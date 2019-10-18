@@ -1,0 +1,22 @@
+.ContentBoxLarge {
+  padding: 140px 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  border-top: 5px solid #2f5596;
+  border-bottom: 5px solid #2f5596;
+}
+
+.SectionHeader {
+  text-indent: 150px;
+  color: #212226;
+  margin: 0 0 0 0;
+  font-size: 46px;
+  font-weight: 500;
+  line-height: 45px;
+}
+
+.VideoSection {
+  text-align: center;
+  padding: 40px 0;
+}

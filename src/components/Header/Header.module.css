@@ -1,0 +1,81 @@
+.HeaderA {
+  background-color: #2f5596;
+  height: 90px;
+  width: 100%;
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.HeaderB {
+  background-color: #fff;
+  height: 90px;
+  width: 100%;
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.HeaderA ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100%;
+  text-align: right;
+}
+
+.HeaderA ul li:first-child {
+  float: left;
+  vertical-align: text-bottom;
+}
+
+.HeaderA li {
+  display: inline-block;
+  margin: 20px;
+  text-align: center;
+}
+
+.HeaderA a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.HeaderA a:hover {
+  color: #677080;
+}
+
+.HeaderB ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100%;
+  text-align: right;
+}
+
+.HeaderB ul li:first-child {
+  float: left;
+  vertical-align: text-bottom;
+}
+
+.HeaderB li {
+  display: inline-block;
+  margin: 20px;
+  text-align: center;
+}
+
+.HeaderB a {
+  text-decoration: none;
+  color: #0a121e;
+}
+
+.HeaderB a:hover {
+  color: #8dadd4;
+}
+
+.Logo {
+  text-align: left;
+}
