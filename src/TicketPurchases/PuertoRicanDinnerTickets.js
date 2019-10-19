@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
@@ -12,23 +12,19 @@ import {
 import { isAuthenticated } from "../auth/index";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
-import Logo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
-import dahdayLogo from "../assets/dahday/dahday-white-logo-updated-5-9-18-1small.png";
-import CocinaCandelaLogo from "../assets/Cocina_Candela/shimp-rice-cocina-candela-nj.jpg";
-
 // hard coded event information
 const puertoRicoEvent = {
   eventID: "0001",
   eventName: "Private Puerto Rican Dinner",
   venue: "Cocina Candela",
-  location: "706 Bloomfield Ave, Montclair, NJ",
+  location: "706 Bloomfiled Ave, Montclair, NJ",
   time: "8:00 pm",
   date: "November 1, 2019",
   description1:
     "Experience a Puerto Rican gastronomy honoring the traditions of Taíno roots and the purity of ingredients. Prepared by Kenny Candelaria who's culinary career began as a child, preparing meals on the fogón with his grandparents in Puerto Rico and refined throughout the years by choosing the most natural, local ingredients available to him.",
-  description2: "Private event limited to 30 guests.",
-  ticketsIssued: 30,
-  ticketsAvailable: 30,
+  description2: "This private event is limited to 30 guests.",
+  ticketsIssued: 20,
+  ticketsAvailable: 20,
   ticketsSold: 0,
   ticketPrice: 75,
   pathName: "/puerto-rican-dinner"
@@ -298,29 +294,20 @@ const PueroRicanDinner = props => {
   if (showTicketSelection) {
     ticketSelection = (
       <Aux>
-        <div>{puertoRicoEvent.description1}</div>
-        <br></br>
-        <div>{puertoRicoEvent.description2}</div>
-        <br></br>
-        <div>
-          <img src={CocinaCandelaLogo} />
-        </div>
         <br></br>
         <div className="row">
           <div className="col-8">
-            <h3>Event Details:</h3>
-            <h5>
-              {puertoRicoEvent.venue} - {puertoRicoEvent.location}
-            </h5>
-            <h5>
+            <h3>{puertoRicoEvent.eventName}</h3>
+            <h4>
+              {puertoRicoEvent.venue}: {puertoRicoEvent.location}
+            </h4>
+            <h4>
               {puertoRicoEvent.date} at {puertoRicoEvent.time}
-            </h5>
-            <h5>${puertoRicoEvent.ticketPrice} per ticket</h5>
+            </h4>
+            <h4>${puertoRicoEvent.ticketPrice} per ticket.</h4>
             <form>
               <br></br>
-
-              <h5>
-                Number of Tickets:
+              <h4>
                 <input
                   type="number"
                   name="ticketsSelected"
@@ -339,68 +326,28 @@ const PueroRicanDinner = props => {
                     });
                   }}
                 />
-              </h5>
+                # of Tickets
+              </h4>
+              <h4></h4>
               <br></br>
             </form>
           </div>
 
           <div className="col-4">
-            <h3>Purchase Summary:</h3>
-            <h5>{ticketPurchase.ticketsSelected} Tickets selected</h5>
-            <h5>
-              Total price ( {ticketPurchase.ticketsSelected} x $
-              {puertoRicoEvent.ticketPrice} ): ${ticketPurchase.purchaseAmount}
-            </h5>
-            <h5>That's it, no hidden fees!!!</h5>
+            <h3>Purchase Summary</h3>
+            <h4>{ticketPurchase.ticketsSelected} Tickets selected</h4>
+            <h4>Total price: ${ticketPurchase.purchaseAmount}</h4>
             <br></br>
-
-            <div className="row">
-              <div className="col-4">
-                <h6>
-                  <button onClick={purchaseTicketHandler}>Checkout</button>
-                </h6>
-              </div>
-              <div className="col-5">
-                <h6>
-                  <button onClick={cancelOrderHandler}>
-                    <Link to="/">Cancel Order</Link>
-                  </button>
-                </h6>
-              </div>
-              <div className="col-3">
-                <h6>
-                  <button>
-                    <a href="https://www.dahday.com/">dahday</a>
-                  </button>
-                </h6>
-              </div>
-            </div>
+            <button onClick={purchaseTicketHandler}>
+              Proceed to Payment Window
+            </button>
+            <br></br>
+            <br></br>
+            <button onClick={cancelOrderHandler}>
+              <Link to="/eventslist">Cancel Order</Link>
+            </button>
           </div>
         </div>
-        <br></br>
-        <br></br>
-        <br></br>
-        <div className="row">
-          <div className="col-10">
-            <h6>
-              Presented by
-              <a href="https://www.dahday.com/">
-                <img src={dahdayLogo} />
-              </a>
-            </h6>
-          </div>
-          <div className="col-2">
-            <h6>
-              Powered by
-              <NavLink to="/" exact>
-                <img src={Logo} />
-              </NavLink>
-            </h6>
-          </div>
-        </div>
-
-        <br></br>
-        <br></br>
       </Aux>
     );
   } else {
@@ -500,7 +447,7 @@ const PueroRicanDinner = props => {
         <br></br>
         <br></br>
         <div>
-          <h1>{puertoRicoEvent.eventName}</h1>
+          <h1>Ticket Selection ONLY</h1>
         </div>
         <br></br>
 

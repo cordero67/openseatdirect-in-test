@@ -7,15 +7,16 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import PuertoRicanDinner from "../../TicketPurchases/PuertoRicanDinner";
+import PuertoRicanDinnerTickets from "../../TicketPurchases/PuertoRicanDinnerTickets";
 
 import Header from "../Header/Header";
 
 import styles from "./Routes.module.css";
 
-import LogoA from "../../assets/images/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_64old.png";
-import LogoB from "../../assets/images/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_64.png";
+import LogoA from "../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_64old.png";
+import LogoB from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_64.png";
 
-import footerLogo from "../../assets/images/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
+import footerLogo from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
 
 class Layout extends Component {
   render() {
@@ -44,12 +45,23 @@ class Layout extends Component {
         />
 
         <Route
-          path="/puerto-rican-dinner"
+          path="/dahday-puertoricandinner"
           exact
           render={routeProps => (
             <React.Fragment>
               <Header styleType="HeaderA" logoType={LogoA}></Header>
               <PuertoRicanDinner />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/dahday-puertoricandinner-tickets"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <Header styleType="HeaderA" logoType={LogoA}></Header>
+              <PuertoRicanDinnerTickets />
             </React.Fragment>
           )}
         />
