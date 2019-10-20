@@ -8,6 +8,7 @@ import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import PuertoRicanDinner from "../../TicketPurchases/PuertoRicanDinner";
 import PuertoRicanDinnerTickets from "../../TicketPurchases/PuertoRicanDinnerTickets";
+import PuertoRicanDinnerCheckout from "../../TicketPurchases/PuertoRicanDinnerCheckout";
 
 import Header from "../Header/Header";
 
@@ -62,6 +63,17 @@ class Layout extends Component {
             <React.Fragment>
               <Header styleType="HeaderA" logoType={LogoA}></Header>
               <PuertoRicanDinnerTickets />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/dahday-puertoricandinner-checkout"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <Header styleType="HeaderA" logoType={LogoA}></Header>
+              <PuertoRicanDinnerCheckout />
             </React.Fragment>
           )}
         />
