@@ -37,14 +37,28 @@ const PueroRicanDinnerTickets = () => {
     purchaseAmount: 0
   });
 
+  // copies existing ticket order details from "localStorage"
+  useEffect(() => {
+    if (localStorage.getItem("order")) {
+      const newOrder = JSON.parse(localStorage.getItem("order"));
+      setTicketPurchase({
+        ...ticketPurchase,
+        eventID: newOrder.eventID,
+        eventName: newOrder.eventName,
+        ticketPrice: newOrder.ticketPrice,
+        ticketsSelected: newOrder.ticketsSelected,
+        purchaseAmount: newOrder.purchaseAmount
+      });
+    }
+  }, []);
+
   // modifies state variables to only show "Ticket Payment" window
   const purchaseTicketHandler = event => {
     if (typeof window !== "undefined") {
       // "localStorage" property allows access the Storage object for a document's origin
       // the stored data is saved across browser sessions and has no expiration time, even when window is closed
-      // "setItem()" adds a data item to "localStorage" with a key of "jwt" and a value of "JSON.stringify(data)"
-
-      localStorage.setItem("ordr", JSON.stringify(ticketPurchase));
+      // "setItem()" adds order information to "localStorage" with a key of "order" and a value of "JSON.stringify(data)"
+      localStorage.setItem("order", JSON.stringify(ticketPurchase));
     }
   };
 

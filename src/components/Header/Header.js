@@ -4,15 +4,7 @@ import { Nav } from "react-bootstrap";
 
 import styles from "./Header.module.css";
 
-const isActive = (history, path) => {
-  if (history.location.pathname === path) {
-    return { color: "#8DADD4" };
-  } else {
-    return { color: "ffffff" };
-  }
-};
-
-const Header = ({ history, logoType, styleType }) => {
+const Header = ({ logoType, styleType }) => {
   return (
     <Nav className={styles[styleType]}>
       <ul>

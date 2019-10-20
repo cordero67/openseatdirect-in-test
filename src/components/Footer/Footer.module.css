@@ -4,7 +4,7 @@
   padding-left: 40px;
   padding-right: 40px;
   width: 100%;
-  color: #2F5596;
+  color: #2f5596;
   font-weight: bold;
   text-align: center;
 }
@@ -17,6 +17,6 @@
 .Footer li {
   display: inline-block;
   margin: 20px;
-  font-size: 14px; 
+  font-size: 14px;
   text-align: center;
 }

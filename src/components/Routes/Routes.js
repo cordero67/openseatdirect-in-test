@@ -11,8 +11,7 @@ import PuertoRicanDinnerTickets from "../../TicketPurchases/PuertoRicanDinnerTic
 import PuertoRicanDinnerCheckout from "../../TicketPurchases/PuertoRicanDinnerCheckout";
 
 import Header from "../Header/Header";
-
-import styles from "./Routes.module.css";
+import Footer from "../Footer/Footer";
 
 import LogoA from "../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_64old.png";
 import LogoB from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_64.png";
@@ -30,6 +29,7 @@ class Layout extends Component {
             <React.Fragment>
               <Header styleType="HeaderB" logoType={LogoB}></Header>
               <Main />
+              <Footer></Footer>
             </React.Fragment>
           )}
         />
@@ -41,6 +41,7 @@ class Layout extends Component {
             <React.Fragment>
               <Header styleType="HeaderA" logoType={LogoA}></Header>
               <Video />
+              <Footer></Footer>
             </React.Fragment>
           )}
         />
@@ -77,18 +78,6 @@ class Layout extends Component {
             </React.Fragment>
           )}
         />
-
-        <Nav className={styles.Footer}>
-          <ul>
-            <li>
-              <img src={footerLogo} className={styles.Logo} />
-            </li>
-            <li>
-              {" "}
-              Copyright &copy; 2019 OpenSeatDirect LLC | All Rights Reserved
-            </li>
-          </ul>
-        </Nav>
       </Aux>
     );
   }

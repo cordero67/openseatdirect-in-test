@@ -21,7 +21,8 @@ const Checkout = props => {
     ticketPrice: 0,
     ticketsSelected: 0,
     purchaseAmount: 0,
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: ""
   });
 
@@ -51,8 +52,8 @@ const Checkout = props => {
   // calls for the Braintree token upon the loading of this component
   // copies ticket order details from "localStorage"
   useEffect(() => {
-    if (localStorage.getItem("ordr")) {
-      const newOrder = JSON.parse(localStorage.getItem("ordr"));
+    if (localStorage.getItem("order")) {
+      const newOrder = JSON.parse(localStorage.getItem("order"));
       setOrder({
         ...order,
         eventID: newOrder.eventID,
@@ -68,7 +69,8 @@ const Checkout = props => {
   const [showTicketPayment, setShowTicketPayment] = useState(false);
   const [showPaymentConfirm, setShowPaymentConfirm] = useState(false);
 
-  // modifies state variables to only show "Payment Confirm" window
+  // clears entire "order" object, removes "order" from "localStorage"
+  // shows the "Payment Confirm" window
   // NEED TO SEND TICKET AMOUNT TO "EventList" AND REGISTER TICKETS PURCHASED
   const purchaseConfirmHandler = () => {
     setOrder({
@@ -77,34 +79,33 @@ const Checkout = props => {
       ticketPrice: 0,
       ticketsSelected: 0,
       purchaseAmount: 0,
-      fullName: "",
+      firstName: "",
+      lastName: "",
       email: ""
     });
     setShowTicketPayment(false);
     setShowPaymentConfirm(true);
-    localStorage.removeItem("ordr");
+    localStorage.removeItem("order");
   };
 
-  // I MAY DELETE THIS SECTION
   // resets all state variables back to defualt values
-  // reroutes user back to events page
-  const cancelOrderHandler = event => {
-    // clears successful ticket purchase information
+  // removes "order" from "localStorage"
+  const cancelOrderHandler = () => {
     setOrder({
       eventID: "",
       eventName: "",
       ticketPrice: 0,
       ticketsSelected: 0,
       purchaseAmount: 0,
-      fullName: "",
+      firstName: "",
+      lastName: "",
       email: ""
     });
-    setShowTicketPayment(false);
-    setShowPaymentConfirm(false);
+    localStorage.removeItem("order");
   };
 
-  // NEED TO WORK ON THIS SECTION
-  // sends payment method and total amount to the backend/server
+  // requests "nonce" from BrainTree
+  // sends payment and order information to the backend
   const expressBuy = () => {
     let nonce;
     let getNonce = data.instance
@@ -117,26 +118,25 @@ const Checkout = props => {
           nonce,
           order.purchaseAmount
         );
-        // UNCOMMENT FROM HERE
         const paymentTicketData = {
           paymentMethodNonce: nonce,
+          eventID: order.eventID,
+          ticketsSelected: order.ticketsSelected,
           amount: order.purchaseAmount,
-          eventID: 100,
-          email: order.email,
-          ticketsSelected: order.ticketsSelected
+          firstName: order.firstName,
+          lastName: order.lastName,
+          email: order.email
         };
 
-        // need to send to backend
+        // sends transaction and payment details to the backend
         processExpressPayment(paymentTicketData)
           .then(response => {
             console.log(response);
             setData({ ...data, success: response.success });
-            // empty cart
-            // create order
+            // emptys the cart and resets
             purchaseConfirmHandler();
           })
           .catch(error => console.log(error));
-        // TO HERE
       })
       .catch(error => {
         console.log("dropin error: ", error);
@@ -158,9 +158,8 @@ const Checkout = props => {
       className="alert alert-info"
       style={{ display: success ? "" : "none" }}
     >
-      <h2>Thank you for your ticket purchase!!! </h2>
-      <h2>Your payment was received successfully</h2>
-      <h2>You will be receiving an email shortly with your order details.</h2>
+      <h2>Payment received, thank you for your order. </h2>
+      <h2>Confirmation email with order details will be sent shortly.</h2>
     </div>
   );
 
@@ -186,7 +185,7 @@ const Checkout = props => {
         </div>
       ) : (
         <div>
-          <h5>NO DROP IN RETURNED</h5>
+          <h5>Empty Order, please return to ticket selection page.</h5>
         </div>
       )}
     </div>
@@ -203,37 +202,60 @@ const Checkout = props => {
           <div className="col-7">
             <h3>Contact Information</h3>
             <form>
-              <h5>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={order.fullName}
-                  placeholder="Full Name*"
-                  required
-                  onChange={event =>
-                    setOrder({
-                      ...order,
-                      fullName: event.target.value
-                    })
-                  }
-                />
-              </h5>
-
-              <h5>
-                <input
-                  type="email"
-                  name="emailAddress"
-                  value={order.email}
-                  placeholder="Email Address*"
-                  required
-                  onChange={event =>
-                    setOrder({
-                      ...order,
-                      email: event.target.value
-                    })
-                  }
-                />
-              </h5>
+              <div className="row">
+                <div className="col-6">
+                  <h5>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={order.firstName}
+                      placeholder="First Name*"
+                      required
+                      onChange={event =>
+                        setOrder({
+                          ...order,
+                          firstName: event.target.value
+                        })
+                      }
+                    />
+                  </h5>
+                </div>
+                <div className="col-6">
+                  <h5>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={order.lastName}
+                      placeholder="Last Name*"
+                      required
+                      onChange={event =>
+                        setOrder({
+                          ...order,
+                          lastName: event.target.value
+                        })
+                      }
+                    />
+                  </h5>
+                </div>
+              </div>
+              <br></br>
+              <row>
+                <h5>
+                  <input
+                    type="email"
+                    name="emailAddress"
+                    value={order.email}
+                    placeholder="Email Address*"
+                    required
+                    onChange={event =>
+                      setOrder({
+                        ...order,
+                        email: event.target.value
+                      })
+                    }
+                  />
+                </h5>
+              </row>
             </form>
             <br></br>
             <h5>{showDropIn()}</h5>
@@ -249,6 +271,18 @@ const Checkout = props => {
             </h5>
             <h5>That's it, no hidden fees!!!</h5>
             <br></br>
+            <br></br>
+            <h6>
+              <button>
+                <Link to="/dahday-puertoricandinner-tickets">Modify Order</Link>
+              </button>
+            </h6>
+            <br></br>
+            <h6>
+              <button onClick={cancelOrderHandler}>
+                <a href="https://www.dahday.com/">Cancel Order</a>
+              </button>
+            </h6>
           </div>
         </div>
         <br></br>
@@ -311,7 +345,8 @@ const Checkout = props => {
           <h6>Tickets selected: {order.ticketsSelected}</h6>
           <h6>Ticket price: {order.ticketPrice}</h6>
           <h6>Purchase amount: {order.purchaseAmount}</h6>
-          <h6>Full Name: {order.fullName}</h6>
+          <h6>First Name: {order.firstName}</h6>
+          <h6>Last Name: {order.lastName}</h6>
           <h6>E-mail Address: {order.email}</h6>
         </div>
       </Container>
