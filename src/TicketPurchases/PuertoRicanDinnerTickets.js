@@ -4,10 +4,7 @@ import { Container } from "react-bootstrap";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
-import Logo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
-import dahdayLogo from "../assets/dahday/dahday-white-logo-updated-5-9-18-1small.png";
-import CocinaCandelaLogo1 from "../assets/Cocina_Candela/shimp-rice-cocina-candela-nj.jpg";
-import CocinaCandelaLogo2 from "../assets/Cocina_Candela/store_signNEW.jpg";
+import CocinaCandelaLogo from "../assets/Cocina_Candela/shimp-rice-cocina-candela-nj.jpg";
 
 // hard coded event information
 const puertoRicoEvent = {
@@ -23,8 +20,7 @@ const puertoRicoEvent = {
   ticketsIssued: 30,
   ticketsAvailable: 30,
   ticketsSold: 0,
-  ticketPrice: 75,
-  pathName: "/dahday-puertoricandinner"
+  ticketPrice: 75
 };
 
 const PueroRicanDinnerTickets = () => {
@@ -76,8 +72,7 @@ const PueroRicanDinnerTickets = () => {
       <div>{puertoRicoEvent.description2}</div>
       <br></br>
       <div>
-        <img src={CocinaCandelaLogo1} />
-        <img src={CocinaCandelaLogo2} />
+        <img src={CocinaCandelaLogo} />
       </div>
       <br></br>
       <div className="row">
@@ -146,30 +141,6 @@ const PueroRicanDinnerTickets = () => {
           </div>
         </div>
       </div>
-      <br></br>
-      <br></br>
-      <br></br>
-      <div className="row">
-        <div className="col-10">
-          <h6>
-            Presented by
-            <a href="https://www.dahday.com/">
-              <img src={dahdayLogo} />
-            </a>
-          </h6>
-        </div>
-        <div className="col-2">
-          <h6>
-            Powered by
-            <NavLink to="/" exact>
-              <img src={Logo} />
-            </NavLink>
-          </h6>
-        </div>
-      </div>
-
-      <br></br>
-      <br></br>
     </Aux>
   );
 
@@ -183,7 +154,14 @@ const PueroRicanDinnerTickets = () => {
         <br></br>
         <h5>{ticketSelection}</h5>
         <br></br>
+      </Container>
+    </Aux>
+  );
+};
 
+export default PueroRicanDinnerTickets;
+
+/*
         <div style={{ color: "red" }}>
           <h5>FOR OSD EYES ONLY</h5>
           <h6>Tickets selected: {ticketPurchase.ticketsSelected}</h6>
@@ -192,9 +170,4 @@ const PueroRicanDinnerTickets = () => {
           <h6>Tickets available: {puertoRicoEvent.ticketsAvailable}</h6>
           <h6>Tickets sold: {puertoRicoEvent.ticketsSold}</h6>
         </div>
-      </Container>
-    </Aux>
-  );
-};
-
-export default PueroRicanDinnerTickets;
+*/

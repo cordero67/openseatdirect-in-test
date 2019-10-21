@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 
-import styles from "./Header.module.css";
+import styles from "./OSDHeader.module.css";
 
 const Header = ({ logoType, styleType }) => {
   return (

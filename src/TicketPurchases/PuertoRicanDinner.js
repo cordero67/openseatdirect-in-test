@@ -13,7 +13,7 @@ import { isAuthenticated } from "../auth/index";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import Logo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
-import dahdayLogo from "../assets/dahday/dahday-white-logo-updated-5-9-18-1small.png";
+import dahdayLogo from "../assets/dahday/dahday-white-logo-small.png";
 import CocinaCandelaLogo from "../assets/Cocina_Candela/shimp-rice-cocina-candela-nj.jpg";
 
 // hard coded event information

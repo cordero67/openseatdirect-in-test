@@ -7,11 +7,8 @@ import {
   getExpressBraintreeClientToken,
   processExpressPayment
 } from "./apiCore";
+import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
-
-import Logo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
-import dahdayLogo from "../assets/dahday/dahday-white-logo-updated-5-9-18-1small.png";
-import CocinaCandelaLogo from "../assets/Cocina_Candela/shimp-rice-cocina-candela-nj.jpg";
 
 const Checkout = props => {
   // ticket purchase data
@@ -25,6 +22,11 @@ const Checkout = props => {
     lastName: "",
     email: ""
   });
+
+  // variables that control view options
+  const [loading, setLoading] = useState(true);
+  const [showTicketPayment, setShowTicketPayment] = useState(false);
+  const [showPaymentConfirm, setShowPaymentConfirm] = useState(false);
 
   // this variable is for the Braintree interface
   const [data, setData] = useState({
@@ -44,6 +46,7 @@ const Checkout = props => {
       } else {
         setData({ ...data, clientToken: data.clientToken });
         // setData({ clientToken: data.clientToken });
+        setLoading(false);
         setShowTicketPayment(true);
       }
     });
@@ -66,9 +69,6 @@ const Checkout = props => {
     getExpressToken();
   }, []);
 
-  const [showTicketPayment, setShowTicketPayment] = useState(false);
-  const [showPaymentConfirm, setShowPaymentConfirm] = useState(false);
-
   // clears entire "order" object, removes "order" from "localStorage"
   // shows the "Payment Confirm" window
   // NEED TO SEND TICKET AMOUNT TO "EventList" AND REGISTER TICKETS PURCHASED
@@ -84,6 +84,7 @@ const Checkout = props => {
       email: ""
     });
     setShowTicketPayment(false);
+    setLoading(false);
     setShowPaymentConfirm(true);
     localStorage.removeItem("order");
   };
@@ -191,8 +192,17 @@ const Checkout = props => {
     </div>
   );
 
+  let spinnerView = null;
   let purchaseSelection = null;
   let purchaseConfirmation = null;
+
+  if (loading) {
+    spinnerView = (
+      <Aux>
+        <Spinner></Spinner>
+      </Aux>
+    );
+  }
 
   // Ticket Purchase Window details
   if (showTicketPayment) {
@@ -285,30 +295,6 @@ const Checkout = props => {
             </h6>
           </div>
         </div>
-        <br></br>
-        <br></br>
-        <br></br>
-        <div className="row">
-          <div className="col-10">
-            <h6>
-              Presented by
-              <a href="https://www.dahday.com/">
-                <img src={dahdayLogo} />
-              </a>
-            </h6>
-          </div>
-          <div className="col-2">
-            <h6>
-              Powered by
-              <NavLink to="/" exact>
-                <img src={Logo} />
-              </NavLink>
-            </h6>
-          </div>
-        </div>
-
-        <br></br>
-        <br></br>
       </Aux>
     );
   }
@@ -316,7 +302,7 @@ const Checkout = props => {
   if (showPaymentConfirm) {
     purchaseConfirmation = (
       <Aux>
-        <h1>Thank you for your purchase</h1>
+        <h3>Order Confirmation</h3>
         <h5>{showSuccess(data.success)}</h5>
       </Aux>
     );
@@ -336,22 +322,25 @@ const Checkout = props => {
         </div>
         <br></br>
 
+        <h5>{spinnerView}</h5>
         <h5>{purchaseSelection}</h5>
         <h5>{purchaseConfirmation}</h5>
         <br></br>
-
-        <div style={{ color: "red" }}>
-          <h5>FOR OSD EYES ONLY</h5>
-          <h6>Tickets selected: {order.ticketsSelected}</h6>
-          <h6>Ticket price: {order.ticketPrice}</h6>
-          <h6>Purchase amount: {order.purchaseAmount}</h6>
-          <h6>First Name: {order.firstName}</h6>
-          <h6>Last Name: {order.lastName}</h6>
-          <h6>E-mail Address: {order.email}</h6>
-        </div>
       </Container>
     </Aux>
   );
 };
 
 export default Checkout;
+
+/*
+        <div style={{ color: "red" }}>
+            <h5>FOR OSD EYES ONLY</h5>
+            <h6>Tickets selected: {order.ticketsSelected}</h6>
+            <h6>Ticket price: {order.ticketPrice}</h6>
+            <h6>Purchase amount: {order.purchaseAmount}</h6>
+            <h6>First Name: {order.firstName}</h6>
+            <h6>Last Name: {order.lastName}</h6>
+            <h6>E-mail Address: {order.email}</h6>
+        </div>
+*/
