@@ -12,7 +12,7 @@ const Footer = () => {
         <h6>
           Presented by
           <a href="https://www.dahday.com/">
-            <img src={dahdayLogo} />
+            <img src={dahdayLogo} alt="Dahday Logo" />
           </a>
         </h6>
       </div>
@@ -20,7 +20,7 @@ const Footer = () => {
         <h6>
           Powered by
           <NavLink to="/" exact>
-            <img src={OSDLogo} />
+            <img src={OSDLogo} alt="OpenSeatDirect Logo" />
           </NavLink>
         </h6>
       </div>

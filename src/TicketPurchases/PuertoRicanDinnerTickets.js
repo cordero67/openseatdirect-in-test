@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -72,7 +72,7 @@ const PueroRicanDinnerTickets = () => {
       <div>{puertoRicoEvent.description2}</div>
       <br></br>
       <div>
-        <img src={CocinaCandelaLogo} />
+        <img src={CocinaCandelaLogo} alt="Cocina Candela Logo" />
       </div>
       <br></br>
       <div className="row">

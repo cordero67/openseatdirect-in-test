@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
 
-import { Nav } from "react-bootstrap";
-
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";

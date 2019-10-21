@@ -10,7 +10,11 @@ const Header = ({ logoType, styleType }) => {
       <ul>
         <li>
           <NavLink to="/" exact>
-            <img src={logoType} className={styles.Logo} />
+            <img
+              src={logoType}
+              alt="OpenSeatDirect Logo"
+              className={styles.Logo}
+            />
           </NavLink>
         </li>
       </ul>

@@ -4,12 +4,12 @@ import { Container } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
 import {
-  getBraintreeClientToken,
+  //getBraintreeClientToken,
   getExpressBraintreeClientToken,
-  processPayment,
+  //processPayment,
   processExpressPayment
 } from "./apiCore";
-import { isAuthenticated } from "../auth/index";
+//import { isAuthenticated } from "../auth/index";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import Logo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
@@ -95,7 +95,7 @@ const PueroRicanDinner = props => {
   //const userID = isAuthenticated() && isAuthenticated().user._id;
 
   // determines if user is logged-in and retreives their token
-  const token = isAuthenticated() && isAuthenticated().token;
+  // const token = isAuthenticated() && isAuthenticated().token;
 
   const [showTicketSelection, setShowTicketSelection] = useState(true);
 
@@ -111,12 +111,12 @@ const PueroRicanDinner = props => {
   };
 
   // modifies state variables to only show "Ticket Selection" window
-  const changeOrderHandler = event => {
-    event.preventDefault();
-    setShowTicketSelection(true);
-    setShowTicketPayment(false);
-    setShowPaymentConfirm(false);
-  };
+  //const changeOrderHandler = event => {
+  //event.preventDefault();
+  //setShowTicketSelection(true);
+  //setShowTicketPayment(false);
+  //setShowPaymentConfirm(false);
+  //};
 
   // modifies state variables to only show "Payment Confirm" window
   // NEED TO SEND TICKET AMOUNT TO "EventList" AND REGISTER TICKETS PURCHASED
@@ -303,7 +303,7 @@ const PueroRicanDinner = props => {
         <div>{puertoRicoEvent.description2}</div>
         <br></br>
         <div>
-          <img src={CocinaCandelaLogo} />
+          <img src={CocinaCandelaLogo} alt="Cocina Candela Logo" />
         </div>
         <br></br>
         <div className="row">
@@ -385,7 +385,7 @@ const PueroRicanDinner = props => {
             <h6>
               Presented by
               <a href="https://www.dahday.com/">
-                <img src={dahdayLogo} />
+                <img src={dahdayLogo} alt="Dahday Logo" />
               </a>
             </h6>
           </div>
@@ -393,7 +393,7 @@ const PueroRicanDinner = props => {
             <h6>
               Powered by
               <NavLink to="/" exact>
-                <img src={Logo} />
+                <img src={Logo} alt="OpenSeatDirect Logo" />
               </NavLink>
             </h6>
           </div>

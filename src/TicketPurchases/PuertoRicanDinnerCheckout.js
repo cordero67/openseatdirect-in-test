@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 

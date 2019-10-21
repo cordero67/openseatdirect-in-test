@@ -9,9 +9,9 @@ const Header = ({ logoType }) => {
     <Nav className={styles.Header}>
       <ul>
         <li>
-          <NavLink to="/" exact>
-            <img src={logoType} className={styles.Logo} />
-          </NavLink>
+          <a href="https://www.dahday.com/">
+            <img src={logoType} alt="Dahday Logo" className={styles.Logo} />
+          </a>
         </li>
       </ul>
     </Nav>
