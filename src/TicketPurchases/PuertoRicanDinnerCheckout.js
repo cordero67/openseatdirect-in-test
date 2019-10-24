@@ -60,22 +60,11 @@ const Checkout = props => {
       }
     });
   };
-  /*
+  // hello
   const connectionStatus = () => (
     <div>
       {data.connection === false ? (
         <div>Sorry no connection at this time, please try later</div>
-      ) : (
-        <div></div>
-      )}
-    </div>
-  );
-  */
-
-  const connectionStatus4444444444444444444 = () => (
-    <div>
-      {data.error === true ? (
-        <div>System error, please try later.</div>
       ) : (
         <div></div>
       )}
