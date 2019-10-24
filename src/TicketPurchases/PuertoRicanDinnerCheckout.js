@@ -35,23 +35,52 @@ const Checkout = props => {
     clientToken: true,
     error: "",
     instance: {},
-    address: ""
+    address: "",
+    connection: true
   });
+
+  /*
+        if (data === undefined) {
+        setData({ ...data, connection: false });
+        setLoading(false);
+      }
+*/
 
   // defines the function that retrieves the Braintree token
   // this represents parts "1" and "2" of the Braintree interaction
   const getExpressToken = () => {
     getExpressBraintreeClientToken().then(data => {
+      setLoading(false);
       if (data.error) {
         setData({ ...data, error: data.error });
       } else {
         setData({ ...data, clientToken: data.clientToken });
         // setData({ clientToken: data.clientToken });
-        setLoading(false);
         setShowTicketPayment(true);
       }
     });
   };
+  /*
+  const connectionStatus = () => (
+    <div>
+      {data.connection === false ? (
+        <div>Sorry no connection at this time, please try later</div>
+      ) : (
+        <div></div>
+      )}
+    </div>
+  );
+  */
+
+  const connectionStatus = () => (
+    <div>
+      {data.error === true ? (
+        <div>System error, please try later.</div>
+      ) : (
+        <div></div>
+      )}
+    </div>
+  );
 
   // calls for the Braintree token upon the loading of this component
   // copies ticket order details from "localStorage"
@@ -359,6 +388,7 @@ const Checkout = props => {
           <h1>Checkout</h1>
         </div>
         <br></br>
+        <h5>{connectionStatus()}</h5>
         <h5>{spinnerView}</h5>
         <h5>{purchaseSelection}</h5>
         <h5>{purchaseConfirmation}</h5>

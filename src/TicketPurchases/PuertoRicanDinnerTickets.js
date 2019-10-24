@@ -119,42 +119,7 @@ const PueroRicanDinnerTickets = () => {
           <h5>${puertoRicoEvent.ticketPrice} per ticket</h5>
           <form>
             <br></br>
-
-            <h5>
-              <span style={{ color: "red" }}>OPTION 1</span>
-            </h5>
-            <h5>
-              <div className="row">
-                <div className="col-5">Number of Tickets:</div>
-                <div className="col-5">
-                  <input
-                    className={styles.TicketBox}
-                    type="number"
-                    name="ticketsSelected"
-                    min="1"
-                    max={puertoRicoEvent.ticketsAvailable}
-                    step="1"
-                    value={ticketPurchase.ticketsSelected}
-                    placeholder=""
-                    required
-                    onChange={event => {
-                      setTicketPurchase({
-                        ...ticketPurchase,
-                        ticketsSelected: event.target.value,
-                        purchaseAmount:
-                          event.target.value * puertoRicoEvent.ticketPrice
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            </h5>
             <br></br>
-            <br></br>
-            <br></br>
-            <h5>
-              <span style={{ color: "red" }}>OPTION 2</span>
-            </h5>
             <div className="row">
               <div className="col-5">Number of Tickets:</div>
               <div className="col-5">
@@ -166,6 +131,7 @@ const PueroRicanDinnerTickets = () => {
                   }}
                   type="number"
                   name="ticketsSelected"
+                  value={ticketPurchase.ticketsSelected}
                   required
                   onChange={event => {
                     setTicketPurchase({
@@ -176,6 +142,7 @@ const PueroRicanDinnerTickets = () => {
                     });
                   }}
                 >
+                  <option>0</option>
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -186,26 +153,6 @@ const PueroRicanDinnerTickets = () => {
                   <option>8</option>
                   <option>9</option>
                   <option>10</option>
-                  <option>11</option>
-                  <option>12</option>
-                  <option>13</option>
-                  <option>14</option>
-                  <option>15</option>
-                  <option>16</option>
-                  <option>17</option>
-                  <option>18</option>
-                  <option>19</option>
-                  <option>20</option>
-                  <option>21</option>
-                  <option>22</option>
-                  <option>23</option>
-                  <option>24</option>
-                  <option>25</option>
-                  <option>26</option>
-                  <option>27</option>
-                  <option>28</option>
-                  <option>29</option>
-                  <option>30</option>
                 </select>
               </div>
             </div>
@@ -253,55 +200,32 @@ export default PueroRicanDinnerTickets;
 
 /*
 
-                <select
-                  style={{
-                    width: "60px",
-                    height: "50px",
-                    textAlign: "right"
-                  }}
-                  type="number"
-                  name="ticketsSelected"
-                  required
-                  onChange={event => {
-                    setTicketPurchase({
-                      ...ticketPurchase,
-                      ticketsSelected: event.target.value,
-                      purchaseAmount:
-                        event.target.value * puertoRicoEvent.ticketPrice
-                    });
-                  }}
-                >
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                  <option>9</option>
-                  <option>10</option>
-                  <option>11</option>
-                  <option>12</option>
-                  <option>13</option>
-                  <option>14</option>
-                  <option>15</option>
-                  <option>16</option>
-                  <option>17</option>
-                  <option>18</option>
-                  <option>19</option>
-                  <option>20</option>
-                  <option>21</option>
-                  <option>22</option>
-                  <option>23</option>
-                  <option>24</option>
-                  <option>25</option>
-                  <option>26</option>
-                  <option>27</option>
-                  <option>28</option>
-                  <option>29</option>
-                  <option>30</option>
-                </select>
+            <h5>
+              <div className="row">
+                <div className="col-5">Number of Tickets:</div>
+                <div className="col-5">
+                  <input
+                    className={styles.TicketBox}
+                    type="number"
+                    name="ticketsSelected"
+                    min="1"
+                    max={puertoRicoEvent.ticketsAvailable}
+                    step="1"
+                    value={ticketPurchase.ticketsSelected}
+                    placeholder=""
+                    required
+                    onChange={event => {
+                      setTicketPurchase({
+                        ...ticketPurchase,
+                        ticketsSelected: event.target.value,
+                        purchaseAmount:
+                          event.target.value * puertoRicoEvent.ticketPrice
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            </h5>
 
 
         <div style={{ color: "red" }}>
