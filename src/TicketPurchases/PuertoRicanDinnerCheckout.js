@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Container } from "react-bootstrap";
+import { Form, Col, Container } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
 import {
@@ -9,6 +9,7 @@ import {
 } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
+import styles from "./TicketPurchases.module.css";
 
 const Checkout = props => {
   // ticket purchase data
@@ -155,12 +156,13 @@ const Checkout = props => {
   );
 
   const showSuccess = success => (
-    <div
-      className="alert alert-info"
-      style={{ display: success ? "" : "none" }}
-    >
-      <h2>Payment received, thank you for your order. </h2>
-      <h2>Confirmation email with order details will be sent shortly.</h2>
+    <div style={{ display: success ? "" : "none" }}>
+      <br></br>
+      <h4>Payment received, thank you for your order. </h4>
+      <br></br>
+      <h4>Confirmation email with order details will be sent shortly.</h4>
+      <br></br>
+      <br></br>
     </div>
   );
 
@@ -180,17 +182,44 @@ const Checkout = props => {
             }}
             onInstance={instance => (data.instance = instance)}
           />
-          <button onClick={expressBuy} className="btn btn-success">
-            Submit Payment
-          </button>
+          {submitButton}
         </div>
       ) : (
         <div>
-          <h5>Empty Order, please return to ticket selection page.</h5>
+          <h5>Your order is empty, please return to ticket selection page.</h5>
         </div>
       )}
     </div>
   );
+
+  // determines if all "contact information" has been filled out by the ticket buyer
+  let submitButton = null;
+  let detailsMinimal =
+    order.firstName !== "" && order.lastName !== "" && order.email !== "";
+
+  if (detailsMinimal) {
+    submitButton = (
+      <button
+        onClick={expressBuy}
+        className="btn btn-success"
+        disabled={!detailsMinimal}
+        className={styles.ButtonGreen}
+      >
+        Submit Payment
+      </button>
+    );
+  } else {
+    submitButton = (
+      <button
+        onClick={expressBuy}
+        className="btn btn-success"
+        disabled={!detailsMinimal}
+        className={styles.ButtonGrey}
+      >
+        Submit Payment
+      </button>
+    );
+  }
 
   let spinnerView = null;
   let purchaseSelection = null;
@@ -209,71 +238,76 @@ const Checkout = props => {
     purchaseSelection = (
       <Aux>
         <div className="row">
-          <div className="col-7">
+          <div className="col-6">
             <h3>Contact Information</h3>
-            <form>
-              <div className="row">
-                <div className="col-6">
-                  <h5>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={order.firstName}
-                      placeholder="First Name*"
-                      required
-                      onChange={event =>
-                        setOrder({
-                          ...order,
-                          firstName: event.target.value
-                        })
-                      }
-                    />
-                  </h5>
-                </div>
-                <div className="col-6">
-                  <h5>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={order.lastName}
-                      placeholder="Last Name*"
-                      required
-                      onChange={event =>
-                        setOrder({
-                          ...order,
-                          lastName: event.target.value
-                        })
-                      }
-                    />
-                  </h5>
-                </div>
-              </div>
-              <br></br>
-              <row>
-                <h5>
-                  <input
-                    type="email"
-                    name="emailAddress"
-                    value={order.email}
-                    placeholder="Email Address*"
-                    required
-                    onChange={event =>
-                      setOrder({
-                        ...order,
-                        email: event.target.value
-                      })
-                    }
-                  />
-                </h5>
-              </row>
-            </form>
+            <br></br>
+            <Form.Row>
+              <Form.Group as={Col} controlId="formGridFirstName">
+                <Form.Control
+                  type="text"
+                  name="firstName"
+                  required
+                  placeholder="First Name*"
+                  value={order.firstName}
+                  onChange={event =>
+                    setOrder({
+                      ...order,
+                      firstName: event.target.value
+                    })
+                  }
+                />
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="formGridLastName">
+                <Form.Control
+                  type="text"
+                  name="lastName"
+                  required
+                  placeholder="Last Name*"
+                  value={order.lastName}
+                  onChange={event =>
+                    setOrder({
+                      ...order,
+                      lastName: event.target.value
+                    })
+                  }
+                />
+              </Form.Group>
+            </Form.Row>
+            <Form.Group controlId="formGridEmail">
+              <Form.Control
+                type="email"
+                name="email"
+                required
+                placeholder="Email Address*"
+                value={order.email}
+                onChange={event =>
+                  setOrder({
+                    ...order,
+                    email: event.target.value
+                  })
+                }
+              />
+            </Form.Group>
+            {detailsMinimal ? (
+              <h6>Thank you for completing all Contact Information fields</h6>
+            ) : (
+              <h6>
+                <span style={{ color: "red" }}>
+                  * Please complete all Contact Information fields to submit
+                  payment
+                </span>
+              </h6>
+            )}
+            <br></br>
             <br></br>
             <h5>{showDropIn()}</h5>
             <h5>{showError(data.error)}</h5>
           </div>
           <div className="col-2"></div>
-          <div className="col-3">
+          <div className="col-4">
             <h3>Order Summary</h3>
+            <br></br>
             <h5>{order.ticketsSelected} Tickets selected</h5>
             <h5>
               Total price ( {order.ticketsSelected} x ${order.ticketPrice} ): $
@@ -282,14 +316,20 @@ const Checkout = props => {
             <h5>That's it, no hidden fees!!!</h5>
             <br></br>
             <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
             <h6>
-              <button>
+              <button className={styles.ButtonWhite}>
                 <Link to="/dahday-puertoricandinner-tickets">Modify Order</Link>
               </button>
             </h6>
             <br></br>
             <h6>
-              <button onClick={cancelOrderHandler}>
+              <button
+                onClick={cancelOrderHandler}
+                className={styles.ButtonWhite}
+              >
                 <a href="https://www.dahday.com/">Cancel Order</a>
               </button>
             </h6>
@@ -298,16 +338,14 @@ const Checkout = props => {
       </Aux>
     );
   }
-
   if (showPaymentConfirm) {
     purchaseConfirmation = (
       <Aux>
-        <h3>Order Confirmation</h3>
+        <h3>Order Status</h3>
         <h5>{showSuccess(data.success)}</h5>
       </Aux>
     );
   }
-
   return (
     <Aux>
       <Container>
@@ -321,7 +359,6 @@ const Checkout = props => {
           <h1>Checkout</h1>
         </div>
         <br></br>
-
         <h5>{spinnerView}</h5>
         <h5>{purchaseSelection}</h5>
         <h5>{purchaseConfirmation}</h5>
@@ -330,9 +367,7 @@ const Checkout = props => {
     </Aux>
   );
 };
-
 export default Checkout;
-
 /*
         <div style={{ color: "red" }}>
             <h5>FOR OSD EYES ONLY</h5>

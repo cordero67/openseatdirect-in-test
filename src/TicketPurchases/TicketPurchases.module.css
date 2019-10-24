@@ -1,0 +1,93 @@
+.Modal {
+  position: fixed;
+  z-index: 500;
+  background-color: white;
+  width: 90%;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px black;
+  padding: 16px;
+  left: 15%;
+  top: 30%;
+  box-sizing: border-box;
+  transition: all 0.3s ease-out;
+}
+
+@media (min-width: 600px) {
+  .Modal {
+    width: 700px;
+    left: calc(50% - 250px);
+  }
+}
+
+.ButtonGreen {
+  background-color: #4caf50;
+  color: white;
+  border: 1px solid grey;
+  border-radius: 8px;
+  padding: 9px 15px;
+  width: 150px;
+  font-size: 16px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+
+.ButtonGrey {
+  background-color: #e7e7e7;
+  color: black;
+  border: 1px solid grey;
+  border-radius: 8px;
+  padding: 9px 15px;
+  width: 150px;
+  font-size: 16px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+
+.ButtonWhite {
+  background-color: white;
+  color: black;
+  border: 1px solid grey;
+  border-radius: 8px;
+  padding: 9px 15px;
+  width: 150px;
+  font-size: 16px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+
+.ButtonBlue {
+  background-color: #008cba;
+  color: #fff;
+  border: 1px solid grey;
+  border-radius: 8px;
+  padding: 9px 15px;
+  width: 150px;
+  font-size: 16px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+
+.ButtonGeneric {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.TicketBox {
+  text-align: center;
+  width: 80px;
+  font-size: 20px;
+}
