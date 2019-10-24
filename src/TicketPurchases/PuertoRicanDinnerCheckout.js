@@ -72,7 +72,7 @@ const Checkout = props => {
   );
   */
 
-  const connectionStatus22222222222 = () => (
+  const connectionStatus4444444444444444444 = () => (
     <div>
       {data.error === true ? (
         <div>System error, please try later.</div>
