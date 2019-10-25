@@ -152,11 +152,12 @@ const PueroRicanDinner = props => {
     //<Link to="/video">Cancel Order</Link>;
   };
 
+  // let getNonce = data.instance
   // ALTERNATE TO buy() CODE: expressBuy()
   // sends payment method and total amount to the backend/server
   const expressBuy = () => {
     let nonce;
-    let getNonce = data.instance
+    data.instance
       .requestPaymentMethod()
       .then(data => {
         console.log(data);

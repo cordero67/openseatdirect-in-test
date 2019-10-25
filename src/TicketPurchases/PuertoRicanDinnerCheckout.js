@@ -60,7 +60,7 @@ const Checkout = props => {
       }
     });
   };
-  // hello
+
   const connectionStatus = () => (
     <div>
       {data.error === true ? (
@@ -124,11 +124,12 @@ const Checkout = props => {
     localStorage.removeItem("order");
   };
 
+  // let getNonce = data.instance
   // requests "nonce" from BrainTree
   // sends payment and order information to the backend
   const expressBuy = () => {
     let nonce;
-    let getNonce = data.instance
+    data.instance
       .requestPaymentMethod()
       .then(data => {
         console.log(data);
@@ -212,8 +213,16 @@ const Checkout = props => {
 
   // determines if all "contact information" has been filled out by the ticket buyer
   let submitButton = null;
+  let validEmail = false;
+  const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  validEmail = regsuper.test(order.email);
+
   let detailsMinimal =
-    order.firstName !== "" && order.lastName !== "" && order.email !== "";
+    order.firstName !== "" &&
+    order.lastName !== "" &&
+    regsuper.test(order.email);
+
+  console.log(detailsMinimal);
 
   if (detailsMinimal) {
     submitButton = (
@@ -360,7 +369,7 @@ const Checkout = props => {
     purchaseConfirmation = (
       <Aux>
         <h3>Order Status</h3>
-        <h5>{showSuccess(data.success)}</h5>
+        {showSuccess(data.success)}
       </Aux>
     );
   }
@@ -377,10 +386,10 @@ const Checkout = props => {
           <h1>Checkout</h1>
         </div>
         <br></br>
-        <h5>{connectionStatus()}</h5>
-        <h5>{spinnerView}</h5>
-        <h5>{purchaseSelection}</h5>
-        <h5>{purchaseConfirmation}</h5>
+        {connectionStatus()}
+        {spinnerView}
+        {purchaseSelection}
+        {purchaseConfirmation}
         <br></br>
       </Container>
     </Aux>
