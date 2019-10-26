@@ -27,9 +27,9 @@ class Video extends Component {
         <div className={styles.ContentBoxLarge}>
           <div className={styles.SectionHeader}>
             <h1>
-              What is{" "}
+              What is
               <span style={{ style: "bold", color: "#2F5596" }}>
-                <strong>OPENSEATDIRECT</strong>
+                <strong> OPENSEATDIRECT</strong>
               </span>
             </h1>
           </div>

@@ -4,7 +4,19 @@ import { Nav } from "react-bootstrap";
 
 import styles from "./OSDHeader.module.css";
 
-const Header = ({ logoType, styleType }) => {
+// determines if current menu item, i.e. "<NavLink>" is the active link
+// "history" represents the actual active path
+// "path" represents the path defined in the respective "<NavLink>"
+// "#ff9900" gives an orange color
+const isActive = (history, path) => {
+  if (history.location.pathname === path) {
+    return { color: "#8DADD4" };
+  } else {
+    return { color: "ffffff" };
+  }
+};
+
+const Header = ({ history, logoType, styleType }) => {
   return (
     <Nav className={styles[styleType]}>
       <ul>

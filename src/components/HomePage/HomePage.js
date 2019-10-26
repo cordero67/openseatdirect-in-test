@@ -49,7 +49,7 @@ class Home extends Component {
               <br></br>
               <h1>
                 <NavLink to="/video" exact>
-                  <Button variant="outline-light">Learn More</Button>
+                  <Button variant="outline-light">LEARN MORE</Button>
                 </NavLink>
                 <Route path="/video" exact component={Video} />
               </h1>

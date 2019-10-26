@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Form, Col, Container } from "react-bootstrap";
+import { Form, Col } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
 import {
@@ -24,12 +24,12 @@ const Checkout = props => {
     email: ""
   });
 
-  // variables that control view options
+  // view control variables
   const [loading, setLoading] = useState(true);
   const [showTicketPayment, setShowTicketPayment] = useState(false);
   const [showPaymentConfirm, setShowPaymentConfirm] = useState(false);
 
-  // this variable is for the Braintree interface
+  // Braintree interface variable
   const [data, setData] = useState({
     success: false,
     clientToken: true,
@@ -124,7 +124,6 @@ const Checkout = props => {
     localStorage.removeItem("order");
   };
 
-  // let getNonce = data.instance
   // requests "nonce" from BrainTree
   // sends payment and order information to the backend
   const expressBuy = () => {
@@ -134,11 +133,11 @@ const Checkout = props => {
       .then(data => {
         console.log(data);
         nonce = data.nonce;
-        console.log(
-          "send nonce and total to process: ",
-          nonce,
-          order.purchaseAmount
-        );
+        //console.log(
+        //  "send nonce and total to process: ",
+        //  nonce,
+        //  order.purchaseAmount
+        //);
         const paymentTicketData = {
           paymentMethodNonce: nonce,
           eventID: order.eventID,
@@ -176,12 +175,26 @@ const Checkout = props => {
 
   const showSuccess = success => (
     <div style={{ display: success ? "" : "none" }}>
-      <br></br>
-      <h4>Payment received, thank you for your order. </h4>
-      <br></br>
-      <h4>Confirmation email with order details will be sent shortly.</h4>
-      <br></br>
-      <br></br>
+      <div className={styles.SubBody}>
+        <div style={{ paddingLeft: "30px" }}>
+          Thank you for your order, your payment was received.<br></br>
+          <br></br>
+          Order details:
+          <div style={{ paddingLeft: "30px" }}>
+            Description:
+            <br></br>
+            Total Amount($):
+            <br></br>
+            Transaction ID:
+          </div>
+          <br></br>A confirmation email with your order details will be sent to
+          bobsmith@xmail.com shortly.
+          <br></br>
+          <br></br>
+          If this e-mail is incorrect, please contact Dahday immediately.
+          <br></br>
+        </div>
+      </div>
     </div>
   );
 
@@ -205,25 +218,49 @@ const Checkout = props => {
         </div>
       ) : (
         <div>
-          <h5>Your order is empty, please return to ticket selection page.</h5>
+          <span style={{ color: "red", fontSize: "16px" }}>
+            Your order is empty, please return to ticket selection page.
+          </span>
         </div>
       )}
     </div>
   );
 
-  // determines if all "contact information" has been filled out by the ticket buyer
-  let submitButton = null;
-  let validEmail = false;
+  // determines what "contact information" has been filled out by the ticket buyer
+  let fullNameProvided = order.firstName !== "" && order.lastName !== "";
   const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  validEmail = regsuper.test(order.email);
+  let validEmail = regsuper.test(order.email);
+  let detailsMinimal = fullNameProvided && regsuper.test(order.email);
+  let detailsMessage = null;
 
-  let detailsMinimal =
-    order.firstName !== "" &&
-    order.lastName !== "" &&
-    regsuper.test(order.email);
+  if (!validEmail && fullNameProvided) {
+    detailsMessage = (
+      <span style={{ color: "red", fontSize: "14px" }}>
+        * A VALID email address is required to ensure delivery of your tickets.
+      </span>
+    );
+  } else if (validEmail && !fullNameProvided) {
+    detailsMessage = (
+      <span style={{ color: "red", fontSize: "14px" }}>
+        * Your full name is required to ensure delivery of your tickets.
+      </span>
+    );
+  } else if (!detailsMinimal) {
+    detailsMessage = (
+      <span style={{ color: "red", fontSize: "14px" }}>
+        * Your full name and a VALID email address are required to ensure
+        delivery of your tickets.
+      </span>
+    );
+  } else {
+    detailsMessage = (
+      <span style={{ color: "blue", fontSize: "16px" }}>
+        Thank you for providing your information.
+      </span>
+    );
+  }
 
-  console.log(detailsMinimal);
-
+  let submitButton = null;
   if (detailsMinimal) {
     submitButton = (
       <button
@@ -265,8 +302,8 @@ const Checkout = props => {
     purchaseSelection = (
       <Aux>
         <div className="row">
-          <div className="col-6">
-            <h3>Contact Information</h3>
+          <div style={{ paddingTop: "20px" }} className="col-6">
+            <span className={styles.SubSectionHeader}>Contact Information</span>
             <br></br>
             <Form.Row>
               <Form.Group as={Col} controlId="formGridFirstName">
@@ -315,51 +352,101 @@ const Checkout = props => {
                   })
                 }
               />
+              {detailsMessage}
             </Form.Group>
-            {detailsMinimal ? (
-              <h6>Thank you for completing all Contact Information fields</h6>
-            ) : (
-              <h6>
-                <span style={{ color: "red" }}>
-                  * Please complete all Contact Information fields to submit
-                  payment
-                </span>
-              </h6>
-            )}
-            <br></br>
-            <br></br>
-            <h5>{showDropIn()}</h5>
-            <h5>{showError(data.error)}</h5>
+
+            <span className={styles.SubSectionHeader}>Payment Information</span>
+            {showDropIn()}
+            {showError(data.error)}
           </div>
-          <div className="col-2"></div>
-          <div className="col-4">
-            <h3>Order Summary</h3>
+          <div className="col-1"></div>
+          <div
+            style={{
+              backgroundColor: "#F1F1F1",
+              paddingLeft: "30px",
+              paddingTop: "20px"
+            }}
+            className="col-5"
+          >
+            <span className={styles.SubSectionHeader}>Order Summary</span>
             <br></br>
-            <h5>{order.ticketsSelected} Tickets selected</h5>
-            <h5>
-              Total price ( {order.ticketsSelected} x ${order.ticketPrice} ): $
-              {order.purchaseAmount}
-            </h5>
-            <h5>That's it, no hidden fees!!!</h5>
+            <div className={styles.SubBody}>
+              <div className="row">
+                <div className="col-10">
+                  {order.ticketsSelected} x {order.eventName}
+                </div>
+                <div
+                  style={{
+                    textAlign: "right",
+                    paddingRight: "25px"
+                  }}
+                  className="col-2"
+                >
+                  ${order.purchaseAmount}
+                </div>
+              </div>
+              <hr style={{ border: "1px solid#C0C0C0" }} />
+              <div className="row">
+                <div className="col-10">Sub-Total</div>
+                <div
+                  style={{
+                    textAlign: "right",
+                    paddingRight: "25px"
+                  }}
+                  className="col-2"
+                >
+                  ${order.purchaseAmount}
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-10">Processing fees:</div>
+                <div
+                  style={{
+                    textAlign: "right",
+                    paddingRight: "25px"
+                  }}
+                  className="col-2"
+                >
+                  $0
+                </div>
+              </div>
+              <hr style={{ border: "1px solid#C0C0C0" }} />
+              <div className="row">
+                <div className="col-10">Total</div>
+
+                <div
+                  style={{
+                    textAlign: "right",
+                    paddingRight: "25px"
+                  }}
+                  className="col-2"
+                >
+                  ${order.purchaseAmount}
+                </div>
+              </div>
+            </div>
             <br></br>
             <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
-            <h6>
-              <button className={styles.ButtonWhite}>
-                <Link to="/dahday-puertoricandinner-tickets">Modify Order</Link>
-              </button>
-            </h6>
-            <br></br>
-            <h6>
-              <button
-                onClick={cancelOrderHandler}
-                className={styles.ButtonWhite}
-              >
-                <a href="https://www.dahday.com/">Cancel Order</a>
-              </button>
-            </h6>
+
+            <div className="row">
+              <div className="col-6">
+                <button className={styles.ButtonWhite}>
+                  <Link to="/dahday-puertoricandinner-tickets">
+                    Modify Order
+                  </Link>
+                </button>
+              </div>
+              <div className="col-6">
+                <button
+                  onClick={cancelOrderHandler}
+                  className={styles.ButtonWhite}
+                >
+                  <a href="https://www.dahday.com/">Cancel Order</a>
+                </button>
+              </div>
+              <br></br>
+              <br></br>
+            </div>
           </div>
         </div>
       </Aux>
@@ -368,30 +455,26 @@ const Checkout = props => {
   if (showPaymentConfirm) {
     purchaseConfirmation = (
       <Aux>
-        <h3>Order Status</h3>
-        {showSuccess(data.success)}
+        <span className={styles.SubSectionHeader}>Order Status</span>
+        <div style={{ paddingTop: "20px" }}>{showSuccess(data.success)}</div>
       </Aux>
     );
   }
   return (
     <Aux>
-      <Container>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <div>
+      <div className={styles.ContentBoxLarge}>
+        <div className={styles.SectionHeader}>
           <h1>Checkout</h1>
         </div>
         <br></br>
-        {connectionStatus()}
-        {spinnerView}
-        {purchaseSelection}
-        {purchaseConfirmation}
         <br></br>
-      </Container>
+        <div className={styles.Body}>
+          {connectionStatus()}
+          {spinnerView}
+          {purchaseSelection}
+          {purchaseConfirmation}
+        </div>
+      </div>
     </Aux>
   );
 };

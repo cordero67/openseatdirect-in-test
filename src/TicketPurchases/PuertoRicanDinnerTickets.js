@@ -94,10 +94,6 @@ const PueroRicanDinnerTickets = () => {
   // defines "ticketSelection" details
   ticketSelection = (
     <Aux>
-      <div>
-        <h1>{puertoRicoEvent.eventName}: Ticket Selection</h1>
-      </div>
-      <br></br>
       <div>{puertoRicoEvent.description1}</div>
       <br></br>
       <div>{puertoRicoEvent.description2}</div>
@@ -108,73 +104,135 @@ const PueroRicanDinnerTickets = () => {
       <br></br>
       <br></br>
       <div className="row">
-        <div className="col-8">
-          <h3>Event Details</h3>
+        <div style={{ paddingTop: "20px" }} className="col-7">
+          <span className={styles.SubSectionHeader}>Event Details</span>
           <br></br>
-          <h5>{puertoRicoEvent.venue}</h5>
-          <h5>{puertoRicoEvent.location}</h5>
-          <h5>
+          <div className={styles.SubBody}>
+            {puertoRicoEvent.venue}
+            <br></br>
+            {puertoRicoEvent.location}
+            <br></br>
             {puertoRicoEvent.date} at {puertoRicoEvent.time}
-          </h5>
-          <h5>${puertoRicoEvent.ticketPrice} per ticket</h5>
-          <form>
+            <br></br>${puertoRicoEvent.ticketPrice} per ticket
             <br></br>
             <br></br>
-            <div className="row">
-              <div className="col-5">Number of Tickets:</div>
-              <div className="col-5">
-                <select
-                  style={{
-                    width: "60px",
-                    height: "30px",
-                    textAlign: "right"
-                  }}
-                  type="number"
-                  name="ticketsSelected"
-                  value={ticketPurchase.ticketsSelected}
-                  required
-                  onChange={event => {
-                    setTicketPurchase({
-                      ...ticketPurchase,
-                      ticketsSelected: event.target.value,
-                      purchaseAmount:
-                        event.target.value * puertoRicoEvent.ticketPrice
-                    });
-                  }}
-                >
-                  <option>0</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                  <option>9</option>
-                  <option>10</option>
-                </select>
+            <span className={styles.SubSectionHeader}>Ticket Selection</span>
+            <form>
+              <div className="row">
+                <div className="col-5">Number of Tickets:</div>
+                <div className="col-5">
+                  <select
+                    style={{
+                      width: "70px",
+                      height: "50px"
+                    }}
+                    type="number"
+                    name="ticketsSelected"
+                    value={ticketPurchase.ticketsSelected}
+                    required
+                    onChange={event => {
+                      setTicketPurchase({
+                        ...ticketPurchase,
+                        ticketsSelected: event.target.value,
+                        purchaseAmount:
+                          event.target.value * puertoRicoEvent.ticketPrice
+                      });
+                    }}
+                  >
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                  </select>
+                </div>
               </div>
-            </div>
-            <h5></h5>
-          </form>
+              <h5></h5>
+            </form>
+          </div>
         </div>
 
-        <div className="col-4">
-          <h3>Order Summary</h3>
+        <div
+          style={{
+            backgroundColor: "#F1F1F1",
+            paddingLeft: "30px",
+            paddingTop: "20px"
+          }}
+          className="col-5"
+        >
+          <span className={styles.SubSectionHeader}>Order Summary</span>
           <br></br>
-          <h5>{ticketPurchase.ticketsSelected} Tickets selected</h5>
-          <h5>
-            Total price ( {ticketPurchase.ticketsSelected} x $
-            {puertoRicoEvent.ticketPrice} ): ${ticketPurchase.purchaseAmount}
-          </h5>
-          <h5>That's it, no hidden fees!!!</h5>
+          <div className={styles.SubBody}>
+            <div className="row">
+              <div className="col-10">
+                {ticketPurchase.ticketsSelected} x {ticketPurchase.eventName}
+              </div>
+              <div
+                style={{
+                  textAlign: "right",
+                  paddingRight: "25px"
+                }}
+                className="col-2"
+              >
+                ${ticketPurchase.purchaseAmount}
+              </div>
+            </div>
+            <hr style={{ border: "1px solid#C0C0C0" }} />
+            <div className="row">
+              <div className="col-10">Sub-Total</div>
+              <div
+                style={{
+                  textAlign: "right",
+                  paddingRight: "25px"
+                }}
+                className="col-2"
+              >
+                ${ticketPurchase.purchaseAmount}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-10">Processing fees:</div>
+              <div
+                style={{
+                  textAlign: "right",
+                  paddingRight: "25px"
+                }}
+                className="col-2"
+              >
+                $0
+              </div>
+            </div>
+            <hr style={{ border: "1px solid#C0C0C0" }} />
+            <div className="row">
+              <div className="col-10">Total</div>
+
+              <div
+                style={{
+                  textAlign: "right",
+                  paddingRight: "25px"
+                }}
+                className="col-2"
+              >
+                ${ticketPurchase.purchaseAmount}
+              </div>
+            </div>
+          </div>
           <br></br>
-          {checkoutButton}
-          <br></br>
-          <button onClick={cancelOrderHandler} className={styles.ButtonWhite}>
-            <a href="https://www.dahday.com/">Cancel</a>
-          </button>
+          <div className="row">
+            <div className="col-6">{checkoutButton}</div>
+            <div className="col-6">
+              <button
+                onClick={cancelOrderHandler}
+                className={styles.ButtonWhite}
+              >
+                <a href="https://www.dahday.com/">Cancel</a>
+              </button>
+            </div>
+            <br></br>
+            <br></br>
+          </div>
         </div>
       </div>
     </Aux>
@@ -182,16 +240,12 @@ const PueroRicanDinnerTickets = () => {
 
   return (
     <Aux>
-      <Container>
+      <div className={styles.ContentBoxLarge}>
+        <div className={styles.SectionHeader}>{puertoRicoEvent.eventName}</div>
         <br></br>
         <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <h5>{ticketSelection}</h5>
-        <br></br>
-      </Container>
+        <div className={styles.Body}>{ticketSelection}</div>
+      </div>
     </Aux>
   );
 };
@@ -199,8 +253,6 @@ const PueroRicanDinnerTickets = () => {
 export default PueroRicanDinnerTickets;
 
 /*
-
-            <h5>
               <div className="row">
                 <div className="col-5">Number of Tickets:</div>
                 <div className="col-5">
@@ -225,8 +277,6 @@ export default PueroRicanDinnerTickets;
                   />
                 </div>
               </div>
-            </h5>
-
 
         <div style={{ color: "red" }}>
           <h5>FOR OSD EYES ONLY</h5>

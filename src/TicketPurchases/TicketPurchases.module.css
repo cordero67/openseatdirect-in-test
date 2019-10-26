@@ -1,22 +1,36 @@
-.Modal {
-  position: fixed;
-  z-index: 500;
-  background-color: white;
-  width: 90%;
-  border: 1px solid #ccc;
-  box-shadow: 1px 1px 1px black;
-  padding: 16px;
-  left: 15%;
-  top: 30%;
-  box-sizing: border-box;
-  transition: all 0.3s ease-out;
+.ContentBoxLarge {
+  padding-top: 150px;
+  padding-bottom: 75px;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
 }
 
-@media (min-width: 600px) {
-  .Modal {
-    width: 700px;
-    left: calc(50% - 250px);
-  }
+.SectionHeader {
+  text-indent: 150px;
+  color: #212226;
+  margin: 0 0 0 0;
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 45px;
+}
+
+.Body {
+  padding-left: 250px;
+  padding-right: 200px;
+  font-size: 20px;
+  color: #000;
+}
+
+.SubBody {
+  font-size: 18px;
+  color: #000;
+}
+
+.SubSectionHeader {
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 45px;
 }
 
 .ButtonGreen {
