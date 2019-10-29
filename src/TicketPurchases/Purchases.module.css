@@ -1,0 +1,354 @@
+/*
+media query sizes:
+smaller than or equal to 768 px (smartphones)
+larger than 768 px (small devices, tablets)
+larger than 992 px (medium devices)
+larger than 1200px (large devices)
+
+my screen is 1620 px
+
+smaller than 480 pixels show the smartphone layout
+larger than 480 pixels but smaller than 1024 pixels show the tablet layout
+larger than 1024 show the regular desktop layout
+*/
+
+/*
+.Generic {
+  width: 1000px;
+  min-width: 1000px;
+}
+*/
+
+.ContentBoxLarge {
+  padding-top: 150px;
+  padding-bottom: 75px;
+}
+
+.SectionHeader {
+  text-indent: 100px;
+  color: #212226;
+  margin: 0 0 0 0;
+}
+
+.ColumnLeft {
+  width: 60%;
+}
+
+.ColumnRight {
+  width: 30%;
+}
+
+.Logo {
+  font-size: 12px;
+}
+
+.ButtonGreen {
+  background-color: #4caf50;
+  color: white;
+  border: 1px solid grey;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+
+.ButtonGrey {
+  background-color: #e7e7e7;
+  color: black;
+  border: 1px solid grey;
+}
+
+.ButtonWhite {
+  background-color: white;
+  color: black;
+  border: 1px solid grey;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+
+.ButtonBlue {
+  background-color: #008cba;
+  color: #fff;
+  border: 1px solid grey;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+
+@media (max-width: 480px) {
+  .Body {
+    font-size: 12px;
+  }
+  .SubBody {
+    font-size: 12px;
+  }
+  .SectionHeader {
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 45px;
+  }
+  .SubSectionHeader {
+    font-size: 14px;
+  }
+  .ContentBoxLarge {
+    width: 100%;
+    background-color: red;
+  }
+  .Logo {
+    width: 50%;
+  }
+}
+
+@media (min-width: 480px) {
+  .Body {
+    font-size: 10px;
+  }
+  .SubBody {
+    font-size: 10px;
+  }
+  .SectionHeader {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 45px;
+  }
+  .SubSectionHeader {
+    font-size: 14px;
+  }
+  .ContentBoxLarge {
+    width: 480px;
+    background-color: yellow;
+  }
+  .Logo {
+    width: 40%;
+  }
+}
+@media (min-width: 760px) {
+  .Body {
+    font-size: 14px;
+  }
+  .SubBody {
+    font-size: 14px;
+  }
+  .SectionHeader {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 45px;
+  }
+  .SubSectionHeader {
+    font-size: 18px;
+  }
+  .ContentBoxLarge {
+    width: 760px;
+    background-color: blue;
+  }
+  .Logo {
+    width: 250px;
+  }
+  .ButtonGreen {
+    padding: 9px 15px;
+    width: 100px;
+    font-size: 10px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+  .ButtonGrey {
+    padding: 9px 15px;
+    width: 100px;
+    font-size: 10px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+  .ButtonWhite {
+    padding: 9px 15px;
+    width: 100px;
+    font-size: 10px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+  .ButtonBlue {
+    padding: 9px 15px;
+    width: 100px;
+    font-size: 10px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+}
+
+@media (min-width: 990px) {
+  .Body {
+    font-size: 18px;
+  }
+  .SubBody {
+    font-size: 18px;
+  }
+  .SectionHeader {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 45px;
+  }
+  .SubSectionHeader {
+    font-size: 22px;
+  }
+  .ContentBoxLarge {
+    width: 100%;
+    background-color: green;
+  }
+  .Logo {
+    width: 330px;
+  }
+  .ButtonGreen {
+    padding: 9px 15px;
+    width: 120px;
+    font-size: 14px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+  .ButtonGrey {
+    padding: 9px 15px;
+    width: 120px;
+    font-size: 14px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+  .ButtonWhite {
+    padding: 9px 15px;
+    width: 120px;
+    font-size: 14px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+  .ButtonBlue {
+    padding: 9px 15px;
+    width: 120px;
+    font-size: 14px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .Body {
+    font-size: 22px;
+  }
+  .SubBody {
+    font-size: 22px;
+  }
+  .SectionHeader {
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 45px;
+  }
+  .SubSectionHeader {
+    font-size: 26px;
+  }
+  .ContentBoxLarge {
+    width: 100%;
+    background-color: white;
+  }
+  .Logo {
+    width: 400px;
+  }
+  .ButtonGreen {
+    padding: 9px 15px;
+    width: 150px;
+    font-size: 18px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+  .ButtonGrey {
+    padding: 9px 15px;
+    width: 150px;
+    font-size: 18px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+  .ButtonWhite {
+    padding: 9px 15px;
+    width: 150px;
+    font-size: 18px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+  .ButtonBlue {
+    padding: 9px 15px;
+    width: 150px;
+    font-size: 18px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+}
+
+.Body {
+  padding-left: 100px;
+  padding-right: 50px;
+  position: static;
+  color: #000;
+}
+
+.SubBody {
+  color: #000;
+}
+/*
+.SubSectionHeader {
+  font-weight: 500;
+  line-height: 45px;
+}*/
+
+.ButtonGeneric {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+}
+
+.TicketBox {
+  text-align: center;
+  width: 80px;
+  font-size: 20px;
+}
