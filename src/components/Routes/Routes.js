@@ -7,6 +7,8 @@ import Video from "../Video/Video";
 import PuertoRicanDinner from "../../TicketPurchases/PuertoRicanDinner";
 import PuertoRicanDinnerTickets from "../../TicketPurchases/PuertoRicanDinnerTickets";
 import PuertoRicanDinnerCheckout from "../../TicketPurchases/PuertoRicanDinnerCheckout";
+import Checkout from "../../TicketPurchases/Checkout";
+import Tickets from "../../TicketPurchases/Tickets";
 
 import OSDHeader from "../Headers/OSDHeader";
 import DahdayHeader from "../Headers/DahDayHeader";
@@ -57,6 +59,17 @@ class Layout extends Component {
         />
 
         <Route
+          path="/dahday-puertoricandinner"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <OSDHeader styleType="HeaderA" logoType={LogoA}></OSDHeader>
+              <PuertoRicanDinner />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
           path="/dahday-puertoricandinner-tickets"
           exact
           render={routeProps => (
@@ -75,6 +88,30 @@ class Layout extends Component {
             <React.Fragment>
               <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
               <PuertoRicanDinnerCheckout />
+              <DahdayFooter></DahdayFooter>
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/dahday-tickets"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
+              <Tickets />
+              <DahdayFooter></DahdayFooter>
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/checkout"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
+              <Checkout />
               <DahdayFooter></DahdayFooter>
             </React.Fragment>
           )}

@@ -24,6 +24,37 @@ const puertoRicoEvent = {
   ticketPrice: 75
 };
 
+// NEW EVENT DETAIL VARIABLE
+const eventDetails = {
+  eventID: "0001",
+  eventName: "Private Puerto Rican Dinner",
+  eventCategory: "Food&Drink",
+  eventStatus: "Scheduled",
+  longDescription:
+    "Experience a Puerto Rican gastronomy honoring the traditions of Taíno roots and the purity of ingredients. Prepared by Kenny Candelaria who's culinary career began as a child, preparing meals on the fogón with his grandparents in Puerto Rico and refined throughout the years by choosing the most natural, local ingredients available to him.",
+  shortDescription: "Private event limited to 30 guests.",
+  image: "",
+  startDateTime: "2019-12-06 08:01:00.000Z",
+  endDateTime: "2019-12-06 09:00:00.000Z",
+  location: {
+    venue: "Cocina Candela",
+    address1: "706 Bloomfield Ave",
+    address2: "",
+    city: "Montclair",
+    state: "NJ",
+    postalCode: "10001"
+  },
+  organizer: "Dahday",
+  cancelURL: "https://www.dahday.com/",
+  eventURL: "/dahday-puertoricandinner",
+  ticketType: "General Admission",
+  initialTicketsIssued: 30,
+  currentTicketsAvailable: 30,
+  ticketsSold: 0,
+  initialTicketPrice: 75,
+  currentTicketPrice: 75
+};
+
 const PueroRicanDinnerTickets = () => {
   // sets ticket purchase data variable
   const [ticketPurchase, setTicketPurchase] = useState({
@@ -66,7 +97,7 @@ const PueroRicanDinnerTickets = () => {
 
   // determines whether or not the "Checkout" button is enabled
   let validTicketAmount =
-    ticketPurchase.ticketsSelected > 0 && ticketPurchase.ticketsSelected < 31;
+    ticketPurchase.ticketsSelected > 0 && ticketPurchase.ticketsSelected < 30;
   let checkoutButton = null;
 
   if (validTicketAmount) {
@@ -103,7 +134,7 @@ const PueroRicanDinnerTickets = () => {
       </div>
       <br></br>
       <br></br>
-      <div className="row">
+      <div className="row" styles={{ position: "fixed" }}>
         <div style={{ paddingTop: "20px" }} className="col-7">
           <span className={styles.SubSectionHeader}>Event Details</span>
           <br></br>
@@ -146,6 +177,8 @@ const PueroRicanDinnerTickets = () => {
                     <option>4</option>
                     <option>5</option>
                     <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
                   </select>
                 </div>
               </div>

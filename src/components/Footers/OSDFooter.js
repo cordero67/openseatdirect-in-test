@@ -15,9 +15,7 @@ const Footer = () => {
             className={styles.Logo}
           />
         </li>
-        <li>
-          Copyright!!! &copy; 2019 OpenSeatDirect LLC | All Rights Reserved
-        </li>
+        <li>Copyright &copy; 2019 OpenSeatDirect LLC | All Rights Reserved</li>
       </ul>
     </div>
   );

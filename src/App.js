@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-//import "bootstrap/dist/css/bootstrap.css";
 import { BrowserRouter } from "react-router-dom";
 
 // Endeavour: #2F5596 rgb(47,85,150)

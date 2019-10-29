@@ -2,7 +2,56 @@ import { API } from "../config";
 
 let statement = {
   error: true,
-  message: "there was an error"
+  message: "buckle your seatbelts, there was an error"
+};
+
+// NEW api TO EXTRACT EVENT DATA FROM SERVER
+export const getEventData = eventId => {
+  return fetch(`${API}/eventId/${eventId}`, {
+    method: "GET"
+  })
+    .then(response => {
+      return response.json();
+    })
+    .catch(err => {
+      console.log("jumping here", err);
+    });
+};
+
+const handleErrors = response => {
+  // different error casses
+  // back-end server is down, i.e. response is "undefined"
+  // "ERROR" will be "err"
+  console.log("Handle Error", response);
+  if (!response.ok) throw Error(response.statusText);
+  return response;
+};
+/*
+            if (response === undefined) {
+              console.log("response is undefined");
+              setData({ ...data, success: true });
+              */
+
+export const processExpressPayment = paymentTicketData => {
+  return (
+    fetch(`${API}/braintree/expressPayment`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(paymentTicketData)
+    })
+      .then(handleErrors)
+      .then(response => {
+        return response.json();
+      })
+      // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
+      .catch(err => {
+        console.log("SERVER MAYBE DOWN".err);
+        throw Error(err);
+      })
+  );
 };
 
 export const getExpressBraintreeClientToken = () => {
@@ -18,20 +67,9 @@ export const getExpressBraintreeClientToken = () => {
       return response.json();
     })
     .catch(err => {
-      console.log("jumping here", err);
-      return statement;
+      console.log("child error thrown", err);
+      throw Error(err);
     });
-};
-
-const handleErrors = response => {
-  // different error casses
-  // back-end server is down, i.e. response is "undefined"
-  if (response === null)
-    throw Error({
-      message: "Network Error",
-      error: true
-    });
-  return response;
 };
 
 export const getBraintreeClientToken = (userId, token) => {
@@ -48,24 +86,6 @@ export const getBraintreeClientToken = (userId, token) => {
       return response.json();
     })
     .catch(err => console.log(err));
-};
-
-export const processExpressPayment = paymentTicketData => {
-  return (
-    fetch(`${API}/braintree/expressPayment`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(paymentTicketData)
-    })
-      .then(response => {
-        return response.json();
-      })
-      // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
-      .catch(err => console.log(err))
-  );
 };
 
 export const processPayment = (userId, token, paymentData) => {

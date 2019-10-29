@@ -32,6 +32,7 @@ const Checkout = props => {
   // Braintree interface variable
   const [data, setData] = useState({
     success: false,
+    dropInSuccess: true,
     clientToken: true,
     error: "",
     instance: {},
@@ -49,21 +50,28 @@ const Checkout = props => {
   // defines the function that retrieves the Braintree token
   // this represents parts "1" and "2" of the Braintree interaction
   const getExpressToken = () => {
-    getExpressBraintreeClientToken().then(data => {
-      setLoading(false);
-      if (data.error) {
-        setData({ ...data, error: data.error });
-      } else {
-        setData({ ...data, clientToken: data.clientToken });
-        // setData({ clientToken: data.clientToken });
-        setShowTicketPayment(true);
-      }
-    });
+    getExpressBraintreeClientToken()
+      .then(res => {
+        setLoading(false);
+        console.log("before if (res.error) statement");
+        if (res.error) {
+          setData({ ...data, error: res.error });
+        } else {
+          setData({ ...data, clientToken: res.clientToken });
+          setShowTicketPayment(true);
+        }
+      })
+      .catch(err2 => {
+        console.log("PARENT ERROR THROWN");
+        console.log("err", err2);
+        setData({ ...data, dropInSuccess: false });
+        setLoading(false);
+      });
   };
 
   const connectionStatus = () => (
     <div>
-      {data.error === true ? (
+      {data.dropInSuccess === false ? (
         <div>System error, please try later.</div>
       ) : (
         <div></div>
@@ -130,9 +138,10 @@ const Checkout = props => {
     let nonce;
     data.instance
       .requestPaymentMethod()
-      .then(data => {
-        console.log(data);
-        nonce = data.nonce;
+      .then(res => {
+        console.log("success in step 3");
+        console.log(res);
+        nonce = res.nonce;
         //console.log(
         //  "send nonce and total to process: ",
         //  nonce,
@@ -151,16 +160,18 @@ const Checkout = props => {
         // sends transaction and payment details to the backend
         processExpressPayment(paymentTicketData)
           .then(response => {
-            console.log(response);
+            console.log("order sent");
             setData({ ...data, success: response.success });
-            // emptys the cart and resets
+            // empties the cart and resets "ticketPurchase" object
             purchaseConfirmHandler();
           })
-          .catch(error => console.log(error));
+          .catch(error => console.log("Error in expressExpressPayment", error));
       })
+      // there is a problem with Braintree and cannot return nonce
       .catch(error => {
         console.log("dropin error: ", error);
-        setData({ ...data, error: error.message });
+        setData({ ...data, success: false });
+        setLoading(false);
       });
   };
 
@@ -173,30 +184,39 @@ const Checkout = props => {
     </div>
   );
 
-  const showSuccess = success => (
-    <div style={{ display: success ? "" : "none" }}>
-      <div className={styles.SubBody}>
-        <div style={{ paddingLeft: "30px" }}>
-          Thank you for your order, your payment was received.<br></br>
-          <br></br>
-          Order details:
+  const showSuccess = success => {
+    if (success) {
+      return (
+        <div className={styles.SubBody}>
           <div style={{ paddingLeft: "30px" }}>
-            Description:
+            Thank you for your order, your payment was received.<br></br>
             <br></br>
-            Total Amount($):
+            Order details:
+            <div style={{ paddingLeft: "30px" }}>
+              Description:
+              <br></br>
+              Total Amount($):
+              <br></br>
+              Transaction ID:
+            </div>
+            <br></br>A confirmation email with your order details will be sent
+            to bobsmith@xmail.com shortly.
             <br></br>
-            Transaction ID:
+            <br></br>
+            If this e-mail is incorrect, please contact Dahday immediately.
+            <br></br>
           </div>
-          <br></br>A confirmation email with your order details will be sent to
-          bobsmith@xmail.com shortly.
-          <br></br>
-          <br></br>
-          If this e-mail is incorrect, please contact Dahday immediately.
-          <br></br>
         </div>
-      </div>
-    </div>
-  );
+      );
+    } else {
+      return (
+        <div>
+          There was a problem processing your credit card; please double check
+          your payment information and try again
+        </div>
+      );
+    }
+  };
 
   const showDropIn = () => (
     <div onBlur={() => setData({ ...data, error: "" })}>
@@ -218,7 +238,7 @@ const Checkout = props => {
         </div>
       ) : (
         <div>
-          <span style={{ color: "red", fontSize: "16px" }}>
+          <span style={{ color: "red", fontSize: "20px" }}>
             Your order is empty, please return to ticket selection page.
           </span>
         </div>
@@ -360,6 +380,7 @@ const Checkout = props => {
             {showError(data.error)}
           </div>
           <div className="col-1"></div>
+
           <div
             style={{
               backgroundColor: "#F1F1F1",
@@ -463,9 +484,7 @@ const Checkout = props => {
   return (
     <Aux>
       <div className={styles.ContentBoxLarge}>
-        <div className={styles.SectionHeader}>
-          <h1>Checkout</h1>
-        </div>
+        <div className={styles.SectionHeader}>Checkout</div>
         <br></br>
         <br></br>
         <div className={styles.Body}>
