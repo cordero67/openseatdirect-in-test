@@ -9,11 +9,6 @@
   text-align: center;
 }
 
-.Footer ul li:first-child {
-  float: left;
-  vertical-align: text-bottom;
-}
-
 .Footer li {
   display: inline-block;
   margin: 20px;

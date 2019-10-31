@@ -32,6 +32,7 @@ const Checkout = props => {
   // Braintree interface variable
   const [data, setData] = useState({
     success: false,
+    friendlyMessage: "",
     dropInSuccess: true,
     clientToken: true,
     error: "",
@@ -39,13 +40,6 @@ const Checkout = props => {
     address: "",
     connection: true
   });
-
-  /*
-        if (data === undefined) {
-        setData({ ...data, connection: false });
-        setLoading(false);
-      }
-*/
 
   // defines the function that retrieves the Braintree token
   // this represents parts "1" and "2" of the Braintree interaction
@@ -91,6 +85,7 @@ const Checkout = props => {
         ticketPrice: newOrder.ticketPrice,
         ticketsSelected: newOrder.ticketsSelected,
         purchaseAmount: newOrder.purchaseAmount
+        //purchaseAmount: 2000
       });
     }
     getExpressToken();
@@ -142,11 +137,6 @@ const Checkout = props => {
         console.log("success in step 3");
         console.log(res);
         nonce = res.nonce;
-        //console.log(
-        //  "send nonce and total to process: ",
-        //  nonce,
-        //  order.purchaseAmount
-        //);
         const paymentTicketData = {
           paymentMethodNonce: nonce,
           eventID: order.eventID,
@@ -161,12 +151,21 @@ const Checkout = props => {
         processExpressPayment(paymentTicketData)
           .then(response => {
             console.log("order sent");
-            setData({ ...data, success: response.success });
+            console.log(response);
+            setData({
+              ...data,
+              success: response.success,
+              friendlyMessage: response.friendlyMessage
+            });
             // empties the cart and resets "ticketPurchase" object
             purchaseConfirmHandler();
           })
-          .catch(error => console.log("Error in expressExpressPayment", error));
+          .catch(error => {
+            console.log("Error in expressExpressPayment", error);
+            data.instance.clearSelectedPaymentMethod();
+          });
       })
+
       // there is a problem with Braintree and cannot return nonce
       .catch(error => {
         console.log("dropin error: ", error);
@@ -177,7 +176,7 @@ const Checkout = props => {
 
   const showError = error => (
     <div
-      className="alert alert-danger"
+      className={styles.AlertTextLarge}
       style={{ display: error ? "" : "none" }}
     >
       {error}
@@ -188,6 +187,7 @@ const Checkout = props => {
     if (success) {
       return (
         <div className={styles.SubBody}>
+          <div>Backend Responce: {data.friendlyMessage}</div>
           <div style={{ paddingLeft: "30px" }}>
             Thank you for your order, your payment was received.<br></br>
             <br></br>
@@ -209,12 +209,7 @@ const Checkout = props => {
         </div>
       );
     } else {
-      return (
-        <div>
-          There was a problem processing your credit card; please double check
-          your payment information and try again
-        </div>
-      );
+      return <div>Backend Responce: {data.friendlyMessage}</div>;
     }
   };
 
@@ -238,7 +233,7 @@ const Checkout = props => {
         </div>
       ) : (
         <div>
-          <span style={{ color: "red", fontSize: "20px" }}>
+          <span className={styles.AlertText}>
             Your order is empty, please return to ticket selection page.
           </span>
         </div>
@@ -255,39 +250,39 @@ const Checkout = props => {
 
   if (!validEmail && fullNameProvided) {
     detailsMessage = (
-      <span style={{ color: "red", fontSize: "14px" }}>
+      <span className={styles.AlertTextSmall}>
         * A VALID email address is required to ensure delivery of your tickets.
       </span>
     );
   } else if (validEmail && !fullNameProvided) {
     detailsMessage = (
-      <span style={{ color: "red", fontSize: "14px" }}>
+      <span className={styles.AlertTextSmall}>
         * Your full name is required to ensure delivery of your tickets.
       </span>
     );
   } else if (!detailsMinimal) {
     detailsMessage = (
-      <span style={{ color: "red", fontSize: "14px" }}>
-        * Your full name and a VALID email address are required to ensure
-        delivery of your tickets.
+      <span className={styles.AlertTextSmall}>
+        * Full name and VALID email address are required to ensure delivery of
+        your tickets.
       </span>
     );
   } else {
     detailsMessage = (
-      <span style={{ color: "blue", fontSize: "16px" }}>
+      <span className={styles.SuccessTextSmall}>
         Thank you for providing your information.
       </span>
     );
   }
 
-  let submitButton = null;
+  let submitButton;
+
   if (detailsMinimal) {
     submitButton = (
       <button
         onClick={expressBuy}
-        className="btn btn-success"
         disabled={!detailsMinimal}
-        className={styles.ButtonGreen}
+        className={styles.ButtonGreenLarge}
       >
         Submit Payment
       </button>
@@ -296,9 +291,8 @@ const Checkout = props => {
     submitButton = (
       <button
         onClick={expressBuy}
-        className="btn btn-success"
         disabled={!detailsMinimal}
-        className={styles.ButtonGrey}
+        className={styles.ButtonGreyLarge}
       >
         Submit Payment
       </button>
@@ -321,8 +315,8 @@ const Checkout = props => {
   if (showTicketPayment) {
     purchaseSelection = (
       <Aux>
-        <div className="row">
-          <div style={{ paddingTop: "20px" }} className="col-6">
+        <div className={styles.GridMain}>
+          <div className={styles.GridMainItemLeft}>
             <span className={styles.SubSectionHeader}>Contact Information</span>
             <br></br>
             <Form.Row>
@@ -379,16 +373,8 @@ const Checkout = props => {
             {showDropIn()}
             {showError(data.error)}
           </div>
-          <div className="col-1"></div>
 
-          <div
-            style={{
-              backgroundColor: "#F1F1F1",
-              paddingLeft: "30px",
-              paddingTop: "20px"
-            }}
-            className="col-5"
-          >
+          <div className={styles.GridMainItemRight}>
             <span className={styles.SubSectionHeader}>Order Summary</span>
             <br></br>
             <div className={styles.SubBody}>
@@ -449,16 +435,16 @@ const Checkout = props => {
             <br></br>
             <br></br>
 
-            <div className="row">
-              <div className="col-6">
-                <button className={styles.ButtonWhite}>
-                  <Link to="/dahday-tickets">Modify Order</Link>
+            <div className={styles.GridButtonsLarge}>
+              <div className={styles.GridButtonsLargeLeft}>
+                <button className={styles.ButtonWhiteLarge}>
+                  <Link to="/dahday-tickets">Change Order</Link>
                 </button>
               </div>
-              <div className="col-6">
+              <div className={styles.GridButtonsLargeRight}>
                 <button
                   onClick={cancelOrderHandler}
-                  className={styles.ButtonWhite}
+                  className={styles.ButtonWhiteLarge}
                 >
                   <a href="https://www.dahday.com/">Cancel Order</a>
                 </button>
@@ -496,14 +482,3 @@ const Checkout = props => {
   );
 };
 export default Checkout;
-/*
-        <div style={{ color: "red" }}>
-            <h5>FOR OSD EYES ONLY</h5>
-            <h6>Tickets selected: {order.ticketsSelected}</h6>
-            <h6>Ticket price: {order.ticketPrice}</h6>
-            <h6>Purchase amount: {order.purchaseAmount}</h6>
-            <h6>First Name: {order.firstName}</h6>
-            <h6>Last Name: {order.lastName}</h6>
-            <h6>E-mail Address: {order.email}</h6>
-        </div>
-*/

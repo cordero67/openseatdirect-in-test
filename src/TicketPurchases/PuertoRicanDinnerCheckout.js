@@ -161,6 +161,7 @@ const Checkout = props => {
         processExpressPayment(paymentTicketData)
           .then(response => {
             console.log("order sent");
+            console.log(response);
             setData({ ...data, success: response.success });
             // empties the cart and resets "ticketPurchase" object
             purchaseConfirmHandler();

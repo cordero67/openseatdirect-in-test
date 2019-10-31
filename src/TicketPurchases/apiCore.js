@@ -26,11 +26,6 @@ const handleErrors = response => {
   if (!response.ok) throw Error(response.statusText);
   return response;
 };
-/*
-            if (response === undefined) {
-              console.log("response is undefined");
-              setData({ ...data, success: true });
-              */
 
 export const processExpressPayment = paymentTicketData => {
   return (
@@ -48,7 +43,7 @@ export const processExpressPayment = paymentTicketData => {
       })
       // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
       .catch(err => {
-        console.log("SERVER MAYBE DOWN".err);
+        console.log("SERVER MAYBE DOWN", err);
         throw Error(err);
       })
   );
@@ -75,6 +70,7 @@ export const getExpressBraintreeClientToken = () => {
 export const getBraintreeClientToken = (userId, token) => {
   return fetch(`${API}/braintree/getToken/${userId}`, {
     method: "GET",
+
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",

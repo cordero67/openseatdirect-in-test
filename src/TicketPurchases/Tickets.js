@@ -2,6 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
+/*
+If you are using react router:
+
+const currentRoute= this.props.location.pathname
+else you can get this like:
+
+const currentRoute= window.location.pathname
+*/
+
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import CocinaCandelaLogo from "../assets/Cocina_Candela/shimp-rice-cocina-candela-nj.jpg";
@@ -78,6 +87,7 @@ const PueroRicanDinnerTickets = () => {
         purchaseAmount: newOrder.purchaseAmount
       });
     }
+    console.log("Current URL", window.location.pathname);
   }, []);
 
   // modifies state variables to only show "Ticket Payment" window
@@ -110,12 +120,10 @@ const PueroRicanDinnerTickets = () => {
     );
   } else {
     checkoutButton = (
-      <div>
-        <div style={{ color: "white" }}>
-          <button disabled={!validTicketAmount} className={styles.ButtonGrey}>
-            Checkout
-          </button>
-        </div>
+      <div style={{ color: "white" }}>
+        <button disabled={!validTicketAmount} className={styles.ButtonGrey}>
+          Checkout
+        </button>
       </div>
     );
   }
@@ -138,8 +146,9 @@ const PueroRicanDinnerTickets = () => {
       </div>
       <br></br>
       <br></br>
-      <div className="row" styles={{ position: "fixed" }}>
-        <div style={{ paddingTop: "20px" }} className="col-7">
+
+      <div className={styles.GridMain}>
+        <div className={styles.GridMainItemLeft}>
           <span className={styles.SubSectionHeader}>Event Details</span>
           <br></br>
           <div className={styles.SubBody}>
@@ -151,16 +160,17 @@ const PueroRicanDinnerTickets = () => {
             <br></br>${puertoRicoEvent.ticketPrice} per ticket
             <br></br>
             <br></br>
-            <span className={styles.SubSectionHeader}>Ticket Selection</span>
-            <form>
-              <div className="row">
-                <div className="col-5">Number of Tickets:</div>
-                <div className="col-5">
+            <div className={styles.GridLeft}>
+              <div className={styles.GridLeftItemLeft}>
+                <span className={styles.SubSectionHeader}>
+                  Ticket Selection
+                </span>
+                <div>Number of Tickets:</div>
+              </div>
+              <form>
+                <div className={styles.GridLeftItemRight}>
                   <select
-                    style={{
-                      width: "70px",
-                      height: "50px"
-                    }}
+                    className={styles.TicketSelect}
                     type="number"
                     name="ticketsSelected"
                     value={ticketPurchase.ticketsSelected}
@@ -185,81 +195,46 @@ const PueroRicanDinnerTickets = () => {
                     <option>8</option>
                   </select>
                 </div>
-              </div>
-              <h5></h5>
-            </form>
+              </form>
+            </div>
+            <h5></h5>
           </div>
         </div>
-
-        <div
-          style={{
-            backgroundColor: "#F1F1F1",
-            paddingLeft: "30px",
-            paddingTop: "20px"
-          }}
-          className="col-5"
-        >
+        <div className={styles.GridMainItemRight}>
           <span className={styles.SubSectionHeader}>Order Summary</span>
           <br></br>
           <div className={styles.SubBody}>
-            <div className="row">
-              <div className="col-10">
+            <div className={styles.GridRight}>
+              <div className={styles.GridRightItemLeft}>
                 {ticketPurchase.ticketsSelected} x {ticketPurchase.eventName}
               </div>
-              <div
-                style={{
-                  textAlign: "right",
-                  paddingRight: "25px"
-                }}
-                className="col-2"
-              >
+              <div className={styles.GridRightItemRight}>
                 ${ticketPurchase.purchaseAmount}
               </div>
             </div>
             <hr style={{ border: "1px solid#C0C0C0" }} />
-            <div className="row">
-              <div className="col-10">Sub-Total</div>
-              <div
-                style={{
-                  textAlign: "right",
-                  paddingRight: "25px"
-                }}
-                className="col-2"
-              >
+            <div className={styles.GridRight}>
+              <div className={styles.GridRightItemLeft}>Sub-Total</div>
+              <div className={styles.GridRightItemRight}>
                 ${ticketPurchase.purchaseAmount}
               </div>
             </div>
-            <div className="row">
-              <div className="col-10">Processing fees:</div>
-              <div
-                style={{
-                  textAlign: "right",
-                  paddingRight: "25px"
-                }}
-                className="col-2"
-              >
-                $0
-              </div>
+            <div className={styles.GridRight}>
+              <div className={styles.GridRightItemLeft}>Processing fees:</div>
+              <div className={styles.GridRightItemRight}>$0</div>
             </div>
             <hr style={{ border: "1px solid#C0C0C0" }} />
-            <div className="row">
-              <div className="col-10">Total</div>
-
-              <div
-                style={{
-                  textAlign: "right",
-                  paddingRight: "25px"
-                }}
-                className="col-2"
-              >
+            <div className={styles.GridRight}>
+              <div className={styles.GridRightItemLeft}>Total</div>
+              <div className={styles.GridRightItemRight}>
                 ${ticketPurchase.purchaseAmount}
               </div>
             </div>
           </div>
           <br></br>
-          <div className="row">
-            <div className="col-6">{checkoutButton}</div>
-            <div className="col-6">
+          <div className={styles.GridButtons}>
+            <div className={styles.GridButtonsLeft}>{checkoutButton}</div>
+            <div className={styles.GridButtonsRight}>
               <button
                 onClick={cancelOrderHandler}
                 className={styles.ButtonWhite}
@@ -280,7 +255,6 @@ const PueroRicanDinnerTickets = () => {
       <div className={styles.ContentBoxLarge}>
         <div className={styles.SectionHeader}>{puertoRicoEvent.eventName}</div>
         <br></br>
-        <br></br>
         <div className={styles.Body}>{ticketSelection}</div>
       </div>
     </Aux>
@@ -288,39 +262,3 @@ const PueroRicanDinnerTickets = () => {
 };
 
 export default PueroRicanDinnerTickets;
-
-/*
-              <div className="row">
-                <div className="col-5">Number of Tickets:</div>
-                <div className="col-5">
-                  <input
-                    className={styles.TicketBox}
-                    type="number"
-                    name="ticketsSelected"
-                    min="1"
-                    max={puertoRicoEvent.ticketsAvailable}
-                    step="1"
-                    value={ticketPurchase.ticketsSelected}
-                    placeholder=""
-                    required
-                    onChange={event => {
-                      setTicketPurchase({
-                        ...ticketPurchase,
-                        ticketsSelected: event.target.value,
-                        purchaseAmount:
-                          event.target.value * puertoRicoEvent.ticketPrice
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-
-        <div style={{ color: "red" }}>
-          <h5>FOR OSD EYES ONLY</h5>
-          <h6>Tickets selected: {ticketPurchase.ticketsSelected}</h6>
-          <h6>Purchase amount: {ticketPurchase.purchaseAmount}</h6>
-          <h6>Tickets issued: {puertoRicoEvent.ticketsIssued}</h6>
-          <h6>Tickets available: {puertoRicoEvent.ticketsAvailable}</h6>
-          <h6>Tickets sold: {puertoRicoEvent.ticketsSold}</h6>
-        </div>
-*/
