@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Container } from "react-bootstrap";
 
 /*
 If you are using react router:
@@ -34,6 +33,7 @@ const puertoRicoEvent = {
 };
 
 // NEW EVENT DETAIL VARIABLE
+/*
 const eventDetails = {
   eventID: "0001",
   eventName: "Private Puerto Rican Dinner",
@@ -63,8 +63,9 @@ const eventDetails = {
   initialTicketPrice: 75,
   currentTicketPrice: 75
 };
+*/
 
-const PueroRicanDinnerTickets = () => {
+const PueroRicanDinnerTickets = props => {
   // sets ticket purchase data variable
   const [ticketPurchase, setTicketPurchase] = useState({
     eventID: puertoRicoEvent.eventID,
@@ -87,7 +88,8 @@ const PueroRicanDinnerTickets = () => {
         purchaseAmount: newOrder.purchaseAmount
       });
     }
-    console.log("Current URL", window.location.pathname);
+    console.log("Current URL using Window object", window.location.pathname);
+    //console.log("Current URL using Router", props.location.pathname);
   }, []);
 
   // modifies state variables to only show "Ticket Payment" window

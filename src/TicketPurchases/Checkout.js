@@ -63,8 +63,9 @@ const Checkout = props => {
       });
   };
 
+  // FULLY STYLED
   const connectionStatus = () => (
-    <div>
+    <div className={styles.Body}>
       {data.dropInSuccess === false ? (
         <div>System error, please try later.</div>
       ) : (
@@ -174,19 +175,18 @@ const Checkout = props => {
       });
   };
 
+  // FULLY SYTLED
   const showError = error => (
-    <div
-      className={styles.AlertTextLarge}
-      style={{ display: error ? "" : "none" }}
-    >
-      {error}
+    <div className={styles.AlertText}>
+      <div style={{ display: error ? "" : "none" }}>{error}</div>
     </div>
   );
 
+  // FULLY SYTLED
   const showSuccess = success => {
     if (success) {
       return (
-        <div className={styles.SubBody}>
+        <div className={styles.Body}>
           <div>Backend Responce: {data.friendlyMessage}</div>
           <div style={{ paddingLeft: "30px" }}>
             Thank you for your order, your payment was received.<br></br>
@@ -213,6 +213,7 @@ const Checkout = props => {
     }
   };
 
+  // FULLY STYLED
   const showDropIn = () => (
     <div onBlur={() => setData({ ...data, error: "" })}>
       {data.clientToken !== null && order.ticketsSelected > 0 ? (
@@ -248,6 +249,7 @@ const Checkout = props => {
   let detailsMinimal = fullNameProvided && regsuper.test(order.email);
   let detailsMessage = null;
 
+  // FULLY STYLED
   if (!validEmail && fullNameProvided) {
     detailsMessage = (
       <span className={styles.AlertTextSmall}>
@@ -277,6 +279,7 @@ const Checkout = props => {
 
   let submitButton;
 
+  // FULLY STYLED
   if (detailsMinimal) {
     submitButton = (
       <button
@@ -303,6 +306,7 @@ const Checkout = props => {
   let purchaseSelection = null;
   let purchaseConfirmation = null;
 
+  // FULLY STYLED
   if (loading) {
     spinnerView = (
       <Aux>
@@ -311,6 +315,9 @@ const Checkout = props => {
     );
   }
 
+  // FULLY STYLED EXCEPT FOR:
+  //  {showDropIn()}
+  //  {showError(data.error)}
   // Ticket Purchase Window details
   if (showTicketPayment) {
     purchaseSelection = (
@@ -335,7 +342,6 @@ const Checkout = props => {
                   }
                 />
               </Form.Group>
-
               <Form.Group as={Col} controlId="formGridLastName">
                 <Form.Control
                   type="text"
@@ -368,73 +374,43 @@ const Checkout = props => {
               />
               {detailsMessage}
             </Form.Group>
-
             <span className={styles.SubSectionHeader}>Payment Information</span>
-            {showDropIn()}
-            {showError(data.error)}
+            <span className={styles.Body}>{showDropIn()}</span>
+            <span className={styles.Body}>{showError(data.error)}</span>
           </div>
 
           <div className={styles.GridMainItemRight}>
             <span className={styles.SubSectionHeader}>Order Summary</span>
             <br></br>
             <div className={styles.SubBody}>
-              <div className="row">
-                <div className="col-10">
+              <div className={styles.GridRight}>
+                <div className={styles.GridRightItemLeft}>
                   {order.ticketsSelected} x {order.eventName}
                 </div>
-                <div
-                  style={{
-                    textAlign: "right",
-                    paddingRight: "25px"
-                  }}
-                  className="col-2"
-                >
+                <div className={styles.GridRightItemRight}>
                   ${order.purchaseAmount}
                 </div>
               </div>
               <hr style={{ border: "1px solid#C0C0C0" }} />
-              <div className="row">
-                <div className="col-10">Sub-Total</div>
-                <div
-                  style={{
-                    textAlign: "right",
-                    paddingRight: "25px"
-                  }}
-                  className="col-2"
-                >
+              <div className={styles.GridRight}>
+                <div className={styles.GridRightItemLeft}>Sub-Total</div>
+                <div className={styles.GridRightItemRight}>
                   ${order.purchaseAmount}
                 </div>
               </div>
-              <div className="row">
-                <div className="col-10">Processing fees:</div>
-                <div
-                  style={{
-                    textAlign: "right",
-                    paddingRight: "25px"
-                  }}
-                  className="col-2"
-                >
-                  $0
-                </div>
+              <div className={styles.GridRight}>
+                <div className={styles.GridRightItemLeft}>Processing fees:</div>
+                <div className={styles.GridRightItemRight}>$0</div>
               </div>
               <hr style={{ border: "1px solid#C0C0C0" }} />
-              <div className="row">
-                <div className="col-10">Total</div>
-
-                <div
-                  style={{
-                    textAlign: "right",
-                    paddingRight: "25px"
-                  }}
-                  className="col-2"
-                >
+              <div className={styles.GridRight}>
+                <div className={styles.GridRightItemLeft}>Total</div>
+                <div className={styles.GridRightItemRight}>
                   ${order.purchaseAmount}
                 </div>
               </div>
             </div>
             <br></br>
-            <br></br>
-
             <div className={styles.GridButtonsLarge}>
               <div className={styles.GridButtonsLargeLeft}>
                 <button className={styles.ButtonWhiteLarge}>
@@ -457,6 +433,8 @@ const Checkout = props => {
       </Aux>
     );
   }
+
+  // FULLY STYLED
   if (showPaymentConfirm) {
     purchaseConfirmation = (
       <Aux>
@@ -465,6 +443,7 @@ const Checkout = props => {
       </Aux>
     );
   }
+
   return (
     <Aux>
       <div className={styles.ContentBoxLarge}>

@@ -1,13 +1,14 @@
 import { API } from "../config";
-
+/*
 let statement = {
   error: true,
   message: "buckle your seatbelts, there was an error"
 };
+*/
 
 // NEW api TO EXTRACT EVENT DATA FROM SERVER
 export const getEventData = eventId => {
-  return fetch(`${API}/eventId/${eventId}`, {
+  return fetch(`${API}/event/e/${eventId}`, {
     method: "GET"
   })
     .then(response => {
