@@ -9,7 +9,7 @@ import PuertoRicanDinnerTickets from "../../TicketPurchases/PuertoRicanDinnerTic
 import PuertoRicanDinnerCheckout from "../../TicketPurchases/PuertoRicanDinnerCheckout";
 import Checkout from "../../TicketPurchases/Checkout";
 import Tickets from "../../TicketPurchases/Tickets";
-import QueryRouting from "../../TicketPurchases/QueryRouting";
+//import QueryRouting from "../../TicketPurchases/QueryRouting";
 
 import OSDHeader from "../Headers/OSDHeader";
 import DahdayHeader from "../Headers/DahDayHeader";
@@ -114,16 +114,6 @@ class Layout extends Component {
               <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
               <Checkout />
               <DahdayFooter></DahdayFooter>
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/queryrouting"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <QueryRouting />
             </React.Fragment>
           )}
         />
