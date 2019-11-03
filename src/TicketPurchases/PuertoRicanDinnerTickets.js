@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Container } from "react-bootstrap";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
@@ -25,6 +24,7 @@ const puertoRicoEvent = {
 };
 
 // NEW EVENT DETAIL VARIABLE
+/*
 const eventDetails = {
   eventID: "0001",
   eventName: "Private Puerto Rican Dinner",
@@ -54,6 +54,7 @@ const eventDetails = {
   initialTicketPrice: 75,
   currentTicketPrice: 75
 };
+*/
 
 const PueroRicanDinnerTickets = () => {
   // sets ticket purchase data variable

@@ -8,6 +8,7 @@ import styles from "./OSDHeader.module.css";
 // "history" represents the actual active path
 // "path" represents the path defined in the respective "<NavLink>"
 // "#ff9900" gives an orange color
+/*
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
     return { color: "#8DADD4" };
@@ -15,6 +16,7 @@ const isActive = (history, path) => {
     return { color: "ffffff" };
   }
 };
+*/
 
 const Header = ({ history, logoType, styleType }) => {
   return (

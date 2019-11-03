@@ -2,7 +2,6 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 import OSDLogo from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
-import dahdayLogo from "../../assets/dahday/dahday-white-logo-small.png";
 
 const Footer = () => {
   return (

@@ -18,7 +18,11 @@ class Video extends Component {
       width: "640",
       playerVars: {
         // https://developers.google.com/youtube/player_parameters
-        autoplay: 1
+        autoplay: 0,
+        start: 0,
+        playsinline: 1,
+        modestbranding: 1,
+        rel: 0
       }
     };
 

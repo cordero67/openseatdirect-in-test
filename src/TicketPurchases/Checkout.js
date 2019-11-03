@@ -187,7 +187,7 @@ const Checkout = props => {
     if (success) {
       return (
         <div className={styles.SubBody}>
-          <div>Backend Responce: {data.friendlyMessage}</div>
+          <div>{data.friendlyMessage}</div>
           <div style={{ paddingLeft: "30px" }}>
             Thank you for your order, your payment was received.<br></br>
             <br></br>
@@ -209,7 +209,7 @@ const Checkout = props => {
         </div>
       );
     } else {
-      return <div>Backend Responce: {data.friendlyMessage}</div>;
+      return <div>{data.friendlyMessage}</div>;
     }
   };
 
@@ -438,7 +438,7 @@ const Checkout = props => {
             <div className={styles.GridButtonsLarge}>
               <div className={styles.GridButtonsLargeLeft}>
                 <button className={styles.ButtonWhiteLarge}>
-                  <Link to="/dahday-tickets">Change Order</Link>
+                  <Link to="/ticket-general">Change Order</Link>
                 </button>
               </div>
               <div className={styles.GridButtonsLargeRight}>
@@ -457,6 +457,7 @@ const Checkout = props => {
       </Aux>
     );
   }
+
   if (showPaymentConfirm) {
     purchaseConfirmation = (
       <Aux>
@@ -465,6 +466,7 @@ const Checkout = props => {
       </Aux>
     );
   }
+
   return (
     <Aux>
       <div className={styles.ContentBoxLarge}>

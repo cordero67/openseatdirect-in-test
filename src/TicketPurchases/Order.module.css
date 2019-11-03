@@ -1,0 +1,371 @@
+.MainContainer {
+  background-color: #2f5596;
+  height: auto;
+}
+.MainGrid {
+  background-color: #fff;
+  margin: auto;
+  height: 720px;
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.LeftGrid {
+  display: grid;
+}
+.RightGrid {
+  display: grid;
+}
+.OrderSummary {
+  background-color: #e5e5e5;
+  font-size: 0.875rem;
+  height: 540px;
+  padding-top: 20px;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+.EventHeader {
+  text-align: center;
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: auto;
+  border-bottom: 1px solid lightgrey;
+}
+.EventTicketSection {
+  background-color: #fff;
+  height: 580px;
+  padding-top: 30px;
+  padding-left: 80px;
+  padding-right: 80px;
+  text-align: left;
+  overflow-y: auto;
+}
+.EventFooter {
+  display: grid;
+  grid-template-columns: auto 55px 130px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  border-top: 1px solid lightgrey;
+  height: 80px;
+}
+.MainItemLeft {
+  background-color: #f9f9f9;
+  border-right: 1px solid lightgrey;
+}
+.SectionHeader {
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+.EventDescription {
+  font-weight: 400;
+  padding-bottom: 5px;
+}
+.TicketType {
+  font-weight: 600;
+  padding-bottom: 5px;
+}
+.TicketPrices {
+  font-weight: 600;
+  padding-bottom: 5px;
+}
+.TicketFees {
+  font-weight: 400;
+}
+.TicketAmount {
+  text-align: right;
+  padding-top: 5px;
+}
+.SelectionBox {
+  font-size: 16px;
+  padding-left: 5px;
+}
+.aaaa {
+}
+
+.ImageBox {
+  height: 180px;
+}
+
+@media (max-width: 480px) {
+  .MainContainer {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+  .MainGrid {
+    grid-template-columns: auto;
+  }
+  .LeftGrid {
+    grid-template-columns: auto 80px;
+  }
+  .RightGrid {
+    grid-template-columns: auto 80px;
+  }
+  .EventTicketSection {
+    height: 580px;
+    padding-top: 30px;
+    padding-left: 15px;
+    padding-right: 10px;
+  }
+  .EventFooter {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .EventDescription {
+    font-size: 1rem;
+  }
+  .TicketType {
+    font-size: 1.25rem;
+  }
+  .TicketPrices {
+    font-size: 1rem;
+  }
+  .TicketFees {
+    font-size: 0.875rem;
+  }
+  .SelectionBox {
+    height: 40px;
+    width: 50px;
+  }
+  .HideRightColumn {
+    display: none;
+  }
+}
+
+@media (min-width: 480px) {
+  .MainContainer {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .MainGrid {
+    grid-template-columns: auto;
+  }
+  .LeftGrid {
+    grid-template-columns: auto 80px;
+  }
+  .RightGrid {
+    grid-template-columns: auto 80px;
+  }
+  .EventTicketSection {
+    height: 580px;
+    padding-top: 30px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .EventFooter {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .EventDescription {
+    font-size: 1rem;
+  }
+  .TicketType {
+    font-size: 1.25rem;
+  }
+  .TicketPrices {
+    font-size: 1rem;
+  }
+  .TicketFees {
+    font-size: 0.875rem;
+  }
+  .SelectionBox {
+    height: 40px;
+    width: 50px;
+  }
+  .HideRightColumn {
+    display: none;
+  }
+}
+
+@media (min-width: 660px) {
+  .MainContainer {
+    padding-top: 100px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 50px;
+  }
+  .MainGrid {
+    grid-template-columns: auto;
+  }
+  .LeftGrid {
+    grid-template-columns: auto 80px;
+  }
+  .RightGrid {
+    grid-template-columns: auto 80px;
+  }
+  .EventTicketSection {
+    height: 580px;
+    padding-top: 30px;
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+  .EventFooter {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+  .EventDescription {
+    font-size: 1rem;
+  }
+  .TicketType {
+    font-size: 1.25rem;
+  }
+  .TicketPrices {
+    font-size: 1rem;
+  }
+  .TicketFees {
+    font-size: 0.875rem;
+  }
+  .SelectionBox {
+    height: 40px;
+    width: 50px;
+  }
+  .HideRightColumn {
+    display: none;
+  }
+}
+
+@media (min-width: 790px) {
+  .MainContainer {
+    padding-top: 100px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 50px;
+  }
+  .MainGrid {
+    grid-template-columns: auto 320px;
+  }
+  .LeftGrid {
+    grid-template-columns: auto 80px;
+  }
+  .RightGrid {
+    grid-template-columns: auto 80px;
+  }
+  .EventTicketSection {
+    height: 580px;
+    padding-top: 30px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .EventFooter {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .EventDescription {
+    font-size: 1rem;
+  }
+  .TicketType {
+    font-size: 1.25rem;
+  }
+  .TicketPrices {
+    font-size: 1rem;
+  }
+  .TicketFees {
+    font-size: 0.875rem;
+  }
+  .SelectionBox {
+    height: 50px;
+    width: 60px;
+  }
+  .HideRightColumn {
+    display: "";
+  }
+}
+
+@media (min-width: 960px) {
+  .MainContainer {
+    padding-top: 100px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 50px;
+  }
+  .MainGrid {
+    grid-template-columns: auto 365px;
+  }
+  .LeftGrid {
+    grid-template-columns: auto 80px;
+  }
+  .RightGrid {
+    grid-template-columns: auto 80px;
+  }
+  .EventTicketSection {
+    height: 580px;
+    padding-top: 30px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .EventFooter {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .EventDescription {
+    font-size: 0.875rem;
+  }
+  .TicketType {
+    font-size: 1.125rem;
+  }
+  .TicketPrices {
+    font-size: 0.875rem;
+  }
+  .TicketFees {
+    font-size: 0.75rem;
+  }
+  .SelectionBox {
+    height: 50px;
+    width: 60px;
+  }
+  .HideRightColumn {
+    display: "";
+  }
+}
+
+@media (min-width: 1140px) {
+  .MainContainer {
+    padding-top: 100px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 50px;
+  }
+  .MainGrid {
+    width: 1085px;
+    grid-template-columns: 720px 365px;
+  }
+  .LeftGrid {
+    grid-template-columns: 460px 80px;
+  }
+  .RightGrid {
+    grid-template-columns: 230px 80px;
+  }
+  .EventTicketSection {
+    height: 580px;
+    padding-top: 30px;
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+  .EventFooter {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+  .EventDescription {
+    font-size: 0.875rem;
+  }
+  .TicketType {
+    font-size: 1.125rem;
+  }
+  .TicketPrices {
+    font-size: 0.875rem;
+  }
+  .TicketFees {
+    font-size: 0.75rem;
+  }
+  .SelectionBox {
+    height: 50px;
+    width: 60px;
+  }
+  .HideRightColumn {
+    display: "";
+  }
+}

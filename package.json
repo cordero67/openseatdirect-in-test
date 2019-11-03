@@ -6,6 +6,7 @@
     "braintree-dropin-react": "^0.1.1",
     "braintree-web": "^3.54.2",
     "braintree-web-drop-in-react": "^1.1.0",
+    "query-string": "^6.8.3",
     "react": "^16.10.2",
     "react-bootstrap": "^1.0.0-beta.14",
     "react-dom": "^16.10.2",
