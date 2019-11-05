@@ -19,7 +19,7 @@ OSD
 
 // hard coded event information
 const eventDetails = {
-  eventID: "0001",
+  eventNum: "94106331593",
   //eventName: "Private Puerto Rican Dinner",
   eventName: "PPRD",
   eventCategory: "Food&Drink",
@@ -51,8 +51,8 @@ const eventDetails = {
   ticketsSold: 0,
   initiaTicketPrice: 75,
   currentTicketPrice: 75,
-  initialTicketFee: 1,
-  currentTicketFee: 1,
+  initialTicketFee: 0,
+  currentTicketFee: 0,
   ticket2Type: "General Admission",
   ticket2Description:
     "No chair, but you get your ass in the door, plus a bottle of boozes!",
@@ -100,7 +100,7 @@ const eventDetails = {
 
 const SingleEvent = () => {
   const [ticketPurchase, setTicketPurchase] = useState({
-    eventID: eventDetails.eventID,
+    eventNum: eventDetails.eventNum,
     eventName: eventDetails.eventName,
     ticketPrice: eventDetails.currentTicketPrice,
     ticketFee: eventDetails.currentTicketFee,
@@ -122,13 +122,10 @@ const SingleEvent = () => {
 
   // dynamically set the "showOrderSummary" variable
   window.onresize = function(event) {
-    console.log(window.innerWidth);
     if (window.innerWidth < 790) {
       setMinView(true);
-      console.log("Total Amount");
     } else {
       setMinView(false);
-      console.log("HIDDEN");
     }
   };
 

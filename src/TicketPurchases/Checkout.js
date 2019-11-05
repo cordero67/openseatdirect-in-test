@@ -12,9 +12,10 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Purchases.module.css";
 
 const Checkout = props => {
-  // ticket purchase data
+  // REFACTORED CODE
+  // ticket purchase data - NONTOXIC
   const [order, setOrder] = useState({
-    eventID: "",
+    eventNum: "",
     eventName: "",
     ticketPrice: 0,
     ticketsSelected: 0,
@@ -24,16 +25,49 @@ const Checkout = props => {
     email: ""
   });
 
-  // view control variables
-  const [loading, setLoading] = useState(true);
-  const [showTicketPayment, setShowTicketPayment] = useState(false);
-  const [showPaymentConfirm, setShowPaymentConfirm] = useState(false);
+  // REFACTORED CODE
+  // DEFINES ALL VIEW CONTROL VARIABLES
+  const [showConnectionStatus, setShowConnectionStatus] = useState(false);
+  const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
+  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(
+    false
+  );
 
-  // Braintree interface variable
+  // REFACTORED CODE
+  // "RADIO BUTTON" TYPE SHOW ONLY CONTROL FUNCTIONS
+  const onlyShowConnectionStatus = () => {
+    setShowConnectionStatus(true);
+    setShowLoadingSpinner(false);
+    setShowPaymentDetails(false);
+    setShowPurchaseConfirmation(false);
+  };
+
+  const onlyShowLoadingSpinner = () => {
+    setShowConnectionStatus(false);
+    setShowLoadingSpinner(true);
+    setShowPaymentDetails(false);
+    setShowPurchaseConfirmation(false);
+  };
+
+  const onlyShowPaymentDetails = () => {
+    setShowConnectionStatus(false);
+    setShowLoadingSpinner(false);
+    setShowPaymentDetails(true);
+    setShowPurchaseConfirmation(false);
+  };
+
+  const onlyShowPurchaseConfirmation = () => {
+    setShowConnectionStatus(false);
+    setShowLoadingSpinner(false);
+    setShowPaymentDetails(false);
+    setShowPurchaseConfirmation(true);
+  };
+
+  // REFACTORED CODE
+  // BRAINTREE INTERFACE VARIABLE
   const [data, setData] = useState({
     success: false,
-    friendlyMessage: "",
-    dropInSuccess: true,
     clientToken: true,
     error: "",
     instance: {},
@@ -41,62 +75,30 @@ const Checkout = props => {
     connection: true
   });
 
-  // defines the function that retrieves the Braintree token
-  // this represents parts "1" and "2" of the Braintree interaction
-  const getExpressToken = () => {
-    getExpressBraintreeClientToken()
-      .then(res => {
-        setLoading(false);
-        console.log("before if (res.error) statement");
-        if (res.error) {
-          setData({ ...data, error: res.error });
-        } else {
-          setData({ ...data, clientToken: res.clientToken });
-          setShowTicketPayment(true);
-        }
-      })
-      .catch(err2 => {
-        console.log("PARENT ERROR THROWN");
-        console.log("err", err2);
-        setData({ ...data, dropInSuccess: false });
-        setLoading(false);
-      });
-  };
-
-  const connectionStatus = () => (
-    <div>
-      {data.dropInSuccess === false ? (
-        <div>System error, please try later.</div>
-      ) : (
-        <div></div>
-      )}
-    </div>
-  );
-
-  // calls for the Braintree token upon the loading of this component
-  // copies ticket order details from "localStorage"
+  // REFACTORED CODE
+  // downloads "order" information from "localStorage" and
+  // requests BrainTree "clientToken" from backend server
   useEffect(() => {
     if (localStorage.getItem("order")) {
       const newOrder = JSON.parse(localStorage.getItem("order"));
       setOrder({
         ...order,
-        eventID: newOrder.eventID,
+        eventNum: newOrder.eventNum,
         eventName: newOrder.eventName,
         ticketPrice: newOrder.ticketPrice,
         ticketsSelected: newOrder.ticketsSelected,
         purchaseAmount: newOrder.purchaseAmount
-        //purchaseAmount: 2000
       });
     }
     getExpressToken();
   }, []);
 
+  // REFACTORED CODE
+  // ***NEED TO SEND TICKET AMOUNT TO "EventList" AND REGISTER TICKETS PURCHASED
   // clears entire "order" object, removes "order" from "localStorage"
-  // shows the "Payment Confirm" window
-  // NEED TO SEND TICKET AMOUNT TO "EventList" AND REGISTER TICKETS PURCHASED
   const purchaseConfirmHandler = () => {
     setOrder({
-      eventID: "",
+      eventNum: "",
       eventName: "",
       ticketPrice: 0,
       ticketsSelected: 0,
@@ -105,17 +107,15 @@ const Checkout = props => {
       lastName: "",
       email: ""
     });
-    setShowTicketPayment(false);
-    setLoading(false);
-    setShowPaymentConfirm(true);
     localStorage.removeItem("order");
   };
 
+  // REFACTORED CODE
   // resets all state variables back to defualt values
   // removes "order" from "localStorage"
   const cancelOrderHandler = () => {
     setOrder({
-      eventID: "",
+      eventNum: "",
       eventName: "",
       ticketPrice: 0,
       ticketsSelected: 0,
@@ -127,6 +127,36 @@ const Checkout = props => {
     localStorage.removeItem("order");
   };
 
+  // REFACTORED CODE
+  // ***STILL A QUESTION AS TO WHAT TO SHOW IF ""res.error" IS RETURNED***
+  // CHANGES VIEW CONTROL VARIABLES
+  // this represents parts "1" and "2" of the Braintree interaction
+  // defines the function that retrieves the Braintree token
+  const getExpressToken = () => {
+    onlyShowLoadingSpinner();
+    getExpressBraintreeClientToken()
+      .then(res => {
+        if (res.error) {
+          setData({ ...data, error: res.error });
+          // ***STILL A QUESTION AS TO WHAT TO SHOW IF ""res.error" IS RETURNED***
+          // ***"res.error" IS SET AND IS CURRENTLY SHOWN IN "paymentDetails"
+          // **IN "paymentDetails" IT DISPLAYS ERROR BUT STILL SHOWS
+          // ***"Contact Information" AND "Order Summmary" SECTIONS
+          onlyShowPaymentDetails();
+        } else {
+          setData({ ...data, clientToken: res.clientToken });
+          onlyShowPaymentDetails();
+        }
+        onlyShowPaymentDetails();
+      })
+      .catch(err2 => {
+        onlyShowConnectionStatus();
+        console.log("getExpressBraintreeClientToken(): ERROR THROWN");
+        console.log("err", err2);
+      });
+  };
+
+  // REFACTORED CODE
   // requests "nonce" from BrainTree
   // sends payment and order information to the backend
   const expressBuy = () => {
@@ -139,7 +169,7 @@ const Checkout = props => {
         nonce = res.nonce;
         const paymentTicketData = {
           paymentMethodNonce: nonce,
-          eventID: order.eventID,
+          eventNum: order.eventNum,
           ticketsSelected: order.ticketsSelected,
           amount: order.purchaseAmount,
           firstName: order.firstName,
@@ -147,6 +177,7 @@ const Checkout = props => {
           email: order.email
         };
 
+        onlyShowLoadingSpinner();
         // sends transaction and payment details to the backend
         processExpressPayment(paymentTicketData)
           .then(response => {
@@ -154,26 +185,31 @@ const Checkout = props => {
             console.log(response);
             setData({
               ...data,
-              success: response.success,
-              friendlyMessage: response.friendlyMessage
+              success: response.success
             });
-            // empties the cart and resets "ticketPurchase" object
+            onlyShowPurchaseConfirmation();
+            // empty cart and reset "ticketPurchase" object
             purchaseConfirmHandler();
           })
           .catch(error => {
-            console.log("Error in expressExpressPayment", error);
-            data.instance.clearSelectedPaymentMethod();
+            console.log("processExpressPayment(): ERROR THROWN");
+            setData({ ...data, success: false });
+            //data.instance.clearSelectedPaymentMethod();
+            onlyShowConnectionStatus();
           });
       })
 
       // there is a problem with Braintree and cannot return nonce
       .catch(error => {
-        console.log("dropin error: ", error);
+        console.log("requestPaymentMethod(): ERROR THROWN", error);
         setData({ ...data, success: false });
-        setLoading(false);
+        //data.instance.clearSelectedPaymentMethod();
+        onlyShowConnectionStatus();
       });
   };
 
+  // REFACTORED CODE
+  // displays "error" if one exists
   const showError = error => (
     <div
       className={styles.AlertTextLarge}
@@ -183,36 +219,8 @@ const Checkout = props => {
     </div>
   );
 
-  const showSuccess = success => {
-    if (success) {
-      return (
-        <div className={styles.SubBody}>
-          <div>{data.friendlyMessage}</div>
-          <div style={{ paddingLeft: "30px" }}>
-            Thank you for your order, your payment was received.<br></br>
-            <br></br>
-            Order details:
-            <div style={{ paddingLeft: "30px" }}>
-              Description:
-              <br></br>
-              Total Amount($):
-              <br></br>
-              Transaction ID:
-            </div>
-            <br></br>A confirmation email with your order details will be sent
-            to bobsmith@xmail.com shortly.
-            <br></br>
-            <br></br>
-            If this e-mail is incorrect, please contact Dahday immediately.
-            <br></br>
-          </div>
-        </div>
-      );
-    } else {
-      return <div>{data.friendlyMessage}</div>;
-    }
-  };
-
+  // REFACTORED CODE
+  // displays the "DropIn" or an "empty cart" error message
   const showDropIn = () => (
     <div onBlur={() => setData({ ...data, error: "" })}>
       {data.clientToken !== null && order.ticketsSelected > 0 ? (
@@ -241,6 +249,43 @@ const Checkout = props => {
     </div>
   );
 
+  // REFACTORED CODE
+  const showSuccess = success => {
+    if (success) {
+      return (
+        <div className={styles.SubBody}>
+          <div style={{ paddingLeft: "30px" }}>
+            Thank you for your order, your payment was received.<br></br>
+            <br></br>
+            Order details:
+            <div style={{ paddingLeft: "30px" }}>
+              Description:
+              <br></br>
+              Total Amount($):
+              <br></br>
+              Transaction ID:
+            </div>
+            <br></br>A confirmation email with your order details will be sent
+            to bobsmith@xmail.com shortly.
+            <br></br>
+            <br></br>
+            If this e-mail is incorrect, please contact Dahday immediately.
+            <br></br>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <span style={{ color: "red" }}>
+            WE NEED TO DECIDE ON AN ERROR MESSAGE!!!
+          </span>
+        </div>
+      );
+    }
+  };
+
+  // REFACTORED CODE
   // determines what "contact information" has been filled out by the ticket buyer
   let fullNameProvided = order.firstName !== "" && order.lastName !== "";
   const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -275,6 +320,8 @@ const Checkout = props => {
     );
   }
 
+  // REFACTORED CODE
+  // determines "submitButton" functionality/formatting
   let submitButton;
 
   if (detailsMinimal) {
@@ -299,21 +346,48 @@ const Checkout = props => {
     );
   }
 
-  let spinnerView = null;
-  let purchaseSelection = null;
+  // REFACTORED CODE
+  // DEFINES VARIABELS THAT DEFINE RENDERED ITEMS
+  let connectionStatus = null;
+  let loadingSpinner = null;
+  let paymentDetails = null;
   let purchaseConfirmation = null;
 
-  if (loading) {
-    spinnerView = (
+  // REFACTORED CODE
+  // CONTROLS "connectionStatus" VIEW
+  if (showConnectionStatus) {
+    connectionStatus = (
       <Aux>
-        <Spinner></Spinner>
+        <div>
+          <h4>
+            Sorry for the inconvenince but our ticket ordering system is down.
+          </h4>
+          <br></br>
+          <h4>Please try back later.</h4>
+          <br></br>
+        </div>
       </Aux>
     );
-  }
+  } /*else {
+    connectionStatus = (
+      <Aux>
+        <div>connectionStatus - else: Everything is OK!!!</div>
+      </Aux>
+    );
+  }*/
 
-  // Ticket Purchase Window details
-  if (showTicketPayment) {
-    purchaseSelection = (
+  // REFACTORED CODE
+  // CONTROLS "loadingSpinner" VIEW
+  if (showLoadingSpinner) {
+    loadingSpinner = <Spinner></Spinner>;
+  } /*else {
+    loadingSpinner = <div>loadingSpinner - else: LOADING IS COMPLETE!!!</div>;
+  }*/
+
+  // REFACTORED CODE
+  // CONTROLS "paymentDetails" VIEW
+  if (showPaymentDetails) {
+    paymentDetails = (
       <Aux>
         <div className={styles.GridMain}>
           <div className={styles.GridMainItemLeft}>
@@ -456,17 +530,31 @@ const Checkout = props => {
         </div>
       </Aux>
     );
-  }
+  } /*else {
+    paymentDetails = (
+      <div>
+        paymentDetails - else: WAITING FOR BT TOKEN OR ORDER HAS BEEN
+        SUBMITTED!!!
+      </div>
+    );
+  }*/
 
-  if (showPaymentConfirm) {
+  // REFACTORED CODE
+  // CONTROLS "purchaseConfirmation" VIEW
+  if (showPurchaseConfirmation) {
     purchaseConfirmation = (
       <Aux>
         <span className={styles.SubSectionHeader}>Order Status</span>
         <div style={{ paddingTop: "20px" }}>{showSuccess(data.success)}</div>
       </Aux>
     );
-  }
+  } /*else {
+    purchaseConfirmation = (
+      <div>purchaseConfirmation - else: ORDER HAS NOT BEEN SUBMITTED!!!</div>
+    );
+  }*/
 
+  // REFACTORED CODE
   return (
     <Aux>
       <div className={styles.ContentBoxLarge}>
@@ -474,9 +562,9 @@ const Checkout = props => {
         <br></br>
         <br></br>
         <div className={styles.Body}>
-          {connectionStatus()}
-          {spinnerView}
-          {purchaseSelection}
+          {connectionStatus}
+          {loadingSpinner}
+          {paymentDetails}
           {purchaseConfirmation}
         </div>
       </div>

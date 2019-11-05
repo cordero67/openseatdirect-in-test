@@ -1,10 +1,4 @@
 import { API } from "../config";
-/*
-let statement = {
-  error: true,
-  message: "buckle your seatbelts, there was an error"
-};
-*/
 
 // NEW api TO EXTRACT EVENT DATA FROM SERVER
 export const getEventData = eventId => {
@@ -23,8 +17,10 @@ const handleErrors = response => {
   // different error casses
   // back-end server is down, i.e. response is "undefined"
   // "ERROR" will be "err"
-  console.log("Handle Error", response);
-  if (!response.ok) throw Error(response.statusText);
+  console.log("apiCore handleErrors()", response);
+  if (!response.ok) {
+    console.log("response was false!");
+  }
   return response;
 };
 
@@ -44,7 +40,10 @@ export const processExpressPayment = paymentTicketData => {
       })
       // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
       .catch(err => {
-        console.log("SERVER MAYBE DOWN", err);
+        console.log(
+          "fetch(`${API}/braintree/expressPayment`): ERROR THROWN",
+          err
+        );
         throw Error(err);
       })
   );
@@ -63,7 +62,10 @@ export const getExpressBraintreeClientToken = () => {
       return response.json();
     })
     .catch(err => {
-      console.log("child error thrown", err);
+      console.log(
+        "fetch(`${API}/braintree/getExpressToken`): ERROR THROWN",
+        err
+      );
       throw Error(err);
     });
 };
