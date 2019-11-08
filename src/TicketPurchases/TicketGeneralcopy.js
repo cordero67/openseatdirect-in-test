@@ -3,39 +3,39 @@ import { NavLink, Link } from "react-router-dom";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
-import CocinaCandelaLogo from "../assets/Cocina_Candela/cocinacandela21NEW.jpg";
+import CocinaCandelaLogo from "../assets/Cocina_Candela/store_sign.jpg";
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
-import TicketType from "./TicketType";
+
 import styles from "./Order.module.css";
 
 // hard coded event information
 const eventDetails = {
   eventNum: "94106331593",
   //eventName: "Private Puerto Rican Dinner",
-  eventName: "Chef's Table Dinner",
+  eventName: "PPRD",
   eventCategory: "Food&Drink",
   eventStatus: "Scheduled",
   longDescription:
     "Experience a Puerto Rican gastronomy honoring the traditions of Taíno roots and the purity of ingredients. Prepared by Kenny Candelaria who's culinary career began as a child, preparing meals on the fogón with his grandparents in Puerto Rico and refined throughout the years by choosing the most natural, local ingredients available to him.",
   shortDescription: "An orgy of Puerto Rican food. No contraception required.",
   image: "",
-  startDateTime: "December 12, 2019 - 8 PM",
+  startDateTime: "2019-12-06 08:01:00.000Z",
   endDateTime: "2019-12-06 09:00:00.000Z",
   location: {
-    venue: "Cocina Candela",
+    venue: "CC",
     //venue: "Cocina Candela",
-    address1: "706 Bloomfield Ave",
+    address1: "706",
     //address1: "706 Bloomfield Ave",
     address2: "",
     city: "Montclair",
     state: "NJ",
-    postalCode: "07042"
+    postalCode: "10001"
   },
   organizer: "Dahday",
   cancelURL: "https://www.dahday.com/",
   eventURL: "/dahday-puertoricandinner",
   ticketType: "General Admission",
-  ticketDescription: "Full seven course meal and live entertainment.",
+  ticketDescription: "No chair, but you get your ass in the door",
   ticketAdditional: "",
   initialTicketsIssued: 30,
   currentTicketsAvailable: 30,
@@ -46,91 +46,47 @@ const eventDetails = {
   currentTicketFee: 0,
   ticket2Type: "General Admission",
   ticket2Description:
-    "Full seven course meal, 2 drinks and live entertainment.",
-  ticket2Additional: " + 2 drinks",
+    "No chair, but you get your ass in the door, plus a bottle of boozes!",
+  ticket2Additional: " + 1 Bottle of Ripple",
   initialTicket2sIssued: 30,
   currentTicket2sAvailable: 30,
   ticket2sSold: 0,
   initialTicket2Price: 100,
   currentTicket2Price: 100,
-  initialTicket2Fee: 0,
-  currentTicket2Fee: 0,
+  initialTicket2Fee: 2,
+  currentTicket2Fee: 2,
   ticket3Type: "VIP",
-  ticket3Description:
-    "Full seven course meal and live entertainment with seat next to the stage.",
+  ticket3Description: "Not only do you get in the door, you also get a chair!",
   ticket3Additional: "",
   initialTicket3sIssued: 30,
   currentTicket3sAvailable: 30,
   ticket3sSold: 0,
   initialTicket3Price: 125,
   currentTicket3Price: 125,
-  initialTicket3Fee: 0,
-  currentTicket3Fee: 0,
+  initialTicket3Fee: 3,
+  currentTicket3Fee: 3,
   ticket4Type: "VIP",
   ticket4Description:
-    "Full seven course meal, 2 drinks and live entertainment with seat next to the stage.",
-  ticket4Additional: " + 2 drinks",
+    "Not only do you get in the door, you also get a chair and a bottle of booze!",
+  ticket4Additional: " + 1 Bottle of Ripple",
   initialTicket4sIssued: 30,
   currentTicket4sAvailable: 30,
   ticket4sSold: 0,
   initialTicket4Price: 150,
   currentTicket4Price: 150,
-  initialTicket4Fee: 0,
-  currentTicket4Fee: 0,
+  initialTicket4Fee: 4,
+  currentTicket4Fee: 4,
   ticket5Type: "VIP",
   ticket5Description:
-    "Full seven course meal, 2 drinks and live entertainment with seat next to the stage. You also get to meet the band before they go on stage",
-  ticket5Additional: " + 2 drinks and band introduction",
+    "Not only do you get in the door, you also get a chair, a bottle of booze and a warm special someone!",
+  ticket5Additional: " + 1 Bottle of Ripple PLUS",
   initialTicket5sIssued: 30,
   currentTicket5sAvailable: 30,
   ticket5sSold: 0,
   initialTicket5Price: 225,
   currentTicket5Price: 225,
-  initialTicket5Fee: 0,
-  currentTicket5Fee: 0
-};
-
-const getDateStr = dt => {
-  // returns pretty date string assuming UTC time sime
-  // i.e.  'Sat Nov 2, 2019 6:30 PM'
-  const mon = dt.getUTCMonth();
-  const monstr = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ][mon];
-  const day = dt.getUTCDay();
-  const dstr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][day];
-  const udate = dt.getUTCDate();
-  const yr = dt.getUTCFullYear();
-  const min = dt.getUTCMinutes();
-  const hr24 = dt.getUTCHours();
-  const hr12 = hr24 % 12;
-  hr12 = hr12 == 0 ? 12 : hr12;
-  const ampm = hr24 > 11 ? " PM" : " AM";
-  const mystr =
-    dstr +
-    " " +
-    monstr +
-    " " +
-    udate +
-    ", " +
-    yr +
-    " " +
-    hr12 +
-    ":" +
-    min +
-    ampm;
-  return mystr;
+  initialTicket5Fee: 5,
+  currentTicket5Fee: 5
 };
 
 const SingleEvent = () => {
@@ -140,8 +96,7 @@ const SingleEvent = () => {
     ticketPrice: eventDetails.currentTicketPrice,
     ticketFee: eventDetails.currentTicketFee,
     ticketsSelected: 0,
-    purchaseAmount: 0,
-    ticketUrl: ""
+    purchaseAmount: 0
   });
 
   // copies existing ticket order details from "localStorage"
@@ -154,14 +109,23 @@ const SingleEvent = () => {
   }, []);
 
   const [minView, setMinView] = useState(false);
+  const [minViewMessage, setMinViewMessage] = useState("NO");
   const [showTicketSelection, setShowTicketSelection] = useState(true);
 
   // dynamically set the "showOrderSummary" variable
   window.onresize = function(event) {
     if (window.innerWidth < 790) {
       setMinView(true);
+      setMinViewMessage("YES");
+      console.log("window.innerWidth: ", window.innerWidth);
+      console.log("setMinView: ", minView);
+      console.log("window.innerHeight: ", window.innerHeight);
     } else {
       setMinView(false);
+      setMinViewMessage("NO");
+      console.log("window.innerWidth: ", window.innerWidth);
+      console.log("setMinView: ", minView);
+      console.log("window.innerHeight: ", window.innerHeight);
     }
   };
 
@@ -290,66 +254,6 @@ const SingleEvent = () => {
     orderSummary = <div></div>;
   }
 
-  const ticket2 = {
-    ticketType: eventDetails.ticket2Type,
-    ticketAdditional: eventDetails.ticket2Additional,
-    currentTicketPrice: eventDetails.currentTicket2Price,
-    currentTicketFee: eventDetails.currentTicket2Fee,
-    ticketsSelected: ticketPurchase.ticket2sSelected,
-    ticketDescription: eventDetails.ticket2Description
-  };
-
-  const ticket3 = {
-    ticketType: eventDetails.ticket3Type,
-    ticketAdditional: eventDetails.ticket3Additional,
-    currentTicketPrice: eventDetails.currentTicket3Price,
-    currentTicketFee: eventDetails.currentTicket3Fee,
-    ticketsSelected: ticketPurchase.ticket3sSelected,
-    ticketDescription: eventDetails.ticket3Description
-  };
-
-  const ticket4 = {
-    ticketType: eventDetails.ticket4Type,
-    ticketAdditional: eventDetails.ticket4Additional,
-    currentTicketPrice: eventDetails.currentTicket4Price,
-    currentTicketFee: eventDetails.currentTicket4Fee,
-    ticketsSelected: ticketPurchase.ticket4sSelected,
-    ticketDescription: eventDetails.ticket4Description
-  };
-
-  const ticket5 = {
-    ticketType: eventDetails.ticket5Type,
-    ticketAdditional: eventDetails.ticket5Additional,
-    currentTicketPrice: eventDetails.currentTicket5Price,
-    currentTicketFee: eventDetails.currentTicket5Fee,
-    ticketsSelected: ticketPurchase.ticket5sSelected,
-    ticketDescription: eventDetails.ticket5Description
-  };
-
-  let ticketTypes = null;
-
-  {
-    /*        onChange={event => {
-          setTicketPurchase({
-            ...ticketPurchase,
-            ticketsSelected: event.target.value,
-            purchaseAmount:
-              event.target.value *
-              (eventDetails.currentTicket2Price + eventDetails.currentTicket2Fee),
-            ticketUrl: window.location.href
-          });
-        }}*/
-  }
-
-  ticketTypes = (
-    <Aux>
-      <TicketType name={ticket2}></TicketType>
-      <TicketType name={ticket3}></TicketType>
-      <TicketType name={ticket4}></TicketType>
-      <TicketType name={ticket5}></TicketType>
-    </Aux>
-  );
-
   let ticketSelection = null;
 
   if (showTicketSelection) {
@@ -382,6 +286,8 @@ const SingleEvent = () => {
             </div>
             <div className={styles.EventTicketSection}>
               <div className={styles.SectionHeader}>Tickets</div>
+
+              <div>Minimum view require: {minViewMessage}</div>
               <div className={styles.LeftGrid}>
                 <div>
                   <div className={styles.TicketType}>
@@ -408,8 +314,7 @@ const SingleEvent = () => {
                         purchaseAmount:
                           event.target.value *
                           (eventDetails.currentTicketPrice +
-                            eventDetails.currentTicketFee),
-                        ticketUrl: window.location.href
+                            eventDetails.currentTicketFee)
                       });
                     }}
                   >
@@ -425,7 +330,110 @@ const SingleEvent = () => {
                 {eventDetails.ticketDescription}
               </div>
               <hr style={{ border: "1px solid#F2F2F2" }} />
-              {ticketTypes}
+              <div className={styles.LeftGrid}>
+                <div>
+                  <div className={styles.TicketType}>
+                    {eventDetails.ticket2Type} {eventDetails.ticket2Additional}
+                  </div>
+                  <div className={styles.TicketPrices}>
+                    ${eventDetails.currentTicket2Price} +
+                    <span className={styles.TicketFees}>
+                      ${eventDetails.currentTicket2Fee} Fee
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.TicketAmount}>
+                  <select className={styles.SelectionBox}>
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.EventDescription}>
+                {eventDetails.ticket2Description}
+              </div>
+              <hr style={{ border: "1px solid#F2F2F2" }} />
+              <div className={styles.LeftGrid}>
+                <div>
+                  <div className={styles.TicketType}>
+                    {eventDetails.ticket3Type} {eventDetails.ticket3Additional}
+                  </div>
+                  <div className={styles.TicketPrices}>
+                    ${eventDetails.currentTicket3Price} +
+                    <span className={styles.TicketFees}>
+                      ${eventDetails.currentTicket3Fee} Fee
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.TicketAmount}>
+                  <select className={styles.SelectionBox}>
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.EventDescription}>
+                {eventDetails.ticket3Description}
+              </div>
+              <hr style={{ border: "1px solid#F2F2F2" }} />
+              <div className={styles.LeftGrid}>
+                <div>
+                  <div className={styles.TicketType}>
+                    {eventDetails.ticket4Type} {eventDetails.ticket4Additional}
+                  </div>
+                  <div className={styles.TicketPrices}>
+                    ${eventDetails.currentTicket4Price} +
+                    <span className={styles.TicketFees}>
+                      ${eventDetails.currentTicket4Fee} Fee
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.TicketAmount}>
+                  <select className={styles.SelectionBox}>
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.EventDescription}>
+                {eventDetails.ticket4Description}
+              </div>
+              <hr style={{ border: "1px solid#F2F2F2" }} />
+              <div className={styles.LeftGrid}>
+                <div>
+                  <div className={styles.TicketType}>
+                    {eventDetails.ticket5Type} {eventDetails.ticket5Additional}
+                  </div>
+                  <div className={styles.TicketPrices}>
+                    ${eventDetails.currentTicket5Price} +
+                    <span className={styles.TicketFees}>
+                      ${eventDetails.currentTicket5Fee} Fee
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.TicketAmount}>
+                  <select className={styles.SelectionBox}>
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.EventDescription}>
+                {eventDetails.ticket5Description}
+              </div>
+              <hr style={{ border: "1px solid#F2F2F2" }} />
               <div className={styles.EventDescription}>
                 Powered by{" "}
                 <NavLink to="/" exact>
@@ -460,7 +468,7 @@ const SingleEvent = () => {
           </div>
           <div>
             <div className={styles.ImageBox}>
-              <img src={CocinaCandelaLogo} alt="Cocina Candela Logo" />
+              <img alt="Cocina Candela Logo" />
             </div>
             <div className={styles.OrderSummary}>{orderSummary}</div>
           </div>

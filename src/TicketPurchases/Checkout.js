@@ -76,6 +76,20 @@ const Checkout = props => {
   });
 
   // REFACTORED CODE
+  // ORDER DETAILS VARIABLE
+  const [transactionDetail, setTransactionDetail] = useState({
+    description: "",
+    email: "",
+    instrumentType: "",
+    accountID: "",
+    payerName: "",
+    totalAmount: 0,
+    transID: ""
+  });
+
+  const [ticketUrl, setTicketUrl] = useState("");
+
+  // REFACTORED CODE
   // downloads "order" information from "localStorage" and
   // requests BrainTree "clientToken" from backend server
   useEffect(() => {
@@ -89,7 +103,10 @@ const Checkout = props => {
         ticketsSelected: newOrder.ticketsSelected,
         purchaseAmount: newOrder.purchaseAmount
       });
+      setTicketUrl(order.ticketUrl);
     }
+    const orderUrl = JSON.parse(localStorage.getItem("order"));
+    //setTicketUrl(orderUrl.ticketUrl);
     getExpressToken();
   }, []);
 
@@ -140,19 +157,19 @@ const Checkout = props => {
           setData({ ...data, error: res.error });
           // ***STILL A QUESTION AS TO WHAT TO SHOW IF ""res.error" IS RETURNED***
           // ***"res.error" IS SET AND IS CURRENTLY SHOWN IN "paymentDetails"
-          // **IN "paymentDetails" IT DISPLAYS ERROR BUT STILL SHOWS
+          // ***IN "paymentDetails" IT DISPLAYS ERROR BUT STILL SHOWS
           // ***"Contact Information" AND "Order Summmary" SECTIONS
-          onlyShowPaymentDetails();
+          onlyShowConnectionStatus();
         } else {
           setData({ ...data, clientToken: res.clientToken });
           onlyShowPaymentDetails();
         }
         onlyShowPaymentDetails();
       })
-      .catch(err2 => {
+      .catch(err => {
         onlyShowConnectionStatus();
         console.log("getExpressBraintreeClientToken(): ERROR THROWN");
-        console.log("err", err2);
+        console.log("err", err);
       });
   };
 
@@ -187,6 +204,18 @@ const Checkout = props => {
               ...data,
               success: response.success
             });
+
+            setTransactionDetail({
+              ...transactionDetail,
+              description: order.eventName,
+              email: response.email,
+              instrumentType: response.osd_paymentInstrumentType,
+              accountID: response.osd_payerAccountId,
+              payerName: response.osd_payerName,
+              totalAmount: response.bt_trans_amount,
+              transID: response.bt_trans_id
+            });
+
             onlyShowPurchaseConfirmation();
             // empty cart and reset "ticketPurchase" object
             purchaseConfirmHandler();
@@ -255,18 +284,22 @@ const Checkout = props => {
       return (
         <div className={styles.SubBody}>
           <div style={{ paddingLeft: "30px" }}>
-            Thank you for your order, your payment was received.<br></br>
+            Thank you {transactionDetail.payerName} for your order, your payment
+            was received.<br></br>
             <br></br>
             Order details:
             <div style={{ paddingLeft: "30px" }}>
-              Description:
+              Description: {transactionDetail.description}
               <br></br>
-              Total Amount($):
+              Total Amount($): {transactionDetail.totalAmount}
               <br></br>
-              Transaction ID:
+              Payment Details($): {transactionDetail.instrumentType}{" "}
+              {transactionDetail.accountID}
+              <br></br>
+              Transaction ID: {transactionDetail.transID}
             </div>
             <br></br>A confirmation email with your order details will be sent
-            to bobsmith@xmail.com shortly.
+            to {transactionDetail.email} shortly.
             <br></br>
             <br></br>
             If this e-mail is incorrect, please contact Dahday immediately.
@@ -359,11 +392,7 @@ const Checkout = props => {
     connectionStatus = (
       <Aux>
         <div>
-          <h4>
-            Sorry for the inconvenince but our ticket ordering system is down.
-          </h4>
-          <br></br>
-          <h4>Please try back later.</h4>
+          <h4>Connection error, please try back later.</h4>
           <br></br>
         </div>
       </Aux>
@@ -392,7 +421,7 @@ const Checkout = props => {
         <div className={styles.GridMain}>
           <div className={styles.GridMainItemLeft}>
             <span className={styles.SubSectionHeader}>Contact Information</span>
-            <br></br>
+
             <Form.Row>
               <Form.Group as={Col} controlId="formGridFirstName">
                 <Form.Control
@@ -508,11 +537,10 @@ const Checkout = props => {
             </div>
             <br></br>
             <br></br>
-
             <div className={styles.GridButtonsLarge}>
               <div className={styles.GridButtonsLargeLeft}>
                 <button className={styles.ButtonWhiteLarge}>
-                  <Link to="/ticket-general">Change Order</Link>
+                  <Link to="/ev">Change Order</Link>
                 </button>
               </div>
               <div className={styles.GridButtonsLargeRight}>

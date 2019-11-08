@@ -1,0 +1,46 @@
+.OuterCanvas {
+  background-color: #2f5596;
+  color: #fff;
+  min-height: 100vh;
+  padding-top: 50px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-bottom: 50px;
+}
+.ParentBox {
+  background-color: #fff;
+  border-style: solid;
+  color: #000;
+  margin: auto;
+  width: 1085px;
+  height: 730px;
+}
+.HeaderBox {
+  background-color: orange;
+  color: red;
+  height: 60px;
+}
+.MiddleBox {
+  background-color: yellowgreen;
+  color: blue;
+  height: 580px;
+}
+.FooterBox {
+  background-color: green;
+  color: white;
+  height: 80px;
+}
+
+@media (max-height: 820px) {
+  .ParentBox {
+    margin: auto;
+    min-height: calc(100vh-100px);
+  }
+
+  .MiddleBox {
+    background-color: red;
+    color: black;
+    height: auto;
+    overflow-y: calc(100%-140px);
+  }
+}

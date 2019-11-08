@@ -4,13 +4,10 @@ import { Route } from "react-router-dom";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
-import PuertoRicanDinner from "../../TicketPurchases/PuertoRicanDinner";
-import PuertoRicanDinnerTickets from "../../TicketPurchases/PuertoRicanDinnerTickets";
-import PuertoRicanDinnerCheckout from "../../TicketPurchases/PuertoRicanDinnerCheckout";
 import Checkout from "../../TicketPurchases/Checkout";
-import Tickets from "../../TicketPurchases/Tickets";
-import QueryRouting from "../../TicketPurchases/QueryRouting";
 import TicketGeneral from "../../TicketPurchases/TicketGeneral";
+import QueryRouting from "../../TicketPurchases/QueryRouting";
+import Height from "../../TicketPurchases/Height";
 
 import OSDHeader from "../Headers/OSDHeader";
 import DahdayHeader from "../Headers/DahDayHeader";
@@ -50,64 +47,6 @@ class Layout extends Component {
         />
 
         <Route
-          path="/dahday-puertoricandinner"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <OSDHeader styleType="HeaderA" logoType={LogoA}></OSDHeader>
-              <PuertoRicanDinner />
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/dahday-puertoricandinner"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <OSDHeader styleType="HeaderA" logoType={LogoA}></OSDHeader>
-              <PuertoRicanDinner />
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/dahday-puertoricandinner-tickets"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
-              <PuertoRicanDinnerTickets />
-              <DahdayFooter></DahdayFooter>
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/dahday-puertoricandinner-checkout"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
-              <PuertoRicanDinnerCheckout />
-              <DahdayFooter></DahdayFooter>
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/dahday-tickets"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
-              <Tickets />
-              <DahdayFooter></DahdayFooter>
-            </React.Fragment>
-          )}
-        />
-
-        <Route
           path="/checkout"
           exact
           render={routeProps => (
@@ -130,8 +69,17 @@ class Layout extends Component {
         />
 
         <Route
-          path="/ticket-general"
+          path="/height"
           exact
+          render={routeProps => (
+            <React.Fragment>
+              <Height />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/ev/"
           render={routeProps => (
             <React.Fragment>
               <TicketGeneral />

@@ -1,6 +1,6 @@
 .MainContainer {
   background-color: #2f5596;
-  height: auto;
+  min-height: 100vh;
 }
 .MainGrid {
   background-color: #fff;
