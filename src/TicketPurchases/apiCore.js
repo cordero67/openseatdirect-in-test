@@ -20,9 +20,34 @@ const handleErrors = response => {
   console.log("apiCore handleErrors()", response);
   if (!response.ok) {
     console.log("response was false!");
-    throw Error(response.statusText);
+    throw Error(response.status);
   }
   return response;
+};
+
+export const processExpressPayment = paymentTicketData => {
+  return (
+    fetch(`${API}/braintree/expressPayment`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(paymentTicketData)
+    })
+      .then(handleErrors)
+      .then(response => {
+        return response.json();
+      })
+      // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
+      .catch(err => {
+        console.log(
+          "fetch(`${API}/braintree/expressPayment`): ERROR THROWN",
+          err
+        );
+        throw Error(err);
+      })
+  );
 };
 
 export const getExpressBraintreeClientToken = () => {
@@ -61,31 +86,6 @@ export const getBraintreeClientToken = (userId, token) => {
       return response.json();
     })
     .catch(err => console.log(err));
-};
-
-export const processExpressPayment = paymentTicketData => {
-  return (
-    fetch(`${API}/braintree/expressPayment`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(paymentTicketData)
-    })
-      .then(handleErrors)
-      .then(response => {
-        return response.json();
-      })
-      // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
-      .catch(err => {
-        console.log(
-          "fetch(`${API}/braintree/expressPayment`): ERROR THROWN",
-          err
-        );
-        throw Error(err);
-      })
-  );
 };
 
 export const processPayment = (userId, token, paymentData) => {

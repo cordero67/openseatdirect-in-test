@@ -2,10 +2,10 @@
   background-color: #2f5596;
   color: #fff;
   min-height: 100vh;
-  padding-top: 50px;
+  padding-top: 10px;
   padding-left: 25px;
   padding-right: 25px;
-  padding-bottom: 50px;
+  padding-bottom: 10px;
 }
 .ParentBox {
   background-color: #fff;
@@ -13,7 +13,7 @@
   color: #000;
   margin: auto;
   width: 1085px;
-  height: 730px;
+  height: calc(100vh - 20px);
 }
 .HeaderBox {
   background-color: orange;
@@ -21,9 +21,11 @@
   height: 60px;
 }
 .MiddleBox {
-  background-color: yellowgreen;
-  color: blue;
-  height: 580px;
+  background-color: red;
+  color: black;
+  height: calc(100vh - 160px);
+  min-height: 160px;
+  overflow-y: auto;
 }
 .FooterBox {
   background-color: green;
@@ -31,16 +33,19 @@
   height: 80px;
 }
 
-@media (max-height: 820px) {
+@media (min-height: 740px) {
+  .OuterCanvas {
+    padding-top: calc((100vh - 720px) / 2);
+    padding-bottom: calc((100vh - 720px) / 2);
+  }
   .ParentBox {
     margin: auto;
-    min-height: calc(100vh-100px);
+    height: 720px;
   }
 
   .MiddleBox {
-    background-color: red;
-    color: black;
-    height: auto;
-    overflow-y: calc(100%-140px);
+    background-color: greenyellow;
+    color: blue;
+    height: 580px;
   }
 }

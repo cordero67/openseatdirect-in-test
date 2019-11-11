@@ -1,131 +1,253 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
+import queryString from "query-string";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
+import { getEventData } from "./apiCore";
+import Spinner from "../components/UI/Spinner/Spinner";
 
-import CocinaCandelaLogo from "../assets/Cocina_Candela/store_sign.jpg";
+import CocinaCandelaLogo from "../assets/Cocina_Candela/cocinacandela21NEW.jpg";
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
-
+import TicketItem from "./TicketItemcopy";
 import styles from "./Order.module.css";
 
 // hard coded event information
 const eventDetails = {
   eventNum: "94106331593",
   //eventName: "Private Puerto Rican Dinner",
-  eventName: "PPRD",
+  eventTitle: "Chef's Table Dinner",
   eventCategory: "Food&Drink",
   eventStatus: "Scheduled",
   longDescription:
     "Experience a Puerto Rican gastronomy honoring the traditions of Taíno roots and the purity of ingredients. Prepared by Kenny Candelaria who's culinary career began as a child, preparing meals on the fogón with his grandparents in Puerto Rico and refined throughout the years by choosing the most natural, local ingredients available to him.",
   shortDescription: "An orgy of Puerto Rican food. No contraception required.",
   image: "",
-  startDateTime: "2019-12-06 08:01:00.000Z",
+  startDateTime: "December 12, 2019 - 8 PM",
   endDateTime: "2019-12-06 09:00:00.000Z",
   location: {
-    venue: "CC",
-    //venue: "Cocina Candela",
-    address1: "706",
-    //address1: "706 Bloomfield Ave",
+    venueName: "Cocina Candela",
+    address1: "706 Bloomfield Ave",
     address2: "",
     city: "Montclair",
     state: "NJ",
-    postalCode: "10001"
+    zipPostalCode: "07042"
   },
-  organizer: "Dahday",
-  cancelURL: "https://www.dahday.com/",
+  organizerName: "Dahday",
+  organizerUrl: "https://www.dahday.com/",
   eventURL: "/dahday-puertoricandinner",
-  ticketType: "General Admission",
-  ticketDescription: "No chair, but you get your ass in the door",
-  ticketAdditional: "",
-  initialTicketsIssued: 30,
-  currentTicketsAvailable: 30,
-  ticketsSold: 0,
-  initiaTicketPrice: 75,
-  currentTicketPrice: 75,
-  initialTicketFee: 0,
-  currentTicketFee: 0,
-  ticket2Type: "General Admission",
+  ticketName: "General Admission",
+  ticketDescription: "Full seven course meal and live entertainment.",
+  ticketsAvailable: 30,
+  ticketPrice: 75,
+  ticketFee: 0,
+  ticket2Name: "General Admission + 2 drinks",
   ticket2Description:
-    "No chair, but you get your ass in the door, plus a bottle of boozes!",
-  ticket2Additional: " + 1 Bottle of Ripple",
-  initialTicket2sIssued: 30,
-  currentTicket2sAvailable: 30,
-  ticket2sSold: 0,
-  initialTicket2Price: 100,
-  currentTicket2Price: 100,
-  initialTicket2Fee: 2,
-  currentTicket2Fee: 2,
-  ticket3Type: "VIP",
-  ticket3Description: "Not only do you get in the door, you also get a chair!",
-  ticket3Additional: "",
-  initialTicket3sIssued: 30,
-  currentTicket3sAvailable: 30,
-  ticket3sSold: 0,
-  initialTicket3Price: 125,
-  currentTicket3Price: 125,
-  initialTicket3Fee: 3,
-  currentTicket3Fee: 3,
-  ticket4Type: "VIP",
+    "Full seven course meal, 2 drinks and live entertainment.",
+  ticket2sAvailable: 30,
+  ticket2Price: 100,
+  ticket2Fee: 0,
+  ticket3Name: "VIP",
+  ticket3Description:
+    "Full seven course meal and live entertainment with seat next to the stage.",
+  ticket3sAvailable: 30,
+  ticket3Price: 125,
+  ticket3Fee: 0,
+  ticket4Name: "VIP + 2 drinks",
   ticket4Description:
-    "Not only do you get in the door, you also get a chair and a bottle of booze!",
-  ticket4Additional: " + 1 Bottle of Ripple",
-  initialTicket4sIssued: 30,
-  currentTicket4sAvailable: 30,
-  ticket4sSold: 0,
-  initialTicket4Price: 150,
-  currentTicket4Price: 150,
-  initialTicket4Fee: 4,
-  currentTicket4Fee: 4,
-  ticket5Type: "VIP",
+    "Full seven course meal, 2 drinks and live entertainment with seat next to the stage.",
+  ticket4sAvailable: 30,
+  ticket4Price: 150,
+  ticket4Fee: 0,
+  ticket5Name: "VIP + 2 drinks and band introduction",
   ticket5Description:
-    "Not only do you get in the door, you also get a chair, a bottle of booze and a warm special someone!",
-  ticket5Additional: " + 1 Bottle of Ripple PLUS",
-  initialTicket5sIssued: 30,
-  currentTicket5sAvailable: 30,
-  ticket5sSold: 0,
-  initialTicket5Price: 225,
-  currentTicket5Price: 225,
-  initialTicket5Fee: 5,
-  currentTicket5Fee: 5
+    "Full seven course meal, 2 drinks and live entertainment with seat next to the stage. You also get to meet the band before they go on stage",
+  ticket5sAvailable: 30,
+  ticket5Price: 225,
+  ticket5Fee: 0
+};
+
+const getDateStr = dt => {
+  // returns pretty date string assuming UTC time sime
+  // i.e.  'Sat Nov 2, 2019 6:30 PM'
+  const mon = dt.getUTCMonth();
+  const monstr = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ][mon];
+  const day = dt.getUTCDay();
+  const dstr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][day];
+  const udate = dt.getUTCDate();
+  const yr = dt.getUTCFullYear();
+  const min = dt.getUTCMinutes();
+  const hr24 = dt.getUTCHours();
+  const hr12 = hr24 % 12;
+  hr12 = hr12 === 0 ? 12 : hr12;
+  const ampm = hr24 > 11 ? " PM" : " AM";
+  const mystr =
+    dstr +
+    " " +
+    monstr +
+    " " +
+    udate +
+    ", " +
+    yr +
+    " " +
+    hr12 +
+    ":" +
+    min +
+    ampm;
+  return mystr;
 };
 
 const SingleEvent = () => {
   const [ticketPurchase, setTicketPurchase] = useState({
     eventNum: eventDetails.eventNum,
-    eventName: eventDetails.eventName,
-    ticketPrice: eventDetails.currentTicketPrice,
-    ticketFee: eventDetails.currentTicketFee,
+    eventName: eventDetails.eventTitle,
+    ticketPrice: eventDetails.ticketPrice,
+    ticketFee: eventDetails.ticketFee,
     ticketsSelected: 0,
-    purchaseAmount: 0
+    purchaseAmount: 0,
+    ticketUrl: ""
   });
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  let ticket2;
+  let ticket3;
+  let ticket4;
+  let ticket5;
+
+  let ticketTypesNEW = (
+    <Aux>
+      <div>NOTHING SHOWN</div>
+    </Aux>
+  );
+  let ticketNEW;
 
   // copies existing ticket order details from "localStorage"
   useEffect(() => {
+    ticketTypesNEW = (
+      <Aux>
+        <div>STILL NOTHING SHOWN</div>
+      </Aux>
+    );
+    setIsLoading(true);
     if (window.innerWidth < 790) {
       setMinView(true);
     } else {
       setMinView(false);
     }
+    eventData(queryString.parse(window.location.search).eventID);
   }, []);
 
+  // defines the function that retrieves the Braintree token
+  // this represents parts "1" and "2" of the Braintree interaction
+  const eventData = eventID => {
+    setIsLoading(true);
+    getEventData(eventID)
+      .then(res => {
+        console.log("Event Data Received NOW", res);
+        console.log("Ticket Info: ", res.ticket);
+        console.log("Event Title: ", res.eventTitle);
+        loadTicketInfo(res.ticket);
+        mapLoadTicketInfo(res.ticket);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.log("In the catch");
+        setIsLoading(false);
+      });
+  };
+
+  let ticketInfoArray = [];
+
+  const ticketInfo = {
+    ticketID: "empty",
+    ticketType: "empty",
+    ticketName: "empty",
+    ticketDescription: "empty",
+    ticketsAvailable: 0,
+    ticketPrice: 0,
+    ticketFee: 0,
+    ticketsSelected: 0,
+    maxTicketOrder: 0,
+    minTicketOrder: 0
+  };
+
+  const mapLoadTicketInfo = ticket => {
+    setIsLoading(true);
+    ticket.map(item => {
+      const newTicketItem = {
+        ticketID: item._id,
+        ticketType: item.ticketType,
+        ticketName: item.ticketName,
+        ticketDescription: item.ticketDescription,
+        ticketsAvailable: item.remainingQuantity,
+        ticketPrice: item.currentTicketPrice,
+        ticketFee: 0,
+        ticketsSelected: ticketPurchase.ticket2sSelected,
+        maxTicketOrder: item.maxTicketsAllowedPerOrder,
+        minTicketOrder: item.minTicketsAllowedPerOrder
+      };
+      ticketInfoArray.push(newTicketItem);
+    });
+
+    ticketNEW = {
+      ticketName: ticketInfoArray[2].ticketName,
+      ticketPrice: ticketInfoArray[2].ticketPrice,
+      ticketFee: ticketInfoArray[2].ticketFee,
+      // NEED TO REFACTOR "ticketsSelected"
+      ticketsSelected: ticketPurchase.ticket2sSelected,
+      ticketDescription: ticketInfoArray[2].ticketDescription
+    };
+    console.log("Before ticketTypeNew");
+    ticketTypesNEW = (
+      <Aux>
+        <TicketItem name={ticketNEW}></TicketItem>
+      </Aux>
+    );
+    console.log("After ticketTypeNew");
+
+    console.log("ticketNEW.ticketName: ", ticketNEW.ticketName);
+    console.log("Ticket Array: ", ticketInfoArray);
+    setIsLoading(true);
+    setIsLoading(false);
+  };
+
+  const loadTicketInfo = ticket => {
+    setIsLoading(true);
+    ticketInfo.ticketID = ticket[0]._id;
+    ticketInfo.ticketType = ticket[0].ticketType;
+    ticketInfo.ticketName = ticket[0].ticketName;
+    ticketInfo.ticketDescription = ticket[0].ticketDescription;
+    ticketInfo.ticketsAvailable = ticket[0].remainingQuantity;
+    ticketInfo.ticketPrice = ticket[0].currentTicketPrice;
+    ticketInfo.maxTicketOrder = ticket[0].maxTicketsAllowedPerOrder;
+    ticketInfo.minTicketOrder = ticket[0].minTicketsAllowedPerOrder;
+    console.log("Ticket Info: ", ticketInfo);
+
+    setIsLoading(false);
+  };
+
   const [minView, setMinView] = useState(false);
-  const [minViewMessage, setMinViewMessage] = useState("NO");
   const [showTicketSelection, setShowTicketSelection] = useState(true);
 
   // dynamically set the "showOrderSummary" variable
   window.onresize = function(event) {
     if (window.innerWidth < 790) {
       setMinView(true);
-      setMinViewMessage("YES");
-      console.log("window.innerWidth: ", window.innerWidth);
-      console.log("setMinView: ", minView);
-      console.log("window.innerHeight: ", window.innerHeight);
     } else {
       setMinView(false);
-      setMinViewMessage("NO");
-      console.log("window.innerWidth: ", window.innerWidth);
-      console.log("setMinView: ", minView);
-      console.log("window.innerHeight: ", window.innerHeight);
     }
   };
 
@@ -220,7 +342,7 @@ const SingleEvent = () => {
         <br></br>
         <div className={styles.RightGrid}>
           <div style={{ fontWeight: "400" }}>
-            {ticketPurchase.ticketsSelected} X {eventDetails.ticketType}
+            {ticketPurchase.ticketsSelected} X {eventDetails.ticketName}
           </div>
           <div style={{ textAlign: "right" }}>
             ${ticketPurchase.ticketsSelected * ticketPurchase.ticketPrice}{" "}
@@ -254,6 +376,61 @@ const SingleEvent = () => {
     orderSummary = <div></div>;
   }
 
+  ticket2 = {
+    ticketName: eventDetails.ticket2Name,
+    ticketPrice: eventDetails.ticket2Price,
+    ticketFee: eventDetails.ticket2Fee,
+    // NEED TO REFACTOR "ticketsSelected"
+    ticketsSelected: ticketPurchase.ticket2sSelected,
+    ticketDescription: eventDetails.ticket2Description
+  };
+
+  ticket3 = {
+    ticketName: eventDetails.ticket3Name,
+    ticketPrice: eventDetails.ticket3Price,
+    ticketFee: eventDetails.ticket3Fee,
+    // NEED TO REFACTOR "ticketsSelected"
+    ticketsSelected: ticketPurchase.ticket3sSelected,
+    ticketDescription: eventDetails.ticket3Description
+  };
+
+  ticket4 = {
+    ticketName: eventDetails.ticket4Name,
+    ticketPrice: eventDetails.ticket4Price,
+    ticketFee: eventDetails.ticket4Fee,
+    // NEED TO REFACTOR "ticketsSelected"
+    ticketsSelected: ticketPurchase.ticket4sSelected,
+    ticketDescription: eventDetails.ticket4Description
+  };
+
+  ticket5 = {
+    ticketName: eventDetails.ticket5Name,
+    ticketPrice: eventDetails.ticket5Price,
+    ticketFee: eventDetails.ticket5Fee,
+    // NEED TO REFACTOR "ticketsSelected"
+    ticketsSelected: ticketPurchase.ticket5sSelected,
+    ticketDescription: eventDetails.ticket5Description
+  };
+
+  let ticketTypes = null;
+
+  if (isLoading) {
+    ticketTypes = (
+      <Aux>
+        <Spinner></Spinner>
+      </Aux>
+    );
+  } else {
+    ticketTypes = (
+      <Aux>
+        <TicketItem name={ticket2}></TicketItem>
+        <TicketItem name={ticket3}></TicketItem>
+        <TicketItem name={ticket4}></TicketItem>
+        <TicketItem name={ticket5}></TicketItem>
+      </Aux>
+    );
+  }
+
   let ticketSelection = null;
 
   if (showTicketSelection) {
@@ -269,8 +446,8 @@ const SingleEvent = () => {
                   fontWeight: "600"
                 }}
               >
-                {eventDetails.organizer} Presents: {eventDetails.location.venue}{" "}
-                - {eventDetails.eventName}
+                {eventDetails.organizerName} Present:{" "}
+                {eventDetails.location.venueName} - {eventDetails.eventTitle}
               </div>
               <div
                 style={{
@@ -280,23 +457,21 @@ const SingleEvent = () => {
               >
                 {eventDetails.location.address1}, {eventDetails.location.city},{" "}
                 {eventDetails.location.state},{" "}
-                {eventDetails.location.postalCode} -{" "}
+                {eventDetails.location.zipPostalCode} -{" "}
                 {eventDetails.startDateTime}
               </div>
             </div>
             <div className={styles.EventTicketSection}>
-              <div className={styles.SectionHeader}>Tickets</div>
-
-              <div>Minimum view require: {minViewMessage}</div>
+              <div className={styles.SectionHeader}>Tickets COPY</div>
               <div className={styles.LeftGrid}>
                 <div>
                   <div className={styles.TicketType}>
-                    {eventDetails.ticketType} {eventDetails.ticketAdditional}
+                    {eventDetails.ticketName}
                   </div>
                   <div className={styles.TicketPrices}>
-                    ${eventDetails.currentTicketPrice} +
+                    ${eventDetails.ticketPrice} +
                     <span className={styles.TicketFees}>
-                      ${eventDetails.currentTicketFee} Fee
+                      ${eventDetails.ticketFee} Fee
                     </span>
                   </div>
                 </div>
@@ -313,8 +488,8 @@ const SingleEvent = () => {
                         ticketsSelected: event.target.value,
                         purchaseAmount:
                           event.target.value *
-                          (eventDetails.currentTicketPrice +
-                            eventDetails.currentTicketFee)
+                          (eventDetails.ticketPrice + eventDetails.ticketFee),
+                        ticketUrl: window.location.href
                       });
                     }}
                   >
@@ -330,110 +505,8 @@ const SingleEvent = () => {
                 {eventDetails.ticketDescription}
               </div>
               <hr style={{ border: "1px solid#F2F2F2" }} />
-              <div className={styles.LeftGrid}>
-                <div>
-                  <div className={styles.TicketType}>
-                    {eventDetails.ticket2Type} {eventDetails.ticket2Additional}
-                  </div>
-                  <div className={styles.TicketPrices}>
-                    ${eventDetails.currentTicket2Price} +
-                    <span className={styles.TicketFees}>
-                      ${eventDetails.currentTicket2Fee} Fee
-                    </span>
-                  </div>
-                </div>
-                <div className={styles.TicketAmount}>
-                  <select className={styles.SelectionBox}>
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles.EventDescription}>
-                {eventDetails.ticket2Description}
-              </div>
-              <hr style={{ border: "1px solid#F2F2F2" }} />
-              <div className={styles.LeftGrid}>
-                <div>
-                  <div className={styles.TicketType}>
-                    {eventDetails.ticket3Type} {eventDetails.ticket3Additional}
-                  </div>
-                  <div className={styles.TicketPrices}>
-                    ${eventDetails.currentTicket3Price} +
-                    <span className={styles.TicketFees}>
-                      ${eventDetails.currentTicket3Fee} Fee
-                    </span>
-                  </div>
-                </div>
-                <div className={styles.TicketAmount}>
-                  <select className={styles.SelectionBox}>
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles.EventDescription}>
-                {eventDetails.ticket3Description}
-              </div>
-              <hr style={{ border: "1px solid#F2F2F2" }} />
-              <div className={styles.LeftGrid}>
-                <div>
-                  <div className={styles.TicketType}>
-                    {eventDetails.ticket4Type} {eventDetails.ticket4Additional}
-                  </div>
-                  <div className={styles.TicketPrices}>
-                    ${eventDetails.currentTicket4Price} +
-                    <span className={styles.TicketFees}>
-                      ${eventDetails.currentTicket4Fee} Fee
-                    </span>
-                  </div>
-                </div>
-                <div className={styles.TicketAmount}>
-                  <select className={styles.SelectionBox}>
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles.EventDescription}>
-                {eventDetails.ticket4Description}
-              </div>
-              <hr style={{ border: "1px solid#F2F2F2" }} />
-              <div className={styles.LeftGrid}>
-                <div>
-                  <div className={styles.TicketType}>
-                    {eventDetails.ticket5Type} {eventDetails.ticket5Additional}
-                  </div>
-                  <div className={styles.TicketPrices}>
-                    ${eventDetails.currentTicket5Price} +
-                    <span className={styles.TicketFees}>
-                      ${eventDetails.currentTicket5Fee} Fee
-                    </span>
-                  </div>
-                </div>
-                <div className={styles.TicketAmount}>
-                  <select className={styles.SelectionBox}>
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles.EventDescription}>
-                {eventDetails.ticket5Description}
-              </div>
-              <hr style={{ border: "1px solid#F2F2F2" }} />
+              {ticketTypesNEW}
+              {ticketTypes}
               <div className={styles.EventDescription}>
                 Powered by{" "}
                 <NavLink to="/" exact>
@@ -468,7 +541,7 @@ const SingleEvent = () => {
           </div>
           <div>
             <div className={styles.ImageBox}>
-              <img alt="Cocina Candela Logo" />
+              <img src={CocinaCandelaLogo} alt="Cocina Candela Logo" />
             </div>
             <div className={styles.OrderSummary}>{orderSummary}</div>
           </div>
@@ -484,3 +557,25 @@ const SingleEvent = () => {
 };
 
 export default SingleEvent;
+
+/*const [minView, setMinView] = useState(false);
+  const [minViewMessage, setMinViewMessage] = useState("NO");
+  const [showTicketSelection, setShowTicketSelection] = useState(true);
+
+  // dynamically set the "showOrderSummary" variable
+  window.onresize = function(event) {
+    if (window.innerWidth < 790) {
+      setMinView(true);
+      setMinViewMessage("YES");
+      console.log("window.innerWidth: ", window.innerWidth);
+      console.log("setMinView: ", minView);
+      console.log("window.innerHeight: ", window.innerHeight);
+    } else {
+      setMinView(false);
+      setMinViewMessage("NO");
+      console.log("window.innerWidth: ", window.innerWidth);
+      console.log("setMinView: ", minView);
+      console.log("window.innerHeight: ", window.innerHeight);
+    }
+  };
+  */

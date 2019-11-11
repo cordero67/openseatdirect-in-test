@@ -5,7 +5,7 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import CocinaCandelaLogo from "../assets/Cocina_Candela/cocinacandela21NEW.jpg";
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
-import TicketType from "./TicketType";
+import TicketItem from "./TicketItem";
 import styles from "./Order.module.css";
 
 // hard coded event information
@@ -34,7 +34,7 @@ const eventDetails = {
   organizer: "Dahday",
   cancelURL: "https://www.dahday.com/",
   eventURL: "/dahday-puertoricandinner",
-  ticketType: "General Admission",
+  ticketName: "General Admission",
   ticketDescription: "Full seven course meal and live entertainment.",
   ticketAdditional: "",
   initialTicketsIssued: 30,
@@ -44,7 +44,7 @@ const eventDetails = {
   currentTicketPrice: 75,
   initialTicketFee: 0,
   currentTicketFee: 0,
-  ticket2Type: "General Admission",
+  ticket2Name: "General Admission",
   ticket2Description:
     "Full seven course meal, 2 drinks and live entertainment.",
   ticket2Additional: " + 2 drinks",
@@ -55,7 +55,7 @@ const eventDetails = {
   currentTicket2Price: 100,
   initialTicket2Fee: 0,
   currentTicket2Fee: 0,
-  ticket3Type: "VIP",
+  ticket3Name: "VIP",
   ticket3Description:
     "Full seven course meal and live entertainment with seat next to the stage.",
   ticket3Additional: "",
@@ -66,7 +66,7 @@ const eventDetails = {
   currentTicket3Price: 125,
   initialTicket3Fee: 0,
   currentTicket3Fee: 0,
-  ticket4Type: "VIP",
+  ticket4Name: "VIP",
   ticket4Description:
     "Full seven course meal, 2 drinks and live entertainment with seat next to the stage.",
   ticket4Additional: " + 2 drinks",
@@ -77,7 +77,7 @@ const eventDetails = {
   currentTicket4Price: 150,
   initialTicket4Fee: 0,
   currentTicket4Fee: 0,
-  ticket5Type: "VIP",
+  ticket5Name: "VIP",
   ticket5Description:
     "Full seven course meal, 2 drinks and live entertainment with seat next to the stage. You also get to meet the band before they go on stage",
   ticket5Additional: " + 2 drinks and band introduction",
@@ -115,7 +115,7 @@ const getDateStr = dt => {
   const min = dt.getUTCMinutes();
   const hr24 = dt.getUTCHours();
   const hr12 = hr24 % 12;
-  hr12 = hr12 == 0 ? 12 : hr12;
+  hr12 = hr12 === 0 ? 12 : hr12;
   const ampm = hr24 > 11 ? " PM" : " AM";
   const mystr =
     dstr +
@@ -256,7 +256,7 @@ const SingleEvent = () => {
         <br></br>
         <div className={styles.RightGrid}>
           <div style={{ fontWeight: "400" }}>
-            {ticketPurchase.ticketsSelected} X {eventDetails.ticketType}
+            {ticketPurchase.ticketsSelected} X {eventDetails.ticketName}
           </div>
           <div style={{ textAlign: "right" }}>
             ${ticketPurchase.ticketsSelected * ticketPurchase.ticketPrice}{" "}
@@ -291,7 +291,7 @@ const SingleEvent = () => {
   }
 
   const ticket2 = {
-    ticketType: eventDetails.ticket2Type,
+    ticketName: eventDetails.ticket2Name,
     ticketAdditional: eventDetails.ticket2Additional,
     currentTicketPrice: eventDetails.currentTicket2Price,
     currentTicketFee: eventDetails.currentTicket2Fee,
@@ -300,7 +300,7 @@ const SingleEvent = () => {
   };
 
   const ticket3 = {
-    ticketType: eventDetails.ticket3Type,
+    ticketName: eventDetails.ticket3Name,
     ticketAdditional: eventDetails.ticket3Additional,
     currentTicketPrice: eventDetails.currentTicket3Price,
     currentTicketFee: eventDetails.currentTicket3Fee,
@@ -309,7 +309,7 @@ const SingleEvent = () => {
   };
 
   const ticket4 = {
-    ticketType: eventDetails.ticket4Type,
+    ticketName: eventDetails.ticket4Name,
     ticketAdditional: eventDetails.ticket4Additional,
     currentTicketPrice: eventDetails.currentTicket4Price,
     currentTicketFee: eventDetails.currentTicket4Fee,
@@ -318,7 +318,7 @@ const SingleEvent = () => {
   };
 
   const ticket5 = {
-    ticketType: eventDetails.ticket5Type,
+    ticketName: eventDetails.ticket5Name,
     ticketAdditional: eventDetails.ticket5Additional,
     currentTicketPrice: eventDetails.currentTicket5Price,
     currentTicketFee: eventDetails.currentTicket5Fee,
@@ -326,10 +326,9 @@ const SingleEvent = () => {
     ticketDescription: eventDetails.ticket5Description
   };
 
-  let ticketTypes = null;
+  let ticketList = null;
 
-  {
-    /*        onChange={event => {
+  /*        onChange={event => {
           setTicketPurchase({
             ...ticketPurchase,
             ticketsSelected: event.target.value,
@@ -339,14 +338,13 @@ const SingleEvent = () => {
             ticketUrl: window.location.href
           });
         }}*/
-  }
 
-  ticketTypes = (
+  ticketList = (
     <Aux>
-      <TicketType name={ticket2}></TicketType>
-      <TicketType name={ticket3}></TicketType>
-      <TicketType name={ticket4}></TicketType>
-      <TicketType name={ticket5}></TicketType>
+      <TicketItem name={ticket2}></TicketItem>
+      <TicketItem name={ticket3}></TicketItem>
+      <TicketItem name={ticket4}></TicketItem>
+      <TicketItem name={ticket5}></TicketItem>
     </Aux>
   );
 
@@ -385,7 +383,7 @@ const SingleEvent = () => {
               <div className={styles.LeftGrid}>
                 <div>
                   <div className={styles.TicketType}>
-                    {eventDetails.ticketType} {eventDetails.ticketAdditional}
+                    {eventDetails.ticketName} {eventDetails.ticketAdditional}
                   </div>
                   <div className={styles.TicketPrices}>
                     ${eventDetails.currentTicketPrice} +
@@ -425,7 +423,7 @@ const SingleEvent = () => {
                 {eventDetails.ticketDescription}
               </div>
               <hr style={{ border: "1px solid#F2F2F2" }} />
-              {ticketTypes}
+              {ticketList}
               <div className={styles.EventDescription}>
                 Powered by{" "}
                 <NavLink to="/" exact>

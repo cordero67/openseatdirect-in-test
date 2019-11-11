@@ -68,6 +68,7 @@ const Checkout = props => {
   // BRAINTREE INTERFACE VARIABLE
   const [data, setData] = useState({
     success: false,
+    message: null,
     clientToken: true,
     error: "",
     instance: {},
@@ -82,6 +83,8 @@ const Checkout = props => {
     email: "",
     instrumentType: "",
     accountID: "",
+    firstName: "",
+    lastName: "",
     payerName: "",
     totalAmount: 0,
     transID: ""
@@ -101,7 +104,8 @@ const Checkout = props => {
         eventName: newOrder.eventName,
         ticketPrice: newOrder.ticketPrice,
         ticketsSelected: newOrder.ticketsSelected,
-        purchaseAmount: newOrder.purchaseAmount
+        //purchaseAmount: newOrder.purchaseAmount,
+        purchaseAmount: 2050
       });
       setTicketUrl(order.ticketUrl);
     }
@@ -207,10 +211,12 @@ const Checkout = props => {
 
             setTransactionDetail({
               ...transactionDetail,
-              description: order.eventName,
+              description: response.eventTitle,
               email: response.email,
               instrumentType: response.osd_paymentInstrumentType,
               accountID: response.osd_payerAccountId,
+              firstName: response.firstName,
+              lastName: response.lastName,
               payerName: response.osd_payerName,
               totalAmount: response.bt_trans_amount,
               transID: response.bt_trans_id
@@ -222,7 +228,11 @@ const Checkout = props => {
           })
           .catch(error => {
             console.log("processExpressPayment(): ERROR THROWN");
-            setData({ ...data, success: false });
+            setData({
+              ...data,
+              success: false,
+              message: error.friendlyMessage
+            });
             //data.instance.clearSelectedPaymentMethod();
             onlyShowConnectionStatus();
           });
@@ -284,17 +294,20 @@ const Checkout = props => {
       return (
         <div className={styles.SubBody}>
           <div style={{ paddingLeft: "30px" }}>
-            Thank you {transactionDetail.payerName} for your order, your payment
-            was received.<br></br>
+            Thank you {transactionDetail.firstName} {transactionDetail.lastName}{" "}
+            for your order, your payment was received.<br></br>
             <br></br>
             Order details:
             <div style={{ paddingLeft: "30px" }}>
-              Description: {transactionDetail.description}
+              Event Title: {transactionDetail.description}
               <br></br>
               Total Amount($): {transactionDetail.totalAmount}
               <br></br>
-              Payment Details($): {transactionDetail.instrumentType}{" "}
+              {transactionDetail.instrumentType}
+              <br></br>
               {transactionDetail.accountID}
+              <br></br>
+              {transactionDetail.payerName}
               <br></br>
               Transaction ID: {transactionDetail.transID}
             </div>
@@ -388,7 +401,7 @@ const Checkout = props => {
 
   // REFACTORED CODE
   // CONTROLS "connectionStatus" VIEW
-  if (showConnectionStatus) {
+  if (showConnectionStatus && data.message === null) {
     connectionStatus = (
       <Aux>
         <div>
@@ -397,7 +410,14 @@ const Checkout = props => {
         </div>
       </Aux>
     );
-  } /*else {
+  } else if (showConnectionStatus && data.message !== null) {
+    connectionStatus = (
+      <Aux>
+        <div>Your credit is shit!!!</div>
+      </Aux>
+    );
+  }
+  /*else {
     connectionStatus = (
       <Aux>
         <div>connectionStatus - else: Everything is OK!!!</div>

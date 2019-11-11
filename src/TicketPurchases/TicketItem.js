@@ -1,15 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Order.module.css";
 
-const TicketType = props => {
+const TicketItem = props => {
   return (
     <Aux>
       <div className={styles.LeftGrid}>
         <div>
           <div className={styles.TicketType}>
-            {props.name.ticketType} {props.name.ticketAdditional}
+            {props.name.ticketName} {props.name.ticketAdditional}
           </div>
           <div className={styles.TicketPrices}>
             ${props.name.currentTicketPrice} +
@@ -43,13 +43,13 @@ const TicketType = props => {
   );
 };
 
-export default TicketType;
+export default TicketItem;
 
 /*
               <div className={styles.LeftGrid}>
                 <div>
                   <div className={styles.TicketType}>
-                    {props.name.ticketType} {props.name.ticketAdditional}
+                    {props.name.ticketName} {props.name.ticketAdditional}
                   </div>
                   <div className={styles.TicketPrices}>
                     ${props.name.currentTicketPrice} +

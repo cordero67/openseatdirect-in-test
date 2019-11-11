@@ -6,8 +6,10 @@ import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Checkout from "../../TicketPurchases/Checkout";
 import TicketGeneral from "../../TicketPurchases/TicketGeneral";
+import TicketGeneralcopy from "../../TicketPurchases/TicketGeneralcopy";
 import QueryRouting from "../../TicketPurchases/QueryRouting";
 import Height from "../../TicketPurchases/Height";
+import EventData from "../../TicketPurchases/EventData";
 
 import OSDHeader from "../Headers/OSDHeader";
 import DahdayHeader from "../Headers/DahDayHeader";
@@ -83,6 +85,24 @@ class Layout extends Component {
           render={routeProps => (
             <React.Fragment>
               <TicketGeneral />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/ev2/"
+          render={routeProps => (
+            <React.Fragment>
+              <TicketGeneralcopy />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/eventdata/"
+          render={routeProps => (
+            <React.Fragment>
+              <EventData />
             </React.Fragment>
           )}
         />
