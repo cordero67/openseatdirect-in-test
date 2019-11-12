@@ -178,7 +178,6 @@ const SingleEvent = () => {
       return (
         <div>
           <button
-            onClick={showOrderSummary}
             style={{
               color: "black",
               fontWeight: "600"
@@ -458,7 +457,7 @@ const SingleEvent = () => {
           </div>
           <div>
             <div className={styles.ImageBox}>
-              <img src={CocinaCandelaLogo} alt="Cocina Candela Logo" />
+              <img alt="Cocina Candela Logo" />
             </div>
             <div className={styles.OrderSummary}>{orderSummary}</div>
           </div>

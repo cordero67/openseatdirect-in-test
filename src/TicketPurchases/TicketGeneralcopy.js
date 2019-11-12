@@ -245,8 +245,6 @@ const SingleEvent = () => {
     }
   };
 
-  //onClick = { showOrderSummary };
-
   const cartLink = show => {
     if (show && ticketPurchase.purchaseAmount > 0) {
       return (
