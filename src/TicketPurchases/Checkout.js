@@ -104,8 +104,7 @@ const Checkout = props => {
         eventName: newOrder.eventName,
         ticketPrice: newOrder.ticketPrice,
         ticketsSelected: newOrder.ticketsSelected,
-        //purchaseAmount: newOrder.purchaseAmount,
-        purchaseAmount: 2050
+        purchaseAmount: newOrder.purchaseAmount
       });
       setTicketUrl(order.ticketUrl);
     }

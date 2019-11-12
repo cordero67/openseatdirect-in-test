@@ -127,20 +127,10 @@ const SingleEvent = () => {
   let ticket4;
   let ticket5;
 
-  let ticketTypesNEW = (
-    <Aux>
-      <div>NOTHING SHOWN</div>
-    </Aux>
-  );
   let ticketNEW;
 
   // copies existing ticket order details from "localStorage"
   useEffect(() => {
-    ticketTypesNEW = (
-      <Aux>
-        <div>STILL NOTHING SHOWN</div>
-      </Aux>
-    );
     setIsLoading(true);
     if (window.innerWidth < 790) {
       setMinView(true);
@@ -211,11 +201,7 @@ const SingleEvent = () => {
       ticketDescription: ticketInfoArray[2].ticketDescription
     };
     console.log("Before ticketTypeNew");
-    ticketTypesNEW = (
-      <Aux>
-        <TicketItem name={ticketNEW}></TicketItem>
-      </Aux>
-    );
+
     console.log("After ticketTypeNew");
 
     console.log("ticketNEW.ticketName: ", ticketNEW.ticketName);
@@ -259,12 +245,13 @@ const SingleEvent = () => {
     }
   };
 
+  //onClick = { showOrderSummary };
+
   const cartLink = show => {
     if (show && ticketPurchase.purchaseAmount > 0) {
       return (
         <div>
           <button
-            onClick={showOrderSummary}
             style={{
               color: "black",
               fontWeight: "600"
@@ -280,7 +267,11 @@ const SingleEvent = () => {
   };
 
   const showOrderSummary = event => {
-    setShowTicketSelection(false);
+    if (showTicketSelection) {
+      setShowTicketSelection(false);
+    } else {
+      setShowTicketSelection(true);
+    }
   };
   // modifies state variables to only show "Ticket Payment" window
   const purchaseTicketHandler = event => {
@@ -376,6 +367,21 @@ const SingleEvent = () => {
     orderSummary = <div></div>;
   }
 
+  let rightPain;
+
+  if (!minView) {
+    rightPain = (
+      <div>
+        <div className={styles.ImageBox}>
+          <img alt="Cocina Candela Logo" />
+        </div>
+        <div className={styles.OrderSummary}>{orderSummary}</div>
+      </div>
+    );
+  } else {
+    rightPain = null;
+  }
+
   ticket2 = {
     ticketName: eventDetails.ticket2Name,
     ticketPrice: eventDetails.ticket2Price,
@@ -462,7 +468,9 @@ const SingleEvent = () => {
               </div>
             </div>
             <div className={styles.EventTicketSection}>
-              <div className={styles.SectionHeader}>Tickets COPY</div>
+              <div className={styles.SectionHeader}>
+                Tickets UPDATED STYLING
+              </div>
               <div className={styles.LeftGrid}>
                 <div>
                   <div className={styles.TicketType}>
@@ -505,7 +513,6 @@ const SingleEvent = () => {
                 {eventDetails.ticketDescription}
               </div>
               <hr style={{ border: "1px solid#F2F2F2" }} />
-              {ticketTypesNEW}
               {ticketTypes}
               <div className={styles.EventDescription}>
                 Powered by{" "}
@@ -539,17 +546,43 @@ const SingleEvent = () => {
               <div style={{ textAlign: "right" }}>{checkoutButton}</div>
             </div>
           </div>
-          <div>
-            <div className={styles.ImageBox}>
-              <img src={CocinaCandelaLogo} alt="Cocina Candela Logo" />
-            </div>
-            <div className={styles.OrderSummary}>{orderSummary}</div>
-          </div>
+          {rightPain}
         </div>
       </div>
     );
   } else {
-    ticketSelection = <div>ORDER SUMMARY COMING SOON</div>;
+    ticketSelection = (
+      <div className={styles.MainContainer}>
+        <div className={styles.MainGrid}>
+          <div>
+            <div className={styles.OrderSummaryMinView}>{orderSummary}</div>
+          </div>
+          <div className={styles.EventFooter}>
+            <div
+              style={{
+                paddingTop: "8px",
+                fontSize: "20px",
+                fontWeight: "600"
+              }}
+            >
+              {cartLink(minView)}
+            </div>
+            <div
+              style={{
+                textAlign: "right",
+                paddingRight: "10px",
+                paddingTop: "8px",
+                fontSize: "20px",
+                fontWeight: "600"
+              }}
+            >
+              {totalAmount(minView)}
+            </div>
+            <div style={{ textAlign: "right" }}>{checkoutButton}</div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // FULLY STYLED

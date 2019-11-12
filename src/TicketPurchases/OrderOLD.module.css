@@ -1,11 +1,12 @@
 .MainContainer {
   background-color: #2f5596;
-  height: 100vh;
+  min-height: 100vh;
   padding-top: 0px;
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 25px;
+  padding-right: 25px;
   padding-bottom: 0px;
 }
+
 .MainGrid {
   background-color: #fff;
   margin: auto;
@@ -19,6 +20,16 @@
 .RightGrid {
   display: grid;
 }
+.OrderSummary {
+  background-color: #e5e5e5;
+  font-size: 0.875rem;
+  height: calc(100vh - 200px);
+  min-height: 120px;
+  padding-top: 20px;
+  padding-left: 25px;
+  padding-right: 25px;
+  overflow-y: auto;
+}
 .EventHeader {
   text-align: center;
   padding-top: 5px;
@@ -29,7 +40,8 @@
 }
 .EventTicketSection {
   background-color: #fff;
-  height: calc(100vh - 140px);
+  height: calc(100vh - 160px);
+  min-height: 160px;
   padding-top: 30px;
   padding-left: 80px;
   padding-right: 80px;
@@ -43,27 +55,6 @@
   padding-bottom: 18px;
   border-top: 1px solid lightgrey;
   height: 80px;
-}
-.ImageBox {
-  height: 160px;
-}
-.OrderSummary {
-  background-color: #e5e5e5;
-  font-size: 0.875rem;
-  height: calc(100vh - 160px);
-  padding-top: 20px;
-  padding-left: 25px;
-  padding-right: 25px;
-  overflow-y: auto;
-}
-.OrderSummaryMinView {
-  background-color: #e5e5e5;
-  font-size: 0.875rem;
-  height: calc(100vh - 80px);
-  padding-top: 20px;
-  padding-left: 25px;
-  padding-right: 25px;
-  overflow-y: auto;
 }
 .MainItemLeft {
   background-color: #f9f9f9;
@@ -98,8 +89,35 @@
   font-size: 16px;
   padding-left: 5px;
 }
+.aaaa {
+}
+
+.ImageBox {
+  height: 180px;
+}
+
+@media (min-height: 900px) {
+  .MainContainer {
+    padding-top: calc((100vh - 720px) / 2);
+    padding-bottom: calc((100vh - 720px) / 2);
+  }
+  .MainGrid {
+    margin: auto;
+    height: 720px;
+  }
+  .EventTicketSection {
+    height: 580px;
+  }
+  .OrderSummary {
+    height: 540px;
+  }
+}
 
 @media (max-width: 480px) {
+  .MainContainer {
+    padding-left: 0;
+    padding-right: 0;
+  }
   .MainGrid {
     grid-template-columns: auto;
   }
@@ -134,9 +152,18 @@
     height: 40px;
     width: 50px;
   }
+  .HideRightColumn {
+    display: none;
+  }
 }
 
 @media (min-width: 480px) {
+  .MainContainer {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
   .MainGrid {
     grid-template-columns: auto;
   }
@@ -170,11 +197,16 @@
   .SelectionBox {
     height: 40px;
     width: 50px;
+  }
+  .HideRightColumn {
+    display: none;
   }
 }
 
 @media (min-width: 660px) {
   .MainContainer {
+    padding-top: calc((100vh - 720px) / 2);
+    padding-bottom: calc((100vh - 720px) / 2);
     padding-left: 25px;
     padding-right: 25px;
   }
@@ -212,29 +244,15 @@
     height: 40px;
     width: 50px;
   }
-
-  @media (min-height: 720px) {
-    .MainContainer {
-      padding-top: calc((100vh - 720px) / 2);
-      padding-bottom: calc((100vh - 720px) / 2);
-    }
-    .MainGrid {
-      height: 720px;
-    }
-    .EventTicketSection {
-      height: 580px;
-    }
-    .OrderSummary {
-      height: 560px;
-    }
-    .OrderSummaryMinView {
-      height: 660px;
-    }
+  .HideRightColumn {
+    display: none;
   }
 }
 
 @media (min-width: 790px) {
   .MainContainer {
+    padding-top: calc((100vh - 720px) / 2);
+    padding-bottom: calc((100vh - 720px) / 2);
     padding-left: 25px;
     padding-right: 25px;
   }
@@ -271,10 +289,15 @@
     height: 50px;
     width: 60px;
   }
+  .HideRightColumn {
+    display: "";
+  }
 }
 
 @media (min-width: 960px) {
   .MainContainer {
+    padding-top: calc((100vh - 720px) / 2);
+    padding-bottom: calc((100vh - 720px) / 2);
     padding-left: 25px;
     padding-right: 25px;
   }
@@ -296,15 +319,6 @@
     padding-left: 25px;
     padding-right: 25px;
   }
-  .ImageBox {
-    height: 180px;
-  }
-  .OrderSummary {
-    height: calc(100vh - 180px);
-  }
-  .OrderSummaryMinView {
-    height: calc(100vh - 80px);
-  }
   .EventDescription {
     font-size: 0.875rem;
   }
@@ -321,19 +335,15 @@
     height: 50px;
     width: 60px;
   }
-
-  @media (min-height: 720px) {
-    .OrderSummary {
-      height: 540px;
-    }
-    .OrderSummaryMinView {
-      height: 640px;
-    }
+  .HideRightColumn {
+    display: "";
   }
 }
 
 @media (min-width: 1140px) {
   .MainContainer {
+    padding-top: calc((100vh - 720px) / 2);
+    padding-bottom: calc((100vh - 720px) / 2);
     padding-left: 25px;
     padding-right: 25px;
   }
@@ -371,5 +381,8 @@
   .SelectionBox {
     height: 50px;
     width: 60px;
+  }
+  .HideRightColumn {
+    display: "";
   }
 }
