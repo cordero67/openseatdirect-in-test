@@ -35,13 +35,13 @@ const eventDetails = {
   cancelURL: "https://www.dahday.com/",
   eventURL: "/dahday-puertoricandinner",
   ticketName: "General Admission",
-  ticketDescription: "Full seven course meal and live entertainment.",
+  ticketDescription: "Full eight course meal and live entertainment.",
   ticketAdditional: "",
   initialTicketsIssued: 30,
   currentTicketsAvailable: 30,
   ticketsSold: 0,
-  initiaTicketPrice: 75,
-  currentTicketPrice: 75,
+  initiaTicketPrice: 2050,
+  currentTicketPrice: 2050,
   initialTicketFee: 0,
   currentTicketFee: 0,
   ticket2Name: "General Admission",
@@ -473,3 +473,25 @@ const SingleEvent = () => {
 };
 
 export default SingleEvent;
+
+/*const [minView, setMinView] = useState(false);
+  const [minViewMessage, setMinViewMessage] = useState("NO");
+  const [showTicketSelection, setShowTicketSelection] = useState(true);
+
+  // dynamically set the "showOrderSummary" variable
+  window.onresize = function(event) {
+    if (window.innerWidth < 790) {
+      setMinView(true);
+      setMinViewMessage("YES");
+      console.log("window.innerWidth: ", window.innerWidth);
+      console.log("setMinView: ", minView);
+      console.log("window.innerHeight: ", window.innerHeight);
+    } else {
+      setMinView(false);
+      setMinViewMessage("NO");
+      console.log("window.innerWidth: ", window.innerWidth);
+      console.log("setMinView: ", minView);
+      console.log("window.innerHeight: ", window.innerHeight);
+    }
+  };
+  */

@@ -4,6 +4,7 @@ import queryString from "query-string";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import { getEventData } from "./apiCore";
+import { getDateStr } from "../components/formuals";
 import Spinner from "../components/UI/Spinner/Spinner";
 
 import CocinaCandelaLogo from "../assets/Cocina_Candela/cocinacandela21NEW.jpg";
@@ -12,17 +13,18 @@ import TicketItem from "./TicketItemcopy";
 import styles from "./Order.module.css";
 
 // hard coded event information
+// THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
 const eventDetails = {
   eventNum: "94106331593",
   //eventName: "Private Puerto Rican Dinner",
-  eventTitle: "Chef's Table Dinner",
+  eventTitle: "Cocina Candela - Chef's Table Dinner",
   eventCategory: "Food&Drink",
   eventStatus: "Scheduled",
   longDescription:
     "Experience a Puerto Rican gastronomy honoring the traditions of Taíno roots and the purity of ingredients. Prepared by Kenny Candelaria who's culinary career began as a child, preparing meals on the fogón with his grandparents in Puerto Rico and refined throughout the years by choosing the most natural, local ingredients available to him.",
   shortDescription: "An orgy of Puerto Rican food. No contraception required.",
   image: "",
-  startDateTime: "December 12, 2019 - 8 PM",
+  startDateTime: "December 18, 2019 - 8 PM",
   endDateTime: "2019-12-06 09:00:00.000Z",
   location: {
     venueName: "Cocina Candela",
@@ -66,50 +68,8 @@ const eventDetails = {
   ticket5Fee: 0
 };
 
-const getDateStr = dt => {
-  // returns pretty date string assuming UTC time sime
-  // i.e.  'Sat Nov 2, 2019 6:30 PM'
-  const mon = dt.getUTCMonth();
-  const monstr = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ][mon];
-  const day = dt.getUTCDay();
-  const dstr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][day];
-  const udate = dt.getUTCDate();
-  const yr = dt.getUTCFullYear();
-  const min = dt.getUTCMinutes();
-  const hr24 = dt.getUTCHours();
-  const hr12 = hr24 % 12;
-  hr12 = hr12 === 0 ? 12 : hr12;
-  const ampm = hr24 > 11 ? " PM" : " AM";
-  const mystr =
-    dstr +
-    " " +
-    monstr +
-    " " +
-    udate +
-    ", " +
-    yr +
-    " " +
-    hr12 +
-    ":" +
-    min +
-    ampm;
-  return mystr;
-};
-
 const SingleEvent = () => {
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const [ticketPurchase, setTicketPurchase] = useState({
     eventNum: eventDetails.eventNum,
     eventName: eventDetails.eventTitle,
@@ -120,47 +80,61 @@ const SingleEvent = () => {
     ticketUrl: ""
   });
 
+  // **DECISION CODE**
+  // **NOTED**
+  const [showDoublePane, setShowDoublePane] = useState(false);
+
+  // **DECISION CODE**
+  // **NOTED**
+  const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
+
+  // **DECISION CODE**
+  // **NEED TO NOTE**
+  const [showTicketSelection, setShowTicketSelection] = useState(true);
+
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const [isLoading, setIsLoading] = useState(true);
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let ticket2;
   let ticket3;
   let ticket4;
   let ticket5;
 
-  let ticketNEW;
-
-  // copies existing ticket order details from "localStorage"
+  // **DECISION CODE**
+  // **NOTED**
   useEffect(() => {
     setIsLoading(true);
+    // determines initial window width and then
+    // determines a one or two pane display
     if (window.innerWidth < 790) {
-      setMinView(true);
+      setShowDoublePane(false);
     } else {
-      setMinView(false);
+      setShowDoublePane(true);
     }
     eventData(queryString.parse(window.location.search).eventID);
   }, []);
 
   // defines the function that retrieves the Braintree token
   // this represents parts "1" and "2" of the Braintree interaction
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const eventData = eventID => {
     setIsLoading(true);
     getEventData(eventID)
       .then(res => {
-        console.log("Event Data Received NOW", res);
-        console.log("Ticket Info: ", res.ticket);
-        console.log("Event Title: ", res.eventTitle);
         loadTicketInfo(res.ticket);
         mapLoadTicketInfo(res.ticket);
         setIsLoading(false);
       })
       .catch(err => {
-        console.log("In the catch");
         setIsLoading(false);
       });
   };
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let ticketInfoArray = [];
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const ticketInfo = {
     ticketID: "empty",
     ticketType: "empty",
@@ -174,6 +148,7 @@ const SingleEvent = () => {
     minTicketOrder: 0
   };
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const mapLoadTicketInfo = ticket => {
     setIsLoading(true);
     ticket.map(item => {
@@ -191,25 +166,10 @@ const SingleEvent = () => {
       };
       ticketInfoArray.push(newTicketItem);
     });
-
-    ticketNEW = {
-      ticketName: ticketInfoArray[2].ticketName,
-      ticketPrice: ticketInfoArray[2].ticketPrice,
-      ticketFee: ticketInfoArray[2].ticketFee,
-      // NEED TO REFACTOR "ticketsSelected"
-      ticketsSelected: ticketPurchase.ticket2sSelected,
-      ticketDescription: ticketInfoArray[2].ticketDescription
-    };
-    console.log("Before ticketTypeNew");
-
-    console.log("After ticketTypeNew");
-
-    console.log("ticketNEW.ticketName: ", ticketNEW.ticketName);
-    console.log("Ticket Array: ", ticketInfoArray);
-    setIsLoading(true);
     setIsLoading(false);
   };
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const loadTicketInfo = ticket => {
     setIsLoading(true);
     ticketInfo.ticketID = ticket[0]._id;
@@ -225,37 +185,55 @@ const SingleEvent = () => {
     setIsLoading(false);
   };
 
-  const [minView, setMinView] = useState(false);
-  const [showTicketSelection, setShowTicketSelection] = useState(true);
-
-  // dynamically set the "showOrderSummary" variable
+  // **DECISION CODE**
+  // **NOTED**
   window.onresize = function(event) {
+    // dynamically determines window width and then
+    // determines a one or two pane display
     if (window.innerWidth < 790) {
-      setMinView(true);
+      setShowDoublePane(false);
     } else {
-      setMinView(false);
+      setShowDoublePane(true);
     }
   };
 
+  // determines whether or not to display the purchase amount
+  // "showDoublePane" must be false and "tickets.selected" must be > 0
+  // **DECISION CODE**
+  // **NOTED**
   const totalAmount = show => {
-    if (show && ticketPurchase.purchaseAmount > 0) {
+    if (!show && ticketPurchase.purchaseAmount > 0) {
       return <div>${ticketPurchase.purchaseAmount}</div>;
     } else {
       return null;
     }
   };
 
+  // determines whether or not to display the cart and arrow
+  // "showDoublePane" must be false
+  // **DECISION CODE**
+  // **NOTED**
   const cartLink = show => {
-    if (show && ticketPurchase.purchaseAmount > 0) {
+    if (!show) {
       return (
         <div>
           <button
+            onClick={switchShowOrderSummary}
             style={{
               color: "black",
               fontWeight: "600"
             }}
           >
             CART
+          </button>
+          <button
+            onClick={switchShowOrderSummary}
+            style={{
+              color: "black",
+              fontWeight: "600"
+            }}
+          >
+            arrow
           </button>
         </div>
       );
@@ -264,14 +242,18 @@ const SingleEvent = () => {
     }
   };
 
-  const showOrderSummary = event => {
-    if (showTicketSelection) {
-      setShowTicketSelection(false);
+  // **DECISION CODE**
+  // **NEED TO NOTE**
+  // I THINK THIS SWITCHES THE VALUE OF showDoublePane
+  const switchShowOrderSummary = event => {
+    if (showOrderSummaryOnly) {
+      setShowOrderSummaryOnly(false);
     } else {
-      setShowTicketSelection(true);
+      setShowOrderSummaryOnly(true);
     }
   };
-  // modifies state variables to only show "Ticket Payment" window
+
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const purchaseTicketHandler = event => {
     if (typeof window !== "undefined") {
       // "localStorage" property allows access the Storage object for a document's origin
@@ -281,9 +263,11 @@ const SingleEvent = () => {
     }
   };
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let checkoutButton = null;
 
   // NEED TO STYLE
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   if (ticketPurchase.ticketsSelected > 0) {
     checkoutButton = (
       <button
@@ -321,9 +305,11 @@ const SingleEvent = () => {
     );
   }
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let orderSummary = null;
 
   // FULLY STYLED
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   if (ticketPurchase.ticketsSelected > 0) {
     orderSummary = (
       <Aux>
@@ -362,13 +348,17 @@ const SingleEvent = () => {
       </Aux>
     );
   } else {
-    orderSummary = <div></div>;
+    orderSummary = <div>Your Cart is Empty. Buy something!!!</div>;
   }
 
-  let rightPain;
+  // **DECISION CODE**
+  // **NOTED**
+  let rightPane;
 
-  if (!minView) {
-    rightPain = (
+  // **DECISION CODE**
+  // **NOTED**
+  if (showDoublePane) {
+    rightPane = (
       <div>
         <div className={styles.ImageBox}>
           <img alt="Cocina Candela Logo" />
@@ -377,9 +367,10 @@ const SingleEvent = () => {
       </div>
     );
   } else {
-    rightPain = null;
+    rightPane = null;
   }
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   ticket2 = {
     ticketName: eventDetails.ticket2Name,
     ticketPrice: eventDetails.ticket2Price,
@@ -389,6 +380,7 @@ const SingleEvent = () => {
     ticketDescription: eventDetails.ticket2Description
   };
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   ticket3 = {
     ticketName: eventDetails.ticket3Name,
     ticketPrice: eventDetails.ticket3Price,
@@ -398,6 +390,7 @@ const SingleEvent = () => {
     ticketDescription: eventDetails.ticket3Description
   };
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   ticket4 = {
     ticketName: eventDetails.ticket4Name,
     ticketPrice: eventDetails.ticket4Price,
@@ -407,6 +400,7 @@ const SingleEvent = () => {
     ticketDescription: eventDetails.ticket4Description
   };
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   ticket5 = {
     ticketName: eventDetails.ticket5Name,
     ticketPrice: eventDetails.ticket5Price,
@@ -416,8 +410,10 @@ const SingleEvent = () => {
     ticketDescription: eventDetails.ticket5Description
   };
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let ticketTypes = null;
 
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   if (isLoading) {
     ticketTypes = (
       <Aux>
@@ -435,178 +431,168 @@ const SingleEvent = () => {
     );
   }
 
-  let ticketSelection = null;
-
-  if (showTicketSelection) {
-    ticketSelection = (
-      <div className={styles.MainContainer}>
-        <div className={styles.MainGrid}>
-          <div className={styles.MainItemLeft}>
-            <div className={styles.EventHeader}>
-              <div
-                style={{
-                  textOverflow: "clip ellipsis",
-                  fontSize: "1.125rem",
-                  fontWeight: "600"
-                }}
-              >
-                {eventDetails.organizerName} Present:{" "}
-                {eventDetails.location.venueName} - {eventDetails.eventTitle}
-              </div>
-              <div
-                style={{
-                  fontSize: "1.0rem",
-                  fontWeight: "400"
-                }}
-              >
-                {eventDetails.location.address1}, {eventDetails.location.city},{" "}
-                {eventDetails.location.state},{" "}
-                {eventDetails.location.zipPostalCode} -{" "}
-                {eventDetails.startDateTime}
-              </div>
-            </div>
-            <div className={styles.EventTicketSection}>
-              <div className={styles.SectionHeader}>
-                Tickets UPDATED STYLING
-              </div>
-              <div className={styles.LeftGrid}>
-                <div>
-                  <div className={styles.TicketType}>
-                    {eventDetails.ticketName}
-                  </div>
-                  <div className={styles.TicketPrices}>
-                    ${eventDetails.ticketPrice} +
-                    <span className={styles.TicketFees}>
-                      ${eventDetails.ticketFee} Fee
-                    </span>
-                  </div>
-                </div>
-                <div className={styles.TicketAmount}>
-                  <select
-                    type="number"
-                    name="ticketsSelected"
-                    required
-                    value={ticketPurchase.ticketsSelected}
-                    className={styles.SelectionBox}
-                    onChange={event => {
-                      setTicketPurchase({
-                        ...ticketPurchase,
-                        ticketsSelected: event.target.value,
-                        purchaseAmount:
-                          event.target.value *
-                          (eventDetails.ticketPrice + eventDetails.ticketFee),
-                        ticketUrl: window.location.href
-                      });
-                    }}
-                  >
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles.EventDescription}>
-                {eventDetails.ticketDescription}
-              </div>
-              <hr style={{ border: "1px solid#F2F2F2" }} />
-              {ticketTypes}
-              <div className={styles.EventDescription}>
-                Powered by{" "}
-                <NavLink to="/" exact>
-                  <img src={OSDLogo} alt="OpenSeatDirect Logo" />
-                </NavLink>
-              </div>
-              <br></br>
-            </div>
-            <div className={styles.EventFooter}>
-              <div
-                style={{
-                  paddingTop: "8px",
-                  fontSize: "20px",
-                  fontWeight: "600"
-                }}
-              >
-                {cartLink(minView)}
-              </div>
-              <div
-                style={{
-                  textAlign: "right",
-                  paddingRight: "10px",
-                  paddingTop: "8px",
-                  fontSize: "20px",
-                  fontWeight: "600"
-                }}
-              >
-                {totalAmount(minView)}
-              </div>
-              <div style={{ textAlign: "right" }}>{checkoutButton}</div>
-            </div>
-          </div>
-          {rightPain}
+  // **DECISION CODE**
+  let mainDisplay = null;
+  let ticketSelection = (
+    <div className={styles.MainItemLeft}>
+      <div className={styles.EventHeader}>
+        <div
+          style={{
+            fontSize: "1.125rem",
+            fontWeight: "600"
+          }}
+        >
+          <span
+            style={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis"
+            }}
+          >
+            {eventDetails.eventTitle}
+          </span>
+        </div>
+        <div
+          style={{
+            fontSize: "1.0rem",
+            fontWeight: "400"
+          }}
+        >
+          {eventDetails.startDateTime}
         </div>
       </div>
+      <div className={styles.EventTicketSection}>
+        <div className={styles.LeftGrid}>
+          <div>
+            <div className={styles.TicketType}>{eventDetails.ticketName}</div>
+            <div className={styles.TicketPrices}>
+              ${eventDetails.ticketPrice} +
+              <span className={styles.TicketFees}>
+                ${eventDetails.ticketFee} Fee
+              </span>
+            </div>
+          </div>
+          <div className={styles.TicketAmount}>
+            <select
+              type="number"
+              name="ticketsSelected"
+              required
+              value={ticketPurchase.ticketsSelected}
+              className={styles.SelectionBox}
+              onChange={event => {
+                setTicketPurchase({
+                  ...ticketPurchase,
+                  ticketsSelected: event.target.value,
+                  purchaseAmount:
+                    event.target.value *
+                    (eventDetails.ticketPrice + eventDetails.ticketFee),
+                  ticketUrl: window.location.href
+                });
+              }}
+            >
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+            </select>
+          </div>
+        </div>
+        <div className={styles.EventDescription}>
+          {eventDetails.ticketDescription}
+        </div>
+        <hr style={{ border: "1px solid#F2F2F2" }} />
+        {ticketTypes}
+        <div className={styles.EventDescription}>
+          Powered by{" "}
+          <NavLink to="/" exact>
+            <img src={OSDLogo} alt="OpenSeatDirect Logo" />
+          </NavLink>
+        </div>
+        <br></br>
+      </div>
+      <div className={styles.EventFooter}>
+        <div
+          style={{
+            paddingTop: "8px",
+            fontSize: "20px",
+            fontWeight: "600"
+          }}
+        >
+          {cartLink(showDoublePane)}
+        </div>
+        <div
+          style={{
+            textAlign: "right",
+            paddingRight: "10px",
+            paddingTop: "8px",
+            fontSize: "20px",
+            fontWeight: "600"
+          }}
+        >
+          {totalAmount(showDoublePane)}
+        </div>
+        <div style={{ textAlign: "right" }}>{checkoutButton}</div>
+      </div>
+    </div>
+  );
+
+  // **DECISION CODE**
+  if (showDoublePane) {
+    mainDisplay = (
+      <Aux>
+        {ticketSelection}
+        {rightPane}
+      </Aux>
+    );
+  } else if (!showOrderSummaryOnly) {
+    mainDisplay = (
+      <Aux>
+        {ticketSelection}
+        {rightPane}
+      </Aux>
     );
   } else {
-    ticketSelection = (
-      <div className={styles.MainContainer}>
-        <div className={styles.MainGrid}>
-          <div>
-            <div className={styles.OrderSummaryMinView}>{orderSummary}</div>
-          </div>
-          <div className={styles.EventFooter}>
-            <div
-              style={{
-                paddingTop: "8px",
-                fontSize: "20px",
-                fontWeight: "600"
-              }}
-            >
-              {cartLink(minView)}
-            </div>
-            <div
-              style={{
-                textAlign: "right",
-                paddingRight: "10px",
-                paddingTop: "8px",
-                fontSize: "20px",
-                fontWeight: "600"
-              }}
-            >
-              {totalAmount(minView)}
-            </div>
-            <div style={{ textAlign: "right" }}>{checkoutButton}</div>
-          </div>
+    mainDisplay = (
+      <Aux>
+        <div>
+          <div className={styles.OrderSummaryMinView}>{orderSummary}</div>
         </div>
-      </div>
+        <div className={styles.EventFooter}>
+          <div
+            style={{
+              paddingTop: "8px",
+              fontSize: "20px",
+              fontWeight: "600"
+            }}
+          >
+            {cartLink(showDoublePane)}
+          </div>
+          <div
+            style={{
+              textAlign: "right",
+              paddingRight: "10px",
+              paddingTop: "8px",
+              fontSize: "20px",
+              fontWeight: "600"
+            }}
+          >
+            {totalAmount(showDoublePane)}
+          </div>
+          <div style={{ textAlign: "right" }}>{checkoutButton}</div>
+        </div>
+      </Aux>
     );
   }
 
   // FULLY STYLED
-  return <Aux>{ticketSelection}</Aux>;
+  return (
+    <Aux>
+      <div className={styles.MainContainer}>
+        <div className={styles.MainGrid}>{mainDisplay}</div>
+      </div>
+    </Aux>
+  );
 };
 
 export default SingleEvent;
-
-/*const [minView, setMinView] = useState(false);
-  const [minViewMessage, setMinViewMessage] = useState("NO");
-  const [showTicketSelection, setShowTicketSelection] = useState(true);
-
-  // dynamically set the "showOrderSummary" variable
-  window.onresize = function(event) {
-    if (window.innerWidth < 790) {
-      setMinView(true);
-      setMinViewMessage("YES");
-      console.log("window.innerWidth: ", window.innerWidth);
-      console.log("setMinView: ", minView);
-      console.log("window.innerHeight: ", window.innerHeight);
-    } else {
-      setMinView(false);
-      setMinViewMessage("NO");
-      console.log("window.innerWidth: ", window.innerWidth);
-      console.log("setMinView: ", minView);
-      console.log("window.innerHeight: ", window.innerHeight);
-    }
-  };
-  */

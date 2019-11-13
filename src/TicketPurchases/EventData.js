@@ -5,6 +5,7 @@ import queryString from "query-string";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import { getEventData } from "./apiCore";
+import { getDateStr } from "../components/formuals";
 import Spinner from "../components/UI/Spinner/Spinner";
 
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
@@ -13,6 +14,9 @@ import styles from "./Order.module.css";
 
 // defines an event's NON ticket type specific information
 let eventDetails;
+
+// defines an event's ticket type specific information
+let eventTicketInfo;
 
 // defines ticket order object
 // contains event information and ticket type specific data
@@ -25,19 +29,7 @@ const EventData = () => {
   const [isLoading, setIsLoading] = useState(true);
   // defines an event's specific ticket type information
   // also tracks the number of tickets selected throughout selection process
-  const [ticketInfo, setTicketInfo] = useState([
-    {
-      ticketID: "",
-      ticketType: "",
-      ticketName: "",
-      ticketDescription: "",
-      ticketsAvailable: 0,
-      ticketPrice: 0,
-      ticketsSelected: 0,
-      maxTicketOrder: 0,
-      minTicketOrder: 0
-    }
-  ]);
+  const [ticketInfo, setTicketInfo] = useState([]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -53,6 +45,7 @@ const EventData = () => {
         loadEventDetails(res);
         loadTicketInfo(res.ticket);
         createTicketOrder(res);
+        console.log("Latest eventTicketInfo: ", eventTicketInfo);
       })
       .catch(err => {
         console.log("In the catch");
@@ -85,6 +78,7 @@ const EventData = () => {
   };
 
   const loadEventDetails = event => {
+    const formattedDateTime = new Date(event.startDateTime);
     eventDetails = {
       eventNum: event.eventNum,
       eventTitle: event.eventTitle,
@@ -93,7 +87,7 @@ const EventData = () => {
       longDescription: event.longDescription,
       organizer: event.organizerName,
       shortDescription: event.shortDescription,
-      startDateTime: event.startDateTime,
+      startDateTime: getDateStr(formattedDateTime),
       endDateTime: event.endDateTime,
       organizerUrl: event.organizerUrl,
       eventURL: event.eventURL,
@@ -108,7 +102,6 @@ const EventData = () => {
       },
       image: ""
     };
-
     console.log("eventDetails: ", eventDetails);
   };
 
@@ -128,8 +121,12 @@ const EventData = () => {
       };
       tempTicketArray.push(tempTicketItem);
     });
+    console.log("tempTicketArray: ", tempTicketArray);
+    console.log("About to set ticketInfo: ");
     setTicketInfo(tempTicketArray);
     console.log("ticketInfo: ", ticketInfo);
+    eventTicketInfo = tempTicketArray;
+    console.log("eventTicketInfo: ", eventTicketInfo);
   };
 
   let eventTitle;
@@ -139,13 +136,14 @@ const EventData = () => {
       <Aux>
         <div
           style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
             textOverflow: "clip ellipsis",
             fontSize: "1.125rem",
             fontWeight: "600"
           }}
         >
-          {eventDetails.organizerName} Present:{" "}
-          {eventDetails.location.venueName} - {eventDetails.eventTitle}
+          {eventDetails.eventTitle}
         </div>
         <div
           style={{
@@ -153,8 +151,6 @@ const EventData = () => {
             fontWeight: "400"
           }}
         >
-          {eventDetails.location.address1}, {eventDetails.location.city},{" "}
-          {eventDetails.location.state}, {eventDetails.location.zipPostalCode} -{" "}
           {eventDetails.startDateTime}
         </div>
       </Aux>
@@ -164,20 +160,7 @@ const EventData = () => {
   }
 
   let ticketItems;
-
-  /*
-    onChange={event => {
-        setTicketPurchase({
-            ...ticketPurchase,
-            ticketsSelected: event.target.value,
-            purchaseAmount:
-                event.target.value *
-                (eventDetails.currentTicketPrice +
-                eventDetails.currentTicketFee),
-            ticketUrl: window.location.href
-        });
-    }}
-*/
+  let ticketItemsMap;
 
   const updateTicketsSelected = (event, ticketType) => {
     console.log("Inside updateTicketsSelected()");
@@ -191,6 +174,7 @@ const EventData = () => {
       "New value of ticketInfo[n].ticketsSelected: ",
       ticketType.ticketsSelected
     );
+    console.log("Old value of ticketType.ticketsSelected: ", ticketsSelected);
     setTicketsSelected(ticketType.ticketsSelected);
     console.log("New value of ticketType.ticketsSelected: ", ticketsSelected);
   };
@@ -198,36 +182,20 @@ const EventData = () => {
   if (!isLoading) {
     ticketItems = (
       <Aux>
-        <TicketItem
-          name={ticketInfo[0]}
-          onChange={event => {
-            updateTicketsSelected(event, ticketInfo[0]);
-          }}
-        ></TicketItem>
-        <TicketItem
-          name={ticketInfo[1]}
-          onChange={event => {
-            updateTicketsSelected(event, ticketInfo[1]);
-          }}
-        ></TicketItem>
-        <TicketItem
-          name={ticketInfo[2]}
-          onChange={event => {
-            updateTicketsSelected(event, ticketInfo[2]);
-          }}
-        ></TicketItem>
-        <TicketItem
-          name={ticketInfo[3]}
-          onChange={event => {
-            updateTicketsSelected(event, ticketInfo[3]);
-          }}
-        ></TicketItem>
-        <TicketItem
-          name={ticketInfo[4]}
-          onChange={event => {
-            updateTicketsSelected(event, ticketInfo[4]);
-          }}
-        ></TicketItem>
+        <div>
+          {ticketInfo.map(item => {
+            return (
+              <Aux>
+                <TicketItem
+                  name={item}
+                  onChange={event => {
+                    updateTicketsSelected(event, item);
+                  }}
+                ></TicketItem>
+              </Aux>
+            );
+          })}
+        </div>
       </Aux>
     );
   } else {
@@ -268,8 +236,6 @@ const EventData = () => {
           <div className={styles.MainItemLeft}>
             <div className={styles.EventHeader}>{eventTitle}</div>
             <div className={styles.EventTicketSection}>
-              <div className={styles.SectionHeader}>Tickets DATA DRIVEN</div>
-              <hr style={{ border: "1px solid#F2F2F2" }} />
               {ticketItems}
               <div className={styles.EventDescription}>
                 Powered by{" "}
