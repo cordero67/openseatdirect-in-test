@@ -5,8 +5,8 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Checkout from "../../TicketPurchases/Checkout";
+import CheckoutNEW from "../../TicketPurchases/CheckoutNEW";
 import TicketGeneral from "../../TicketPurchases/TicketGeneral";
-import TicketGeneralcopy from "../../TicketPurchases/TicketGeneralcopy";
 import QueryRouting from "../../TicketPurchases/QueryRouting";
 import Height from "../../TicketPurchases/Height";
 import EventData from "../../TicketPurchases/EventData";
@@ -61,6 +61,16 @@ class Layout extends Component {
         />
 
         <Route
+          path="/checkoutNEW"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <CheckoutNEW />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
           path="/queryrouting"
           exact
           render={routeProps => (
@@ -85,15 +95,6 @@ class Layout extends Component {
           render={routeProps => (
             <React.Fragment>
               <TicketGeneral />
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/ev2/"
-          render={routeProps => (
-            <React.Fragment>
-              <TicketGeneralcopy />
             </React.Fragment>
           )}
         />

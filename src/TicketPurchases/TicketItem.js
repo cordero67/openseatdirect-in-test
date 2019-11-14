@@ -8,24 +8,17 @@ const TicketItem = props => {
     <Aux>
       <div className={styles.LeftGrid}>
         <div>
-          <div className={styles.TicketType}>
-            {props.name.ticketName} {props.name.ticketAdditional}
-          </div>
-          <div className={styles.TicketPrices}>
-            ${props.name.currentTicketPrice} +
-            <span className={styles.TicketFees}>
-              ${props.name.currentTicketFee} Fee
-            </span>
-          </div>
+          <div className={styles.TicketType}>{props.name.ticketName}</div>
+          <div className={styles.TicketPrices}>${props.name.ticketPrice}</div>
         </div>
         <div className={styles.TicketAmount}>
           <select
             type="number"
             name="ticketsSelected"
-            onChange={props.onChange}
             required
             value={props.name.ticketsSelected}
             className={styles.SelectionBox}
+            onChange={props.onChange}
           >
             <option>0</option>
             <option>1</option>

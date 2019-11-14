@@ -9,7 +9,7 @@ import { getDateStr } from "../components/formuals";
 import Spinner from "../components/UI/Spinner/Spinner";
 
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
-import TicketItem from "./TicketItemcopy";
+import TicketItem from "./TicketItem";
 import styles from "./Order.module.css";
 
 // defines an event's NON ticket type specific information

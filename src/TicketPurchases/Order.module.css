@@ -56,7 +56,7 @@
   padding-right: 25px;
   overflow-y: auto;
 }
-.OrderSummaryMinView {
+.OrderSummaryAlt {
   background-color: #e5e5e5;
   font-size: 0.875rem;
   height: calc(100vh - 80px);
@@ -97,6 +97,28 @@
 .SelectionBox {
   font-size: 16px;
   padding-left: 5px;
+}
+
+.faShoppingCart {
+  font-size: 1.5rem;
+  vertical-align: center;
+}
+.faShoppingCart:hover {
+  border-color: transparent;
+}
+.faChevronUp {
+  font-size: 0.75rem;
+  vertical-align: center;
+}
+faChevronUp:hover {
+  border-color: transparent;
+}
+.faChevronDown {
+  font-size: 0.75rem;
+  vertical-align: center;
+}
+faChevronDown:hover {
+  border-color: transparent;
 }
 
 @media (max-width: 480px) {
@@ -227,8 +249,8 @@
     .OrderSummary {
       height: 560px;
     }
-    .OrderSummaryMinView {
-      height: 660px;
+    .OrderSummaryAlt {
+      height: 640px;
     }
   }
 }
@@ -302,7 +324,7 @@
   .OrderSummary {
     height: calc(100vh - 180px);
   }
-  .OrderSummaryMinView {
+  .OrderSummaryAlt {
     height: calc(100vh - 80px);
   }
   .EventDescription {
@@ -326,7 +348,7 @@
     .OrderSummary {
       height: 540px;
     }
-    .OrderSummaryMinView {
+    .OrderSummaryAlt {
       height: 640px;
     }
   }
