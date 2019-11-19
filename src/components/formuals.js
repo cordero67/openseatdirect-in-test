@@ -25,7 +25,7 @@ export const getDateStr = dt => {
   const min = dt.getUTCMinutes();
   const hr24 = dt.getUTCHours();
   let hr12 = hr24 % 12;
-  hr12 = hr12 == 0 ? 12 : hr12;
+  hr12 = hr12 === 0 ? 12 : hr12;
   const ampm = hr24 > 11 ? " PM" : " AM";
   const mystr =
     dstr +

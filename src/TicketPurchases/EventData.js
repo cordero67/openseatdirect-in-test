@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 
 import { NavLink } from "react-router-dom";
 import queryString from "query-string";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faShoppingCart,
+  faChevronUp,
+  faChevronDown
+} from "@fortawesome/free-solid-svg-icons";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import { getEventData } from "./apiCore";
@@ -15,37 +21,28 @@ import styles from "./Order.module.css";
 // defines an event's NON ticket type specific information
 let eventDetails;
 
-// defines an event's ticket type specific information
-let eventTicketInfo;
-
 // defines ticket order object
 // contains event information and ticket type specific data
 // this object is sent to "Checkout" page
 let ticketOrder;
 
 const EventData = () => {
-  // temporary variable
-  const [ticketsSelected, setTicketsSelected] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   // defines an event's specific ticket type information
   // also tracks the number of tickets selected throughout selection process
   const [ticketInfo, setTicketInfo] = useState([]);
 
   useEffect(() => {
-    setIsLoading(true);
     eventData(queryString.parse(window.location.search).eventID);
   }, []);
 
   const eventData = eventID => {
     getEventData(eventID)
       .then(res => {
-        console.log("Event Data Received NOW", res);
-        console.log("Ticket Info: ", res.ticket);
-        console.log("Event Title: ", res.eventTitle);
+        console.log("Event Data Received: ", res);
         loadEventDetails(res);
         loadTicketInfo(res.ticket);
         createTicketOrder(res);
-        console.log("Latest eventTicketInfo: ", eventTicketInfo);
       })
       .catch(err => {
         console.log("In the catch");
@@ -53,28 +50,6 @@ const EventData = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  };
-
-  const createTicketOrder = event => {
-    console.log("event in createTicketOrder: ", event);
-    const ticketParameters = [];
-    console.log("event.ticket in createTicketOrder :", event.ticket);
-    event.ticket.map(item => {
-      const newTicketItem = {
-        ticketID: item._id,
-        ticketPrice: item.currentTicketPrice,
-        ticketsSelected: 0,
-        ticketPurchaseAmount: 0
-      };
-      ticketParameters.push(newTicketItem);
-    });
-    console.log("ticketParameters: ", ticketParameters);
-    ticketOrder = {
-      eventNum: event.eventNum,
-      eventName: event.eventTitle,
-      tickets: ticketParameters
-    };
-    console.log("ticketOrder: ", ticketOrder);
   };
 
   const loadEventDetails = event => {
@@ -90,7 +65,7 @@ const EventData = () => {
       startDateTime: getDateStr(formattedDateTime),
       endDateTime: event.endDateTime,
       organizerUrl: event.organizerUrl,
-      eventURL: event.eventURL,
+      eventUrl: event.eventUrl,
       location: {
         venueName: event.locationVenueName,
         address1: event.locationAddress1,
@@ -102,7 +77,6 @@ const EventData = () => {
       },
       image: ""
     };
-    console.log("eventDetails: ", eventDetails);
   };
 
   const loadTicketInfo = ticket => {
@@ -121,12 +95,31 @@ const EventData = () => {
       };
       tempTicketArray.push(tempTicketItem);
     });
-    console.log("tempTicketArray: ", tempTicketArray);
-    console.log("About to set ticketInfo: ");
     setTicketInfo(tempTicketArray);
-    console.log("ticketInfo: ", ticketInfo);
-    eventTicketInfo = tempTicketArray;
-    console.log("eventTicketInfo: ", eventTicketInfo);
+  };
+
+  const createTicketOrder = event => {
+    const ticketParameters = [];
+    event.ticket.map(item => {
+      const newTicketItem = {
+        ticketID: item._id,
+        ticketPrice: item.currentTicketPrice,
+        ticketName: item.ticketName,
+        ticketsSelected: 0,
+        ticketPurchaseAmount: 0
+      };
+      ticketParameters.push(newTicketItem);
+    });
+    ticketOrder = {
+      eventNum: event.eventNum,
+      eventUrl: event.eventUrl,
+      eventName: event.eventTitle,
+      startDateTime: event.startDateTime,
+      endDateTime: event.endDateTime,
+      totalPurchaseAmount: 0,
+      tickets: ticketParameters
+    };
+    console.log("ticketOrder: ", ticketOrder);
   };
 
   let eventTitle;
@@ -159,25 +152,30 @@ const EventData = () => {
     eventTitle = null;
   }
 
-  let ticketItems;
-  let ticketItemsMap;
-
   const updateTicketsSelected = (event, ticketType) => {
-    console.log("Inside updateTicketsSelected()");
-    console.log("ticketInfo[n]: ", ticketType);
-    console.log(
-      "Current value of ticketInfo[n].ticketsSelected: ",
-      ticketType.ticketsSelected
-    );
-    ticketType.ticketsSelected = event.target.value;
-    console.log(
-      "New value of ticketInfo[n].ticketsSelected: ",
-      ticketType.ticketsSelected
-    );
-    console.log("Old value of ticketType.ticketsSelected: ", ticketsSelected);
-    setTicketsSelected(ticketType.ticketsSelected);
-    console.log("New value of ticketType.ticketsSelected: ", ticketsSelected);
+    let tempTicketInfo = [...ticketInfo];
+    tempTicketInfo.map(item => {
+      if (item.ticketID === ticketType.ticketID) {
+        item.ticketsSelected = event.target.value;
+      }
+    });
+    setTicketInfo(tempTicketInfo);
+    ticketOrder.tickets.map(item => {
+      if (item.ticketID === ticketType.ticketID) {
+        item.ticketsSelected = parseInt(ticketType.ticketsSelected);
+        item.ticketPurchaseAmount = item.ticketsSelected * item.ticketPrice;
+      }
+    });
+    let tempTotalPurchaseAmount = 0;
+    ticketOrder.tickets.map(item => {
+      tempTotalPurchaseAmount += item.ticketPurchaseAmount;
+    });
+    ticketOrder.totalPurchaseAmount = tempTotalPurchaseAmount;
+    console.log("ticketOrder.tickets: ", ticketOrder.tickets);
+    console.log("ticketOrder: ", ticketOrder);
   };
+
+  let ticketItems;
 
   if (!isLoading) {
     ticketItems = (
@@ -188,6 +186,7 @@ const EventData = () => {
               <Aux>
                 <TicketItem
                   name={item}
+                  key={item._id}
                   onChange={event => {
                     updateTicketsSelected(event, item);
                   }}
@@ -206,29 +205,62 @@ const EventData = () => {
     );
   }
 
-  // TEMP CODE
-  let ticketInfoTicketsSelected;
+  let orderSummary;
 
-  if (!isLoading) {
-    ticketInfoTicketsSelected = (
+  if (!isLoading && ticketOrder.totalPurchaseAmount > 0) {
+    orderSummary = (
       <Aux>
-        ticketInfo[0].ticketsSelected: {ticketInfo[0].ticketsSelected}
+        <div style={{ fontWeight: "600" }}>Order Summary</div>
         <br></br>
-        ticketInfo[1].ticketsSelected: {ticketInfo[1].ticketsSelected}
+        {ticketOrder.tickets.map(item => {
+          if (item.ticketsSelected > 0) {
+            return (
+              <Aux>
+                <div className={styles.RightGrid}>
+                  <div style={{ fontWeight: "400" }}>
+                    {item.ticketsSelected} X {item.ticketName}
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    ${item.ticketsSelected * item.ticketPrice}{" "}
+                  </div>
+                </div>
+              </Aux>
+            );
+          }
+        })}
+
+        <hr style={{ border: "1px solid#B2B2B2" }} />
+        <div className={styles.RightGrid}>
+          <div style={{ fontWeight: "600" }}>Total</div>
+          <div style={{ textAlign: "right" }}>
+            ${ticketOrder.totalPurchaseAmount}
+          </div>
+        </div>
         <br></br>
-        ticketInfo[2].ticketsSelected: {ticketInfo[2].ticketsSelected}
-        <br></br>
-        ticketInfo[3].ticketsSelected: {ticketInfo[3].ticketsSelected}
-        <br></br>
-        ticketInfo[4].ticketsSelected: {ticketInfo[4].ticketsSelected}
       </Aux>
     );
+  } else if (!isLoading && ticketOrder.totalPurchaseAmount <= 0) {
+    orderSummary = (
+      <div
+        style={{
+          color: "grey",
+          position: "relative",
+          float: "left",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)"
+        }}
+      >
+        <FontAwesomeIcon
+          className={styles.faShoppingCart}
+          icon={faShoppingCart}
+        />
+      </div>
+    );
   } else {
-    ticketInfoTicketsSelected = "Not loaded Yet";
+    orderSummary = "Not loaded Yet";
   }
-  // TEMP CODE
 
-  // FULLY STYLED
   return (
     <Aux>
       <div className={styles.MainContainer}>
@@ -249,10 +281,8 @@ const EventData = () => {
           <div>
             <div className={styles.ImageBox}>Logo Coming Soon!!!</div>
             <div className={styles.OrderSummary}>
-              Order Summary Coming Soon!
               <br></br>
-              <br></br>
-              <div>{ticketInfoTicketsSelected}</div>
+              <div>{orderSummary}</div>
             </div>
           </div>
         </div>

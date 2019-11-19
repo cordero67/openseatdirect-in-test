@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
-import queryString from "query-string";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -13,7 +12,7 @@ import {
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import Spinner from "../components/UI/Spinner/Spinner";
 
-import CocinaCandelaLogo from "../assets/Cocina_Candela/cocinacandela21NEW.jpg";
+import CocinaCandelaLogo from "../assets/Cocina_Candela/cocina-candela-large.jpg";
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
 import TicketItem from "./TicketItem";
 import styles from "./Order.module.css";
@@ -30,8 +29,8 @@ const eventDetails = {
     "Experience a Puerto Rican gastronomy honoring the traditions of Taíno roots and the purity of ingredients. Prepared by Kenny Candelaria who's culinary career began as a child, preparing meals on the fogón with his grandparents in Puerto Rico and refined throughout the years by choosing the most natural, local ingredients available to him.",
   shortDescription: "An orgy of Puerto Rican food. No contraception required.",
   image: "",
-  startDateTime: "December 18, 2019 - 8 PM",
-  endDateTime: "2019-12-06 09:00:00.000Z",
+  startDateTime: "Wed Dec 18, 2019 8:00 PM",
+  endDateTime: "Wed Dec 18, 2019 11:00 PM",
   location: {
     venueName: "Cocina Candela",
     address1: "706 Bloomfield Ave",
@@ -69,7 +68,7 @@ const eventDetails = {
   ticket5Price: 225
 };
 
-const SingleEvent = () => {
+const TicketSelection = () => {
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const [ticketPurchase, setTicketPurchase] = useState({
     eventNum: eventDetails.eventNum,
@@ -209,7 +208,7 @@ const SingleEvent = () => {
           borderRadius: "8px"
         }}
       >
-        <Link to="/checkout">Checkout</Link>
+        <Link to="/checkoutCURRENT">Checkout</Link>
       </button>
     );
   } else {
@@ -295,7 +294,11 @@ const SingleEvent = () => {
     orderPane = (
       <div>
         <div className={styles.ImageBox}>
-          <img alt="Cocina Candela Logo" />
+          <img
+            className={styles.Image}
+            src={CocinaCandelaLogo}
+            alt="Cocina Candela Logo"
+          />
         </div>
         <div className={styles.OrderSummary}>{orderSummary}</div>
       </div>
@@ -490,24 +493,32 @@ const SingleEvent = () => {
   if (showDoublePane) {
     mainDisplay = (
       <Aux>
-        {ticketPane}
-        {orderPane}
+        <div className={styles.MainGrid}>
+          {ticketPane}
+          {orderPane}
+        </div>
       </Aux>
     );
   } else if (!showOrderSummaryOnly) {
-    mainDisplay = <Aux>{ticketPane}</Aux>;
+    mainDisplay = (
+      <Aux>
+        <div className={styles.MainGrid}>{ticketPane}</div>
+      </Aux>
+    );
   } else {
-    mainDisplay = <Aux>{orderPane}</Aux>;
+    mainDisplay = (
+      <Aux>
+        <div className={styles.MainGrid}>{orderPane}</div>
+      </Aux>
+    );
   }
 
   // FULLY STYLED
   return (
     <Aux>
-      <div className={styles.MainContainer}>
-        <div className={styles.MainGrid}>{mainDisplay}</div>
-      </div>
+      <div className={styles.MainContainer}>{mainDisplay}</div>
     </Aux>
   );
 };
 
-export default SingleEvent;
+export default TicketSelection;

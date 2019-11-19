@@ -46,6 +46,11 @@
 }
 .ImageBox {
   height: 160px;
+  padding: 0 0 0 0;
+}
+.Image {
+  max-width: 100%;
+  max-height: auto;
 }
 .OrderSummary {
   background-color: #e5e5e5;
@@ -97,6 +102,47 @@
 .SelectionBox {
   font-size: 16px;
   padding-left: 5px;
+}
+
+.Spinner {
+  background-color: #fff;
+  margin: auto;
+  vertical-align: center;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: auto;
+}
+.SubSectionHeader {
+  font-weight: 500;
+}
+.AlertText {
+  color: red;
+}
+.AlertTextSmall {
+  color: red;
+}
+.SuccessTextSmall {
+  color: blue;
+}
+.ButtonGreenLarge {
+  background-color: #4caf50;
+  color: white;
+  border: 1px solid grey;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+.ButtonGreyLarge {
+  background-color: #e7e7e7;
+  color: black;
+  border: 1px solid grey;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
 }
 
 .faShoppingCart {
@@ -156,6 +202,32 @@ faChevronDown:hover {
     height: 40px;
     width: 50px;
   }
+
+  .SubSectionHeader {
+    font-size: 18px;
+  }
+  .SubBody {
+    font-size: 12px;
+  }
+  .AlertText {
+    font-size: 12px;
+  }
+  .AlertTextSmall {
+    font-size: 8px;
+  }
+  .SuccessTextSmall {
+    font-size: 8px;
+  }
+  .ButtonGreenLarge {
+    padding: 9px 15px;
+    width: 135px;
+    font-size: 12px;
+  }
+  .ButtonGreyLarge {
+    padding: 9px 15px;
+    width: 135px;
+    font-size: 12px;
+  }
 }
 
 @media (min-width: 480px) {
@@ -192,6 +264,32 @@ faChevronDown:hover {
   .SelectionBox {
     height: 40px;
     width: 50px;
+  }
+
+  .SubSectionHeader {
+    font-size: 20px;
+  }
+  .SubBody {
+    font-size: 14px;
+  }
+  .AlertText {
+    font-size: 14px;
+  }
+  .AlertTextSmall {
+    font-size: 10px;
+  }
+  .SuccessTextSmall {
+    font-size: 10px;
+  }
+  .ButtonGreenLarge {
+    padding: 9px 15px;
+    width: 150px;
+    font-size: 14px;
+  }
+  .ButtonGreyLarge {
+    padding: 9px 15px;
+    width: 150px;
+    font-size: 14px;
   }
 }
 
@@ -252,6 +350,10 @@ faChevronDown:hover {
     .OrderSummaryAlt {
       height: 640px;
     }
+
+    .Spinner {
+      height: 720px;
+    }
   }
 }
 
@@ -293,6 +395,32 @@ faChevronDown:hover {
     height: 50px;
     width: 60px;
   }
+
+  .SubSectionHeader {
+    font-size: 22px;
+  }
+  .SubBody {
+    font-size: 14px;
+  }
+  .AlertText {
+    font-size: 13px;
+  }
+  .AlertTextSmall {
+    font-size: 9px;
+  }
+  .SuccessTextSmall {
+    font-size: 9px;
+  }
+  .ButtonGreenLarge {
+    padding: 9px 15px;
+    width: 150px;
+    font-size: 14px;
+  }
+  .ButtonGreyLarge {
+    padding: 9px 15px;
+    width: 150px;
+    font-size: 14px;
+  }
 }
 
 @media (min-width: 960px) {
@@ -301,7 +429,7 @@ faChevronDown:hover {
     padding-right: 25px;
   }
   .MainGrid {
-    grid-template-columns: auto 365px;
+    grid-template-columns: auto 360px;
   }
   .LeftGrid {
     grid-template-columns: auto 80px;
@@ -344,6 +472,32 @@ faChevronDown:hover {
     width: 60px;
   }
 
+  .SubSectionHeader {
+    font-size: 24px;
+  }
+  .SubBody {
+    font-size: 16px;
+  }
+  .AlertText {
+    font-size: 16px;
+  }
+  .AlertTextSmall {
+    font-size: 12px;
+  }
+  .SuccessTextSmall {
+    font-size: 12px;
+  }
+  .ButtonGreenLarge {
+    padding: 9px 15px;
+    width: 180px;
+    font-size: 16px;
+  }
+  .ButtonGreyLarge {
+    padding: 9px 15px;
+    width: 180px;
+    font-size: 16px;
+  }
+
   @media (min-height: 720px) {
     .OrderSummary {
       height: 540px;
@@ -360,8 +514,8 @@ faChevronDown:hover {
     padding-right: 25px;
   }
   .MainGrid {
-    width: 1085px;
-    grid-template-columns: 720px 365px;
+    width: 1080px;
+    grid-template-columns: 720px 360px;
   }
   .LeftGrid {
     grid-template-columns: 460px 80px;
@@ -393,5 +547,34 @@ faChevronDown:hover {
   .SelectionBox {
     height: 50px;
     width: 60px;
+  }
+
+  .Spinner {
+    width: 1080px;
+  }
+  .SubSectionHeader {
+    font-size: 30px;
+  }
+  .SubBody {
+    font-size: 20px;
+  }
+  .AlertText {
+    font-size: 20px;
+  }
+  .AlertTextSmall {
+    font-size: 14px;
+  }
+  .SuccessTextSmall {
+    font-size: 14px;
+  }
+  .ButtonGreenLarge {
+    padding: 9px 15px;
+    width: 200px;
+    font-size: 20px;
+  }
+  .ButtonGreyLarge {
+    padding: 9px 15px;
+    width: 200px;
+    font-size: 20px;
   }
 }

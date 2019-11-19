@@ -5,10 +5,9 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Checkout from "../../TicketPurchases/Checkout";
-import CheckoutNEW from "../../TicketPurchases/CheckoutNEW";
-import TicketGeneral from "../../TicketPurchases/TicketGeneral";
-import QueryRouting from "../../TicketPurchases/QueryRouting";
-import Height from "../../TicketPurchases/Height";
+import CheckoutCURRENT from "../../TicketPurchases/CheckoutCURRENT";
+import TicketSelection from "../../TicketPurchases/TicketSelection";
+import TicketSelectionOLD from "../../TicketPurchases/TicketSelectionOLD";
 import EventData from "../../TicketPurchases/EventData";
 
 import OSDHeader from "../Headers/OSDHeader";
@@ -53,39 +52,19 @@ class Layout extends Component {
           exact
           render={routeProps => (
             <React.Fragment>
-              <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
               <Checkout />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/checkoutCURRENT"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
+              <CheckoutCURRENT />
               <DahdayFooter></DahdayFooter>
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/checkoutNEW"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <CheckoutNEW />
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/queryrouting"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <QueryRouting />
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/height"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <Height />
             </React.Fragment>
           )}
         />
@@ -94,7 +73,16 @@ class Layout extends Component {
           path="/ev/"
           render={routeProps => (
             <React.Fragment>
-              <TicketGeneral />
+              <TicketSelection />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/evOLD/"
+          render={routeProps => (
+            <React.Fragment>
+              <TicketSelectionOLD />
             </React.Fragment>
           )}
         />

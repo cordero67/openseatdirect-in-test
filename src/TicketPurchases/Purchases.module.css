@@ -164,6 +164,28 @@ larger than 1024 show the regular desktop layout
   -o-border-radius: 8px;
 }
 
+.faShoppingCart {
+  font-size: 1.5rem;
+  vertical-align: center;
+}
+.faShoppingCart:hover {
+  border-color: transparent;
+}
+.faChevronUp {
+  font-size: 0.75rem;
+  vertical-align: center;
+}
+faChevronUp:hover {
+  border-color: transparent;
+}
+.faChevronDown {
+  font-size: 0.75rem;
+  vertical-align: center;
+}
+faChevronDown:hover {
+  border-color: transparent;
+}
+
 @media (max-width: 480px) {
   .GridMain {
     grid-template-columns: auto;

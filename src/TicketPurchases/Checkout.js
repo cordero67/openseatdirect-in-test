@@ -3,23 +3,33 @@ import { Link } from "react-router-dom";
 import { Form, Col } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
+import CocinaCandelaLogo from "../assets/Cocina_Candela/cocina-candela-large.jpg";
+
+import { getDateStr } from "../components/formuals";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import {
+  faShoppingCart,
+  faChevronUp,
+  faChevronDown
+} from "@fortawesome/free-solid-svg-icons";
+
 import {
   getExpressBraintreeClientToken,
   processExpressPayment
 } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
-import styles from "./Purchases.module.css";
+import styles from "./Order.module.css";
+
+// defines the ticket order populated from "localStorage"
+let ticketOrder;
 
 const Checkout = props => {
   // REFACTORED CODE
-  // ticket purchase data - NONTOXIC
-  const [order, setOrder] = useState({
-    eventNum: "",
-    eventName: "",
-    ticketPrice: 0,
-    ticketsSelected: 0,
-    purchaseAmount: 0,
+  // defines purchase order to be sent to server
+  const [contactInformation, setContactInformation] = useState({
     firstName: "",
     lastName: "",
     email: ""
@@ -33,6 +43,12 @@ const Checkout = props => {
   const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(
     false
   );
+
+  // **TRANSFERRED CODE**
+  const [showDoublePane, setShowDoublePane] = useState(false);
+
+  // **TRANSFERRED CODE**
+  const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
 
   // REFACTORED CODE
   // "RADIO BUTTON" TYPE SHOW ONLY CONTROL FUNCTIONS
@@ -66,7 +82,7 @@ const Checkout = props => {
 
   // REFACTORED CODE
   // BRAINTREE INTERFACE VARIABLE
-  const [data, setData] = useState({
+  const [braintreeData, setBraintreeData] = useState({
     success: false,
     message: null,
     clientToken: true,
@@ -77,7 +93,7 @@ const Checkout = props => {
   });
 
   // REFACTORED CODE
-  // ORDER DETAILS VARIABLE
+  // stores payment receipt data received from server
   const [transactionDetail, setTransactionDetail] = useState({
     description: "",
     email: "",
@@ -90,61 +106,42 @@ const Checkout = props => {
     transID: ""
   });
 
-  const [ticketUrl, setTicketUrl] = useState("");
-
   // REFACTORED CODE
   // downloads "order" information from "localStorage" and
   // requests BrainTree "clientToken" from backend server
   useEffect(() => {
-    if (localStorage.getItem("order")) {
-      const newOrder = JSON.parse(localStorage.getItem("order"));
-      setOrder({
-        ...order,
-        eventNum: newOrder.eventNum,
-        eventName: newOrder.eventName,
-        ticketPrice: newOrder.ticketPrice,
-        ticketsSelected: newOrder.ticketsSelected,
-        purchaseAmount: newOrder.purchaseAmount
-      });
-      setTicketUrl(order.ticketUrl);
+    if (localStorage.getItem("cart")) {
+      ticketOrder = JSON.parse(localStorage.getItem("cart"));
+      console.log("ticketOrder: ", ticketOrder);
     }
-    const orderUrl = JSON.parse(localStorage.getItem("order"));
-    //setTicketUrl(orderUrl.ticketUrl);
+    // **TRANSFERRED CODE**
+    // determines initial window width and then
+    // determines a one or two pane display
+    if (window.innerWidth < 790) {
+      setShowDoublePane(false);
+    } else {
+      setShowDoublePane(true);
+    }
     getExpressToken();
   }, []);
 
-  // REFACTORED CODE
-  // ***NEED TO SEND TICKET AMOUNT TO "EventList" AND REGISTER TICKETS PURCHASED
-  // clears entire "order" object, removes "order" from "localStorage"
-  const purchaseConfirmHandler = () => {
-    setOrder({
-      eventNum: "",
-      eventName: "",
-      ticketPrice: 0,
-      ticketsSelected: 0,
-      purchaseAmount: 0,
-      firstName: "",
-      lastName: "",
-      email: ""
-    });
-    localStorage.removeItem("order");
+  // **TRANSFERRED CODE**
+  window.onresize = function(event) {
+    // dynamically determines window width and then
+    // determines a one or two pane display
+    if (window.innerWidth < 790) {
+      setShowDoublePane(false);
+    } else {
+      setShowDoublePane(true);
+    }
   };
 
   // REFACTORED CODE
-  // resets all state variables back to defualt values
-  // removes "order" from "localStorage"
-  const cancelOrderHandler = () => {
-    setOrder({
-      eventNum: "",
-      eventName: "",
-      ticketPrice: 0,
-      ticketsSelected: 0,
-      purchaseAmount: 0,
-      firstName: "",
-      lastName: "",
-      email: ""
-    });
-    localStorage.removeItem("order");
+  // ***NEED TO SEND TICKET AMOUNT TO "EventList" AND REGISTER TICKETS PURCHASED
+  // clears entire "cart" object, removes "cart" from "localStorage"
+  const purchaseConfirmHandler = () => {
+    ticketOrder({});
+    localStorage.removeItem("cart");
   };
 
   // REFACTORED CODE
@@ -157,14 +154,14 @@ const Checkout = props => {
     getExpressBraintreeClientToken()
       .then(res => {
         if (res.error) {
-          setData({ ...data, error: res.error });
+          setBraintreeData({ ...braintreeData, error: res.error });
           // ***STILL A QUESTION AS TO WHAT TO SHOW IF ""res.error" IS RETURNED***
-          // ***"res.error" IS SET AND IS CURRENTLY SHOWN IN "paymentDetails"
-          // ***IN "paymentDetails" IT DISPLAYS ERROR BUT STILL SHOWS
+          // ***"res.error" IS SET AND IS CURRENTLY SHOWN IN "paymentPane"
+          // ***IN "paymentPane" IT DISPLAYS ERROR BUT STILL SHOWS
           // ***"Contact Information" AND "Order Summmary" SECTIONS
           onlyShowConnectionStatus();
         } else {
-          setData({ ...data, clientToken: res.clientToken });
+          setBraintreeData({ ...braintreeData, clientToken: res.clientToken });
           onlyShowPaymentDetails();
         }
         onlyShowPaymentDetails();
@@ -181,33 +178,31 @@ const Checkout = props => {
   // sends payment and order information to the backend
   const expressBuy = () => {
     let nonce;
-    data.instance
+    braintreeData.instance
       .requestPaymentMethod()
       .then(res => {
         console.log("success in step 3");
         console.log(res);
         nonce = res.nonce;
-        const paymentTicketData = {
+        const paymentData = {
           paymentMethodNonce: nonce,
-          eventNum: order.eventNum,
-          ticketsSelected: order.ticketsSelected,
-          amount: order.purchaseAmount,
-          firstName: order.firstName,
-          lastName: order.lastName,
-          email: order.email
+          firstName: contactInformation.firstName,
+          lastName: contactInformation.lastName,
+          email: contactInformation.email,
+          totalPurchaseAmount: ticketOrder.totalPurchaseAmount,
+          tickets: ticketOrder.tickets
         };
 
         onlyShowLoadingSpinner();
         // sends transaction and payment details to the backend
-        processExpressPayment(paymentTicketData)
+        processExpressPayment(paymentData)
           .then(response => {
             console.log("order sent");
             console.log(response);
-            setData({
-              ...data,
+            setBraintreeData({
+              ...braintreeData,
               success: response.success
             });
-
             setTransactionDetail({
               ...transactionDetail,
               description: response.eventTitle,
@@ -222,17 +217,17 @@ const Checkout = props => {
             });
 
             onlyShowPurchaseConfirmation();
-            // empty cart and reset "ticketPurchase" object
+            // empty cart and reset "ticketOrder" object
             purchaseConfirmHandler();
           })
           .catch(error => {
             console.log("processExpressPayment(): ERROR THROWN");
-            setData({
-              ...data,
+            setBraintreeData({
+              ...braintreeData,
               success: false,
               message: error.friendlyMessage
             });
-            //data.instance.clearSelectedPaymentMethod();
+            //braintreeData.instance.clearSelectedPaymentMethod();
             onlyShowConnectionStatus();
           });
       })
@@ -240,42 +235,190 @@ const Checkout = props => {
       // there is a problem with Braintree and cannot return nonce
       .catch(error => {
         console.log("requestPaymentMethod(): ERROR THROWN", error);
-        setData({ ...data, success: false });
-        //data.instance.clearSelectedPaymentMethod();
+        setBraintreeData({ ...braintreeData, success: false });
+        //braintreeData.instance.clearSelectedPaymentMethod();
         onlyShowConnectionStatus();
       });
   };
 
+  // determines whether or not to display the purchase amount
+  // "showDoublePane" must be false and "tickets.selected" must be > 0
+  // **TRANSFERRED CODE**
+  const totalAmount = show => {
+    if (!showLoadingSpinner && !show && ticketOrder.totalPurchaseAmount > 0) {
+      return <div>${ticketOrder.totalPurchaseAmount}</div>;
+    } else {
+      return null;
+    }
+  };
+
+  // determines whether or not to display the cart and arrow
+  // "showDoublePane" must be false
+  // **TRANSFERRED CODE**
+  const cartLink = show => {
+    if (!showLoadingSpinner && !show) {
+      return (
+        <div>
+          <FontAwesomeIcon
+            onClick={switchShowOrderSummary}
+            className={styles.faShoppingCart}
+            icon={faShoppingCart}
+          />
+
+          {showOrderSummaryOnly ? (
+            <FontAwesomeIcon
+              onClick={switchShowOrderSummary}
+              className={styles.faChevronUp}
+              icon={faChevronUp}
+            />
+          ) : (
+            <FontAwesomeIcon
+              onClick={switchShowOrderSummary}
+              className={styles.faChevronDown}
+              icon={faChevronDown}
+            />
+          )}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  // **TRANSFERRED CODE**
+  // toggles between "order pane" views
+  const switchShowOrderSummary = event => {
+    if (showOrderSummaryOnly) {
+      setShowOrderSummaryOnly(false);
+    } else {
+      setShowOrderSummaryOnly(true);
+    }
+  };
+
+  // **TRANSFERRED CODE**
+  // NEED TO STYLE
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
+  let checkoutButton = null;
+  if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount > 0) {
+    checkoutButton = (
+      <button
+        disabled={false}
+        style={{
+          height: "44px",
+          width: "127px",
+          backgroundColor: "#d1410c",
+          color: "black",
+          fontWeight: "600",
+          border: "1px #d1410c",
+          borderRadius: "8px"
+        }}
+      >
+        <Link>Place OrderNOW</Link>
+      </button>
+    );
+  } else if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount <= 0) {
+    checkoutButton = (
+      <button
+        disabled={true}
+        style={{
+          height: "44px",
+          width: "127px",
+          backgroundColor: "#fff",
+          color: "lightgrey",
+          fontWeight: "600",
+          border: "1px solid lightgrey",
+          borderRadius: "8px"
+        }}
+      >
+        Place OrderNOW
+      </button>
+    );
+  } else checkoutButton = null;
+
+  // **TRANSFERRED CODE**
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
+  let orderSummary;
+  // FULLY STYLED
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
+  if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount > 0) {
+    orderSummary = (
+      <Aux>
+        <div style={{ fontWeight: "600" }}>Order Summary</div>
+        <br></br>
+        {ticketOrder.tickets.map(item => {
+          if (item.ticketsSelected > 0) {
+            return (
+              <Aux>
+                <div className={styles.RightGrid}>
+                  <div style={{ fontWeight: "400" }}>
+                    {item.ticketsSelected} X {item.ticketName}
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    ${item.ticketsSelected * item.ticketPrice}{" "}
+                  </div>
+                </div>
+              </Aux>
+            );
+          }
+        })}
+
+        <hr style={{ border: "1px solid#B2B2B2" }} />
+        <div className={styles.RightGrid}>
+          <div style={{ fontWeight: "600" }}>Total</div>
+          <div style={{ textAlign: "right" }}>
+            ${ticketOrder.totalPurchaseAmount}
+          </div>
+        </div>
+        <br></br>
+      </Aux>
+    );
+  } else if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount <= 0) {
+    orderSummary = (
+      <div
+        style={{
+          color: "grey",
+          position: "relative",
+          float: "left",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)"
+        }}
+      >
+        <FontAwesomeIcon
+          className={styles.faShoppingCart}
+          icon={faShoppingCart}
+        />
+      </div>
+    );
+  } else {
+    orderSummary = null;
+  }
+
   // REFACTORED CODE
   // displays "error" if one exists
   const showError = error => (
-    <div
-      className={styles.AlertTextLarge}
-      style={{ display: error ? "" : "none" }}
-    >
-      {error}
-    </div>
+    <div style={{ display: error ? "" : "none" }}>{error}</div>
   );
 
   // REFACTORED CODE
   // displays the "DropIn" or an "empty cart" error message
   const showDropIn = () => (
-    <div onBlur={() => setData({ ...data, error: "" })}>
-      {data.clientToken !== null && order.ticketsSelected > 0 ? (
+    <div onBlur={() => setBraintreeData({ ...braintreeData, error: "" })}>
+      {braintreeData.clientToken !== null &&
+      ticketOrder.totalPurchaseAmount > 0 ? (
         <div>
           {/*this establishes a Braintree connection in order to complete
           part "3" of the interaction*/}
           <DropIn
             options={{
-              authorization: data.clientToken,
+              authorization: braintreeData.clientToken,
               paypal: {
                 flow: "vault"
               },
               venmo: {}
             }}
-            onInstance={instance => (data.instance = instance)}
+            onInstance={instance => (braintreeData.instance = instance)}
           />
-          {submitButton}
         </div>
       ) : (
         <div>
@@ -332,10 +475,12 @@ const Checkout = props => {
 
   // REFACTORED CODE
   // determines what "contact information" has been filled out by the ticket buyer
-  let fullNameProvided = order.firstName !== "" && order.lastName !== "";
+  let fullNameProvided =
+    contactInformation.firstName !== "" && contactInformation.lastName !== "";
   const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  let validEmail = regsuper.test(order.email);
-  let detailsMinimal = fullNameProvided && regsuper.test(order.email);
+  let validEmail = regsuper.test(contactInformation.email);
+  let detailsMinimal =
+    fullNameProvided && regsuper.test(contactInformation.email);
   let detailsMessage = null;
 
   if (!validEmail && fullNameProvided) {
@@ -366,28 +511,74 @@ const Checkout = props => {
   }
 
   // REFACTORED CODE
-  // determines "submitButton" functionality/formatting
-  let submitButton;
+  // determines "placeOrderButton" functionality/formatting
+  let placeOrderButton;
 
   if (detailsMinimal) {
-    submitButton = (
+    placeOrderButton = (
       <button
         onClick={expressBuy}
         disabled={!detailsMinimal}
         className={styles.ButtonGreenLarge}
       >
-        Submit Payment
+        Place Order
       </button>
     );
   } else {
-    submitButton = (
+    placeOrderButton = (
       <button
         onClick={expressBuy}
         disabled={!detailsMinimal}
         className={styles.ButtonGreyLarge}
       >
-        Submit Payment
+        Place Order
       </button>
+    );
+  }
+  // **TRANSFERRED CODE**
+  let orderPane;
+  if (showDoublePane) {
+    orderPane = (
+      <div>
+        <div className={styles.ImageBox}>
+          <img
+            className={styles.Image}
+            src={CocinaCandelaLogo}
+            alt="Cocina Candela Logo"
+          />
+        </div>
+        <div className={styles.OrderSummary}>{orderSummary}</div>
+      </div>
+    );
+  } else {
+    orderPane = (
+      <Aux>
+        <div>
+          <div className={styles.OrderSummaryAlt}>{orderSummary}</div>
+        </div>
+        <div className={styles.EventFooter}>
+          <div
+            style={{
+              paddingTop: "10px",
+              fontWeight: "600"
+            }}
+          >
+            {cartLink(showDoublePane)}
+          </div>
+          <div
+            style={{
+              textAlign: "right",
+              paddingRight: "10px",
+              paddingTop: "8px",
+              fontSize: "20px",
+              fontWeight: "600"
+            }}
+          >
+            {totalAmount(showDoublePane)}
+          </div>
+          <div style={{ textAlign: "right" }}>{placeOrderButton}</div>
+        </div>
+      </Aux>
     );
   }
 
@@ -395,12 +586,12 @@ const Checkout = props => {
   // DEFINES VARIABELS THAT DEFINE RENDERED ITEMS
   let connectionStatus = null;
   let loadingSpinner = null;
-  let paymentDetails = null;
+  let paymentPane = null;
   let purchaseConfirmation = null;
 
   // REFACTORED CODE
   // CONTROLS "connectionStatus" VIEW
-  if (showConnectionStatus && data.message === null) {
+  if (showConnectionStatus && braintreeData.message === null) {
     connectionStatus = (
       <Aux>
         <div>
@@ -409,31 +600,60 @@ const Checkout = props => {
         </div>
       </Aux>
     );
-  } else if (showConnectionStatus && data.message !== null) {
+  } else if (showConnectionStatus && braintreeData.message !== null) {
     connectionStatus = (
       <Aux>
         <div>Your credit is shit!!!</div>
       </Aux>
     );
+  } else {
+    connectionStatus = null;
   }
 
   // REFACTORED CODE
   // CONTROLS "loadingSpinner" VIEW
   if (showLoadingSpinner) {
-    loadingSpinner = <Spinner></Spinner>;
-  } /*else {
-    loadingSpinner = <div>loadingSpinner - else: LOADING IS COMPLETE!!!</div>;
-  }*/
+    loadingSpinner = (
+      <div className={styles.Spinner}>
+        <Spinner></Spinner>;
+      </div>
+    );
+  } else {
+    loadingSpinner = null;
+  }
 
   // REFACTORED CODE
-  // CONTROLS "paymentDetails" VIEW
+  // CONTROLS "paymentPane" VIEW
   if (showPaymentDetails) {
-    paymentDetails = (
+    paymentPane = (
       <Aux>
-        <div className={styles.GridMain}>
-          <div className={styles.GridMainItemLeft}>
-            <span className={styles.SubSectionHeader}>Contact Information</span>
-
+        <div className={styles.MainItemLeft}>
+          <div className={styles.EventHeader}>
+            <div
+              style={{
+                fontSize: "1.125rem",
+                fontWeight: "600"
+              }}
+            >
+              <span
+                style={{
+                  textOverflow: "ellipsis"
+                }}
+              >
+                {ticketOrder.eventName}
+              </span>
+            </div>
+            <div
+              style={{
+                fontSize: "1.0rem",
+                fontWeight: "400"
+              }}
+            >
+              {ticketOrder.startDateTime}
+            </div>
+          </div>
+          <div className={styles.EventTicketSection}>
+            <span className={styles.TicketType}>Contact Information</span>
             <Form.Row>
               <Form.Group as={Col} controlId="formGridFirstName">
                 <Form.Control
@@ -441,10 +661,10 @@ const Checkout = props => {
                   name="firstName"
                   required
                   placeholder="First Name*"
-                  value={order.firstName}
+                  value={contactInformation.firstName}
                   onChange={event =>
-                    setOrder({
-                      ...order,
+                    setContactInformation({
+                      ...contactInformation,
                       firstName: event.target.value
                     })
                   }
@@ -457,10 +677,10 @@ const Checkout = props => {
                   name="lastName"
                   required
                   placeholder="Last Name*"
-                  value={order.lastName}
+                  value={contactInformation.lastName}
                   onChange={event =>
-                    setOrder({
-                      ...order,
+                    setContactInformation({
+                      ...contactInformation,
                       lastName: event.target.value
                     })
                   }
@@ -473,99 +693,42 @@ const Checkout = props => {
                 name="email"
                 required
                 placeholder="Email Address*"
-                value={order.email}
+                value={contactInformation.email}
                 onChange={event =>
-                  setOrder({
-                    ...order,
+                  setContactInformation({
+                    ...contactInformation,
                     email: event.target.value
                   })
                 }
               />
               {detailsMessage}
             </Form.Group>
-
-            <span className={styles.SubSectionHeader}>Payment Information</span>
+            <span className={styles.TicketType}>Payment Information</span>
             {showDropIn()}
-            {showError(data.error)}
+            {showError(braintreeData.error)}
           </div>
-
-          <div className={styles.GridMainItemRight}>
-            <span className={styles.SubSectionHeader}>Order Summary</span>
-            <br></br>
-            <div className={styles.SubBody}>
-              <div className="row">
-                <div className="col-10">
-                  {order.ticketsSelected} x {order.eventName}
-                </div>
-                <div
-                  style={{
-                    textAlign: "right",
-                    paddingRight: "25px"
-                  }}
-                  className="col-2"
-                >
-                  ${order.purchaseAmount}
-                </div>
-              </div>
-              <hr style={{ border: "1px solid#C0C0C0" }} />
-              <div className="row">
-                <div className="col-10">Sub-Total</div>
-                <div
-                  style={{
-                    textAlign: "right",
-                    paddingRight: "25px"
-                  }}
-                  className="col-2"
-                >
-                  ${order.purchaseAmount}
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-10">Processing fees:</div>
-                <div
-                  style={{
-                    textAlign: "right",
-                    paddingRight: "25px"
-                  }}
-                  className="col-2"
-                >
-                  $0
-                </div>
-              </div>
-              <hr style={{ border: "1px solid#C0C0C0" }} />
-              <div className="row">
-                <div className="col-10">Total</div>
-
-                <div
-                  style={{
-                    textAlign: "right",
-                    paddingRight: "25px"
-                  }}
-                  className="col-2"
-                >
-                  ${order.purchaseAmount}
-                </div>
-              </div>
+          <div className={styles.EventFooter}>
+            <div
+              style={{
+                paddingTop: "8px",
+                fontSize: "20px",
+                fontWeight: "600"
+              }}
+            >
+              {cartLink(showDoublePane)}
             </div>
-            <br></br>
-            <br></br>
-            <div className={styles.GridButtonsLarge}>
-              <div className={styles.GridButtonsLargeLeft}>
-                <button className={styles.ButtonWhiteLarge}>
-                  <Link to="/ev">Change Order</Link>
-                </button>
-              </div>
-              <div className={styles.GridButtonsLargeRight}>
-                <button
-                  onClick={cancelOrderHandler}
-                  className={styles.ButtonWhiteLarge}
-                >
-                  <a href="https://www.dahday.com/">Cancel Order</a>
-                </button>
-              </div>
-              <br></br>
-              <br></br>
+            <div
+              style={{
+                textAlign: "right",
+                paddingRight: "10px",
+                paddingTop: "8px",
+                fontSize: "20px",
+                fontWeight: "600"
+              }}
+            >
+              {totalAmount(showDoublePane)}
             </div>
+            <div style={{ textAlign: "right" }}>{placeOrderButton}</div>
           </div>
         </div>
       </Aux>
@@ -578,24 +741,54 @@ const Checkout = props => {
     purchaseConfirmation = (
       <Aux>
         <span className={styles.SubSectionHeader}>Order Status</span>
-        <div style={{ paddingTop: "20px" }}>{showSuccess(data.success)}</div>
+        <div style={{ paddingTop: "20px" }}>
+          {showSuccess(braintreeData.success)}
+        </div>
       </Aux>
     );
+  } else {
+    purchaseConfirmation = null;
+  }
+
+  // **TRANSFERRED CODE**
+  let mainDisplay = null;
+  if (showPaymentDetails) {
+    if (showDoublePane) {
+      // REMOVED "{ticketPane}" FROM "<Aux>" BODY
+      mainDisplay = (
+        <Aux>
+          <div className={styles.MainGrid}>
+            {paymentPane}
+            {orderPane}
+          </div>
+        </Aux>
+      );
+    } else if (!showOrderSummaryOnly) {
+      // REMOVED "{ticketPane}" FROM "<Aux>" BODY
+      mainDisplay = (
+        <Aux>
+          <div className={styles.MainGrid}>{paymentPane}</div>
+        </Aux>
+      );
+    } else {
+      mainDisplay = (
+        <Aux>
+          <div className={styles.MainGrid}>{orderPane}</div>
+        </Aux>
+      );
+    }
+  } else {
+    mainDisplay = null;
   }
 
   // REFACTORED CODE
   return (
     <Aux>
-      <div className={styles.ContentBoxLarge}>
-        <div className={styles.SectionHeader}>Checkout</div>
-        <br></br>
-        <br></br>
-        <div className={styles.Body}>
-          {connectionStatus}
-          {loadingSpinner}
-          {paymentDetails}
-          {purchaseConfirmation}
-        </div>
+      <div className={styles.MainContainer}>
+        {loadingSpinner}
+        {connectionStatus}
+        {mainDisplay}
+        {purchaseConfirmation}
       </div>
     </Aux>
   );

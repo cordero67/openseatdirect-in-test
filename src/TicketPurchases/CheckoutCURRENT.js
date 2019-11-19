@@ -34,12 +34,6 @@ const Checkout = props => {
     false
   );
 
-  // **TRANSFERRED CODE**
-  const [showDoublePane, setShowDoublePane] = useState(false);
-
-  // **TRANSFERRED CODE**
-  const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
-
   // REFACTORED CODE
   // "RADIO BUTTON" TYPE SHOW ONLY CONTROL FUNCTIONS
   const onlyShowConnectionStatus = () => {
@@ -96,7 +90,7 @@ const Checkout = props => {
     transID: ""
   });
 
-  const [ticketUrl, setTicketUrl] = useState("");
+  //const [ticketUrl, setTicketUrl] = useState("");
 
   // REFACTORED CODE
   // downloads "order" information from "localStorage" and
@@ -112,31 +106,12 @@ const Checkout = props => {
         ticketsSelected: newOrder.ticketsSelected,
         purchaseAmount: newOrder.purchaseAmount
       });
-      setTicketUrl(order.ticketUrl);
+      //setTicketUrl(order.ticketUrl);
     }
-    const orderUrl = JSON.parse(localStorage.getItem("order"));
+    //const orderUrl = JSON.parse(localStorage.getItem("order"));
     //setTicketUrl(orderUrl.ticketUrl);
-    // **TRANSFERRED CODE**
-    // determines initial window width and then
-    // determines a one or two pane display
-    if (window.innerWidth < 790) {
-      setShowDoublePane(false);
-    } else {
-      setShowDoublePane(true);
-    }
     getExpressToken();
   }, []);
-
-  // **TRANSFERRED CODE**
-  window.onresize = function(event) {
-    // dynamically determines window width and then
-    // determines a one or two pane display
-    if (window.innerWidth < 790) {
-      setShowDoublePane(false);
-    } else {
-      setShowDoublePane(true);
-    }
-  };
 
   // REFACTORED CODE
   // ***NEED TO SEND TICKET AMOUNT TO "EventList" AND REGISTER TICKETS PURCHASED
@@ -274,12 +249,7 @@ const Checkout = props => {
   // REFACTORED CODE
   // displays "error" if one exists
   const showError = error => (
-    <div
-      className={styles.AlertTextLarge}
-      style={{ display: error ? "" : "none" }}
-    >
-      {error}
-    </div>
+    <div style={{ display: error ? "" : "none" }}>{error}</div>
   );
 
   // REFACTORED CODE
@@ -441,13 +411,6 @@ const Checkout = props => {
       </Aux>
     );
   }
-  /*else {
-    connectionStatus = (
-      <Aux>
-        <div>connectionStatus - else: Everything is OK!!!</div>
-      </Aux>
-    );
-  }*/
 
   // REFACTORED CODE
   // CONTROLS "loadingSpinner" VIEW
@@ -602,14 +565,7 @@ const Checkout = props => {
         </div>
       </Aux>
     );
-  } /*else {
-    paymentDetails = (
-      <div>
-        paymentDetails - else: WAITING FOR BT TOKEN OR ORDER HAS BEEN
-        SUBMITTED!!!
-      </div>
-    );
-  }*/
+  }
 
   // REFACTORED CODE
   // CONTROLS "purchaseConfirmation" VIEW
@@ -620,11 +576,7 @@ const Checkout = props => {
         <div style={{ paddingTop: "20px" }}>{showSuccess(data.success)}</div>
       </Aux>
     );
-  } /*else {
-    purchaseConfirmation = (
-      <div>purchaseConfirmation - else: ORDER HAS NOT BEEN SUBMITTED!!!</div>
-    );
-  }*/
+  }
 
   // REFACTORED CODE
   return (

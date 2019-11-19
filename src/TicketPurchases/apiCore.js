@@ -35,7 +35,7 @@ export const processExpressPayment = paymentTicketData => {
       },
       body: JSON.stringify(paymentTicketData)
     })
-      .then(handleErrors)
+      //.then(handleErrors)
       .then(response => {
         return response.json();
       })
