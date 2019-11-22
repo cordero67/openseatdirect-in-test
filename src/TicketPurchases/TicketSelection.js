@@ -95,11 +95,11 @@ const SingleEvent = () => {
       shortDescription: event.shortDescription,
       startDateTime: dateFormat(
         event.startDateTime,
-        "dddd, mmmm dS, yyyy, h:MM:ss TT"
+        'ddd, mmm d, yyyy - h:MM TT',true
       ),
       endDateTime: dateFormat(
         event.endDateTime,
-        "dddd, mmmm dS, yyyy, h:MM:ss TT"
+        'ddd, mmm d, yyyy - h:MM TT',true
       ),
       organizerUrl: event.organizerUrl,
       eventUrl: event.eventUrl,
@@ -154,11 +154,11 @@ const SingleEvent = () => {
       eventName: event.eventTitle,
       startDateTime: dateFormat(
         event.startDateTime,
-        "dddd, mmmm dS, yyyy, h:MM:ss TT"
+        'ddd, mmm d, yyyy - h:MM TT',true
       ),
       endDateTime: dateFormat(
         event.endDateTime,
-        "dddd, mmmm dS, yyyy, h:MM:ss TT"
+        'ddd, mmm d, yyyy - h:MM TT',true
       ),
       totalPurchaseAmount: 0,
       ticketsPurchased: 0,
