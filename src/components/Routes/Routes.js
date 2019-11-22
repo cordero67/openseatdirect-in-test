@@ -5,7 +5,7 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Checkout from "../../TicketPurchases/Checkout";
-import CheckoutCURRENT from "../../TicketPurchases/CheckoutCURRENT";
+import CheckoutOLD from "../../TicketPurchases/CheckoutOLD";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import TicketSelectionOLD from "../../TicketPurchases/TicketSelectionOLD";
 import EventData from "../../TicketPurchases/EventData";
@@ -58,12 +58,12 @@ class Layout extends Component {
         />
 
         <Route
-          path="/checkoutCURRENT"
+          path="/checkoutOLD"
           exact
           render={routeProps => (
             <React.Fragment>
               <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
-              <CheckoutCURRENT />
+              <CheckoutOLD />
               <DahdayFooter></DahdayFooter>
             </React.Fragment>
           )}

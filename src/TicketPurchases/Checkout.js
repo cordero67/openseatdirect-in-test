@@ -4,11 +4,9 @@ import { Form, Col } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
 import CocinaCandelaLogo from "../assets/Cocina_Candela/cocina-candela-large.jpg";
-
 import { getDateStr } from "../components/formuals";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import {
   faShoppingCart,
   faChevronUp,
@@ -24,7 +22,7 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Order.module.css";
 
 // defines the ticket order populated from "localStorage"
-let ticketOrder;
+let ticketOrder = {};
 
 const Checkout = props => {
   // REFACTORED CODE
@@ -79,7 +77,7 @@ const Checkout = props => {
     setShowPaymentDetails(false);
     setShowPurchaseConfirmation(true);
   };
-
+  
   // REFACTORED CODE
   // BRAINTREE INTERFACE VARIABLE
   const [braintreeData, setBraintreeData] = useState({
@@ -137,11 +135,12 @@ const Checkout = props => {
   };
 
   // REFACTORED CODE
-  // ***NEED TO SEND TICKET AMOUNT TO "EventList" AND REGISTER TICKETS PURCHASED
   // clears entire "cart" object, removes "cart" from "localStorage"
   const purchaseConfirmHandler = () => {
-    ticketOrder({});
+    console.log("Inside purchaseConfirmHandler()");
+    ticketOrder = {};
     localStorage.removeItem("cart");
+    console.log("Finishing purchaseConfirmHandler()");
   };
 
   // REFACTORED CODE
@@ -178,7 +177,8 @@ const Checkout = props => {
   // sends payment and order information to the backend
   const expressBuy = () => {
     let nonce;
-    braintreeData.instance
+    // **I ADDED BACK "getNonce = " BUT I DON'T THINK ITS REQUIRED
+    let getNonce = braintreeData.instance
       .requestPaymentMethod()
       .then(res => {
         console.log("success in step 3");
@@ -197,12 +197,13 @@ const Checkout = props => {
         // sends transaction and payment details to the backend
         processExpressPayment(paymentData)
           .then(response => {
-            console.log("order sent");
-            console.log(response);
+            console.log("order received");
+            console.log("response: ",response);
             setBraintreeData({
               ...braintreeData,
               success: response.success
             });
+            console.log("about to setTransactionDetail()");
             setTransactionDetail({
               ...transactionDetail,
               description: response.eventTitle,
@@ -215,19 +216,19 @@ const Checkout = props => {
               totalAmount: response.bt_trans_amount,
               transID: response.bt_trans_id
             });
-
+            console.log("about to purchaseConfirmHandler()");
             onlyShowPurchaseConfirmation();
             // empty cart and reset "ticketOrder" object
             purchaseConfirmHandler();
+            console.log("SUCCESSFULL PURCHASE2")
           })
           .catch(error => {
-            console.log("processExpressPayment(): ERROR THROWN");
+            console.log("processExpressPayment(): ERROR THROWN!!!!!!!");
             setBraintreeData({
               ...braintreeData,
               success: false,
               message: error.friendlyMessage
             });
-            //braintreeData.instance.clearSelectedPaymentMethod();
             onlyShowConnectionStatus();
           });
       })
@@ -235,14 +236,17 @@ const Checkout = props => {
       // there is a problem with Braintree and cannot return nonce
       .catch(error => {
         console.log("requestPaymentMethod(): ERROR THROWN", error);
-        setBraintreeData({ ...braintreeData, success: false });
+        // **THIS IS THE ORIGINAL CODE FOR THE ecomm CLASS
+        setBraintreeData({ ...braintreeData, error: error.message });
+        // **THIS IS WHAT IT WAS CHANGED TO
+        //setBraintreeData({ ...braintreeData, success: false });
         //braintreeData.instance.clearSelectedPaymentMethod();
-        onlyShowConnectionStatus();
+        // ** WE NEED TO LET THIS ERROR DISPLAY WITHOUT SWITCHING TO "onlyShowConnectionStatus()";"
+        // onlyShowConnectionStatus();
       });
   };
 
   // determines whether or not to display the purchase amount
-  // "showDoublePane" must be false and "tickets.selected" must be > 0
   // **TRANSFERRED CODE**
   const totalAmount = show => {
     if (!showLoadingSpinner && !show && ticketOrder.totalPurchaseAmount > 0) {
@@ -253,7 +257,6 @@ const Checkout = props => {
   };
 
   // determines whether or not to display the cart and arrow
-  // "showDoublePane" must be false
   // **TRANSFERRED CODE**
   const cartLink = show => {
     if (!showLoadingSpinner && !show) {
@@ -294,46 +297,6 @@ const Checkout = props => {
       setShowOrderSummaryOnly(true);
     }
   };
-
-  // **TRANSFERRED CODE**
-  // NEED TO STYLE
-  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
-  let checkoutButton = null;
-  if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount > 0) {
-    checkoutButton = (
-      <button
-        disabled={false}
-        style={{
-          height: "44px",
-          width: "127px",
-          backgroundColor: "#d1410c",
-          color: "black",
-          fontWeight: "600",
-          border: "1px #d1410c",
-          borderRadius: "8px"
-        }}
-      >
-        <Link>Place OrderNOW</Link>
-      </button>
-    );
-  } else if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount <= 0) {
-    checkoutButton = (
-      <button
-        disabled={true}
-        style={{
-          height: "44px",
-          width: "127px",
-          backgroundColor: "#fff",
-          color: "lightgrey",
-          fontWeight: "600",
-          border: "1px solid lightgrey",
-          borderRadius: "8px"
-        }}
-      >
-        Place OrderNOW
-      </button>
-    );
-  } else checkoutButton = null;
 
   // **TRANSFERRED CODE**
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
@@ -397,7 +360,7 @@ const Checkout = props => {
   // REFACTORED CODE
   // displays "error" if one exists
   const showError = error => (
-    <div style={{ display: error ? "" : "none" }}>{error}</div>
+    <div style={{ display: error ? "" : "none" }}><span style={{color: "red"}}>{error}</span></div>
   );
 
   // REFACTORED CODE
@@ -419,6 +382,7 @@ const Checkout = props => {
             }}
             onInstance={instance => (braintreeData.instance = instance)}
           />
+          {showError(braintreeData.error)}
         </div>
       ) : (
         <div>
@@ -510,6 +474,50 @@ const Checkout = props => {
     );
   }
 
+
+
+
+  // **TRANSFERRED CODE**
+  // NEED TO STYLE
+  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
+  let checkoutButton = null;
+  if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount > 0) {
+    checkoutButton = (
+      <button
+        disabled={false}
+        style={{
+          height: "44px",
+          width: "127px",
+          backgroundColor: "#d1410c",
+          color: "black",
+          fontWeight: "600",
+          border: "1px #d1410c",
+          borderRadius: "8px"
+        }}
+      >
+        <Link>Place OrderNOW</Link>
+      </button>
+    );
+  } else if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount <= 0) {
+    checkoutButton = (
+      <button
+        disabled={true}
+        style={{
+          height: "44px",
+          width: "127px",
+          backgroundColor: "#fff",
+          color: "lightgrey",
+          fontWeight: "600",
+          border: "1px solid lightgrey",
+          borderRadius: "8px"
+        }}
+      >
+        Place OrderNOW
+      </button>
+    );
+  } else checkoutButton = null;
+
+
   // REFACTORED CODE
   // determines "placeOrderButton" functionality/formatting
   let placeOrderButton;
@@ -519,7 +527,7 @@ const Checkout = props => {
       <button
         onClick={expressBuy}
         disabled={!detailsMinimal}
-        className={styles.ButtonGreenLarge}
+        className={styles.ButtonGreen}
       >
         Place Order
       </button>
@@ -529,12 +537,13 @@ const Checkout = props => {
       <button
         onClick={expressBuy}
         disabled={!detailsMinimal}
-        className={styles.ButtonGreyLarge}
+        className={styles.ButtonGrey}
       >
         Place Order
       </button>
     );
   }
+  
   // **TRANSFERRED CODE**
   let orderPane;
   if (showDoublePane) {
@@ -705,7 +714,6 @@ const Checkout = props => {
             </Form.Group>
             <span className={styles.TicketType}>Payment Information</span>
             {showDropIn()}
-            {showError(braintreeData.error)}
           </div>
           <div className={styles.EventFooter}>
             <div

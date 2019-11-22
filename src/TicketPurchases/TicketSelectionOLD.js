@@ -208,7 +208,7 @@ const TicketSelection = () => {
           borderRadius: "8px"
         }}
       >
-        <Link to="/checkoutCURRENT">Checkout</Link>
+        <Link to="/checkoutOLD">Checkout</Link>
       </button>
     );
   } else {

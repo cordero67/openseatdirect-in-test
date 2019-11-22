@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
+import dateFormat from "dateformat";
 import queryString from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,11 +18,6 @@ import CocinaCandelaLogo from "../assets/Cocina_Candela/cocina-candela-large.jpg
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
 import TicketItem from "./TicketItem";
 import styles from "./Order.module.css";
-
-// NEW VARIABLES/FUNCTIONS
-// eventDetails
-// ticketOrder
-// ticketInfo, setTicketInfo
 
 // CODE TRANSFERRED FROM "EventData"
 // defines an event's NON ticket type specific information
@@ -70,6 +66,8 @@ const SingleEvent = () => {
     getEventData(eventID)
       .then(res => {
         console.log("Event Data Received: ", res);
+        console.log("startDateTime Data Received: ", res.startDateTime);
+        console.log("endDateTime Data Received: ", res.endDateTime);
         loadEventDetails(res);
         loadTicketInfo(res.ticket);
         createTicketOrder(res);
@@ -87,7 +85,6 @@ const SingleEvent = () => {
 
   // CODE TRANSFERRED FROM "EventData"
   const loadEventDetails = event => {
-    const formattedDateTime = new Date(event.startDateTime);
     eventDetails = {
       eventNum: event.eventNum,
       eventTitle: event.eventTitle,
@@ -96,8 +93,14 @@ const SingleEvent = () => {
       longDescription: event.longDescription,
       organizer: event.organizerName,
       shortDescription: event.shortDescription,
-      startDateTime: getDateStr(formattedDateTime),
-      endDateTime: event.endDateTime,
+      startDateTime: dateFormat(
+        event.startDateTime,
+        "dddd, mmmm dS, yyyy, h:MM:ss TT"
+      ),
+      endDateTime: dateFormat(
+        event.endDateTime,
+        "dddd, mmmm dS, yyyy, h:MM:ss TT"
+      ),
       organizerUrl: event.organizerUrl,
       eventUrl: event.eventUrl,
       location: {
@@ -135,7 +138,6 @@ const SingleEvent = () => {
 
   // CODE TRANSFERRED FROM "EventData"
   const createTicketOrder = event => {
-    const formattedDateTime = new Date(event.startDateTime);
     const ticketParameters = [];
     event.ticket.map(item => {
       const newTicketItem = {
@@ -150,9 +152,16 @@ const SingleEvent = () => {
       eventNum: event.eventNum,
       eventUrl: event.eventUrl,
       eventName: event.eventTitle,
-      startDateTime: getDateStr(formattedDateTime),
-      endDateTime: event.endDateTime,
+      startDateTime: dateFormat(
+        event.startDateTime,
+        "dddd, mmmm dS, yyyy, h:MM:ss TT"
+      ),
+      endDateTime: dateFormat(
+        event.endDateTime,
+        "dddd, mmmm dS, yyyy, h:MM:ss TT"
+      ),
       totalPurchaseAmount: 0,
+      ticketsPurchased: 0,
       tickets: ticketParameters
     };
     console.log("ticketOrder: ", ticketOrder);
@@ -204,12 +213,15 @@ const SingleEvent = () => {
         item.ticketsSelected = parseInt(ticketType.ticketsSelected);
       }
     });
-    // updates "ticketOrder.totalPurchaseAmount"
+    // updates "ticketOrder.totalPurchaseAmount" and "ticketOrder.ticketsPurchased"
     let tempTotalPurchaseAmount = 0;
+    let temptTicketsPurchased = 0;
     ticketOrder.tickets.map(item => {
       tempTotalPurchaseAmount += item.ticketsSelected * item.ticketPrice;
+      temptTicketsPurchased += item.ticketsSelected;
     });
     ticketOrder.totalPurchaseAmount = tempTotalPurchaseAmount;
+    ticketOrder.ticketsPurchased = temptTicketsPurchased;
     console.log("ticketOrder.tickets: ", ticketOrder.tickets);
     console.log("ticketOrder: ", ticketOrder);
   };
@@ -259,12 +271,22 @@ const SingleEvent = () => {
   };
 
   // determines whether or not to display the purchase amount
-  // "showDoublePane" must be false and "tickets.selected" must be > 0
+  // "showDoublePane" must be false and "ticketOrder.totalPurchaseAmount" must be > 0
   // **DECISION CODE**
   // **NOTED**
   const totalAmount = show => {
     if (!isLoading && !show && ticketOrder.totalPurchaseAmount > 0) {
       return <div>${ticketOrder.totalPurchaseAmount}</div>;
+    } else return null;
+  };
+
+  // determines whether or not to display the number of tickets purchased
+  // "showDoublePane" must be false and "ticketOrder.ticketsPurchased" must be > 0
+  // **DECISION CODE**
+  // **NOTED**
+  const ticketAmount = show => {
+    if (!isLoading && !show && ticketOrder.ticketsPurchased > 0) {
+      return <Aux><span className={styles.cartBadge}><sup>{ticketOrder.ticketsPurchased}</sup></span></Aux>;
     } else return null;
   };
 
@@ -280,7 +302,7 @@ const SingleEvent = () => {
             onClick={switchShowOrderSummary}
             className={styles.faShoppingCart}
             icon={faShoppingCart}
-          />
+          />{ticketAmount(showDoublePane)}
 
           {showOrderSummaryOnly ? (
             <FontAwesomeIcon
@@ -332,32 +354,16 @@ const SingleEvent = () => {
       <button
         onClick={purchaseTicketHandler}
         disabled={false}
-        style={{
-          height: "44px",
-          width: "127px",
-          backgroundColor: "#d1410c",
-          color: "black",
-          fontWeight: "600",
-          border: "1px #d1410c",
-          borderRadius: "8px"
-        }}
+        className={styles.ButtonRed}
       >
-        <Link to="/checkout">Checkout</Link>
+        <Link to="/checkout"><span style={{color: "white"}}>Checkout</span></Link>
       </button>
     );
   } else if (!isLoading) {
     checkoutButton = (
       <button
         disabled={true}
-        style={{
-          height: "44px",
-          width: "127px",
-          backgroundColor: "#fff",
-          color: "lightgrey",
-          fontWeight: "600",
-          border: "1px solid lightgrey",
-          borderRadius: "8px"
-        }}
+        className={styles.ButtonGrey}
       >
         Checkout
       </button>

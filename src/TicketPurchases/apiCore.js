@@ -35,7 +35,7 @@ export const processExpressPayment = paymentTicketData => {
       },
       body: JSON.stringify(paymentTicketData)
     })
-      //.then(handleErrors)
+      .then(handleErrors)
       .then(response => {
         return response.json();
       })
@@ -74,7 +74,6 @@ export const getExpressBraintreeClientToken = () => {
 export const getBraintreeClientToken = (userId, token) => {
   return fetch(`${API}/braintree/getToken/${userId}`, {
     method: "GET",
-
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",

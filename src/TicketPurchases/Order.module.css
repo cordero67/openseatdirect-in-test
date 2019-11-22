@@ -124,9 +124,13 @@
 .SuccessTextSmall {
   color: blue;
 }
-.ButtonGreenLarge {
-  background-color: #4caf50;
+
+.ButtonRed {
+  height: 44px;
+  width: 127px;
+  background-color: red;
   color: white;
+  fontWeight: 600;
   border: 1px solid grey;
   border-radius: 8px;
   -webkit-border-radius: 8px;
@@ -134,9 +138,25 @@
   -ms-border-radius: 8px;
   -o-border-radius: 8px;
 }
-.ButtonGreyLarge {
+.ButtonGreen {
+  height: 44px;
+  width: 127px;
+  background-color: #4caf50;
+  color: white;
+  fontWeight: 600;
+  border: 1px solid grey;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+.ButtonGrey {
+  height: 44px;
+  width: 127px;
   background-color: #e7e7e7;
   color: black;
+  fontWeight: 600;
   border: 1px solid grey;
   border-radius: 8px;
   -webkit-border-radius: 8px;
@@ -156,15 +176,26 @@
   font-size: 0.75rem;
   vertical-align: center;
 }
-faChevronUp:hover {
+.faChevronUp:hover {
   border-color: transparent;
 }
 .faChevronDown {
   font-size: 0.75rem;
   vertical-align: center;
 }
-faChevronDown:hover {
+.faChevronDown:hover {
   border-color: transparent;
+}
+.cartBadge {
+  border-radius: 50%;
+  vertical-align: super;
+  font-size: 16px;
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: white;
+  font-style: italic;
+  background: red;
 }
 
 @media (max-width: 480px) {
@@ -218,16 +249,6 @@ faChevronDown:hover {
   .SuccessTextSmall {
     font-size: 8px;
   }
-  .ButtonGreenLarge {
-    padding: 9px 15px;
-    width: 135px;
-    font-size: 12px;
-  }
-  .ButtonGreyLarge {
-    padding: 9px 15px;
-    width: 135px;
-    font-size: 12px;
-  }
 }
 
 @media (min-width: 480px) {
@@ -280,16 +301,6 @@ faChevronDown:hover {
   }
   .SuccessTextSmall {
     font-size: 10px;
-  }
-  .ButtonGreenLarge {
-    padding: 9px 15px;
-    width: 150px;
-    font-size: 14px;
-  }
-  .ButtonGreyLarge {
-    padding: 9px 15px;
-    width: 150px;
-    font-size: 14px;
   }
 }
 
@@ -411,16 +422,6 @@ faChevronDown:hover {
   .SuccessTextSmall {
     font-size: 9px;
   }
-  .ButtonGreenLarge {
-    padding: 9px 15px;
-    width: 150px;
-    font-size: 14px;
-  }
-  .ButtonGreyLarge {
-    padding: 9px 15px;
-    width: 150px;
-    font-size: 14px;
-  }
 }
 
 @media (min-width: 960px) {
@@ -486,16 +487,6 @@ faChevronDown:hover {
   }
   .SuccessTextSmall {
     font-size: 12px;
-  }
-  .ButtonGreenLarge {
-    padding: 9px 15px;
-    width: 180px;
-    font-size: 16px;
-  }
-  .ButtonGreyLarge {
-    padding: 9px 15px;
-    width: 180px;
-    font-size: 16px;
   }
 
   @media (min-height: 720px) {
@@ -566,15 +557,5 @@ faChevronDown:hover {
   }
   .SuccessTextSmall {
     font-size: 14px;
-  }
-  .ButtonGreenLarge {
-    padding: 9px 15px;
-    width: 200px;
-    font-size: 20px;
-  }
-  .ButtonGreyLarge {
-    padding: 9px 15px;
-    width: 200px;
-    font-size: 20px;
   }
 }
