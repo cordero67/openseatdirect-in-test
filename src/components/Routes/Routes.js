@@ -5,10 +5,7 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Checkout from "../../TicketPurchases/Checkout";
-import CheckoutOLD from "../../TicketPurchases/CheckoutOLD";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import TicketSelectionOLD from "../../TicketPurchases/TicketSelectionOLD";
-import EventData from "../../TicketPurchases/EventData";
 
 import OSDHeader from "../Headers/OSDHeader";
 import DahdayHeader from "../Headers/DahDayHeader";
@@ -58,40 +55,10 @@ class Layout extends Component {
         />
 
         <Route
-          path="/checkoutOLD"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <DahdayHeader logoType={DahdayLogo}></DahdayHeader>
-              <CheckoutOLD />
-              <DahdayFooter></DahdayFooter>
-            </React.Fragment>
-          )}
-        />
-
-        <Route
           path="/ev/"
           render={routeProps => (
             <React.Fragment>
               <TicketSelection />
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/evOLD/"
-          render={routeProps => (
-            <React.Fragment>
-              <TicketSelectionOLD />
-            </React.Fragment>
-          )}
-        />
-
-        <Route
-          path="/eventdata/"
-          render={routeProps => (
-            <React.Fragment>
-              <EventData />
             </React.Fragment>
           )}
         />

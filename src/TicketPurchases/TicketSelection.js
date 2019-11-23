@@ -11,7 +11,6 @@ import {
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import { getEventData } from "./apiCore";
-import { getDateStr } from "../components/formuals";
 import Spinner from "../components/UI/Spinner/Spinner";
 
 import CocinaCandelaLogo from "../assets/Cocina_Candela/cocina-candela-large.jpg";
@@ -66,8 +65,6 @@ const SingleEvent = () => {
     getEventData(eventID)
       .then(res => {
         console.log("Event Data Received: ", res);
-        console.log("startDateTime Data Received: ", res.startDateTime);
-        console.log("endDateTime Data Received: ", res.endDateTime);
         loadEventDetails(res);
         loadTicketInfo(res.ticket);
         createTicketOrder(res);
@@ -95,11 +92,13 @@ const SingleEvent = () => {
       shortDescription: event.shortDescription,
       startDateTime: dateFormat(
         event.startDateTime,
-        'ddd, mmm d, yyyy - h:MM TT',true
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
       ),
       endDateTime: dateFormat(
         event.endDateTime,
-        'ddd, mmm d, yyyy - h:MM TT',true
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
       ),
       organizerUrl: event.organizerUrl,
       eventUrl: event.eventUrl,
@@ -136,43 +135,61 @@ const SingleEvent = () => {
     setTicketInfo(tempTicketArray);
   };
 
+  /*
+  if (typeof window !== "undefined" && localStorage.getItem("cart") !== null) {
+    //ticketOrder = JSON.parse(localStorage.getItem("cart"));
+  } else {
+  }
+  */
+
   // CODE TRANSFERRED FROM "EventData"
   const createTicketOrder = event => {
-    const ticketParameters = [];
-    event.ticket.map(item => {
-      const newTicketItem = {
-        ticketID: item._id,
-        ticketPrice: item.currentTicketPrice,
-        ticketName: item.ticketName,
-        ticketsSelected: 0
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("cart") !== null
+    ) {
+      console.log("ORDER EXISTS!");
+      ticketOrder = JSON.parse(localStorage.getItem("cart"));
+      setTicketInfo(ticketOrder.tickets);
+    } else {
+      const ticketParameters = [];
+      event.ticket.map(item => {
+        const newTicketItem = {
+          ticketID: item._id,
+          ticketPrice: item.currentTicketPrice,
+          ticketName: item.ticketName,
+          ticketsSelected: 0
+        };
+        ticketParameters.push(newTicketItem);
+      });
+      ticketOrder = {
+        eventNum: event.eventNum,
+        eventUrl: event.eventUrl,
+        eventName: event.eventTitle,
+        startDateTime: dateFormat(
+          event.startDateTime,
+          "ddd, mmm d, yyyy - h:MM TT",
+          true
+        ),
+        endDateTime: dateFormat(
+          event.endDateTime,
+          "ddd, mmm d, yyyy - h:MM TT",
+          true
+        ),
+        totalPurchaseAmount: 0,
+        ticketsPurchased: 0,
+        tickets: ticketParameters
       };
-      ticketParameters.push(newTicketItem);
-    });
-    ticketOrder = {
-      eventNum: event.eventNum,
-      eventUrl: event.eventUrl,
-      eventName: event.eventTitle,
-      startDateTime: dateFormat(
-        event.startDateTime,
-        'ddd, mmm d, yyyy - h:MM TT',true
-      ),
-      endDateTime: dateFormat(
-        event.endDateTime,
-        'ddd, mmm d, yyyy - h:MM TT',true
-      ),
-      totalPurchaseAmount: 0,
-      ticketsPurchased: 0,
-      tickets: ticketParameters
-    };
-    console.log("ticketOrder: ", ticketOrder);
+      console.log("ticketOrder: ", ticketOrder);
+    }
   };
 
   // CODE TRANSFERRED FROM "EventData"
-  let eventTitle;
+  let eventHeader;
 
   // CODE TRANSFERRED FROM "EventData"
   if (!isLoading) {
-    eventTitle = (
+    eventHeader = (
       <Aux>
         <div
           style={{
@@ -195,7 +212,7 @@ const SingleEvent = () => {
         </div>
       </Aux>
     );
-  } else eventTitle = null;
+  } else eventHeader = null;
 
   // CODE TRANSFERRED FROM "EventData"
   const updateTicketsSelected = (event, ticketType) => {
@@ -286,7 +303,13 @@ const SingleEvent = () => {
   // **NOTED**
   const ticketAmount = show => {
     if (!isLoading && !show && ticketOrder.ticketsPurchased > 0) {
-      return <Aux><span className={styles.cartBadge}><sup>{ticketOrder.ticketsPurchased}</sup></span></Aux>;
+      return (
+        <Aux>
+          <span className={styles.cartBadge}>
+            <sup>{ticketOrder.ticketsPurchased}</sup>
+          </span>
+        </Aux>
+      );
     } else return null;
   };
 
@@ -302,7 +325,8 @@ const SingleEvent = () => {
             onClick={switchShowOrderSummary}
             className={styles.faShoppingCart}
             icon={faShoppingCart}
-          />{ticketAmount(showDoublePane)}
+          />
+          {ticketAmount(showDoublePane)}
 
           {showOrderSummaryOnly ? (
             <FontAwesomeIcon
@@ -356,15 +380,14 @@ const SingleEvent = () => {
         disabled={false}
         className={styles.ButtonRed}
       >
-        <Link to="/checkout"><span style={{color: "white"}}>Checkout</span></Link>
+        <Link to="/checkout">
+          <span style={{ color: "white" }}>Checkout</span>
+        </Link>
       </button>
     );
   } else if (!isLoading) {
     checkoutButton = (
-      <button
-        disabled={true}
-        className={styles.ButtonGrey}
-      >
+      <button disabled={true} className={styles.ButtonGrey}>
         Checkout
       </button>
     );
@@ -484,7 +507,7 @@ const SingleEvent = () => {
   // **NOTED**
   let ticketPane = (
     <div className={styles.MainItemLeft}>
-      <div className={styles.EventHeader}>{eventTitle}</div>
+      <div className={styles.EventHeader}>{eventHeader}</div>
       <div className={styles.EventTicketSection}>
         {ticketItems}
         <div className={styles.EventDescription}>

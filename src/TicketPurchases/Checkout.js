@@ -4,7 +4,6 @@ import { Form, Col } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
 import CocinaCandelaLogo from "../assets/Cocina_Candela/cocina-candela-large.jpg";
-import { getDateStr } from "../components/formuals";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -77,7 +76,7 @@ const Checkout = props => {
     setShowPaymentDetails(false);
     setShowPurchaseConfirmation(true);
   };
-  
+
   // REFACTORED CODE
   // BRAINTREE INTERFACE VARIABLE
   const [braintreeData, setBraintreeData] = useState({
@@ -198,7 +197,7 @@ const Checkout = props => {
         processExpressPayment(paymentData)
           .then(response => {
             console.log("order received");
-            console.log("response: ",response);
+            console.log("response: ", response);
             setBraintreeData({
               ...braintreeData,
               success: response.success
@@ -220,7 +219,7 @@ const Checkout = props => {
             onlyShowPurchaseConfirmation();
             // empty cart and reset "ticketOrder" object
             purchaseConfirmHandler();
-            console.log("SUCCESSFULL PURCHASE2")
+            console.log("SUCCESSFULL PURCHASE2");
           })
           .catch(error => {
             console.log("processExpressPayment(): ERROR THROWN!!!!!!!");
@@ -360,7 +359,9 @@ const Checkout = props => {
   // REFACTORED CODE
   // displays "error" if one exists
   const showError = error => (
-    <div style={{ display: error ? "" : "none" }}><span style={{color: "red"}}>{error}</span></div>
+    <div style={{ display: error ? "" : "none" }}>
+      <span style={{ color: "red" }}>{error}</span>
+    </div>
   );
 
   // REFACTORED CODE
@@ -474,9 +475,6 @@ const Checkout = props => {
     );
   }
 
-
-
-
   // **TRANSFERRED CODE**
   // NEED TO STYLE
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
@@ -517,7 +515,6 @@ const Checkout = props => {
     );
   } else checkoutButton = null;
 
-
   // REFACTORED CODE
   // determines "placeOrderButton" functionality/formatting
   let placeOrderButton;
@@ -543,7 +540,7 @@ const Checkout = props => {
       </button>
     );
   }
-  
+
   // **TRANSFERRED CODE**
   let orderPane;
   if (showDoublePane) {
@@ -644,6 +641,7 @@ const Checkout = props => {
                 fontWeight: "600"
               }}
             >
+              {/*back arrow:{"    "}*/}
               <span
                 style={{
                   textOverflow: "ellipsis"
