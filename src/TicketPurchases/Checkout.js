@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Form, Col } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
@@ -24,7 +23,25 @@ import styles from "./Order.module.css";
 let ticketOrder = {};
 
 const Checkout = props => {
-  // REFACTORED CODE
+
+/*document.height (pure javascript)
+$(document).height() (jQuery)
+
+$(window).on('resize', function() {
+        resize();
+    });
+*/
+
+window.onresize = function(event) {
+  // dynamically determines window width and then determines a one or two pane display
+  if (window.innerWidth < 790) {
+    setShowDoublePane(false);
+  } else {
+    setShowDoublePane(true);
+  }
+};
+
+
   // defines purchase order to be sent to server
   const [contactInformation, setContactInformation] = useState({
     firstName: "",
@@ -32,8 +49,7 @@ const Checkout = props => {
     email: ""
   });
 
-  // REFACTORED CODE
-  // DEFINES ALL VIEW CONTROL VARIABLES
+  // defines all view control variables
   const [showConnectionStatus, setShowConnectionStatus] = useState(false);
   const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
@@ -41,14 +57,11 @@ const Checkout = props => {
     false
   );
 
-  // **TRANSFERRED CODE**
+  // defines single or double pane view control variables
   const [showDoublePane, setShowDoublePane] = useState(false);
-
-  // **TRANSFERRED CODE**
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
 
-  // REFACTORED CODE
-  // "RADIO BUTTON" TYPE SHOW ONLY CONTROL FUNCTIONS
+  // control variables viewing functions, assures only one is "true" at a single point in time
   const onlyShowConnectionStatus = () => {
     setShowConnectionStatus(true);
     setShowLoadingSpinner(false);
@@ -77,8 +90,7 @@ const Checkout = props => {
     setShowPurchaseConfirmation(true);
   };
 
-  // REFACTORED CODE
-  // BRAINTREE INTERFACE VARIABLE
+  // BrainTree interface variable
   const [braintreeData, setBraintreeData] = useState({
     success: false,
     message: null,
@@ -89,7 +101,6 @@ const Checkout = props => {
     connection: true
   });
 
-  // REFACTORED CODE
   // stores payment receipt data received from server
   const [transactionDetail, setTransactionDetail] = useState({
     description: "",
@@ -103,29 +114,24 @@ const Checkout = props => {
     transID: ""
   });
 
-  // REFACTORED CODE
-  // downloads "order" information from "localStorage" and
-  // requests BrainTree "clientToken" from backend server
   useEffect(() => {
+    // downloads "order" information from "localStorage" and
     if (localStorage.getItem("cart")) {
       ticketOrder = JSON.parse(localStorage.getItem("cart"));
       console.log("ticketOrder: ", ticketOrder);
     }
-    // **TRANSFERRED CODE**
-    // determines initial window width and then
-    // determines a one or two pane display
+    // determines initial window width and a one or two pane display
     if (window.innerWidth < 790) {
       setShowDoublePane(false);
     } else {
       setShowDoublePane(true);
     }
+    // requests BrainTree "clientToken" from backend server
     getExpressToken();
   }, []);
 
-  // **TRANSFERRED CODE**
   window.onresize = function(event) {
-    // dynamically determines window width and then
-    // determines a one or two pane display
+    // dynamically determines window width and then determines a one or two pane display
     if (window.innerWidth < 790) {
       setShowDoublePane(false);
     } else {
@@ -133,17 +139,13 @@ const Checkout = props => {
     }
   };
 
-  // REFACTORED CODE
   // clears entire "cart" object, removes "cart" from "localStorage"
   const purchaseConfirmHandler = () => {
-    console.log("Inside purchaseConfirmHandler()");
     ticketOrder = {};
     localStorage.removeItem("cart");
-    console.log("Finishing purchaseConfirmHandler()");
   };
 
-  // REFACTORED CODE
-  // ***STILL A QUESTION AS TO WHAT TO SHOW IF ""res.error" IS RETURNED***
+  // ***STILL A QUESTION AS TO WHAT TO SHOW IF "res.error" IS RETURNED***
   // CHANGES VIEW CONTROL VARIABLES
   // this represents parts "1" and "2" of the Braintree interaction
   // defines the function that retrieves the Braintree token
@@ -171,13 +173,12 @@ const Checkout = props => {
       });
   };
 
-  // REFACTORED CODE
   // requests "nonce" from BrainTree
-  // sends payment and order information to the backend
+  // sends payment and order information to the server
   const expressBuy = () => {
     let nonce;
-    // **I ADDED BACK "getNonce = " BUT I DON'T THINK ITS REQUIRED
-    let getNonce = braintreeData.instance
+    // requests "nonce" from BrainTree
+    braintreeData.instance
       .requestPaymentMethod()
       .then(res => {
         console.log("success in step 3");
@@ -193,7 +194,7 @@ const Checkout = props => {
         };
 
         onlyShowLoadingSpinner();
-        // sends transaction and payment details to the backend
+        // sends payment and order information to the server
         processExpressPayment(paymentData)
           .then(response => {
             console.log("order received");
@@ -223,6 +224,7 @@ const Checkout = props => {
           })
           .catch(error => {
             console.log("processExpressPayment(): ERROR THROWN!!!!!!!");
+            console.log("error.message: ", error.message);
             setBraintreeData({
               ...braintreeData,
               success: false,
@@ -246,7 +248,6 @@ const Checkout = props => {
   };
 
   // determines whether or not to display the purchase amount
-  // **TRANSFERRED CODE**
   const totalAmount = show => {
     if (!showLoadingSpinner && !show && ticketOrder.totalPurchaseAmount > 0) {
       return <div>${ticketOrder.totalPurchaseAmount}</div>;
@@ -256,7 +257,6 @@ const Checkout = props => {
   };
 
   // determines whether or not to display the cart and arrow
-  // **TRANSFERRED CODE**
   const cartLink = show => {
     if (!showLoadingSpinner && !show) {
       return (
@@ -287,7 +287,6 @@ const Checkout = props => {
     }
   };
 
-  // **TRANSFERRED CODE**
   // toggles between "order pane" views
   const switchShowOrderSummary = event => {
     if (showOrderSummaryOnly) {
@@ -297,7 +296,6 @@ const Checkout = props => {
     }
   };
 
-  // **TRANSFERRED CODE**
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let orderSummary;
   // FULLY STYLED
@@ -356,7 +354,6 @@ const Checkout = props => {
     orderSummary = null;
   }
 
-  // REFACTORED CODE
   // displays "error" if one exists
   const showError = error => (
     <div style={{ display: error ? "" : "none" }}>
@@ -364,15 +361,13 @@ const Checkout = props => {
     </div>
   );
 
-  // REFACTORED CODE
   // displays the "DropIn" or an "empty cart" error message
   const showDropIn = () => (
+    //establishes a Braintree connection in order to complete part "3" of the interaction
     <div onBlur={() => setBraintreeData({ ...braintreeData, error: "" })}>
       {braintreeData.clientToken !== null &&
       ticketOrder.totalPurchaseAmount > 0 ? (
         <div>
-          {/*this establishes a Braintree connection in order to complete
-          part "3" of the interaction*/}
           <DropIn
             options={{
               authorization: braintreeData.clientToken,
@@ -395,7 +390,9 @@ const Checkout = props => {
     </div>
   );
 
-  // REFACTORED CODE
+  // ***AAA***
+    // ***AAA***
+    // ***AAA***
   const showSuccess = success => {
     if (success) {
       return (
@@ -438,7 +435,6 @@ const Checkout = props => {
     }
   };
 
-  // REFACTORED CODE
   // determines what "contact information" has been filled out by the ticket buyer
   let fullNameProvided =
     contactInformation.firstName !== "" && contactInformation.lastName !== "";
@@ -475,47 +471,6 @@ const Checkout = props => {
     );
   }
 
-  // **TRANSFERRED CODE**
-  // NEED TO STYLE
-  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
-  let checkoutButton = null;
-  if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount > 0) {
-    checkoutButton = (
-      <button
-        disabled={false}
-        style={{
-          height: "44px",
-          width: "127px",
-          backgroundColor: "#d1410c",
-          color: "black",
-          fontWeight: "600",
-          border: "1px #d1410c",
-          borderRadius: "8px"
-        }}
-      >
-        <Link>Place OrderNOW</Link>
-      </button>
-    );
-  } else if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount <= 0) {
-    checkoutButton = (
-      <button
-        disabled={true}
-        style={{
-          height: "44px",
-          width: "127px",
-          backgroundColor: "#fff",
-          color: "lightgrey",
-          fontWeight: "600",
-          border: "1px solid lightgrey",
-          borderRadius: "8px"
-        }}
-      >
-        Place OrderNOW
-      </button>
-    );
-  } else checkoutButton = null;
-
-  // REFACTORED CODE
   // determines "placeOrderButton" functionality/formatting
   let placeOrderButton;
 
@@ -541,8 +496,8 @@ const Checkout = props => {
     );
   }
 
-  // **TRANSFERRED CODE**
   let orderPane;
+
   if (showDoublePane) {
     orderPane = (
       <div>
@@ -588,19 +543,17 @@ const Checkout = props => {
     );
   }
 
-  // REFACTORED CODE
-  // DEFINES VARIABELS THAT DEFINE RENDERED ITEMS
+  // variables that define rendered items
   let connectionStatus = null;
   let loadingSpinner = null;
   let paymentPane = null;
   let purchaseConfirmation = null;
 
-  // REFACTORED CODE
   // CONTROLS "connectionStatus" VIEW
   if (showConnectionStatus && braintreeData.message === null) {
     connectionStatus = (
       <Aux>
-        <div>
+        <div className={styles.BlankCanvas}>
           <h4>Connection error, please try back later.</h4>
           <br></br>
         </div>
@@ -609,14 +562,16 @@ const Checkout = props => {
   } else if (showConnectionStatus && braintreeData.message !== null) {
     connectionStatus = (
       <Aux>
-        <div>Your credit is shit!!!</div>
+        <div className={styles.BlankCanvas}>
+          <span className={styles.SubSectionHeader}>Order Status</span>
+          <h5>There was a problem with your order</h5>
+          </div>
       </Aux>
     );
   } else {
     connectionStatus = null;
   }
 
-  // REFACTORED CODE
   // CONTROLS "loadingSpinner" VIEW
   if (showLoadingSpinner) {
     loadingSpinner = (
@@ -628,7 +583,6 @@ const Checkout = props => {
     loadingSpinner = null;
   }
 
-  // REFACTORED CODE
   // CONTROLS "paymentPane" VIEW
   if (showPaymentDetails) {
     paymentPane = (
@@ -741,14 +695,15 @@ const Checkout = props => {
     );
   }
 
-  // REFACTORED CODE
   // CONTROLS "purchaseConfirmation" VIEW
   if (showPurchaseConfirmation) {
     purchaseConfirmation = (
       <Aux>
-        <span className={styles.SubSectionHeader}>Order Status</span>
-        <div style={{ paddingTop: "20px" }}>
-          {showSuccess(braintreeData.success)}
+        <div className={styles.BlankCanvas}>
+          <span className={styles.SubSectionHeader}>Order Confirmation</span>
+          <div style={{ paddingTop: "20px" }}>
+            {showSuccess(braintreeData.success)}
+          </div>
         </div>
       </Aux>
     );
@@ -756,11 +711,9 @@ const Checkout = props => {
     purchaseConfirmation = null;
   }
 
-  // **TRANSFERRED CODE**
   let mainDisplay = null;
   if (showPaymentDetails) {
     if (showDoublePane) {
-      // REMOVED "{ticketPane}" FROM "<Aux>" BODY
       mainDisplay = (
         <Aux>
           <div className={styles.MainGrid}>
@@ -770,7 +723,6 @@ const Checkout = props => {
         </Aux>
       );
     } else if (!showOrderSummaryOnly) {
-      // REMOVED "{ticketPane}" FROM "<Aux>" BODY
       mainDisplay = (
         <Aux>
           <div className={styles.MainGrid}>{paymentPane}</div>
@@ -787,7 +739,6 @@ const Checkout = props => {
     mainDisplay = null;
   }
 
-  // REFACTORED CODE
   return (
     <Aux>
       <div className={styles.MainContainer}>

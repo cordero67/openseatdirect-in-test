@@ -8,13 +8,10 @@ import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 
 import OSDHeader from "../Headers/OSDHeader";
-import DahdayHeader from "../Headers/DahDayHeader";
 import OSDFooter from "../Footers/OSDFooter";
-import DahdayFooter from "../Footers/DahdayFooter";
 
 import LogoA from "../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_64old.png";
 import LogoB from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_64.png";
-import DahdayLogo from "../../assets/dahday/dahday-white-logo-header.png";
 
 class Layout extends Component {
   render() {

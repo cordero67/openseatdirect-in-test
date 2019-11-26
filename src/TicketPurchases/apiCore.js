@@ -1,5 +1,7 @@
 import { API } from "../config";
 
+import { each, isObject } from "underscore";
+
 // NEW api TO EXTRACT EVENT DATA FROM SERVER
 export const getEventData = eventId => {
   return fetch(`${API}/event/e/${eventId}`, {
@@ -13,11 +15,35 @@ export const getEventData = eventId => {
     });
 };
 
+var expandedLog = (function() {
+  var MAX_DEPTH = 100;
+
+  return function(item, depth) {
+    depth = depth || 0;
+
+    if (depth > MAX_DEPTH) {
+      console.log(item);
+      return;
+    }
+
+    if (isObject(item)) {
+      each(item, function(value, key) {
+        console.group(key + " : " + typeof value);
+        expandedLog(value, depth + 1);
+        console.groupEnd();
+      });
+    } else {
+      console.log(item);
+    }
+  };
+})();
+
 const handleErrors = response => {
   // different error casses
   // back-end server is down, i.e. response is "undefined"
   // "ERROR" will be "err"
   console.log("apiCore handleErrors()", response);
+  console.log("json response: ", expandedLog(response, 1));
   if (!response.ok) {
     console.log("response was false!");
     throw Error(response.status);

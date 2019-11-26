@@ -6,11 +6,6 @@
   padding-right: 0px;
   padding-bottom: 0px;
 }
-.BlankContainer {
-  background-color: #fff;
-  margin: auto;
-  height: 100vh;
-}
 .MainGrid {
   background-color: #fff;
   margin: auto;
@@ -125,7 +120,16 @@
   font-size: 16px;
   padding-left: 5px;
 }
-
+.BlankCanvas {
+  background-color: #fff;
+  margin: auto;
+  vertical-align: center;
+  height: 100vh;  padding-top: 30px;
+  padding-left: 80px;
+  padding-right: 80px;
+  text-align: left;
+  overflow-y: auto;
+}
 .Spinner {
   background-color: #fff;
   margin: auto;
@@ -255,6 +259,11 @@
     height: 40px;
     width: 50px;
   }
+  .BlankCanvas {
+    padding-top: 30px;
+    padding-left: 15px;
+    padding-right: 10px;
+  }
 
   .SubSectionHeader {
     font-size: 18px;
@@ -307,6 +316,11 @@
   .SelectionBox {
     height: 40px;
     width: 50px;
+  }
+  .BlankCanvas {
+    padding-top: 30px;
+    padding-left: 25px;
+    padding-right: 25px;
   }
 
   .SubSectionHeader {
@@ -365,6 +379,11 @@
     height: 40px;
     width: 50px;
   }
+  .BlankCanvas {
+    padding-top: 30px;
+    padding-left: 80px;
+    padding-right: 80px;
+  }
 
   @media (min-height: 720px) {
     .MainContainer {
@@ -384,6 +403,9 @@
       height: 640px;
     }
 
+    .BlankCanvas {
+      height: 720px;
+    }
     .Spinner {
       height: 720px;
     }
@@ -427,6 +449,10 @@
   .SelectionBox {
     height: 50px;
     width: 60px;
+  }
+  .BlankCanvas {
+    padding-left: 25px;
+    padding-right: 25px;
   }
 
   .SubSectionHeader {
@@ -493,6 +519,11 @@
   .SelectionBox {
     height: 50px;
     width: 60px;
+  }
+  .BlankCanvas {
+    padding-top: 30px;
+    padding-left: 25px;
+    padding-right: 25px;
   }
 
   .SubSectionHeader {
@@ -562,6 +593,12 @@
     width: 60px;
   }
 
+  .BlankCanvas {
+    width: 1080px;
+    padding-top: 30px;
+    padding-left: 80px;
+    padding-right: 80px;
+  }
   .Spinner {
     width: 1080px;
   }
