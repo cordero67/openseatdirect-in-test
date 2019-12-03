@@ -31,6 +31,18 @@ const Header = ({ history, logoType, styleType }) => {
             />
           </NavLink>
         </li>
+
+        <li>
+          <NavLink to="/ev/dahday_cocina_candela?eventID=94106331593">
+            Events
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/evCOPY/dahday_cocina_candela?eventID=94106331593">
+            Events<br></br>NEW
+          </NavLink>
+        </li>
       </ul>
     </Nav>
   );

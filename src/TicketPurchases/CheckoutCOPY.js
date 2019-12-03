@@ -41,13 +41,6 @@ $(window).on('resize', function() {
 
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
-  //const [MainContainer, setMainContainer] = useState({});
-  //const [MainGrid, setMainGrid] = useState({});
-  //const [EventTicketSection, setEventTicketSection] = useState({});
-  //const [OrderSummary, setOrderSummary] = useState({});
-  //const [OrderSummaryAlt, setOrderSummaryAlt] = useState({});
-  //const [BlankCanvas, setBlankCanvas] = useState({});
-  //const [SpinnerCanvas, setSpinnerCanvas] = useState({});
 
   // defines purchase order to be sent to server
   const [contactInformation, setContactInformation] = useState({
@@ -127,64 +120,68 @@ $(window).on('resize', function() {
       ticketOrder = JSON.parse(localStorage.getItem("cart"));
       console.log("ticketOrder: ", ticketOrder);
     }
-    stylingUpdate();
+    stylingUpdate(window.innerWidth, window.innerHeight);
     // requests BrainTree "clientToken" from backend server
     getExpressToken();
   }, []);
 
-  const stylingUpdate = () => {
+  window.onresize = function(event) {
+    stylingUpdate(window.innerWidth, window.innerHeight);
+  };
+
+  const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
-    if (window.innerWidth < 790) {
+    if (inWidth < 790) {
       setShowDoublePane(false);
     } else {
       setShowDoublePane(true);
     }
-    if (window.innerWidth < 660) {
+
+    if (inWidth < 660) {
       MainContainer = {
-        backgroundColor: `green`,
-        height: `100vh`,
+        backgroundColor: `red`,
+        height: `${inHeight}px`,
         paddingTop: `0px`,
         paddingLeft: `0px`,
         paddingRight: `0px`,
         paddingBottom: `0px`
       };
-    } else if (window.innerHeight < 720) {
+    } else if (inHeight < 720) {
       MainContainer = {
         backgroundColor: `green`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         paddingTop: `0px`,
-        paddingLeft: `5px`,
+        paddingLeft: `25px`,
         paddingRight: `25px`,
         paddingBottom: `0px`
       };
     } else {
       MainContainer = {
         backgroundColor: `#2f5596`,
-        height: `100vh`,
-        paddingTop: `calc((100vh - 720px) / 2)`,
+        paddingTop: `calc((${inHeight}px - 720px) / 2)`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
-        paddingBottom: `calc((100vh - 720px) / 2)`
+        paddingBottom: `calc((${inHeight}px - 720px) / 2)`
       };
     }
 
-    if (window.innerWidth < 660) {
+    if (inWidth < 660) {
       // width < 660px, height does not matter
       MainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         display: `grid`,
         gridTemplateColumns: `auto`
       };
-    } else if (window.innerWidth < 790) {
+    } else if (inWidth < 790) {
       // width < 790px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         MainGrid = {
           backgroundColor: `#fff`,
           margin: `auto`,
-          height: `100vh`,
+          height: `${inHeight}px`,
           display: `grid`,
           gridTemplateColumns: `auto`
         };
@@ -198,14 +195,14 @@ $(window).on('resize', function() {
           gridTemplateColumns: `auto`
         };
       }
-    } else if (window.innerWidth < 960) {
+    } else if (inWidth < 960) {
       // width < 960px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         MainGrid = {
           backgroundColor: `#fff`,
           margin: `auto`,
-          height: `100vh`,
+          height: `${inHeight}px`,
           display: `grid`,
           gridTemplateColumns: `auto 320px`
         };
@@ -219,14 +216,14 @@ $(window).on('resize', function() {
           gridTemplateColumns: `auto 320px`
         };
       }
-    } else if (window.innerWidth < 1140) {
+    } else if (inWidth < 1140) {
       // width < 1140px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         MainGrid = {
           backgroundColor: `#fff`,
           margin: `auto`,
-          height: `100vh`,
+          height: `${inHeight}px`,
           display: `grid`,
           gridTemplateColumns: `auto 360px`
         };
@@ -242,12 +239,12 @@ $(window).on('resize', function() {
       }
     } else {
       // width >= 1140px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         MainGrid = {
           backgroundColor: `#fff`,
           margin: `auto`,
-          height: `100vh`,
+          height: `${inHeight}px`,
           width: `1080px`,
           display: `grid`,
           gridTemplateColumns: `720px 360px`
@@ -265,35 +262,35 @@ $(window).on('resize', function() {
       }
     }
 
-    if (window.innerWidth < 480) {
+    if (inWidth < 480) {
       // width < 480px, height does not matter
       EventTicketSection = {
         backgroundColor: `#fff`,
-        height: `calc(100vh - 140px)`,
+        height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
         paddingLeft: `15px`,
         paddingRight: `10px`,
         textAlign: `left`,
         overflowY: `auto`
       };
-    } else if (window.innerWidth < 660) {
+    } else if (inWidth < 660) {
       // width < 660px, height does not matter
       EventTicketSection = {
         backgroundColor: `#fff`,
-        height: `calc(100vh - 140px)`,
+        height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
         textAlign: `left`,
         overflowY: `auto`
       };
-    } else if (window.innerWidth < 790) {
+    } else if (inWidth < 790) {
       // width < 790px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         EventTicketSection = {
           backgroundColor: `#fff`,
-          height: `calc(100vh - 140px)`,
+          height: `calc(${inHeight}px - 140px)`,
           paddingTop: `30px`,
           paddingLeft: `80px`,
           paddingRight: `80px`,
@@ -312,13 +309,13 @@ $(window).on('resize', function() {
           overflowY: `auto`
         };
       }
-    } else if (window.innerWidth < 960) {
+    } else if (inWidth < 960) {
       // width < 960px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         EventTicketSection = {
           backgroundColor: `#fff`,
-          height: `calc(100vh - 140px)`,
+          height: `calc(${inHeight}px - 140px)`,
           paddingTop: `30px`,
           paddingLeft: `25px`,
           paddingRight: `25px`,
@@ -337,13 +334,13 @@ $(window).on('resize', function() {
           overflowY: `auto`
         };
       }
-    } else if (window.innerWidth < 1140) {
+    } else if (inWidth < 1140) {
       // width < 1140px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         EventTicketSection = {
           backgroundColor: `#fff`,
-          height: `calc(100vh - 140px)`,
+          height: `calc(${inHeight}px - 140px)`,
           paddingTop: `30px`,
           paddingLeft: `25px`,
           paddingRight: `25px`,
@@ -364,11 +361,11 @@ $(window).on('resize', function() {
       }
     } else {
       // width >= 1140px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         EventTicketSection = {
           backgroundColor: `#fff`,
-          height: `calc(100vh - 140px)`,
+          height: `calc(${inHeight}px - 140px)`,
           paddingTop: `30px`,
           paddingLeft: `80px`,
           paddingRight: `80px`,
@@ -389,25 +386,25 @@ $(window).on('resize', function() {
       }
     }
 
-    if (window.innerWidth < 660) {
+    if (inWidth < 660) {
       // width < 660px, height does not matter
       OrderSummarySection = {
         backgroundColor: `#e5e5e5`,
         fontSize: `0.875rem`,
-        height: `calc(100vh - 160px)`,
+        height: `calc(${inHeight}px - 160px)`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
         overflowY: `auto`
       };
-    } else if (window.innerWidth < 960) {
+    } else if (inWidth < 960) {
       // width < 960px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         OrderSummarySection = {
           backgroundColor: `#e5e5e5`,
           fontSize: `0.875rem`,
-          height: `calc(100vh - 160px)`,
+          height: `calc(${inHeight}px - 160px)`,
           paddingTop: `20px`,
           paddingLeft: `25px`,
           paddingRight: `25px`,
@@ -427,12 +424,12 @@ $(window).on('resize', function() {
       }
     } else {
       // width >= 960px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         OrderSummarySection = {
           backgroundColor: `#e5e5e5`,
           fontSize: `0.875rem`,
-          height: `calc(100vh - 180px)`,
+          height: `calc(${inHeight}px - 180px)`,
           paddingTop: `20px`,
           paddingLeft: `25px`,
           paddingRight: `25px`,
@@ -452,25 +449,25 @@ $(window).on('resize', function() {
       }
     }
 
-    if (window.innerWidth < 660) {
+    if (inWidth < 660) {
       // width < 660px, height does not matter
       OrderSummarySectionAlt = {
         backgroundColor: `#e5e5e5`,
         fontSize: `0.875rem`,
-        height: `calc(100vh - 80px)`,
+        height: `calc(${inHeight}px - 80px)`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
         overflowY: `auto`
       };
-    } else if (window.innerWidth < 960) {
+    } else if (inWidth < 960) {
       // width < 960px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         OrderSummarySectionAlt = {
           backgroundColor: `#e5e5e5`,
           fontSize: `0.875rem`,
-          height: `calc(100vh - 80px)`,
+          height: `calc(${inHeight}px - 80px)`,
           paddingTop: `20px`,
           paddingLeft: `25px`,
           paddingRight: `25px`,
@@ -490,12 +487,12 @@ $(window).on('resize', function() {
       }
     } else {
       // width >= 960px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         OrderSummarySectionAlt = {
           backgroundColor: `#e5e5e5`,
           fontSize: `0.875rem`,
-          height: `calc(100vh - 80px)`,
+          height: `calc(${inHeight}px - 80px)`,
           paddingTop: `20px`,
           paddingLeft: `25px`,
           paddingRight: `25px`,
@@ -515,41 +512,41 @@ $(window).on('resize', function() {
       }
     }
 
-    if (window.innerWidth < 480) {
+    if (inWidth < 480) {
       // width < 480px, height does not matter
       BlankCanvas = {
         backgroundColor: `#fff`,
         margin: `auto`,
         verticalAlign: `center`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         paddingTop: `30px`,
         paddingLeft: `15px`,
         paddingRight: `10px`,
         textAlign: `left`,
         overflowY: `auto`
       };
-    } else if (window.innerWidth < 660) {
+    } else if (inWidth < 660) {
       // width < 660px, height does not matter
       BlankCanvas = {
         backgroundColor: `#fff`,
         margin: `auto`,
         verticalAlign: `center`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         paddingTop: `30px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
         textAlign: `left`,
         overflowY: `auto`
       };
-    } else if (window.innerWidth < 790) {
+    } else if (inWidth < 790) {
       // width < 790px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         BlankCanvas = {
           backgroundColor: `#fff`,
           margin: `auto`,
           verticalAlign: `center`,
-          height: `100vh`,
+          height: `${inHeight}px`,
           paddingTop: `30px`,
           paddingLeft: `80px`,
           paddingRight: `80px`,
@@ -570,15 +567,15 @@ $(window).on('resize', function() {
           overflowY: `auto`
         };
       }
-    } else if (window.innerWidth < 960) {
+    } else if (inWidth < 960) {
       // width < 960px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         BlankCanvas = {
           backgroundColor: `#fff`,
           margin: `auto`,
           verticalAlign: `center`,
-          height: `100vh`,
+          height: `${inHeight}px`,
           paddingTop: `30px`,
           paddingLeft: `25px`,
           paddingRight: `25px`,
@@ -601,13 +598,13 @@ $(window).on('resize', function() {
       }
     } else {
       // width >= 1140px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         BlankCanvas = {
           backgroundColor: `#fff`,
           margin: `auto`,
           verticalAlign: `center`,
-          height: `100vh`,
+          height: `${inHeight}px`,
           width: `1080px`,
           paddingTop: `30px`,
           paddingLeft: `80px`,
@@ -632,25 +629,25 @@ $(window).on('resize', function() {
       }
     }
 
-    if (window.innerWidth < 660) {
+    if (inWidth < 660) {
       // width < 660px, height does not matter
       SpinnerCanvas = {
         backgroundColor: `#fff`,
         margin: `auto`,
         verticalAlign: `center`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         display: `grid`,
         gridTemplateColumns: `auto`
       };
-    } else if (window.innerWidth < 1140) {
+    } else if (inWidth < 1140) {
       // width < 1140px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         SpinnerCanvas = {
           backgroundColor: `#fff`,
           margin: `auto`,
           verticalAlign: `center`,
-          height: `100vh`,
+          height: `${inHeight}px`,
           display: `grid`,
           gridTemplateColumns: `auto`
         };
@@ -667,13 +664,13 @@ $(window).on('resize', function() {
       }
     } else {
       // width >= 1140px, NEED TO CHECK HEIGHT
-      if (window.innerHeight < 720) {
+      if (inHeight < 720) {
         // height < 720px
         SpinnerCanvas = {
           backgroundColor: `#fff`,
           margin: `auto`,
           verticalAlign: `center`,
-          height: `100vh`,
+          height: `${inHeight}px`,
           width: `1080px`,
           display: `grid`,
           gridTemplateColumns: `auto`
@@ -692,11 +689,16 @@ $(window).on('resize', function() {
       }
     }
 
+    /*return [
+      MainContainer,
+      MainGrid,
+      EventTicketSection,
+      OrderSummarySection,
+      OrderSummarySectionAlt,
+      BlankCanvas,
+      SpinnerCanvas
+    ];*/
     setIsRestyling(false);
-  };
-
-  window.onresize = function(event) {
-    stylingUpdate();
   };
 
   // clears entire "cart" object, removes "cart" from "localStorage"

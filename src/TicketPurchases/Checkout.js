@@ -23,15 +23,6 @@ import styles from "./Order.module.css";
 let ticketOrder = {};
 
 const Checkout = props => {
-  window.onresize = function(event) {
-    // dynamically determines window width and then determines a one or two pane display
-    if (window.innerWidth < 790) {
-      setShowDoublePane(false);
-    } else {
-      setShowDoublePane(true);
-    }
-  };
-
   // defines purchase order to be sent to server
   const [contactInformation, setContactInformation] = useState({
     firstName: "",
