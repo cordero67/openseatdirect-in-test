@@ -10,10 +10,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
-import { getEventData } from "./apiCore";
+import { getEventData, getEventImage } from "./apiCore";
+import {
+  MainContainerStyling,
+  MainGridStyling,
+  EventTicketSectionStyling,
+  OrderSummarySectionStyling,
+  OrderSummarySectionAltStyling
+} from "./Styling";
 import Spinner from "../components/UI/Spinner/Spinner";
 
-import CocinaCandelaLogo from "../assets/Cocina_Candela/cocina-candela-large.jpg";
+import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
 import TicketItem from "./TicketItem";
 import styles from "./Order.module.css";
@@ -22,11 +29,19 @@ import styles from "./Order.module.css";
 // defines an event's NON ticket type specific information
 let eventDetails;
 
+// defines an event's image
+let eventLogo = "";
 // CODE TRANSFERRED FROM "EventData"
 // defines ticket order object
 // contains event information and ticket type specific data
 // this object is sent to "Checkout" page
 let ticketOrder;
+
+let MainContainer = {};
+let MainGrid = {};
+let EventTicketSection = {};
+let OrderSummarySection = {};
+let OrderSummarySectionAlt = {};
 
 const SingleEvent = () => {
   // **DECISION CODE**
@@ -38,27 +53,301 @@ const SingleEvent = () => {
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingEvent, setIsLoadingEvent] = useState(true);
+  const [isLoadingImage, setIsLoadingImage] = useState(true);
 
   // CODE TRANSFERRED FROM "EventData"
   // defines an event's specific ticket type information
   // also tracks the number of tickets selected throughout selection process
   const [ticketInfo, setTicketInfo] = useState([]);
 
+  // defines styling variables
+  const [isRestyling, setIsRestyling] = useState(false);
+
   // **DECISION CODE**
   // **NOTED**
   useEffect(() => {
-    setIsLoading(true);
+    setIsLoadingEvent(true);
+    setIsLoadingImage(true);
     // CODE TRANSFERRED FROM "EventData"
     eventData(queryString.parse(window.location.search).eventID);
+    eventImage(queryString.parse(window.location.search).eventID);
     // determines initial window width and then
     // determines a one or two pane display
-    if (window.innerWidth < 790) {
+    stylingUpdate(window.innerWidth, window.innerHeight);
+  }, []);
+
+  const stylingUpdate = (inWidth, inHeight) => {
+    setIsRestyling(true);
+    // dynamically determines window width and then
+    // determines a one or two pane display
+    if (inWidth < 790) {
       setShowDoublePane(false);
     } else {
       setShowDoublePane(true);
     }
-  }, []);
+
+    MainContainer = MainContainerStyling(inWidth, inHeight);
+    MainGrid = MainGridStyling(inWidth, inHeight);
+
+    //EventTicketSection = EventTicketSectionStyling(inWidth, inHeight);
+
+    if (inWidth < 480) {
+      // width < 480px, height does not matter
+      EventTicketSection = {
+        backgroundColor: `#fff`,
+        height: `calc(${inHeight}px - 140px)`,
+        paddingTop: `30px`,
+        paddingLeft: `15px`,
+        paddingRight: `10px`,
+        textAlign: `left`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 660) {
+      // width < 660px, height does not matter
+      EventTicketSection = {
+        backgroundColor: `#fff`,
+        height: `calc(${inHeight}px - 140px)`,
+        paddingTop: `30px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        textAlign: `left`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 790) {
+      // width < 790px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `calc(${inHeight}px - 140px)`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `580px`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    } else if (inWidth < 960) {
+      // width < 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `calc(${inHeight}px - 140px)`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `580px`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    } else if (inWidth < 1140) {
+      // width < 1140px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `calc(${inHeight}px - 140px)`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `580px`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    } else {
+      // width >= 1140px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `calc(${inHeight}px - 140px)`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `580px`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    }
+
+    // OrderSummarySection = OrderSummarySectionStyling(inWidth, inHeight);
+
+    if (inWidth < 660) {
+      // width < 660px, height does not matter
+      OrderSummarySection = {
+        backgroundColor: `#e5e5e5`,
+        fontSize: `0.875rem`,
+        height: `calc(${inHeight}px - 160px)`,
+        paddingTop: `20px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 960) {
+      // width < 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        OrderSummarySection = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `calc(${inHeight}px - 160px)`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        OrderSummarySection = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `560px`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      }
+    } else {
+      // width >= 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        OrderSummarySection = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `calc(${inHeight}px - 180px)`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        OrderSummarySection = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `540px`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      }
+    }
+
+    // OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
+
+    if (inWidth < 660) {
+      // width < 660px, height does not matter
+      OrderSummarySectionAlt = {
+        backgroundColor: `#e5e5e5`,
+        fontSize: `0.875rem`,
+        height: `calc(${inHeight}px - 80px)`,
+        paddingTop: `20px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 960) {
+      // width < 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        OrderSummarySectionAlt = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `calc(${inHeight}px - 80px)`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        OrderSummarySectionAlt = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `640px`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      }
+    } else {
+      // width >= 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        OrderSummarySectionAlt = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `calc(${inHeight}px - 80px)`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        OrderSummarySectionAlt = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `640px`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      }
+    }
+
+    setIsRestyling(false);
+  };
 
   // CODE TRANSFERRED FROM "EventData"
   const eventData = eventID => {
@@ -76,7 +365,26 @@ const SingleEvent = () => {
         console.log("In the catch");
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsLoadingEvent(false);
+      });
+  };
+
+  // CODE TRANSFERRED FROM "EventData"
+
+  const eventImage = eventID => {
+    console.log("Inside 'eventImage' function call");
+    getEventImage(eventID)
+      .then(res => {
+        console.log("Event Image Received: ", res);
+        console.log(typeof res);
+        eventLogo = res;
+        console.log("eventLogo: ", eventLogo);
+      })
+      .catch(err => {
+        console.log("In the catch 'getEventImage'");
+      })
+      .finally(() => {
+        setIsLoadingImage(false);
       });
   };
 
@@ -110,8 +418,7 @@ const SingleEvent = () => {
         state: event.locationState,
         zipPostalCode: event.locationZipPostalCode,
         countryCode: event.locationCountryCode
-      },
-      image: ""
+      }
     };
   };
 
@@ -135,21 +442,16 @@ const SingleEvent = () => {
     setTicketInfo(tempTicketArray);
   };
 
-  /*
-  if (typeof window !== "undefined" && localStorage.getItem("cart") !== null) {
-    //ticketOrder = JSON.parse(localStorage.getItem("cart"));
-  } else {
-  }
-  */
-
   // CODE TRANSFERRED FROM "EventData"
   const createTicketOrder = event => {
     if (
       typeof window !== "undefined" &&
-      localStorage.getItem("cart") !== null
+      localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
     ) {
       console.log("ORDER EXISTS!");
-      ticketOrder = JSON.parse(localStorage.getItem("cart"));
+      ticketOrder = JSON.parse(
+        localStorage.getItem(`cart_${eventDetails.eventNum}`)
+      );
       setTicketInfo(ticketOrder.tickets);
     } else {
       const ticketParameters = [];
@@ -188,7 +490,7 @@ const SingleEvent = () => {
   let eventHeader;
 
   // CODE TRANSFERRED FROM "EventData"
-  if (!isLoading) {
+  if (!isLoadingEvent && !isLoadingImage) {
     eventHeader = (
       <Aux>
         <div
@@ -247,7 +549,7 @@ const SingleEvent = () => {
   let ticketItems;
 
   // CODE TRANSFERRED FROM "EventData"
-  if (!isLoading) {
+  if (!isLoadingEvent && !isLoadingImage) {
     ticketItems = (
       <Aux>
         <div>
@@ -278,13 +580,7 @@ const SingleEvent = () => {
   // **DECISION CODE**
   // **NOTED**
   window.onresize = function(event) {
-    // dynamically determines window width and then
-    // determines a one or two pane display
-    if (window.innerWidth < 790) {
-      setShowDoublePane(false);
-    } else {
-      setShowDoublePane(true);
-    }
+    stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
   // determines whether or not to display the purchase amount
@@ -292,7 +588,12 @@ const SingleEvent = () => {
   // **DECISION CODE**
   // **NOTED**
   const totalAmount = show => {
-    if (!isLoading && !show && ticketOrder.totalPurchaseAmount > 0) {
+    if (
+      !isLoadingEvent &&
+      !isLoadingImage &&
+      !show &&
+      ticketOrder.totalPurchaseAmount > 0
+    ) {
       return <div>${ticketOrder.totalPurchaseAmount}</div>;
     } else return null;
   };
@@ -302,7 +603,12 @@ const SingleEvent = () => {
   // **DECISION CODE**
   // **NOTED**
   const ticketAmount = show => {
-    if (!isLoading && !show && ticketOrder.ticketsPurchased > 0) {
+    if (
+      !isLoadingEvent &&
+      !isLoadingImage &&
+      !show &&
+      ticketOrder.ticketsPurchased > 0
+    ) {
       return (
         <Aux>
           <span className={styles.cartBadge}>
@@ -318,7 +624,7 @@ const SingleEvent = () => {
   // **DECISION CODE**
   // **NOTED**
   const cartLink = show => {
-    if (!isLoading && !show) {
+    if (!isLoadingEvent && !isLoadingImage && !show) {
       return (
         <div>
           <FontAwesomeIcon
@@ -364,7 +670,12 @@ const SingleEvent = () => {
       // "localStorage" property allows access the Storage object for a document's origin
       // the stored data is saved across browser sessions and has no expiration time, even when window is closed
       // "setItem()" adds order information to "localStorage" with a key of "order" and a value of "JSON.stringify(data)"
-      localStorage.setItem("cart", JSON.stringify(ticketOrder));
+      localStorage.setItem(
+        `cart_${eventDetails.eventNum}`,
+        JSON.stringify(ticketOrder)
+      );
+      localStorage.setItem(`image`, JSON.stringify(eventLogo));
+      localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
     }
   };
 
@@ -373,7 +684,11 @@ const SingleEvent = () => {
 
   // NEED TO STYLE
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
-  if (!isLoading && ticketOrder.totalPurchaseAmount > 0) {
+  if (
+    !isLoadingEvent &&
+    !isLoadingImage &&
+    ticketOrder.totalPurchaseAmount > 0
+  ) {
     checkoutButton = (
       <button
         onClick={purchaseTicketHandler}
@@ -385,7 +700,7 @@ const SingleEvent = () => {
         </Link>
       </button>
     );
-  } else if (!isLoading) {
+  } else if (!isLoadingEvent && !isLoadingImage) {
     checkoutButton = (
       <button disabled={true} className={styles.ButtonGrey}>
         Checkout
@@ -398,7 +713,11 @@ const SingleEvent = () => {
 
   // FULLY STYLED
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
-  if (!isLoading && ticketOrder.totalPurchaseAmount > 0) {
+  if (
+    !isLoadingEvent &&
+    !isLoadingImage &&
+    ticketOrder.totalPurchaseAmount > 0
+  ) {
     orderSummary = (
       <Aux>
         <div style={{ fontWeight: "600" }}>Order Summary</div>
@@ -430,7 +749,11 @@ const SingleEvent = () => {
         <br></br>
       </Aux>
     );
-  } else if (!isLoading && ticketOrder.totalPurchaseAmount <= 0) {
+  } else if (
+    !isLoadingEvent &&
+    !isLoadingImage &&
+    ticketOrder.totalPurchaseAmount <= 0
+  ) {
     orderSummary = (
       <div
         style={{
@@ -464,18 +787,18 @@ const SingleEvent = () => {
         <div className={styles.ImageBox}>
           <img
             className={styles.Image}
-            src={CocinaCandelaLogo}
-            alt="Cocina Candela Logo"
+            src={eventLogo}
+            alt="Event Logo Coming Soon!!!"
           />
         </div>
-        <div className={styles.OrderSummary}>{orderSummary}</div>
+        <div style={OrderSummarySection}>{orderSummary}</div>
       </div>
     );
   } else {
     orderPane = (
       <Aux>
         <div>
-          <div className={styles.OrderSummaryAlt}>{orderSummary}</div>
+          <div style={OrderSummarySectionAlt}>{orderSummary}</div>
         </div>
         <div className={styles.EventFooter}>
           <div
@@ -508,7 +831,7 @@ const SingleEvent = () => {
   let ticketPane = (
     <div className={styles.MainItemLeft}>
       <div className={styles.EventHeader}>{eventHeader}</div>
-      <div className={styles.EventTicketSection}>
+      <div style={EventTicketSection}>
         {ticketItems}
         <div className={styles.EventDescription}>
           Powered by{" "}
@@ -551,7 +874,7 @@ const SingleEvent = () => {
   if (showDoublePane) {
     mainDisplay = (
       <Aux>
-        <div className={styles.MainGrid}>
+        <div style={MainGrid}>
           {ticketPane}
           {orderPane}
         </div>
@@ -560,13 +883,13 @@ const SingleEvent = () => {
   } else if (!showOrderSummaryOnly) {
     mainDisplay = (
       <Aux>
-        <div className={styles.MainGrid}>{ticketPane}</div>
+        <div style={MainGrid}>{ticketPane}</div>
       </Aux>
     );
   } else {
     mainDisplay = (
       <Aux>
-        <div className={styles.MainGrid}>{orderPane}</div>
+        <div style={MainGrid}>{orderPane}</div>
       </Aux>
     );
   }
@@ -574,7 +897,7 @@ const SingleEvent = () => {
   // FULLY STYLED
   return (
     <Aux>
-      <div className={styles.MainContainer}>{mainDisplay}</div>
+      <div style={MainContainer}>{mainDisplay}</div>
     </Aux>
   );
 };

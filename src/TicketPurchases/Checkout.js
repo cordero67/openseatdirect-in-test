@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Form, Col } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
-import CocinaCandelaLogo from "../assets/Cocina_Candela/cocina-candela-large.jpg";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faShoppingCart,
@@ -11,6 +9,13 @@ import {
   faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
 
+import {
+  MainContainerStyling,
+  MainGridStyling,
+  EventTicketSectionStyling,
+  OrderSummarySectionStyling,
+  OrderSummarySectionAltStyling
+} from "./Styling";
 import {
   getExpressBraintreeClientToken,
   processExpressPayment
@@ -22,7 +27,29 @@ import styles from "./Order.module.css";
 // defines the ticket order populated from "localStorage"
 let ticketOrder = {};
 
+let MainContainer = {};
+let MainGrid = {};
+let EventTicketSection = {};
+let OrderSummarySection = {};
+let OrderSummarySectionAlt = {};
+let BlankCanvas = {};
+let SpinnerCanvas = {};
+
+// defines an event's image
+let eventLogo = "";
+
 const Checkout = props => {
+  /*document.height (pure javascript)
+$(document).height() (jQuery)
+
+$(window).on('resize', function() {
+        resize();
+    });
+*/
+
+  // defines styling variables
+  const [isRestyling, setIsRestyling] = useState(false);
+
   // defines purchase order to be sent to server
   const [contactInformation, setContactInformation] = useState({
     firstName: "",
@@ -97,33 +124,486 @@ const Checkout = props => {
 
   useEffect(() => {
     // downloads "order" information from "localStorage" and
-    if (localStorage.getItem("cart")) {
-      ticketOrder = JSON.parse(localStorage.getItem("cart"));
-      console.log("ticketOrder: ", ticketOrder);
+    if (localStorage.getItem("eventNum")) {
+      let event = JSON.parse(localStorage.getItem("eventNum"));
+      if (localStorage.getItem(`cart_${event}`)) {
+        ticketOrder = JSON.parse(localStorage.getItem(`cart_${event}`));
+        console.log("ticketOrder: ", ticketOrder);
+      }
+      if (localStorage.getItem(`image`)) {
+        eventLogo = JSON.parse(localStorage.getItem(`image`));
+        console.log("image: ", eventLogo);
+      }
     }
-    // determines initial window width and a one or two pane display
-    if (window.innerWidth < 790) {
-      setShowDoublePane(false);
-    } else {
-      setShowDoublePane(true);
-    }
+
+    stylingUpdate(window.innerWidth, window.innerHeight);
     // requests BrainTree "clientToken" from backend server
     getExpressToken();
   }, []);
 
   window.onresize = function(event) {
-    // dynamically determines window width and then determines a one or two pane display
-    if (window.innerWidth < 790) {
+    stylingUpdate(window.innerWidth, window.innerHeight);
+  };
+
+  //MainContainerStyling(window.innerWidth, window.innerHeight);
+
+  const stylingUpdate = (inWidth, inHeight) => {
+    setIsRestyling(true);
+    if (inWidth < 790) {
       setShowDoublePane(false);
     } else {
       setShowDoublePane(true);
     }
+
+    MainContainer = MainContainerStyling(window.innerWidth, window.innerHeight);
+
+    MainGrid = MainGridStyling(window.innerWidth, window.innerHeight);
+
+    /*    EventTicketSection = EventTicketSectionStyling(
+      window.innerWidth,
+      window.innerHeight
+    );
+*/
+    if (inWidth < 480) {
+      // width < 480px, height does not matter
+      EventTicketSection = {
+        backgroundColor: `#fff`,
+        height: `calc(${inHeight}px - 140px)`,
+        paddingTop: `30px`,
+        paddingLeft: `15px`,
+        paddingRight: `10px`,
+        textAlign: `left`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 660) {
+      // width < 660px, height does not matter
+      EventTicketSection = {
+        backgroundColor: `#fff`,
+        height: `calc(${inHeight}px - 140px)`,
+        paddingTop: `30px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        textAlign: `left`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 790) {
+      // width < 790px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `calc(${inHeight}px - 140px)`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `580px`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    } else if (inWidth < 960) {
+      // width < 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `calc(${inHeight}px - 140px)`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `580px`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    } else if (inWidth < 1140) {
+      // width < 1140px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `calc(${inHeight}px - 140px)`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `580px`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    } else {
+      // width >= 1140px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `calc(${inHeight}px - 140px)`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        EventTicketSection = {
+          backgroundColor: `#fff`,
+          height: `580px`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    }
+
+    //  OrderSummarySection = OrderSummarySectionStyling(
+    //    window.innerWidth,
+    //    window.innerHeight
+    //  );
+
+    if (inWidth < 660) {
+      // width < 660px, height does not matter
+      OrderSummarySection = {
+        backgroundColor: `#e5e5e5`,
+        fontSize: `0.875rem`,
+        height: `calc(${inHeight}px - 160px)`,
+        paddingTop: `20px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 960) {
+      // width < 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        OrderSummarySection = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `calc(${inHeight}px - 160px)`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        OrderSummarySection = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `560px`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      }
+    } else {
+      // width >= 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        OrderSummarySection = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `calc(${inHeight}px - 180px)`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        OrderSummarySection = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `540px`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      }
+    }
+
+    if (inWidth < 660) {
+      // width < 660px, height does not matter
+      OrderSummarySectionAlt = {
+        backgroundColor: `#e5e5e5`,
+        fontSize: `0.875rem`,
+        height: `calc(${inHeight}px - 80px)`,
+        paddingTop: `20px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 960) {
+      // width < 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        OrderSummarySectionAlt = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `calc(${inHeight}px - 80px)`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        OrderSummarySectionAlt = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `640px`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      }
+    } else {
+      // width >= 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        OrderSummarySectionAlt = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `calc(${inHeight}px - 80px)`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        OrderSummarySectionAlt = {
+          backgroundColor: `#e5e5e5`,
+          fontSize: `0.875rem`,
+          height: `640px`,
+          paddingTop: `20px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          overflowY: `auto`
+        };
+      }
+    }
+
+    if (inWidth < 480) {
+      // width < 480px, height does not matter
+      BlankCanvas = {
+        backgroundColor: `#fff`,
+        margin: `auto`,
+        verticalAlign: `center`,
+        height: `${inHeight}px`,
+        paddingTop: `30px`,
+        paddingLeft: `15px`,
+        paddingRight: `10px`,
+        textAlign: `left`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 660) {
+      // width < 660px, height does not matter
+      BlankCanvas = {
+        backgroundColor: `#fff`,
+        margin: `auto`,
+        verticalAlign: `center`,
+        height: `${inHeight}px`,
+        paddingTop: `30px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        textAlign: `left`,
+        overflowY: `auto`
+      };
+    } else if (inWidth < 790) {
+      // width < 790px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        BlankCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `${inHeight}px`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        BlankCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `720px`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    } else if (inWidth < 960) {
+      // width < 960px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        BlankCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `${inHeight}px`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        BlankCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `720px`,
+          paddingTop: `30px`,
+          paddingLeft: `25px`,
+          paddingRight: `25px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    } else {
+      // width >= 1140px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        BlankCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `${inHeight}px`,
+          width: `1080px`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      } else {
+        // height >= 720px
+        BlankCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `720px`,
+          width: `1080px`,
+          paddingTop: `30px`,
+          paddingLeft: `80px`,
+          paddingRight: `80px`,
+          textAlign: `left`,
+          overflowY: `auto`
+        };
+      }
+    }
+
+    if (inWidth < 660) {
+      // width < 660px, height does not matter
+      SpinnerCanvas = {
+        backgroundColor: `#fff`,
+        margin: `auto`,
+        verticalAlign: `center`,
+        height: `${inHeight}px`,
+        display: `grid`,
+        gridTemplateColumns: `auto`
+      };
+    } else if (inWidth < 1140) {
+      // width < 1140px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        SpinnerCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `${inHeight}px`,
+          display: `grid`,
+          gridTemplateColumns: `auto`
+        };
+      } else {
+        // height >= 720px
+        SpinnerCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `720px`,
+          display: `grid`,
+          gridTemplateColumns: `auto`
+        };
+      }
+    } else {
+      // width >= 1140px, NEED TO CHECK HEIGHT
+      if (inHeight < 720) {
+        // height < 720px
+        SpinnerCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `${inHeight}px`,
+          width: `1080px`,
+          display: `grid`,
+          gridTemplateColumns: `auto`
+        };
+      } else {
+        // height >= 720px
+        SpinnerCanvas = {
+          backgroundColor: `#fff`,
+          margin: `auto`,
+          verticalAlign: `center`,
+          height: `720px`,
+          width: `1080px`,
+          display: `grid`,
+          gridTemplateColumns: `auto`
+        };
+      }
+    }
+
+    setIsRestyling(false);
   };
 
   // clears entire "cart" object, removes "cart" from "localStorage"
   const purchaseConfirmHandler = () => {
     ticketOrder = {};
-    localStorage.removeItem("cart");
+    let event = JSON.parse(localStorage.getItem("eventNum"));
+    localStorage.removeItem(`cart_${event}`);
   };
 
   // ***STILL A QUESTION AS TO WHAT TO SHOW IF "res.error" IS RETURNED***
@@ -485,18 +965,18 @@ const Checkout = props => {
         <div className={styles.ImageBox}>
           <img
             className={styles.Image}
-            src={CocinaCandelaLogo}
-            alt="Cocina Candela Logo"
+            src={eventLogo}
+            alt="Event Logo Coming Soon!!!"
           />
         </div>
-        <div className={styles.OrderSummary}>{orderSummary}</div>
+        <div style={OrderSummarySection}>{orderSummary}</div>
       </div>
     );
   } else {
     orderPane = (
       <Aux>
         <div>
-          <div className={styles.OrderSummaryAlt}>{orderSummary}</div>
+          <div style={OrderSummarySectionAlt}>{orderSummary}</div>
         </div>
         <div className={styles.EventFooter}>
           <div
@@ -534,7 +1014,7 @@ const Checkout = props => {
   if (showConnectionStatus && braintreeData.message === null) {
     connectionStatus = (
       <Aux>
-        <div className={styles.BlankCanvas}>
+        <div style={BlankCanvas}>
           <h4>Connection error, please try back later.</h4>
           <br></br>
         </div>
@@ -543,7 +1023,7 @@ const Checkout = props => {
   } else if (showConnectionStatus && braintreeData.message !== null) {
     connectionStatus = (
       <Aux>
-        <div className={styles.BlankCanvas}>
+        <div style={BlankCanvas}>
           <span className={styles.SubSectionHeader}>Order Status</span>
           <h5>There was a problem with your order</h5>
         </div>
@@ -556,7 +1036,7 @@ const Checkout = props => {
   // CONTROLS "loadingSpinner" VIEW
   if (showLoadingSpinner) {
     loadingSpinner = (
-      <div className={styles.Spinner}>
+      <div style={SpinnerCanvas}>
         <Spinner></Spinner>;
       </div>
     );
@@ -594,7 +1074,7 @@ const Checkout = props => {
               {ticketOrder.startDateTime}
             </div>
           </div>
-          <div className={styles.EventTicketSection}>
+          <div style={EventTicketSection}>
             <span className={styles.TicketType}>Contact Information</span>
             <Form.Row>
               <Form.Group as={Col} controlId="formGridFirstName">
@@ -680,7 +1160,7 @@ const Checkout = props => {
   if (showPurchaseConfirmation) {
     purchaseConfirmation = (
       <Aux>
-        <div className={styles.BlankCanvas}>
+        <div style={BlankCanvas}>
           <span className={styles.SubSectionHeader}>Order Confirmation</span>
           <div style={{ paddingTop: "20px" }}>
             {showSuccess(braintreeData.success)}
@@ -692,12 +1172,14 @@ const Checkout = props => {
     purchaseConfirmation = null;
   }
 
+  //  <div className={styles.MainGrid}>
+
   let mainDisplay = null;
   if (showPaymentDetails) {
     if (showDoublePane) {
       mainDisplay = (
         <Aux>
-          <div className={styles.MainGrid}>
+          <div style={MainGrid}>
             {paymentPane}
             {orderPane}
           </div>
@@ -706,13 +1188,13 @@ const Checkout = props => {
     } else if (!showOrderSummaryOnly) {
       mainDisplay = (
         <Aux>
-          <div className={styles.MainGrid}>{paymentPane}</div>
+          <div style={MainGrid}>{paymentPane}</div>
         </Aux>
       );
     } else {
       mainDisplay = (
         <Aux>
-          <div className={styles.MainGrid}>{orderPane}</div>
+          <div style={MainGrid}>{orderPane}</div>
         </Aux>
       );
     }
@@ -722,7 +1204,7 @@ const Checkout = props => {
 
   return (
     <Aux>
-      <div className={styles.MainContainer}>
+      <div style={MainContainer}>
         {loadingSpinner}
         {connectionStatus}
         {mainDisplay}

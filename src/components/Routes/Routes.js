@@ -5,9 +5,16 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Checkout from "../../TicketPurchases/Checkout";
-import CheckoutCOPY from "../../TicketPurchases/CheckoutCOPY";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import TicketSelectionCOPY from "../../TicketPurchases/TicketSelectionCOPY";
+import MyAccount from "../../user/MyAccount";
+import UserDashboard from "../../user/UserDashboard";
+import AdminDashboard from "../../user/AdminDashboard";
+import SignIn from "../../user/SignIn";
+import SignUp from "../../user/SignUp";
+
+import MyRoute from "./MyRoute";
+import UserRoute from "./UserRoute";
+import AdminRoute from "./AdminRoute";
 
 import OSDHeader from "../Headers/OSDHeader";
 import OSDFooter from "../Footers/OSDFooter";
@@ -30,7 +37,6 @@ class Layout extends Component {
             </React.Fragment>
           )}
         />
-
         <Route
           path="/video"
           exact
@@ -42,17 +48,6 @@ class Layout extends Component {
             </React.Fragment>
           )}
         />
-
-        <Route
-          path="/checkoutCOPY"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <CheckoutCOPY />
-            </React.Fragment>
-          )}
-        />
-
         <Route
           path="/checkout"
           exact
@@ -62,20 +57,44 @@ class Layout extends Component {
             </React.Fragment>
           )}
         />
-
-        <Route
-          path="/evCOPY/"
-          render={routeProps => (
-            <React.Fragment>
-              <TicketSelectionCOPY />
-            </React.Fragment>
-          )}
-        />
         <Route
           path="/ev/"
           render={routeProps => (
             <React.Fragment>
               <TicketSelection />
+            </React.Fragment>
+          )}
+        />
+        />
+        <MyRoute path="/myaccount" exact component={MyAccount} />
+        <UserRoute path="/userdashboard" exact component={UserDashboard} />
+        <AdminRoute path="/admindashboard" exact component={AdminDashboard} />
+        )} />
+        <Route
+          path="/signin"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <OSDHeader
+                styleType="HeaderB"
+                logoType={LogoB}
+                pathName="signin"
+              ></OSDHeader>
+              <SignIn />
+            </React.Fragment>
+          )}
+        />
+        <Route
+          path="/signup"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <OSDHeader
+                styleType="HeaderB"
+                logoType={LogoB}
+                pathName="signup"
+              ></OSDHeader>
+              <SignUp />
             </React.Fragment>
           )}
         />

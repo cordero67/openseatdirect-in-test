@@ -1,14 +1,10 @@
-const stylingUpdate = (inWidth, inHeight) => {
-  setIsRestyling(true);
-  if (inWidth < 790) {
-    setShowDoublePane(false);
-  } else {
-    setShowDoublePane(true);
-  }
+export const MainContainerStyling = (inWidth, inHeight) => {
+  let MainContainer = {};
+
   if (inWidth < 660) {
     MainContainer = {
-      backgroundColor: `green`,
-      height: `100vh`,
+      backgroundColor: `red`,
+      height: `${inHeight}px`,
       paddingTop: `0px`,
       paddingLeft: `0px`,
       paddingRight: `0px`,
@@ -17,29 +13,36 @@ const stylingUpdate = (inWidth, inHeight) => {
   } else if (inHeight < 720) {
     MainContainer = {
       backgroundColor: `green`,
-      height: `100vh`,
+      backgroundImage: `linear-gradient(180deg, green 0%, #000000 100%)`,
+      height: `${inHeight}px`,
       paddingTop: `0px`,
-      paddingLeft: `5px`,
+      paddingLeft: `25px`,
       paddingRight: `25px`,
       paddingBottom: `0px`
     };
   } else {
     MainContainer = {
       backgroundColor: `#2f5596`,
-      height: `100vh`,
-      paddingTop: `calc((100vh - 720px) / 2)`,
+      backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
+      paddingTop: `calc((${inHeight}px - 720px) / 2)`,
       paddingLeft: `25px`,
       paddingRight: `25px`,
-      paddingBottom: `calc((100vh - 720px) / 2)`
+      paddingBottom: `calc((${inHeight}px - 720px) / 2)`
     };
   }
+
+  return MainContainer;
+};
+
+export const MainGridStyling = (inWidth, inHeight) => {
+  let MainGrid;
 
   if (inWidth < 660) {
     // width < 660px, height does not matter
     MainGrid = {
       backgroundColor: `#fff`,
       margin: `auto`,
-      height: `100vh`,
+      height: `${inHeight}px`,
       display: `grid`,
       gridTemplateColumns: `auto`
     };
@@ -50,7 +53,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       MainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         display: `grid`,
         gridTemplateColumns: `auto`
       };
@@ -71,7 +74,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       MainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         display: `grid`,
         gridTemplateColumns: `auto 320px`
       };
@@ -92,7 +95,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       MainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         display: `grid`,
         gridTemplateColumns: `auto 360px`
       };
@@ -113,7 +116,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       MainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         width: `1080px`,
         display: `grid`,
         gridTemplateColumns: `720px 360px`
@@ -131,11 +134,17 @@ const stylingUpdate = (inWidth, inHeight) => {
     }
   }
 
+  return MainGrid;
+};
+
+export const EventTicketSectionStyling = (inWidth, inHeight) => {
+  let EventTicketSection;
+
   if (inWidth < 480) {
     // width < 480px, height does not matter
     EventTicketSection = {
       backgroundColor: `#fff`,
-      height: `calc(100vh - 140px)`,
+      height: `calc(${inHeight}px - 140px)`,
       paddingTop: `30px`,
       paddingLeft: `15px`,
       paddingRight: `10px`,
@@ -146,7 +155,7 @@ const stylingUpdate = (inWidth, inHeight) => {
     // width < 660px, height does not matter
     EventTicketSection = {
       backgroundColor: `#fff`,
-      height: `calc(100vh - 140px)`,
+      height: `calc(${inHeight}px - 140px)`,
       paddingTop: `30px`,
       paddingLeft: `25px`,
       paddingRight: `25px`,
@@ -159,7 +168,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       // height < 720px
       EventTicketSection = {
         backgroundColor: `#fff`,
-        height: `calc(100vh - 140px)`,
+        height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
         paddingLeft: `80px`,
         paddingRight: `80px`,
@@ -184,7 +193,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       // height < 720px
       EventTicketSection = {
         backgroundColor: `#fff`,
-        height: `calc(100vh - 140px)`,
+        height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
@@ -209,7 +218,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       // height < 720px
       EventTicketSection = {
         backgroundColor: `#fff`,
-        height: `calc(100vh - 140px)`,
+        height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
@@ -234,7 +243,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       // height < 720px
       EventTicketSection = {
         backgroundColor: `#fff`,
-        height: `calc(100vh - 140px)`,
+        height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
         paddingLeft: `80px`,
         paddingRight: `80px`,
@@ -255,12 +264,18 @@ const stylingUpdate = (inWidth, inHeight) => {
     }
   }
 
+  return EventTicketSectionStyling;
+};
+
+export const OrderSummarySectionStyling = (inWidth, inHeight) => {
+  let OrderSummarySection;
+
   if (inWidth < 660) {
     // width < 660px, height does not matter
     OrderSummarySection = {
       backgroundColor: `#e5e5e5`,
       fontSize: `0.875rem`,
-      height: `calc(100vh - 160px)`,
+      height: `calc(${inHeight}px - 160px)`,
       paddingTop: `20px`,
       paddingLeft: `25px`,
       paddingRight: `25px`,
@@ -273,7 +288,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       OrderSummarySection = {
         backgroundColor: `#e5e5e5`,
         fontSize: `0.875rem`,
-        height: `calc(100vh - 160px)`,
+        height: `calc(${inHeight}px - 160px)`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
@@ -298,7 +313,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       OrderSummarySection = {
         backgroundColor: `#e5e5e5`,
         fontSize: `0.875rem`,
-        height: `calc(100vh - 180px)`,
+        height: `calc(${inHeight}px - 180px)`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
@@ -318,12 +333,18 @@ const stylingUpdate = (inWidth, inHeight) => {
     }
   }
 
+  return OrderSummarySectionStyling;
+};
+
+export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
+  let OrderSummarySectionAlt;
+
   if (inWidth < 660) {
     // width < 660px, height does not matter
     OrderSummarySectionAlt = {
       backgroundColor: `#e5e5e5`,
       fontSize: `0.875rem`,
-      height: `calc(100vh - 80px)`,
+      height: `calc(${inHeight}px - 80px)`,
       paddingTop: `20px`,
       paddingLeft: `25px`,
       paddingRight: `25px`,
@@ -336,7 +357,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       OrderSummarySectionAlt = {
         backgroundColor: `#e5e5e5`,
         fontSize: `0.875rem`,
-        height: `calc(100vh - 80px)`,
+        height: `calc(${inHeight}px - 80px)`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
@@ -361,7 +382,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       OrderSummarySectionAlt = {
         backgroundColor: `#e5e5e5`,
         fontSize: `0.875rem`,
-        height: `calc(100vh - 80px)`,
+        height: `calc(${inHeight}px - 80px)`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
@@ -381,13 +402,19 @@ const stylingUpdate = (inWidth, inHeight) => {
     }
   }
 
+  return OrderSummarySectionAltStyling;
+};
+
+export const BlankCanvasStyling = (inWidth, inHeight) => {
+  let BlankCanvas = {};
+
   if (inWidth < 480) {
     // width < 480px, height does not matter
     BlankCanvas = {
       backgroundColor: `#fff`,
       margin: `auto`,
       verticalAlign: `center`,
-      height: `100vh`,
+      height: `${inHeight}px`,
       paddingTop: `30px`,
       paddingLeft: `15px`,
       paddingRight: `10px`,
@@ -400,7 +427,7 @@ const stylingUpdate = (inWidth, inHeight) => {
       backgroundColor: `#fff`,
       margin: `auto`,
       verticalAlign: `center`,
-      height: `100vh`,
+      height: `${inHeight}px`,
       paddingTop: `30px`,
       paddingLeft: `25px`,
       paddingRight: `25px`,
@@ -415,7 +442,7 @@ const stylingUpdate = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         margin: `auto`,
         verticalAlign: `center`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         paddingTop: `30px`,
         paddingLeft: `80px`,
         paddingRight: `80px`,
@@ -444,7 +471,7 @@ const stylingUpdate = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         margin: `auto`,
         verticalAlign: `center`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         paddingTop: `30px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
@@ -473,7 +500,7 @@ const stylingUpdate = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         margin: `auto`,
         verticalAlign: `center`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         width: `1080px`,
         paddingTop: `30px`,
         paddingLeft: `80px`,
@@ -498,13 +525,19 @@ const stylingUpdate = (inWidth, inHeight) => {
     }
   }
 
+  return BlankCanvas;
+};
+
+export const SpinnerCanvasStyling = (inWidth, inHeight) => {
+  let SpinnerCanvas = {};
+
   if (inWidth < 660) {
     // width < 660px, height does not matter
     SpinnerCanvas = {
       backgroundColor: `#fff`,
       margin: `auto`,
       verticalAlign: `center`,
-      height: `100vh`,
+      height: `${inHeight}px`,
       display: `grid`,
       gridTemplateColumns: `auto`
     };
@@ -516,7 +549,7 @@ const stylingUpdate = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         margin: `auto`,
         verticalAlign: `center`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         display: `grid`,
         gridTemplateColumns: `auto`
       };
@@ -539,7 +572,7 @@ const stylingUpdate = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         margin: `auto`,
         verticalAlign: `center`,
-        height: `100vh`,
+        height: `${inHeight}px`,
         width: `1080px`,
         display: `grid`,
         gridTemplateColumns: `auto`
@@ -558,5 +591,5 @@ const stylingUpdate = (inWidth, inHeight) => {
     }
   }
 
-  setIsRestyling(false);
+  return SpinnerCanvas;
 };
