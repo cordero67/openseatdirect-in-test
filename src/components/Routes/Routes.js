@@ -5,9 +5,7 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Checkout from "../../TicketPurchases/Checkout";
-import CheckoutCOPY from "../../TicketPurchases/CheckoutCOPY";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import TicketSelectionCOPY from "../../TicketPurchases/TicketSelectionCOPY";
 
 import OSDHeader from "../Headers/OSDHeader";
 import OSDFooter from "../Footers/OSDFooter";
@@ -44,16 +42,6 @@ class Layout extends Component {
         />
 
         <Route
-          path="/checkoutCOPY"
-          exact
-          render={routeProps => (
-            <React.Fragment>
-              <CheckoutCOPY />
-            </React.Fragment>
-          )}
-        />
-
-        <Route
           path="/checkout"
           exact
           render={routeProps => (
@@ -63,14 +51,6 @@ class Layout extends Component {
           )}
         />
 
-        <Route
-          path="/evCOPY/"
-          render={routeProps => (
-            <React.Fragment>
-              <TicketSelectionCOPY />
-            </React.Fragment>
-          )}
-        />
         <Route
           path="/ev/"
           render={routeProps => (

@@ -8,15 +8,13 @@ import styles from "./OSDHeader.module.css";
 // "history" represents the actual active path
 // "path" represents the path defined in the respective "<NavLink>"
 // "#ff9900" gives an orange color
-/*
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
-    return { color: "#8DADD4" };
+    return { color: "black" };
   } else {
     return { color: "ffffff" };
   }
 };
-*/
 
 const Header = ({ history, logoType, styleType }) => {
   return (
@@ -33,14 +31,24 @@ const Header = ({ history, logoType, styleType }) => {
         </li>
 
         <li>
-          <NavLink to="/ev/dahday_cocina_candela?eventID=94106331593">
-            Events
+          <NavLink to="/video" style={isActive(history, "/video")} exact>
+            About<br></br>OSD
           </NavLink>
         </li>
 
+        {/*dahday_ha_ha_for_hire?eventID=33387658421*/}
+
+        {/*dahday_concina_candela?eventID=81295501293*/}
+
         <li>
-          <NavLink to="/evCOPY/dahday_cocina_candela?eventID=94106331593">
-            Events<br></br>NEW
+          <NavLink
+            to="/ev/dahday_ha_ha_for_hire?eventID=33387658421"
+            style={isActive(
+              history,
+              "/ev/dahday_ha_ha_for_hire?eventID=33387658421"
+            )}
+          >
+            Events
           </NavLink>
         </li>
       </ul>

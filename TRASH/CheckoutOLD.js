@@ -22,26 +22,7 @@ import styles from "./Order.module.css";
 // defines the ticket order populated from "localStorage"
 let ticketOrder = {};
 
-let MainContainer = {};
-let MainGrid = {};
-let EventTicketSection = {};
-let OrderSummarySection = {};
-let OrderSummarySectionAlt = {};
-let BlankCanvas = {};
-let SpinnerCanvas = {};
-
 const Checkout = props => {
-  /*document.height (pure javascript)
-$(document).height() (jQuery)
-
-$(window).on('resize', function() {
-        resize();
-    });
-*/
-
-  // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
-
   // defines purchase order to be sent to server
   const [contactInformation, setContactInformation] = useState({
     firstName: "",
@@ -120,585 +101,23 @@ $(window).on('resize', function() {
       ticketOrder = JSON.parse(localStorage.getItem("cart"));
       console.log("ticketOrder: ", ticketOrder);
     }
-    stylingUpdate(window.innerWidth, window.innerHeight);
+    // determines initial window width and a one or two pane display
+    if (window.innerWidth < 790) {
+      setShowDoublePane(false);
+    } else {
+      setShowDoublePane(true);
+    }
     // requests BrainTree "clientToken" from backend server
     getExpressToken();
   }, []);
 
   window.onresize = function(event) {
-    stylingUpdate(window.innerWidth, window.innerHeight);
-  };
-
-  const stylingUpdate = (inWidth, inHeight) => {
-    setIsRestyling(true);
-    if (inWidth < 790) {
+    // dynamically determines window width and then determines a one or two pane display
+    if (window.innerWidth < 790) {
       setShowDoublePane(false);
     } else {
       setShowDoublePane(true);
     }
-
-    if (inWidth < 660) {
-      MainContainer = {
-        backgroundColor: `red`,
-        height: `${inHeight}px`,
-        paddingTop: `0px`,
-        paddingLeft: `0px`,
-        paddingRight: `0px`,
-        paddingBottom: `0px`
-      };
-    } else if (inHeight < 720) {
-      MainContainer = {
-        backgroundColor: `green`,
-        height: `${inHeight}px`,
-        paddingTop: `0px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        paddingBottom: `0px`
-      };
-    } else {
-      MainContainer = {
-        backgroundColor: `#2f5596`,
-        paddingTop: `calc((${inHeight}px - 720px) / 2)`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        paddingBottom: `calc((${inHeight}px - 720px) / 2)`
-      };
-    }
-
-    if (inWidth < 660) {
-      // width < 660px, height does not matter
-      MainGrid = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        height: `${inHeight}px`,
-        display: `grid`,
-        gridTemplateColumns: `auto`
-      };
-    } else if (inWidth < 790) {
-      // width < 790px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        MainGrid = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          height: `${inHeight}px`,
-          display: `grid`,
-          gridTemplateColumns: `auto`
-        };
-      } else {
-        // height >= 720px
-        MainGrid = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          height: `720px`,
-          display: `grid`,
-          gridTemplateColumns: `auto`
-        };
-      }
-    } else if (inWidth < 960) {
-      // width < 960px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        MainGrid = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          height: `${inHeight}px`,
-          display: `grid`,
-          gridTemplateColumns: `auto 320px`
-        };
-      } else {
-        // height >= 720px
-        MainGrid = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          height: `720px`,
-          display: `grid`,
-          gridTemplateColumns: `auto 320px`
-        };
-      }
-    } else if (inWidth < 1140) {
-      // width < 1140px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        MainGrid = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          height: `${inHeight}px`,
-          display: `grid`,
-          gridTemplateColumns: `auto 360px`
-        };
-      } else {
-        // height >= 720px
-        MainGrid = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          height: `720px`,
-          display: `grid`,
-          gridTemplateColumns: `auto 360px`
-        };
-      }
-    } else {
-      // width >= 1140px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        MainGrid = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          height: `${inHeight}px`,
-          width: `1080px`,
-          display: `grid`,
-          gridTemplateColumns: `720px 360px`
-        };
-      } else {
-        // height >= 720px
-        MainGrid = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          height: `720px`,
-          width: `1080px`,
-          display: `grid`,
-          gridTemplateColumns: `720px 360px`
-        };
-      }
-    }
-
-    if (inWidth < 480) {
-      // width < 480px, height does not matter
-      EventTicketSection = {
-        backgroundColor: `#fff`,
-        height: `calc(${inHeight}px - 140px)`,
-        paddingTop: `30px`,
-        paddingLeft: `15px`,
-        paddingRight: `10px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    } else if (inWidth < 660) {
-      // width < 660px, height does not matter
-      EventTicketSection = {
-        backgroundColor: `#fff`,
-        height: `calc(${inHeight}px - 140px)`,
-        paddingTop: `30px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    } else if (inWidth < 790) {
-      // width < 790px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        EventTicketSection = {
-          backgroundColor: `#fff`,
-          height: `calc(${inHeight}px - 140px)`,
-          paddingTop: `30px`,
-          paddingLeft: `80px`,
-          paddingRight: `80px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        EventTicketSection = {
-          backgroundColor: `#fff`,
-          height: `580px`,
-          paddingTop: `30px`,
-          paddingLeft: `80px`,
-          paddingRight: `80px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      }
-    } else if (inWidth < 960) {
-      // width < 960px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        EventTicketSection = {
-          backgroundColor: `#fff`,
-          height: `calc(${inHeight}px - 140px)`,
-          paddingTop: `30px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        EventTicketSection = {
-          backgroundColor: `#fff`,
-          height: `580px`,
-          paddingTop: `30px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      }
-    } else if (inWidth < 1140) {
-      // width < 1140px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        EventTicketSection = {
-          backgroundColor: `#fff`,
-          height: `calc(${inHeight}px - 140px)`,
-          paddingTop: `30px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        EventTicketSection = {
-          backgroundColor: `#fff`,
-          height: `580px`,
-          paddingTop: `30px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      }
-    } else {
-      // width >= 1140px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        EventTicketSection = {
-          backgroundColor: `#fff`,
-          height: `calc(${inHeight}px - 140px)`,
-          paddingTop: `30px`,
-          paddingLeft: `80px`,
-          paddingRight: `80px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        EventTicketSection = {
-          backgroundColor: `#fff`,
-          height: `580px`,
-          paddingTop: `30px`,
-          paddingLeft: `80px`,
-          paddingRight: `80px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      }
-    }
-
-    if (inWidth < 660) {
-      // width < 660px, height does not matter
-      OrderSummarySection = {
-        backgroundColor: `#e5e5e5`,
-        fontSize: `0.875rem`,
-        height: `calc(${inHeight}px - 160px)`,
-        paddingTop: `20px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        overflowY: `auto`
-      };
-    } else if (inWidth < 960) {
-      // width < 960px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        OrderSummarySection = {
-          backgroundColor: `#e5e5e5`,
-          fontSize: `0.875rem`,
-          height: `calc(${inHeight}px - 160px)`,
-          paddingTop: `20px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        OrderSummarySection = {
-          backgroundColor: `#e5e5e5`,
-          fontSize: `0.875rem`,
-          height: `560px`,
-          paddingTop: `20px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          overflowY: `auto`
-        };
-      }
-    } else {
-      // width >= 960px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        OrderSummarySection = {
-          backgroundColor: `#e5e5e5`,
-          fontSize: `0.875rem`,
-          height: `calc(${inHeight}px - 180px)`,
-          paddingTop: `20px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        OrderSummarySection = {
-          backgroundColor: `#e5e5e5`,
-          fontSize: `0.875rem`,
-          height: `540px`,
-          paddingTop: `20px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          overflowY: `auto`
-        };
-      }
-    }
-
-    if (inWidth < 660) {
-      // width < 660px, height does not matter
-      OrderSummarySectionAlt = {
-        backgroundColor: `#e5e5e5`,
-        fontSize: `0.875rem`,
-        height: `calc(${inHeight}px - 80px)`,
-        paddingTop: `20px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        overflowY: `auto`
-      };
-    } else if (inWidth < 960) {
-      // width < 960px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        OrderSummarySectionAlt = {
-          backgroundColor: `#e5e5e5`,
-          fontSize: `0.875rem`,
-          height: `calc(${inHeight}px - 80px)`,
-          paddingTop: `20px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        OrderSummarySectionAlt = {
-          backgroundColor: `#e5e5e5`,
-          fontSize: `0.875rem`,
-          height: `640px`,
-          paddingTop: `20px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          overflowY: `auto`
-        };
-      }
-    } else {
-      // width >= 960px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        OrderSummarySectionAlt = {
-          backgroundColor: `#e5e5e5`,
-          fontSize: `0.875rem`,
-          height: `calc(${inHeight}px - 80px)`,
-          paddingTop: `20px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        OrderSummarySectionAlt = {
-          backgroundColor: `#e5e5e5`,
-          fontSize: `0.875rem`,
-          height: `640px`,
-          paddingTop: `20px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          overflowY: `auto`
-        };
-      }
-    }
-
-    if (inWidth < 480) {
-      // width < 480px, height does not matter
-      BlankCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `${inHeight}px`,
-        paddingTop: `30px`,
-        paddingLeft: `15px`,
-        paddingRight: `10px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    } else if (inWidth < 660) {
-      // width < 660px, height does not matter
-      BlankCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `${inHeight}px`,
-        paddingTop: `30px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    } else if (inWidth < 790) {
-      // width < 790px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        BlankCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `${inHeight}px`,
-          paddingTop: `30px`,
-          paddingLeft: `80px`,
-          paddingRight: `80px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        BlankCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `720px`,
-          paddingTop: `30px`,
-          paddingLeft: `80px`,
-          paddingRight: `80px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      }
-    } else if (inWidth < 960) {
-      // width < 960px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        BlankCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `${inHeight}px`,
-          paddingTop: `30px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        BlankCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `720px`,
-          paddingTop: `30px`,
-          paddingLeft: `25px`,
-          paddingRight: `25px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      }
-    } else {
-      // width >= 1140px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        BlankCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `${inHeight}px`,
-          width: `1080px`,
-          paddingTop: `30px`,
-          paddingLeft: `80px`,
-          paddingRight: `80px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      } else {
-        // height >= 720px
-        BlankCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `720px`,
-          width: `1080px`,
-          paddingTop: `30px`,
-          paddingLeft: `80px`,
-          paddingRight: `80px`,
-          textAlign: `left`,
-          overflowY: `auto`
-        };
-      }
-    }
-
-    if (inWidth < 660) {
-      // width < 660px, height does not matter
-      SpinnerCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `${inHeight}px`,
-        display: `grid`,
-        gridTemplateColumns: `auto`
-      };
-    } else if (inWidth < 1140) {
-      // width < 1140px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        SpinnerCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `${inHeight}px`,
-          display: `grid`,
-          gridTemplateColumns: `auto`
-        };
-      } else {
-        // height >= 720px
-        SpinnerCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `720px`,
-          display: `grid`,
-          gridTemplateColumns: `auto`
-        };
-      }
-    } else {
-      // width >= 1140px, NEED TO CHECK HEIGHT
-      if (inHeight < 720) {
-        // height < 720px
-        SpinnerCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `${inHeight}px`,
-          width: `1080px`,
-          display: `grid`,
-          gridTemplateColumns: `auto`
-        };
-      } else {
-        // height >= 720px
-        SpinnerCanvas = {
-          backgroundColor: `#fff`,
-          margin: `auto`,
-          verticalAlign: `center`,
-          height: `720px`,
-          width: `1080px`,
-          display: `grid`,
-          gridTemplateColumns: `auto`
-        };
-      }
-    }
-
-    /*return [
-      MainContainer,
-      MainGrid,
-      EventTicketSection,
-      OrderSummarySection,
-      OrderSummarySectionAlt,
-      BlankCanvas,
-      SpinnerCanvas
-    ];*/
-    setIsRestyling(false);
   };
 
   // clears entire "cart" object, removes "cart" from "localStorage"
@@ -1053,7 +472,7 @@ $(window).on('resize', function() {
         disabled={!detailsMinimal}
         className={styles.ButtonGrey}
       >
-        Place Order
+        Place OrderOLD
       </button>
     );
   }
@@ -1070,14 +489,14 @@ $(window).on('resize', function() {
             alt="Cocina Candela Logo"
           />
         </div>
-        <div style={OrderSummarySection}>{orderSummary}</div>
+        <div className={styles.OrderSummary}>{orderSummary}</div>
       </div>
     );
   } else {
     orderPane = (
       <Aux>
         <div>
-          <div style={OrderSummarySectionAlt}>{orderSummary}</div>
+          <div className={styles.OrderSummaryAlt}>{orderSummary}</div>
         </div>
         <div className={styles.EventFooter}>
           <div
@@ -1115,7 +534,7 @@ $(window).on('resize', function() {
   if (showConnectionStatus && braintreeData.message === null) {
     connectionStatus = (
       <Aux>
-        <div style={BlankCanvas}>
+        <div className={styles.BlankCanvas}>
           <h4>Connection error, please try back later.</h4>
           <br></br>
         </div>
@@ -1124,7 +543,7 @@ $(window).on('resize', function() {
   } else if (showConnectionStatus && braintreeData.message !== null) {
     connectionStatus = (
       <Aux>
-        <div style={BlankCanvas}>
+        <div className={styles.BlankCanvas}>
           <span className={styles.SubSectionHeader}>Order Status</span>
           <h5>There was a problem with your order</h5>
         </div>
@@ -1137,7 +556,7 @@ $(window).on('resize', function() {
   // CONTROLS "loadingSpinner" VIEW
   if (showLoadingSpinner) {
     loadingSpinner = (
-      <div style={SpinnerCanvas}>
+      <div className={styles.Spinner}>
         <Spinner></Spinner>;
       </div>
     );
@@ -1175,7 +594,7 @@ $(window).on('resize', function() {
               {ticketOrder.startDateTime}
             </div>
           </div>
-          <div style={EventTicketSection}>
+          <div className={styles.EventTicketSection}>
             <span className={styles.TicketType}>Contact Information</span>
             <Form.Row>
               <Form.Group as={Col} controlId="formGridFirstName">
@@ -1261,7 +680,7 @@ $(window).on('resize', function() {
   if (showPurchaseConfirmation) {
     purchaseConfirmation = (
       <Aux>
-        <div style={BlankCanvas}>
+        <div className={styles.BlankCanvas}>
           <span className={styles.SubSectionHeader}>Order Confirmation</span>
           <div style={{ paddingTop: "20px" }}>
             {showSuccess(braintreeData.success)}
@@ -1273,14 +692,12 @@ $(window).on('resize', function() {
     purchaseConfirmation = null;
   }
 
-  //  <div className={styles.MainGrid}>
-
   let mainDisplay = null;
   if (showPaymentDetails) {
     if (showDoublePane) {
       mainDisplay = (
         <Aux>
-          <div style={MainGrid}>
+          <div className={styles.MainGrid}>
             {paymentPane}
             {orderPane}
           </div>
@@ -1289,13 +706,13 @@ $(window).on('resize', function() {
     } else if (!showOrderSummaryOnly) {
       mainDisplay = (
         <Aux>
-          <div style={MainGrid}>{paymentPane}</div>
+          <div className={styles.MainGrid}>{paymentPane}</div>
         </Aux>
       );
     } else {
       mainDisplay = (
         <Aux>
-          <div style={MainGrid}>{orderPane}</div>
+          <div className={styles.MainGrid}>{orderPane}</div>
         </Aux>
       );
     }
@@ -1305,7 +722,7 @@ $(window).on('resize', function() {
 
   return (
     <Aux>
-      <div style={MainContainer}>
+      <div className={styles.MainContainer}>
         {loadingSpinner}
         {connectionStatus}
         {mainDisplay}

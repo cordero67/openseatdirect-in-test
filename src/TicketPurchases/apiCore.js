@@ -2,13 +2,28 @@ import { API } from "../config";
 
 import { each, isObject } from "underscore";
 
-// NEW api TO EXTRACT EVENT DATA FROM SERVER
+// extracts specific event data, non-transactional
 export const getEventData = eventId => {
   return fetch(`${API}/event/e/${eventId}`, {
     method: "GET"
   })
     .then(response => {
       return response.json();
+    })
+    .catch(err => {
+      console.log("jumping here", err);
+    });
+};
+
+// extracts specific event data, non-transactional
+export const getEventImage = eventId => {
+  console.log("Inside apiCore and the 'getEventImage' function call");
+  return fetch(`${API}/event/photo/e/${eventId}`, {
+    method: "GET"
+  })
+    .then(response => {
+      console.log("Inside apiCore and the 'getEventImage' .then block");
+      return response.url;
     })
     .catch(err => {
       console.log("jumping here", err);
