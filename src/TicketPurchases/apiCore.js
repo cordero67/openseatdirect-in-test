@@ -66,6 +66,69 @@ const handleErrors = response => {
   return response;
 };
 
+// *********
+// NEED TO ADJUST
+// CURRENTLY USING fetch(`${API}/braintree/expressPayment`)
+// WILL BE CHANGED TO fetch(`${API}/paypal/expressPaymentPreOrder1`)
+// RUNTIME ERROR CAUSED BY ".then(handleErrors)"
+// PayPal Smart button fetch api
+export const expressPaymentPreOrder1 = paymentTicketData => {
+  return (
+    fetch(`${API}/paypal/expressPayment`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(paymentTicketData)
+    })
+      .then(handleErrors)
+      .then(response => {
+        return response.json();
+      })
+      // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
+      .catch(err => {
+        console.log(
+          "fetch(`${API}/braintree/expressPayment`): ERROR THROWN",
+          err
+        );
+        throw Error(err);
+      })
+  );
+};
+
+// *********
+// NEED TO ADJUST
+// CURRENTLY USING fetch(`${API}/braintree/expressPayment`)
+// WILL BE CHANGED TO fetch(`${API}/paypal/expressPaymentOnSuccess`)
+// RUNTIME ERROR CAUSED BY ".then(handleErrors)"
+// PayPal Smart button fetch api
+export const expressPaymentOnSuccess = paymentTicketData => {
+  return (
+    fetch(`${API}/paypal/expressPayment`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(paymentTicketData)
+    })
+      //.then(handleErrors)
+      .then(response => {
+        return response.json();
+      })
+      // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
+      .catch(err => {
+        console.log(
+          "fetch(`${API}/braintree/expressPayment`): ERROR THROWN",
+          err
+        );
+        throw Error(err);
+      })
+  );
+};
+
+// BrainTree fetch api
 export const processExpressPayment = paymentTicketData => {
   return (
     fetch(`${API}/braintree/expressPayment`, {
@@ -91,6 +154,7 @@ export const processExpressPayment = paymentTicketData => {
   );
 };
 
+// BrainTree fetch api
 export const getExpressBraintreeClientToken = () => {
   return fetch(`${API}/braintree/getExpressToken`, {
     method: "GET",
@@ -112,22 +176,7 @@ export const getExpressBraintreeClientToken = () => {
     });
 };
 
-export const getBraintreeClientToken = (userId, token) => {
-  return fetch(`${API}/braintree/getToken/${userId}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    }
-  })
-    .then(handleErrors)
-    .then(response => {
-      return response.json();
-    })
-    .catch(err => console.log(err));
-};
-
+// BrainTree fetch api
 export const processPayment = (userId, token, paymentData) => {
   return fetch(`${API}/braintree/payment/${userId}`, {
     method: "POST",
@@ -138,6 +187,23 @@ export const processPayment = (userId, token, paymentData) => {
     },
     body: JSON.stringify(paymentData)
   })
+    .then(response => {
+      return response.json();
+    })
+    .catch(err => console.log(err));
+};
+
+// BrainTree fetch api
+export const getBraintreeClientToken = (userId, token) => {
+  return fetch(`${API}/braintree/getToken/${userId}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(handleErrors)
     .then(response => {
       return response.json();
     })

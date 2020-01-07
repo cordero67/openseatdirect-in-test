@@ -3,7 +3,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
 
   if (inWidth < 660) {
     MainContainer = {
-      backgroundColor: `red`,
+      backgroundColor: `#2f5596`,
       height: `${inHeight}px`,
       paddingTop: `0px`,
       paddingLeft: `0px`,
@@ -12,7 +12,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
     };
   } else if (inHeight < 720) {
     MainContainer = {
-      backgroundColor: `green`,
+      backgroundColor: `#2f5596`,
       backgroundImage: `linear-gradient(180deg, green 0%, #000000 100%)`,
       height: `${inHeight}px`,
       paddingTop: `0px`,
@@ -139,7 +139,6 @@ export const MainGridStyling = (inWidth, inHeight) => {
 
 export const EventTicketSectionStyling = (inWidth, inHeight) => {
   let EventTicketSection;
-
   if (inWidth < 480) {
     // width < 480px, height does not matter
     EventTicketSection = {
@@ -264,7 +263,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
     }
   }
 
-  return EventTicketSectionStyling;
+  return EventTicketSection;
 };
 
 export const OrderSummarySectionStyling = (inWidth, inHeight) => {
@@ -333,7 +332,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
     }
   }
 
-  return OrderSummarySectionStyling;
+  return OrderSummarySection;
 };
 
 export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
@@ -402,194 +401,5 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
     }
   }
 
-  return OrderSummarySectionAltStyling;
-};
-
-export const BlankCanvasStyling = (inWidth, inHeight) => {
-  let BlankCanvas = {};
-
-  if (inWidth < 480) {
-    // width < 480px, height does not matter
-    BlankCanvas = {
-      backgroundColor: `#fff`,
-      margin: `auto`,
-      verticalAlign: `center`,
-      height: `${inHeight}px`,
-      paddingTop: `30px`,
-      paddingLeft: `15px`,
-      paddingRight: `10px`,
-      textAlign: `left`,
-      overflowY: `auto`
-    };
-  } else if (inWidth < 660) {
-    // width < 660px, height does not matter
-    BlankCanvas = {
-      backgroundColor: `#fff`,
-      margin: `auto`,
-      verticalAlign: `center`,
-      height: `${inHeight}px`,
-      paddingTop: `30px`,
-      paddingLeft: `25px`,
-      paddingRight: `25px`,
-      textAlign: `left`,
-      overflowY: `auto`
-    };
-  } else if (inWidth < 790) {
-    // width < 790px, NEED TO CHECK HEIGHT
-    if (inHeight < 720) {
-      // height < 720px
-      BlankCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `${inHeight}px`,
-        paddingTop: `30px`,
-        paddingLeft: `80px`,
-        paddingRight: `80px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    } else {
-      // height >= 720px
-      BlankCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `720px`,
-        paddingTop: `30px`,
-        paddingLeft: `80px`,
-        paddingRight: `80px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    }
-  } else if (inWidth < 960) {
-    // width < 960px, NEED TO CHECK HEIGHT
-    if (inHeight < 720) {
-      // height < 720px
-      BlankCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `${inHeight}px`,
-        paddingTop: `30px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    } else {
-      // height >= 720px
-      BlankCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `720px`,
-        paddingTop: `30px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    }
-  } else {
-    // width >= 1140px, NEED TO CHECK HEIGHT
-    if (inHeight < 720) {
-      // height < 720px
-      BlankCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `${inHeight}px`,
-        width: `1080px`,
-        paddingTop: `30px`,
-        paddingLeft: `80px`,
-        paddingRight: `80px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    } else {
-      // height >= 720px
-      BlankCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `720px`,
-        width: `1080px`,
-        paddingTop: `30px`,
-        paddingLeft: `80px`,
-        paddingRight: `80px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    }
-  }
-
-  return BlankCanvas;
-};
-
-export const SpinnerCanvasStyling = (inWidth, inHeight) => {
-  let SpinnerCanvas = {};
-
-  if (inWidth < 660) {
-    // width < 660px, height does not matter
-    SpinnerCanvas = {
-      backgroundColor: `#fff`,
-      margin: `auto`,
-      verticalAlign: `center`,
-      height: `${inHeight}px`,
-      display: `grid`,
-      gridTemplateColumns: `auto`
-    };
-  } else if (inWidth < 1140) {
-    // width < 1140px, NEED TO CHECK HEIGHT
-    if (inHeight < 720) {
-      // height < 720px
-      SpinnerCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `${inHeight}px`,
-        display: `grid`,
-        gridTemplateColumns: `auto`
-      };
-    } else {
-      // height >= 720px
-      SpinnerCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `720px`,
-        display: `grid`,
-        gridTemplateColumns: `auto`
-      };
-    }
-  } else {
-    // width >= 1140px, NEED TO CHECK HEIGHT
-    if (inHeight < 720) {
-      // height < 720px
-      SpinnerCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `${inHeight}px`,
-        width: `1080px`,
-        display: `grid`,
-        gridTemplateColumns: `auto`
-      };
-    } else {
-      // height >= 720px
-      SpinnerCanvas = {
-        backgroundColor: `#fff`,
-        margin: `auto`,
-        verticalAlign: `center`,
-        height: `720px`,
-        width: `1080px`,
-        display: `grid`,
-        gridTemplateColumns: `auto`
-      };
-    }
-  }
-
-  return SpinnerCanvas;
+  return OrderSummarySectionAlt;
 };

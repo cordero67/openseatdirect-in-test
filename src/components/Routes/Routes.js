@@ -4,7 +4,8 @@ import { Route } from "react-router-dom";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
-import Checkout from "../../TicketPurchases/Checkout";
+import CheckoutBT from "../../TicketPurchases/Checkout_bt";
+import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 
 import OSDHeader from "../Headers/OSDHeader";
@@ -42,11 +43,21 @@ class Layout extends Component {
         />
 
         <Route
-          path="/checkout"
+          path="/checkout_bt"
           exact
           render={routeProps => (
             <React.Fragment>
-              <Checkout />
+              <CheckoutBT />
+            </React.Fragment>
+          )}
+        />
+
+        <Route
+          path="/checkout_pp"
+          exact
+          render={routeProps => (
+            <React.Fragment>
+              <CheckoutPP />
             </React.Fragment>
           )}
         />
