@@ -20,19 +20,17 @@ import {
 } from "./Styling";
 import Spinner from "../components/UI/Spinner/Spinner";
 
-import CocinaCandelaLogo from "../assets/Cocina_Candela/cocina-candela-large.jpg";
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
 import TicketItem from "./TicketItem";
 import styles from "./Order.module.css";
 
-// CODE TRANSFERRED FROM "EventData"
 // defines an event's NON ticket type specific information
 let eventDetails;
 
 // defines an event's image
 let eventLogo = "";
-// CODE TRANSFERRED FROM "EventData"
+
 // defines ticket order object
 // contains event information and ticket type specific data
 // this object is sent to "Checkout" page
@@ -45,19 +43,14 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const SingleEvent = () => {
-  // **DECISION CODE**
-  // **NOTED**
   const [showDoublePane, setShowDoublePane] = useState(false);
 
-  // **DECISION CODE**
-  // **NOTED**
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
   const [isLoadingImage, setIsLoadingImage] = useState(true);
 
-  // CODE TRANSFERRED FROM "EventData"
   // defines an event's specific ticket type information
   // also tracks the number of tickets selected throughout selection process
   const [ticketInfo, setTicketInfo] = useState([]);
@@ -65,8 +58,6 @@ const SingleEvent = () => {
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
 
-  // **DECISION CODE**
-  // **NOTED**
   useEffect(() => {
     setIsLoadingEvent(true);
     setIsLoadingImage(true);
@@ -97,7 +88,6 @@ const SingleEvent = () => {
     setIsRestyling(false);
   };
 
-  // CODE TRANSFERRED FROM "EventData"
   const eventData = eventID => {
     getEventData(eventID)
       .then(res => {
@@ -117,13 +107,11 @@ const SingleEvent = () => {
       });
   };
 
-  // CODE TRANSFERRED FROM "EventData"
   const eventImage = eventID => {
     console.log("Inside 'eventImage' function call");
     getEventImage(eventID)
       .then(res => {
         console.log("Event Image Received: ", res);
-        console.log(typeof res);
         eventLogo = res;
         console.log("eventLogo: ", eventLogo);
       })
@@ -135,7 +123,6 @@ const SingleEvent = () => {
       });
   };
 
-  // CODE TRANSFERRED FROM "EventData"
   const loadEventDetails = event => {
     eventDetails = {
       eventNum: event.eventNum,
@@ -169,7 +156,6 @@ const SingleEvent = () => {
     };
   };
 
-  // CODE TRANSFERRED FROM "EventData"
   const loadTicketInfo = ticket => {
     let tempTicketArray = [];
     ticket.map(item => {
@@ -189,7 +175,6 @@ const SingleEvent = () => {
     setTicketInfo(tempTicketArray);
   };
 
-  // CODE TRANSFERRED FROM "EventData"
   const createTicketOrder = event => {
     if (
       typeof window !== "undefined" &&
@@ -233,10 +218,8 @@ const SingleEvent = () => {
     }
   };
 
-  // CODE TRANSFERRED FROM "EventData"
   let eventHeader;
 
-  // CODE TRANSFERRED FROM "EventData"
   if (!isLoadingEvent && !isLoadingImage) {
     eventHeader = (
       <Aux>
@@ -263,7 +246,6 @@ const SingleEvent = () => {
     );
   } else eventHeader = null;
 
-  // CODE TRANSFERRED FROM "EventData"
   const updateTicketsSelected = (event, ticketType) => {
     // updates "ticketInfo"
     let tempTicketInfo = [...ticketInfo];
@@ -292,10 +274,8 @@ const SingleEvent = () => {
     console.log("ticketOrder: ", ticketOrder);
   };
 
-  // CODE TRANSFERRED FROM "EventData"
   let ticketItems;
 
-  // CODE TRANSFERRED FROM "EventData"
   if (!isLoadingEvent && !isLoadingImage) {
     ticketItems = (
       <Aux>
@@ -324,16 +304,12 @@ const SingleEvent = () => {
     );
   }
 
-  // **DECISION CODE**
-  // **NOTED**
   window.onresize = function(event) {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
   // determines whether or not to display the purchase amount
   // "showDoublePane" must be false and "ticketOrder.totalPurchaseAmount" must be > 0
-  // **DECISION CODE**
-  // **NOTED**
   const totalAmount = show => {
     if (
       !isLoadingEvent &&
@@ -347,8 +323,6 @@ const SingleEvent = () => {
 
   // determines whether or not to display the number of tickets purchased
   // "showDoublePane" must be false and "ticketOrder.ticketsPurchased" must be > 0
-  // **DECISION CODE**
-  // **NOTED**
   const ticketAmount = show => {
     if (
       !isLoadingEvent &&
@@ -368,8 +342,6 @@ const SingleEvent = () => {
 
   // determines whether or not to display the cart and arrow
   // "showDoublePane" must be false
-  // **DECISION CODE**
-  // **NOTED**
   const cartLink = show => {
     if (!isLoadingEvent && !isLoadingImage && !show) {
       return (
@@ -399,8 +371,6 @@ const SingleEvent = () => {
     } else return null;
   };
 
-  // **DECISION CODE**
-  // **NOTED**
   // toggles between "order pane" views
   const switchShowOrderSummary = event => {
     if (showOrderSummaryOnly) {
@@ -429,7 +399,6 @@ const SingleEvent = () => {
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let checkoutButton;
 
-  // NEED TO STYLE
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   if (
     !isLoadingEvent &&
@@ -442,7 +411,7 @@ const SingleEvent = () => {
         disabled={false}
         className={styles.ButtonRed}
       >
-        <Link to="/checkout_bt">
+        <Link to="/checkout_pp">
           <span style={{ color: "white" }}>Checkout</span>
         </Link>
       </button>
@@ -458,7 +427,6 @@ const SingleEvent = () => {
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let orderSummary;
 
-  // FULLY STYLED
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   if (
     !isLoadingEvent &&
@@ -522,12 +490,8 @@ const SingleEvent = () => {
     orderSummary = null;
   }
 
-  // **DECISION CODE**
-  // **NOTED**
   let orderPane;
 
-  // **DECISION CODE**
-  // **NOTED**
   if (showDoublePane) {
     orderPane = (
       <div>
@@ -573,8 +537,6 @@ const SingleEvent = () => {
     );
   }
 
-  // **DECISION CODE**
-  // **NOTED**
   let ticketPane = (
     <div className={styles.MainItemLeft}>
       <div className={styles.EventHeader}>{eventHeader}</div>
@@ -614,8 +576,6 @@ const SingleEvent = () => {
     </div>
   );
 
-  // **DECISION CODE**
-  // **NOTED**
   let mainDisplay;
 
   if (showDoublePane) {
@@ -641,7 +601,6 @@ const SingleEvent = () => {
     );
   }
 
-  // FULLY STYLED
   return (
     <Aux>
       <div style={MainContainer}>{mainDisplay}</div>

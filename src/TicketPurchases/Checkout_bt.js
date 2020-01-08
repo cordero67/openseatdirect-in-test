@@ -154,8 +154,10 @@ const Checkout = props => {
   // clears entire "cart" object, removes "cart" from "localStorage"
   const purchaseConfirmHandler = () => {
     ticketOrder = {};
+    eventLogo = "";
     let event = JSON.parse(localStorage.getItem("eventNum"));
     localStorage.removeItem(`cart_${event}`);
+    localStorage.removeItem(`image`);
   };
 
   // ***STILL A QUESTION AS TO WHAT TO SHOW IF "res.error" IS RETURNED***

@@ -69,37 +69,6 @@ const handleErrors = response => {
 // *********
 // NEED TO ADJUST
 // CURRENTLY USING fetch(`${API}/braintree/expressPayment`)
-// WILL BE CHANGED TO fetch(`${API}/paypal/expressPaymentPreOrder1`)
-// RUNTIME ERROR CAUSED BY ".then(handleErrors)"
-// PayPal Smart button fetch api
-export const expressPaymentPreOrder1 = paymentTicketData => {
-  return (
-    fetch(`${API}/paypal/expressPayment`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(paymentTicketData)
-    })
-      .then(handleErrors)
-      .then(response => {
-        return response.json();
-      })
-      // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
-      .catch(err => {
-        console.log(
-          "fetch(`${API}/braintree/expressPayment`): ERROR THROWN",
-          err
-        );
-        throw Error(err);
-      })
-  );
-};
-
-// *********
-// NEED TO ADJUST
-// CURRENTLY USING fetch(`${API}/braintree/expressPayment`)
 // WILL BE CHANGED TO fetch(`${API}/paypal/expressPaymentOnSuccess`)
 // RUNTIME ERROR CAUSED BY ".then(handleErrors)"
 // PayPal Smart button fetch api
