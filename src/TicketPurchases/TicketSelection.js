@@ -192,7 +192,8 @@ const SingleEvent = () => {
           ticketID: item._id,
           ticketPrice: item.currentTicketPrice,
           ticketName: item.ticketName,
-          ticketsSelected: 0
+          ticketsSelected: 0,
+          ticketDescription: item.ticketDescription
         };
         ticketParameters.push(newTicketItem);
       });
