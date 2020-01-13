@@ -334,23 +334,19 @@ const TicketSelection = () => {
 
   if (!isLoadingEvent) {
     ticketItems = (
-      <Aux>
-        <div>
-          {ticketInfo.map(item => {
-            return (
-              <Aux>
-                <TicketItem
-                  name={item}
-                  key={item._id}
-                  onChange={event => {
-                    updateTicketsSelected(event, item);
-                  }}
-                ></TicketItem>
-              </Aux>
-            );
-          })}
-        </div>
-      </Aux>
+      <div>
+        {ticketInfo.map(item => {
+          return (
+            <TicketItem
+              name={item}
+              key={item.ticketID}
+              onChange={event => {
+                updateTicketsSelected(event, item);
+              }}
+            ></TicketItem>
+          );
+        })}
+      </div>
     );
   } else {
     ticketItems = (
@@ -471,7 +467,7 @@ const TicketSelection = () => {
         {ticketOrder.tickets.map(item => {
           if (item.ticketsSelected > 0) {
             return (
-              <Aux>
+              <Aux key={item.ticketID}>
                 <div className={styles.RightGrid}>
                   <div style={{ fontWeight: "400" }}>
                     {item.ticketsSelected} X {item.ticketName}
@@ -518,7 +514,6 @@ const TicketSelection = () => {
   }
 
   let orderPane;
-
   if (showDoublePane) {
     orderPane = (
       <div>
