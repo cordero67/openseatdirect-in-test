@@ -566,7 +566,7 @@ const Checkout = props => {
     connectionStatus = (
       <Aux>
         <div className={styles.BlankCanvas}>
-          <h4>Connection error, please try back later.</h4>
+          <h5>Connection error, please try back later.</h5>
           <br></br>
         </div>
       </Aux>

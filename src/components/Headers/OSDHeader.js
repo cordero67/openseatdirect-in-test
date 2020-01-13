@@ -32,7 +32,7 @@ const Header = ({ history, logoType, styleType }) => {
 
         <li>
           <NavLink to="/video" style={isActive(history, "/video")} exact>
-            About<br></br>OSD
+            About<br></br>Us
           </NavLink>
         </li>
 
@@ -42,10 +42,10 @@ const Header = ({ history, logoType, styleType }) => {
 
         <li>
           <NavLink
-            to="/ev/dahday_ha_ha_for_hire?eventID=33387658421"
+            to="/ev/dahday_ha_ha_for_hire?eventID=10056046773"
             style={isActive(
               history,
-              "/ev/dahday_ha_ha_for_hire?eventID=33387658421"
+              "/ev/dahday_ha_ha_for_hire?eventID=10056046773"
             )}
           >
             Events

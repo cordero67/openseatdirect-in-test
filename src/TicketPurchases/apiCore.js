@@ -2,16 +2,35 @@ import { API } from "../config";
 
 import { each, isObject } from "underscore";
 
+const handleErrors = response => {
+  // back-end server is down, i.e. response is "undefined"
+  // "ERROR" will be "err"
+  console.log("Inside 'apiCore' 'handleErrors()'", response);
+  //console.log("json response: ", expandedLog(response, 1));
+  if (!response.ok) {
+    console.log("response was false!");
+    console.log("response.status: ", response.status);
+    throw Error(response.status);
+  }
+  return response;
+};
+
 // extracts specific event data, non-transactional
 export const getEventData = eventId => {
   return fetch(`${API}/event/e/${eventId}`, {
     method: "GET"
   })
+    .then(handleErrors)
     .then(response => {
+      console.log("'apiCore' - 'getEventData()' - '.then' block");
       return response.json();
     })
     .catch(err => {
-      console.log("jumping here", err);
+      console.log(
+        "Inside '.catch' block of 'getEventData()', this is the error:",
+        err
+      );
+      throw Error(err);
     });
 };
 
@@ -53,19 +72,6 @@ var expandedLog = (function() {
   };
 })();
 
-const handleErrors = response => {
-  // different error casses
-  // back-end server is down, i.e. response is "undefined"
-  // "ERROR" will be "err"
-  console.log("apiCore handleErrors()", response);
-  console.log("json response: ", expandedLog(response, 1));
-  if (!response.ok) {
-    console.log("response was false!");
-    throw Error(response.status);
-  }
-  return response;
-};
-
 // *********
 // NEED TO ADJUST
 // CURRENTLY USING fetch(`${API}/braintree/expressPayment`)
@@ -88,10 +94,7 @@ export const expressPaymentOnSuccess = paymentTicketData => {
       })
       // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
       .catch(err => {
-        console.log(
-          "fetch(`${API}/braintree/expressPayment`): ERROR THROWN",
-          err
-        );
+        console.log("fetch(`${API}/paypal/expressPayment`): ERROR THROWN", err);
         throw Error(err);
       })
   );

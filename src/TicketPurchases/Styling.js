@@ -13,7 +13,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
   } else if (inHeight < 720) {
     MainContainer = {
       backgroundColor: `#2f5596`,
-      backgroundImage: `linear-gradient(180deg, green 0%, #000000 100%)`,
+      backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
       height: `${inHeight}px`,
       paddingTop: `0px`,
       paddingLeft: `25px`,

@@ -31,9 +31,7 @@ let eventDetails;
 // defines an event's image
 let eventLogo = "";
 
-// defines ticket order object
-// contains event information and ticket type specific data
-// this object is sent to "Checkout" page
+// defines ticket order object sent to "Checkout" page: event information and ticket type specific data
 let ticketOrder;
 
 let MainContainer = {};
@@ -42,7 +40,7 @@ let EventTicketSection = {};
 let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
-const SingleEvent = () => {
+const TicketSelection = () => {
   const [showDoublePane, setShowDoublePane] = useState(false);
 
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
@@ -50,6 +48,7 @@ const SingleEvent = () => {
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
   const [isLoadingImage, setIsLoadingImage] = useState(true);
+  const [isSuccessful, setIsSuccessful] = useState(true);
 
   // defines an event's specific ticket type information
   // also tracks the number of tickets selected throughout selection process
@@ -60,10 +59,11 @@ const SingleEvent = () => {
 
   useEffect(() => {
     setIsLoadingEvent(true);
-    setIsLoadingImage(true);
-    // CODE TRANSFERRED FROM "EventData"
+    setIsSuccessful(true);
+    console.log("About to call 'eventData()' inside 'TicketSelection'");
     eventData(queryString.parse(window.location.search).eventID);
-    eventImage(queryString.parse(window.location.search).eventID);
+    //console.log("About to call 'eventImage()' inside 'TicketSelection'");
+    // eventImage(queryString.parse(window.location.search).eventID);
     // determines initial window width and then
     // determines a one or two pane display
     stylingUpdate(window.innerWidth, window.innerHeight);
@@ -71,8 +71,7 @@ const SingleEvent = () => {
 
   const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
-    // dynamically determines window width and then
-    // determines a one or two pane display
+    // based on window width, displays one or two panes
     if (inWidth < 790) {
       setShowDoublePane(false);
     } else {
@@ -89,41 +88,95 @@ const SingleEvent = () => {
   };
 
   const eventData = eventID => {
+    console.log("Inside 'eventData()' function call inside 'TicketSelection'");
     getEventData(eventID)
       .then(res => {
-        console.log("Event Data Received: ", res);
+        console.log(
+          "Event Data Received from 'getEventData()' api function: ",
+          res
+        );
         loadEventDetails(res);
         loadTicketInfo(res.ticket);
         createTicketOrder(res);
-        console.log("eventDetails: ", eventDetails);
-        console.log("ticketOrder: ", ticketOrder);
-        console.log("ticketInfo: ", ticketInfo);
+        console.log(
+          "Inside 'eventData()' function call, eventDetails: ",
+          eventDetails
+        );
+        console.log(
+          "Inside 'eventData()' function call, ticketOrder: ",
+          ticketOrder
+        );
+        console.log(
+          "Inside 'eventData()' function call, ticketInfo: ",
+          ticketInfo
+        );
+
+        //console.log("About to call 'eventImage()' inside 'TicketSelection'");
+        //eventImage(queryString.parse(window.location.search).eventID);
+        console.log("About to call 'getEventImage()' inside 'TicketSelection'");
+        getEventImage(eventID)
+          .then(res => {
+            console.log("Event Image Received: ", res);
+            eventLogo = res;
+            console.log("eventLogo: ", eventLogo);
+            //setIsLoadingEvent(false);
+          })
+          .catch(err => {
+            console.log("In the catch 'getEventImage'");
+            console.log("No image exists");
+            eventLogo = DefaultLogo;
+            //setIsLoadingImage(true);
+          })
+          .finally(() => {
+            setIsLoadingEvent(false);
+          });
+
+        //setIsLoadingEvent(false);
       })
       .catch(err => {
-        console.log("In the catch");
+        console.log(
+          "In the 'eventData()' '.catch' block inside 'TicketSelection'"
+        );
+        console.log("This is the error from 'getEventData': ", err);
+        if (err === "Error: Error: 400") {
+          console.log("I'm handling a 400 error");
+        }
+        //if (err.TypeError === undefined) {
+        if (err === undefined) {
+          console.log("I'm handling an undefined error");
+        }
+        // need to now handle this situation
+        setIsLoadingEvent(true);
+
+        setIsSuccessful(false);
       })
       .finally(() => {
-        setIsLoadingEvent(false);
+        //setIsLoadingEvent(false);
       });
   };
 
   const eventImage = eventID => {
-    console.log("Inside 'eventImage' function call");
+    console.log("Inside 'eventImage()' function call 'TicketSelection'");
     getEventImage(eventID)
       .then(res => {
         console.log("Event Image Received: ", res);
         eventLogo = res;
         console.log("eventLogo: ", eventLogo);
+        setIsLoadingEvent(false);
       })
       .catch(err => {
         console.log("In the catch 'getEventImage'");
+        console.log("No image exists");
+        eventLogo = DefaultLogo;
+        //setIsLoadingImage(true);
       })
       .finally(() => {
-        setIsLoadingImage(false);
+        //setIsLoadingImage(false);
       });
   };
 
   const loadEventDetails = event => {
+    console.log("Inside 'loadEventDetails' inside 'TicketSelection'");
     eventDetails = {
       eventNum: event.eventNum,
       eventTitle: event.eventTitle,
@@ -148,7 +201,7 @@ const SingleEvent = () => {
         venueName: event.locationVenueName,
         address1: event.locationAddress1,
         address2: "",
-        city: "Montclair",
+        city: "",
         state: event.locationState,
         zipPostalCode: event.locationZipPostalCode,
         countryCode: event.locationCountryCode
@@ -157,6 +210,7 @@ const SingleEvent = () => {
   };
 
   const loadTicketInfo = ticket => {
+    console.log("Inside 'loadTicketInfo' inside 'TicketSelection'");
     let tempTicketArray = [];
     ticket.map(item => {
       const tempTicketItem = {
@@ -176,6 +230,7 @@ const SingleEvent = () => {
   };
 
   const createTicketOrder = event => {
+    console.log("Inside 'createTicketOrder' inside 'TicketSelection'");
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
@@ -221,7 +276,7 @@ const SingleEvent = () => {
 
   let eventHeader;
 
-  if (!isLoadingEvent && !isLoadingImage) {
+  if (!isLoadingEvent) {
     eventHeader = (
       <Aux>
         <div
@@ -277,7 +332,7 @@ const SingleEvent = () => {
 
   let ticketItems;
 
-  if (!isLoadingEvent && !isLoadingImage) {
+  if (!isLoadingEvent) {
     ticketItems = (
       <Aux>
         <div>
@@ -312,12 +367,7 @@ const SingleEvent = () => {
   // determines whether or not to display the purchase amount
   // "showDoublePane" must be false and "ticketOrder.totalPurchaseAmount" must be > 0
   const totalAmount = show => {
-    if (
-      !isLoadingEvent &&
-      !isLoadingImage &&
-      !show &&
-      ticketOrder.totalPurchaseAmount > 0
-    ) {
+    if (!isLoadingEvent && !show && ticketOrder.totalPurchaseAmount > 0) {
       return <div>${ticketOrder.totalPurchaseAmount}</div>;
     } else return null;
   };
@@ -325,12 +375,7 @@ const SingleEvent = () => {
   // determines whether or not to display the number of tickets purchased
   // "showDoublePane" must be false and "ticketOrder.ticketsPurchased" must be > 0
   const ticketAmount = show => {
-    if (
-      !isLoadingEvent &&
-      !isLoadingImage &&
-      !show &&
-      ticketOrder.ticketsPurchased > 0
-    ) {
+    if (!isLoadingEvent && !show && ticketOrder.ticketsPurchased > 0) {
       return (
         <Aux>
           <span className={styles.cartBadge}>
@@ -344,7 +389,8 @@ const SingleEvent = () => {
   // determines whether or not to display the cart and arrow
   // "showDoublePane" must be false
   const cartLink = show => {
-    if (!isLoadingEvent && !isLoadingImage && !show) {
+    //if (!isLoadingEvent && !isLoadingImage && !show) {
+    if (!isLoadingEvent && !show) {
       return (
         <div>
           <FontAwesomeIcon
@@ -381,13 +427,9 @@ const SingleEvent = () => {
     }
   };
 
-  // NEED TO MODIFY TO SEND "cart" rather than "order"
-  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
+  // stores "ticketOrder" and "eventLogo" in "localStorage"
   const purchaseTicketHandler = event => {
     if (typeof window !== "undefined") {
-      // "localStorage" property allows access the Storage object for a document's origin
-      // the stored data is saved across browser sessions and has no expiration time, even when window is closed
-      // "setItem()" adds order information to "localStorage" with a key of "order" and a value of "JSON.stringify(data)"
       localStorage.setItem(
         `cart_${eventDetails.eventNum}`,
         JSON.stringify(ticketOrder)
@@ -399,13 +441,7 @@ const SingleEvent = () => {
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let checkoutButton;
-
-  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
-  if (
-    !isLoadingEvent &&
-    !isLoadingImage &&
-    ticketOrder.totalPurchaseAmount > 0
-  ) {
+  if (!isLoadingEvent && ticketOrder.totalPurchaseAmount > 0) {
     checkoutButton = (
       <button
         onClick={purchaseTicketHandler}
@@ -417,7 +453,7 @@ const SingleEvent = () => {
         </Link>
       </button>
     );
-  } else if (!isLoadingEvent && !isLoadingImage) {
+  } else if (!isLoadingEvent) {
     checkoutButton = (
       <button disabled={true} className={styles.ButtonGrey}>
         Checkout
@@ -427,13 +463,7 @@ const SingleEvent = () => {
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let orderSummary;
-
-  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
-  if (
-    !isLoadingEvent &&
-    !isLoadingImage &&
-    ticketOrder.totalPurchaseAmount > 0
-  ) {
+  if (!isLoadingEvent && ticketOrder.totalPurchaseAmount > 0) {
     orderSummary = (
       <Aux>
         <div style={{ fontWeight: "600" }}>Order Summary</div>
@@ -465,11 +495,7 @@ const SingleEvent = () => {
         <br></br>
       </Aux>
     );
-  } else if (
-    !isLoadingEvent &&
-    !isLoadingImage &&
-    ticketOrder.totalPurchaseAmount <= 0
-  ) {
+  } else if (!isLoadingEvent && ticketOrder.totalPurchaseAmount <= 0) {
     orderSummary = (
       <div
         style={{
@@ -579,7 +605,7 @@ const SingleEvent = () => {
 
   let mainDisplay;
 
-  if (showDoublePane) {
+  if (showDoublePane && isSuccessful) {
     mainDisplay = (
       <Aux>
         <div style={MainGrid}>
@@ -588,16 +614,26 @@ const SingleEvent = () => {
         </div>
       </Aux>
     );
-  } else if (!showOrderSummaryOnly) {
+  } else if (!showOrderSummaryOnly && isSuccessful) {
     mainDisplay = (
       <Aux>
         <div style={MainGrid}>{ticketPane}</div>
       </Aux>
     );
-  } else {
+  } else if (isSuccessful) {
     mainDisplay = (
       <Aux>
         <div style={MainGrid}>{orderPane}</div>
+      </Aux>
+    );
+  } else {
+    mainDisplay = (
+      <Aux>
+        <div className={styles.BlankCanvas}>
+          <h5>
+            <span style={{ color: "red" }}>This event does not exist.</span>
+          </h5>
+        </div>
       </Aux>
     );
   }
@@ -605,8 +641,9 @@ const SingleEvent = () => {
   return (
     <Aux>
       <div style={MainContainer}>{mainDisplay}</div>
+      {/*<div style={MainContainer}>{errorPanel}</div>*/}
     </Aux>
   );
 };
 
-export default SingleEvent;
+export default TicketSelection;

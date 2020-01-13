@@ -199,19 +199,19 @@ const Checkout = props => {
         });
         // NEED TO ADD CODE TO GRAB TRANSACTION DETAIL FROM SERVER
         /*
-      console.log("about to setTransactionDetail()");
-      setTransactionDetail({
-        ...transactionDetail,
-        description: response.eventTitle,
-        email: response.email,
-        instrumentType: response.osd_paymentInstrumentType,
-        accountID: response.osd_payerAccountId,
-        firstName: response.firstName,
-        lastName: response.lastName,
-        payerName: response.osd_payerName,
-        totalAmount: response.bt_trans_amount,
-        transID: response.bt_trans_id
-      });
+        console.log("about to setTransactionDetail()");
+        setTransactionDetail({
+          ...transactionDetail,
+          description: response.eventTitle,
+          email: response.email,
+          instrumentType: response.osd_paymentInstrumentType,
+          accountID: response.osd_payerAccountId,
+          firstName: response.firstName,
+          lastName: response.lastName,
+          payerName: response.osd_payerName,
+          totalAmount: response.bt_trans_amount,
+          transID: response.bt_trans_id
+        });
       */
         onlyShowPurchaseConfirmation();
         console.log("about to purchaseConfirmHandler()");
@@ -385,17 +385,6 @@ const Checkout = props => {
               console.log("onCancel 'data': ", data);
               alert("Transaction Cancelled!");
             }}
-            /*
-            onApprove={(data, actions) => {
-              console.log("Inside the <PayPalButton> 'onApprove' property");
-              console.log("onApprove 'data': ", data);
-              console.log("onApprove 'actions': ", actions);
-              // Capture the funds from the transaction
-              return actions.order.capture().then(function(details) {
-                console.log("Details: ", details);
-              });
-            }}
-            */
             onSuccess={(details, data) => {
               console.log("onSuccess 'details': ", details);
               setTransactionStatus({
@@ -509,7 +498,6 @@ const Checkout = props => {
   let paymentPane = null;
   let purchaseConfirmation = null;
 
-  // ***************
   // ***************
   // ***************
   // THIS NEEDS WORK, DECIDE IF ONLY ERRORS FROM PAYPAL ARE CAUGHT HERE
