@@ -320,7 +320,7 @@ const Checkout = props => {
       <Aux>
         <div style={{ fontWeight: "600" }}>Order Summary</div>
         <br></br>
-        {ticketOrder.tickets.map(item => {
+        {ticketOrder.tickets.forEach(item => {
           if (item.ticketsSelected > 0) {
             return (
               <Aux key={item.ticketID}>

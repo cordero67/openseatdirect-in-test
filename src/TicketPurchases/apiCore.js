@@ -40,12 +40,14 @@ export const getEventImage = eventId => {
   return fetch(`${API}/event/photo/e/${eventId}`, {
     method: "GET"
   })
+    .then(handleErrors)
     .then(response => {
       console.log("Inside apiCore and the 'getEventImage' .then block");
       return response.url;
     })
     .catch(err => {
       console.log("jumping here", err);
+      throw Error(err);
     });
 };
 
@@ -88,7 +90,7 @@ export const expressPaymentOnSuccess = paymentTicketData => {
       },
       body: JSON.stringify(paymentTicketData)
     })
-      //.then(handleErrors)
+      .then(handleErrors)
       .then(response => {
         return response.json();
       })
@@ -159,10 +161,14 @@ export const processPayment = (userId, token, paymentData) => {
     },
     body: JSON.stringify(paymentData)
   })
+    .then(handleErrors)
     .then(response => {
       return response.json();
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      throw Error(err);
+    });
 };
 
 // BrainTree fetch api
@@ -179,5 +185,8 @@ export const getBraintreeClientToken = (userId, token) => {
     .then(response => {
       return response.json();
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      throw Error(err);
+    });
 };
