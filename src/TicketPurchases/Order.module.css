@@ -95,6 +95,18 @@
   padding-right: 25px;
   overflow-y: auto;
 }
+.EmptyOrderSummary {
+  color: grey;
+  position: relative;
+  float: left;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+}
 .MainItemLeft {
   background-color: #f9f9f9;
   border-right: 1px solid lightgrey;
@@ -231,6 +243,18 @@
   color: white;
   font-style: italic;
   background: red;
+}
+.TotalAmount {
+  text-align: right;
+  padding-right: 10px;
+  padding-top: 8px;
+  font-size: 20px;
+  font-weight: 600;
+}
+.CartLink {
+  padding-top: 8px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 @media (max-width: 480px) {

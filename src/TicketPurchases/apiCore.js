@@ -76,9 +76,6 @@ var expandedLog = (function() {
 
 // *********
 // NEED TO ADJUST
-// CURRENTLY USING fetch(`${API}/braintree/expressPayment`)
-// WILL BE CHANGED TO fetch(`${API}/paypal/expressPaymentOnSuccess`)
-// RUNTIME ERROR CAUSED BY ".then(handleErrors)"
 // PayPal Smart button fetch api
 export const expressPaymentOnSuccess = paymentTicketData => {
   return (

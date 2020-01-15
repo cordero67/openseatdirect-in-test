@@ -3,11 +3,7 @@ import React, { useState, useEffect } from "react";
 import { PayPalButton } from "react-paypal-button-v2";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faShoppingCart,
-  faChevronUp,
-  faChevronDown
-} from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
 import {
   MainContainerStyling,
@@ -19,6 +15,8 @@ import {
 import { expressPaymentOnSuccess } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
+import CartLink from "./CartLink";
+import OrderSummary from "./OrderSummary";
 import styles from "./Order.module.css";
 
 // defines the ticket order populated from "localStorage"
@@ -147,12 +145,11 @@ const Checkout = props => {
   // sets the PayPal "purchase_units.items" value populated from "ticketOrder"
   const setPaypalArray = () => {
     paypalArray = [];
-    ticketOrder.tickets.map(item => {
+    ticketOrder.tickets.forEach(item => {
       if (item.ticketsSelected > 0) {
         let newElement;
         newElement = {
-          name: item.ticketName,
-          //description: "General Admission",
+          name: `${ticketOrder.eventName}: ${item.ticketName}`,
           sku: item.ticketID,
           unit_amount: {
             currency_code: "USD",
@@ -175,8 +172,6 @@ const Checkout = props => {
   };
 
   // **********
-  // **********
-  // **********
   // THIS SECTION NEEDS WORK
   // called by <PaypalButton> on a successful transaction
   const payPalExpressBuy = details => {
@@ -187,8 +182,6 @@ const Checkout = props => {
     console.log("On Success 'details' object: ", details);
     // sends PayPal order object to the server
     expressPaymentOnSuccess(paymentData)
-      // NEED TO ADD ALL THE '.then" AND ".catch" STATEMENTS
-      // THIS IS THE CODE THAT NEEDS TO BE ADDED
       .then(response => {
         console.log("order received");
         console.log("response: ", response);
@@ -240,27 +233,13 @@ const Checkout = props => {
   const cartLink = show => {
     if (!showLoadingSpinner && !show) {
       return (
-        <div>
-          <FontAwesomeIcon
-            onClick={switchShowOrderSummary}
-            className={styles.faShoppingCart}
-            icon={faShoppingCart}
-          />
-
-          {showOrderSummaryOnly ? (
-            <FontAwesomeIcon
-              onClick={switchShowOrderSummary}
-              className={styles.faChevronUp}
-              icon={faChevronUp}
-            />
-          ) : (
-            <FontAwesomeIcon
-              onClick={switchShowOrderSummary}
-              className={styles.faChevronDown}
-              icon={faChevronDown}
-            />
-          )}
-        </div>
+        <CartLink
+          onClick={switchShowOrderSummary}
+          showStatus={showOrderSummaryOnly}
+          isLoading={showLoadingSpinner}
+          ticketOrder={ticketOrder}
+          showDoublePane={showDoublePane}
+        />
       );
     } else {
       return null;
@@ -279,49 +258,10 @@ const Checkout = props => {
   // defines and sets "orderSummary" which is displayed in right panel
   let orderSummary;
   if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount > 0) {
-    orderSummary = (
-      <Aux>
-        <div style={{ fontWeight: "600" }}>Order Summary</div>
-        <br></br>
-        {ticketOrder.tickets.map(item => {
-          if (item.ticketsSelected > 0) {
-            return (
-              <Aux key={item.ticketID}>
-                <div className={styles.RightGrid}>
-                  <div style={{ fontWeight: "400" }}>
-                    {item.ticketsSelected} X {item.ticketName}
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    ${item.ticketsSelected * item.ticketPrice}{" "}
-                  </div>
-                </div>
-              </Aux>
-            );
-          }
-        })}
-
-        <hr style={{ border: "1px solid#B2B2B2" }} />
-        <div className={styles.RightGrid}>
-          <div style={{ fontWeight: "600" }}>Total</div>
-          <div style={{ textAlign: "right" }}>
-            ${ticketOrder.totalPurchaseAmount}
-          </div>
-        </div>
-        <br></br>
-      </Aux>
-    );
+    orderSummary = <OrderSummary ticketOrder={ticketOrder} />;
   } else if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount <= 0) {
     orderSummary = (
-      <div
-        style={{
-          color: "grey",
-          position: "relative",
-          float: "left",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)"
-        }}
-      >
+      <div className={styles.EmptyOrderSummary}>
         <FontAwesomeIcon
           className={styles.faShoppingCart}
           icon={faShoppingCart}
@@ -333,11 +273,8 @@ const Checkout = props => {
   }
 
   // **********
-  // **********
-  // **********
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // "showError" WAS USED TO HANDLE NOT RECEIVING BRAINTREE CLIENT TOKEN
-  // THEREFORE THIS MIGHT STILL BE REQUIRED
   // displays "error" if one exists
   const showError = error => (
     <div style={{ display: error ? "" : "none" }}>
@@ -345,8 +282,6 @@ const Checkout = props => {
     </div>
   );
 
-  // **********
-  // **********
   // **********
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // POTENTIALLY NEED TO ADD BACK THE "onBLur" IN <div>
@@ -364,8 +299,6 @@ const Checkout = props => {
                   {
                     reference_id: ticketOrder.eventNum,
                     description: ticketOrder.eventName,
-                    //custom_id: "holivas@xmail.com",
-                    //soft_descriptor: "Great description 1",
                     amount: {
                       currency_code: "USD",
                       value: ticketOrder.totalPurchaseAmount.toString(),
@@ -394,8 +327,7 @@ const Checkout = props => {
               payPalExpressBuy(details);
             }}
             options={{
-              clientId:
-                "AQdWzLz5fiOs9ub51DS_ndZDPJZ7rtpZF1ul4fvErAIsv-lrAuMshmlJLKX5gB5OZtwdyqUHmfuenYgj"
+              clientId: ticketOrder.clientID
             }}
             catchError={err => {
               console.log("catchError 'err': ", err);
@@ -419,8 +351,6 @@ const Checkout = props => {
     </div>
   );
 
-  // **********
-  // **********
   // **********
   // THIS NEEDS WORK
   // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
@@ -468,23 +398,8 @@ const Checkout = props => {
           <div style={OrderSummarySectionAlt}>{orderSummary}</div>
         </div>
         <div className={styles.EventFooterMod}>
-          <div
-            style={{
-              paddingTop: "10px",
-              fontWeight: "600"
-            }}
-          >
-            {cartLink(showDoublePane)}
-          </div>
-          <div
-            style={{
-              textAlign: "right",
-              paddingRight: "10px",
-              paddingTop: "8px",
-              fontSize: "20px",
-              fontWeight: "600"
-            }}
-          >
+          <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
+          <div className={styles.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
         </div>
@@ -499,10 +414,8 @@ const Checkout = props => {
   let purchaseConfirmation = null;
 
   // ***************
-  // ***************
   // THIS NEEDS WORK, DECIDE IF ONLY ERRORS FROM PAYPAL ARE CAUGHT HERE
   // HOW ARE WE GOING TO HANDLE ERROR IF SERVER DOES NOT RECEIVE THE ORDER
-  // BUT IT WAS PROCESSED BY PAYPAL
   // CONTROLS "connectionStatus" VIEW
   if (showConnectionStatus && transactionStatus.message === null) {
     connectionStatus = (
@@ -579,24 +492,8 @@ const Checkout = props => {
           </div>
 
           <div className={styles.EventFooterMod}>
-            <div
-              style={{
-                paddingTop: "8px",
-                fontSize: "20px",
-                fontWeight: "600"
-              }}
-            >
-              {cartLink(showDoublePane)}
-            </div>
-            <div
-              style={{
-                textAlign: "right",
-                paddingRight: "10px",
-                paddingTop: "8px",
-                fontSize: "20px",
-                fontWeight: "600"
-              }}
-            >
+            <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
+            <div className={styles.TotalAmount}>
               {totalAmount(showDoublePane)}
             </div>
           </div>
@@ -605,8 +502,7 @@ const Checkout = props => {
     );
   }
 
-  // defines and sets "purchaseConfirmation" contents
-  // contolled by "transactionStatus.success"
+  // defines and sets "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   if (showPurchaseConfirmation) {
     purchaseConfirmation = (
       <Aux>

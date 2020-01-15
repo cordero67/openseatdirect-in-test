@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import dateFormat from "dateformat";
 import queryString from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,6 +22,8 @@ import Spinner from "../components/UI/Spinner/Spinner";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
+import CartLink from "./CartLink";
+import OrderSummary from "./OrderSummary";
 import TicketItem from "./TicketItem";
 import styles from "./Order.module.css";
 
@@ -30,6 +32,9 @@ let eventDetails;
 
 // defines an event's image
 let eventLogo = "";
+
+// defines checkout page address based on payment gateway
+let paymentGateway = "/";
 
 // defines ticket order object sent to "Checkout" page: event information and ticket type specific data
 let ticketOrder;
@@ -47,7 +52,6 @@ const TicketSelection = () => {
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
-  const [isLoadingImage, setIsLoadingImage] = useState(true);
   const [isSuccessful, setIsSuccessful] = useState(true);
 
   // defines an event's specific ticket type information
@@ -125,13 +129,10 @@ const TicketSelection = () => {
             console.log("In the catch 'getEventImage'");
             console.log("No image exists");
             eventLogo = DefaultLogo;
-            //setIsLoadingImage(true);
           })
           .finally(() => {
             setIsLoadingEvent(false);
           });
-
-        //setIsLoadingEvent(false);
       })
       .catch(err => {
         console.log(
@@ -141,38 +142,14 @@ const TicketSelection = () => {
         if (err === "Error: Error: 400") {
           console.log("I'm handling a 400 error");
         }
-        //if (err.TypeError === undefined) {
         if (err === undefined) {
           console.log("I'm handling an undefined error");
         }
         // need to now handle this situation
         setIsLoadingEvent(true);
-
         setIsSuccessful(false);
       })
-      .finally(() => {
-        //setIsLoadingEvent(false);
-      });
-  };
-
-  const eventImage = eventID => {
-    console.log("Inside 'eventImage()' function call 'TicketSelection'");
-    getEventImage(eventID)
-      .then(res => {
-        console.log("Event Image Received: ", res);
-        eventLogo = res;
-        console.log("eventLogo: ", eventLogo);
-        setIsLoadingEvent(false);
-      })
-      .catch(err => {
-        console.log("In the catch 'getEventImage'");
-        console.log("No image exists");
-        eventLogo = DefaultLogo;
-        //setIsLoadingImage(true);
-      })
-      .finally(() => {
-        //setIsLoadingImage(false);
-      });
+      .finally(() => {});
   };
 
   const loadEventDetails = event => {
@@ -184,6 +161,8 @@ const TicketSelection = () => {
       eventStatus: event.eventStatus,
       longDescription: event.longDescription,
       organizer: event.organizerName,
+      gateway: event.organizer_paymentGatewayType,
+      gatewayClientID: event.paypalExpress_client_id,
       shortDescription: event.shortDescription,
       startDateTime: dateFormat(
         event.startDateTime,
@@ -207,12 +186,18 @@ const TicketSelection = () => {
         countryCode: event.locationCountryCode
       }
     };
+    // sets the checkout page url
+    if (eventDetails.gateway === "PayPalExpress") {
+      paymentGateway = "/checkout_pp";
+    } else if (eventDetails.gateway === "Braintree") {
+      paymentGateway = "/checkout_bt";
+    }
   };
 
   const loadTicketInfo = ticket => {
     console.log("Inside 'loadTicketInfo' inside 'TicketSelection'");
     let tempTicketArray = [];
-    ticket.map(item => {
+    ticket.forEach(item => {
       const tempTicketItem = {
         ticketID: item._id,
         ticketType: item.ticketType,
@@ -242,7 +227,7 @@ const TicketSelection = () => {
       setTicketInfo(ticketOrder.tickets);
     } else {
       const ticketParameters = [];
-      event.ticket.map(item => {
+      event.ticket.forEach(item => {
         const newTicketItem = {
           ticketID: item._id,
           ticketPrice: item.currentTicketPrice,
@@ -252,7 +237,10 @@ const TicketSelection = () => {
         };
         ticketParameters.push(newTicketItem);
       });
+
       ticketOrder = {
+        gateway: eventDetails.gateway,
+        clientID: eventDetails.gatewayClientID,
         eventNum: event.eventNum,
         eventUrl: event.eventUrl,
         eventName: event.eventTitle,
@@ -270,6 +258,7 @@ const TicketSelection = () => {
         ticketsPurchased: 0,
         tickets: ticketParameters
       };
+      console.log("THIS SHOULD HAVE THE GATEWAY INFO");
       console.log("ticketOrder: ", ticketOrder);
     }
   };
@@ -305,14 +294,14 @@ const TicketSelection = () => {
   const updateTicketsSelected = (event, ticketType) => {
     // updates "ticketInfo"
     let tempTicketInfo = [...ticketInfo];
-    tempTicketInfo.map(item => {
+    tempTicketInfo.forEach(item => {
       if (item.ticketID === ticketType.ticketID) {
         item.ticketsSelected = event.target.value;
       }
     });
     setTicketInfo(tempTicketInfo);
     // updates "ticketOrder.tickets"
-    ticketOrder.tickets.map(item => {
+    ticketOrder.tickets.forEach(item => {
       if (item.ticketID === ticketType.ticketID) {
         item.ticketsSelected = parseInt(ticketType.ticketsSelected);
       }
@@ -320,7 +309,7 @@ const TicketSelection = () => {
     // updates "ticketOrder.totalPurchaseAmount" and "ticketOrder.ticketsPurchased"
     let tempTotalPurchaseAmount = 0;
     let temptTicketsPurchased = 0;
-    ticketOrder.tickets.map(item => {
+    ticketOrder.tickets.forEach(item => {
       tempTotalPurchaseAmount += item.ticketsSelected * item.ticketPrice;
       temptTicketsPurchased += item.ticketsSelected;
     });
@@ -385,31 +374,15 @@ const TicketSelection = () => {
   // determines whether or not to display the cart and arrow
   // "showDoublePane" must be false
   const cartLink = show => {
-    //if (!isLoadingEvent && !isLoadingImage && !show) {
     if (!isLoadingEvent && !show) {
       return (
-        <div>
-          <FontAwesomeIcon
-            onClick={switchShowOrderSummary}
-            className={styles.faShoppingCart}
-            icon={faShoppingCart}
-          />
-          {ticketAmount(showDoublePane)}
-
-          {showOrderSummaryOnly ? (
-            <FontAwesomeIcon
-              onClick={switchShowOrderSummary}
-              className={styles.faChevronUp}
-              icon={faChevronUp}
-            />
-          ) : (
-            <FontAwesomeIcon
-              onClick={switchShowOrderSummary}
-              className={styles.faChevronDown}
-              icon={faChevronDown}
-            />
-          )}
-        </div>
+        <CartLink
+          onClick={switchShowOrderSummary}
+          showStatus={showOrderSummaryOnly}
+          ticketOrder={ticketOrder}
+          isLoading={isLoadingEvent}
+          showDoublePane={showDoublePane}
+        />
       );
     } else return null;
   };
@@ -433,6 +406,7 @@ const TicketSelection = () => {
       localStorage.setItem(`image`, JSON.stringify(eventLogo));
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
     }
+    window.location.href = paymentGateway;
   };
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
@@ -444,9 +418,7 @@ const TicketSelection = () => {
         disabled={false}
         className={styles.ButtonRed}
       >
-        <Link to="/checkout_pp">
-          <span style={{ color: "white" }}>Checkout</span>
-        </Link>
+        <span style={{ color: "white" }}>Checkout</span>
       </button>
     );
   } else if (!isLoadingEvent) {
@@ -460,49 +432,10 @@ const TicketSelection = () => {
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let orderSummary;
   if (!isLoadingEvent && ticketOrder.totalPurchaseAmount > 0) {
-    orderSummary = (
-      <Aux>
-        <div style={{ fontWeight: "600" }}>Order Summary</div>
-        <br></br>
-        {ticketOrder.tickets.map(item => {
-          if (item.ticketsSelected > 0) {
-            return (
-              <Aux key={item.ticketID}>
-                <div className={styles.RightGrid}>
-                  <div style={{ fontWeight: "400" }}>
-                    {item.ticketsSelected} X {item.ticketName}
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    ${item.ticketsSelected * item.ticketPrice}{" "}
-                  </div>
-                </div>
-              </Aux>
-            );
-          }
-        })}
-
-        <hr style={{ border: "1px solid#B2B2B2" }} />
-        <div className={styles.RightGrid}>
-          <div style={{ fontWeight: "600" }}>Total</div>
-          <div style={{ textAlign: "right" }}>
-            ${ticketOrder.totalPurchaseAmount}
-          </div>
-        </div>
-        <br></br>
-      </Aux>
-    );
+    orderSummary = <OrderSummary ticketOrder={ticketOrder} />;
   } else if (!isLoadingEvent && ticketOrder.totalPurchaseAmount <= 0) {
     orderSummary = (
-      <div
-        style={{
-          color: "grey",
-          position: "relative",
-          float: "left",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)"
-        }}
-      >
+      <div className={styles.EmptyOrderSummary}>
         <FontAwesomeIcon
           className={styles.faShoppingCart}
           icon={faShoppingCart}
@@ -636,7 +569,6 @@ const TicketSelection = () => {
   return (
     <Aux>
       <div style={MainContainer}>{mainDisplay}</div>
-      {/*<div style={MainContainer}>{errorPanel}</div>*/}
     </Aux>
   );
 };

@@ -7,7 +7,6 @@ import styles from "./OSDHeader.module.css";
 // determines if current menu item, i.e. "<NavLink>" is the active link
 // "history" represents the actual active path
 // "path" represents the path defined in the respective "<NavLink>"
-// "#ff9900" gives an orange color
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
     return { color: "black" };
@@ -35,10 +34,6 @@ const Header = ({ history, logoType, styleType }) => {
             About<br></br>Us
           </NavLink>
         </li>
-
-        {/*dahday_ha_ha_for_hire?eventID=33387658421*/}
-
-        {/*dahday_concina_candela?eventID=81295501293*/}
 
         <li>
           <NavLink

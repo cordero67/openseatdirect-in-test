@@ -3,11 +3,7 @@ import { Form, Col } from "react-bootstrap";
 import DropIn from "braintree-web-drop-in-react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faShoppingCart,
-  faChevronUp,
-  faChevronDown
-} from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
 import {
   MainContainerStyling,
@@ -22,6 +18,8 @@ import {
 } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
+import CartLink from "./CartLink";
+import OrderSummary from "./OrderSummary";
 import styles from "./Order.module.css";
 
 // defines the ticket order populated from "localStorage"
@@ -188,7 +186,6 @@ const Checkout = props => {
       });
   };
 
-  // requests "nonce" from BrainTree
   // sends payment and order information to the server
   const expressBuy = () => {
     let nonce;
@@ -248,15 +245,10 @@ const Checkout = props => {
             onlyShowConnectionStatus();
           });
       })
-
       // there is a problem with Braintree and cannot return nonce
       .catch(error => {
         console.log("requestPaymentMethod(): ERROR THROWN", error);
-        // **THIS IS THE ORIGINAL CODE FOR THE ecomm CLASS
         setBraintreeData({ ...braintreeData, error: error.message });
-        // **THIS IS WHAT IT WAS CHANGED TO
-        //setBraintreeData({ ...braintreeData, success: false });
-        //braintreeData.instance.clearSelectedPaymentMethod();
         // ** WE NEED TO LET THIS ERROR DISPLAY WITHOUT SWITCHING TO "onlyShowConnectionStatus()";"
         // onlyShowConnectionStatus();
       });
@@ -275,27 +267,13 @@ const Checkout = props => {
   const cartLink = show => {
     if (!showLoadingSpinner && !show) {
       return (
-        <div>
-          <FontAwesomeIcon
-            onClick={switchShowOrderSummary}
-            className={styles.faShoppingCart}
-            icon={faShoppingCart}
-          />
-
-          {showOrderSummaryOnly ? (
-            <FontAwesomeIcon
-              onClick={switchShowOrderSummary}
-              className={styles.faChevronUp}
-              icon={faChevronUp}
-            />
-          ) : (
-            <FontAwesomeIcon
-              onClick={switchShowOrderSummary}
-              className={styles.faChevronDown}
-              icon={faChevronDown}
-            />
-          )}
-        </div>
+        <CartLink
+          onClick={switchShowOrderSummary}
+          showStatus={showOrderSummaryOnly}
+          isLoading={showLoadingSpinner}
+          ticketOrder={ticketOrder}
+          showDoublePane={showDoublePane}
+        />
       );
     } else {
       return null;
@@ -311,54 +289,13 @@ const Checkout = props => {
     }
   };
 
-  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
+  // defines and sets "orderSummary" which is displayed in right panel
   let orderSummary;
-  // FULLY STYLED
-  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount > 0) {
-    orderSummary = (
-      <Aux>
-        <div style={{ fontWeight: "600" }}>Order Summary</div>
-        <br></br>
-        {ticketOrder.tickets.forEach(item => {
-          if (item.ticketsSelected > 0) {
-            return (
-              <Aux key={item.ticketID}>
-                <div className={styles.RightGrid}>
-                  <div style={{ fontWeight: "400" }}>
-                    {item.ticketsSelected} X {item.ticketName}
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    ${item.ticketsSelected * item.ticketPrice}{" "}
-                  </div>
-                </div>
-              </Aux>
-            );
-          }
-        })}
-
-        <hr style={{ border: "1px solid#B2B2B2" }} />
-        <div className={styles.RightGrid}>
-          <div style={{ fontWeight: "600" }}>Total</div>
-          <div style={{ textAlign: "right" }}>
-            ${ticketOrder.totalPurchaseAmount}
-          </div>
-        </div>
-        <br></br>
-      </Aux>
-    );
+    orderSummary = <OrderSummary ticketOrder={ticketOrder} />;
   } else if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount <= 0) {
     orderSummary = (
-      <div
-        style={{
-          color: "grey",
-          position: "relative",
-          float: "left",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)"
-        }}
-      >
+      <div className={styles.EmptyOrderSummary}>
         <FontAwesomeIcon
           className={styles.faShoppingCart}
           icon={faShoppingCart}
@@ -426,13 +363,12 @@ const Checkout = props => {
               {transactionDetail.payerName}
               <br></br>
               Transaction ID: {transactionDetail.transID}
+              <br></br>
             </div>
             <br></br>A confirmation email with your order details will be sent
             to {transactionDetail.email} shortly.
             <br></br>
-            <br></br>
             If this e-mail is incorrect, please contact Dahday immediately.
-            <br></br>
           </div>
         </div>
       );
@@ -508,8 +444,8 @@ const Checkout = props => {
     );
   }
 
+  // defines and sets "orderPane" which is the right panel
   let orderPane;
-
   if (showDoublePane) {
     orderPane = (
       <div>
@@ -530,23 +466,8 @@ const Checkout = props => {
           <div style={OrderSummarySectionAlt}>{orderSummary}</div>
         </div>
         <div className={styles.EventFooter}>
-          <div
-            style={{
-              paddingTop: "10px",
-              fontWeight: "600"
-            }}
-          >
-            {cartLink(showDoublePane)}
-          </div>
-          <div
-            style={{
-              textAlign: "right",
-              paddingRight: "10px",
-              paddingTop: "8px",
-              fontSize: "20px",
-              fontWeight: "600"
-            }}
-          >
+          <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
+          <div className={styles.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
           <div style={{ textAlign: "right" }}>{placeOrderButton}</div>
