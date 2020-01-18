@@ -367,8 +367,6 @@ const Checkout = props => {
             </div>
             <br></br>A confirmation email with your order details will be sent
             to {transactionDetail.email} shortly.
-            <br></br>
-            If this e-mail is incorrect, please contact Dahday immediately.
           </div>
         </div>
       );
