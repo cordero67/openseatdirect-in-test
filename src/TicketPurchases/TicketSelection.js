@@ -161,8 +161,8 @@ const TicketSelection = () => {
       eventStatus: event.eventStatus,
       longDescription: event.longDescription,
       organizer: event.organizerName,
-      gateway: event.organizer_paymentGatewayType,
-      gatewayClientID: event.paypalExpress_client_id,
+      gateway: event.accountId.paymentGatewayType,
+      gatewayClientID: event.accountId.paypalExpress_client_id,
       shortDescription: event.shortDescription,
       startDateTime: dateFormat(
         event.startDateTime,
