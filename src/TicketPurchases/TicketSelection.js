@@ -161,6 +161,7 @@ const TicketSelection = () => {
       eventStatus: event.eventStatus,
       longDescription: event.longDescription,
       organizer: event.organizerName,
+      organizerEmail: event.accountId.accountEmail,
       gateway: event.accountId.paymentGatewayType,
       gatewayClientID: event.accountId.paypalExpress_client_id,
       shortDescription: event.shortDescription,
@@ -179,8 +180,7 @@ const TicketSelection = () => {
       location: {
         venueName: event.locationVenueName,
         address1: event.locationAddress1,
-        address2: "",
-        city: "",
+        city: event.locationCity,
         state: event.locationState,
         zipPostalCode: event.locationZipPostalCode,
         countryCode: event.locationCountryCode
@@ -192,6 +192,8 @@ const TicketSelection = () => {
     } else if (eventDetails.gateway === "Braintree") {
       paymentGateway = "/checkout_bt";
     }
+
+    console.log("This is the 'loadEventDetails': ", eventDetails);
   };
 
   const loadTicketInfo = ticket => {
@@ -241,6 +243,8 @@ const TicketSelection = () => {
       ticketOrder = {
         gateway: eventDetails.gateway,
         clientID: eventDetails.gatewayClientID,
+        location: eventDetails.location,
+        userEmail: eventDetails.organizerEmail,
         eventNum: event.eventNum,
         eventUrl: event.eventUrl,
         eventName: event.eventTitle,

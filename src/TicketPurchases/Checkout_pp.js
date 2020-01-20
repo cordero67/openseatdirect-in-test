@@ -17,6 +17,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
+import { OrderConfirmationTT, OrderConfirmationTF } from "./OrderConfirmation";
 import styles from "./Order.module.css";
 
 // defines the ticket order populated from "localStorage"
@@ -36,17 +37,7 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 // stores payment receipt data received from PayPal
-let transactionInfo = {
-  description: "",
-  email: "",
-  instrumentType: "",
-  accountID: "",
-  firstName: "",
-  lastName: "",
-  payerName: "",
-  totalAmount: 0,
-  transID: ""
-};
+let transactionInfo = {};
 
 const Checkout = props => {
   // defines styling variables
@@ -96,9 +87,6 @@ const Checkout = props => {
   // THIS REPLACED "braintreeData" INTERFACE VARIABLE
   // transaction status variable
   const [transactionStatus, setTransactionStatus] = useState({
-    //success: false,
-    //paypalSuccess: false,
-    //serverSuccess: false,
     message: null,
     error: "",
     connection: true
@@ -188,14 +176,20 @@ const Checkout = props => {
     console.log("paypalStatus inside 'payPalExpressBuy': ", paypalStatus);
 
     transactionInfo = {
-      description: ticketOrder.eventName,
-      email: details.payer.email_address,
-      //accountID: response.osd_payerAccountId,
+      eventTitle: ticketOrder.eventName,
+      venue: ticketOrder.location.venueName,
+      address1: ticketOrder.location.address1,
+      city: ticketOrder.location.city,
+      state: ticketOrder.location.state,
+      zipPostalCode: ticketOrder.location.zipPostalCode,
+      dateTime: ticketOrder.startDateTime,
+      paypalEmail: details.payer.email_address,
       firstName: details.payer.name.given_name,
       lastName: details.payer.name.surname,
-      //payerName: details.osd_payerName,
-      totalAmount: ticketOrder.totalPurchaseAmount
-      //transID: details.bt_trans_id
+      numTickets: ticketOrder.ticketsPurchased,
+      totalAmount: ticketOrder.totalPurchaseAmount,
+      tickets: ticketOrder.tickets,
+      userEmail: ticketOrder.userEmail
     };
 
     console.log("transactionInfo: ", transactionInfo);
@@ -344,74 +338,32 @@ const Checkout = props => {
   );
 
   // **********
-  // THIS NEEDS WORK
   // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
   const showSuccess = () => {
     if (paypalStatus && orderStatus) {
       return (
-        <div className={styles.SubBody}>
-          <div>
-            Thank you {transactionInfo.firstName} {transactionInfo.lastName},
-            your order was received and processed.
-            <br></br>
-            <br></br>
-            Order details:
-            <div style={{ paddingLeft: "30px" }}>
-              Event Title: {transactionInfo.description}
-              <br></br>
-              Total Amount($): {transactionInfo.totalAmount}
-              <br></br>
-              Instrument Type:
-              <br></br>
-              AccountID:
-              <br></br>
-              Payer Name: {transactionInfo.firstName} {transactionInfo.lastName}
-              <br></br>
-              Transaction ID:
-              <br></br>
-            </div>
-            <br></br>
-            You will shortly receive a confirmation email from OpenSeatDirect
-            that contains your pdf tickets and order details.
-          </div>
-        </div>
+        <OrderConfirmationTT
+          transactionInfo={transactionInfo}
+        ></OrderConfirmationTT>
       );
     } else if (paypalStatus && !orderStatus) {
       return (
-        <div className={styles.SubBody}>
-          <div>
-            Thank you {transactionInfo.firstName} {transactionInfo.lastName},
-            your order was received and processed.
-            <br></br>
-            <br></br>
-            Order details:
-            <div style={{ paddingLeft: "30px" }}>
-              Event Title: {transactionInfo.description}
-              <br></br>
-              Total Amount($): {transactionInfo.totalAmount}
-              <br></br>
-              Instrument Type:
-              <br></br>
-              AccountID:
-              <br></br>
-              Payer Name: {transactionInfo.firstName} {transactionInfo.lastName}
-              <br></br>
-              Transaction ID:
-              <br></br>
-            </div>
-            <br></br>
-            Later today, you will receive a confirmation email from
-            OpenSeatDirect that contains your pdf tickets and order details.
-          </div>
-        </div>
+        <OrderConfirmationTF
+          transactionInfo={transactionInfo}
+        ></OrderConfirmationTF>
       );
     } else {
       return (
-        <div>
-          <span style={{ color: "red" }}>
-            WE NEED TO DECIDE ON AN ERROR MESSAGE!!!
-          </span>
-        </div>
+        <Aux>
+          <span className={styles.SubSectionHeader}>Order Rejection</span>
+          <br></br>
+          <br></br>
+          <div>
+            <span style={{ color: "red" }}>
+              WE NEED TO DECIDE ON AN ERROR MESSAGE!!!
+            </span>
+          </div>
+        </Aux>
       );
     }
   };
@@ -545,12 +497,9 @@ const Checkout = props => {
   // defines and sets "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   if (showPurchaseConfirmation) {
     purchaseConfirmation = (
-      <Aux>
-        <div className={styles.BlankCanvas}>
-          <span className={styles.SubSectionHeader}>Order Confirmation</span>
-          <div style={{ paddingTop: "20px" }}>{showSuccess()}</div>
-        </div>
-      </Aux>
+      <div className={styles.BlankCanvas}>
+        <div style={{ paddingTop: "20px" }}>{showSuccess()}</div>
+      </div>
     );
   } else {
     purchaseConfirmation = null;

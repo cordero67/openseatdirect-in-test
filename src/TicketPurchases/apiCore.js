@@ -9,7 +9,7 @@ const handleErrors = response => {
   //console.log("json response: ", expandedLog(response, 1));
   if (!response.ok) {
     console.log("response was false!");
-    console.log("response.status: ", response.status);
+    //console.log("response.status: ", response.status);
     throw Error(response.status);
   }
   return response;
