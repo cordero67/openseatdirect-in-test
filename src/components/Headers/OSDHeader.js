@@ -37,11 +37,8 @@ const Header = ({ history, logoType, styleType }) => {
 
         <li>
           <NavLink
-            to="/ev/dahday_ha_ha_for_hire?eventID=10056046773"
-            style={isActive(
-              history,
-              "/ev/dahday_ha_ha_for_hire?eventID=10056046773"
-            )}
+            to="/ev/ha_ha_for_hire?eventID=10056046773"
+            style={isActive(history, "/ev/ha_ha_for_hire?eventID=10056046773")}
           >
             Events
           </NavLink>
