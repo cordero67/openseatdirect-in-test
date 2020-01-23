@@ -136,7 +136,7 @@ const TicketSelection = () => {
       })
       .catch(err => {
         console.log(
-          "In the 'eventData()' '.catch' block inside of 'TicketSelection'"
+          "In the 'eventData()' '.catch' block inside 'TicketSelection'"
         );
         console.log("This is the error from 'getEventData': ", err);
         if (err === "Error: Error: 400") {
