@@ -190,8 +190,7 @@ export const OrderConfirmationFF = props => {
             Total Purchase Amount: ${props.transactionInfo.totalAmount}
           </div>
           <br></br>
-          OpenSeatDirect will be sending you a message to the email associated
-          with your PayPal account:{" "}
+          OpenSeatDirect will be sending you a message to your email:{" "}
           <span style={{ color: "blue", fontWeight: "600" }}>
             {props.transactionInfo.paypalEmail}
           </span>
