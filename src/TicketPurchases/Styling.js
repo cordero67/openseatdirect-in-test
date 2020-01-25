@@ -3,6 +3,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
 
   if (inWidth < 660) {
     MainContainer = {
+      fontFamily: "'Roboto', sans-serif",
       backgroundColor: `#2f5596`,
       height: `${inHeight}px`,
       paddingTop: `0px`,
@@ -12,6 +13,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
     };
   } else if (inHeight < 720) {
     MainContainer = {
+      fontFamily: "'Roboto', sans-serif",
       backgroundColor: `#2f5596`,
       backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
       height: `${inHeight}px`,
@@ -22,6 +24,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
     };
   } else {
     MainContainer = {
+      fontFamily: "'Roboto', sans-serif",
       backgroundColor: `#2f5596`,
       backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
       paddingTop: `calc((${inHeight}px - 720px) / 2)`,
