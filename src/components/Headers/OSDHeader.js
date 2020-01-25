@@ -7,6 +7,7 @@ import styles from "./OSDHeader.module.css";
 // determines if current menu item, i.e. "<NavLink>" is the active link
 // "history" represents the actual active path
 // "path" represents the path defined in the respective "<NavLink>"
+// new comment
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
     return { color: "black" };
