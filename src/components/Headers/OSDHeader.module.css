@@ -1,6 +1,8 @@
 .HeaderA {
-  background-color: #2f5596;
-  height: 90px;
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  border-bottom: 2px solid #2f5596;
+  height: 80px;
   width: 100%;
   z-index: 9999;
   position: fixed;
@@ -9,13 +11,23 @@
 }
 
 .HeaderB {
-  background-color: #fff;
-  height: 90px;
+  font-family: "Roboto", sans-serif;
+  background-color: #2f5596;
+  height: 80px;
   width: 100%;
   z-index: 9999;
   position: fixed;
   top: 0;
   left: 0;
+}
+
+.HeaderB ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100%;
+  text-align: right;
 }
 
 .HeaderA ul {
@@ -40,20 +52,12 @@
 
 .HeaderA a {
   text-decoration: none;
-  color: #fff;
+  font-weight: 500;
 }
 
 .HeaderA a:hover {
-  color: #677080;
-}
-
-.HeaderB ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 40px;
-  padding-right: 40px;
-  width: 100%;
-  text-align: right;
+  font-weight: 700;
+  text-decoration: underline;
 }
 
 .HeaderB ul li:first-child {
@@ -69,13 +73,15 @@
 
 .HeaderB a {
   text-decoration: none;
-  color: #0a121e;
+  font-weight: 500;
+  color: #fff;
 }
 
 .HeaderB a:hover {
-  color: #8dadd4;
+  color: #fff;
 }
 
 .Logo {
+  height: 50px;
   text-align: left;
 }

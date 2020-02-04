@@ -52,7 +52,7 @@ const TicketSelection = () => {
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
-  const [isSuccessful, setIsSuccessful] = useState(true);
+  const [isSuccessfull, setIsSuccessfull] = useState(true);
 
   // defines an event's specific ticket type information
   // also tracks the number of tickets selected throughout selection process
@@ -63,7 +63,7 @@ const TicketSelection = () => {
 
   useEffect(() => {
     setIsLoadingEvent(true);
-    setIsSuccessful(true);
+    setIsSuccessfull(true);
     console.log("About to call 'eventData()' inside 'TicketSelection'");
     eventData(queryString.parse(window.location.search).eventID);
     //console.log("About to call 'eventImage()' inside 'TicketSelection'");
@@ -123,7 +123,7 @@ const TicketSelection = () => {
             console.log("Event Image Received: ", res);
             eventLogo = res;
             console.log("eventLogo: ", eventLogo);
-            //setIsLoadingEvent(false);
+            setIsLoadingEvent(false);
           })
           .catch(err => {
             console.log("In the catch 'getEventImage'");
@@ -147,7 +147,7 @@ const TicketSelection = () => {
         }
         // need to now handle this situation
         setIsLoadingEvent(true);
-        setIsSuccessful(false);
+        setIsSuccessfull(false);
       })
       .finally(() => {});
   };
@@ -537,7 +537,7 @@ const TicketSelection = () => {
 
   let mainDisplay;
 
-  if (showDoublePane && isSuccessful) {
+  if (showDoublePane && isSuccessfull) {
     mainDisplay = (
       <Aux>
         <div style={MainGrid}>
@@ -546,13 +546,13 @@ const TicketSelection = () => {
         </div>
       </Aux>
     );
-  } else if (!showOrderSummaryOnly && isSuccessful) {
+  } else if (!showOrderSummaryOnly && isSuccessfull) {
     mainDisplay = (
       <Aux>
         <div style={MainGrid}>{ticketPane}</div>
       </Aux>
     );
-  } else if (isSuccessful) {
+  } else if (isSuccessfull) {
     mainDisplay = (
       <Aux>
         <div style={MainGrid}>{orderPane}</div>
