@@ -1,0 +1,25 @@
+.MainContainer {
+  font-family: "Roboto", sans-serif;
+  background-color: blue;
+  padding-top: 100px;
+  padding-bottom: 40px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.MainGrid {
+  background-color: #fff;
+  vertical-align: center;
+  width: auto;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: left;
+}
+
+.Events {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  width: 100%;
+  margin: auto;
+}

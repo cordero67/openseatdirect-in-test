@@ -1,0 +1,27 @@
+.Event {
+  width: 360px;
+  height: 300px;
+  text-align: center;
+  box-shadow: 0 2px 3px #ccc;
+  margin: 15px 15px 15px 15px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.EventImage {
+  width: 360px;
+  height: 180px;
+  border: 1px solid black;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.Event:hover,
+.Event:active {
+  background-color: #c0ddf5;
+}
+
+.Author {
+  margin: 16px 0;
+  color: #ccc;
+}

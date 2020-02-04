@@ -3,38 +3,87 @@
   background-color: white;
   padding-top: 100px;
   padding-bottom: 40px;
-  padding-right: 10px;
-  padding-left: 10px;
 }
 
 .MainGrid {
-  background-color: #fff;
+  background-color: white;
   vertical-align: center;
   margin: auto;
-  width: 690px;
   padding-top: 30px;
   padding-bottom: 30px;
   text-align: left;
 }
 
 .SectionHeader {
-  text-indent: 150px;
   color: #212226;
-  margin: 0 0 0 0;
-  font-size: 56px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 45px;
+  text-align: center;
 }
 
 .VideoSection {
   text-align: center;
-  padding: 40px 0;
+  padding-top: 10px;
 }
 
-@media (max-width: 990px) {
+@media (max-width: 383px) {
+  .MainGrid {
+    width: auto;
+  }
   .VideoSection {
     text-align: center;
-    padding: 20px 0;
+    width: 310;
+    height: 174px;
+  }
+}
+
+@media (max-width: 380px) {
+  .MainGrid {
     width: auto;
+  }
+  .VideoSection {
+    text-align: center;
+    width: 330;
+    height: 185px;
+  }
+}
+
+@media (max-width: 420px) {
+  .MainGrid {
+    width: auto;
+  }
+  .SectionHeader {
+    text-align: left;
+    padding-left: 35px;
+  }
+}
+
+@media (max-width: 770px) {
+  .MainGrid {
+    width: auto;
+  }
+  .VideoSection {
+    text-align: center;
+    width: 420;
+    height: 236px;
+  }
+  .SectionHeader {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 770px) {
+  .MainGrid {
+    width: 770px;
+  }
+  .SectionHeader {
+    text-align: left;
+    padding-left: 35px;
+  }
+  .VideoSection {
+    text-align: center;
+    width: 640;
+    height: 360px;
   }
 }

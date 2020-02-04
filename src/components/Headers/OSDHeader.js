@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 
@@ -9,13 +9,35 @@ import styles from "./OSDHeader.module.css";
 // "path" represents the path defined in the respective "<NavLink>"
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
-    return { color: "black" };
+    return { color: "#8DADD4" };
   } else {
-    return { color: "ffffff" };
+    return { color: "#000" };
   }
 };
 
-const Header = ({ history, logoType, styleType, showFullHeader }) => {
+const Header = ({ history, logoType, styleType }) => {
+  const [showFullHeader, setShowFullHeader] = useState(false);
+
+  const stylingUpdate = (inWidth, inHeight) => {
+    // based on window width, displays one or two panes
+    if (inWidth < 700) {
+      setShowFullHeader(false);
+    } else {
+      setShowFullHeader(true);
+    }
+  };
+
+  useEffect(() => {
+    stylingUpdate(window.innerWidth, window.innerHeight);
+  }, []);
+
+  window.onresize = function(event) {
+    if (window.innerWidth < 700) {
+      setShowFullHeader(false);
+    } else {
+      setShowFullHeader(true);
+    }
+  };
   let headerDisplay;
 
   if (showFullHeader) {

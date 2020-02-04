@@ -150,6 +150,7 @@
   padding-right: 80px;
   text-align: left;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 .Spinner {
   background-color: #fff;

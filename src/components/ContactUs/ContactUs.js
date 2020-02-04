@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Row, Col, Container } from "react-bootstrap";
-import { Route, NavLink } from "react-router-dom";
+import { Form } from "react-bootstrap";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -13,23 +12,120 @@ import {
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import styles from "./ContactUs.module.css";
+import FormItem from "./FormItem";
 
 const ContactUs = () => {
-  // contact information declaration
-  const [contactInformation, setContactInformation] = useState({
-    emailAddress: "",
-    firstName: "",
-    lastName: "",
-    company: "",
-    phoneNumber: "",
-    message: ""
+  const [contactData, setContactData] = useState({
+    emailAddress: {
+      label: "EMAIL:",
+      elementType: "input",
+      controlId: "formGridEmail",
+      elementConfig: {
+        type: "email",
+        placeHolder: "Email"
+      },
+      value: "",
+      validation: {
+        required: true,
+        validEmail: true
+      },
+      valid: false,
+      touched: false,
+      message: "Please provide a valid email."
+    },
+    firstName: {
+      label: "FIRST NAME:",
+      elementType: "input",
+      controlId: "formGridFirstName",
+      elementConfig: {
+        type: "text",
+        placeHolder: "First Name"
+      },
+      value: "",
+      validation: {},
+      valid: true,
+      touched: false,
+      message: "Please provide your first name."
+    },
+    lastName: {
+      label: "LAST NAME:",
+      elementType: "input",
+      controlId: "formGridLastName",
+      elementConfig: {
+        type: "text",
+        placeHolder: "Last Name"
+      },
+      value: "",
+      validation: {},
+      valid: true,
+      touched: false,
+      message: "Please provide your last name."
+    },
+    company: {
+      label: "COMPANY NAME:",
+      elementType: "input",
+      controlId: "formGridCompanyName",
+      elementConfig: {
+        type: "text",
+        placeHolder: "Company "
+      },
+      value: "",
+      validation: {},
+      valid: true,
+      touched: false,
+      message: "Please provide your company name."
+    },
+    phoneNumber: {
+      label: "PHONE NUMBER:",
+      elementType: "input",
+      controlId: "formGridPhoneNumber",
+      elementConfig: {
+        type: "text",
+        placeHolder: "Phone Number"
+      },
+      value: "",
+      validation: {},
+      valid: true,
+      touched: false,
+      message: "Please provide your phone number."
+    },
+    /*
+    number: {
+      label: "OPTION:",
+      elementType: "select",
+      controlId: "formNumber",
+      elementConfig: {
+        type: "text",
+        placeHolder: "1",
+        as: "select",
+        options: ["a", "b", "c", "d"]
+      },
+      value: "a",
+      validation: {},
+      valid: true
+    },
+    */
+    message: {
+      label: "MESSAGE:",
+      elementType: "textarea",
+      controlId: "formMessage",
+      elementConfig: {
+        type: "text",
+        placeHolder: "Message",
+        as: "textarea",
+        rows: "3"
+      },
+      value: "",
+      validation: {},
+      valid: true,
+      touched: false,
+      errorMessage: "Please provide a message."
+    }
   });
+
+  const [formIsValid, setFormIsValid] = useState(false);
 
   const [showDoublePane, setShowDoublePane] = useState(true);
-
-  const instance = axios.create({
-    baseURL: "https://openseatdirect-contacts.firebaseio.com/"
-  });
 
   window.onresize = function(event) {
     if (window.innerWidth < 990) {
@@ -39,35 +135,57 @@ const ContactUs = () => {
     }
   };
 
-  const sendMessageHandler = () => {
+  const sendMessageHandler = event => {
+    let contactInfo = {};
+    for (let key in contactData) {
+      contactInfo[key] = contactData[key].value;
+    }
     axios
-      .post(
-        "https://openseatdirect-contacts.firebaseio.com/.json",
-        contactInformation
-      )
-      .then(response => {
-        console.log("Response from Firebase: ", response);
-      })
+      .post("https://openseatdirect-contacts.firebaseio.com/.json", contactInfo)
+      .then(response => {})
       .catch(err => {
         console.log("Error from Firebase: ", err);
-      })
-      .finally(() => {
-        setContactInformation({
-          emailAddress: "",
-          firstName: "",
-          lastName: "",
-          company: "",
-          phoneNumber: ""
-        });
       });
+  };
+
+  // returns "true" or "false" depending on validity test
+  const checkValidity = (value, rules) => {
+    let isValid = true;
+    if (rules.required) {
+      isValid = value.trim() !== "" && isValid;
+    }
+    if (rules.validEmail) {
+      const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      isValid = regsuper.test(value) && isValid;
+    }
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+    return isValid;
+  };
+
+  const inputChangedHandler = (event, inputIdentifier) => {
+    const newContactData = { ...contactData };
+    const updatedFormElement = { ...newContactData[inputIdentifier] };
+    updatedFormElement.value = event.target.value;
+    updatedFormElement.touched = true;
+    updatedFormElement.valid = checkValidity(
+      updatedFormElement.value,
+      updatedFormElement.validation
+    );
+    newContactData[inputIdentifier] = updatedFormElement;
+    setContactData(newContactData);
+    let validForm = true;
+    for (let key in newContactData) {
+      validForm = newContactData[key].valid && validForm;
+    }
+    setFormIsValid(validForm);
   };
 
   let mainDisplay;
   let rightPane = (
     <Aux>
-      <div style={{ fontWeight: "500", fontSize: "20px" }}>
-        Or contact us directly:
-      </div>
+      <div className={styles.Header}>Or contact us directly:</div>
       <br></br>
       <div style={{ paddingLeft: "20px", fontWeight: "400", fontSize: "16px" }}>
         mikem@openseatdirect.com
@@ -78,7 +196,7 @@ const ContactUs = () => {
       </div>
       <br></br>
       <br></br>
-      <div style={{ fontWeight: "500", fontSize: "20px" }}>
+      <div className={styles.Header}>
         Follows us on:
         <a href="https://www.instagram.com/openseatdirect/">
           <FontAwesomeIcon className={styles.faFacebook} icon={faFacebook} />
@@ -86,7 +204,6 @@ const ContactUs = () => {
         <a href="https://www.youtube.com/channel/UCTC0aLCktp-DoI_FSmp_b4w/videos">
           <FontAwesomeIcon className={styles.faYoutube} icon={faYoutube} />
         </a>
-        <FontAwesomeIcon icon="check-square" />
         <a href="https://twitter.com/openseatdirect">
           <FontAwesomeIcon className={styles.faTwitter} icon={faTwitter} />
         </a>
@@ -97,132 +214,54 @@ const ContactUs = () => {
     </Aux>
   );
 
+  const formDataArray = [];
+  for (let key in contactData) {
+    formDataArray.push({
+      id: key,
+      config: contactData[key]
+    });
+  }
+
+  let formData;
+
+  formData = (
+    <Form onSubmit={sendMessageHandler}>
+      <div style={{ paddingLeft: "15px", paddingRight: "15px" }}>
+        {formDataArray.map(item => {
+          return (
+            <FormItem
+              key={item.id}
+              elementType={item.config.elementType}
+              label={item.config.label}
+              controlId={item.config.controlId}
+              elementConfig={item.config.elementConfig}
+              value={item.config.value}
+              touched={item.config.touched}
+              invalid={!item.config.valid}
+              shouldValidate={item.config.validation}
+              validationError={item.config.message}
+              changed={event => inputChangedHandler(event, item.id)}
+            />
+          );
+        })}
+        <button className={styles.Button} disabled={!formIsValid}>
+          SUBMIT
+        </button>
+      </div>
+    </Form>
+  );
+
   let leftPane = (
     <Aux>
-      <div style={{ fontWeight: "500", fontSize: "20px" }}>
+      <div className={styles.Header}>
         To learn more about{" "}
         <span style={{ color: "#2F5596" }}>OpenSeatDirect</span>, please provide
         your contact details below and we will respond to you shortly.
       </div>
       <br></br>
-      <Form onSubmit={sendMessageHandler}>
-        <Form.Group as={Col} controlId="formGridEmail">
-          <Form.Label
-            style={{ paddingLeft: "10px", fontWeight: "500", fontSize: "14px" }}
-          >
-            EMAIL: <span style={{ color: "red" }}>*</span>
-          </Form.Label>
-          <Form.Control
-            type="text"
-            value={contactInformation.emailAddress}
-            onChange={event =>
-              setContactInformation({
-                ...contactInformation,
-                emailAddress: event.target.value
-              })
-            }
-          />
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="formGridFirstName">
-          <Form.Label
-            style={{ paddingLeft: "10px", fontWeight: "500", fontSize: "14px" }}
-          >
-            FIRST NAME:
-          </Form.Label>
-          <Form.Control
-            type="text"
-            value={contactInformation.firstName}
-            onChange={event =>
-              setContactInformation({
-                ...contactInformation,
-                firstName: event.target.value
-              })
-            }
-          />
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="formGridLastName">
-          <Form.Label
-            style={{ paddingLeft: "10px", fontWeight: "500", fontSize: "14px" }}
-          >
-            LAST NAME:
-          </Form.Label>
-          <Form.Control
-            type="text"
-            value={contactInformation.lastName}
-            onChange={event =>
-              setContactInformation({
-                ...contactInformation,
-                lastName: event.target.value
-              })
-            }
-          />
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="formGridCompanyName">
-          <Form.Label
-            style={{ paddingLeft: "10px", fontWeight: "500", fontSize: "14px" }}
-          >
-            COMPANY NAME:
-          </Form.Label>
-          <Form.Control
-            type="text"
-            value={contactInformation.company}
-            onChange={event =>
-              setContactInformation({
-                ...contactInformation,
-                company: event.target.value
-              })
-            }
-          />
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="formGridPhoneNumber">
-          <Form.Label
-            style={{ paddingLeft: "10px", fontWeight: "500", fontSize: "14px" }}
-          >
-            PHONE NUMBER:
-          </Form.Label>
-          <Form.Control
-            type="text"
-            value={contactInformation.phoneNumber}
-            onChange={event =>
-              setContactInformation({
-                ...contactInformation,
-                phoneNumber: event.target.value
-              })
-            }
-          />
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="formMessage">
-          <Form.Label
-            style={{ paddingLeft: "10px", fontWeight: "500", fontSize: "14px" }}
-          >
-            MESSAGE:
-          </Form.Label>
-          <Form.Control
-            type="text"
-            value={contactInformation.message}
-            onChange={event =>
-              setContactInformation({
-                ...contactInformation,
-                message: event.target.value
-              })
-            }
-            as="textarea"
-            rows="3"
-          />
-        </Form.Group>
-        <div style={{ paddingLeft: "15px" }}>
-          <button>SUBMIT</button>
-        </div>
-      </Form>
+      {formData}
     </Aux>
   );
-
-  let singlePane;
 
   if (showDoublePane) {
     mainDisplay = (

@@ -1,53 +1,44 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import YouTube from "react-youtube";
-import { Row, Col, Container } from "react-bootstrap";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import styles from "./Video.module.css";
 
-let youTubeHeight = "240";
-let youTubeWidth = "426";
+const Video = () => {
+  // defines styling variables
+  const [isRestyling, setIsRestyling] = useState(false);
+  const [youTubeDimensions, setYouTubeDimensions] = useState({
+    width: "640",
+    height: "360"
+  });
 
-let opts = {
-  height: youTubeHeight,
-  width: youTubeWidth,
-  playerVars: {
-    // https://developers.google.com/youtube/player_parameters
-    autoplay: 0,
-    start: 0,
-    playsinline: 1,
-    modestbranding: 1,
-    rel: 0
-  }
-};
-
-const video = () => {
   const _onReady = event => {
     event.target.pauseVideo();
   };
 
-  window.onresize = function(event) {
-    if (window.innerWidth > 760) {
-      youTubeHeight = "360";
-      youTubeWidth = "640";
-      console.log("youTubeWidth: ", youTubeWidth);
-      console.log("youTubeHeight: ", youTubeHeight);
-      resetOpts(youTubeWidth, youTubeHeight);
-    } else {
-      youTubeHeight = "240";
-      youTubeWidth = "426";
-      console.log("youTubeWidth: ", youTubeWidth);
-      console.log("youTubeHeight: ", youTubeHeight);
-      console.log("Calling 'resetOpts()'");
-      resetOpts(youTubeWidth, youTubeHeight);
+  let opts = {
+    width: youTubeDimensions.width,
+    height: youTubeDimensions.height,
+    playerVars: {
+      // https://developers.google.com/youtube/player_parameters
+      autoplay: 0,
+      start: 0,
+      playsinline: 1,
+      modestbranding: 1,
+      rel: 0
     }
   };
 
-  const resetOpts = (youTubeWidth, youTubeHeight) => {
+  const resetOpts = (newWidth, newHeight) => {
+    setIsRestyling(true);
+    setYouTubeDimensions({
+      width: newWidth,
+      height: newHeight
+    });
     opts = {
-      height: youTubeHeight,
-      width: youTubeWidth,
+      width: youTubeDimensions.width,
+      height: youTubeDimensions.height,
       playerVars: {
         // https://developers.google.com/youtube/player_parameters
         autoplay: 0,
@@ -57,37 +48,80 @@ const video = () => {
         rel: 0
       }
     };
-    console.log("'opts.width: ", opts.width);
-    console.log("'opts.height: ", opts.height);
+    setIsRestyling(false);
+  };
+
+  const stylingUpdate = (inWidth, inHeight) => {
+    // based on window width, displays one or two panes
+    let width;
+    let height;
+    if (inWidth < 330) {
+      height = "174.375";
+      width = "310";
+    } else if (inWidth < 380) {
+      height = "185.625";
+      width = "330";
+    } else if (inWidth < 420) {
+      height = "213.75";
+      width = "380";
+    } else if (inWidth < 770) {
+      height = "236.25";
+      width = "420";
+    } else {
+      height = "360";
+      width = "640";
+    }
+    resetOpts(width, height);
+  };
+
+  useEffect(() => {
+    setYouTubeDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+    stylingUpdate(window.innerWidth, window.innerHeight);
+  }, []);
+
+  window.onresize = function(event) {
+    let width;
+    let height;
+    if (window.innerWidth < 330) {
+      height = "174.375";
+      width = "310";
+    } else if (window.innerWidth < 380) {
+      height = "185.625";
+      width = "330";
+    } else if (window.innerWidth < 420) {
+      height = "213.75";
+      width = "380";
+    } else if (window.innerWidth < 770) {
+      height = "236.25";
+      width = "420";
+    } else {
+      height = "360";
+      width = "640";
+    }
+    resetOpts(width, height);
   };
 
   return (
     <Aux>
       <div className={styles.MainContainer}>
         <div className={styles.MainGrid}>
-          <Container>
-            <div style={{ fontWeight: "500", fontSize: "20px" }}>
-              Please enjoy this short video about
-              <span style={{ style: "bold", color: "#2F5596" }}>
-                <strong> OPENSEATDIRECT</strong>
-              </span>
-            </div>
-            <Row>
-              <Col>
-                <div className={styles.VideoSection}>
-                  <YouTube
-                    videoId="wDkdnWzPNW0"
-                    opts={opts}
-                    onReady={_onReady}
-                  />
-                </div>
-              </Col>
-            </Row>
-          </Container>
+          <div className={styles.SectionHeader}>
+            Please enjoy this short video about
+            <span style={{ style: "bold", color: "#2F5596" }}>
+              <strong> OPENSEATDIRECT</strong>
+            </span>
+          </div>
+
+          <div className={styles.VideoSection}>
+            <YouTube videoId="wDkdnWzPNW0" opts={opts} onReady={_onReady} />
+          </div>
         </div>
       </div>
     </Aux>
   );
 };
 
-export default video;
+export default Video;
