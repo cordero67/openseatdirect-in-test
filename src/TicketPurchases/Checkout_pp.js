@@ -373,7 +373,7 @@ const Checkout = props => {
   if (showDoublePane) {
     orderPane = (
       <div>
-        <div className={styles.ImageBox}>
+        <div>
           <img
             className={styles.Image}
             src={eventLogo}

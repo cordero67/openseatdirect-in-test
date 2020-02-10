@@ -4,30 +4,9 @@
   border-bottom: 2px solid #2f5596;
   height: 80px;
   width: 100%;
-  z-index: 9999;
-  position: fixed;
+  z-index: 500;
   top: 0;
   left: 0;
-}
-
-.HeaderB {
-  font-family: "Roboto", sans-serif;
-  background-color: #2f5596;
-  height: 80px;
-  width: 100%;
-  z-index: 9999;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-.HeaderB ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 40px;
-  padding-right: 40px;
-  width: 100%;
-  text-align: right;
 }
 
 .HeaderA ul {
@@ -58,6 +37,68 @@
 .HeaderA a:hover {
   font-weight: 700;
   text-decoration: underline;
+}
+
+.HeaderAFixed {
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  border-bottom: 2px solid #2f5596;
+  height: 80px;
+  width: 100%;
+  z-index: 500;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.HeaderAFixed ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100%;
+  text-align: right;
+}
+
+.HeaderAFixed ul li:first-child {
+  float: left;
+  vertical-align: text-bottom;
+}
+
+.HeaderAFixed li {
+  display: inline-block;
+  margin: 20px;
+  text-align: center;
+}
+
+.HeaderAFixed a {
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.HeaderAFixed a:hover {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.HeaderB {
+  font-family: "Roboto", sans-serif;
+  background-color: #2f5596;
+  height: 80px;
+  width: 100%;
+  z-index: 500;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.HeaderB ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100%;
+  text-align: right;
 }
 
 .HeaderB ul li:first-child {

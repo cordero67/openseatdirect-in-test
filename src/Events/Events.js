@@ -3,150 +3,151 @@ import React, { useState, useEffect } from "react";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Events.module.css";
 import Event from "./Event/Event";
+import Modal from "./Modal/Modal";
+
+import Logo from "./NEWPIC.png";
 
 const eventData = [
   {
     image: "https://openseatdirect.com/api/event/photo/e/10056046773",
-    name: "HaHa For Hire: The Lineup",
-    date: "Feb. 28, 2020: 7:00 pm",
-    description: "description1",
-    location: "location1"
+    title: "HaHa For Hire: Comedy Showcase & Open Mic",
+    eventNum: "",
+    date: "Wed, Feb 12, 2020 - 8:00 PM",
+    description: "description2",
+    location: "Voix Lounge, Philadelphia, PA",
+    url: "",
+    available: false
   },
   {
     image: "https://openseatdirect.com/api/event/photo/e/10056046773",
-    name: "HaHa For Hire: Comedy Showcase & Open Mic",
-    date: "Feb.5, 2020: 7:00 pm",
+    title: "HaHa For Hire: The Lineup",
+    eventNum: "10056046773",
+    date: "Fri, Feb 28, 2020: 7:30 pm",
     description: "description1",
-    location: "location1"
-  },
-  {
-    image:
-      "http://www.philadelphiaindependentfilmfestival.com/wp-content/uploads/2013/03/PIFF-FILMS-PRESENTS-FEST-13-HEADER_2019_.jpg",
-    name: "Philly Independent Film Festival",
-    date: "May 6-9, 2020: All day event",
-    description: "description2",
-    location: "location2"
+    location: "Voix Lounge, Philadelphia, PA",
+    url: "ev/ha_ha_for_hire?eventID=10056046773",
+    available: "true"
   },
   {
     image: "https://openseatdirect.com/api/event/photo/e/81295501293",
-    name: "Cocina Candela",
-    date: "date3",
-    description: "description3",
-    location: "location3"
+    title: "Cocina Candela - Private Dinner",
+    eventNum: "81295501293",
+    date: "Wed, Jan 29, 2020 - 7:00 PM",
+    description: "description4",
+    location: "Montclair, NJ",
+    url: "ev/dahday_concina_candela?eventID=81295501293",
+    available: true
   },
   {
     image:
       "https://s7d2.scene7.com/is/image/TWCNews/0110_n13_puerto_rico_earthquakes_slate?wid=1250&hei=703&$wide-bg$",
-    name: "Puerto Rico Earthquake Fund Raiser",
-    date: "date4",
-    description: "description4",
-    location: "location4"
+    title: "Puerto Rico Earthquake Fund Raiser",
+    eventNum: "",
+    date: "Mar 13-22, 2020: 10 Day Event",
+    description: "description5",
+    location: "Online Charity Event",
+    url: "",
+    available: false
+  },
+  {
+    image: Logo,
+    //"http://www.philadelphiaindependentfilmfestival.com/wp-content/uploads/2013/03/PIFF-FILMS-PRESENTS-FEST-13-HEADER_2019_.jpg",
+    title: "Philadelphia Independent Film Festival #13",
+    eventNum: "",
+    date: "May 6-9, 2020: All Day Event",
+    description: "description3",
+    location: "Philadelphia, PA",
+    url: "eventdetail",
+    available: true
+  },
+  {
+    image: "https://www.openseatdirect.com/api/event/photo/e/60909827273",
+    title: "Billy Goat Hall of Fame Induction Ceremony",
+    eventNum: "60909827273",
+    date: "Fri, Jan 31, 2020 - 7:30 PM",
+    description: "description6",
+    location: "Chicago, IL",
+    url: "ev/ha_ha_for_hire?eventID=60909827273",
+    available: true
   }
 ];
 
 const Events = () => {
-  // contact information declaration
-  const [contactInformation, setContactInformation] = useState({
-    emailAddress: "",
-    firstName: "",
-    lastName: "",
-    company: "",
-    phoneNumber: "",
-    message: ""
-  });
-
-  const [isLoadingEvents, setIsLoadingEvents] = useState(true);
-  const [isSuccessfull, setIsSuccessfull] = useState(true);
-  const [showDoublePane, setShowDoublePane] = useState(true);
+  //const [isLoadingEvents, setIsLoadingEvents] = useState(true);
+  //const [isSuccessfull, setIsSuccessfull] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [noEventDetails, setNoEventDetails] = useState();
 
   useEffect(() => {
-    //setIsLoadingEvents(true);
-    //setIsSuccessfull(true);
-    //console.log("About to call 'eventData()' inside 'TicketSelection'");
-    //eventData(queryString.parse(window.location.search).eventID);
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
 
   const stylingUpdate = (inWidth, inHeight) => {
-    //setIsRestyling(true);
     // based on window width, displays one or two panes
     if (inWidth < 790) {
-      setShowDoublePane(false);
     } else {
-      setShowDoublePane(true);
     }
-    //setIsRestyling(false);
   };
 
   window.onresize = function(event) {
     if (window.innerWidth < 990) {
-      setShowDoublePane(false);
     } else {
-      setShowDoublePane(true);
     }
   };
 
-  const events = eventData.map(post => {
+  const backdropClickedHandler = () => {
+    setShowModal(false);
+  };
+
+  let noDetailsModal;
+
+  if (showModal) {
+    noDetailsModal = (
+      <Aux>
+        <Modal
+          show={showModal}
+          modalClosed={backdropClickedHandler}
+          event={noEventDetails}
+        ></Modal>
+      </Aux>
+    );
+  } else noDetailsModal = null;
+
+  const eventSelectionHandler = (event, eventItem) => {
+    if (eventItem.available) {
+      setShowModal(false);
+      //window.location.href = `/ev/${eventItem.url}`;
+      window.location.href = `/${eventItem.url}`;
+    } else {
+      setNoEventDetails({
+        title: eventItem.title,
+        location: eventItem.location,
+        date: eventItem.date
+      });
+      setShowModal(true);
+    }
+  };
+
+  const events = eventData.map((eventItem, index) => {
     return (
       <Event
-        image={post.image}
-        name={post.name}
-        date={post.date}
-        location={post.location}
-        description={post.description}
+        key={index}
+        image={eventItem.image}
+        title={eventItem.title}
+        date={eventItem.date}
+        location={eventItem.location}
+        description={eventItem.description}
+        url={eventItem.url}
+        clicked={event => eventSelectionHandler(event, eventItem)}
       />
     );
   });
-  /*
-  <article className="Post" onClick={props.clicked}>
-    <h1>{props.title}</h1>
-    <h2 className="Info">
-      <h3 className="Author">{props.author}</h3>
-    </h2>
-  </article>;
-  */
-
-  let mainDisplay;
-  let rightPane = (
-    <Aux>
-      <div style={{ fontWeight: "500", fontSize: "20px" }}>Right Pane</div>
-    </Aux>
-  );
-
-  let leftPane = (
-    <Aux>
-      <section style={{ fontWeight: "500", fontSize: "20px" }}>
-        {events}
-      </section>
-    </Aux>
-  );
-
-  let singlePane;
-
-  if (showDoublePane) {
-    mainDisplay = (
-      <div className={styles.MainGrid}>
-        <div className={styles.LeftPane}>{leftPane}</div>
-        <div className={styles.RightPane}>{rightPane}</div>
-      </div>
-    );
-  } else {
-    mainDisplay = (
-      <div className={styles.MainGrid}>
-        <div className={styles.SinglePane}>
-          {leftPane}
-          <br></br>
-          <br></br>
-          {rightPane}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.MainContainer}>
       <div className={styles.MainGrid}>
         <section className={styles.Events}>{events}</section>
+        {noDetailsModal}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -136,14 +136,22 @@ const ContactUs = () => {
   };
 
   const sendMessageHandler = event => {
+    //event.preventDefault();
     let contactInfo = {};
     for (let key in contactData) {
       contactInfo[key] = contactData[key].value;
     }
+    console.log("contactInfo: ", contactInfo);
     axios
       .post("https://openseatdirect-contacts.firebaseio.com/.json", contactInfo)
-      .then(response => {})
+      .then(response => {
+        alert("Data received by Firebase.");
+        console.log("Response from Firebase: ", response);
+        console.log("contactInfo: ", contactInfo);
+        console.log("contactData: ", contactData);
+      })
       .catch(err => {
+        alert("Data WAS NOT received by Firebase.");
         console.log("Error from Firebase: ", err);
       });
   };

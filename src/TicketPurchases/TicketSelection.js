@@ -3,11 +3,7 @@ import { NavLink } from "react-router-dom";
 import dateFormat from "dateformat";
 import queryString from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faShoppingCart,
-  faChevronUp,
-  faChevronDown
-} from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import { getEventData, getEventImage } from "./apiCore";
@@ -454,13 +450,12 @@ const TicketSelection = () => {
   if (showDoublePane) {
     orderPane = (
       <div>
-        <div className={styles.ImageBox}>
-          <img
-            className={styles.Image}
-            src={eventLogo}
-            alt="Event Logo Coming Soon!!!"
-          />
-        </div>
+        <img
+          className={styles.Image}
+          src={eventLogo}
+          alt="Event Logo Coming Soon!!!"
+        />
+
         <div style={OrderSummarySection}>{orderSummary}</div>
       </div>
     );

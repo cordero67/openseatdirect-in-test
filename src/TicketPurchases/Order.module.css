@@ -69,10 +69,6 @@
   border-top: 1px solid lightgrey;
   height: 80px;
 }
-.ImageBox {
-  height: 160px;
-  padding: 0 0 0 0;
-}
 .Image {
   max-width: 100%;
   max-height: auto;
@@ -549,9 +545,6 @@
     padding-left: 25px;
     padding-right: 25px;
   }
-  .ImageBox {
-    height: 180px;
-  }
   .OrderSummary {
     height: calc(100vh - 180px);
   }
@@ -650,7 +643,6 @@
     height: 50px;
     width: 60px;
   }
-
   .BlankCanvas {
     width: 1080px;
     padding-top: 30px;

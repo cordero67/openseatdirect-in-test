@@ -1,0 +1,418 @@
+/*NEW CHANGES A*/
+.MainContainer {
+  font-family: "Roboto", sans-serif;
+  background-color: #2f5596;
+  background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
+  margin: auto;
+  box-sizing: border-box;
+}
+.UpperGrid {
+  background-color: #fff;
+  border-bottom: 2px solid lightgrey;
+  border-right: 2px solid red;
+  margin: auto;
+  box-sizing: border-box;
+}
+.ImageBox {
+  box-sizing: border-box;
+}
+.SummaryPlacard {
+  box-sizing: border-box;
+}
+.TicketGrid {
+  background-color: #fff;
+  border-bottom: 1px solid lightgrey;
+  border-right: 2px solid red;
+  position: -webkit-sticky;
+  position: sticky;
+  margin: auto;
+  box-sizing: border-box;
+}
+.MiddleGrid {
+  background-color: #fff;
+  border-right: 2px solid red;
+  margin: auto;
+  box-sizing: border-box;
+}
+.LowerGrid {
+  background-color: #fff;
+  border-right: 2px solid red;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+.ButtonGreen {
+  height: 44px;
+  width: auto;
+  background-color: green;
+  color: white;
+  font-weight: 500;
+  border: 1px solid grey;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+
+@media (max-width: 480px) {
+  .MainContainer {
+    padding-top: 80px;
+    padding-bottom: 0px;
+  }
+  .UpperGrid {
+    height: calc((100vw - 17px) / 2);
+    width: 100%;
+  }
+  .ImageBox {
+    max-height: auto;
+    max-width: 100%;
+  }
+  .SummaryPlacard {
+    border-bottom: 4px solid red;
+    border-top: 4px solid red;
+    border-left: 4px solid red;
+    border-right: 4px solid red;
+    height: 100%;
+    width: 100%;
+  }
+  .TicketGrid {
+    height: 66px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+    top: 80px;
+  }
+  .MiddleGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto;
+  }
+  .LowerGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .SummaryDetails {
+    border-bottom: 4px solid green;
+    border-top: 4px solid green;
+    border-left: 4px solid green;
+    border-right: 4px solid green;
+    height: auto;
+    padding: 20px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .Date {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .Event {
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .Presenter {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .LeftLowerGrid {
+    padding: 20px 40px 20px 20px;
+    box-sizing: border-box;
+  }
+  .RightLowerGrid {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+}
+@media (max-width: 799px) {
+  .MainContainer {
+    padding-top: 80px;
+    padding-bottom: 0px;
+  }
+  .UpperGrid {
+    height: calc((100vw - 17px) / 2);
+    width: 100%;
+  }
+  .ImageBox {
+    max-height: auto;
+    max-width: 100%;
+  }
+  .SummaryPlacard {
+    border-bottom: 4px solid red;
+    border-top: 4px solid red;
+    border-left: 4px solid red;
+    border-right: 4px solid red;
+    height: 100%;
+    width: 100%;
+  }
+  .TicketGrid {
+    height: 66px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+    top: 80px;
+  }
+  .MiddleGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto;
+  }
+  .LowerGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .SummaryDetails {
+    border-bottom: 4px solid green;
+    border-top: 4px solid green;
+    border-left: 4px solid green;
+    border-right: 4px solid green;
+    height: auto;
+    padding: 20px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .Date {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .Event {
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .Presenter {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .LeftLowerGrid {
+    padding: 20px 40px 20px 20px;
+    box-sizing: border-box;
+  }
+  .RightLowerGrid {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: 800px) {
+  .MainContainer {
+    padding-top: 80px;
+    padding-bottom: 0px;
+  }
+  .UpperGrid {
+    height: calc((100vw - 17px) / 3);
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .ImageBox {
+    max-height: auto;
+    max-width: 100%;
+  }
+  .SummaryPlacard {
+    border-bottom: 4px solid red;
+    border-top: 4px solid red;
+    border-left: 4px solid red;
+    border-right: 4px solid red;
+    height: 100%;
+    width: 100%;
+  }
+  .TicketGrid {
+    height: 66px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+    top: 80px;
+  }
+  .MiddleGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .LowerGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .SummaryDetails {
+    border-bottom: 4px solid green;
+    border-top: 4px solid green;
+    border-left: 4px solid green;
+    border-right: 4px solid green;
+    height: calc(100% - 40px);
+    padding: 20px 20px 0px 20px;
+    box-sizing: border-box;
+  }
+  .TicketRange {
+    border-bottom: 4px solid blue;
+    border-top: 4px solid blue;
+    border-left: 4px solid blue;
+    border-right: 4px solid blue;
+    height: 40px;
+    padding: 0px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .Month {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .Date {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .Event {
+    font-size: 18px;
+    font-weight: 600;
+    padding-top: 6px;
+  }
+  .Presenter {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .Prices {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .LeftLowerGrid {
+    padding: 20px 40px 20px 20px;
+    box-sizing: border-box;
+  }
+  .TitleLeft {
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .TextLeft {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .RightLowerGrid {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .TitleRight {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .TextRight {
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+@media (min-width: 1097px) {
+  .MainContainer {
+    padding-top: 100px;
+    padding-bottom: 40px;
+  }
+  .UpperGrid {
+    height: 360px;
+    width: 1080px;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .ImageBox {
+    max-height: auto;
+    max-width: 100%;
+  }
+  .SummaryPlacard {
+    border-bottom: 4px solid red;
+    border-top: 4px solid red;
+    border-left: 4px solid red;
+    border-right: 4px solid red;
+    height: 100%;
+    width: 100%;
+  }
+  .TicketGrid {
+    height: 66px;
+    width: 1080px;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+    top: 80px;
+  }
+  .MiddleGrid {
+    height: auto;
+    width: 1080px;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .LowerGrid {
+    height: auto;
+    width: 1080px;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+
+  .SummaryDetails {
+    border-bottom: 4px solid green;
+    border-top: 4px solid green;
+    border-left: 4px solid green;
+    border-right: 4px solid green;
+    height: calc(100% - 40px);
+    padding: 20px 20px 0px 20px;
+    box-sizing: border-box;
+  }
+  .TicketRange {
+    border-bottom: 4px solid blue;
+    border-top: 4px solid blue;
+    border-left: 4px solid blue;
+    border-right: 4px solid blue;
+    height: 40px;
+    padding: 0px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .Month {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .Date {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .Event {
+    font-size: 20px;
+    font-weight: 600;
+    padding-top: 6px;
+  }
+  .Presenter {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .Prices {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .LeftLowerGrid {
+    padding: 20px 40px 20px 20px;
+    box-sizing: border-box;
+  }
+  .TitleLeft {
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .TextLeft {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .RightLowerGrid {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .TitleRight {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .TextRight {
+    font-size: 16px;
+    font-weight: 500;
+  }
+}

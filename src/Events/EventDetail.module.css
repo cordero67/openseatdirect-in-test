@@ -1,0 +1,487 @@
+/*NEW CHANGES A*/
+.MainContainer {
+  font-family: "Roboto", sans-serif;
+  background-color: #2f5596;
+  background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
+  margin: auto;
+  box-sizing: border-box;
+}
+.UpperGrid {
+  background-color: #fff;
+  border-bottom: 2px solid lightgrey;
+  /*border-right: 2px solid red;*/
+  margin: auto;
+  box-sizing: border-box;
+}
+.ImageBox {
+  box-sizing: border-box;
+}
+.SummaryPlacard {
+  box-sizing: border-box;
+}
+.TicketGrid {
+  background-color: #fff;
+  border-bottom: 1px solid lightgrey;
+  /*border-right: 2px solid red;*/
+  position: -webkit-sticky;
+  position: sticky;
+  font-size: 16px;
+  margin: auto;
+  box-sizing: border-box;
+}
+.MiddleGrid {
+  background-color: #fff;
+  /*border-right: 2px solid red;*/
+  margin: auto;
+  box-sizing: border-box;
+}
+.LowerGrid {
+  background-color: #fff;
+  /*border-right: 2px solid red;*/
+  margin: auto;
+  box-sizing: border-box;
+}
+
+.ButtonGreen {
+  background-color: green;
+  color: white;
+  font-weight: 500;
+  border: 1px solid grey;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+  height: 44px;
+}
+
+@media (max-width: 480px) {
+  .MainContainer {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .UpperGrid {
+    height: calc((100vw - 17px) / 2);
+    width: 100%;
+  }
+  .ImageBox {
+    max-height: auto;
+    max-width: 100%;
+  }
+  .SummaryPlacard {
+    height: 100%;
+    width: 100%;
+  }
+
+  .PriceRange {
+    margin: auto;
+    height: 34px;
+    width: 100%;
+    padding-top: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .TicketGrid {
+    height: 100px;
+    width: 100%;
+    top: 0px;
+  }
+  .ButtonContainer {
+    margin: auto;
+    height: 66px;
+    width: 100%;
+    padding-top: 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .ButtonGreen {
+    width: calc(100% - 40px);
+  }
+
+  .MiddleGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto;
+  }
+  .LowerGrid {
+    height: auto;
+    width: 100%;
+  }
+  .SummaryDetails {
+    height: auto;
+    padding: 20px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .Date {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .Event {
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .Presenter {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .LeftLowerGrid {
+    padding: 20px 40px 20px 20px;
+    box-sizing: border-box;
+  }
+  .TitleLeft {
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .TextLeft {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .RightLowerGrid {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .TitleRight {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .TextRight {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .ButtonGreen {
+    padding-right: 10px;
+    padding-left: 10px;
+    width: calc(100% - 20px);
+  }
+}
+
+@media (min-width: 480px) {
+  .MainContainer {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .UpperGrid {
+    height: calc((100vw - 17px) / 2);
+    width: 100%;
+  }
+  .ImageBox {
+    max-height: auto;
+    max-width: 100%;
+  }
+  .SummaryPlacard {
+    height: 100%;
+    width: 100%;
+  }
+
+  .TicketGrid {
+    height: 100px;
+    width: 100%;
+    top: 0px;
+  }
+  .PriceRange {
+    margin: auto;
+    height: 34px;
+    width: 100%;
+    padding-top: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .ButtonContainer {
+    margin: auto;
+    height: 66px;
+    width: 100%;
+    padding-top: 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .ButtonGreen {
+    width: calc(100% - 40px);
+  }
+
+  .MiddleGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto;
+  }
+  .LowerGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .SummaryDetails {
+    height: auto;
+    padding: 20px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .Date {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .Event {
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .Presenter {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .LeftLowerGrid {
+    padding: 20px 40px 20px 20px;
+    box-sizing: border-box;
+  }
+  .TitleLeft {
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .TextLeft {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .RightLowerGrid {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .TitleRight {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .TextRight {
+    font-size: 16px;
+    font-weight: 400;
+  }
+}
+
+@media (min-width: 800px) {
+  .MainContainer {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .UpperGrid {
+    height: calc((100vw - 17px) / 3);
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .ImageBox {
+    max-height: auto;
+    max-width: 100%;
+  }
+  .SummaryPlacard {
+    height: 100%;
+    width: 100%;
+  }
+
+  .TicketGrid {
+    height: 66px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+    top: 0px;
+  }
+  .PriceRange {
+    padding-top: 21px;
+    padding-bottom: 21px;
+    padding-right: 20px;
+    height: auto;
+    width: 100%;
+    text-align: right;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .ButtonContainer {
+    margin: auto;
+    height: auto;
+    width: 100%;
+    padding-top: 0px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .ButtonGreen {
+    width: calc(100% - 40px);
+  }
+
+  .MiddleGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .LowerGrid {
+    height: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .SummaryDetails {
+    height: calc(100% - 40px);
+    padding: 20px 20px 0px 20px;
+    box-sizing: border-box;
+  }
+  .TicketRange {
+    height: 40px;
+    padding: 0px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .Month {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .Date {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .Event {
+    font-size: 18px;
+    font-weight: 600;
+    padding-top: 6px;
+    max-height: 114px;
+    overflow: hidden;
+  }
+  .Presenter {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .Prices {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .LeftLowerGrid {
+    padding: 20px 40px 20px 20px;
+    box-sizing: border-box;
+  }
+  .TitleLeft {
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .TextLeft {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .RightLowerGrid {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .TitleRight {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .TextRight {
+    font-size: 16px;
+    font-weight: 400;
+  }
+}
+
+@media (min-width: 1097px) {
+  .MainContainer {
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+  .UpperGrid {
+    height: 360px;
+    width: 1080px;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .ImageBox {
+    max-height: auto;
+    max-width: 100%;
+  }
+  .SummaryPlacard {
+    height: 100%;
+    width: 100%;
+  }
+  .TicketGrid {
+    height: 66px;
+    width: 1080px;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+    top: 0px;
+  }
+  .MiddleGrid {
+    height: auto;
+    width: 1080px;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+  .LowerGrid {
+    height: auto;
+    width: 1080px;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+  }
+
+  .SummaryDetails {
+    height: calc(100% - 40px);
+    padding: 20px 20px 0px 20px;
+    box-sizing: border-box;
+  }
+  .TicketRange {
+    height: 40px;
+    padding: 0px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .Month {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .Date {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .Event {
+    font-size: 20px;
+    font-weight: 600;
+    padding-top: 6px;
+    max-height: 126px;
+    overflow: hidden;
+  }
+  .Presenter {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .Prices {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .LeftLowerGrid {
+    padding: 20px 40px 20px 20px;
+    box-sizing: border-box;
+  }
+  .TitleLeft {
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .TextLeft {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .RightLowerGrid {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .TitleRight {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .TextRight {
+    font-size: 16px;
+    font-weight: 400;
+  }
+}

@@ -1,5 +1,6 @@
 .MainContainer {
   font-family: "Roboto", sans-serif;
+  background-color: blue;
   padding-top: 100px;
   padding-bottom: 40px;
 }
