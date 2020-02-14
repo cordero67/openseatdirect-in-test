@@ -16,6 +16,10 @@
 .LeftGrid {
   display: grid;
 }
+.PromoGrid {
+  height: 48px;
+  display: grid;
+}
 .RightGrid {
   display: grid;
 }
@@ -33,7 +37,7 @@
   padding-top: 5px;
   padding-left: 5px;
   padding-right: 5px;
-  height: 60px;
+  height: 50px;
   border-bottom: 1px solid lightgrey;
 }
 .EventHeader {
@@ -41,8 +45,16 @@
   padding-top: 5px;
   padding-left: 5px;
   padding-right: 5px;
-  height: 60px;
+  height: 50px;
   border-bottom: 1px solid lightgrey;
+}
+.EventTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.EventDate {
+  font-size: 0.8rem;
+  font-weight: 400;
 }
 .EventTicketSection {
   background-color: #fff;
@@ -68,10 +80,6 @@
   padding-bottom: 18px;
   border-top: 1px solid lightgrey;
   height: 80px;
-}
-.ImageBox {
-  height: 160px;
-  padding: 0 0 0 0;
 }
 .Image {
   max-width: 100%;
@@ -110,6 +118,7 @@
 .MainItemLeft {
   background-color: #f9f9f9;
   border-right: 1px solid lightgrey;
+
 }
 .SectionHeader {
   font-size: 1.5rem;
@@ -258,11 +267,31 @@
   font-weight: 600;
 }
 
+@media (min-width: 400px) {
+  .EventTitle {
+    font-size: 1.0rem;
+    font-weight: 600;
+  }
+  .EventDate {
+    font-size: 1.0rem;
+    font-weight: 400;
+  }
+  .EventHeaderCheckout {
+    height: 60px;
+  }
+  .EventHeader {
+    height: 60px;
+  }
+}
+
 @media (max-width: 480px) {
   .MainGrid {
     grid-template-columns: auto;
   }
   .LeftGrid {
+    grid-template-columns: auto 80px;
+  }
+  .PromoGrid {
     grid-template-columns: auto 80px;
   }
   .RightGrid {
@@ -325,6 +354,17 @@
     grid-template-columns: auto;
   }
   .LeftGrid {
+    grid-template-columns: auto 80px;
+  }
+.EventTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.EventDate {
+  font-size: 1.0rem;
+  font-weight: 400;
+}
+  .PromoGrid {
     grid-template-columns: auto 80px;
   }
   .RightGrid {
@@ -391,6 +431,9 @@
     grid-template-columns: auto;
   }
   .LeftGrid {
+    grid-template-columns: auto 80px;
+  }
+  .PromoGrid {
     grid-template-columns: auto 80px;
   }
   .RightGrid {
@@ -469,6 +512,9 @@
   .LeftGrid {
     grid-template-columns: auto 80px;
   }
+  .PromoGrid {
+    grid-template-columns: auto 80px;
+  }
   .RightGrid {
     grid-template-columns: auto 80px;
   }
@@ -533,6 +579,9 @@
   .LeftGrid {
     grid-template-columns: auto 80px;
   }
+  .PromoGrid {
+    grid-template-columns: auto 80px;
+  }
   .RightGrid {
     grid-template-columns: auto 80px;
   }
@@ -548,9 +597,6 @@
   .EventFooterMod {
     padding-left: 25px;
     padding-right: 25px;
-  }
-  .ImageBox {
-    height: 180px;
   }
   .OrderSummary {
     height: calc(100vh - 180px);
@@ -618,6 +664,9 @@
   .LeftGrid {
     grid-template-columns: 460px 80px;
   }
+  .PromoGrid {
+    grid-template-columns: 460px 80px;
+  }
   .RightGrid {
     grid-template-columns: 230px 80px;
   }
@@ -650,7 +699,6 @@
     height: 50px;
     width: 60px;
   }
-
   .BlankCanvas {
     width: 1080px;
     padding-top: 30px;

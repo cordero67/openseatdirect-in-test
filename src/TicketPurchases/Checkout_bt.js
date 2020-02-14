@@ -520,28 +520,8 @@ const Checkout = props => {
       <Aux>
         <div className={styles.MainItemLeft}>
           <div className={styles.EventHeader}>
-            <div
-              style={{
-                fontSize: "1.125rem",
-                fontWeight: "600"
-              }}
-            >
-              <span
-                style={{
-                  textOverflow: "ellipsis"
-                }}
-              >
-                {ticketOrder.eventName}
-              </span>
-            </div>
-            <div
-              style={{
-                fontSize: "1.0rem",
-                fontWeight: "400"
-              }}
-            >
-              {ticketOrder.startDateTime}
-            </div>
+            <div className={styles.EventTitle}>{ticketOrder.eventName}</div>
+            <div className={styles.EventDate}>{ticketOrder.startDateTime}</div>
           </div>
           <div style={EventTicketSection}>
             <span className={styles.TicketType}>Contact Information</span>
