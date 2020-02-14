@@ -181,7 +181,18 @@ export const MainGridStyling = (inWidth, inHeight) => {
 
 export const EventTicketSectionStyling = (inWidth, inHeight) => {
   let EventTicketSection;
-  if (inWidth < 480) {
+  if (inWidth < 400) {
+    // width < 480px, height does not matter
+    EventTicketSection = {
+      backgroundColor: `#fff`,
+      height: `calc(${inHeight}px - 130px)`,
+      paddingTop: `30px`,
+      paddingLeft: `15px`,
+      paddingRight: `10px`,
+      textAlign: `left`,
+      overflowY: `auto`
+    };
+  } else if (inWidth < 480) {
     // width < 480px, height does not matter
     EventTicketSection = {
       backgroundColor: `#fff`,

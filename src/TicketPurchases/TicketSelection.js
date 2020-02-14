@@ -268,23 +268,11 @@ const TicketSelection = () => {
   if (!isLoadingEvent) {
     eventHeader = (
       <Aux>
-        <div
-          style={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "clip ellipsis",
-            fontSize: "1.125rem",
-            fontWeight: "600"
-          }}
+        <div className={styles.EventTitle}
         >
           {eventDetails.eventTitle}
         </div>
-        <div
-          style={{
-            fontSize: "1.0rem",
-            fontWeight: "400"
-          }}
-        >
+        <div className={styles.EventDate}>
           {eventDetails.startDateTime}
         </div>
       </Aux>
