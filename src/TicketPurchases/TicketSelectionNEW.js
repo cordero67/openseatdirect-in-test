@@ -180,50 +180,59 @@ const TicketSelection = () => {
     };
     console.log("EVENT DETAILS from 'loadEventDetails()': ", eventDetails);
   };
-
+  
   const loadTicketInfo = ticket => {
-    console.log("Inside 'loadTicketInfo' inside 'TicketSelection'");
-    let tempTicketArray = [];
-    ticket.forEach(item => {
-      let tempPromoCodes = [];
-      // determines if the "promoCodes" field exists
-      if (item.promoCodesAlt) {
-        console.log("Promo Codes exist");
-        console.log("Promo Codes: ", item.promoCodesAlt);
-        tempPromoCodes = item.promoCodesAlt;
-      } else {
-        console.log("Promo Codes DOES NOT exist");
-      }
-      const tempTicketItem = {
-        ticketID: item._id,
-        ticketType: item.ticketType,
-        ticketName: item.ticketName,
-        ticketDescription: item.ticketDescription,
-        ticketsAvailable: item.remainingQuantity,
-        ticketPrice: item.currentTicketPrice,
-        ticketsSelected: 0,
-        maxTicketOrder: item.maxTicketsAllowedPerOrder,
-        minTicketOrder: item.minTicketsAllowedPerOrder,
-        ticketPromoCodes: tempPromoCodes,
-        ticketPromoCodeApplied: "",
-        promoTicketPrice: item.currentTicketPrice
-      };
-      tempTicketArray.push(tempTicketItem);
-    });
-    setTicketInfo(tempTicketArray);
-    tempTicketArray.forEach(item => {
-      console.log(
-        "PROMO CODES inside 'loadTicketInfo()': ",
-        item.ticketPromoCodes
-      );
-    });
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
+    ) {
+      let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+      console.log("ORDER EXISTS!");
+      setTicketInfo(cart.ticketInfo);
+      console.log("Ticket Info: ", ticketInfo)
+    } else {
+      console.log("Inside 'loadTicketInfo' inside 'TicketSelection'");
+      let tempTicketArray = [];
+      ticket.forEach(item => {
+        let tempPromoCodes = [];
+        // determines if the "promoCodes" field exists
+        if (item.promoCodesAlt) {
+          console.log("Promo Codes exist");
+          console.log("Promo Codes: ", item.promoCodesAlt);
+          tempPromoCodes = item.promoCodesAlt;
+        } else {
+          console.log("Promo Codes DOES NOT exist");
+        }
+        const tempTicketItem = {
+          ticketID: item._id,
+          ticketType: item.ticketType,
+          ticketName: item.ticketName,
+          ticketDescription: item.ticketDescription,
+          ticketsAvailable: item.remainingQuantity,
+          ticketPrice: item.currentTicketPrice,
+          ticketsSelected: 0,
+          maxTicketOrder: item.maxTicketsAllowedPerOrder,
+          minTicketOrder: item.minTicketsAllowedPerOrder,
+          ticketPromoCodes: tempPromoCodes,
+          ticketPromoCodeApplied: "",
+          promoTicketPrice: item.currentTicketPrice
+        };
+        tempTicketArray.push(tempTicketItem);
+      });
+      setTicketInfo(tempTicketArray);
+      tempTicketArray.forEach(item => {
+        console.log(
+          "PROMO CODES inside 'loadTicketInfo()': ",
+          item.ticketPromoCodes
+        );
+      });
+    }
   };
 
   // receives ticket field from event data received from server
   const loadPromoCodeDetails = ticket => {
     // defines temporary array that captures all the unique promo codes
     let tempCodesArray = [];
-
     ticket.forEach(item => {
       console.log("INSIDE loadPromoCodeDetails", item);
       // check if 'promoCodesAlt' field exists in specific ticket type
@@ -246,17 +255,27 @@ const TicketSelection = () => {
       tempCodeDetail.available = true;
     }
     console.log("INSIDE loadPromoCodeDetails tempCodeDetail", tempCodeDetail);
-
     setPromoCodeDetails(tempCodeDetail);
     console.log("INSIDE loadPromoCodeDetails promoCodeDetails", promoCodeDetails);
   };
 
   const loadOrderTotals = event => {
-    setOrderTotals({
-      ticketsPurchased: 0,
-      totalPurchaseAmount: 0
-    });
-    console.log("Initial loading of orderTotals: ", orderTotals)
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
+    ) {
+      let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+      console.log("ORDER EXISTS!");
+      setOrderTotals(cart.ticketInfo);
+      console.log("Ticket Info: ", orderTotals)
+    } else {
+      setOrderTotals({
+        ticketsPurchased: 0,
+        totalPurchaseAmount: 0,
+        promoCodeApplied: ""
+      });
+      console.log("Initial loading of orderTotals: ", orderTotals)
+    }
   }
 
   let eventHeader;
@@ -322,9 +341,9 @@ const TicketSelection = () => {
       });
       setTicketInfo(tempTicketInfo);
       console.log("TICKET INFO after promo code applied: ", tempTicketInfo);
-      updateOrderTotals();
+      updateOrderTotals(inputtedPromoCode);
     } else {
-      let tempobject = { ...promoCodeDetails };
+      let tempobject = {...promoCodeDetails };
       tempobject.errorMessage = "INVALID PROMO CODE";
       setPromoCodeDetails(tempobject);
     }
@@ -494,7 +513,14 @@ const TicketSelection = () => {
     );
   }
 
-  const updateOrderTotals = () => {
+  /*
+  let tempOrderTotals;
+  tempOrderTotals = {...updateOrderTotals}
+  tempOrderTotals.promoCodeApplied = inputtedPromoCode;
+  setOrderTotals(tempOrderTotals);
+  */
+
+  const updateOrderTotals = (promoCode) => {
     let tempTicketsPurchased = 0;
     let tempTotalPurchaseAmount = 0;
     let tempTicketInfo2 = [...ticketInfo];
@@ -502,10 +528,14 @@ const TicketSelection = () => {
         tempTicketsPurchased = tempTicketsPurchased + parseInt(item.ticketsSelected);
         tempTotalPurchaseAmount = tempTotalPurchaseAmount + (item.ticketsSelected * item.promoTicketPrice);
     });
-    setOrderTotals({
-        ticketsPurchased: tempTicketsPurchased,
-        totalPurchaseAmount: tempTotalPurchaseAmount
-      });
+    let tempOrderTotals;
+    tempOrderTotals = {...orderTotals};
+    tempOrderTotals.ticketsPurchased = tempTicketsPurchased;
+    tempOrderTotals.totalPurchaseAmount = tempTotalPurchaseAmount;
+    if (promoCode) {
+      tempOrderTotals.promoCodeApplied = promoCode;
+    }
+    setOrderTotals(tempOrderTotals);
   }
 
   const updateTicketsSelected = (event, ticketType) => {
@@ -608,14 +638,16 @@ const TicketSelection = () => {
   // stores "orderTotals" and "eventLogo" in "localStorage"
   const purchaseTicketHandler = event => {
     if (typeof window !== "undefined") {
-      localStorage.setItem(
-        `cart_${eventDetails.eventNum}`,
-        JSON.stringify(ticketInfo)
-      );
+      //localStorage.setItem(`ticketInfo_${eventDetails.eventNum}`, JSON.stringify(ticketInfo));
       localStorage.setItem(`image_${eventDetails.eventNum}`, JSON.stringify(eventLogo));
-      localStorage.setItem(`orderTotals_${eventDetails.eventNum}`, JSON.stringify(orderTotals));
-      localStorage.setItem(`eventDetails_${eventDetails.eventNum}`, JSON.stringify(eventDetails));
+      //localStorage.setItem(`orderTotals_${eventDetails.eventNum}`, JSON.stringify(orderTotals));
+      //localStorage.setItem(`eventDetails_${eventDetails.eventNum}`, JSON.stringify(eventDetails));
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
+      localStorage.setItem(`cart_${eventDetails.eventNum}`, JSON.stringify({
+        eventDetails: eventDetails,
+        ticketInfo: ticketInfo,
+        orderTotals: orderTotals,
+      }));
     }
     window.location.href = eventDetails.gatewayURL;
   };

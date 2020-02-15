@@ -235,7 +235,6 @@ const TicketSelection = () => {
         };
         ticketParameters.push(newTicketItem);
       });
-
       ticketOrder = {
         gateway: eventDetails.gateway,
         clientID: eventDetails.gatewayClientID,
