@@ -6,6 +6,7 @@ import Event from "./Event/Event";
 import Modal from "./Modal/Modal";
 
 import Logo from "./NEWPIC.png";
+import LogoNew from "./Light of Gold PR Logo.png"
 
 const eventData = [
   {
@@ -51,13 +52,22 @@ const eventData = [
   },
   {
     image: Logo,
-    //"http://www.philadelphiaindependentfilmfestival.com/wp-content/uploads/2013/03/PIFF-FILMS-PRESENTS-FEST-13-HEADER_2019_.jpg",
     title: "Philadelphia Independent Film Festival #13",
     eventNum: "",
     date: "May 6-9, 2020: All Day Event",
     description: "description3",
     location: "Philadelphia, PA",
-    url: "eventdetail",
+    url: "evd/PIFF_Philly_Interantional_Film_Festival?eventID=86753091234",
+    available: true
+  },
+  {
+    image: LogoNew,
+    title: "Gold Women's Business Connect Conference",
+    eventNum: "",
+    date: "Friday, March 20th, 2020",
+    description: "description3",
+    location: "Bryant Park, New York City",
+    url: "evd/PIFF_Philly_Interantional_Film_Festival?eventID=86753091234",
     available: true
   },
   {

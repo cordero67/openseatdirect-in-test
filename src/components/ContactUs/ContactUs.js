@@ -124,7 +124,6 @@ const ContactUs = () => {
   });
 
   const [formIsValid, setFormIsValid] = useState(false);
-
   const [showDoublePane, setShowDoublePane] = useState(true);
 
   window.onresize = function(event) {

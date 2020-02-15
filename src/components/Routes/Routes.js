@@ -6,13 +6,19 @@ import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
+import EventDetailLight from "../../Events/EventDetailLight";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
+import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
+import TicketSelectionNEW from "../../TicketPurchases/TicketSelectionNEW";
+import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
 
 import OSDHeaderFixed from "../Headers/OSDHeaderFixed";
+import OSDHeaderClean from "../Headers/OSDHeaderClean";
 import OSDHeader from "../Headers/OSDHeader";
+import OSDFooterClean from "../Footers/OSDFooterClean";
 import OSDFooter from "../Footers/OSDFooter";
 
 //import LogoA from "../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_1024.png";
@@ -38,7 +44,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
         path="/video"
         exact
@@ -53,7 +58,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
         path="/contactus"
         exact
@@ -68,7 +72,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
         path="/events"
         exact
@@ -83,9 +86,8 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
-        path="/eventdetail"
+        path="/evd/"
         render={routeProps => (
           <React.Fragment>
             <OSDHeader styleType="HeaderA" logoType={LogoC}></OSDHeader>
@@ -96,6 +98,20 @@ const Layout = () => {
       />
 
       <Route
+        path="/evdLight/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeaderClean styleType="HeaderA" logoType={LogoC}></OSDHeaderClean>
+            <EventDetailLight />
+            <OSDFooterClean></OSDFooterClean>
+          </React.Fragment>
+        )}
+      />
+
+
+
+
+      <Route
         path="/checkout_bt"
         exact
         render={routeProps => (
@@ -104,7 +120,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
         path="/checkout_pp"
         exact
@@ -114,12 +129,37 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
+      <Route
+        path="/checkout_ppPROMO"
+        exact
+        render={routeProps => (
+          <React.Fragment>
+            <CheckoutPPPROMO />
+          </React.Fragment>
+        )}
+      />
       <Route
         path="/ev/"
         render={routeProps => (
           <React.Fragment>
             <TicketSelection />
+          </React.Fragment>
+        )}
+      />
+      <Route
+        path="/evNEW/"
+        render={routeProps => (
+          <React.Fragment>
+            <TicketSelectionNEW />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/evPROMO/"
+        render={routeProps => (
+          <React.Fragment>
+            <TicketSelectionPROMO />
           </React.Fragment>
         )}
       />

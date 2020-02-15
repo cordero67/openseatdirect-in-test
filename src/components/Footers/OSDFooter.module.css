@@ -30,3 +30,29 @@
   font-size: 14px;
   text-align: center;
 }
+
+.FooterClean {
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  border-top: 2px solid #2f5596;
+  height: 60px;
+  width: 100%;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+}
+
+.FooterCleanText {
+  font-family: "Roboto", sans-serif;
+  border-top: 2px solid #2f5596;
+  display: inline-block;
+  margin: auto;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100%;
+  color: #2f5596;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
