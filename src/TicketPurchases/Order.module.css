@@ -20,6 +20,12 @@
   height: 48px;
   display: grid;
 }
+.Red {
+  border: 1px solid red
+}
+.Blue {
+  border: 1px solid blue
+}
 .RightGrid {
   display: grid;
 }
@@ -356,16 +362,16 @@
   .LeftGrid {
     grid-template-columns: auto 80px;
   }
-.EventTitle {
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-.EventDate {
-  font-size: 1.0rem;
-  font-weight: 400;
-}
   .PromoGrid {
     grid-template-columns: auto 80px;
+  }
+  .EventTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  .EventDate {
+    font-size: 1.0rem;
+    font-weight: 400;
   }
   .RightGrid {
     grid-template-columns: auto 80px;
@@ -662,10 +668,10 @@
     grid-template-columns: 720px 360px;
   }
   .LeftGrid {
-    grid-template-columns: 460px 80px;
+    grid-template-columns: 480px 80px;
   }
   .PromoGrid {
-    grid-template-columns: 460px 80px;
+    grid-template-columns: 480px 77px;
   }
   .RightGrid {
     grid-template-columns: 230px 80px;

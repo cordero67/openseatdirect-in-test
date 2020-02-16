@@ -184,6 +184,7 @@ const TicketSelection = () => {
     };
     // sets the checkout page url
     if (eventDetails.gateway === "PayPalExpress") {
+      console.log(eventDetails.gateway);
       paymentGateway = "/checkout_pp";
     } else if (eventDetails.gateway === "Braintree") {
       paymentGateway = "/checkout_bt";

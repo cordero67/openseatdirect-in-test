@@ -12,7 +12,6 @@ import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import TicketSelectionNEW from "../../TicketPurchases/TicketSelectionNEW";
 import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
 
 import OSDHeaderFixed from "../Headers/OSDHeaderFixed";
@@ -143,14 +142,6 @@ const Layout = () => {
         render={routeProps => (
           <React.Fragment>
             <TicketSelection />
-          </React.Fragment>
-        )}
-      />
-      <Route
-        path="/evNEW/"
-        render={routeProps => (
-          <React.Fragment>
-            <TicketSelectionNEW />
           </React.Fragment>
         )}
       />

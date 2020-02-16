@@ -117,8 +117,8 @@ const Checkout = props => {
         setPaypalArray();
         console.log("Paypal Array: ", paypalArray);
       }
-      if (localStorage.getItem(`image`)) {
-        eventLogo = JSON.parse(localStorage.getItem(`image`));
+      if (localStorage.getItem(`image_${event}`)) {
+        eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
         console.log("image: ", eventLogo);
       }
     }
@@ -157,7 +157,7 @@ const Checkout = props => {
           sku: item.ticketID,
           unit_amount: {
             currency_code: "USD",
-            value: item.ticketPrice.toString()
+            value: item.promoTicketPrice.toString()
           },
           quantity: item.ticketsSelected.toString()
         };
@@ -174,7 +174,7 @@ const Checkout = props => {
     eventLogo = "";
     let event = JSON.parse(localStorage.getItem("eventNum"));
     localStorage.removeItem(`cart_${event}`);
-    localStorage.removeItem(`image`);
+    localStorage.removeItem(`image_${event}`);
   };
 
   // **********
