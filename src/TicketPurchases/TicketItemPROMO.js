@@ -9,8 +9,11 @@ const TicketItem = props => {
       <div className={styles.LeftGrid}>
         <div>
           <div className={styles.TicketType}>{props.name.ticketName}</div>
-          <div className={styles.TicketPrices}>${props.name.promoTicketPrice}<span style={{color: "blue", 
-  fontWeight: "400"}}>{props.name.ticketPromoCodeApplied ? " Discounted" : null}</span></div>
+          <div className={styles.TicketPrices}>${props.name.promoTicketPrice}
+            <span style={{color: "blue", fontWeight: "400"}}>
+              {props.name.ticketPromoCodeApplied ? " Promo Price" : null}
+            </span>
+          </div>
         </div>
         <div className={styles.TicketAmount}>
           <select

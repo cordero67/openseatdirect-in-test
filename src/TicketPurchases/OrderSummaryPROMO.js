@@ -31,7 +31,7 @@ const OrderSummary = props => {
             </div>
             {item.promoTicketPrice !== item.ticketPrice ? 
             <div className={styles.RightGrid}>
-              <div style={{ fontWeight: "400", color: "blue", paddingLeft: "10px" }}>- less discount
+              <div style={{ fontWeight: "400", color: "blue", paddingLeft: "10px" }}>- discount
                 
               </div>
               <div style={{ textAlign: "right", color: "blue" }}>-

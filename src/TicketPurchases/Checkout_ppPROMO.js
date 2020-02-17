@@ -17,7 +17,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLinkPROMO";
 import OrderSummary from "./OrderSummaryPROMO";
-import { OrderConfirmationTT, OrderConfirmationTF } from "./OrderConfirmation";
+import { OrderConfirmationTT, OrderConfirmationTF } from "./OrderConfirmationPROMO";
 import styles from "./Order.module.css";
 
 // defines the ticket order populated from "localStorage"

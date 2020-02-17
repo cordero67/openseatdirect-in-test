@@ -46,11 +46,6 @@ const TicketSelection = () => {
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
 
-  // tracks ticket order ticket specific information
-  const [ticketInfo, setTicketInfo] = useState([]);
-  // tracks ticket order general information
-  const [orderTotals, setOrderTotals] = useState([]);
-
   // defines an event's specific ticket type promo codes
   const [promoCodeDetails, setPromoCodeDetails] = useState({
     available: false,
@@ -63,12 +58,16 @@ const TicketSelection = () => {
     eventPromoCodes: []
   });
 
+  // tracks ticket order ticket specific information
+  const [ticketInfo, setTicketInfo] = useState([]);
+  // tracks ticket order general information
+  const [orderTotals, setOrderTotals] = useState([]);
+
   useEffect(() => {
     setIsLoadingEvent(true);
     setIsSuccessfull(true);
     eventData(queryString.parse(window.location.search).eventID);
-    // determines initial window width and then
-    // determines a one or two pane display
+    // determines a one or two pane display based on initial window width 
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
 
@@ -80,7 +79,7 @@ const TicketSelection = () => {
     } else {
       setShowDoublePane(true);
     }
-    // set styling parameters
+    // sets styling parameters
     MainContainer = MainContainerStyling(inWidth, inHeight);
     MainGrid = MainGridStyling(inWidth, inHeight);
     EventTicketSection = EventTicketSectionStyling(inWidth, inHeight);
@@ -94,29 +93,31 @@ const TicketSelection = () => {
   const eventData = eventID => {
     getEventData(eventID)
       .then(res => {
-        console.log(
-          "Event Data Received from Server in 'getEventData()' api function: ",
-          res
-        );
+        console.log("EVENT DATA OBJECT received from Server in 'getEventData()': ", res);
         loadEventDetails(res);
-        loadTicketInfo(res.ticket);
+        if (
+          typeof window !== "undefined" &&
+          localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
+        ) {
+          let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+          console.log("ORDER EXISTS!");
+          setPromoCodeDetails(cart.promoCodeDetails);
+          console.log("Ticket Info: ", promoCodeDetails)
+          setTicketInfo(cart.ticketInfo);
+          console.log("Ticket Info: ", ticketInfo)
+          setOrderTotals(cart.orderTotals);
+          console.log("Ticket Info: ", orderTotals)
+        } else {
         loadPromoCodeDetails(res.ticket);
-        //createTicketOrder(res);
+        loadTicketInfo(res.ticket);
         loadOrderTotals(res);
-
-        //console.log("About to call 'eventImage()' inside 'TicketSelection'");
-        //eventImage(queryString.parse(window.location.search).eventID);
-        console.log("About to call 'getEventImage()' inside 'TicketSelection'");
+        }
         getEventImage(eventID)
           .then(res => {
-            console.log("Event Image Received: ", res);
             eventLogo = res;
-            console.log("eventLogo: ", eventLogo);
-            setIsLoadingEvent(false);
+            // setIsLoadingEvent(false);
           })
           .catch(err => {
-            console.log("In the catch 'getEventImage'");
-            console.log("No image exists");
             eventLogo = DefaultLogo;
           })
           .finally(() => {
@@ -124,22 +125,18 @@ const TicketSelection = () => {
           });
       })
       .catch(err => {
-        console.log("This is the error from 'getEventData': ", err);
+        // NEED TO ADDRESS THESE SITUATIONS
         if (err === "Error: Error: 400") {
-          console.log("I'm handling a 400 error");
         }
         if (err === undefined) {
-          console.log("I'm handling an undefined error");
         }
-        // need to now handle this situation
         setIsLoadingEvent(true);
         setIsSuccessfull(false);
       })
-      .finally(() => {});
+      // .finally(() => {});
   };
 
   const loadEventDetails = event => {
-    console.log("Inside 'loadEventDetails' inside 'TicketSelection'");
     let tempGatewayURL;
     // sets the checkout page url
     if (event.accountId.paymentGatewayType === "PayPalExpress") {
@@ -149,7 +146,7 @@ const TicketSelection = () => {
     } else {
       tempGatewayURL = "/"
     }
-
+    // defines the eniter "eventDetails" variable
     eventDetails = {
       eventNum: event.eventNum,
       eventTitle: event.eventTitle,
@@ -180,63 +177,13 @@ const TicketSelection = () => {
         countryCode: event.locationCountryCode
       }
     };
-    console.log("EVENT DETAILS from 'loadEventDetails()': ", eventDetails);
-  };
-  
-  const loadTicketInfo = ticket => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
-    ) {
-      let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
-      console.log("ORDER EXISTS!");
-      setTicketInfo(cart.ticketInfo);
-      console.log("Ticket Info: ", ticketInfo)
-    } else {
-      console.log("Inside 'loadTicketInfo' inside 'TicketSelection'");
-      let tempTicketArray = [];
-      ticket.forEach(item => {
-        let tempPromoCodes = [];
-        // determines if the "promoCodes" field exists
-        if (item.promoCodesAlt) {
-          console.log("Promo Codes exist");
-          console.log("Promo Codes: ", item.promoCodesAlt);
-          tempPromoCodes = item.promoCodesAlt;
-        } else {
-          console.log("Promo Codes DOES NOT exist");
-        }
-        const tempTicketItem = {
-          ticketID: item._id,
-          ticketType: item.ticketType,
-          ticketName: item.ticketName,
-          ticketDescription: item.ticketDescription,
-          ticketsAvailable: item.remainingQuantity,
-          ticketPrice: item.currentTicketPrice,
-          ticketsSelected: 0,
-          maxTicketOrder: item.maxTicketsAllowedPerOrder,
-          minTicketOrder: item.minTicketsAllowedPerOrder,
-          ticketPromoCodes: tempPromoCodes,
-          ticketPromoCodeApplied: "",
-          promoTicketPrice: item.currentTicketPrice
-        };
-        tempTicketArray.push(tempTicketItem);
-      });
-      setTicketInfo(tempTicketArray);
-      tempTicketArray.forEach(item => {
-        console.log(
-          "PROMO CODES inside 'loadTicketInfo()': ",
-          item.ticketPromoCodes
-        );
-      });
-    }
+    console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
   };
 
   // receives ticket field from event data received from server
   const loadPromoCodeDetails = ticket => {
-    // defines temporary array that captures all the unique promo codes
     let tempCodesArray = [];
     ticket.forEach(item => {
-      console.log("INSIDE loadPromoCodeDetails", item);
       // check if 'promoCodesAlt' field exists in specific ticket type
       if (item.promoCodesAlt) {
         let codes = item.promoCodesAlt;
@@ -248,7 +195,6 @@ const TicketSelection = () => {
         });
       }
     });
-    console.log("INSIDE loadPromoCodeDetails tempCodesArray", tempCodesArray);
 
     // populate "promoCodeDetails" with "eventPromoCodes" and "available" properties
     let tempCodeDetail = { ...promoCodeDetails };
@@ -256,92 +202,74 @@ const TicketSelection = () => {
     if (tempCodesArray.length > 0) {
       tempCodeDetail.available = true;
     }
-    console.log("INSIDE loadPromoCodeDetails tempCodeDetail", tempCodeDetail);
     setPromoCodeDetails(tempCodeDetail);
-    console.log("INSIDE loadPromoCodeDetails promoCodeDetails", promoCodeDetails);
   };
 
-  const loadOrderTotals = event => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
-    ) {
-      let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
-      console.log("ORDER EXISTS!");
-      setOrderTotals(cart.orderTotals);
-      console.log("Ticket Info: ", orderTotals)
-
-
-
-      // CHECK IF PROMO CODE EXISTS IN ORDER
-      if (cart.orderTotals.promoCodeApplied) {
-        console.log("Promo code exist")
-          // defines an event's specific ticket type promo codes
-        setPromoCodeDetails({
-          available: true,
-          applied: true,
-          input: false,
-          errorMessage: "",
-          appliedPromoCode: cart.orderTotals.promoCodeApplied,
-          inputtedPromoValue: "",
-          lastInvalidPromoCode: "",
-          eventPromoCodes: []    
-        });
+  const loadTicketInfo = ticket => {
+    let tempTicketArray = [];
+    ticket.forEach(item => {
+      let tempPromoCodes = [];
+      // determines if the "promoCodes" field exists
+      if (item.promoCodesAlt) {
+        tempPromoCodes = item.promoCodesAlt;
       } else {
-        console.log("Promo code COES NOT exist")
       }
-
-    } else {
-      setOrderTotals({
-        ticketsPurchased: 0,
-        totalPurchaseAmount: 0,
-        promoCodeApplied: ""
-      });
-      console.log("Initial loading of orderTotals: ", orderTotals)
-    }
+      const tempTicketItem = {
+        ticketID: item._id,
+        ticketType: item.ticketType,
+        ticketName: item.ticketName,
+        ticketDescription: item.ticketDescription,
+        ticketsAvailable: item.remainingQuantity,
+        ticketPrice: item.currentTicketPrice,
+        ticketsSelected: 0,
+        maxTicketOrder: item.maxTicketsAllowedPerOrder,
+        minTicketOrder: item.minTicketsAllowedPerOrder,
+        ticketPromoCodes: tempPromoCodes,
+        ticketPromoCodeApplied: "",
+        promoTicketPrice: item.currentTicketPrice
+      };
+      tempTicketArray.push(tempTicketItem);
+    });
+    setTicketInfo(tempTicketArray);
+    //tempTicketArray.forEach(item => {
+    //  console.log(
+    //    "PROMO CODES inside 'loadTicketInfo()': ",
+    //    item.ticketPromoCodes
+    //  );
+    //});
   }
 
-  let eventHeader;
+  const loadOrderTotals = event => {
+    setOrderTotals({
+      ticketsPurchased: 0,
+      totalPurchaseAmount: 0,
+      promoCodeApplied: ""
+    });
+  }
 
-  if (!isLoadingEvent) {
-    eventHeader = (
-      <Aux>
-        <div className={styles.EventTitle}>{eventDetails.eventTitle}</div>
-        <div className={styles.EventDate}>{eventDetails.startDateTime}</div>
-      </Aux>
-    );
-  } else eventHeader = null;
-
-  const changeInputHandler = () => {
-    // updates "ticketInfo"
-    let tempPromoCodeDetails;
-    tempPromoCodeDetails = { ...promoCodeDetails };
-    tempPromoCodeDetails.input = true;
-    setPromoCodeDetails(tempPromoCodeDetails);
-  };
-
-/*
-  setPromoCodeDetails({
-    available: true,
-    applied: true,
-    input: false,
-    errorMessage: "",
-    appliedPromoCode: "",
-    inputtedPromoValue: "",
-    lastInvalidPromoCode: "",
-    eventPromoCodes: []
-  });
-*/
+  // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTOtals"
+  const updateOrderTotals = (promoCode) => {
+    let tempTicketsPurchased = 0;
+    let tempTotalPurchaseAmount = 0;
+    let tempTicketInfo2 = [...ticketInfo];
+    tempTicketInfo2.forEach(item => {
+        tempTicketsPurchased = tempTicketsPurchased + parseInt(item.ticketsSelected);
+        tempTotalPurchaseAmount = tempTotalPurchaseAmount + (item.ticketsSelected * item.promoTicketPrice);
+    });
+    let tempOrderTotals;
+    tempOrderTotals = {...orderTotals};
+    tempOrderTotals.ticketsPurchased = tempTicketsPurchased;
+    tempOrderTotals.totalPurchaseAmount = tempTotalPurchaseAmount;
+    if (promoCode) {
+      tempOrderTotals.promoCodeApplied = promoCode;
+    }
+    setOrderTotals(tempOrderTotals);
+  }
 
   const applyPromoCodeHandler = (event, inputtedPromoCode) => {
     event.preventDefault();
-    console.log("ENTERING APPLY PROMO CODE HANDLER");
-    console.log("promoCodeDetails", promoCodeDetails);
-    console.log("ticketInfo", ticketInfo);
-
-    console.log("TICKET INFO: ", ticketInfo);
-if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
-      console.log("applyPromoCodeHandler ", inputtedPromoCode);
+    if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
+      // updates "promoCodeDetails" with valid promo code instance
       let tempPromoCodeDetails = { ...promoCodeDetails };
       tempPromoCodeDetails.applied = true;
       tempPromoCodeDetails.errorMessage = "Valid Promo Code";
@@ -349,50 +277,39 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
       tempPromoCodeDetails.inputtedPromoCode = "";
       tempPromoCodeDetails.lastInvalidPromoCode = "";
       setPromoCodeDetails(tempPromoCodeDetails);
-      console.log("tempPromoCodeDetails: ", tempPromoCodeDetails);
-      console.log("promoCodeDetails: ", promoCodeDetails);
-      console.log("TICKET INFO BEFORE THE CHANGE: ", ticketInfo);
       // updates "ticketInfo"
       let tempTicketInfo;
       tempTicketInfo = [...ticketInfo];
-
-      // checks if ticket type has the code and then extracts the discount amount
+      // checks if ticket type has the code and then extracts and applies the discount amount
       tempTicketInfo.forEach((item, index) => {
         let discount = 0;
-        console.log("Individual Ticket Type: ", item);
-        console.log("Individual Ticket Type Promo Codes: ", item.ticketPromoCodes);
-
-        item.ticketPromoCodes.forEach(element => {
-          console.log("EACH CODE VALUE: ", element.code);          
+        item.ticketPromoCodes.forEach(element => {      
           if (element.code === inputtedPromoCode) {
             console.log("WE HAVE A MATCH");
             discount = element.amount;
-            console.log("Updated Discount Amount: ", discount);
             item.promoTicketPrice = item.ticketPrice - discount;
-            console.log("Updated Promo Ticket Price: ", item.promoTicketPrice);
             item.ticketPromoCodeApplied = inputtedPromoCode;
-            console.log("Updated Promo Ticket Promo Code Applied: ", item.ticketPromoCodeApplied);
           } else {
             console.log("NO MATCH");
-            console.log("Updated Discount Amount: ", discount)
           }
         });
       });
       setTicketInfo(tempTicketInfo);
-      console.log("TICKET INFO after promo code applied: ", tempTicketInfo);
       updateOrderTotals(inputtedPromoCode);
-      //document.getElementById("input box").focus();
+      document.getElementById("input box").focus();
     } else {
+      // updates "promoCodeDetails" with invalid promo code instance
       let tempobject = {...promoCodeDetails };
       tempobject.errorMessage = "Sorry, that promo code is invalid";
       tempobject.lastInvalidPromoCode = inputtedPromoCode;
       setPromoCodeDetails(tempobject);
-      //document.getElementById("input box").focus();
+      document.getElementById("input box").focus();
     }
   };
 
-  let inputPromoCode;
 
+  // LOOK TO MAKE AN <InputPromoCode> COMPONENT
+  let inputPromoCode;
   if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
     inputPromoCode = (
       <Aux>
@@ -411,7 +328,6 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
                 outline: "none" 
               }}
               value={promoCodeDetails.inputtedPromoValue}
-              //disabled={true}
               onChange={event => {
                 let tempobject = { ...promoCodeDetails };
                 tempobject.inputtedPromoValue = event.target.value;
@@ -419,7 +335,6 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
                 setPromoCodeDetails(tempobject);
               }}
             ></input>
-
             <button
               style={{
                 fontSize: "14px",
@@ -438,10 +353,6 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
             >
               Clear
               </button>
-
-
-
-
           </div>
           <div style={{ color: "red", fontSize: "12px" }}>
             {promoCodeDetails.errorMessage !== ""
@@ -461,6 +372,7 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
             <input
               type="text"
               id="input box"
+              placeholder="Enter Promo Code"
               style={{
                 paddingLeft: "10px",
                 color: "black",
@@ -468,8 +380,6 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
                 border: "none",
                 outline: "none" 
               }}
-              placeholder="Enter Promo Code"
-              value={promoCodeDetails.inputtedPromoValue}
               onChange={event => {
                 let tempDetails = { ...promoCodeDetails };
                 tempDetails.inputtedPromoValue = event.target.value;
@@ -477,7 +387,6 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
                 setPromoCodeDetails(tempDetails);
               }}
             ></input>
-
             <button
               style={{
                 fontSize: "14px",
@@ -501,21 +410,6 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
       </Aux>
     );
   }
-
-
-/*
-  setPromoCodeDetails({
-    available: true,
-    applied: true,
-    input: false,
-    errorMessage: "",
-    appliedPromoCode: "",
-    inputtedPromoValue: "",
-    lastInvalidPromoCode: "",
-    eventPromoCodes: []
-  });
-  */
-
 
   let controlData = (null/*
     <div style={{ paddingLeft: "40px", color: "red", fontSize: "14px" }}>
@@ -554,7 +448,6 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
   );
 
   let promoOption;
-
   if (!promoCodeDetails.available) {
     promoOption = (
       <Aux>
@@ -568,7 +461,7 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
     promoOption = (
       <Aux>
         <div style={{ color: "blue", fontSize: "16px" }}>
-          Promo code applied to respective ticket prices.
+          Promo code has been applied.
         </div>
         <br></br>
         {controlData}
@@ -588,7 +481,7 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
     promoOption = (
       <Aux>
         <div
-          style={{ color: "blue" }}
+          className={styles.EnterPromoCode}
           onClick={() => {
             let tempPromoCodeDetails;
             tempPromoCodeDetails = { ...promoCodeDetails };
@@ -604,31 +497,6 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
     );
   }
 
-  /*
-  let tempOrderTotals;
-  tempOrderTotals = {...updateOrderTotals}
-  tempOrderTotals.promoCodeApplied = inputtedPromoCode;
-  setOrderTotals(tempOrderTotals);
-  */
-
-  const updateOrderTotals = (promoCode) => {
-    let tempTicketsPurchased = 0;
-    let tempTotalPurchaseAmount = 0;
-    let tempTicketInfo2 = [...ticketInfo];
-    tempTicketInfo2.forEach(item => {
-        tempTicketsPurchased = tempTicketsPurchased + parseInt(item.ticketsSelected);
-        tempTotalPurchaseAmount = tempTotalPurchaseAmount + (item.ticketsSelected * item.promoTicketPrice);
-    });
-    let tempOrderTotals;
-    tempOrderTotals = {...orderTotals};
-    tempOrderTotals.ticketsPurchased = tempTicketsPurchased;
-    tempOrderTotals.totalPurchaseAmount = tempTotalPurchaseAmount;
-    if (promoCode) {
-      tempOrderTotals.promoCodeApplied = promoCode;
-    }
-    setOrderTotals(tempOrderTotals);
-  }
-
   const updateTicketsSelected = (event, ticketType) => {
     // updates "ticketInfo"
     let tempTicketInfo = [...ticketInfo];
@@ -638,14 +506,24 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
       }
     });
     setTicketInfo(tempTicketInfo);
-
     // updates "orderTotals"
     updateOrderTotals();
 
   };
 
-  let ticketItems;
+  
 
+  let eventHeader;
+  if (!isLoadingEvent) {
+    eventHeader = (
+      <Aux>
+        <div className={styles.EventTitle}>{eventDetails.eventTitle}</div>
+        <div className={styles.EventDate}>{eventDetails.startDateTime}</div>
+      </Aux>
+    );
+  } else eventHeader = null;
+
+  let ticketItems;
   if (!isLoadingEvent) {
     ticketItems = (
       <div>
@@ -681,11 +559,6 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
       return <div>${orderTotals.totalPurchaseAmount}</div>;
     } else return null;
   };
-/*
-  OrderTotals({
-      ticketsPurchased: 0,
-      totalPurchaseAmount: 0
-*/
   // determines whether or not to display the number of tickets purchased
   // "showDoublePane" must be false and "orderTotals.ticketsPurchased" must be > 0
   const ticketAmount = show => {
@@ -725,19 +598,16 @@ if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
     }
   };
 
-// NEEDS WORK
   // stores "orderTotals" and "eventLogo" in "localStorage"
   const purchaseTicketHandler = event => {
     if (typeof window !== "undefined") {
-      //localStorage.setItem(`ticketInfo_${eventDetails.eventNum}`, JSON.stringify(ticketInfo));
       localStorage.setItem(`image_${eventDetails.eventNum}`, JSON.stringify(eventLogo));
-      //localStorage.setItem(`orderTotals_${eventDetails.eventNum}`, JSON.stringify(orderTotals));
-      //localStorage.setItem(`eventDetails_${eventDetails.eventNum}`, JSON.stringify(eventDetails));
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
       localStorage.setItem(`cart_${eventDetails.eventNum}`, JSON.stringify({
         eventDetails: eventDetails,
+        promoCodeDetails: promoCodeDetails,
         ticketInfo: ticketInfo,
-        orderTotals: orderTotals,
+        orderTotals: orderTotals
       }));
     }
     window.location.href = eventDetails.gatewayURL;

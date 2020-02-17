@@ -31,7 +31,7 @@ const TicketItem = props => {
       <div className={styles.EventDescription}>
         {props.name.ticketDescription}
       </div>
-      <hr style={{ border: "1px solid#F2F2F2" }} />
+      <hr style={{ border: "1px solid #F2F2F2" }} />
     </Aux>
   );
 };
