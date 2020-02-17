@@ -108,9 +108,9 @@ const TicketSelection = () => {
           setOrderTotals(cart.orderTotals);
           console.log("Ticket Info: ", orderTotals)
         } else {
-        loadPromoCodeDetails(res.ticket);
-        loadTicketInfo(res.ticket);
-        loadOrderTotals(res);
+          loadPromoCodeDetails(res.ticket);
+          loadTicketInfo(res.ticket);
+          loadOrderTotals(res);
         }
         getEventImage(eventID)
           .then(res => {
@@ -180,31 +180,6 @@ const TicketSelection = () => {
     console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
   };
 
-  // receives ticket field from event data received from server
-  const loadPromoCodeDetails = ticket => {
-    let tempCodesArray = [];
-    ticket.forEach(item => {
-      // check if 'promoCodesAlt' field exists in specific ticket type
-      if (item.promoCodesAlt) {
-        let codes = item.promoCodesAlt;
-        console.log("INSIDE loadPromoCodeDetails codes", codes);
-        codes.map(item2 => {
-          if (!tempCodesArray.includes(item2.code)) {
-            tempCodesArray.push(item2.code);
-          }
-        });
-      }
-    });
-
-    // populate "promoCodeDetails" with "eventPromoCodes" and "available" properties
-    let tempCodeDetail = { ...promoCodeDetails };
-    tempCodeDetail.eventPromoCodes = tempCodesArray;
-    if (tempCodesArray.length > 0) {
-      tempCodeDetail.available = true;
-    }
-    setPromoCodeDetails(tempCodeDetail);
-  };
-
   const loadTicketInfo = ticket => {
     let tempTicketArray = [];
     ticket.forEach(item => {
@@ -212,7 +187,6 @@ const TicketSelection = () => {
       // determines if the "promoCodes" field exists
       if (item.promoCodesAlt) {
         tempPromoCodes = item.promoCodesAlt;
-      } else {
       }
       const tempTicketItem = {
         ticketID: item._id,
@@ -238,6 +212,36 @@ const TicketSelection = () => {
     //  );
     //});
   }
+
+  // receives ticket field from event data received from server
+  const loadPromoCodeDetails = ticket => {
+    // defines temporary array that captures all the unique promo codes
+    let tempCodesArray = [];
+    ticket.forEach(item => {
+      console.log("INSIDE loadPromoCodeDetails", item);
+      // check if 'promoCodesAlt' field exists in specific ticket type
+      if (item.promoCodesAlt) {
+        let codes = item.promoCodesAlt;
+        console.log("INSIDE loadPromoCodeDetails codes", codes);
+        codes.map(item2 => {
+          if (!tempCodesArray.includes(item2.code)) {
+            tempCodesArray.push(item2.code);
+          }
+        });
+      }
+    });
+    console.log("INSIDE loadPromoCodeDetails tempCodesArray", tempCodesArray);
+
+    // populate "promoCodeDetails" with "eventPromoCodes" and "available" properties
+    let tempCodeDetail = { ...promoCodeDetails };
+    tempCodeDetail.eventPromoCodes = tempCodesArray;
+    if (tempCodesArray.length > 0) {
+      tempCodeDetail.available = true;
+    }
+    console.log("INSIDE loadPromoCodeDetails tempCodeDetail", tempCodeDetail);
+    setPromoCodeDetails(tempCodeDetail);
+    console.log("INSIDE loadPromoCodeDetails promoCodeDetails", promoCodeDetails);
+  };
 
   const loadOrderTotals = event => {
     setOrderTotals({
@@ -296,14 +300,14 @@ const TicketSelection = () => {
       });
       setTicketInfo(tempTicketInfo);
       updateOrderTotals(inputtedPromoCode);
-      document.getElementById("input box").focus();
+      //document.getElementById("input box").focus();
     } else {
       // updates "promoCodeDetails" with invalid promo code instance
       let tempobject = {...promoCodeDetails };
       tempobject.errorMessage = "Sorry, that promo code is invalid";
       tempobject.lastInvalidPromoCode = inputtedPromoCode;
       setPromoCodeDetails(tempobject);
-      document.getElementById("input box").focus();
+      //document.getElementById("input box").focus();
     }
   };
 
@@ -380,6 +384,7 @@ const TicketSelection = () => {
                 border: "none",
                 outline: "none" 
               }}
+              value={promoCodeDetails.inputtedPromoValue}
               onChange={event => {
                 let tempDetails = { ...promoCodeDetails };
                 tempDetails.inputtedPromoValue = event.target.value;
@@ -433,8 +438,6 @@ const TicketSelection = () => {
       <div>appliedPromoCode: {promoCodeDetails.appliedPromoCode}</div>
       <div>inputtedPromoValue: {promoCodeDetails.inputtedPromoValue}</div>
       <div>lastInvalidPromoCode: {promoCodeDetails.lastInvalidPromoCode}</div>
-
-
       <div>Ticket Promos</div>
       {promoCodeDetails.eventPromoCodes.map(item => {
         return (
@@ -508,10 +511,7 @@ const TicketSelection = () => {
     setTicketInfo(tempTicketInfo);
     // updates "orderTotals"
     updateOrderTotals();
-
   };
-
-  
 
   let eventHeader;
   if (!isLoadingEvent) {
