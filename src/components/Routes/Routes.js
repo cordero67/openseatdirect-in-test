@@ -8,7 +8,9 @@ import Events from "../../Events/Events";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
+import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
+import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO";
 
 import OSDHeader from "../Headers/OSDHeader";
 import OSDFooter from "../Footers/OSDFooter";
@@ -91,10 +93,29 @@ const Layout = () => {
       />
 
       <Route
+        path="/checkout_ppPROMO"
+        exact
+        render={routeProps => (
+          <React.Fragment>
+            <CheckoutPPPROMO />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
         path="/ev/"
         render={routeProps => (
           <React.Fragment>
             <TicketSelection />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/evPROMO/"
+        render={routeProps => (
+          <React.Fragment>
+            <TicketSelectionPROMO />
           </React.Fragment>
         )}
       />
