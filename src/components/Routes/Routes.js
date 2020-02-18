@@ -14,11 +14,11 @@ import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
 
+import OSDHeaderFloating from "../Headers/OSDHeaderFloating";
 import OSDHeaderFixed from "../Headers/OSDHeaderFixed";
-import OSDHeaderClean from "../Headers/OSDHeaderClean";
-import OSDHeader from "../Headers/OSDHeader";
-import OSDFooterClean from "../Footers/OSDFooterClean";
+import OSDHeaderCleanFloating from "../Headers/OSDHeaderCleanFloating";
 import OSDFooter from "../Footers/OSDFooter";
+import OSDFooterClean from "../Footers/OSDFooterClean";
 
 //import LogoA from "../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_1024.png";
 //import LogoB from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_1024.png";
@@ -89,7 +89,7 @@ const Layout = () => {
         path="/evd/"
         render={routeProps => (
           <React.Fragment>
-            <OSDHeader styleType="HeaderA" logoType={LogoC}></OSDHeader>
+            <OSDHeaderFloating styleType="HeaderA" logoType={LogoC}></OSDHeaderFloating>
             <EventDetail />
             <OSDFooter></OSDFooter>
           </React.Fragment>
@@ -100,9 +100,9 @@ const Layout = () => {
         path="/evdLight/"
         render={routeProps => (
           <React.Fragment>
-            <OSDHeaderClean styleType="HeaderA" logoType={LogoC}></OSDHeaderClean>
+            <OSDHeaderFloating styleType="HeaderA" logoType={LogoC}></OSDHeaderFloating>
             <EventDetailLight />
-            <OSDFooterClean></OSDFooterClean>
+            <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
       />

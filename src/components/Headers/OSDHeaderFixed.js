@@ -38,6 +38,7 @@ const Header = ({ history, logoType, styleType }) => {
       setShowFullHeader(true);
     }
   };
+  
   let headerDisplay;
 
   if (showFullHeader) {

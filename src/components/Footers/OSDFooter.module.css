@@ -1,3 +1,28 @@
+.FooterNew {
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  border-top: 2px solid #2f5596;
+  height: 70px;
+  width: 100%;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 100px auto;
+}
+
+.Image {
+  margin: auto;
+}
+
+.CopyRight {
+  margin: auto;
+}
+
+
+
+
+
 .Footer {
   font-family: "Roboto", sans-serif;
   background-color: #fff;

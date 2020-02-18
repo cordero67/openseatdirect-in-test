@@ -5,12 +5,9 @@ import styles from "./Order.module.css";
 
 const OrderSummary = props => {
   let purchaseTotal =0;
-  console.log("Purchase Total beginning value: ", purchaseTotal)
   props.ticketOrder.map(item => {
     if(item.ticketsSelected > 0) {
       purchaseTotal += (item.ticketsSelected * item.promoTicketPrice);
-      
-  console.log("Purchase Total updated value: ", purchaseTotal)
     }
   })
   

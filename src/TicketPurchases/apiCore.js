@@ -3,12 +3,10 @@ import { API } from "../config";
 import { each, isObject } from "underscore";
 
 const handleErrors = response => {
-  // back-end server is down, i.e. response is "undefined"
-  // "ERROR" will be "err"
-  console.log("Inside 'apiCore' 'handleErrors()'", response);
+  //console.log("Inside 'apiCore' 'handleErrors()'", response);
   //console.log("json response: ", expandedLog(response, 1));
   if (!response.ok) {
-    console.log("response was false!");
+    //console.log("response was false!");
     //console.log("response.status: ", response.status);
     throw Error(response.status);
   }
@@ -22,31 +20,28 @@ export const getEventData = eventId => {
   })
     .then(handleErrors)
     .then(response => {
-      console.log("'apiCore' - 'getEventData()' - '.then' block");
+      //console.log("'apiCore' - 'getEventData()' - '.then' block");
       return response.json();
     })
     .catch(err => {
-      console.log(
-        "Inside '.catch' block of 'getEventData()', this is the error:",
-        err
-      );
+      //console.log("Inside '.catch' block of 'getEventData()', this is the error:", err);
       throw Error(err);
     });
 };
 
 // extracts specific event data, non-transactional
 export const getEventImage = eventId => {
-  console.log("Inside apiCore and the 'getEventImage' function call");
+  //console.log("Inside apiCore and the 'getEventImage' function call");
   return fetch(`${API}/event/photo/e/${eventId}`, {
     method: "GET"
   })
     .then(handleErrors)
     .then(response => {
-      console.log("Inside apiCore and the 'getEventImage' .then block");
+      //console.log("Inside apiCore and the 'getEventImage' .then block");
       return response.url;
     })
     .catch(err => {
-      console.log("jumping here", err);
+      //console.log("jumping here", err);
       throw Error(err);
     });
 };
