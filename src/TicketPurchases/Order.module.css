@@ -329,8 +329,20 @@
   color: blue;
   width: 140px;
 }
-
 .EnterPromoCode:hover {
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.AppliedPromoCode {
+  color: blue;
+  width: 220px;
+}
+.RemovePromoCode {
+  color: red;
+  width: 80px;
+}
+.RemovePromoCode:hover {
   font-weight: 500;
   cursor: pointer;
   text-decoration: underline;

@@ -39,7 +39,7 @@ const TicketSelection = () => {
   const [showDoublePane, setShowDoublePane] = useState(false);
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
 
-  // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
+  // Defines data loading control variables
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
   const [isSuccessfull, setIsSuccessfull] = useState(true);
 
@@ -107,6 +107,9 @@ const TicketSelection = () => {
           console.log("Ticket Info: ", ticketInfo)
           setOrderTotals(cart.orderTotals);
           console.log("Ticket Info: ", orderTotals)
+          let event = JSON.parse(localStorage.getItem("eventNum"));
+          localStorage.removeItem(`cart_${event}`);
+          localStorage.removeItem(`image_${event}`);
         } else {
           loadPromoCodeDetails(res.ticket);
           loadTicketInfo(res.ticket);
@@ -205,12 +208,6 @@ const TicketSelection = () => {
       tempTicketArray.push(tempTicketItem);
     });
     setTicketInfo(tempTicketArray);
-    //tempTicketArray.forEach(item => {
-    //  console.log(
-    //    "PROMO CODES inside 'loadTicketInfo()': ",
-    //    item.ticketPromoCodes
-    //  );
-    //});
   }
 
   // receives ticket field from event data received from server
@@ -286,12 +283,12 @@ const TicketSelection = () => {
       tempTicketInfo = [...ticketInfo];
       // checks if ticket type has the code and then extracts and applies the discount amount
       tempTicketInfo.forEach((item, index) => {
-        let discount = 0;
+        //let discount = 0;
         item.ticketPromoCodes.forEach(element => {      
           if (element.code === inputtedPromoCode) {
             console.log("WE HAVE A MATCH");
-            discount = element.amount;
-            item.promoTicketPrice = item.ticketPrice - discount;
+            //discount = element.amount;
+            item.promoTicketPrice = element.amount;
             item.ticketPromoCodeApplied = inputtedPromoCode;
           } else {
             console.log("NO MATCH");
@@ -299,6 +296,7 @@ const TicketSelection = () => {
         });
       });
       setTicketInfo(tempTicketInfo);
+    console.log("Ticket Info Before: ", tempTicketInfo)
       updateOrderTotals(inputtedPromoCode);
       //document.getElementById("input box").focus();
     } else {
@@ -311,7 +309,10 @@ const TicketSelection = () => {
     }
   };
 
-
+  // *********************************
+  // *********************************
+  // *********************************
+  // STOPPED REFACTORING AT THIS POINT
   // LOOK TO MAKE AN <InputPromoCode> COMPONENT
   let inputPromoCode;
   if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
@@ -416,6 +417,35 @@ const TicketSelection = () => {
     );
   }
 
+  // adjusts "promoCodeDetails", "ticketInfo" and "orderTotals" variables
+  const clearPromoTicektPrices = () => {
+    console.log("WILL REMOVE PROMO CODE PRICES")
+    let tempPromoCodeDetails;
+    let tempTotalPurchaseAmount = 0;
+    tempPromoCodeDetails = { ...promoCodeDetails };
+    tempPromoCodeDetails.applied = false;
+    tempPromoCodeDetails.input = true;
+    tempPromoCodeDetails.errorMessage = "";
+    tempPromoCodeDetails.appliedPromoCode = "";
+    tempPromoCodeDetails.inputtedPromoValue = "";
+    tempPromoCodeDetails.lastInvalidPromoCode = "";
+    setPromoCodeDetails(tempPromoCodeDetails);
+    let tempTicketInfo;
+    tempTicketInfo = [...ticketInfo];
+    tempTicketInfo.forEach((item, index) => {
+      tempTotalPurchaseAmount = tempTotalPurchaseAmount + (item.ticketsSelected * item.ticketPrice);
+      item.promoTicketPrice = item.ticketPrice;
+      item.ticketPromoCodeApplied = "";
+    })
+    console.log("Ticket Info After: ", tempTicketInfo);
+    setTicketInfo(tempTicketInfo);
+    let tempOrderTotals;
+    tempOrderTotals = {...orderTotals};
+    tempOrderTotals.totalPurchaseAmount = tempTotalPurchaseAmount;
+    tempOrderTotals.promoCodeApplied = "";
+    setOrderTotals(tempOrderTotals);
+  }
+
   let controlData = (null/*
     <div style={{ paddingLeft: "40px", color: "red", fontSize: "14px" }}>
       <div>Ticket Prices</div>
@@ -463,15 +493,19 @@ const TicketSelection = () => {
   } else if (promoCodeDetails.available && promoCodeDetails.applied) {
     promoOption = (
       <Aux>
-        <div style={{ color: "blue", fontSize: "16px" }}>
-          Promo code has been applied.
-        </div>
+      <div className={styles.AppliedPromoCode}>Promo Code Applied.{"  "}
+        <span
+          className={styles.RemovePromoCode}
+          onClick={() => {clearPromoTicektPrices();
+          }}
+        >
+          Remove
+        </span></div>
         <br></br>
         {controlData}
       </Aux>
     );
   } else if (promoCodeDetails.input) {
-    console.log("TICKETINFO: ", ticketInfo);
     promoOption = (
       <Aux>
         {inputPromoCode}
@@ -480,7 +514,6 @@ const TicketSelection = () => {
       </Aux>
     );
   } else if (!promoCodeDetails.input) {
-    console.log("TICKETINFO: ", ticketInfo);
     promoOption = (
       <Aux>
         <div
