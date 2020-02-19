@@ -1,128 +1,101 @@
-.HeaderA {
+.HeaderFixed {
   font-family: "Roboto", sans-serif;
   background-color: #fff;
   border-bottom: 2px solid #2f5596;
-  height: 80px;
-  width: 100%;
-  z-index: 500;
-  top: 0;
-  left: 0;
-}
-
-.HeaderA ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 40px;
-  padding-right: 40px;
-  width: 100%;
-  text-align: right;
-}
-
-.HeaderA ul li:first-child {
-  float: left;
-  vertical-align: text-bottom;
-}
-
-.HeaderA li {
-  display: inline-block;
-  margin: 20px;
-  text-align: center;
-}
-
-.HeaderA a {
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.HeaderA a:hover {
-  font-weight: 700;
-  text-decoration: underline;
-}
-
-.HeaderAFixed {
-  font-family: "Roboto", sans-serif;
-  background-color: #fff;
-  border-bottom: 2px solid #2f5596;
-  height: 80px;
-  width: 100%;
-  z-index: 500;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-.HeaderAFixed ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 40px;
-  padding-right: 40px;
-  width: 100%;
-  text-align: right;
-}
-
-.HeaderAFixed ul li:first-child {
-  float: left;
-  vertical-align: text-bottom;
-}
-
-.HeaderAFixed li {
-  display: inline-block;
-  margin: 20px;
-  text-align: center;
-}
-
-.HeaderAFixed a {
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.HeaderAFixed a:hover {
-  font-weight: 700;
-  text-decoration: underline;
-}
-
-.HeaderB {
-  font-family: "Roboto", sans-serif;
-  background-color: #2f5596;
-  height: 80px;
-  width: 100%;
-  z-index: 500;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-.HeaderB ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 40px;
-  padding-right: 40px;
-  width: 100%;
-  text-align: right;
-}
-
-.HeaderB ul li:first-child {
-  float: left;
-  vertical-align: text-bottom;
-}
-
-.HeaderB li {
-  display: inline-block;
-  margin: 20px;
-  text-align: center;
-}
-
-.HeaderB a {
-  text-decoration: none;
-  font-weight: 500;
-  color: #fff;
-}
-
-.HeaderB a:hover {
-  color: #fff;
-}
-
-.Logo {
   height: 50px;
-  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 9999;
+  position: fixed;
+  display: grid;
+  grid-template-columns: 90px auto;
+}
+.ImageBox {
+  padding-top: 6px;
+  padding-right: 0px;
+  padding-left: 10px;
+  max-height: auto;
+  max-width: 90px;
+  box-sizing: border-box;
+}
+.HeaderFixedLinks {
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  padding-top: 11px;
+  padding-right: 10px;
+  padding-left: 0px;
+  height: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.HeaderFixedLinks ul {
+  list-style: none;
+  width: 100%;
+  text-align: right;
+}
+.HeaderFixedLinks li {
+  padding-right: 10px;
+  padding-left: 10px;
+  display: inline-block;
+  text-align: center;
+}
+.HeaderFixedLinks a {
+  text-decoration: none;
+  font-weight: 500;
+}
+.HeaderFixedLinks a:hover {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+@media (min-width: 550px) {
+.HeaderFixed {
+  height: 70px;
+  display: grid;
+  grid-template-columns: 140px auto;
+}
+  .HeaderFixedLinks {
+    font-family: "Roboto", sans-serif;
+    background-color: #fff;
+    padding-top: 19px;
+    padding-right: 30px;
+    padding-left: 30px;
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  .ImageBox {
+    padding-top: 12px;
+    padding-bottom: 10px;
+    padding-right: 0px;
+    padding-left: 20px;
+    max-height: auto;
+    max-width: 120px;
+  }
+}
+
+@media (min-width: 780px) {
+  .HeaderFixed {
+    height: 80px;
+    display: grid;
+    grid-template-columns: 150px auto;
+  }
+  .HeaderFixedLinks {
+    font-family: "Roboto", sans-serif;
+    background-color: #fff;
+    padding-top: 25px;
+    padding-right: 40px;
+    padding-left: 40px;
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  .ImageBox {
+    padding-top: 15px;
+    padding-bottom: 10px;
+    padding-right: 0px;
+    padding-left: 30px;
+    max-height: auto;
+    max-width: 150px;
+  }
 }

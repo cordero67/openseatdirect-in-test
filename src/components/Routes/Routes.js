@@ -4,7 +4,6 @@ import { Route } from "react-router-dom";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
-import Events from "../../Events/Events";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
@@ -61,18 +60,6 @@ const Layout = () => {
       />
 
       <Route
-        path="/events"
-        exact
-        render={routeProps => (
-          <React.Fragment>
-            <OSDHeader styleType="HeaderA" logoType={LogoC}></OSDHeader>
-            <Events />
-            <OSDFooter></OSDFooter>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
         path="/checkout_bt"
         exact
         render={routeProps => (
@@ -98,6 +85,15 @@ const Layout = () => {
         render={routeProps => (
           <React.Fragment>
             <CheckoutPPPROMO />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/ev/light_of_gold?eventID=46017305135"
+        render={routeProps => (
+          <React.Fragment>
+            <TicketSelectionPROMO />
           </React.Fragment>
         )}
       />

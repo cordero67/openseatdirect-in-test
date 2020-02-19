@@ -347,6 +347,10 @@
   cursor: pointer;
   text-decoration: underline;
 }
+.ImageBox {
+  max-height: auto;
+  max-width: 70px;
+}
 
 @media (min-width: 400px) {
   .EventTitle {

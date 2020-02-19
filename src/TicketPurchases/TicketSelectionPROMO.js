@@ -17,7 +17,8 @@ import {
 import Spinner from "../components/UI/Spinner/Spinner";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
-import OSDLogo from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
+import OSDLogo from "../assets/BlueLettering_TransparentBackground/BlueLettering_TransparentBackground_1024.png";
+import OSDLogoA from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
 import CartLink from "./CartLinkPROMO";
 import OrderSummary from "./OrderSummaryPROMO";
 import TicketItem from "./TicketItemPROMO";
@@ -181,6 +182,7 @@ const TicketSelection = () => {
       }
     };
     console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
+    console.log("EVENT MONTH in 'loadEventDetails()': ", eventDetails.startDateTime);
   };
 
   const loadTicketInfo = ticket => {
@@ -485,7 +487,6 @@ const TicketSelection = () => {
     promoOption = (
       <Aux>
         <div style={{ color: "red", fontSize: "16px" }}>
-          No promo codes exist for this event
         </div>
         {controlData}
       </Aux>
@@ -737,7 +738,7 @@ const TicketSelection = () => {
         <div className={styles.EventDescription}>
           Powered by{" "}
           <NavLink to="/" exact>
-            <img src={OSDLogo} alt="OpenSeatDirect Logo" />
+            <img className={styles.ImageBox} src={OSDLogo} alt="OpenSeatDirect Logo" />
           </NavLink>
         </div>
         <br></br>
