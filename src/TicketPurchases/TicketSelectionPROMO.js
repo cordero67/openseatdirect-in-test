@@ -321,7 +321,7 @@ const TicketSelection = () => {
     inputPromoCode = (
       <Aux>
         <form onSubmit={(event) => {
-          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue);
+          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toLowerCase());
         }}>
           <div className={[styles.PromoGrid, styles.Red].join(' ')}>
             <input
@@ -373,7 +373,7 @@ const TicketSelection = () => {
     inputPromoCode = (
       <Aux>
         <form onSubmit={(event) => {
-          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue);
+          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toLowerCase());
         }}>
           <div className={[styles.PromoGrid, styles.Blue].join(' ')}>
             <input
