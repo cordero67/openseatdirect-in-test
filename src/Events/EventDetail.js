@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 import dateFormat from "dateformat";
 
+import Footer from "../components/Footers/OSDFooter";
+
 import { API } from "../config";
 
 import styles from "./EventDetail.module.css";
@@ -20,7 +22,6 @@ let eventLogo = DefaultLogo;
 const EventDetail = props => {
   // Defines data loading control variables
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
-  const [isSuccessfull, setIsSuccessfull] = useState(true);
 
   const [showLargerDoublePane, setShowLargerDoublePane] = useState(false);
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
@@ -81,9 +82,6 @@ const EventDetail = props => {
 };
 
   useEffect(() => {
-    //getEventData();
-    setIsLoadingEvent(true);
-    setIsSuccessfull(true);
     eventData(queryString.parse(window.location.search).eventID);
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
@@ -114,10 +112,10 @@ const EventDetail = props => {
         }
         if (err === undefined) {
         }
-        setIsLoadingEvent(true);
-        setIsSuccessfull(false);
+        setIsLoadingEvent(false);
       })
-      // .finally(() => {});
+      .finally(() => {
+      });
   };
 
 
@@ -165,8 +163,9 @@ const EventDetail = props => {
   };
 
 
+//DID NOT MAKE A CHANGE
   const stylingUpdate = (inWidth, inHeight) => {
-    setIsRestyling(true);
+    //setIsRestyling(true);
     // based on window width, displays one or two panes
     if (inWidth < 800) {
       setShowLargerDoublePane(false);
@@ -178,9 +177,10 @@ const EventDetail = props => {
     } else {
       setShowSmallerDoublePane(true);
     }
-    setIsRestyling(false);
+    //setIsRestyling(false);
   };
 
+//DID NOT MAKE A CHANGE
   window.onresize = function(event) {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
@@ -265,8 +265,6 @@ const EventDetail = props => {
       middleDisplay = null}
   }
 
-  //  <div className={styles.Presenter}>by PIFF Films</div>
-
   if (!showLargerDoublePane) {
     ticketDisplay = (
       <div className={styles.TicketGrid}>
@@ -339,103 +337,15 @@ const EventDetail = props => {
           <br></br>
           <div className={styles.TitleLeft}>Event Details</div>
           <div className={styles.TextLeft}>
-            <div>
-              Part of the Media Track #phillytechweek #PTW19 Philadelphia Tech
-              Week 2019 ~ presented by Comcast Where: TBD #piffFilms Creative &
-              Media track discussions supported by: mediabureau.com,
-              gearstuff.com, University of the Arts Corzo Center for the
-              Creative Economy, and Philly Nexus.e
-            </div>
           </div>
           <br></br>
           <div className={styles.TitleLeft}>About Light of Gold PR, Marketing, and Consulting</div>
           <div className={styles.TextLeft}>
-            <div>
-              PIFF discovers and curates a unique collection of local and global
-              Independent Drama, Documentary, Thriller, Sci-Fi, Political,
-              Horror, Comedy, Music Video, Animation, Web Series and other
-              thought provoking films in Philadelphia, PA, using surrounding
-              traditional and non-traditional theaters and venues. PIFF is
-              committed too discovering and presenting a unique cinematic
-              experience unrestrained by conventional boundaries.
-            </div>
-            <br></br>
-            <div>
-              At this year's events, PIFF will be discussing the tokenization
-              (democratization of content) of film, independent distribution,
-              breaking media technology, media and propaganda, via the cross
-              roads of digital story telling, media, film, education, and
-              culture using #uff #piff #piffFilms #mediabureau #PTW20 #AI
-              #BigData among other tags.
-            </div>
           </div>
 
           <br></br>
           <div className={styles.TitleLeft}>History</div>
           <div className={styles.TextLeft}>
-            <div>
-              Founded by digital media pioneer Media Bureau Inc in 2007, the
-              Philadelphia Independent Film Festival’s (PIFF) birth was a direct
-              result of a colliding critical mass of independent digital film
-              and media, and a swift reaction to the perceived demand to
-              “experience” it. The goal was to establish an event environment to
-              discuss film and its digital path while always trying to innovate
-              at the leading edge. The festival incubated from the then
-              omni-present (#uff) underground film forum. The forum had been
-              meeting off and on since the inception of the Media Bureau in 1997
-              and was the first place in PA to regularly produce, screen, and
-              stream digital films and discuss the art of digital storytelling
-              at the intersection of digital media and technology. No other
-              place existed like it at the time in Philadelphia and the
-              tri-state area.
-            </div>
-            <br></br>
-            <div>
-              Through a steady stream of incredibly in the moment original
-              content and technology grew the rare appreciation for film in ways
-              that we never had thought of. It was not a passive experience
-              anymore. With this we realized we were taking part in
-              Philadelphia’s transformation, from analog to digital content
-              production, and in turn were witnessing the birth of a new
-              (digital) storytelling technique. The audience reaction was
-              instant.
-            </div>
-            <br></br>
-            <div>
-              This analog to digital media transition (adoption) was complete
-              across the consumer market place as early as 2006 (just in time to
-              adjust via the great recession) and was a strategic reason to
-              launch the festival when we did. By this time, MBN had fully
-              engaged in digital media history from a uniquely Philadelphian,
-              old city (historical) perspective. Our ecosystem had been
-              established via design and by “request” and was defined by our
-              ability to reach our layered and displaced digital communities on
-              demand. We have been fortunate to be able to follow and peer in to
-              the many journeys of countless storytellers, innovators,
-              creative’s, and filmmakers, in all formats, across many borders,
-              over 20+ years. We are now screening/discussing digital film from
-              a unique pertch – the Democratization of Content.
-            </div>
-            <br></br>
-            <div>
-              Digital filmmaking has taught the festival many things. Most
-              importantly, perhaps, it has opened the minds of possibility for
-              anybody to exercise their right to shoot and post “their story”.
-              This was how we were able to coin the term in 2008, Real Time
-              Documentary, to help our filmmakers better place their experiences
-              in the context of a narrative, yet obviously documentary film. The
-              festival was conceived to help enable this type of creative cipher
-              to know no cinematic bounds.
-            </div>
-            <br></br>
-            <div>
-              The Philadelphia Independent Film Festival (PIFF) is in its
-              thirteenth year of operation. Each year, the festival has grown,
-              and adds to its knowledge bank a diverse selection of unknown
-              national and international films. 95% of the films the festival
-              screens during its 4+ day festival are world and local premiers
-              while an average of 70% +/- are world premiers.
-            </div>
           </div>
         </div>
       </div>
@@ -443,12 +353,15 @@ const EventDetail = props => {
   } else {bottomDisplay = null}
 
   return (
+    <Aux>
     <div className={styles.MainContainer}>
       {topDisplay}
       {ticketDisplay}
       {middleDisplay}
       {bottomDisplay}
     </div>
+    <Footer />
+    </Aux>
   );
 };
 

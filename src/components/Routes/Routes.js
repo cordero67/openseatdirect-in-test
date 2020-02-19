@@ -6,6 +6,7 @@ import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
+import EventDetailCOPY from "../../Events/EventDetail copy";
 import EventDetailLight from "../../Events/EventDetailLight";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
@@ -15,10 +16,8 @@ import TicketSelection from "../../TicketPurchases/TicketSelection";
 import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
 
 import OSDHeaderFloating from "../Headers/OSDHeaderFloating";
-import OSDHeaderFixed from "../Headers/OSDHeaderFixed";
-import OSDHeaderCleanFloating from "../Headers/OSDHeaderCleanFloating";
+import OSDHeader from "../Headers/OSDHeader";
 import OSDFooter from "../Footers/OSDFooter";
-import OSDFooterClean from "../Footers/OSDFooterClean";
 
 //import LogoA from "../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_1024.png";
 //import LogoB from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_1024.png";
@@ -34,10 +33,10 @@ const Layout = () => {
         exact
         render={routeProps => (
           <React.Fragment>
-            <OSDHeaderFixed
-              styleType="HeaderAFixed"
+            <OSDHeader
+              positioning="fixed"
               logoType={LogoC}
-            ></OSDHeaderFixed>
+            ></OSDHeader>
             <Main />
             <OSDFooter></OSDFooter>
           </React.Fragment>
@@ -48,10 +47,10 @@ const Layout = () => {
         exact
         render={routeProps => (
           <React.Fragment>
-            <OSDHeaderFixed
-              styleType="HeaderAFixed"
+            <OSDHeader
+              positioning="fixed"
               logoType={LogoC}
-            ></OSDHeaderFixed>
+            ></OSDHeader>
             <Video />
             <OSDFooter></OSDFooter>
           </React.Fragment>
@@ -62,10 +61,10 @@ const Layout = () => {
         exact
         render={routeProps => (
           <React.Fragment>
-            <OSDHeaderFixed
-              styleType="HeaderAFixed"
+            <OSDHeader
+              positioning="fixed"
               logoType={LogoC}
-            ></OSDHeaderFixed>
+            ></OSDHeader>
             <ContactUs />
             <OSDFooter></OSDFooter>
           </React.Fragment>
@@ -76,10 +75,10 @@ const Layout = () => {
         exact
         render={routeProps => (
           <React.Fragment>
-            <OSDHeaderFixed
-              styleType="HeaderAFixed"
+            <OSDHeader
+              positioning="fixed"
               logoType={LogoC}
-            ></OSDHeaderFixed>
+            ></OSDHeader>
             <Events />
             <OSDFooter></OSDFooter>
           </React.Fragment>
@@ -89,8 +88,24 @@ const Layout = () => {
         path="/evd/"
         render={routeProps => (
           <React.Fragment>
-            <OSDHeaderFloating styleType="HeaderA" logoType={LogoC}></OSDHeaderFloating>
+            <OSDHeaderFloating
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeaderFloating>
             <EventDetail />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
+      <Route
+        path="/evdCOPY/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeaderFloating
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeaderFloating>
+            <EventDetailCOPY />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
@@ -100,15 +115,16 @@ const Layout = () => {
         path="/evdLight/"
         render={routeProps => (
           <React.Fragment>
-            <OSDHeaderFloating styleType="HeaderA" logoType={LogoC}></OSDHeaderFloating>
+            <OSDHeaderFloating
+              positioning="floating"
+              styleType="HeaderA"
+              logoType={LogoC}
+            ></OSDHeaderFloating>
             <EventDetailLight />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
       />
-
-
-
 
       <Route
         path="/checkout_bt"

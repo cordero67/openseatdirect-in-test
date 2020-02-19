@@ -1,82 +1,60 @@
-.FooterNew {
-  font-family: "Roboto", sans-serif;
-  background-color: #fff;
-  border-top: 2px solid #2f5596;
-  height: 70px;
-  width: 100%;
-  z-index: 9999;
-  top: 0;
-  left: 0;
-  display: grid;
-  grid-template-columns: 100px auto;
-}
-
-.Image {
-  margin: auto;
-}
-
-.CopyRight {
-  margin: auto;
-}
-
-
-
-
-
 .Footer {
   font-family: "Roboto", sans-serif;
   background-color: #fff;
   border-top: 2px solid #2f5596;
-  height: 90px;
+  height: 50px;
   width: 100%;
+  box-sizing: border-box;
   z-index: 9999;
   top: 0;
   left: 0;
+  display: grid;
+  grid-template-columns: 90px auto;
 }
-.Footer ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 40px;
-  padding-right: 40px;
-  width: 100%;
-  color: #2f5596;
-  font-weight: bold;
+.ImageBox {
+  padding: 10px;
+  max-height: auto;
+  max-width: 90px;
+}
+.CopyRight {
   text-align: center;
+  padding-top: 6px;
+  padding-right: 8px;
+  color: #2F5596;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-.Footer ul li:first-child {
-  float: left;
-  vertical-align: text-bottom;
+@media (min-width: 550px) {
+  .Footer {
+    display: grid;
+    grid-template-columns: 100px auto;
+  }
+  .ImageBox {
+    padding-left: 20px;
+    max-height: auto;
+    max-width: 100px;
+  }
+  .CopyRight {
+    padding-top: 12px;
+    padding-right: 8px;
+    font-size: 14px;
+  }
 }
 
-.Footer li {
-  display: inline-block;
-  margin: 20px;
-  font-size: 14px;
-  text-align: center;
-}
-
-.FooterClean {
-  font-family: "Roboto", sans-serif;
-  background-color: #fff;
-  border-top: 2px solid #2f5596;
-  height: 60px;
-  width: 100%;
-  z-index: 9999;
-  top: 0;
-  left: 0;
-}
-
-.FooterCleanText {
-  font-family: "Roboto", sans-serif;
-  border-top: 2px solid #2f5596;
-  display: inline-block;
-  margin: auto;
-  padding-left: 40px;
-  padding-right: 40px;
-  width: 100%;
-  color: #2f5596;
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
+@media (min-width: 780px) {
+  .Footer {
+    display: grid;
+    grid-template-columns: 110px auto;
+  }
+  .ImageBox {
+    padding-left: 30px;
+    max-height: auto;
+    max-width: 110px;
+  }
+  .CopyRight {
+    padding-top: 12px;
+    padding-right: 8px;
+    font-size: 16px;
+  }
 }
