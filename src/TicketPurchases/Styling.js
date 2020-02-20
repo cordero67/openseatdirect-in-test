@@ -325,7 +325,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
   if (inWidth < 660) {
     // width < 660px, height does not matter
     OrderSummarySection = {
-      backgroundColor: `#e5e5e5`,
+      backgroundColor: `#E7E7E7`,
       fontSize: `0.875rem`,
       height: `calc(${inHeight}px - 160px)`,
       paddingTop: `20px`,
@@ -338,7 +338,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
     if (inHeight < 720) {
       // height < 720px
       OrderSummarySection = {
-        backgroundColor: `#e5e5e5`,
+        backgroundColor: `#E7E7E7`,
         fontSize: `0.875rem`,
         height: `calc(${inHeight}px - 160px)`,
         paddingTop: `20px`,
@@ -349,7 +349,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
     } else {
       // height >= 720px
       OrderSummarySection = {
-        backgroundColor: `#e5e5e5`,
+        backgroundColor: `#E7E7E7`,
         fontSize: `0.875rem`,
         height: `560px`,
         paddingTop: `20px`,
@@ -363,7 +363,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
     if (inHeight < 720) {
       // height < 720px
       OrderSummarySection = {
-        backgroundColor: `#e5e5e5`,
+        backgroundColor: `#E7E7E7`,
         fontSize: `0.875rem`,
         height: `calc(${inHeight}px - 180px)`,
         paddingTop: `20px`,
@@ -374,7 +374,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
     } else {
       // height >= 720px
       OrderSummarySection = {
-        backgroundColor: `#e5e5e5`,
+        backgroundColor: `#E7E7E7`,
         fontSize: `0.875rem`,
         height: `540px`,
         paddingTop: `20px`,
@@ -394,7 +394,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
   if (inWidth < 660) {
     // width < 660px, height does not matter
     OrderSummarySectionAlt = {
-      backgroundColor: `#e5e5e5`,
+      backgroundColor: `#E7E7E7`,
       fontSize: `0.875rem`,
       height: `calc(${inHeight}px - 80px)`,
       paddingTop: `20px`,
@@ -407,7 +407,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
     if (inHeight < 720) {
       // height < 720px
       OrderSummarySectionAlt = {
-        backgroundColor: `#e5e5e5`,
+        backgroundColor: `#E7E7E7`,
         fontSize: `0.875rem`,
         height: `calc(${inHeight}px - 80px)`,
         paddingTop: `20px`,
@@ -418,7 +418,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
     } else {
       // height >= 720px
       OrderSummarySectionAlt = {
-        backgroundColor: `#e5e5e5`,
+        backgroundColor: `#E7E7E7`,
         fontSize: `0.875rem`,
         height: `640px`,
         paddingTop: `20px`,
@@ -432,7 +432,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
     if (inHeight < 720) {
       // height < 720px
       OrderSummarySectionAlt = {
-        backgroundColor: `#e5e5e5`,
+        backgroundColor: `#E7E7E7`,
         fontSize: `0.875rem`,
         height: `calc(${inHeight}px - 80px)`,
         paddingTop: `20px`,
@@ -443,7 +443,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
     } else {
       // height >= 720px
       OrderSummarySectionAlt = {
-        backgroundColor: `#e5e5e5`,
+        backgroundColor: `#E7E7E7`,
         fontSize: `0.875rem`,
         height: `640px`,
         paddingTop: `20px`,

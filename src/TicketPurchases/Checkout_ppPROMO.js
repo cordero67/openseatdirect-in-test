@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import dateFormat from "dateformat";
 
 import { PayPalButton } from "react-paypal-button-v2";
 
@@ -194,7 +195,8 @@ const Checkout = props => {
       city: eventDetails.location.city,
       state: eventDetails.location.state,
       zipPostalCode: eventDetails.location.zipPostalCode,
-      dateTime: eventDetails.startDateTime,
+      startDateTime: eventDetails.startDateTime,
+      endDateTime: eventDetails.endDateTime,
       paypalEmail: details.payer.email_address,//??
       firstName: details.payer.name.given_name,//??
       lastName: details.payer.name.surname,//??
@@ -462,15 +464,44 @@ const Checkout = props => {
 
   // defines and sets "paymentPane" view status
   if (showPaymentDetails) {
+
+    let dateRange;
+    if (dateFormat(eventDetails.startDateTime, "m d yy", true) === dateFormat(eventDetails.endDateTime, "m d yy", true)) {
+      dateRange = <Aux>{dateFormat(
+        eventDetails.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        eventDetails.endDateTime,
+        "shortTime",
+        true
+      )}</Aux>
+    } else {
+      dateRange = <Aux>{dateFormat(
+        eventDetails.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        eventDetails.endDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )}</Aux>
+    }
+
+
+
+
+
+
     paymentPane = (
       <Aux>
         <div className={styles.MainItemLeft}>
           <div className={styles.EventHeader}>
             <div className={styles.EventTitle}>
-                {eventDetails.eventName}
+                {eventDetails.eventTitle}
             </div>
             <div className={styles.EventDate}>
-              {eventDetails.startDateTime}
+              {dateRange}
             </div>
           </div>
 

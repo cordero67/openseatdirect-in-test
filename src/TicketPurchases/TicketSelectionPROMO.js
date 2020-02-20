@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import dateFormat from "dateformat";
 import queryString from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import { getEventData, getEventImage } from "./apiCore";
@@ -160,16 +160,8 @@ const TicketSelection = () => {
       gateway: event.accountId.paymentGatewayType,
       gatewayClientID: event.accountId.paypalExpress_client_id,
       gatewayURL: tempGatewayURL,
-      startDateTime: dateFormat(
-        event.startDateTime,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-      ),
-      endDateTime: dateFormat(
-        event.endDateTime,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-      ),
+      startDateTime: event.startDateTime,
+      endDateTime: event.endDateTime,
       organizerUrl: event.organizerUrl,
       eventUrl: event.eventUrl,
       location: {
@@ -182,16 +174,26 @@ const TicketSelection = () => {
       }
     };
     console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
-    console.log("EVENT MONTH in 'loadEventDetails()': ", eventDetails.startDateTime);
   };
 
   const loadTicketInfo = ticket => {
     let tempTicketArray = [];
     ticket.forEach(item => {
-      let tempPromoCodes = [];
+      console.log("NEW TICKET ELEMENT ", item.ticketName)
+      let promoCodes = [];
       // determines if the "promoCodes" field exists
+      // if field does exist it converts all codes to upper case
       if (item.promoCodesAlt) {
-        tempPromoCodes = item.promoCodesAlt;
+        console.log("PROMO CODES ARRAY FOR THIS TICKET TYPE DO EXIST: ", item.promoCodesAlt);
+        item.promoCodesAlt.forEach(item => {
+          let tempPromoCodes = {code: "", amount: ""};
+          tempPromoCodes.code = item.code.toUpperCase();
+          tempPromoCodes.amount = item.amount;
+          promoCodes.push(tempPromoCodes);
+        })
+        console.log("PROMO CODES ARRAY: ", promoCodes)
+      } else {
+        console.log("NO PROMO CODES ARRAY FOR THIS TICKET TYPE")
       }
       const tempTicketItem = {
         ticketID: item._id,
@@ -203,7 +205,7 @@ const TicketSelection = () => {
         ticketsSelected: 0,
         maxTicketOrder: item.maxTicketsAllowedPerOrder,
         minTicketOrder: item.minTicketsAllowedPerOrder,
-        ticketPromoCodes: tempPromoCodes,
+        ticketPromoCodes: promoCodes,
         ticketPromoCodeApplied: "",
         promoTicketPrice: item.currentTicketPrice
       };
@@ -224,7 +226,7 @@ const TicketSelection = () => {
         console.log("INSIDE loadPromoCodeDetails codes", codes);
         codes.map(item2 => {
           if (!tempCodesArray.includes(item2.code)) {
-            tempCodesArray.push(item2.code);
+            tempCodesArray.push(item2.code.toUpperCase());
           }
         });
       }
@@ -267,6 +269,7 @@ const TicketSelection = () => {
       tempOrderTotals.promoCodeApplied = promoCode;
     }
     setOrderTotals(tempOrderTotals);
+    console.log("UPDATED 'Order Totals': ", tempOrderTotals)
   }
 
   const applyPromoCodeHandler = (event, inputtedPromoCode) => {
@@ -321,7 +324,7 @@ const TicketSelection = () => {
     inputPromoCode = (
       <Aux>
         <form onSubmit={(event) => {
-          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toLowerCase());
+          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toUpperCase());
         }}>
           <div className={[styles.PromoGrid, styles.Red].join(' ')}>
             <input
@@ -373,7 +376,7 @@ const TicketSelection = () => {
     inputPromoCode = (
       <Aux>
         <form onSubmit={(event) => {
-          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toLowerCase());
+          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toUpperCase());
         }}>
           <div className={[styles.PromoGrid, styles.Blue].join(' ')}>
             <input
@@ -495,7 +498,12 @@ const TicketSelection = () => {
   } else if (promoCodeDetails.available && promoCodeDetails.applied) {
     promoOption = (
       <Aux>
-      <div className={styles.AppliedPromoCode}>Promo Code Applied.{"  "}
+      <div className={styles.AppliedPromoCode}>
+        <FontAwesomeIcon
+          className={styles.faCheckCircle}
+          icon={faCheckCircle}
+        />{" "}Code{" "}
+        <span style={{ fontWeight: "600" }}>{" ",promoCodeDetails.appliedPromoCode} </span>applied.{" "}
         <span
           className={styles.RemovePromoCode}
           onClick={() => {clearPromoTicektPrices();
@@ -550,10 +558,33 @@ const TicketSelection = () => {
 
   let eventHeader;
   if (!isLoadingEvent) {
+    let dateRange;
+    if (dateFormat(eventDetails.startDateTime, "m d yy", true) === dateFormat(eventDetails.endDateTime, "m d yy", true)) {
+      dateRange = <Aux>{dateFormat(
+        eventDetails.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        eventDetails.endDateTime,
+        "shortTime",
+        true
+      )}</Aux>
+    } else {
+      dateRange = <Aux>{dateFormat(
+        eventDetails.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        eventDetails.endDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )}</Aux>
+    }
+
     eventHeader = (
       <Aux>
         <div className={styles.EventTitle}>{eventDetails.eventTitle}</div>
-        <div className={styles.EventDate}>{eventDetails.startDateTime}</div>
+        <div className={styles.EventDate}>{dateRange}</div>
       </Aux>
     );
   } else eventHeader = null;

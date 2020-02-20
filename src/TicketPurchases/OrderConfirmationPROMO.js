@@ -1,9 +1,33 @@
 import React from "react";
+import dateFormat from "dateformat";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Order.module.css";
 
 export const OrderConfirmationTT = props => {
+    let dateRange;
+    if (dateFormat(props.transactionInfo.startDateTime, "m d yy", true) === dateFormat(props.transactionInfo.endDateTime, "m d yy", true)) {
+      dateRange = <Aux>{dateFormat(
+        props.transactionInfo.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        props.transactionInfo.endDateTime,
+        "shortTime",
+        true
+      )}</Aux>
+    } else {
+      dateRange = <Aux>{dateFormat(
+        props.transactionInfo.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        props.transactionInfo.endDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )}</Aux>
+    }
+
   return (
     <Aux>
       <span className={styles.SubSectionHeader}>Order Confirmation</span>
@@ -23,7 +47,7 @@ export const OrderConfirmationTT = props => {
             <br></br>
             {props.transactionInfo.eventTitle}
             <br></br>
-            {props.transactionInfo.dateTime}
+            {dateRange}
             <br></br>
             {props.transactionInfo.venue}
             <br></br>
@@ -45,11 +69,11 @@ export const OrderConfirmationTT = props => {
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: $
-                  {item.promoTicketPrice} per
+                  {item.promoTicketPrice.toFixed(2)} per ticket
                 </div>
               ) : null;
             })}
-            Total Purchase Amount: ${props.transactionInfo.totalAmount}
+            Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
           </div>
           <br></br>
           OpenSeatDirect will be sending you a message to your email:{" "}
@@ -108,11 +132,11 @@ export const OrderConfirmationTF = props => {
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: $
-                  {item.promoTicketPrice} per
+                  {item.promoTicketPrice.toFixed(2)} per ticket
                 </div>
               ) : null;
             })}
-            Total Purchase Amount: ${props.transactionInfo.totalAmount}
+            Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
           </div>
           <br></br>
           OpenSeatDirect is experiencing a temporary delay in creating your pdf
@@ -183,11 +207,11 @@ export const OrderConfirmationFF = props => {
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: $
-                  {item.promoTicketPrice} per
+                  {item.promoTicketPrice.toFixed(2)} per ticket
                 </div>
               ) : null;
             })}
-            Total Purchase Amount: ${props.transactionInfo.totalAmount}
+            Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
           </div>
           <br></br>
           OpenSeatDirect will be sending you a message to your email:{" "}
