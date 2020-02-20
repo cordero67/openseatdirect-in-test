@@ -23,27 +23,28 @@ const OrderSummary = props => {
                 {item.ticketsSelected} X {item.ticketName}
               </div>
               <div style={{ textAlign: "right" }}>
-                ${item.ticketsSelected * item.ticketPrice}
+                ${(item.ticketsSelected * item.ticketPrice).toFixed(2)}
               </div>
             </div>
             {item.promoTicketPrice !== item.ticketPrice ? 
             <div className={styles.RightGrid}>
-              <div style={{ fontWeight: "400", color: "blue", paddingLeft: "10px" }}>- discount
+              <div style={{ fontWeight: "400", color: "#4BBA00"}}>less Discount
                 
               </div>
-              <div style={{ textAlign: "right", color: "blue" }}>-
-                ${item.ticketsSelected * (item.ticketPrice - item.promoTicketPrice)}
+              <div style={{ textAlign: "right", color: "#4BBA00" }}>-
+                ${(item.ticketsSelected * (item.ticketPrice - item.promoTicketPrice)).toFixed(2)}
               </div>
             </div> : null}
+            <br></br>   
           </Aux>
         ) : null;
       })}
 
-      <hr style={{ border: "1px solid#B2B2B2" }} />
+      <hr style={{ border: "1px solid#B2B2B2", marginTop: "0"}} />
       <div className={styles.RightGrid}>
         <div style={{ fontWeight: "600" }}>Total</div>
         <div style={{ textAlign: "right", fontWeight: "600" }}>
-         ${purchaseTotal}
+         ${purchaseTotal.toFixed(2)}
         </div>
       </div>
       <br></br>

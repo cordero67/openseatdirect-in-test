@@ -59,7 +59,7 @@
   font-weight: 600;
 }
 .EventDate {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 400;
 }
 .EventTicketSection {
@@ -168,8 +168,6 @@
   vertical-align: center;
   height: 100vh;
   padding-top: 30px;
-  padding-left: 80px;
-  padding-right: 80px;
   text-align: left;
   overflow-y: auto;
   box-sizing: border-box;
@@ -330,20 +328,23 @@
   width: 140px;
 }
 .EnterPromoCode:hover {
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
 }
 .AppliedPromoCode {
-  color: blue;
-  width: 220px;
+  background-color: #EFF8E9;
+  padding-top: 5px;
+  padding-left: 5px;
+  height: 30px;
 }
 .RemovePromoCode {
-  color: red;
+  color: blue;
+  font-size: 14px;
   width: 80px;
 }
 .RemovePromoCode:hover {
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
 }
@@ -358,7 +359,7 @@
     font-weight: 600;
   }
   .EventDate {
-    font-size: 1.0rem;
+    font-size: 0.8rem;
     font-weight: 400;
   }
   .EventHeaderCheckout {
@@ -416,7 +417,9 @@
     padding-left: 15px;
     padding-right: 10px;
   }
-
+  .ConfirmationDetails {
+    padding-left: 0px;
+  }
   .SubSectionHeader {
     font-size: 18px;
   }
@@ -449,7 +452,7 @@
     font-weight: 600;
   }
   .EventDate {
-    font-size: 1.0rem;
+    font-size: 0.9rem;
     font-weight: 400;
   }
   .RightGrid {
@@ -489,7 +492,9 @@
     padding-left: 25px;
     padding-right: 25px;
   }
-
+  .ConfirmationDetails {
+    padding-left: 30px;
+  }
   .SubSectionHeader {
     font-size: 20px;
   }
@@ -555,8 +560,8 @@
   }
   .BlankCanvas {
     padding-top: 30px;
-    padding-left: 80px;
-    padding-right: 80px;
+    padding-left: 25px;
+    padding-right: 25px;
   }
 
   @media (min-height: 720px) {
