@@ -71,7 +71,7 @@ const getEventData = eventId => {
     } else {
       setShowLargerDoublePane(true);
     }
-    if (inWidth < 480) {
+    if (inWidth < 730) {
       setShowSmallerDoublePane(false);
     } else {
       setShowSmallerDoublePane(true);
@@ -82,7 +82,7 @@ const getEventData = eventId => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
   
-  const ticketsHandler = () => {window.location.href = '/ev/dahday_concina_candela?eventID=81295501293'}
+  const ticketsHandler = () => {window.location.href = '/etPROMO/dahday_concina_candela?eventID=81295501293'}
 
   let summaryPlacard;
 
@@ -185,7 +185,7 @@ const getEventData = eventId => {
       <div className={styles.TicketGrid}>
         <div className={styles.PriceRange}>$50 - $175</div>
         <div className={styles.ButtonContainer}>
-          <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
+          <button disabled={true} onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets Coming Soon</button>
         </div>
       </div>
     );
@@ -194,7 +194,7 @@ const getEventData = eventId => {
       <div className={styles.TicketGrid}>
         <div className={styles.PriceRange}>$50 - $175</div>
         <div className={styles.ButtonContainer}>
-          <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
+          <button disabled={true} onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets Coming Soon</button>
         </div>
       </div>
     );

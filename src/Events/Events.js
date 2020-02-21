@@ -26,7 +26,7 @@ const eventData = [
     date: "Fri, Feb 28, 2020: 7:30 pm",
     description: "description1",
     location: "Voix Lounge, Philadelphia, PA",
-    url: "evPROMO/ha_ha_for_hire?eventID=10056046773",
+    url: "etPROMO/ha_ha_for_hire?eventID=85819827131",
     available: "true"
   },
   {
@@ -36,7 +36,7 @@ const eventData = [
     date: "Wed, Jan 29, 2020 - 7:00 PM",
     description: "description4",
     location: "Montclair, NJ",
-    url: "evPROMO/dahday_concina_candela?eventID=81295501293",
+    url: "etPROMO/dahday_concina_candela?eventID=81295501293",
     available: true
   },
   {
@@ -57,7 +57,7 @@ const eventData = [
     date: "May 6-9, 2020: All Day Event",
     description: "description3",
     location: "Philadelphia, PA",
-    url: "evd/PIFF_Philly_Interantional_Film_Festival?eventID=86753091234",
+    url: "edphilly/PIFF_Philly_Interantional_Film_Festival?eventID=86753091234",
     available: true
   },
   {
@@ -67,7 +67,7 @@ const eventData = [
     date: "Friday, March 20th, 2020",
     description: "description3",
     location: "Bryant Park, New York City",
-    url: "evd/light_of_gold?eventID=46017305135",
+    url: "ed/light_of_gold?eventID=46017305135",
     available: true
   },
   {
@@ -77,7 +77,7 @@ const eventData = [
     date: "Fri, Jan 31, 2020 - 7:30 PM",
     description: "description6",
     location: "Chicago, IL",
-    url: "evPROMO/billy_goat_tavern?eventID=60909827273",
+    url: "etPROMO/billy_goat_tavern?eventID=60909827273",
     available: true
   }
 ];

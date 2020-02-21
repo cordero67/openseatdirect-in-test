@@ -1,36 +1,36 @@
-.container {
+.MainContainer {
   position: relative;
   background: #2f5596;
-  height: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.container_image {
+.MainContainer_image {
   background-image: url("../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_1024.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  padding-top: 0px;
-  width: 100%;
+  padding-top: 100px;
   height: 100%;
+  width: 100%;
 }
 
-.container::before {
+.MainContainer::before {
   position: absolute;
   display: block;
-  width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.77);
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
   content: "";
 }
 
-.content {
+.MainGrid {
   color: #fff;
   text-align: center;
   position: relative;
-  align-items: center;
+  height: 100%;
 }
 .TextMain {
   vertical-align: middle;
@@ -46,25 +46,15 @@
 
 @media (min-width: 450px) {
   .TextMain {
-    font-size: 42px;
+    font-size: 44px;
   }
   .TextTagLine {
-    font-size: 34px;
+    font-size: 36px;
   }
 }
 
 
-@media (min-width: 580px) {
-  .TextMain {
-    font-size: 34px;
-  }
-  .TextTagLine {
-    font-size: 26px;
-  }
-}
-
-
-@media (min-width: 700px) {
+@media (min-width: 550px) {
   .TextMain {
     font-size: 38px;
   }
@@ -75,6 +65,10 @@
 
 
 @media (min-width: 840px) {
+.MainContainer_image {
+  padding-top: 150px;
+}
+
   .TextMain {
     font-size: 44px;
   }

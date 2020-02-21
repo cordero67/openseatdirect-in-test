@@ -6,8 +6,7 @@ import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
-import EventDetailCOPY from "../../Events/EventDetail copy";
-import EventDetailLight from "../../Events/EventDetailLight";
+import EventDetailPhilly from "../../Events/EventDetailPhilly";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
@@ -15,7 +14,6 @@ import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
 
-import OSDHeaderFloating from "../Headers/OSDHeaderFloating";
 import OSDHeader from "../Headers/OSDHeader";
 import OSDFooter from "../Footers/OSDFooter";
 
@@ -84,47 +82,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-      <Route
-        path="/evd/"
-        render={routeProps => (
-          <React.Fragment>
-            <OSDHeaderFloating
-              positioning="floating"
-              logoType={LogoC}
-            ></OSDHeaderFloating>
-            <EventDetail />
-            <OSDFooter></OSDFooter>
-          </React.Fragment>
-        )}
-      />
-      <Route
-        path="/evdCOPY/"
-        render={routeProps => (
-          <React.Fragment>
-            <OSDHeaderFloating
-              positioning="floating"
-              logoType={LogoC}
-            ></OSDHeaderFloating>
-            <EventDetailCOPY />
-            <OSDFooter></OSDFooter>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/evdLight/"
-        render={routeProps => (
-          <React.Fragment>
-            <OSDHeaderFloating
-              positioning="floating"
-              styleType="HeaderA"
-              logoType={LogoC}
-            ></OSDHeaderFloating>
-            <EventDetailLight />
-            <OSDFooter></OSDFooter>
-          </React.Fragment>
-        )}
-      />
 
       <Route
         path="/checkout_bt"
@@ -154,7 +111,33 @@ const Layout = () => {
         )}
       />
       <Route
-        path="/ev/"
+        path="/ed/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeader
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeader>
+            <EventDetail />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
+      <Route
+        path="/edphilly/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeader
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeader>
+            <EventDetailPhilly />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
+      <Route
+        path="/et/"
         render={routeProps => (
           <React.Fragment>
             <TicketSelection />
@@ -163,7 +146,7 @@ const Layout = () => {
       />
 
       <Route
-        path="/evPROMO/"
+        path="/etPROMO/"
         render={routeProps => (
           <React.Fragment>
             <TicketSelectionPROMO />

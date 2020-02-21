@@ -51,12 +51,12 @@ const Header = ({ history, logoType, positioning }) => {
                 <img
                   src={logoType}
                   alt="OpenSeatDirect Logo"
-                   className={styles.ImageBox}
+                  className={styles.ImageBox}
                 />
               </NavLink>
             </Nav>
           </div>
-          <div className={styles.HeaderFixedLinks}>
+          <div className={styles.HeaderLinks}>
             <Nav>
               <ul>
                 <li>
@@ -101,7 +101,7 @@ const Header = ({ history, logoType, positioning }) => {
               </NavLink>
             </Nav>
           </div>
-          <div className={styles.HeaderFixedLinks}>
+          <div className={styles.HeaderLinks}>
             <Nav>
               <ul>
                 <li>
@@ -126,20 +126,21 @@ const Header = ({ history, logoType, positioning }) => {
       );
     }
   } else if (positioning === "floating") {
+    if (showFullHeader) {
       headerDisplay = (
-        <div className={styles.HeaderFixed}>
+        <div className={styles.HeaderFloating}>
           <div>
             <Nav>
               <NavLink to="/" exact>
                 <img
                   src={logoType}
                   alt="OpenSeatDirect Logo"
-                   className={styles.ImageBox}
+                  className={styles.ImageBox}
                 />
               </NavLink>
             </Nav>
           </div>
-          <div className={styles.HeaderFixedLinks}>
+          <div className={styles.HeaderLinks}>
             <Nav>
               <ul>
                 <li>
@@ -172,7 +173,7 @@ const Header = ({ history, logoType, positioning }) => {
       );
     } else {
       headerDisplay = (
-        <div className={styles.HeaderFixed}>
+        <div className={styles.HeaderFloating}>
           <div>
             <Nav>
               <NavLink to="/" exact>
@@ -184,7 +185,7 @@ const Header = ({ history, logoType, positioning }) => {
               </NavLink>
             </Nav>
           </div>
-          <div className={styles.HeaderFixedLinks}>
+          <div className={styles.HeaderLinks}>
             <Nav>
               <ul>
                 <li>
@@ -207,7 +208,8 @@ const Header = ({ history, logoType, positioning }) => {
           </div>
         </div>
       );
-  }
+    }
+  } else headerDisplay = null;
 
   return <div>{headerDisplay}</div>;
 };

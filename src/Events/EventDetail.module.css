@@ -21,6 +21,7 @@
 }
 .TicketGrid {
   background-color: #fff;
+  border-top: 1px solid lightgrey;
   border-bottom: 1px solid lightgrey;
   position: -webkit-sticky;
   position: sticky;
@@ -52,7 +53,7 @@
   height: 44px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 730px) {
   .MainContainer {
     padding-top: 0px;
     padding-bottom: 0px;
@@ -133,7 +134,7 @@
   }
 
   .LeftLowerGrid {
-    padding: 20px 40px 20px 20px;
+    padding: 20px 20px 20px 20px;
     box-sizing: border-box;
   }
   .TitleLeft {
@@ -147,7 +148,9 @@
   }
 
   .RightLowerGrid {
-    padding: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
     box-sizing: border-box;
   }
   .TitleRight {
@@ -167,7 +170,7 @@
   }
 }
 
-@media (min-width: 480px) {
+@media (min-width: 730px) {
   .MainContainer {
     padding-top: 0px;
     padding-bottom: 0px;
@@ -251,7 +254,7 @@
   }
 
   .LeftLowerGrid {
-    padding: 20px 40px 20px 20px;
+    padding: 20px 20px 20px 20px;
     box-sizing: border-box;
   }
   .TitleLeft {
@@ -265,7 +268,9 @@
   }
 
   .RightLowerGrid {
-    padding: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
     box-sizing: border-box;
   }
   .TitleRight {

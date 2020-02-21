@@ -2,15 +2,11 @@ import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 import dateFormat from "dateformat";
 
-import Footer from "../components/Footers/OSDFooter";
-
 import { API } from "../config";
 
 import styles from "./EventDetail.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
-import Logo from "./NEWPIC.png";
-import Logo2 from "./piff2by1.png";
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
 
 // defines an event's NON ticket type specific information
@@ -127,21 +123,13 @@ const EventDetail = props => {
       eventStatus: event.eventStatus,
       organizer: "Light of Gold PR, Marketing, and Consulting",
       organizerEmail: event.accountId.accountEmail,
-      startDateTime: dateFormat(
-        event.startDateTime,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-      ),
-      endDateTime: dateFormat(
-        event.endDateTime,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-      ),
+      startDateTime: event.startDateTime,
+      endDateTime: event.endDateTime,
       organizerUrl: event.organizerUrl,
       eventUrl: event.eventUrl,
       location: {
         venueName: event.locationVenueName,
-        address: ["Berkeley College PREP",
+        address: ["Berkeley College",
           "Bryant Park 2nd Fl.",
           "12 E 41st St.",
           "between Madison and 5th Ave"],
@@ -151,13 +139,40 @@ const EventDetail = props => {
         countryCode: event.locationCountryCode
       },
       descriptions: [
-        {title: "Event Details",
-        text: ["The 2020 Gold Women’s Business Connect Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!"]
+        {
+          title: "Event Description",
+          text: ["The 2020 Gold Women’s Business Connect Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!"]
         },
-        {title: "About Light of Gold PR, Marketing, and Consulting LLC",
-        text: ["Light of Gold PR, Marketing and Consulting LLC, is a MWBE (City certified Minority and Women Business Enterprise), specializes in PR (Public Relations), Marketing, Consulting, Branding & Digital products & services, Web, Video and TV Commercials, as well as Events and Social Media Management.", "Light of Gold PR, Marketing, and Consulting LLC. provides innovative solutions and creative opportunities for your products and services to be promoted to the public consistently. They enhance your image, give you more visibility, and save your organization money! They can increase the overall profitability by positioning your company in front of your target market."]
+        {
+          title: "Conference Details",
+          text: ["In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!"]
+        },
+        {
+          title: "Entrepreneurial Mindset & Goal Setting",
+          text: ["hosted by Malla Haridat, Breakthrough Business Coach"]
+        },
+        {
+          title: "Growing and Scaling Your Business",
+          text: ["hosted by Scott Mason, Scott Mason LLC"]
+        },
+        {
+          title: "Cohesive Marketing that Gains more Exposure to Increase you Bottom Line",
+          text: ["hosted by Debra Dixon Anderson, Light of Gold PR"]
+        },
+        {
+          title: "Is Your Money Causing You to Lose Money?",
+          text: ["hosted by Katanni Bramhan, The K District"]
+        },
+        {
+          title: "Effective Tactics that Will Make You a Sales Superstar",
+          text: ["hosted by Adrian Miller, Adrian Miller Sales Training"]
+        },
+        {
+          title: "About Light of Gold PR, Marketing, and Consulting LLC",
+          text: ["Light of Gold PR, Marketing and Consulting LLC, is a MWBE (City certified Minority and Women Business Enterprise), specializes in PR (Public Relations), Marketing, Consulting, Branding & Digital products & services, Web, Video and TV Commercials, as well as Events and Social Media Management.", "Light of Gold PR, Marketing, and Consulting LLC. provides innovative solutions and creative opportunities for your products and services to be promoted to the public consistently. They enhance your image, give you more visibility, and save your organization money! They can increase the overall profitability by positioning your company in front of your target market."]
         }
-      ]
+      ],
+      tickets: event.ticket,
     };
     console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
   };
@@ -172,7 +187,7 @@ const EventDetail = props => {
     } else {
       setShowLargerDoublePane(true);
     }
-    if (inWidth < 480) {
+    if (inWidth < 730) {
       setShowSmallerDoublePane(false);
     } else {
       setShowSmallerDoublePane(true);
@@ -185,42 +200,86 @@ const EventDetail = props => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
   
-  const ticketsHandler = () => {window.location.href = '/ev/dahday_concina_candela?eventID=81295501293'}
+  const ticketsHandler = () => {window.location.href = `/etPROMO/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`}
 
-  let summaryPlacard;
-  if (showLargerDoublePane && !isLoadingEvent) {
-    summaryPlacard = (
-      <div className={styles.SummaryPlacard}>
-        <div className={styles.SummaryDetails}>
-          <div className={styles.Month}>MAY</div>
-          <div className={styles.Date}>06</div>
-          <div className={styles.Event}>
-                {eventDetails.eventTitle}
-          </div>
-          <div className={styles.Presenter}>by {eventDetails.organizer}</div>
-        </div>
-        <div className={styles.TicketRange}>
-          <div className={styles.Prices}>$50 - $175</div>
-        </div>
-      </div>
-    );
-  } else summaryPlacard = null;
-
-  let image;
-
-  image = (
+  let image = (
     <img
       className={styles.ImageBox}
       src={eventLogo}
       alt="Event Logo Coming Soon!!!"
     />
   );
+  
+  let ticketPriceRange;
+  if (!isLoadingEvent) {
+    let priceArray = [];
+    eventDetails.tickets.map(item => {
+      priceArray.push(item.currentTicketPrice);
+    })
+    ticketPriceRange = <div>${Math.min(...priceArray)} - ${Math.max(...priceArray)}</div>
+  }
+
+  let dateRange;
+  if (showSmallerDoublePane && !isLoadingEvent) {
+    if (dateFormat(eventDetails.startDateTime, "m d yy", true) === dateFormat(eventDetails.endDateTime, "m d yy", true)) {
+      dateRange =
+        <Aux>
+          <div className={styles.TextLeft}>{dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy", true)}</div>
+          <div className={styles.TextLeft}>
+            {dateFormat(eventDetails.startDateTime, "h:MM TT", true)}
+            {" - "}
+            {dateFormat(eventDetails.endDateTime, "h:MM TT", true)}
+          </div>
+        </Aux>
+    } else {
+      dateRange =
+        <Aux>
+          <div className={styles.TextLeft}>{dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy - h:MM TT", true)}</div>
+          <div className={styles.TextLeft}>to {dateFormat(eventDetails.endDateTime, "ddd, mmm d, yyyy - h:MM TT", true)}</div>
+        </Aux>
+    }
+  }
+  else if (!isLoadingEvent)  {
+    if (dateFormat(eventDetails.startDateTime, "m d yy", true) === dateFormat(eventDetails.endDateTime, "m d yy", true)) {
+      dateRange =
+        <Aux>
+          <div className={styles.TextRight}>{dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy", true)}</div>
+          <div className={styles.TextRight}>
+            {dateFormat(eventDetails.startDateTime, "h:MM TT", true)}
+            {" - "}
+            {dateFormat(eventDetails.endDateTime, "h:MM TT", true)}
+          </div>
+        </Aux>
+    } else {
+      dateRange =
+        <Aux>
+          <div className={styles.TextRight}>{dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy - h:MM TT", true)}</div>
+          <div className={styles.TextRight}>to {dateFormat(eventDetails.endDateTime, "ddd, mmm d, yyyy - h:MM TT", true)}</div>
+        </Aux>
+    }
+  } 
+
+  let summaryPlacard;
+  if (showLargerDoublePane && !isLoadingEvent) {
+    summaryPlacard = (
+      <div className={styles.SummaryPlacard}>
+        <div className={styles.SummaryDetails}>
+          <div className={styles.Month}>{dateFormat(eventDetails.startDateTime, "mmm", true).toUpperCase()}</div>
+          <div className={styles.Date}>{dateFormat(eventDetails.startDateTime, "dd", true).toUpperCase()}</div>
+          <div className={styles.Event}>
+                {eventDetails.eventTitle}
+          </div>
+          <div className={styles.Presenter}>by {eventDetails.organizer}</div>
+        </div>
+        <div className={styles.TicketRange}>
+          <div className={styles.Prices}>{ticketPriceRange}</div>
+        </div>
+      </div>
+    );
+  } else summaryPlacard = null;
 
   let topDisplay;
-  let ticketDisplay;
   let middleDisplay;
-  let bottomDisplay;
-
   if (showLargerDoublePane) {
     topDisplay = (
       <div className={styles.UpperGrid}>
@@ -228,7 +287,7 @@ const EventDetail = props => {
         {summaryPlacard}
       </div>
     );
-    middleDisplay = null;
+    middleDisplay = null
   } else {
     topDisplay = <div className={styles.UpperGrid}>{image}</div>;
     if (showSmallerDoublePane && !isLoadingEvent) {
@@ -236,8 +295,8 @@ const EventDetail = props => {
         <Aux>
           <div className={styles.MiddleGrid}>
             <div>
-              <div className={styles.Month}>MAY</div>
-              <div className={styles.Date}>06</div>
+              <div className={styles.Month}>{dateFormat(eventDetails.startDateTime, "mmm", true).toUpperCase()}</div>
+              <div className={styles.Date}>{dateFormat(eventDetails.startDateTime, "dd", true).toUpperCase()}</div>
             </div>
             <div>
               <div className={styles.TitleLeft}>
@@ -265,10 +324,11 @@ const EventDetail = props => {
       middleDisplay = null}
   }
 
+  let ticketDisplay;
   if (!showLargerDoublePane) {
     ticketDisplay = (
       <div className={styles.TicketGrid}>
-        <div className={styles.PriceRange}>$50 - $175</div>
+        <div className={styles.PriceRange}>{ticketPriceRange}</div>
         <div className={styles.ButtonContainer}>
           <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
         </div>
@@ -277,7 +337,7 @@ const EventDetail = props => {
   } else {
     ticketDisplay = (
       <div className={styles.TicketGrid}>
-        <div className={styles.PriceRange}>$50 - $175</div>
+        <div className={styles.PriceRange}>{ticketPriceRange}</div>
         <div className={styles.ButtonContainer}>
           <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
         </div>
@@ -285,29 +345,26 @@ const EventDetail = props => {
     );
   }
 
+  let bottomDisplay;
   if (showSmallerDoublePane && !isLoadingEvent) {
     bottomDisplay = (
       <div className={styles.LowerGrid}>
         <div className={styles.LeftLowerGrid}>
-          <br></br>
           {eventDetails.descriptions.map(item1 => {return (
             <Aux>
               <div className={styles.TitleLeft}>{item1.title}</div>
                 {item1.text.map(item2 => {return (
-                  <Aux>
-                <div className={styles.TextLeft}>{item2}</div>
-                <br></br>
+                <Aux>
+                  <div className={styles.TextLeft}>{item2}</div>
+                  <br></br>
                 </Aux>
               )})}
             </Aux>
           )})}
-
-          </div>
-
+        </div>
         <div className={styles.RightLowerGrid}>
           <div className={styles.TitleRight}>Date and Time</div>
-          <div className={styles.TextRight}>May 6, 2020</div>
-          <div className={styles.TextRight}>8pm - 10pm</div>
+          {dateRange}
           <br></br>
           <div className={styles.TitleRight}>Location</div>
           {eventDetails.location.address.map(add => {
@@ -315,7 +372,7 @@ const EventDetail = props => {
               <div className={styles.TextLeft}>{add}</div>
             )
           })}
-          <div className={styles.TextRight}>{eventDetails.location.city}, {eventDetails.location.state}</div>
+          <div className={styles.TextRight}>{eventDetails.location.city}, {eventDetails.location.state} {eventDetails.location.zipPostalCode}</div>
         </div>
       </div>
     );
@@ -324,8 +381,7 @@ const EventDetail = props => {
       <div className={styles.LowerGrid}>
         <div className={styles.LeftLowerGrid}>
           <div className={styles.TitleLeft}>Date and Time</div>
-          <div className={styles.TextLeft}>May 6, 2020</div>
-          <div className={styles.TextLeft}>8pm - 10pm</div>
+          {dateRange}
           <br></br>
           <div className={styles.TitleLeft}>Location</div>
           {eventDetails.location.address.map(add => {
@@ -333,35 +389,31 @@ const EventDetail = props => {
               <div className={styles.TextLeft}>{add}</div>
             )
           })}
-          <div className={styles.TextLeft}>{eventDetails.location.city}, {eventDetails.location.state}</div>
+          <div className={styles.TextLeft}>{eventDetails.location.city}, {eventDetails.location.state} {eventDetails.location.zipPostalCode}</div>
           <br></br>
-          <div className={styles.TitleLeft}>Event Details</div>
-          <div className={styles.TextLeft}>
-          </div>
-          <br></br>
-          <div className={styles.TitleLeft}>About Light of Gold PR, Marketing, and Consulting</div>
-          <div className={styles.TextLeft}>
-          </div>
-
-          <br></br>
-          <div className={styles.TitleLeft}>History</div>
-          <div className={styles.TextLeft}>
-          </div>
+          {eventDetails.descriptions.map(item1 => {return (
+            <Aux>
+              <div className={styles.TitleLeft}>{item1.title}</div>
+                {item1.text.map(item2 => {return (
+                <Aux>
+                  <div className={styles.TextLeft}>{item2}</div>
+                  <br></br>
+                </Aux>
+              )})}
+            </Aux>
+          )})}
         </div>
       </div>
     );
   } else {bottomDisplay = null}
 
   return (
-    <Aux>
     <div className={styles.MainContainer}>
       {topDisplay}
       {ticketDisplay}
       {middleDisplay}
       {bottomDisplay}
     </div>
-    <Footer />
-    </Aux>
   );
 };
 

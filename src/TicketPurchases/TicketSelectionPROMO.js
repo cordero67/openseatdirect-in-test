@@ -18,7 +18,6 @@ import Spinner from "../components/UI/Spinner/Spinner";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/BlueLettering_TransparentBackground/BlueLettering_TransparentBackground_1024.png";
-import OSDLogoA from "../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_32.png";
 import CartLink from "./CartLinkPROMO";
 import OrderSummary from "./OrderSummaryPROMO";
 import TicketItem from "./TicketItemPROMO";
