@@ -5,6 +5,9 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import ContactUs from "../ContactUs/ContactUs";
+import Events from "../../Events/Events";
+import EventDetail from "../../Events/EventDetail";
+import EventDetailPhilly from "../../Events/EventDetailPhilly";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
@@ -28,32 +31,53 @@ const Layout = () => {
         exact
         render={routeProps => (
           <React.Fragment>
-            <OSDHeader styleType="HeaderA" logoType={LogoC}></OSDHeader>
+            <OSDHeader
+              positioning="fixed"
+              logoType={LogoC}
+            ></OSDHeader>
             <Main />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
       />
-
       <Route
         path="/video"
         exact
         render={routeProps => (
           <React.Fragment>
-            <OSDHeader styleType="HeaderA" logoType={LogoC}></OSDHeader>
+            <OSDHeader
+              positioning="fixed"
+              logoType={LogoC}
+            ></OSDHeader>
             <Video />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
       />
-
       <Route
         path="/contactus"
         exact
         render={routeProps => (
           <React.Fragment>
-            <OSDHeader styleType="HeaderA" logoType={LogoC}></OSDHeader>
+            <OSDHeader
+              positioning="fixed"
+              logoType={LogoC}
+            ></OSDHeader>
             <ContactUs />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
+      <Route
+        path="/events"
+        exact
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeader
+              positioning="fixed"
+              logoType={LogoC}
+            ></OSDHeader>
+            <Events />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
@@ -68,7 +92,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
         path="/checkout_pp"
         exact
@@ -78,7 +101,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
         path="/checkout_ppPROMO"
         exact
@@ -88,18 +110,34 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
-        path="/ev/light_of_gold?eventID=46017305135"
+        path="/ed/"
         render={routeProps => (
           <React.Fragment>
-            <TicketSelectionPROMO />
+            <OSDHeader
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeader>
+            <EventDetail />
+            <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
       />
-
       <Route
-        path="/ev/"
+        path="/edphilly/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeader
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeader>
+            <EventDetailPhilly />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
+      <Route
+        path="/et/"
         render={routeProps => (
           <React.Fragment>
             <TicketSelection />
@@ -108,14 +146,13 @@ const Layout = () => {
       />
 
       <Route
-        path="/evPROMO/"
+        path="/etPROMO/"
         render={routeProps => (
           <React.Fragment>
             <TicketSelectionPROMO />
           </React.Fragment>
         )}
       />
-
     </Aux>
   );
 };

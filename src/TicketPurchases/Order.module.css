@@ -172,6 +172,9 @@
   overflow-y: auto;
   box-sizing: border-box;
 }
+.OrderConfirmItems {
+  padding-left: 0px
+}
 .Spinner {
   background-color: #fff;
   margin: auto;
@@ -417,9 +420,7 @@
     padding-left: 15px;
     padding-right: 10px;
   }
-  .ConfirmationDetails {
-    padding-left: 0px;
-  }
+
   .SubSectionHeader {
     font-size: 18px;
   }
@@ -492,9 +493,7 @@
     padding-left: 25px;
     padding-right: 25px;
   }
-  .ConfirmationDetails {
-    padding-left: 30px;
-  }
+
   .SubSectionHeader {
     font-size: 20px;
   }
@@ -640,6 +639,9 @@
     padding-left: 25px;
     padding-right: 25px;
   }
+  .OrderConfirmItems {
+    padding-left: 30px
+  }
 
   .SubSectionHeader {
     font-size: 22px;
@@ -711,7 +713,6 @@
     width: 60px;
   }
   .BlankCanvas {
-    padding-top: 30px;
     padding-left: 25px;
     padding-right: 25px;
   }
@@ -791,7 +792,6 @@
   }
   .BlankCanvas {
     width: 1080px;
-    padding-top: 30px;
     padding-left: 80px;
     padding-right: 80px;
   }

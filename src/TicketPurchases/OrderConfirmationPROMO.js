@@ -40,7 +40,7 @@ export const OrderConfirmationTT = props => {
           processed.
           <br></br>
           <br></br>
-          <div className={styles.ConfirmationDetails}>
+          <div className={styles.OrderConfirmItems}>
             <span style={{ textDecoration: "underline", fontWeight: "600" }}>
               Event Details
             </span>
@@ -58,7 +58,7 @@ export const OrderConfirmationTT = props => {
             <br></br>
           </div>
           <br></br>
-          <div className={styles.ConfirmationDetails}>
+          <div className={styles.OrderConfirmItems}>
             <span style={{ textDecoration: "underline", fontWeight: "600" }}>
               Order Details
             </span>
@@ -103,7 +103,7 @@ export const OrderConfirmationTF = props => {
           process.
           <br></br>
           <br></br>
-          <div className={styles.ConfirmationDetails}>
+          <div style={{ paddingLeft: "30px" }}>
             <span style={{ textDecoration: "underline", fontWeight: "600" }}>
               Event Details
             </span>
@@ -121,7 +121,7 @@ export const OrderConfirmationTF = props => {
             <br></br>
           </div>
           <br></br>
-          <div className={styles.ConfirmationDetails}>
+          <div style={{ paddingLeft: "30px" }}>
             <span style={{ textDecoration: "underline", fontWeight: "600" }}>
               Order Details
             </span>
@@ -178,7 +178,7 @@ export const OrderConfirmationFF = props => {
           processed.
           <br></br>
           <br></br>
-          <div className={styles.ConfirmationDetails}>
+          <div style={{ paddingLeft: "30px" }}>
             <span style={{ textDecoration: "underline", fontWeight: "600" }}>
               Event Details
             </span>
@@ -196,7 +196,7 @@ export const OrderConfirmationFF = props => {
             <br></br>
           </div>
           <br></br>
-          <div className={styles.ConfirmationDetails}>
+          <div style={{ paddingLeft: "30px" }}>
             <span style={{ textDecoration: "underline", fontWeight: "600" }}>
               Order Details
             </span>

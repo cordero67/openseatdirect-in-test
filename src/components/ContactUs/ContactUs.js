@@ -124,26 +124,42 @@ const ContactUs = () => {
   });
 
   const [formIsValid, setFormIsValid] = useState(false);
-
   const [showDoublePane, setShowDoublePane] = useState(true);
 
-  window.onresize = function(event) {
-    if (window.innerWidth < 990) {
+  const stylingUpdate = (inWidth) => {
+    // based on window width, displays one or two panes
+    if (inWidth < 990) {
       setShowDoublePane(false);
     } else {
       setShowDoublePane(true);
     }
   };
 
+  useEffect(() => {
+    stylingUpdate(window.innerWidth);
+  }, []);
+
+  window.onresize = function(event) {
+    stylingUpdate(window.innerWidth)
+  };
+
   const sendMessageHandler = event => {
+    //event.preventDefault();
     let contactInfo = {};
     for (let key in contactData) {
       contactInfo[key] = contactData[key].value;
     }
+    console.log("contactInfo: ", contactInfo);
     axios
       .post("https://openseatdirect-contacts.firebaseio.com/.json", contactInfo)
-      .then(response => {})
+      .then(response => {
+        alert("Data received by Firebase.");
+        console.log("Response from Firebase: ", response);
+        console.log("contactInfo: ", contactInfo);
+        console.log("contactData: ", contactData);
+      })
       .catch(err => {
+        alert("Data WAS NOT received by Firebase.");
         console.log("Error from Firebase: ", err);
       });
   };
@@ -260,23 +276,24 @@ const ContactUs = () => {
       </div>
       <br></br>
       {formData}
+      <br></br>
     </Aux>
   );
 
   if (showDoublePane) {
     mainDisplay = (
+      <Aux>
       <div className={styles.MainGrid}>
         <div className={styles.LeftPane}>{leftPane}</div>
         <div className={styles.RightPane}>{rightPane}</div>
       </div>
+      </Aux>
     );
   } else {
     mainDisplay = (
       <div className={styles.MainGrid}>
         <div className={styles.SinglePane}>
           {leftPane}
-          <br></br>
-          <br></br>
           {rightPane}
         </div>
       </div>

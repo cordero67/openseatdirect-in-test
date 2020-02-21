@@ -10,6 +10,17 @@
   display: grid;
   grid-template-columns: 90px auto;
 }
+.HeaderFloating {
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  border-bottom: 2px solid #2f5596;
+  height: 50px;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 9999;
+  display: grid;
+  grid-template-columns: 90px auto;
+}
 .ImageBox {
   padding-top: 6px;
   padding-right: 0px;
@@ -18,7 +29,7 @@
   max-width: 90px;
   box-sizing: border-box;
 }
-.HeaderFixedLinks {
+.HeaderLinks {
   font-family: "Roboto", sans-serif;
   background-color: #fff;
   padding-top: 11px;
@@ -28,33 +39,38 @@
   box-sizing: border-box;
   font-size: 14px;
 }
-.HeaderFixedLinks ul {
+.HeaderLinks ul {
   list-style: none;
   width: 100%;
   text-align: right;
 }
-.HeaderFixedLinks li {
+.HeaderLinks li {
   padding-right: 10px;
   padding-left: 10px;
   display: inline-block;
   text-align: center;
 }
-.HeaderFixedLinks a {
+.HeaderLinks a {
   text-decoration: none;
   font-weight: 500;
 }
-.HeaderFixedLinks a:hover {
+.HeaderLinks a:hover {
   font-weight: 700;
   text-decoration: underline;
 }
 
 @media (min-width: 550px) {
-.HeaderFixed {
-  height: 70px;
-  display: grid;
-  grid-template-columns: 140px auto;
-}
-  .HeaderFixedLinks {
+  .HeaderFixed {
+    height: 70px;
+    display: grid;
+    grid-template-columns: 140px auto;
+  }
+  .HeaderFloating {
+    height: 70px;
+    display: grid;
+    grid-template-columns: 140px auto;
+  }
+  .HeaderLinks {
     font-family: "Roboto", sans-serif;
     background-color: #fff;
     padding-top: 19px;
@@ -80,7 +96,12 @@
     display: grid;
     grid-template-columns: 150px auto;
   }
-  .HeaderFixedLinks {
+  .HeaderFloating {
+    height: 80px;
+    display: grid;
+    grid-template-columns: 150px auto;
+  }
+  .HeaderLinks {
     font-family: "Roboto", sans-serif;
     background-color: #fff;
     padding-top: 25px;

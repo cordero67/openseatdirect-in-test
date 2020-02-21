@@ -8,13 +8,15 @@ const event = props => (
       className={styles.EventImage}
       src={props.image}
       alt="Event Logo Coming Soon!!!"
+      onClick={props.clicked}
     />
-    <h5>{props.name}</h5>
-    <div>
-      <h6>{props.description}</h6>
-      <h6>
-        {props.location} * {props.date}
-      </h6>
+    <div className={styles.EventDetail}>
+      <div className={styles.EventDate}>{props.date}</div>
+
+      <div className={styles.EventTitle} onClick={props.clicked}>
+        {props.title}
+      </div>
+      <div className={styles.EventLocation}>{props.location}</div>
     </div>
   </article>
 );

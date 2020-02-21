@@ -1,4 +1,3 @@
-  
 import React, { useState, useEffect } from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { Nav } from "react-bootstrap";
@@ -52,12 +51,12 @@ const Header = ({ history, logoType, positioning }) => {
                 <img
                   src={logoType}
                   alt="OpenSeatDirect Logo"
-                   className={styles.ImageBox}
+                  className={styles.ImageBox}
                 />
               </NavLink>
             </Nav>
           </div>
-          <div className={styles.HeaderFixedLinks}>
+          <div className={styles.HeaderLinks}>
             <Nav>
               <ul>
                 <li>
@@ -78,7 +77,7 @@ const Header = ({ history, logoType, positioning }) => {
                 </li>
                 <li>
                   <NavLink
-                    to="/evPROMO/light_of_gold?eventID=46017305135"
+                    to="/events"
                     style={isActive(history, "/events")}
                   >Events
                   </NavLink>
@@ -102,7 +101,7 @@ const Header = ({ history, logoType, positioning }) => {
               </NavLink>
             </Nav>
           </div>
-          <div className={styles.HeaderFixedLinks}>
+          <div className={styles.HeaderLinks}>
             <Nav>
               <ul>
                 <li>
@@ -115,7 +114,7 @@ const Header = ({ history, logoType, positioning }) => {
                 </li>
                 <li>
                   <NavLink
-                    to="/evPROMO/light_of_gold?eventID=46017305135"
+                    to="/events"
                     style={isActive(history, "/events")}
                   >Events
                   </NavLink>
@@ -127,20 +126,21 @@ const Header = ({ history, logoType, positioning }) => {
       );
     }
   } else if (positioning === "floating") {
+    if (showFullHeader) {
       headerDisplay = (
-        <div className={styles.HeaderFixed}>
+        <div className={styles.HeaderFloating}>
           <div>
             <Nav>
               <NavLink to="/" exact>
                 <img
                   src={logoType}
                   alt="OpenSeatDirect Logo"
-                   className={styles.ImageBox}
+                  className={styles.ImageBox}
                 />
               </NavLink>
             </Nav>
           </div>
-          <div className={styles.HeaderFixedLinks}>
+          <div className={styles.HeaderLinks}>
             <Nav>
               <ul>
                 <li>
@@ -161,7 +161,7 @@ const Header = ({ history, logoType, positioning }) => {
                 </li>
                 <li>
                   <NavLink
-                    to="/evPROMO/light_of_gold?eventID=46017305135"
+                    to="/events"
                     style={isActive(history, "/events")}
                   >Events
                   </NavLink>
@@ -173,7 +173,7 @@ const Header = ({ history, logoType, positioning }) => {
       );
     } else {
       headerDisplay = (
-        <div className={styles.HeaderFixed}>
+        <div className={styles.HeaderFloating}>
           <div>
             <Nav>
               <NavLink to="/" exact>
@@ -185,7 +185,7 @@ const Header = ({ history, logoType, positioning }) => {
               </NavLink>
             </Nav>
           </div>
-          <div className={styles.HeaderFixedLinks}>
+          <div className={styles.HeaderLinks}>
             <Nav>
               <ul>
                 <li>
@@ -198,7 +198,7 @@ const Header = ({ history, logoType, positioning }) => {
                 </li>
                 <li>
                   <NavLink
-                    to="/evPROMO/light_of_gold?eventID=46017305135"
+                    to="/events"
                     style={isActive(history, "/events")}
                   >Events
                   </NavLink>
@@ -208,7 +208,8 @@ const Header = ({ history, logoType, positioning }) => {
           </div>
         </div>
       );
-  }
+    }
+  } else headerDisplay = null;
 
   return <div>{headerDisplay}</div>;
 };
