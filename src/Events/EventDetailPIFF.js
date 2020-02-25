@@ -121,7 +121,7 @@ const EventDetail = props => {
       eventNum: event.eventNum,
       eventTitle: event.eventTitle,
       eventStatus: event.eventStatus,
-      organizer: "Light of Gold PR, Marketing, and Consulting",
+      organizer: "PIFF Films",
       organizerEmail: event.accountId.accountEmail,
       startDateTime: event.startDateTime,
       endDateTime: event.endDateTime,
@@ -129,10 +129,8 @@ const EventDetail = props => {
       eventUrl: event.eventUrl,
       location: {
         venueName: event.locationVenueName,
-        address: ["Venue Name",
-          "Address1",
-          "Address2",
-          "location detail"],
+        address: ["Various Locations",
+          "across Philly"],
         city: event.locationCity,
         state: event.locationState,
         zipPostalCode: event.locationZipPostalCode,
@@ -140,36 +138,21 @@ const EventDetail = props => {
       },
       descriptions: [
         {
-          title: "Event Description",
-          text: ["The 2020 Gold Women’s Business Connect Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!"]
+          title: "Event Details",
+          text: ["Part of the Media Track #phillytechweek #PTW19 Philadelphia Tech Week 2019 ~ presented by Comcast Where: TBD #piffFilms Creative & Media track discussions supported by: mediabureau.com, gearstuff.com, University of the Arts Corzo Center for the Creative Economy, and Philly Nexus.e"]
         },
         {
-          title: "Conference Details",
-          text: ["In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!"]
+          title: "About PIFF",
+          text: ["PIFF discovers and curates a unique collection of local and global Independent Drama, Documentary, Thriller, Sci-Fi, Political, Horror, Comedy, Music Video, Animation, Web Series and other thought provoking films in Philadelphia, PA, using surrounding traditional and non-traditional theaters and venues. PIFF is committed too discovering and presenting a unique cinematic experience unrestrained by conventional boundaries.",
+            "At this year's events, PIFF will be discussing the tokenization (democratization of content) of film, independent distribution, breaking media technology, media and propaganda, via the cross roads of digital story telling, media, film, education, and culture using #uff #piff #piffFilms #mediabureau #PTW20 #AI #BigData among other tags."]
         },
         {
-          title: "Entrepreneurial Mindset & Goal Setting",
-          text: ["taught by Malla Haridat, Breakthrough Business Coach"]
-        },
-        {
-          title: "Growing and Scaling Your Business",
-          text: ["taught by Scott Mason, Scott Mason LLC"]
-        },
-        {
-          title: "Cohesive Marketing that Gains more Exposure to Increase you Bottom Line",
-          text: ["taught by Debra Dixon Anderson, Light of Gold PR"]
-        },
-        {
-          title: "Is Your Brand Causing You to Lose Money?",
-          text: ["taught by Katanni Bramhan, The K District"]
-        },
-        {
-          title: "Effective Tactics that Will Make You a Sales Superstar",
-          text: ["taught by Adrian Miller, Adrian Miller Sales Training"]
-        },
-        {
-          title: "About Light of Gold PR, Marketing, and Consulting LLC",
-          text: ["Light of Gold PR, Marketing and Consulting LLC, is a MWBE (City certified Minority and Women Business Enterprise), specializes in PR (Public Relations), Marketing, Consulting, Branding & Digital products & services, Web, Video and TV Commercials, as well as Events and Social Media Management.", "Light of Gold PR, Marketing, and Consulting LLC. provides innovative solutions and creative opportunities for your products and services to be promoted to the public consistently. They enhance your image, give you more visibility, and save your organization money! They can increase the overall profitability by positioning your company in front of your target market."]
+          title: "History",
+          text: ["Founded by digital media pioneer Media Bureau Inc in 2007, the Philadelphia Independent Film Festival’s (PIFF) birth was a direct result of a colliding critical mass of independent digital film and media, and a swift reaction to the perceived demand to “experience” it. The goal was to establish an event environment to discuss film and its digital path while always trying to innovate at the leading edge. The festival incubated from the then omni-present (#uff) underground film forum. The forum had been meeting off and on since the inception of the Media Bureau in 1997 and was the first place in PA to regularly produce, screen, and stream digital films and discuss the art of digital storytelling at the intersection of digital media and technology. No other place existed like it at the time in Philadelphia and the tri-state area.",
+            "Through a steady stream of incredibly in the moment original content and technology grew the rare appreciation for film in ways that we never had thought of. It was not a passive experience anymore. With this we realized we were taking part in Philadelphia’s transformation, from analog to digital content production, and in turn were witnessing the birth of a new (digital) storytelling technique. The audience reaction was instant.",
+            "This analog to digital media transition (adoption) was complete across the consumer market place as early as 2006 (just in time to adjust via the great recession) and was a strategic reason to launch the festival when we did. By this time, MBN had fully engaged in digital media history from a uniquely Philadelphian, old city (historical) perspective. Our ecosystem had been established via design and by “request” and was defined by our ability to reach our layered and displaced digital communities on demand. We have been fortunate to be able to follow and peer in to the many journeys of countless storytellers, innovators, creative’s, and filmmakers, in all formats, across many borders, over 20+ years. We are now screening/discussing digital film from a unique pertch – the Democratization of Content.",
+            "Digital filmmaking has taught the festival many things. Most importantly, perhaps, it has opened the minds of possibility for anybody to exercise their right to shoot and post “their story”. This was how we were able to coin the term in 2008, Real Time Documentary, to help our filmmakers better place their experiences in the context of a narrative, yet obviously documentary film. The festival was conceived to help enable this type of creative cipher to know no cinematic bounds.",
+            "The Philadelphia Independent Film Festival (PIFF) is in its thirteenth year of operation. Each year, the festival has grown, and adds to its knowledge bank a diverse selection of unknown national and international films. 95% of the films the festival screens during its 4+ day festival are world and local premiers while an average of 70% +/- are world premiers."]
         }
       ],
       tickets: event.ticket,

@@ -486,14 +486,7 @@ const TicketSelection = () => {
 
   let promoOption;
   if (!promoCodeDetails.available) {
-    promoOption = (
-      <Aux>
-        <div style={{ color: "red", fontSize: "16px" }}>
-          No promo codes exist for this event
-        </div>
-        {controlData}
-      </Aux>
-    );
+    promoOption = null;
   } else if (promoCodeDetails.available && promoCodeDetails.applied) {
     promoOption = (
       <Aux>

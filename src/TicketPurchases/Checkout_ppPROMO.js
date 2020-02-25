@@ -312,6 +312,7 @@ const Checkout = props => {
                   {
                     reference_id: eventDetails.eventNum,
                     description: eventDetails.eventName,
+                    payment_descriptor: eventDetails.eventNum,
                     amount: {
                       currency_code: "USD",
                       value: orderTotals.totalPurchaseAmount.toString(),

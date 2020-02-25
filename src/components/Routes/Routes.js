@@ -6,7 +6,8 @@ import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
-import EventDetailPhilly from "../../Events/EventDetailPhilly";
+import EventDetailLight from "../../Events/EventDetailLight";
+import EventDetailPIFF from "../../Events/EventDetailPIFF";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
@@ -26,6 +27,8 @@ import LogoC from "../../assets/BlueLettering_TransparentBackground/BlueLetterin
 const Layout = () => {
   return (
     <Aux>
+
+
       <Route
         path="/"
         exact
@@ -83,6 +86,7 @@ const Layout = () => {
         )}
       />
 
+
       <Route
         path="/checkout_bt"
         exact
@@ -92,6 +96,8 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+
+
       <Route
         path="/checkout_pp"
         exact
@@ -110,6 +116,8 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+
+
       <Route
         path="/ed/"
         render={routeProps => (
@@ -124,18 +132,33 @@ const Layout = () => {
         )}
       />
       <Route
-        path="/edphilly/"
+        path="/edl/"
         render={routeProps => (
           <React.Fragment>
             <OSDHeader
               positioning="floating"
               logoType={LogoC}
             ></OSDHeader>
-            <EventDetailPhilly />
+            <EventDetailLight />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
       />
+      <Route
+        path="/edf/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeader
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeader>
+            <EventDetailPIFF />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
+
+
       <Route
         path="/et/"
         render={routeProps => (
@@ -144,7 +167,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
         path="/etPROMO/"
         render={routeProps => (
@@ -153,6 +175,8 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+
+
     </Aux>
   );
 };

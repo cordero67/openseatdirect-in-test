@@ -1,6 +1,6 @@
 .MainContainer {
   font-family: "Roboto", sans-serif;
-  background-color: blue;
+  background-color: white;
   padding-top: 100px;
   padding-bottom: 40px;
 }
@@ -23,15 +23,8 @@
 }
 
 .VideoSection {
-  background-color: blue;
   text-align: center;
-}
-
-.VideoSection2 {
-  text-align: center;
-  background-color: blue;
-  width: 420px;
-  height: 236px;
+  padding-top: 10px;
 }
 
 @media (max-width: 383px) {
@@ -39,10 +32,7 @@
     width: auto;
   }
   .VideoSection {
-    width: 310;
-    height: 174px;
-  }
-  .VideoSection2 {
+    text-align: center;
     width: 310;
     height: 174px;
   }
@@ -53,16 +43,16 @@
     width: auto;
   }
   .VideoSection {
-    width: 330;
-    height: 185px;
-  }
-  .VideoSection2 {
+    text-align: center;
     width: 330;
     height: 185px;
   }
 }
 
 @media (max-width: 420px) {
+  .MainGrid {
+    width: auto;
+  }
   .SectionHeader {
     text-align: left;
     padding-left: 35px;
@@ -73,16 +63,13 @@
   .MainGrid {
     width: auto;
   }
+  .VideoSection {
+    text-align: center;
+    width: 420;
+    height: 236px;
+  }
   .SectionHeader {
     font-size: 18px;
-  }
-  .VideoSection {
-    width: 420;
-    height: 236px;
-  }
-  .VideoSection2 {
-    width: 420;
-    height: 236px;
   }
 }
 
@@ -95,10 +82,7 @@
     padding-left: 35px;
   }
   .VideoSection {
-    width: 640;
-    height: 360px;
-  }
-  .VideoSection2 {
+    text-align: center;
     width: 640;
     height: 360px;
   }

@@ -40,7 +40,7 @@ export const OrderConfirmationTT = props => {
           processed.
           <br></br>
           <br></br>
-          <div style={{ paddingLeft: "30px" }}>
+          <div className={styles.OrderConfirmItems}>
             <span style={{ textDecoration: "underline", fontWeight: "600" }}>
               Event Details
             </span>
@@ -58,7 +58,7 @@ export const OrderConfirmationTT = props => {
             <br></br>
           </div>
           <br></br>
-          <div style={{ paddingLeft: "30px" }}>
+          <div className={styles.OrderConfirmItems}>
             <span style={{ textDecoration: "underline", fontWeight: "600" }}>
               Order Details
             </span>
