@@ -6,7 +6,8 @@ import Event from "./Event/Event";
 import Modal from "./Modal/Modal";
 
 import Logo from "./NEWPIC.png";
-import LogoNew from "./Light of Gold PR Logo.png"
+import LogoNew from "./Light of Gold PR Logo.png";
+import LightLogo from "./LightFull2X1.png";
 
 const eventData = [
   {
@@ -23,7 +24,7 @@ const eventData = [
     image: "https://openseatdirect.com/api/event/photo/e/10056046773",
     title: "HaHa For Hire: The Lineup",
     eventNum: "10056046773",
-    date: "Fri, Feb 28, 2020: 7:30 pm",
+    date: "Thu, Feb 27, 2020: 7:30 pm",
     description: "description1",
     location: "Voix Lounge, Philadelphia, PA",
     url: "etPROMO/hahaforhire-presents-the-lineup?eventID=85819827131",
@@ -40,7 +41,7 @@ const eventData = [
     available: true
   },
   {
-    image: LogoNew,
+    image: LightLogo,
     title: "Gold Women's Business Connect Conference",
     eventNum: "",
     date: "Friday, March 20th, 2020",
