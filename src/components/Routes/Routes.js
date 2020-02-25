@@ -4,28 +4,31 @@ import { Route } from "react-router-dom";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
-import ContactUs from "../ContactUs/ContactUs";
 import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
-import EventDetailPhilly from "../../Events/EventDetailPhilly";
+import EventDetailLight from "../../Events/EventDetailLight";
+import EventDetailPIFF from "../../Events/EventDetailPIFF";
+import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO";
+import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
 
 import OSDHeader from "../Headers/OSDHeader";
 import OSDFooter from "../Footers/OSDFooter";
 
-import LogoA from "../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_1024.png";
-import LogoB from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_1024.png";
+//import LogoA from "../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_1024.png";
+//import LogoB from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_1024.png";
 import LogoC from "../../assets/BlueLettering_TransparentBackground/BlueLettering_TransparentBackground_1024.png";
-import LogoD from "../../assets/BlackandWhite/Black_and_White_1024.png";
-import LogoE from "../../assets/BlackandWhite_TransparentBackground/Black_and_White_TransparentBackground_1024.png";
+//import LogoD from "../../assets/BlackandWhite/Black_and_White_1024.png";
+//import LogoE from "../../assets/BlackandWhite_TransparentBackground/Black_and_White_TransparentBackground_1024.png";
 
 const Layout = () => {
   return (
     <Aux>
+
+
       <Route
         path="/"
         exact
@@ -83,6 +86,7 @@ const Layout = () => {
         )}
       />
 
+
       <Route
         path="/checkout_bt"
         exact
@@ -92,6 +96,8 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+
+
       <Route
         path="/checkout_pp"
         exact
@@ -110,6 +116,8 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+
+
       <Route
         path="/ed/"
         render={routeProps => (
@@ -124,18 +132,33 @@ const Layout = () => {
         )}
       />
       <Route
-        path="/edphilly/"
+        path="/edl/"
         render={routeProps => (
           <React.Fragment>
             <OSDHeader
               positioning="floating"
               logoType={LogoC}
             ></OSDHeader>
-            <EventDetailPhilly />
+            <EventDetailLight />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
       />
+      <Route
+        path="/edf/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeader
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeader>
+            <EventDetailPIFF />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
+
+
       <Route
         path="/et/"
         render={routeProps => (
@@ -144,7 +167,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
       <Route
         path="/etPROMO/"
         render={routeProps => (
@@ -153,6 +175,17 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+      
+      <Route
+        path="/ev/"
+        render={routeProps => (
+          <React.Fragment>
+            <TicketSelection />
+          </React.Fragment>
+        )}
+      />
+
+
     </Aux>
   );
 };

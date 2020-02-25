@@ -13,7 +13,7 @@ const eventData = [
     image: "https://openseatdirect.com/api/event/photo/e/10056046773",
     title: "HaHa For Hire: Comedy Showcase & Open Mic",
     eventNum: "",
-    date: "Wed, Mar 6, 2020: 8:00 PM",
+    date: "Wed, Feb 12, 2020 - 8:00 PM",
     description: "description2",
     location: "Voix Lounge, Philadelphia, PA",
     url: "",
@@ -23,10 +23,10 @@ const eventData = [
     image: "https://openseatdirect.com/api/event/photo/e/10056046773",
     title: "HaHa For Hire: The Lineup",
     eventNum: "10056046773",
-    date: "Thu, Feb 27, 2020: 7:30 PM",
+    date: "Fri, Feb 28, 2020: 7:30 pm",
     description: "description1",
     location: "Voix Lounge, Philadelphia, PA",
-    url: "etPROMO/ha_ha_for_hire?eventID=85819827131",
+    url: "etPROMO/hahaforhire-presents-the-lineup?eventID=85819827131",
     available: "true"
   },
   {
@@ -36,17 +36,17 @@ const eventData = [
     date: "May 6-9, 2020: All Day Event",
     description: "description3",
     location: "Philadelphia, PA",
-    url: "edphilly/PIFF_Philly_Interantional_Film_Festival?eventID=86753091234",
+    url: "edf/PIFF-philadelphia-independent-film-festival?eventID=64064955878",
     available: true
   },
   {
     image: LogoNew,
     title: "Gold Women's Business Connect Conference",
     eventNum: "",
-    date: "Fri, Mar 20, 2020: 8:30 PM",
+    date: "Friday, March 20th, 2020",
     description: "description3",
     location: "Bryant Park, New York City",
-    url: "ed/light_of_gold?eventID=46017305135",
+    url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
     available: true
   }
 ];
