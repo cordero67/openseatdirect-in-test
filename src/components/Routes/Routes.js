@@ -8,12 +8,14 @@ import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
 import EventDetailLight from "../../Events/EventDetailLight";
 import EventDetailPIFF from "../../Events/EventDetailPIFF";
+import EventDetailHaHa from "../../Events/EventDetailHaHa";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
+import TicketSelectionPROMOADV from "../../TicketPurchases/TicketSelectionPROMOADV.js";
 
 import OSDHeader from "../Headers/OSDHeader";
 import OSDFooter from "../Footers/OSDFooter";
@@ -157,6 +159,19 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+      <Route
+        path="/edh/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeader
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeader>
+            <EventDetailHaHa />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
 
 
       <Route
@@ -175,15 +190,20 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-      
       <Route
-        path="/ev/"
+        path="/etPROMOADV/"
         render={routeProps => (
           <React.Fragment>
-            <TicketSelection />
+            <TicketSelectionPROMOADV />
           </React.Fragment>
         )}
       />
+
+
+
+
+
+      
 
 
     </Aux>

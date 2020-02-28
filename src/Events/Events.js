@@ -28,7 +28,7 @@ const eventData = [
     date: "Thu, Feb 27, 2020: 7:30 PM",
     description: "description1",
     location: "Voix Lounge, Philadelphia, PA",
-    url: "etPROMO/hahaforhire-presents-the-lineup?eventID=85819827131",
+    url: "edh/hahaforhire-presents-the-lineup?eventID=85819827131",
     available: true
   },
   {
@@ -48,7 +48,7 @@ const eventData = [
     date: "Fri, Mar, 2020: 8:30 AM",
     description: "description3",
     location: "Bryant Park, New York City",
-    url: "edl/2020-gold-women-s-business-connect-conference?eventID=46017305135",
+    url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
     available: true
   }
 ];
