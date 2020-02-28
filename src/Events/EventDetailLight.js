@@ -129,10 +129,10 @@ const EventDetail = props => {
       eventUrl: event.eventUrl,
       location: {
         venueName: event.locationVenueName,
-        address: ["Berkeley College",
-          "Bryant Park 2nd Fl.",
+        address: ["Berkeley College - Bryant Park",
           "12 E 41st St.",
-          "between Madison and 5th Ave"],
+          "(between Madison and 5th Ave)",
+          "2nd Fl."],
         city: event.locationCity,
         state: event.locationState,
         zipPostalCode: event.locationZipPostalCode,
@@ -279,7 +279,7 @@ const EventDetail = props => {
   if (showLargerDoublePane && !isLoadingEvent) {
     summaryPlacard = (
       <div className={styles.SummaryPlacard}>
-        <div className={styles.SummaryDetails}>
+        <div className={styles.SummaryDetailsLight}>
           <div className={styles.Month}>{dateFormat(eventDetails.startDateTime, "mmm", true).toUpperCase()}</div>
           <div className={styles.Date}>{dateFormat(eventDetails.startDateTime, "dd", true).toUpperCase()}</div>
           <div className={styles.Event}>
@@ -287,7 +287,8 @@ const EventDetail = props => {
           </div>
           <div className={styles.Presenter}>by {eventDetails.organizer}</div>
         </div>
-        <div className={styles.TicketRange}>
+        <div className={styles.TicketRangeLight}>
+          <div style={{ color: "blue", fontWeight: "500"}}>$30 Early Bird through Mar 13</div>
           <div className={styles.Prices}>{ticketPriceRange}</div>
         </div>
       </div>
@@ -343,7 +344,8 @@ const EventDetail = props => {
   let ticketDisplay;
   if (!showLargerDoublePane) {
     ticketDisplay = (
-      <div className={styles.TicketGrid}>
+      <div className={styles.TicketGridLight}>
+        <div className={styles.PriceRange}><span style={{ color: "blue", fontWeight: "500"}}>$30 Early Bird Special through Mar 13</span></div>
         <div className={styles.PriceRange}>{ticketPriceRange}</div>
         <div className={styles.ButtonContainer}>
           <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
@@ -352,7 +354,7 @@ const EventDetail = props => {
     );
   } else {
     ticketDisplay = (
-      <div className={styles.TicketGrid}>
+      <div className={styles.TicketGridLight}>
         <div className={styles.PriceRange}>{ticketPriceRange}</div>
         <div className={styles.ButtonContainer}>
           <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
@@ -366,18 +368,50 @@ const EventDetail = props => {
     bottomDisplay = (
       <div className={styles.LowerGrid}>
         <div className={styles.LeftLowerGrid}>
-          {eventDetails.descriptions.map(item1 => {return (
-            <Aux>
-              <div className={styles.TitleLeft}>{item1.title}</div>
-                {item1.text.map(item2 => {return (
-                <Aux>
-                  <div className={styles.TextLeft}>{item2}</div>
-                  <br></br>
-                </Aux>
-              )})}
-            </Aux>
-          )})}
+          <div className={styles.TitleLeft}>Event Description</div>
+          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!</div>
+          <br></br>
+          <br></br>
+          <div className={styles.TitleLeft}>Conference Details</div>
+          <div className={styles.TextLeft}>In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!</div>
+          <br></br>
+          <br></br>
+          <div className={styles.TitleLeft}>Breakout Sessions:</div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Entrepreneurial Mindset & Goal Setting</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Malla Haridat, Breakthrough Business Coach</span></div>
+          </div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Scott Mason, Scott Mason LLC</span></div>
+          </div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Cohesive Marketing that Gains more Exposure to Increase you Bottom Line</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Debra Dixon Anderson, Light of Gold P</span></div>
+          </div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Is Your Brand Causing You to Lose Money?</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Katanni Bramhan, The K District</span></div>
+          </div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Effective Tactics that Will Make You a Sales Superstar</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Adrian Miller, Adrian Miller Sales Training</span></div>
+          </div>
+          <br></br>
+          <br></br>
+          <div className={styles.TitleLeft}>About Light of Gold PR, Marketing, and Consulting LLC</div>
+          <div className={styles.TextLeft}>Light of Gold PR, Marketing and Consulting LLC, is a MWBE (City certified Minority and Women Business Enterprise), specializes in PR (Public Relations), Marketing, Consulting, Branding & Digital products & services, Web, Video and TV Commercials, as well as Events and Social Media Management.</div>
+          <br></br>
+          <div className={styles.TextLeft}>Light of Gold PR, Marketing, and Consulting LLC. provides innovative solutions and creative opportunities for your products and services to be promoted to the public consistently. They enhance your image, give you more visibility, and save your organization money! They can increase the overall profitability by positioning your company in front of your target market.</div>
+          <br></br>
         </div>
+
+
         <div className={styles.RightLowerGrid}>
           <div className={styles.TitleRight}>Date and Time</div>
           {dateRange}
@@ -407,17 +441,47 @@ const EventDetail = props => {
           })}
           <div className={styles.TextLeft}>{eventDetails.location.city}, {eventDetails.location.state} {eventDetails.location.zipPostalCode}</div>
           <br></br>
-          {eventDetails.descriptions.map(item1 => {return (
-            <Aux>
-              <div className={styles.TitleLeft}>{item1.title}</div>
-                {item1.text.map(item2 => {return (
-                <Aux>
-                  <div className={styles.TextLeft}>{item2}</div>
-                  <br></br>
-                </Aux>
-              )})}
-            </Aux>
-          )})}
+          <div className={styles.TitleLeft}>Event Description</div>
+          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!</div>
+          <br></br>
+          <br></br>
+          <div className={styles.TitleLeft}>Conference Details</div>
+          <div className={styles.TextLeft}>In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!</div>
+          <br></br>
+          <br></br>
+          <div className={styles.TitleLeft}>Breakout Sessions:</div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Entrepreneurial Mindset & Goal Setting</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Malla Haridat, Breakthrough Business Coach</span></div>
+          </div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Scott Mason, Scott Mason LLC</span></div>
+          </div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Cohesive Marketing that Gains more Exposure to Increase you Bottom Line</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Debra Dixon Anderson, Light of Gold P</span></div>
+          </div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Is Your Brand Causing You to Lose Money?</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Katanni Bramhan, The K District</span></div>
+          </div>
+          <br></br>
+          <div style={{ paddingLeft: "10px" }}>
+            <div className={styles.TitleLeft}>Effective Tactics that Will Make You a Sales Superstar</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Adrian Miller, Adrian Miller Sales Training</span></div>
+          </div>
+          <br></br>
+          <br></br>
+          <div className={styles.TitleLeft}>About Light of Gold PR, Marketing, and Consulting LLC</div>
+          <div className={styles.TextLeft}>Light of Gold PR, Marketing and Consulting LLC, is a MWBE (City certified Minority and Women Business Enterprise), specializes in PR (Public Relations), Marketing, Consulting, Branding & Digital products & services, Web, Video and TV Commercials, as well as Events and Social Media Management.</div>
+          <br></br>
+          <div className={styles.TextLeft}>Light of Gold PR, Marketing, and Consulting LLC. provides innovative solutions and creative opportunities for your products and services to be promoted to the public consistently. They enhance your image, give you more visibility, and save your organization money! They can increase the overall profitability by positioning your company in front of your target market.</div>
+          <br></br>
         </div>
       </div>
     );
