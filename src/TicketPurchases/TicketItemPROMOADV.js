@@ -9,11 +9,12 @@ const TicketItem = props => {
       <div className={styles.LeftGrid}>
         <div>
           <div className={styles.TicketType}>{props.name.ticketName}</div>
-          <div className={styles.TicketPrices}>${props.name.promoTicketPrice.toFixed(2)}{"  "}
-            {props.name.ticketPromoCodeApplied ?
+          {props.name.ticketPromoCodeApplied ?
+            <div className={styles.TicketPrices}>
               <span style={{ textDecoration: "line-through" }}>${props.name.ticketPrice.toFixed(2)}</span>
-               : null}
-          </div>
+            </div>
+            : <div className={styles.TicketPrices}>${props.name.ticketPrice.toFixed(2)}</div>}
+
         </div>
         <div className={styles.TicketAmount}>
           <select

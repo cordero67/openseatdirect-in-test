@@ -29,6 +29,16 @@
   margin: auto;
   box-sizing: border-box;
 }
+.TicketGridLight {
+  background-color: #fff;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+  position: -webkit-sticky;
+  position: sticky;
+  font-size: 16px;
+  margin: auto;
+  box-sizing: border-box;
+}
 .MiddleGrid {
   background-color: #fff;
   margin: auto;
@@ -81,8 +91,23 @@
     font-weight: 500;
   }
 
+  .PrePriceRange {
+    margin: auto;
+    height: 34px;
+    width: 100%;
+    padding-top: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
   .TicketGrid {
     height: 100px;
+    width: 100%;
+    top: 0px;
+  }
+  .TicketGridLight {
+    height: 140px;
     width: 100%;
     top: 0px;
   }
@@ -109,6 +134,11 @@
     width: 100%;
   }
   .SummaryDetails {
+    height: auto;
+    padding: 20px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .SummaryDetailsLight {
     height: auto;
     padding: 20px 20px 20px 20px;
     box-sizing: border-box;
@@ -193,6 +223,11 @@
     width: 100%;
     top: 0px;
   }
+  .TicketGridLight {
+    height: 140px;
+    width: 100%;
+    top: 0px;
+  }
   .PriceRange {
     margin: auto;
     height: 34px;
@@ -229,6 +264,11 @@
     grid-template-columns: 66.66% 33.34%;
   }
   .SummaryDetails {
+    height: auto;
+    padding: 20px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .SummaryDetailsLight {
     height: auto;
     padding: 20px 20px 20px 20px;
     box-sizing: border-box;
@@ -311,6 +351,13 @@
     grid-template-columns: 66.66% 33.34%;
     top: 0px;
   }
+  .TicketGridLight {
+    height: 66px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+    top: 0px;
+  }
   .PriceRange {
     padding-top: 21px;
     padding-bottom: 21px;
@@ -343,8 +390,18 @@
     padding: 20px 20px 0px 20px;
     box-sizing: border-box;
   }
+  .SummaryDetailsLight {
+    height: calc(100% - 60px);
+    padding: 20px 20px 0px 20px;
+    box-sizing: border-box;
+  }
   .TicketRange {
     height: 40px;
+    padding: 0px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .TicketRangeLight {
+    height: 60px;
     padding: 0px 20px 20px 20px;
     box-sizing: border-box;
   }
@@ -430,6 +487,13 @@
     grid-template-columns: 66.66% 33.34%;
     top: 0px;
   }
+  .TicketGridLight {
+    height: 66px;
+    width: 1080px;
+    display: grid;
+    grid-template-columns: 66.66% 33.34%;
+    top: 0px;
+  }
   .LowerGrid {
     height: auto;
     width: 1080px;
@@ -442,8 +506,18 @@
     padding: 20px 20px 0px 20px;
     box-sizing: border-box;
   }
+  .SummaryDetailsLight {
+    height: calc(100% - 60px);
+    padding: 20px 20px 0px 20px;
+    box-sizing: border-box;
+  }
   .TicketRange {
     height: 40px;
+    padding: 0px 20px 20px 20px;
+    box-sizing: border-box;
+  }
+  .TicketRangeLight {
+    height: 60px;
     padding: 0px 20px 20px 20px;
     box-sizing: border-box;
   }

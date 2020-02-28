@@ -129,8 +129,8 @@ const EventDetail = props => {
       eventUrl: event.eventUrl,
       location: {
         venueName: event.locationVenueName,
-        address: ["Various Locations",
-          "across Philly"],
+        address: ["University of the Arts",
+          "320 S. Broad St."],
         city: event.locationCity,
         state: event.locationState,
         zipPostalCode: event.locationZipPostalCode,
@@ -183,7 +183,7 @@ const EventDetail = props => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
   
-  const ticketsHandler = () => {window.location.href = `/etPROMO/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`}
+  const ticketsHandler = () => {window.location.href = `/etPROMOADV/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`}
 
   let image = (
     <img
@@ -202,14 +202,14 @@ const EventDetail = props => {
     if (priceArray.length > 1) {
       ticketPriceRange = (
         <div>
-          ${Math.min(...priceArray)} - ${Math.max(...priceArray)}
+          ${Math.min(...priceArray).toFixed(2)} - ${Math.max(...priceArray).toFixed(2)}
         </div>
       )
     }
     else {
       ticketPriceRange = (
         <div>
-          ${Math.min(...priceArray)}
+          ${Math.min(...priceArray).toFixed(2)}
         </div>
       )
     }

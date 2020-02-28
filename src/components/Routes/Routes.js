@@ -15,6 +15,7 @@ import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
+import TicketSelectionPROMOADV from "../../TicketPurchases/TicketSelectionPROMOADV.js";
 
 import OSDHeader from "../Headers/OSDHeader";
 import OSDFooter from "../Footers/OSDFooter";
@@ -189,6 +190,20 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+      <Route
+        path="/etPROMOADV/"
+        render={routeProps => (
+          <React.Fragment>
+            <TicketSelectionPROMOADV />
+          </React.Fragment>
+        )}
+      />
+
+
+
+
+
+      
 
 
     </Aux>
