@@ -8,6 +8,7 @@ import styles from "./EventDetail.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
+import HaHaLogo from "./HaHaForHireFeb.png";
 
 // defines an event's NON ticket type specific information
 let eventDetails;
@@ -93,7 +94,7 @@ const EventDetail = props => {
         getEventImage(eventID)
           .then(res => {
         console.log("EVENT IMAGE received from Server in 'getEventData()': ", res);
-            eventLogo = res;
+            eventLogo = HaHaLogo;
           })
           .catch(err => {
             eventLogo = DefaultLogo;
@@ -121,7 +122,7 @@ const EventDetail = props => {
       eventNum: event.eventNum,
       eventTitle: event.eventTitle,
       eventStatus: event.eventStatus,
-      organizer: "Light of Gold PR, Marketing, and Consulting",
+      organizer: "Mike Salvi",
       organizerEmail: event.accountId.accountEmail,
       startDateTime: event.startDateTime,
       endDateTime: event.endDateTime,
@@ -129,10 +130,8 @@ const EventDetail = props => {
       eventUrl: event.eventUrl,
       location: {
         venueName: event.locationVenueName,
-        address: ["Berkeley College",
-          "Bryant Park 2nd Fl.",
-          "12 E 41st St.",
-          "between Madison and 5th Ave"],
+        address: ["Voix Karaoke Lounge",
+          "2825 Cottman Ave #1"],
         city: event.locationCity,
         state: event.locationState,
         zipPostalCode: event.locationZipPostalCode,
@@ -140,46 +139,22 @@ const EventDetail = props => {
       },
       descriptions: [
         {
-          title: "Event Description",
-          text: ["The 2020 Gold Women’s Business Connect Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!"]
+          title: "The Lineup",
+          text: ["A monthly comedy showcase featuring local comedians. This month we celebrate the birthday of Lawrence Arnell. Lawrence will MC this month's show which features special guest OC Diesel. Also performing will be HaHaForHire's comedians: Che Sasa, Jack WIllis, Rich Owen and their ruthless leader Mike Salvi."]
         },
         {
-          title: "Conference Details",
-          text: ["In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!"]
+          title: "Lawrence Arnell",
+          text: ["Lawrence Arnell is a rapper and singer from Philadelphia, Pennsylvania. He first collaborated with the Jedi Mind Tricks camp on Violent By Design under the name Diamondback in 2000. In 2014, he joined Army of the Pharaohs and appeared on their studio albums In Death Reborn and Heavy Lies the Crown."]
         },
         {
-          title: "Entrepreneurial Mindset & Goal Setting",
-          text: ["taught by Malla Haridat, Breakthrough Business Coach"]
+          title: "Mike Salvi",
+          text: ["Mike Salvi, better known as 'Chico Mike', is the fearless leading of HaHaForHire. There are rumors that he is a great skateboarder and a really nice kid. But then again, those are just rumors."]
         },
-        {
-          title: "Growing and Scaling Your Business",
-          text: ["taught by Scott Mason, Scott Mason LLC"]
-        },
-        {
-          title: "Cohesive Marketing that Gains more Exposure to Increase you Bottom Line",
-          text: ["taught by Debra Dixon Anderson, Light of Gold PR"]
-        },
-        {
-          title: "Is Your Brand Causing You to Lose Money?",
-          text: ["taught by Katanni Bramhan, The K District"]
-        },
-        {
-          title: "Effective Tactics that Will Make You a Sales Superstar",
-          text: ["taught by Adrian Miller, Adrian Miller Sales Training"]
-        },
-        {
-          title: "About Light of Gold PR, Marketing, and Consulting LLC",
-          text: [
-            "Light of Gold PR, Marketing and Consulting LLC, is a MWBE (City certified Minority and Women Business Enterprise), specializes in PR (Public Relations), Marketing, Consulting, Branding & Digital products & services, Web, Video and TV Commercials, as well as Events and Social Media Management.",
-            "Light of Gold PR, Marketing, and Consulting LLC. provides innovative solutions and creative opportunities for your products and services to be promoted to the public consistently. They enhance your image, give you more visibility, and save your organization money! They can increase the overall profitability by positioning your company in front of your target market."
-          ]
-        }
       ],
       tickets: event.ticket,
     };
     console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
   };
-
 
 //DID NOT MAKE A CHANGE
   const stylingUpdate = (inWidth, inHeight) => {

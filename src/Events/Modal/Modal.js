@@ -17,7 +17,7 @@ const Modal = props => {
       >
         <div>
           Details for the {props.event.title} event are currently not
-          avaialable.
+          available.
         </div>
         <br></br>
         <div>

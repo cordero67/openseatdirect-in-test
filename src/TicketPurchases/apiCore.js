@@ -37,7 +37,7 @@ export const getEventImage = eventId => {
   })
     .then(handleErrors)
     .then(response => {
-      //console.log("Inside apiCore and the 'getEventImage' .then block");
+      console.log("Received IMAGE");
       return response.url;
     })
     .catch(err => {

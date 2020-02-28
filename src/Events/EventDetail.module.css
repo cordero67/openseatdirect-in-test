@@ -63,8 +63,8 @@
     width: 100%;
   }
   .ImageBox {
-    max-height: auto;
-    max-width: 100%;
+    height: auto;
+    width: 100%;
   }
   .SummaryPlacard {
     height: 100%;
@@ -180,8 +180,8 @@
     width: 100%;
   }
   .ImageBox {
-    max-height: auto;
-    max-width: 100%;
+    height: auto;
+    width: 100%;
   }
   .SummaryPlacard {
     height: 100%;
@@ -296,8 +296,8 @@
     grid-template-columns: 66.66% 33.34%;
   }
   .ImageBox {
-    max-height: auto;
-    max-width: 100%;
+    height: auto;
+    width: 100%;
   }
   .SummaryPlacard {
     height: 100%;
@@ -416,8 +416,8 @@
     grid-template-columns: 66.66% 33.34%;
   }
   .ImageBox {
-    max-height: auto;
-    max-width: 100%;
+    height: auto;
+    width: 100%;
   }
   .SummaryPlacard {
     height: 100%;

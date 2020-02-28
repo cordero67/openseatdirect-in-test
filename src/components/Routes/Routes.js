@@ -8,6 +8,7 @@ import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
 import EventDetailLight from "../../Events/EventDetailLight";
 import EventDetailPIFF from "../../Events/EventDetailPIFF";
+import EventDetailHaHa from "../../Events/EventDetailHaHa";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
@@ -153,6 +154,19 @@ const Layout = () => {
               logoType={LogoC}
             ></OSDHeader>
             <EventDetailPIFF />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
+      <Route
+        path="/edh/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeader
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeader>
+            <EventDetailHaHa />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}

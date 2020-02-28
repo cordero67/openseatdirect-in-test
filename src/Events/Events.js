@@ -5,35 +5,37 @@ import styles from "./Events.module.css";
 import Event from "./Event/Event";
 import Modal from "./Modal/Modal";
 
-import Logo from "./NEWPIC.png";
-import LogoNew from "./Light of Gold PR Logo.png"
+import LightLogo from "./LightEvent.png";
+import HaHaLogo from "./HaHaForHireFeb.png";
+import HaHaComedy from "./HaHaForHireComedyNight.png";
+import PIFFLogo from "./PIFFLogo.png"
 
 const eventData = [
   {
-    image: "https://openseatdirect.com/api/event/photo/e/10056046773",
-    title: "HaHa For Hire: Comedy Showcase & Open Mic",
-    eventNum: "",
-    date: "Wed, Feb 12, 2020 - 8:00 PM",
+    image: HaHaComedy,
+    title: "Laugh Lounge - Weekly Showcase & Open Mic",
+    eventNum: "20806407169",
+    date: "Every Wednesday: 8:00 PM",
     description: "description2",
     location: "Voix Lounge, Philadelphia, PA",
-    url: "",
-    available: false
+    url: "etPROMO/laugh-lounge-weekly-comedy-showcase-&-open-mic?eventID=20806407169",
+    available: true
   },
   {
-    image: "https://openseatdirect.com/api/event/photo/e/10056046773",
+    image: HaHaLogo,
     title: "HaHa For Hire: The Lineup",
-    eventNum: "10056046773",
-    date: "Fri, Feb 28, 2020: 7:30 pm",
+    eventNum: "85819827131",
+    date: "Thu, Feb 27, 2020: 7:30 PM",
     description: "description1",
     location: "Voix Lounge, Philadelphia, PA",
-    url: "etPROMO/hahaforhire-presents-the-lineup?eventID=85819827131",
-    available: "true"
+    url: "edh/hahaforhire-presents-the-lineup?eventID=85819827131",
+    available: true
   },
   {
     image: "https://openseatdirect.com/api/event/photo/e/81295501293",
     title: "Cocina Candela - Private Dinner",
     eventNum: "81295501293",
-    date: "Wed, Jan 29, 2020 - 7:00 PM",
+    date: "Wed, Jan 29, 2020: 7:00 PM",
     description: "description4",
     location: "Montclair, NJ",
     url: "etPROMO/cocina-candela-chef-s-table-dinner?eventID=81295501293",
@@ -51,20 +53,20 @@ const eventData = [
     available: false
   },
   {
-    image: Logo,
+    image: PIFFLogo,
     title: "Philadelphia Independent Film Festival #13",
     eventNum: "",
-    date: "May 6-9, 2020: All Day Event",
+    date: "May 6-9, 2020: 4 Day Event",
     description: "description3",
     location: "Philadelphia, PA",
     url: "edf/PIFF-philadelphia-independent-film-festival?eventID=64064955878",
     available: true
   },
   {
-    image: LogoNew,
+    image: LightLogo,
     title: "Gold Women's Business Connect Conference",
     eventNum: "",
-    date: "Friday, March 20th, 2020",
+    date: "Fri, Mar, 2020: 8:30 AM",
     description: "description3",
     location: "Bryant Park, New York City",
     url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
@@ -74,10 +76,10 @@ const eventData = [
     image: "https://www.openseatdirect.com/api/event/photo/e/60909827273",
     title: "Billy Goat Hall of Fame Induction Ceremony",
     eventNum: "60909827273",
-    date: "Fri, Jan 31, 2020 - 7:30 PM",
+    date: "Fri, Jan 31, 2020: 7:30 PM",
     description: "description6",
     location: "Chicago, IL",
-    url: "etPROMO/billy_goat_tavern?eventID=60909827273",
+    url: "etPROMO/billy-goat-tavern?eventID=60909827273",
     available: true
   }
 ];
