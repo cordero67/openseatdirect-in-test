@@ -158,7 +158,7 @@ const Checkout = props => {
           sku: item.ticketID,
           unit_amount: {
             currency_code: "USD",
-            value: item.promoTicketPrice.toString()
+            value: item.ticketPrice.toString()
           },
           quantity: item.ticketsSelected.toString()
         };
@@ -202,11 +202,13 @@ const Checkout = props => {
       zipPostalCode: eventDetails.location.zipPostalCode,
       startDateTime: eventDetails.startDateTime,
       endDateTime: eventDetails.endDateTime,
-      paypalEmail: details.payer.email_address,//??
-      firstName: details.payer.name.given_name,//??
-      lastName: details.payer.name.surname,//??
+      paypalEmail: details.payer.email_address,
+      firstName: details.payer.name.given_name,
+      lastName: details.payer.name.surname,
       numTickets: orderTotals.ticketsPurchased,
-      totalAmount: orderTotals.totalPurchaseAmount,
+      fullAmount: orderTotals.fullPurchaseAmount,
+      discount: orderTotals.discountAmount,
+      totalAmount: orderTotals.finalPurchaseAmount,
       tickets: ticketInfo,
       userEmail: eventDetails.organizerEmail,
     };
@@ -234,8 +236,8 @@ const Checkout = props => {
 
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
-    if (!showLoadingSpinner && !show && orderTotals.totalPurchaseAmount > 0) {
-      return <div>${orderTotals.totalPurchaseAmount}</div>;
+    if (!showLoadingSpinner && !show && orderTotals.finalPurchaseAmount > 0) {
+      return <div>${orderTotals.finalPurchaseAmount}</div>;
     } else {
       return null;
     }
@@ -275,9 +277,9 @@ const Checkout = props => {
 
   // defines and sets "orderSummary" which is displayed in right panel
   let orderSummary;
-  if (!showLoadingSpinner && orderTotals.totalPurchaseAmount > 0) {
+  if (!showLoadingSpinner && orderTotals.finalPurchaseAmount > 0) {
     orderSummary = <OrderSummary ticketOrder={ticketInfo} />;
-  } else if (!showLoadingSpinner && orderTotals.totalPurchaseAmount <= 0) {
+  } else if (!showLoadingSpinner && orderTotals.finalPurchaseAmount <= 0) {
     orderSummary = (
       <div className={styles.EmptyOrderSummary}>
         <FontAwesomeIcon
@@ -307,7 +309,7 @@ const Checkout = props => {
   const showPayPal = () => (
     // loads PayPal Smart buttons if order exists
     <div>
-      {orderTotals.totalPurchaseAmount > 0 ? (
+      {orderTotals.finalPurchaseAmount > 0 ? (
         <div>
           <PayPalButton
             onButtonReady={() => {}}
@@ -320,11 +322,16 @@ const Checkout = props => {
                     payment_descriptor: eventDetails.eventNum,
                     amount: {
                       currency_code: "USD",
-                      value: orderTotals.totalPurchaseAmount.toString(),
+                      value: orderTotals.finalPurchaseAmount.toString(),
+
                       breakdown: {
                         item_total: {
                           currency_code: "USD",
-                          value: orderTotals.totalPurchaseAmount.toString()
+                          value: orderTotals.fullPurchaseAmount.toString()
+                        },
+                        discount: {
+                          currency_code: "USD",
+                          value: orderTotals.discountAmount.toString()
                         }
                       }
                     },
