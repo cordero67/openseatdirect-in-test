@@ -143,7 +143,7 @@ const TicketSelection = () => {
     let tempGatewayURL;
     // sets the checkout page url
     if (event.accountId.paymentGatewayType === "PayPalExpress") {
-      tempGatewayURL = "/checkout_ppPROMO";
+      tempGatewayURL = "/checkout_ppPROMOADV";
     } else if (event.accountId.paymentGatewayType === "Braintree") {
       tempGatewayURL = "/checkout_bt";
     } else {
@@ -255,7 +255,9 @@ const TicketSelection = () => {
   const loadOrderTotals = event => {
     setOrderTotals({
       ticketsPurchased: 0,
-      totalPurchaseAmount: 0,
+      fullPurchaseAmount: 0,
+      discountAmount: 0,
+      finalPurchaseAmount: 0,
       promoCodeApplied: ""
     });
   }
@@ -263,16 +265,22 @@ const TicketSelection = () => {
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTOtals"
   const updateOrderTotals = (promoCode) => {
     let tempTicketsPurchased = 0;
-    let tempTotalPurchaseAmount = 0;
+    let tempFullAmount = 0;
+    let tempDiscountAmount = 0;
+    let tempFinalAmount = 0;
     let tempTicketInfo2 = [...ticketInfo];
     tempTicketInfo2.forEach(item => {
         tempTicketsPurchased = tempTicketsPurchased + parseInt(item.ticketsSelected);
-        tempTotalPurchaseAmount = tempTotalPurchaseAmount + (item.ticketsSelected * item.promoTicketPrice);
+        tempFullAmount = tempFullAmount + (item.ticketsSelected * item.ticketPrice);
+        tempFinalAmount = tempFinalAmount + (item.ticketsSelected * item.promoTicketPrice);
+        tempDiscountAmount = tempFullAmount - tempFinalAmount;
     });
     let tempOrderTotals;
     tempOrderTotals = {...orderTotals};
     tempOrderTotals.ticketsPurchased = tempTicketsPurchased;
-    tempOrderTotals.totalPurchaseAmount = tempTotalPurchaseAmount;
+    tempOrderTotals.fullPurchaseAmount = tempFullAmount;
+    tempOrderTotals.discountAmount = tempDiscountAmount;
+    tempOrderTotals.finalPurchaseAmount = tempFinalAmount;
     if (promoCode) {
       tempOrderTotals.promoCodeApplied = promoCode;
     }
@@ -454,7 +462,10 @@ const TicketSelection = () => {
     setTicketInfo(tempTicketInfo);
     let tempOrderTotals;
     tempOrderTotals = {...orderTotals};
-    tempOrderTotals.totalPurchaseAmount = tempTotalPurchaseAmount;
+    tempOrderTotals.fullPurchaseAmount = tempTotalPurchaseAmount;
+    tempOrderTotals.finalPurchaseAmount = tempTotalPurchaseAmount;
+    tempOrderTotals.discountAmount = 0;
+
     tempOrderTotals.promoCodeApplied = "";
     setOrderTotals(tempOrderTotals);
   }
@@ -640,8 +651,8 @@ const TicketSelection = () => {
   // determines whether or not to display the purchase amount
   // "showDoublePane" must be false and "orderTotals.totalPurchaseAmount" must be > 0
   const totalAmount = show => {
-    if (!isLoadingEvent && !show && orderTotals.totalPurchaseAmount > 0) {
-      return <div>${orderTotals.totalPurchaseAmount}</div>;
+    if (!isLoadingEvent && !show && orderTotals.finalPurchaseAmount > 0) {
+      return <div>${orderTotals.finalPurchaseAmount}</div>;
     } else return null;
   };
   // determines whether or not to display the number of tickets purchased
@@ -700,7 +711,7 @@ const TicketSelection = () => {
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let checkoutButton;
-  if (!isLoadingEvent && orderTotals.totalPurchaseAmount > 0) {
+  if (!isLoadingEvent && orderTotals.finalPurchaseAmount > 0) {
     checkoutButton = (
       <button
         onClick={purchaseTicketHandler}
@@ -720,9 +731,9 @@ const TicketSelection = () => {
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let orderSummary;
-  if (!isLoadingEvent && orderTotals.totalPurchaseAmount > 0) {
+  if (!isLoadingEvent && orderTotals.finalPurchaseAmount > 0) {
     orderSummary = <OrderSummary ticketOrder={ticketInfo} />;
-  } else if (!isLoadingEvent && orderTotals.totalPurchaseAmount <= 0) {
+  } else if (!isLoadingEvent && orderTotals.finalPurchaseAmount <= 0) {
     orderSummary = (
       <div className={styles.EmptyOrderSummary}>
         <FontAwesomeIcon

@@ -13,6 +13,7 @@ import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
+import CheckoutPPPROMOADV from "../../TicketPurchases/Checkout_ppPROMOADV";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
 import TicketSelectionPROMOADV from "../../TicketPurchases/TicketSelectionPROMOADV.js";
@@ -118,6 +119,15 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+      <Route
+        path="/checkout_ppPROMOADV"
+        exact
+        render={routeProps => (
+          <React.Fragment>
+            <CheckoutPPPROMOADV />
+          </React.Fragment>
+        )}
+      />
 
 
       <Route
@@ -198,14 +208,6 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
-
-
-
-
-
-      
-
-
     </Aux>
   );
 };
