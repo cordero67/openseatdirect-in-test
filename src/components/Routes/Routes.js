@@ -6,9 +6,10 @@ import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
-import EventDetailLight from "../../Events/EventDetailLight";
-import EventDetailPIFF from "../../Events/EventDetailPIFF";
 import EventDetailHaHa from "../../Events/EventDetailHaHa";
+import EventDetailTech from "../../Events/EventDetailTech";
+import EventDetailPIFF from "../../Events/EventDetailPIFF";
+import EventDetailLight from "../../Events/EventDetailLight";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
@@ -144,14 +145,14 @@ const Layout = () => {
         )}
       />
       <Route
-        path="/edl/"
+        path="/edh/"
         render={routeProps => (
           <React.Fragment>
             <OSDHeader
               positioning="floating"
               logoType={LogoC}
             ></OSDHeader>
-            <EventDetailLight />
+            <EventDetailHaHa />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
@@ -170,18 +171,32 @@ const Layout = () => {
         )}
       />
       <Route
-        path="/edh/"
+        path="/edt/"
         render={routeProps => (
           <React.Fragment>
             <OSDHeader
               positioning="floating"
               logoType={LogoC}
             ></OSDHeader>
-            <EventDetailHaHa />
+            <EventDetailTech />
             <OSDFooter></OSDFooter>
           </React.Fragment>
         )}
       />
+      <Route
+        path="/edl/"
+        render={routeProps => (
+          <React.Fragment>
+            <OSDHeader
+              positioning="floating"
+              logoType={LogoC}
+            ></OSDHeader>
+            <EventDetailLight />
+            <OSDFooter></OSDFooter>
+          </React.Fragment>
+        )}
+      />
+
 
 
       <Route
