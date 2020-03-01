@@ -1,9 +1,57 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Order.module.css";
 
 const TicketItem = props => {
+  const selectionOption = () => {
+    let options;
+    let options2;
+    let ticketsAvailableArray = [];
+    let i;
+    let maxAmount;
+    let adjTicketsAvailable = props.name.ticketsAvailable;
+    if (props.name.ticketsAvailable < 1) {
+      adjTicketsAvailable = 0;
+    }
+
+    if (props.name.ticketsAvailable < 1) {
+      options = (<div className={styles.TicketAmount}><span style={{ color: "grey" }}>Sold Out</span></div>)
+      return options;
+    } else {
+      if (props.name.advancedTicketPricingActive && props.name.advancedTicketPricing.length > 0) {
+        maxAmount = Math.min(props.name.advancedTicketPricing.length, props.name.ticketsAvailable);
+      }
+      else if (props.name.maxTicketOrder) {
+        maxAmount = Math.min(props.name.maxTicketOrder, props.name.ticketsAvailable);
+      }
+      else {
+        maxAmount = Math.min(8, adjTicketsAvailable);
+      }
+    
+      for (i = 0; i <= maxAmount; i++) {
+        ticketsAvailableArray.push(i);
+      }
+      options = (
+        <div className={styles.TicketAmount}>
+          <select
+            type="number"
+            name="ticketsSelected"
+            required
+            value={props.name.ticketsSelected}
+            className={styles.SelectionBox}
+            onChange={props.onChange}
+          >
+          {ticketsAvailableArray.map(opt => <option>{opt}</option>)}
+          </select>
+        </div>
+      )
+      return options;
+    }
+  }
+
+  console.log("TICKETS REMAINING: ", props.name.ticketsAvailable)
+
   return (
     <Aux>
       <div className={styles.LeftGrid}>
@@ -14,28 +62,8 @@ const TicketItem = props => {
               <span style={{ textDecoration: "line-through" }}>${props.name.ticketPrice.toFixed(2)}</span>
             </div>
             : <div className={styles.TicketPrices}>${props.name.ticketPrice.toFixed(2)}</div>}
-
         </div>
-        <div className={styles.TicketAmount}>
-          <select
-            type="number"
-            name="ticketsSelected"
-            required
-            value={props.name.ticketsSelected}
-            className={styles.SelectionBox}
-            onChange={props.onChange}
-          >
-            <option>0</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-          </select>
-        </div>
+        {selectionOption()}
       </div>
       <div className={styles.EventDescription}>
         {props.name.ticketDescription}

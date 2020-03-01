@@ -8,7 +8,8 @@ import Modal from "./Modal/Modal";
 import LightLogo from "./LightEvent.png";
 import HaHaLogo from "./HaHaForHireFeb.png";
 import HaHaComedy from "./HaHaForHireComedyNight.png";
-import PIFFLogo from "./PIFFLogo.png"
+import PIFFLogo from "./PIFFLogo.png";
+import TechWeekLogo from "./TechWeek.png";
 
 const eventData = [
   {
@@ -51,6 +52,16 @@ const eventData = [
     location: "Online Charity Event",
     url: "",
     available: false
+  },
+  {
+    image: TechWeekLogo,
+    title: "PTW 2020 Philly Tech Week",
+    eventNum: "",
+    date: "May 6-9, 2020: 4 Day Event",
+    description: "description3",
+    location: "Philadelphia, PA",
+    url: "edt/PIFF-philadelphia-independent-film-festival?eventID=64064955878",
+    available: true
   },
   {
     image: PIFFLogo,

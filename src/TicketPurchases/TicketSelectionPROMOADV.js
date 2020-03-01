@@ -181,25 +181,29 @@ const TicketSelection = () => {
       console.log("NEW TICKET ELEMENT ", item.ticketName)
       let promoCodes = [];
       let advPrices = [];
+      let advPricesActive = false;
+      let minOrder = "";
+      let maxOrder = "";
       // determines if the "promoCodes" field exists
       // if field does exist it converts all codes to upper case
       if (item.promoCodesAlt) {
-        console.log("PROMO CODES ARRAY FOR THIS TICKET TYPE DO EXIST: ", item.promoCodesAlt);
         item.promoCodesAlt.forEach(item => {
           let tempPromoCodes = {code: "", amount: ""};
           tempPromoCodes.code = item.code.toUpperCase();
           tempPromoCodes.amount = item.amount;
           promoCodes.push(tempPromoCodes);
         })
-        console.log("PROMO CODES ARRAY: ", promoCodes);
       } else {
-        console.log("NO PROMO CODES ARRAY FOR THIS TICKET TYPE");
       }
       if (item.advancedTicketPricing) {
         advPrices = item.advancedTicketPricing;
-        console.log("THERE ARE ADVANCED TICKET PRICES");
-      } else {
-        console.log("THERE ARE NOT ADVANCED TICKET PRICES");
+        advPricesActive = item.useAdvancedTicketPricing;
+      }
+      if (item.maxTicketsAllowedPerOrder) {
+        maxOrder = item.maxTicketsAllowedPerOrder;
+      }
+      if (item.minTicketsAllowedPerOrder) {
+        minOrder = item.minTicketsAllowedPerOrder;
       }
       const tempTicketItem = {
         ticketID: item._id,
@@ -209,11 +213,12 @@ const TicketSelection = () => {
         ticketsAvailable: item.remainingQuantity,
         ticketPrice: item.currentTicketPrice,
         ticketsSelected: 0,
-        maxTicketOrder: item.maxTicketsAllowedPerOrder,
-        minTicketOrder: item.minTicketsAllowedPerOrder,
+        maxTicketOrder: maxOrder,
+        minTicketOrder: minOrder,
         ticketPromoCodes: promoCodes,
         ticketPromoCodeApplied: "",
         advancedTicketPricing: advPrices,
+        advancedTicketPricingActive: advPricesActive,
         promoTicketPrice: item.currentTicketPrice
       };
       tempTicketArray.push(tempTicketItem);
