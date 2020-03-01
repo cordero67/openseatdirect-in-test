@@ -33,16 +33,6 @@ const eventData = [
     available: true
   },
   {
-    image: TechWeekLogo,
-    title: "PTW 2020 Philly Tech Week",
-    eventNum: "",
-    date: "May 6-9, 2020: 4 Day Event",
-    description: "description3",
-    location: "Philadelphia, PA",
-    url: "edt/PIFF-philadelphia-independent-film-festival?eventID=64064955878",
-    available: true
-  },
-  {
     image: PIFFLogo,
     title: "Philadelphia Independent Film Festival #13",
     eventNum: "",
