@@ -148,7 +148,7 @@ const EventDetail = props => {
         },
         {
           title: "Mike Salvi",
-          text: ["Mike Salvi, better known as 'Chico Mike', is the fearless leading of HaHaForHire. There are rumors that he is a great skateboarder and a really nice kid. But then again, those are just rumors."]
+          text: ["Mike Salvi, better known as 'Chico Mike', is the fearless leader of HaHaForHire. There are rumors that he is a great skateboarder and a really nice kid. But then again, those are just rumors."]
         },
       ],
       tickets: event.ticket,

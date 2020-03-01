@@ -8,6 +8,7 @@ import styles from "./EventDetail.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
+import TechLogo from "./TechWeek.png";
 
 // defines an event's NON ticket type specific information
 let eventDetails;
@@ -93,7 +94,7 @@ const EventDetail = props => {
         getEventImage(eventID)
           .then(res => {
         console.log("EVENT IMAGE received from Server in 'getEventData()': ", res);
-            eventLogo = res;
+            eventLogo = TechLogo;
           })
           .catch(err => {
             eventLogo = DefaultLogo;
@@ -144,11 +145,11 @@ const EventDetail = props => {
         {
           title: "Premier Sponsor: $13,850 (1 available)",
           text: [
-            "a. Full page Logo in festival program and on original poster design collaboration",
+            "a. Full page Logo in Festival Program and on original poster design collaboration",
             "b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020",
             "c.	On screen logo during ALL festival screening blocks (min. 7) (pre and post roll of film)",
             "d.	Premier sponsor recognition (brand mention throughout festival “Thank you…”)",
-            "e.	:10 Video Ad during blocks and intermissions",
+            "e.	:10 Video ad during blocks and intermissions",
             "f.	Sponsor of opening and closing night event and VIP events (strategic logo placement, etc. TBD)",
             "g.	Complimentary ALL ACCESS passes / cued as audience members"
           ]
@@ -156,7 +157,7 @@ const EventDetail = props => {
         {
           title: "Closing or Opening Night Sponsor: $8,550 (2 available)",
           text: [
-            "a.	1/2 page Logo in festival Program and on original poster design",
+            "a.	1/2 page Logo in Festival Program and on original poster design",
             "b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020",
             "c.	On screen logo during 6 screening blocks (pre and post roll of film)",
             "d.	Sponsorship of closing night film",
@@ -166,12 +167,31 @@ const EventDetail = props => {
         {
           title: "Presenting Sponsor: $6,850 (2 available)",
           text: [
-            "a.	1/4 page Logo in festival Program and on original poster design",
+            "a.	1/4 page Logo in Festival Program and on original poster design",
             "b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020",
             "c.	On screen logo during 4 screening blocks (pre and post roll of film)",
             "d.	Sponsorship of specific film* (Does not include Opening and / or Closing films)",
             "e.	:10 Video ad before chosen screening block",
             "f.	6 Complimentary ALL ACCESS passes / cued as audience members"]
+        },
+        {
+          title: "Award Sponsor: $4,650 (12 available)",
+          text: [
+            "a.	1/4 page Logo in Festival Program and on original poster design",
+            "b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020",
+            "c.	On screen logo during 3 screening blocks and 1 genre winner (pre and post roll of film)",
+            "d.	Sponsorship of genre specific film and Q&A including pre and post festival promotion (TBD)",
+            "e.	:10 Video ad before chosen screening block",
+            "f.	6 Complimentary ALL ACCESS passes / cued as audience members"]
+        },
+        {
+          title: "Sponsor: $2,850 (15 available)",
+          text: [
+            "a.	1/4 page Logo in Festival Program (TBD))",
+            "b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020",
+            "c.	On screen logo during 1 screening block (pre and post roll of film)",
+            "d.	4 Complimentary ALL ACCESS passes / cued as audience members",
+            "e.	Does noy include Opening and / or Closing films"]
         }
       ],
       tickets: event.ticket,
@@ -345,7 +365,7 @@ const EventDetail = props => {
       <div className={styles.TicketGrid}>
         <div className={styles.PriceRange}>{ticketPriceRange}</div>
         <div className={styles.ButtonContainer}>
-          <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
+          <button onClick={ticketsHandler} className={styles.ButtonGreen}>Sponsorships</button>
         </div>
       </div>
     );
@@ -354,7 +374,7 @@ const EventDetail = props => {
       <div className={styles.TicketGrid}>
         <div className={styles.PriceRange}>{ticketPriceRange}</div>
         <div className={styles.ButtonContainer}>
-          <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
+          <button onClick={ticketsHandler} className={styles.ButtonGreen}>Sponsorships</button>
         </div>
       </div>
     );
@@ -364,36 +384,8 @@ const EventDetail = props => {
 
 
 /*
-          title: "Premier Sponsor: $13,850 (1 available)",
+          title: "",
           text: [
-            "a. Full page Logo in festival program and on original poster design collaboration",
-            "b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020",
-            "c.	On screen logo during ALL festival screening blocks (min. 7) (pre and post roll of film)",
-            "d.	Premier sponsor recognition (brand mention throughout festival “Thank you…”)",
-            "e.	:10 Video Ad during blocks and intermissions",
-            "f.	Sponsor of opening and closing night event and VIP events (strategic logo placement, etc. TBD)",
-            "g.	Complimentary ALL ACCESS passes / cued as audience members"
-          ]
-        },
-        {
-          title: "Closing or Opening Night Sponsor: $8,550 (2 available)",
-          text: [
-            "a.	1/2 page Logo in festival Program and on original poster design",
-            "b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020",
-            "c.	On screen logo during 6 screening blocks (pre and post roll of film)",
-            "d.	Sponsorship of closing night film",
-            "e.	:10 Video ad at beginning of Presented By… (choice)",
-            "f.	8 Complimentary ALL ACCESS passes / cued as audience members"]
-        },
-        {
-          title: "Presenting Sponsor: $6,850 (2 available)",
-          text: [
-            "a.	1/4 page Logo in festival Program and on original poster design",
-            "b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020",
-            "c.	On screen logo during 4 screening blocks (pre and post roll of film)",
-            "d.	Sponsorship of specific film* (Does not include Opening and / or Closing films)",
-            "e.	:10 Video ad before chosen screening block",
-            "f.	6 Complimentary ALL ACCESS passes / cued as audience members"]
 
 */
 
@@ -411,61 +403,92 @@ const EventDetail = props => {
           <div className={styles.TitleLeft}>Sponsorship 2020</div>
           <div className={styles.TextLeft}>The Philadelphia Independent Film Festival is a unique sponsorship opportunity. All packages are customizable and can directly interact with existing campaigns. The festival incubates a unique, active, and hardworking independent film / tech community. Let’s discuss ideas and options on how to reach your current / new audience.</div>
           <br></br>
-          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Premier Sponsor: $13,850 (1 available)</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Premier Sponsor: $13,850 <span style={{ fontSize: "16px" }}>(1 available)</span></span></div>
           <div className={styles.TextLeft}>
-          <div style={{ paddingLeft: "5px"}}>
-            a. Full page Logo in festival program and on original poster design collaboration
-            <br></br>
-            b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
-            <br></br>
-            c.	On screen logo during ALL festival screening blocks (min. 7) (pre and post roll of film)
-            <br></br>
-            d.	Premier sponsor recognition (brand mention throughout festival “Thank you…”)
-            <br></br>
-            e.	:10 Video Ad during blocks and intermissions
-            <br></br>
-            f.	Sponsor of opening and closing night event and VIP events (strategic logo placement, etc. TBD)
-            <br></br>
-            g.	Complimentary ALL ACCESS passes / cued as audience members
-          </div>
-          </div>
-          <br></br>
-          <div className={styles.TitleLeft}>Breakout Sessions:</div>
-          <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Entrepreneurial Mindset & Goal Setting</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Malla Haridat, Breakthrough Business Coach</span></div>
+            <div style={{ paddingLeft: "5px"}}>
+              a. Full page Logo in Festival Program and on original poster design collaboration
+              <br></br>
+              b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
+              <br></br>
+              c.	On screen logo during ALL festival screening blocks (min. 7) (pre and post roll of film)
+              <br></br>
+              d.	Premier sponsor recognition (brand mention throughout festival “Thank you…”)
+              <br></br>
+              e.	:10 Video ad during blocks and intermissions
+              <br></br>
+              f.	Sponsor of opening and closing night event and VIP events (strategic logo placement, etc. TBD)
+              <br></br>
+              g.	Complimentary ALL ACCESS passes / cued as audience members
+            </div>
           </div>
           <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Scott Mason, Scott Mason LLC</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Closing or Opening Night Sponsor: $8,550 <span style={{ fontSize: "16px" }}>(2 available)</span></span></div>
+          <div className={styles.TextLeft}>
+            <div style={{ paddingLeft: "5px"}}>
+              a.	1/2 page Logo in Festival Program and on original poster design
+              <br></br>
+              b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
+              <br></br>
+              c.	On screen logo during 6 screening blocks (pre and post roll of film)
+              <br></br>
+              d.	Sponsorship of closing night film
+              <br></br>
+              e.	:10 Video ad at beginning of Presented By… (choice)
+              <br></br>
+              f.	8 Complimentary ALL ACCESS passes / cued as audience members
+            </div>
           </div>
           <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Cohesive Marketing that Gains more Exposure to Increase you Bottom Line</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Debra Dixon Anderson, Light of Gold P</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Presenting Sponsor: $6,850 <span style={{ fontSize: "16px" }}>(2 available)</span></span></div>
+          <div className={styles.TextLeft}>
+            <div style={{ paddingLeft: "5px"}}>
+              a.	1/4 page Logo in Festival Program and on original poster design
+              <br></br>
+              b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              <br></br>
+              c.	On screen logo during 4 screening blocks (pre and post roll of film)
+              <br></br>
+              d.	Sponsorship of specific film* (Does not include Opening and / or Closing films)
+              <br></br>
+              e.	:10 Video ad before chosen screening block
+              <br></br>
+              f.	6 Complimentary ALL ACCESS passes / cued as audience members
+              <br></br>
+            </div>
           </div>
           <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Is Your Brand Causing You to Lose Money?</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Katanni Bramhan, The K District</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Award Sponsor: $4,650 <span style={{ fontSize: "16px" }}>(12 available)</span></span></div>
+          <div className={styles.TextLeft}>
+            <div style={{ paddingLeft: "5px"}}>
+              a.	1/4 page Logo in Festival Program and on original poster design
+              <br></br>
+              b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              <br></br>
+              c.	On screen logo during 3 screening blocks and 1 genre winner (pre and post roll of film)
+              <br></br>
+              d.	Sponsorship of genre specific film and Q&A including pre and post festival promotion (TBD)
+              <br></br>
+              e.	:10 Video ad before chosen screening block
+              <br></br>
+              f.	6 Complimentary ALL ACCESS passes / cued as audience members
+            </div>
           </div>
           <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Effective Tactics that Will Make You a Sales Superstar</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Adrian Miller, Adrian Miller Sales Training</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Sponsor: $2,850 <span style={{ fontSize: "16px" }}>(15 available)</span></span></div>
+          <div className={styles.TextLeft}>
+            <div style={{ paddingLeft: "5px"}}>
+            a.	1/4 page Logo in Festival Program (TBD)
+              <br></br>
+            b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              <br></br>
+            c.	On screen logo during 1 screening block (pre and post roll of film)
+              <br></br>
+            d.	4 Complimentary ALL ACCESS passes / cued as audience members
+              <br></br>
+            e.	Does not include Opening and / or Closing films
+            </div>
           </div>
-          <br></br>
-          <br></br>
-          <div className={styles.TitleLeft}>About Light of Gold PR, Marketing, and Consulting LLC</div>
-          <div className={styles.TextLeft}>Light of Gold PR, Marketing and Consulting LLC, is a MWBE (City certified Minority and Women Business Enterprise), specializes in PR (Public Relations), Marketing, Consulting, Branding & Digital products & services, Web, Video and TV Commercials, as well as Events and Social Media Management.</div>
-          <br></br>
-          <div className={styles.TextLeft}>Light of Gold PR, Marketing, and Consulting LLC. provides innovative solutions and creative opportunities for your products and services to be promoted to the public consistently. They enhance your image, give you more visibility, and save your organization money! They can increase the overall profitability by positioning your company in front of your target market.</div>
-          <br></br>
         </div>
-
-
         <div className={styles.RightLowerGrid}>
           <div className={styles.TitleRight}>Date and Time</div>
           {dateRange}
@@ -498,44 +521,91 @@ const EventDetail = props => {
           <div className={styles.TitleLeft}>Sponsorship 2020</div>
           <div className={styles.TextLeft}>The Philadelphia Independent Film Festival is a unique sponsorship opportunity. All packages are customizable and can directly interact with existing campaigns. The festival incubates a unique, active, and hardworking independent film / tech community. Let’s discuss ideas and options on how to reach your current / new audience.</div>
           <br></br>
-          <br></br>
-          <div className={styles.TitleLeft}>Premier Sponsor: $13,850 (1 available)</div>
-          <div className={styles.TextLeft}>In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!</div>
-          <br></br>
-          <br></br>
-          <div className={styles.TitleLeft}>Breakout Sessions:</div>
-          <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Entrepreneurial Mindset & Goal Setting</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Malla Haridat, Breakthrough Business Coach</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Premier Sponsor: $13,850 <span style={{ fontSize: "16px" }}>(1 available)</span></span></div>
+          <div className={styles.TextLeft}>
+            <div style={{ paddingLeft: "5px"}}>
+              a. Full page Logo in Festival Program and on original poster design collaboration
+              <br></br>
+              b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
+              <br></br>
+              c.	On screen logo during ALL festival screening blocks (min. 7) (pre and post roll of film)
+              <br></br>
+              d.	Premier sponsor recognition (brand mention throughout festival “Thank you…”)
+              <br></br>
+              e.	:10 Video ad during blocks and intermissions
+              <br></br>
+              f.	Sponsor of opening and closing night event and VIP events (strategic logo placement, etc. TBD)
+              <br></br>
+              g.	Complimentary ALL ACCESS passes / cued as audience members
+            </div>
           </div>
           <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Scott Mason, Scott Mason LLC</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Closing or Opening Night Sponsor: $8,550 <span style={{ fontSize: "16px" }}>(2 available)</span></span></div>
+          <div className={styles.TextLeft}>
+            <div style={{ paddingLeft: "5px"}}>
+              a.	1/2 page Logo in Festival Program and on original poster design
+              <br></br>
+              b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
+              <br></br>
+              c.	On screen logo during 6 screening blocks (pre and post roll of film)
+              <br></br>
+              d.	Sponsorship of closing night film
+              <br></br>
+              e.	:10 Video ad at beginning of Presented By… (choice)
+              <br></br>
+              f.	8 Complimentary ALL ACCESS passes / cued as audience members
+            </div>
           </div>
           <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Cohesive Marketing that Gains more Exposure to Increase you Bottom Line</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Debra Dixon Anderson, Light of Gold P</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Presenting Sponsor: $6,850 <span style={{ fontSize: "16px" }}>(2 available)</span></span></div>
+          <div className={styles.TextLeft}>
+            <div style={{ paddingLeft: "5px"}}>
+              a.	1/4 page Logo in Festival Program and on original poster design
+              <br></br>
+              b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              <br></br>
+              c.	On screen logo during 4 screening blocks (pre and post roll of film)
+              <br></br>
+              d.	Sponsorship of specific film* (Does not include Opening and / or Closing films)
+              <br></br>
+              e.	:10 Video ad before chosen screening block
+              <br></br>
+              f.	6 Complimentary ALL ACCESS passes / cued as audience members
+              <br></br>
+            </div>
           </div>
           <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Is Your Brand Causing You to Lose Money?</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Katanni Bramhan, The K District</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Award Sponsor: $4,650 <span style={{ fontSize: "16px" }}>(12 available)</span></span></div>
+          <div className={styles.TextLeft}>
+            <div style={{ paddingLeft: "5px"}}>
+              a.	1/4 page Logo in Festival Program and on original poster design
+              <br></br>
+              b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              <br></br>
+              c.	On screen logo during 3 screening blocks and 1 genre winner (pre and post roll of film)
+              <br></br>
+              d.	Sponsorship of genre specific film and Q&A including pre and post festival promotion (TBD)
+              <br></br>
+              e.	:10 Video ad before chosen screening block
+              <br></br>
+              f.	6 Complimentary ALL ACCESS passes / cued as audience members
+            </div>
           </div>
           <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Effective Tactics that Will Make You a Sales Superstar</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Adrian Miller, Adrian Miller Sales Training</span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Sponsor: $2,850 <span style={{ fontSize: "16px" }}>(15 available)</span></span></div>
+          <div className={styles.TextLeft}>
+            <div style={{ paddingLeft: "5px"}}>
+            a.	1/4 page Logo in Festival Program (TBD)
+              <br></br>
+            b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              <br></br>
+            c.	On screen logo during 1 screening block (pre and post roll of film)
+              <br></br>
+            d.	4 Complimentary ALL ACCESS passes / cued as audience members
+              <br></br>
+            e.	Does not include Opening and / or Closing films
+            </div>
           </div>
-          <br></br>
-          <br></br>
-          <div className={styles.TitleLeft}>About Light of Gold PR, Marketing, and Consulting LLC</div>
-          <div className={styles.TextLeft}>Light of Gold PR, Marketing and Consulting LLC, is a MWBE (City certified Minority and Women Business Enterprise), specializes in PR (Public Relations), Marketing, Consulting, Branding & Digital products & services, Web, Video and TV Commercials, as well as Events and Social Media Management.</div>
-          <br></br>
-          <div className={styles.TextLeft}>Light of Gold PR, Marketing, and Consulting LLC. provides innovative solutions and creative opportunities for your products and services to be promoted to the public consistently. They enhance your image, give you more visibility, and save your organization money! They can increase the overall profitability by positioning your company in front of your target market.</div>
-          <br></br>
         </div>
       </div>
     );
