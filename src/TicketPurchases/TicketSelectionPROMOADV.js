@@ -19,7 +19,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/BlueLettering_TransparentBackground/BlueLettering_TransparentBackground_1024.png";
 import CartLink from "./CartLinkPROMO";
-import OrderSummary from "./OrderSummaryPROMO";
+import OrderSummary from "./OrderSummaryPROMOADV";
 import TicketItem from "./TicketItemPROMOADV";
 import styles from "./Order.module.css";
 
@@ -211,6 +211,7 @@ const TicketSelection = () => {
         ticketName: item.ticketName,
         ticketDescription: item.ticketDescription,
         ticketsAvailable: item.remainingQuantity,
+        //ticketsAvailable: 0,
         ticketPrice: item.currentTicketPrice,
         ticketsSelected: 0,
         maxTicketOrder: maxOrder,

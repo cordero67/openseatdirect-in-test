@@ -7,8 +7,8 @@ import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
 import EventDetailHaHa from "../../Events/EventDetailHaHa";
-import EventDetailTech from "../../Events/EventDetailTech";
 import EventDetailPIFF from "../../Events/EventDetailPIFF";
+import EventDetailTech from "../../Events/EventDetailTech";
 import EventDetailLight from "../../Events/EventDetailLight";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
@@ -197,8 +197,6 @@ const Layout = () => {
         )}
       />
 
-
-
       <Route
         path="/et/"
         render={routeProps => (
@@ -223,6 +221,7 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+
     </Aux>
   );
 };
