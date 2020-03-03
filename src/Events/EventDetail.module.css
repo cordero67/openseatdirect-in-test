@@ -63,6 +63,17 @@
   height: 44px;
 }
 
+.SponsorGrid {
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+.SponsorItem {
+  width: 20px;
+}
+.SponsorDescription {
+  width: auto;
+}
+
 @media (max-width: 730px) {
   .MainContainer {
     padding-top: 0px;

@@ -17,7 +17,7 @@ import { expressPaymentOnSuccess } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLinkPROMO";
-import OrderSummary from "./OrderSummaryPROMO";
+import OrderSummary from "./OrderSummaryPROMOADV";
 import { OrderConfirmationTT, OrderConfirmationTF } from "./OrderConfirmationPROMO";
 import styles from "./Order.module.css";
 

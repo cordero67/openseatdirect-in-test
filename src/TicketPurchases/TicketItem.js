@@ -25,13 +25,17 @@ const TicketItem = props => {
             <option>2</option>
             <option>3</option>
             <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
           </select>
         </div>
       </div>
       <div className={styles.EventDescription}>
         {props.name.ticketDescription}
       </div>
-      <hr style={{ border: "1px solid#F2F2F2" }} />
+      <hr style={{ border: "1px solid #F2F2F2" }} />
     </Aux>
   );
 };

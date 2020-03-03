@@ -33,13 +33,23 @@ const eventData = [
     available: true
   },
   {
+    image: LightLogo,
+    title: "Gold Women's Business Connect Conference",
+    eventNum: "",
+    date: "Fri, Mar, 2020: 8:30 AM",
+    description: "description3",
+    location: "Bryant Park, New York City",
+    url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
+    available: true
+  },
+  {
     image: TechWeekLogo,
-    title: "Philly Tech Week 2020 - Sponsorship",
+    title: "PTW 2020 Philly Tech Week",
     eventNum: "",
     date: "May 6-9, 2020: 4 Day Event",
     description: "description3",
     location: "Philadelphia, PA",
-    url: "edt/PIFF-philadelphia-independent-film-festival?eventID=64064955878",
+    url: "edt/sponsorship-2020-philly-tech-week?eventID=8681441794",
     available: true
   },
   {
@@ -50,16 +60,6 @@ const eventData = [
     description: "description3",
     location: "Philadelphia, PA",
     url: "edf/PIFF-philadelphia-independent-film-festival?eventID=64064955878",
-    available: true
-  },
-  {
-    image: LightLogo,
-    title: "Gold Women's Business Connect Conference",
-    eventNum: "",
-    date: "Fri, Mar, 2020: 8:30 AM",
-    description: "description3",
-    location: "Bryant Park, New York City",
-    url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
     available: true
   }
 ];

@@ -1,6 +1,7 @@
 .MainContainer {
   font-family: "Roboto", sans-serif;
-  padding-top: 100px;
+  background-color: #fff;
+  padding-top: 50px;
   padding-bottom: 40px;
 }
 
@@ -81,6 +82,18 @@
 .faInstagram:hover {
   color: #a788b9;
   border-color: transparent;
+}
+
+
+@media (min-width: 550px) {
+  .MainContainer {
+    padding-top: 90px;
+  }
+}
+@media (min-width: 780px) {
+  .MainContainer {
+    padding-top: 100px;
+  }
 }
 
 @media (min-width: 990px) {

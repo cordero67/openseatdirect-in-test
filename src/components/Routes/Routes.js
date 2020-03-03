@@ -197,6 +197,10 @@ const Layout = () => {
         )}
       />
 
+
+
+
+
       <Route
         path="/et/"
         render={routeProps => (
@@ -221,6 +225,13 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+
+
+
+
+
+      
+
 
     </Aux>
   );

@@ -447,7 +447,7 @@ const Checkout = props => {
   if (showDoublePane) {
     orderPane = (
       <div>
-        <div className={styles.ImageBox}>
+        <div>
           <img
             className={styles.Image}
             src={eventLogo}
@@ -520,8 +520,12 @@ const Checkout = props => {
       <Aux>
         <div className={styles.MainItemLeft}>
           <div className={styles.EventHeader}>
-            <div className={styles.EventTitle}>{ticketOrder.eventName}</div>
-            <div className={styles.EventDate}>{ticketOrder.startDateTime}</div>
+            <div className={styles.EventTitle} >
+              {ticketOrder.eventName}
+            </div>
+            <div className={styles.EventDate}>
+              {ticketOrder.startDateTime}
+            </div>
           </div>
           <div style={EventTicketSection}>
             <span className={styles.TicketType}>Contact Information</span>

@@ -6,7 +6,7 @@ import { Button } from "react-bootstrap";
 import Video from "../Video/Video";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
-import styles from "./HomePage.module.css";
+import styles from "./HomePageORIGINAL.module.css";
 
 class Home extends Component {
   render() {

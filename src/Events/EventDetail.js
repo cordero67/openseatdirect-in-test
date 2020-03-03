@@ -216,7 +216,20 @@ const EventDetail = props => {
     eventDetails.tickets.map(item => {
       priceArray.push(item.currentTicketPrice);
     })
-    ticketPriceRange = <div>${Math.min(...priceArray)} - ${Math.max(...priceArray)}</div>
+    if (priceArray.length > 1) {
+      ticketPriceRange = (
+        <div>
+          ${Math.min(...priceArray).toFixed(2)} - ${Math.max(...priceArray).toFixed(2)}
+        </div>
+      )
+    }
+    else {
+      ticketPriceRange = (
+        <div>
+          ${Math.min(...priceArray).toFixed(2)}
+        </div>
+      )
+    }
   }
 
   let dateRange;

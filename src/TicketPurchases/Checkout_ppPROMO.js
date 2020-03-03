@@ -182,6 +182,11 @@ const Checkout = props => {
   // THIS SECTION NEEDS WORK
   // called by <PaypalButton> on a successful transaction
   const payPalExpressBuy = details => {
+      //let tempDetails = 
+      console.log("DETAILS items", details.purchase_units[0].items);
+      console.log("PAYPAL array ", paypalArray);
+      details.purchase_units[0].items = paypalArray;
+      console.log("DETAILS OBJECT ", details);
     const paymentData = {
       paypalOrderDetails: details
     };
@@ -312,6 +317,7 @@ const Checkout = props => {
                   {
                     reference_id: eventDetails.eventNum,
                     description: eventDetails.eventName,
+                    payment_descriptor: eventDetails.eventNum,
                     amount: {
                       currency_code: "USD",
                       value: orderTotals.totalPurchaseAmount.toString(),

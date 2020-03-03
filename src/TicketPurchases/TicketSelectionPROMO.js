@@ -450,6 +450,40 @@ const TicketSelection = () => {
     setOrderTotals(tempOrderTotals);
   }
 
+  let controlData = (null/*
+    <div style={{ paddingLeft: "40px", color: "red", fontSize: "14px" }}>
+      <div>Ticket Prices</div>
+      {ticketInfo.map(item => {
+        return (
+          <div>
+            <div>Ticket Type: {item.ticketName}</div>
+            <div>Ticket Price: {item.ticketPrice}</div>
+            <div>Adjusted Ticket Price: {item.promoTicketPrice}</div>
+            <div>Promo Code Applied: {item.ticketPromoCodeApplied}</div>
+          </div>
+        );
+      })}
+      <br></br>
+      <div>promoCodeDetails</div>
+      <div>available: {promoCodeDetails.available.toString()}</div>
+      <div>applied: {promoCodeDetails.applied.toString()}</div>
+      <div>input: {promoCodeDetails.input.toString()}</div>
+      <div>errorMessage: {promoCodeDetails.errorMessage}</div>
+      <div>appliedPromoCode: {promoCodeDetails.appliedPromoCode}</div>
+      <div>inputtedPromoValue: {promoCodeDetails.inputtedPromoValue}</div>
+      <div>lastInvalidPromoCode: {promoCodeDetails.lastInvalidPromoCode}</div>
+      <div>Ticket Promos</div>
+      {promoCodeDetails.eventPromoCodes.map(item => {
+        return (
+          <Aux>
+            <div>{item}</div>
+          </Aux>
+        );
+      })}
+    </div>
+    */
+  );
+
   let promoOption;
   if (!promoCodeDetails.available) {
     promoOption = null;
@@ -469,12 +503,16 @@ const TicketSelection = () => {
         >
           Remove
         </span></div>
+        <br></br>
+        {controlData}
       </Aux>
     );
   } else if (promoCodeDetails.input) {
     promoOption = (
       <Aux>
         {inputPromoCode}
+        <br></br>
+        {controlData}
       </Aux>
     );
   } else if (!promoCodeDetails.input) {
@@ -491,6 +529,8 @@ const TicketSelection = () => {
         >
           Enter Promo Code
         </div>
+        <br></br>
+        {controlData}
       </Aux>
     );
   }
