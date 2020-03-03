@@ -60,7 +60,7 @@ const eventData = [
     date: "May 6-9, 2020: 4 Day Event",
     description: "description3",
     location: "Philadelphia, PA",
-    url: "edt/PIFF-philadelphia-independent-film-festival?eventID=64064955878",
+    url: "edt/sponsorship-2020-philly-tech-week?eventID=8681441794",
     available: true
   },
   {

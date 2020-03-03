@@ -49,7 +49,7 @@ const TicketItem = props => {
         maxAmount = Math.min(props.name.maxTicketOrder, props.name.ticketsAvailable);
       }
       else {
-        maxAmount = Math.min(8, props.name.ticketsAvailable);
+        maxAmount = Math.min(25, props.name.ticketsAvailable);
       }
       for (i = 0; i <= maxAmount; i++) {
         ticketsAvailableArray.push(i);

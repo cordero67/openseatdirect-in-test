@@ -73,7 +73,7 @@
 }
 .EventFooter {
   display: grid;
-  grid-template-columns: auto 55px 130px;
+  grid-template-columns: auto 80px 130px;
   padding-top: 18px;
   padding-bottom: 18px;
   border-top: 1px solid lightgrey;
@@ -81,7 +81,7 @@
 }
 .EventFooterMod {
   display: grid;
-  grid-template-columns: auto 55px;
+  grid-template-columns: auto 80px;
   padding-top: 18px;
   padding-bottom: 18px;
   border-top: 1px solid lightgrey;

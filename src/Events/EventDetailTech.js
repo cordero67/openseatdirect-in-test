@@ -241,14 +241,14 @@ const EventDetail = props => {
     if (priceArray.length > 1) {
       ticketPriceRange = (
         <div>
-          ${Math.min(...priceArray).toFixed(2)} - ${Math.max(...priceArray).toFixed(2)}
+          ${Math.min(...priceArray)} - ${Math.max(...priceArray)}
         </div>
       )
     }
     else {
       ticketPriceRange = (
         <div>
-          ${Math.min(...priceArray).toFixed(2)}
+          ${Math.min(...priceArray)}
         </div>
       )
     }
@@ -380,21 +380,6 @@ const EventDetail = props => {
     );
   }
 
-
-
-
-/*
-          title: "",
-          text: [
-
-*/
-
-
-
-
-
-
-
   let bottomDisplay;
   if (showSmallerDoublePane && !isLoadingEvent) {
     bottomDisplay = (
@@ -405,89 +390,256 @@ const EventDetail = props => {
           <br></br>
           <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Premier Sponsor: $13,850 <span style={{ fontSize: "16px" }}>(1 available)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-              a. Full page Logo in Festival Program and on original poster design collaboration
-              <br></br>
-              b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
-              <br></br>
-              c.	On screen logo during ALL festival screening blocks (min. 7) (pre and post roll of film)
-              <br></br>
-              d.	Premier sponsor recognition (brand mention throughout festival “Thank you…”)
-              <br></br>
-              e.	:10 Video ad during blocks and intermissions
-              <br></br>
-              f.	Sponsor of opening and closing night event and VIP events (strategic logo placement, etc. TBD)
-              <br></br>
-              g.	Complimentary ALL ACCESS passes / cued as audience members
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Full page Logo in Festival Program and on original poster design collaboration
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during ALL festival screening blocks (min. 7) (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Premier sponsor recognition (brand mention throughout festival “Thank you…”)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                e.
+              </div>
+              <div className={styles.SponsorDescription}>
+                :10 Video ad during blocks and intermissions
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                f.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Sponsor of opening and closing night event and VIP events (strategic logo placement, etc. TBD)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                g.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
           <br></br>
           <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Closing or Opening Night Sponsor: $8,550 <span style={{ fontSize: "16px" }}>(2 available)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-              a.	1/2 page Logo in Festival Program and on original poster design
-              <br></br>
-              b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
-              <br></br>
-              c.	On screen logo during 6 screening blocks (pre and post roll of film)
-              <br></br>
-              d.	Sponsorship of closing night film
-              <br></br>
-              e.	:10 Video ad at beginning of Presented By… (choice)
-              <br></br>
-              f.	8 Complimentary ALL ACCESS passes / cued as audience members
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                1/2 page Logo in Festival Program and on original poster design
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during 6 screening blocks (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Sponsorship of closing night film
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                e.
+              </div>
+              <div className={styles.SponsorDescription}>
+                :10 Video ad at beginning of Presented By… (choice)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                f.
+              </div>
+              <div className={styles.SponsorDescription}>
+                8 Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
           <br></br>
           <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Presenting Sponsor: $6,850 <span style={{ fontSize: "16px" }}>(2 available)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-              a.	1/4 page Logo in Festival Program and on original poster design
-              <br></br>
-              b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
-              <br></br>
-              c.	On screen logo during 4 screening blocks (pre and post roll of film)
-              <br></br>
-              d.	Sponsorship of specific film* (Does not include Opening and / or Closing films)
-              <br></br>
-              e.	:10 Video ad before chosen screening block
-              <br></br>
-              f.	6 Complimentary ALL ACCESS passes / cued as audience members
-              <br></br>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                1/4 page Logo in Festival Program and on original poster design
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during 4 screening blocks (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Sponsorship of specific film* (Does not include Opening and / or Closing films)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                e.
+              </div>
+              <div className={styles.SponsorDescription}>
+                :10 Video ad before chosen screening block
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                f.
+              </div>
+              <div className={styles.SponsorDescription}>
+                6 Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
           <br></br>
           <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Award Sponsor: $4,650 <span style={{ fontSize: "16px" }}>(12 available)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-              a.	1/4 page Logo in Festival Program and on original poster design
-              <br></br>
-              b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
-              <br></br>
-              c.	On screen logo during 3 screening blocks and 1 genre winner (pre and post roll of film)
-              <br></br>
-              d.	Sponsorship of genre specific film and Q&A including pre and post festival promotion (TBD)
-              <br></br>
-              e.	:10 Video ad before chosen screening block
-              <br></br>
-              f.	6 Complimentary ALL ACCESS passes / cued as audience members
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                1/4 page Logo in Festival Program and on original poster design
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during 3 screening blocks and 1 genre winner (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Sponsorship of genre specific film and Q&A including pre and post festival promotion (TBD)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                e.
+              </div>
+              <div className={styles.SponsorDescription}>
+                :10 Video ad before chosen screening block
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                f.
+              </div>
+              <div className={styles.SponsorDescription}>
+                6 Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
           <br></br>
-          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Sponsor: $2,850 <span style={{ fontSize: "16px" }}>(15 available)</span></span></div>
+          <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Sponsor: $2,850 <span style={{ fontSize: "16px" }}>(15 available) (Does not include Opening and / or Closing films)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-            a.	1/4 page Logo in Festival Program (TBD)
-              <br></br>
-            b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
-              <br></br>
-            c.	On screen logo during 1 screening block (pre and post roll of film)
-              <br></br>
-            d.	4 Complimentary ALL ACCESS passes / cued as audience members
-              <br></br>
-            e.	Does not include Opening and / or Closing films
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                1/4 page Logo in Festival Program (TBD)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during 1 screening block (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                4 Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
+
         </div>
         <div className={styles.RightLowerGrid}>
           <div className={styles.TitleRight}>Date and Time</div>
@@ -523,87 +675,253 @@ const EventDetail = props => {
           <br></br>
           <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Premier Sponsor: $13,850 <span style={{ fontSize: "16px" }}>(1 available)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-              a. Full page Logo in Festival Program and on original poster design collaboration
-              <br></br>
-              b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
-              <br></br>
-              c.	On screen logo during ALL festival screening blocks (min. 7) (pre and post roll of film)
-              <br></br>
-              d.	Premier sponsor recognition (brand mention throughout festival “Thank you…”)
-              <br></br>
-              e.	:10 Video ad during blocks and intermissions
-              <br></br>
-              f.	Sponsor of opening and closing night event and VIP events (strategic logo placement, etc. TBD)
-              <br></br>
-              g.	Complimentary ALL ACCESS passes / cued as audience members
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Full page Logo in Festival Program and on original poster design collaboration
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during ALL festival screening blocks (min. 7) (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Premier sponsor recognition (brand mention throughout festival “Thank you…”)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                e.
+              </div>
+              <div className={styles.SponsorDescription}>
+                :10 Video ad during blocks and intermissions
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                f.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Sponsor of opening and closing night event and VIP events (strategic logo placement, etc. TBD)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                g.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
           <br></br>
           <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Closing or Opening Night Sponsor: $8,550 <span style={{ fontSize: "16px" }}>(2 available)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-              a.	1/2 page Logo in Festival Program and on original poster design
-              <br></br>
-              b.	Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
-              <br></br>
-              c.	On screen logo during 6 screening blocks (pre and post roll of film)
-              <br></br>
-              d.	Sponsorship of closing night film
-              <br></br>
-              e.	:10 Video ad at beginning of Presented By… (choice)
-              <br></br>
-              f.	8 Complimentary ALL ACCESS passes / cued as audience members
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                1/2 page Logo in Festival Program and on original poster design
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week before and after festival ~ April 29th – May 16th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during 6 screening blocks (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Sponsorship of closing night film
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                e.
+              </div>
+              <div className={styles.SponsorDescription}>
+                :10 Video ad at beginning of Presented By… (choice)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                f.
+              </div>
+              <div className={styles.SponsorDescription}>
+                8 Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
           <br></br>
           <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Presenting Sponsor: $6,850 <span style={{ fontSize: "16px" }}>(2 available)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-              a.	1/4 page Logo in Festival Program and on original poster design
-              <br></br>
-              b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
-              <br></br>
-              c.	On screen logo during 4 screening blocks (pre and post roll of film)
-              <br></br>
-              d.	Sponsorship of specific film* (Does not include Opening and / or Closing films)
-              <br></br>
-              e.	:10 Video ad before chosen screening block
-              <br></br>
-              f.	6 Complimentary ALL ACCESS passes / cued as audience members
-              <br></br>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                1/4 page Logo in Festival Program and on original poster design
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during 4 screening blocks (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Sponsorship of specific film* (Does not include Opening and / or Closing films)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                e.
+              </div>
+              <div className={styles.SponsorDescription}>
+                :10 Video ad before chosen screening block
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                f.
+              </div>
+              <div className={styles.SponsorDescription}>
+                6 Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
           <br></br>
           <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Award Sponsor: $4,650 <span style={{ fontSize: "16px" }}>(12 available)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-              a.	1/4 page Logo in Festival Program and on original poster design
-              <br></br>
-              b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
-              <br></br>
-              c.	On screen logo during 3 screening blocks and 1 genre winner (pre and post roll of film)
-              <br></br>
-              d.	Sponsorship of genre specific film and Q&A including pre and post festival promotion (TBD)
-              <br></br>
-              e.	:10 Video ad before chosen screening block
-              <br></br>
-              f.	6 Complimentary ALL ACCESS passes / cued as audience members
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                1/4 page Logo in Festival Program and on original poster design
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during 3 screening blocks and 1 genre winner (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Sponsorship of genre specific film and Q&A including pre and post festival promotion (TBD)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                e.
+              </div>
+              <div className={styles.SponsorDescription}>
+                :10 Video ad before chosen screening block
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                f.
+              </div>
+              <div className={styles.SponsorDescription}>
+                6 Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
           <br></br>
           <div className={styles.TitleLeft}><span style={{ textDecoration: "underline"}}>Sponsor: $2,850 <span style={{ fontSize: "16px" }}>(15 available)</span></span></div>
           <div className={styles.TextLeft}>
-            <div style={{ paddingLeft: "5px"}}>
-            a.	1/4 page Logo in Festival Program (TBD)
-              <br></br>
-            b.	Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
-              <br></br>
-            c.	On screen logo during 1 screening block (pre and post roll of film)
-              <br></br>
-            d.	4 Complimentary ALL ACCESS passes / cued as audience members
-              <br></br>
-            e.	Does not include Opening and / or Closing films
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                a.
+              </div>
+              <div className={styles.SponsorDescription}>
+                1/4 page Logo in Festival Program (TBD)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                b.
+              </div>
+              <div className={styles.SponsorDescription}>
+                Social Media # and @ posts x2 daily during week of festival ~ May 3rd – 9th, 2020
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                c.
+              </div>
+              <div className={styles.SponsorDescription}>
+                On screen logo during 1 screening block (pre and post roll of film)
+              </div>
+            </div>
+            <div className={styles.SponsorGrid}>
+              <div className={styles.SponsorItem}>
+                d.
+              </div>
+              <div className={styles.SponsorDescription}>
+                4 Complimentary ALL ACCESS passes / cued as audience members
+              </div>
             </div>
           </div>
         </div>
