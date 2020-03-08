@@ -111,6 +111,7 @@ const Checkout = props => {
         eventDetails = tempCart.eventDetails;
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
+        console.log(orderTotals.promoCodeApplied);
 
         console.log("eventDetails: ", eventDetails);
         console.log("ticketInfo: ", ticketInfo);
@@ -300,6 +301,14 @@ const Checkout = props => {
     </div>
   );
 
+  const appliedCode = () => {
+    if (orderTotals.promoCodeApplied) {
+      return `${eventDetails.eventNum}: ${orderTotals.promoCodeApplied}`;
+    } else {
+      return `${eventDetails.eventNum}: NO CODE`;
+    }
+  }
+
   // **********
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // POTENTIALLY NEED TO ADD BACK THE "onBLur" IN <div>
@@ -315,7 +324,9 @@ const Checkout = props => {
               return actions.order.create({
                 purchase_units: [
                   {
-                    reference_id: eventDetails.eventNum,
+                    //reference_id: eventDetails.eventNum,
+                    //reference_id: "no promo code was applied",
+                    reference_id: appliedCode(),
                     description: eventDetails.eventName,
                     payment_descriptor: eventDetails.eventNum,
                     amount: {

@@ -17,7 +17,7 @@ import { expressPaymentOnSuccess } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLinkPROMO";
-import OrderSummary from "./OrderSummaryPROMO";
+import OrderSummary from "./OrderSummaryPROMOADV";
 import { OrderConfirmationTT, OrderConfirmationTF } from "./OrderConfirmationPROMO";
 import styles from "./Order.module.css";
 
@@ -317,9 +317,14 @@ const Checkout = props => {
               return actions.order.create({
                 purchase_units: [
                   {
-                    reference_id: eventDetails.eventNum,
+                    //reference_id: eventDetails.eventNum,
+                    //reference_id: "Test promo code",
+                    reference_id: orderTotals.promoCodeApplied,
+                    //reference_id: `${orderTotals.promoCodeApplied}`,
                     description: eventDetails.eventName,
-                    payment_descriptor: eventDetails.eventNum,
+                    invoice_number: "test promo1",
+                    custom: "test promo3",
+                    payment_descriptor: "Payment Mobile World",
                     amount: {
                       currency_code: "USD",
                       value: orderTotals.finalPurchaseAmount.toString(),
