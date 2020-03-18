@@ -364,7 +364,7 @@ const EventDetail = props => {
       <div className={styles.LowerGrid}>
         <div className={styles.LeftLowerGrid}>
           <div className={styles.TitleLeft}>Event Description</div>
-          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Virtual Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Virtual Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!</div>
+          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Virtual Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Virtual Conference, we’ll have fun speed networking activities, breakout sessions on important topics, prize drawings, and more!</div>
           <br></br>
           <br></br>
           <div className={styles.TitleLeft}>Virtual Conference Details</div>
@@ -429,7 +429,7 @@ const EventDetail = props => {
             )
           })}
           <div className={styles.TitleLeft}>Event Description</div>
-          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Virtual Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Virtual Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!</div>
+          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Virtual Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Virtual Conference, we’ll have fun speed networking activities, breakout sessions on important topics, prize drawings, and more!</div>
           <br></br>
           <br></br>
           <div className={styles.TitleLeft}>Virtual Conference Details</div>
