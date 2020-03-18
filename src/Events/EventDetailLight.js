@@ -374,8 +374,8 @@ const EventDetail = props => {
           <div className={styles.TitleLeft}>Breakout Sessions:</div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Scott Mason, Scott Mason LLC</span></div>
+            <div className={styles.TitleLeft}>Is Your Brand Causing You to Lose Money?</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Katanni Bramhan, The K District</span></div>
           </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
@@ -384,13 +384,13 @@ const EventDetail = props => {
           </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Is Your Brand Causing You to Lose Money?</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Katanni Bramhan, The K District</span></div>
+            <div className={styles.TitleLeft}>Effective Tactics that Will Make You a Sales Superstar</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Adrian Miller, Adrian Miller Sales Training</span></div>
           </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Effective Tactics that Will Make You a Sales Superstar</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Adrian Miller, Adrian Miller Sales Training</span></div>
+            <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Scott Mason, Scott Mason LLC</span></div>
           </div>
           <br></br>
           <br></br>
@@ -439,8 +439,8 @@ const EventDetail = props => {
           <div className={styles.TitleLeft}>Breakout Sessions:</div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Scott Mason, Scott Mason LLC</span></div>
+            <div className={styles.TitleLeft}>Is Your Brand Causing You to Lose Money?</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Katanni Bramhan, The K District</span></div>
           </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
@@ -449,13 +449,13 @@ const EventDetail = props => {
           </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Is Your Brand Causing You to Lose Money?</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Katanni Bramhan, The K District</span></div>
+            <div className={styles.TitleLeft}>Effective Tactics that Will Make You a Sales Superstar</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Adrian Miller, Adrian Miller Sales Training</span></div>
           </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Effective Tactics that Will Make You a Sales Superstar</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Adrian Miller, Adrian Miller Sales Training</span></div>
+            <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Scott Mason, Scott Mason LLC</span></div>
           </div>
           <br></br>
           <br></br>
