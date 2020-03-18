@@ -380,7 +380,7 @@ const EventDetail = props => {
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
             <div className={styles.TitleLeft}>Cohesive Marketing that Gains more Exposure to Increase you Bottom Line</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Debra Dixon Anderson, Light of Gold P</span></div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Debra Dixon Anderson, Light of Gold PR</span></div>
           </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
@@ -445,7 +445,7 @@ const EventDetail = props => {
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
             <div className={styles.TitleLeft}>Cohesive Marketing that Gains more Exposure to Increase you Bottom Line</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Debra Dixon Anderson, Light of Gold P</span></div>
+            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Debra Dixon Anderson, Light of Gold PR</span></div>
           </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
