@@ -119,7 +119,7 @@ const EventDetail = props => {
     // defines the eniter "eventDetails" variable
     eventDetails = {
       eventNum: event.eventNum,
-      eventTitle: event.eventTitle,
+      eventTitle: "2020 Gold Women's Business Connect Virtual Conference",
       eventStatus: event.eventStatus,
       organizer: "Light of Gold PR, Marketing, and Consulting",
       organizerEmail: event.accountId.accountEmail,
