@@ -129,10 +129,7 @@ const EventDetail = props => {
       eventUrl: event.eventUrl,
       location: {
         venueName: event.locationVenueName,
-        address: ["Berkeley College - Bryant Park",
-          "12 E 41st St.",
-          "(between Madison and 5th Ave)",
-          "2nd Fl."],
+        address: ["Video Conference"],
         city: event.locationCity,
         state: event.locationState,
         zipPostalCode: event.locationZipPostalCode,
@@ -141,11 +138,11 @@ const EventDetail = props => {
       descriptions: [
         {
           title: "Event Description",
-          text: ["The 2020 Gold Women’s Business Connect Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!"]
+          text: ["The 2020 Gold Women’s Business Connect Virtual Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Virtual Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!"]
         },
         {
-          title: "Conference Details",
-          text: ["In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!"]
+          title: "Virtual Conference Details",
+          text: ["In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Virtual Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!"]
         },
         {
           title: "Entrepreneurial Mindset & Goal Setting",
@@ -279,7 +276,7 @@ const EventDetail = props => {
   if (showLargerDoublePane && !isLoadingEvent) {
     summaryPlacard = (
       <div className={styles.SummaryPlacard}>
-        <div className={styles.SummaryDetailsLight}>
+        <div className={styles.SummaryDetails}>
           <div className={styles.Month}>{dateFormat(eventDetails.startDateTime, "mmm", true).toUpperCase()}</div>
           <div className={styles.Date}>{dateFormat(eventDetails.startDateTime, "dd", true).toUpperCase()}</div>
           <div className={styles.Event}>
@@ -287,8 +284,7 @@ const EventDetail = props => {
           </div>
           <div className={styles.Presenter}>by {eventDetails.organizer}</div>
         </div>
-        <div className={styles.TicketRangeLight}>
-          <div style={{ color: "blue", fontWeight: "500"}}>$30 Early Bird through Mar 13</div>
+        <div className={styles.TicketRange}>
           <div className={styles.Prices}>{ticketPriceRange}</div>
         </div>
       </div>
@@ -344,8 +340,7 @@ const EventDetail = props => {
   let ticketDisplay;
   if (!showLargerDoublePane) {
     ticketDisplay = (
-      <div className={styles.TicketGridLight}>
-        <div className={styles.PriceRange}><span style={{ color: "blue", fontWeight: "500"}}>$30 Early Bird Special through Mar 13</span></div>
+      <div className={styles.TicketGrid}>
         <div className={styles.PriceRange}>{ticketPriceRange}</div>
         <div className={styles.ButtonContainer}>
           <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
@@ -354,7 +349,7 @@ const EventDetail = props => {
     );
   } else {
     ticketDisplay = (
-      <div className={styles.TicketGridLight}>
+      <div className={styles.TicketGrid}>
         <div className={styles.PriceRange}>{ticketPriceRange}</div>
         <div className={styles.ButtonContainer}>
           <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
@@ -369,19 +364,14 @@ const EventDetail = props => {
       <div className={styles.LowerGrid}>
         <div className={styles.LeftLowerGrid}>
           <div className={styles.TitleLeft}>Event Description</div>
-          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!</div>
+          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Virtual Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Virtual Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!</div>
           <br></br>
           <br></br>
-          <div className={styles.TitleLeft}>Conference Details</div>
-          <div className={styles.TextLeft}>In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!</div>
+          <div className={styles.TitleLeft}>Virtual Conference Details</div>
+          <div className={styles.TextLeft}>In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Virtual Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!</div>
           <br></br>
           <br></br>
           <div className={styles.TitleLeft}>Breakout Sessions:</div>
-          <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Entrepreneurial Mindset & Goal Setting</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Malla Haridat, Breakthrough Business Coach</span></div>
-          </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
             <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>
@@ -422,7 +412,6 @@ const EventDetail = props => {
               <div className={styles.TextLeft}>{add}</div>
             )
           })}
-          <div className={styles.TextRight}>{eventDetails.location.city}, {eventDetails.location.state} {eventDetails.location.zipPostalCode}</div>
         </div>
       </div>
     );
@@ -439,22 +428,15 @@ const EventDetail = props => {
               <div className={styles.TextLeft}>{add}</div>
             )
           })}
-          <div className={styles.TextLeft}>{eventDetails.location.city}, {eventDetails.location.state} {eventDetails.location.zipPostalCode}</div>
-          <br></br>
           <div className={styles.TitleLeft}>Event Description</div>
-          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!</div>
+          <div className={styles.TextLeft}>The 2020 Gold Women’s Business Connect Virtual Conference will shine a light on Women, Power, Business, and Economic Development! Learn strategies to grow your business, enhance your productivity, and increase your bottom line. At the Virtual Conference, we’ll have fun speed networking activities, breakout sessions on important topics, breakfast and refreshments, vendor and resource information tables, prize drawings, and more!</div>
           <br></br>
           <br></br>
-          <div className={styles.TitleLeft}>Conference Details</div>
-          <div className={styles.TextLeft}>In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!</div>
+          <div className={styles.TitleLeft}>Virtual Conference Details</div>
+          <div className={styles.TextLeft}>In honor of Women’s History Month, the 2020 Gold Women’s Business Connect Virtual Conference – NY will feature powerful information from Experts and Speakers who are at the top of their fields. Our experts will Enlighten, Empower, and Educate you on today’s important topics for professional woman as well as women business owners!</div>
           <br></br>
           <br></br>
           <div className={styles.TitleLeft}>Breakout Sessions:</div>
-          <br></br>
-          <div style={{ paddingLeft: "10px" }}>
-            <div className={styles.TitleLeft}>Entrepreneurial Mindset & Goal Setting</div>
-            <div className={styles.TextLeft}>taught by <span style={{color: "red", fontWeight: "600" }}>Malla Haridat, Breakthrough Business Coach</span></div>
-          </div>
           <br></br>
           <div style={{ paddingLeft: "10px" }}>
             <div className={styles.TitleLeft}>Growing and Scaling Your Business</div>

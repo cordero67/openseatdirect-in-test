@@ -5,7 +5,7 @@ import styles from "./Events.module.css";
 import Event from "./Event/Event";
 import Modal from "./Modal/Modal";
 
-import LightLogo from "./LightEvent.png";
+import LightUpdateLogo from "./LightEventUpdate.png";
 import HaHaLogo from "./HaHaForHireFeb.png";
 import HaHaComedy from "./HaHaForHireComedyNight.png";
 import PIFFLogo from "./PIFFLogo.png";
@@ -33,12 +33,12 @@ const eventData = [
     available: true
   },
   {
-    image: LightLogo,
-    title: "Gold Women's Business Connect Conference",
+    image: LightUpdateLogo,
+    title: "Gold Women's Business Connect Video Conference",
     eventNum: "",
     date: "Fri, Mar, 2020: 8:30 AM",
     description: "description3",
-    location: "Bryant Park, New York City",
+    location: "Video Conference",
     url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
     available: true
   },
