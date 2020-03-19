@@ -5,7 +5,7 @@ import styles from "./Events.module.css";
 import Event from "./Event/Event";
 import Modal from "./Modal/Modal";
 
-import LightLogo from "./LightEvent.png";
+import LightLogo from "./LightEventUpdate.png";
 import HaHaLogo from "./HaHaForHireFeb.png";
 import HaHaComedy from "./HaHaForHireComedyNight.png";
 import PIFFLogo from "./PIFFLogo.png";

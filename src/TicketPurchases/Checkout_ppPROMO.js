@@ -183,7 +183,6 @@ const Checkout = props => {
   // THIS SECTION NEEDS WORK
   // called by <PaypalButton> on a successful transaction
   const payPalExpressBuy = details => {
-      //let tempDetails = 
       console.log("DETAILS items", details.purchase_units[0].items);
       console.log("PAYPAL array ", paypalArray);
       details.purchase_units[0].items = paypalArray;
@@ -324,8 +323,6 @@ const Checkout = props => {
               return actions.order.create({
                 purchase_units: [
                   {
-                    //reference_id: eventDetails.eventNum,
-                    //reference_id: "no promo code was applied",
                     reference_id: appliedCode(),
                     description: eventDetails.eventName,
                     payment_descriptor: eventDetails.eventNum,
@@ -504,11 +501,6 @@ const Checkout = props => {
         true
       )}</Aux>
     }
-
-
-
-
-
 
     paymentPane = (
       <Aux>
