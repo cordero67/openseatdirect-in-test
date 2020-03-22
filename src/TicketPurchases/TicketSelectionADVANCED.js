@@ -21,8 +21,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/BlueLettering_TransparentBackground/BlueLettering_TransparentBackground_1024.png";
 import CartLink from "./CartLinkPROMO";
-import OrderSummary from "./OrderSummaryPROMOADV";
-import OrderSummaryADVANCED from "./OrderSummaryADVANCED";
+import OrderSummary from "./OrderSummaryADVANCED";
 import TicketItem from "./TicketItemPROMOADV";
 import TicketItemADVANCED from "./TicketItemADVANCED";
 import styles from "./Order.module.css";
@@ -829,9 +828,9 @@ const TicketSelection = () => {
 
   // THIS SECTION IS NOT DEPENDENT UPON SCREEN SIZE OR VIEW CONDITIONS
   let orderSummary2;
-  if (!isLoadingEvent && orderTotals2.finalPurchaseAmount > 0) {
-    orderSummary2 = <OrderSummaryADVANCED ticketOrder={ticketInfo2} />;
-  } else if (!isLoadingEvent && orderTotals2.finalPurchaseAmount <= 0) {
+  if (!isLoadingEvent && orderTotals2.ticketsPurchased > 0) {
+    orderSummary2 = <OrderSummary ticketOrder={ticketInfo2} />;
+  } else if (!isLoadingEvent && orderTotals2.ticketsPurchased <= 0) {
     orderSummary2 = (
       <div className={styles.EmptyOrderSummary}>
         <FontAwesomeIcon
