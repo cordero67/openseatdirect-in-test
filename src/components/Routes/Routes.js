@@ -13,9 +13,12 @@ import EventDetailLight from "../../Events/EventDetailLight";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
+import CheckoutADVANCED from "../../TicketPurchases/Checkout_ppADVANCED";
 import CheckoutPPPROMO from "../../TicketPurchases/Checkout_ppPROMO";
 import CheckoutPPPROMOADV from "../../TicketPurchases/Checkout_ppPROMOADV";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
+import TicketSelectionADVANCED from "../../TicketPurchases/TicketSelectionADVANCED.js";
+import TicketSelectionADVANCEDOLD from "../../TicketPurchases/TicketSelectionADVANCEDOLD.js";
 import TicketSelectionPROMO from "../../TicketPurchases/TicketSelectionPROMO.js";
 import TicketSelectionPROMOADV from "../../TicketPurchases/TicketSelectionPROMOADV.js";
 
@@ -129,6 +132,16 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+      <Route
+        path="/checkout_ppADVANCED"
+        exact
+        render={routeProps => (
+          <React.Fragment>
+            <CheckoutADVANCED />
+          </React.Fragment>
+        )}
+      />
+
 
 
       <Route
@@ -225,6 +238,23 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+      <Route
+        path="/etADVANCED/"
+        render={routeProps => (
+          <React.Fragment>
+            <TicketSelectionADVANCED />
+          </React.Fragment>
+        )}
+      />
+      <Route
+        path="/etADVANCEDOLD/"
+        render={routeProps => (
+          <React.Fragment>
+            <TicketSelectionADVANCEDOLD />
+          </React.Fragment>
+        )}
+      />
+
 
 
 
