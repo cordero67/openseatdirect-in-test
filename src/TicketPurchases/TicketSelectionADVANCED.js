@@ -248,6 +248,12 @@ const TicketSelection = () => {
             args: item.priceFunction.args};
             pricingCode = "twofer";
           //console.log("Price Function form field EXISTS and is TWOFER: ", priceFunction)
+        } else if (item.priceFunction.form === "twoferCapped" && item.priceFunction.args) {
+          //console.log("Price Function form field EXISTS and is TWOFERCAPPED");
+          priceFunction = {form: "twoferCapped",
+            args: item.priceFunction.args};
+            pricingCode = "twoferCapped";
+          //console.log("Price Function form field EXISTS and is TWOFERCAPPED: ", priceFunction)
         } else if (item.priceFunction.form === "bogo" && item.priceFunction.args) {
           //console.log("Price Function form field EXISTS and is BOGO");
           priceFunction = {form: "bogo",
@@ -624,6 +630,11 @@ const TicketSelection = () => {
     return (result);
   }
 
+  const twofer = (i,u,n,tp ) => {
+    let result = (Math.floor(i/n)*tp) + (i%n)*u;
+    return (result);
+  }
+
   const updateTicketsSelected2 = (event, ticketType) => {
     // updates "ticketInfo"
     let tempTicketInfo = [...ticketInfo2];
@@ -633,26 +644,35 @@ const TicketSelection = () => {
         item.ticketsSelected = event.target.value;
         console.log("Tickets Selected: ", event.target.value);
         if (item.ticketPriceFunction.form === "bogo") {
-        let totalPurchase = bogox(
-          event.target.value,
-          item.ticketPrice,
-          item.ticketPriceFunction.args.buy,
-          item.ticketPriceFunction.args.get,
-          item.ticketPriceFunction.args.discount
-        );
-        console.log("Bogo total Purchase: ", totalPurchase)
-        item.adjustedTicketPrice = totalPurchase/event.target.value;
-
+          let totalPurchase = bogox(
+            event.target.value,
+            item.ticketPrice,
+            item.ticketPriceFunction.args.buy,
+            item.ticketPriceFunction.args.get,
+            item.ticketPriceFunction.args.discount
+          );
+          console.log("Bogo total Purchase: ", totalPurchase)
+          item.adjustedTicketPrice = totalPurchase/event.target.value;
         } else if (item.ticketPriceFunction.form === "twofer") {
-        console.log("Form field twofer: ", item.ticketPriceFunction.form);
-        let totalPurchase = twoferCapped(
-          event.target.value,
-          item.ticketPrice,
-          item.ticketPriceFunction.args.buy,
-          item.ticketPriceFunction.args.for
-        );
-        console.log("Twofor total Purchase: ", totalPurchase)
-        item.adjustedTicketPrice = totalPurchase/event.target.value;
+          console.log("Form field twofer: ", item.ticketPriceFunction.form);
+          let totalPurchase = twofer(
+            event.target.value,
+            item.ticketPrice,
+            item.ticketPriceFunction.args.buy,
+            item.ticketPriceFunction.args.for
+          );
+          console.log("Twofor total Purchase: ", totalPurchase)
+          item.adjustedTicketPrice = totalPurchase/event.target.value;
+        } else if (item.ticketPriceFunction.form === "twoferCapped") {
+          console.log("Form field twoferCapped: ", item.ticketPriceFunction.form);
+          let totalPurchase = twoferCapped(
+            event.target.value,
+            item.ticketPrice,
+            item.ticketPriceFunction.args.buy,
+            item.ticketPriceFunction.args.for
+          );
+          console.log("TwoferCapped total Purchase: ", totalPurchase)
+          item.adjustedTicketPrice = totalPurchase/event.target.value;
         }
         else {
           console.log("No DISCOUNT PRICING AVAILABLE")
