@@ -18,8 +18,8 @@ import {
 } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
-import CartLink from "./CartLink";
-import OrderSummary from "./OrderSummary";
+import CartLink from "./CartLink_bt";
+import OrderSummary from "./OrderSummary_bt";
 import styles from "./Order.module.css";
 
 // defines the ticket order populated from "localStorage"

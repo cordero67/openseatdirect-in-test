@@ -19,7 +19,7 @@ const eventData = [
     date: "Every Wednesday: 8:00 PM",
     description: "description2",
     location: "Voix Lounge, Philadelphia, PA",
-    url: "etPROMO/laugh-lounge-weekly-comedy-showcase-&-open-mic?eventID=20806407169",
+    url: "et/laugh-lounge-weekly-comedy-showcase-&-open-mic?eventID=20806407169",
     available: true
   },
   {
@@ -39,7 +39,7 @@ const eventData = [
     date: "Wed, Jan 29, 2020: 7:00 PM",
     description: "description4",
     location: "Montclair, NJ",
-    url: "etPROMO/cocina-candela-chef-s-table-dinner?eventID=81295501293",
+    url: "et/cocina-candela-chef-s-table-dinner?eventID=81295501293",
     available: true
   },
   {
@@ -90,7 +90,7 @@ const eventData = [
     date: "Fri, Jan 31, 2020: 7:30 PM",
     description: "description6",
     location: "Chicago, IL",
-    url: "etPROMO/billy-goat-tavern?eventID=60909827273",
+    url: "et/billy-goat-tavern?eventID=60909827273",
     available: true
   }
 ];

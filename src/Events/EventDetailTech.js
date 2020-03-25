@@ -222,7 +222,7 @@ const EventDetail = props => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
   
-  const ticketsHandler = () => {window.location.href = `/etPROMOADV/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`}
+  const ticketsHandler = () => {window.location.href = `/et/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`}
 
   let image = (
     <img

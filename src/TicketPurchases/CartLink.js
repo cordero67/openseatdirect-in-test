@@ -12,14 +12,14 @@ import styles from "./Order.module.css";
 
 const CartLink = props => {
   // determines whether or not to display the number of tickets purchased
-  // "showDoublePane" must be false and "ticketOrder.ticketsPurchased" must be > 0
+  // "showDoublePane" must be false and "orderTotals.ticketsPurchased" must be > 0
 
   const ticketAmount = show => {
-    if (!props.isLoading && !show && props.ticketOrder.ticketsPurchased > 0) {
+    if (!props.isLoading && !show && props.orderTotals.ticketsPurchased > 0) {
       return (
         <Aux>
           <span className={styles.cartBadge}>
-            <sup>{props.ticketOrder.ticketsPurchased}</sup>
+            <sup>{props.orderTotals.ticketsPurchased}</sup>
           </span>
         </Aux>
       );
