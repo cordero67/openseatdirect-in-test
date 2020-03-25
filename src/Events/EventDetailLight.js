@@ -200,7 +200,7 @@ const EventDetail = props => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
   
-  const ticketsHandler = () => {window.location.href = `/etPROMO/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`}
+  const ticketsHandler = () => {window.location.href = `/et/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`}
 
   let image = (
     <img
@@ -219,14 +219,14 @@ const EventDetail = props => {
     if (priceArray.length > 1) {
       ticketPriceRange = (
         <div>
-          ${Math.min(...priceArray).toFixed(0)} - ${Math.max(...priceArray).toFixed(0)}
+          ${Math.min(...priceArray).toFixed(2)} - ${Math.max(...priceArray).toFixed(2)}
         </div>
       )
     }
     else {
       ticketPriceRange = (
         <div>
-          ${Math.min(...priceArray).toFixed(0)}
+          ${Math.min(...priceArray).toFixed(2)}
         </div>
       )
     }
@@ -276,7 +276,7 @@ const EventDetail = props => {
   if (showLargerDoublePane && !isLoadingEvent) {
     summaryPlacard = (
       <div className={styles.SummaryPlacard}>
-        <div className={styles.SummaryDetailsLight}>
+        <div className={styles.SummaryDetails}>
           <div className={styles.Month}>{dateFormat(eventDetails.startDateTime, "mmm", true).toUpperCase()}</div>
           <div className={styles.Date}>{dateFormat(eventDetails.startDateTime, "dd", true).toUpperCase()}</div>
           <div className={styles.Event}>
@@ -284,8 +284,7 @@ const EventDetail = props => {
           </div>
           <div className={styles.Presenter}>by {eventDetails.organizer}</div>
         </div>
-        <div className={styles.TicketRangeLight}>
-          <div className={styles.Prices}><span style={{ fontWeight: "600", color: "blue" }}>$20 - $30 w/ Empower2020 promo code</span></div>
+        <div className={styles.TicketRange}>
           <div className={styles.Prices}>{ticketPriceRange}</div>
         </div>
       </div>
@@ -341,8 +340,7 @@ const EventDetail = props => {
   let ticketDisplay;
   if (!showLargerDoublePane) {
     ticketDisplay = (
-      <div className={styles.TicketGridLight}>
-        <div className={styles.PriceRange}><span style={{ fontWeight: "600", color: "blue" }}>$20 - $30 w/ Empower2020 promo code</span></div>
+      <div className={styles.TicketGrid}>
         <div className={styles.PriceRange}>{ticketPriceRange}</div>
         <div className={styles.ButtonContainer}>
           <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>

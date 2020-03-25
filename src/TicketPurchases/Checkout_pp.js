@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import dateFormat from "dateformat";
 
 import { PayPalButton } from "react-paypal-button-v2";
 
@@ -21,13 +22,18 @@ import { OrderConfirmationTT, OrderConfirmationTF } from "./OrderConfirmation";
 import styles from "./Order.module.css";
 
 // defines the ticket order populated from "localStorage"
-let ticketOrder = {};
+//let ticketOrder = {};
 
-// defines the PayPal "purchase_units.items" value populated from "ticketOrder"
-let paypalArray = [];
+// defines the variables that accept the "cart_" data from "localStorage"
+let eventDetails = {};
+let ticketInfo = {};
+let orderTotals = {};
 
 // defines an event's image
 let eventLogo = "";
+
+// defines the PayPal "purchase_units.items" value populated from "ticketOrder"
+let paypalArray = [];
 
 // defines the styling variables
 let MainContainer = {};
@@ -101,14 +107,15 @@ const Checkout = props => {
     if (localStorage.getItem("eventNum")) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
-        ticketOrder = JSON.parse(localStorage.getItem(`cart_${event}`));
-        console.log("ticketOrder: ", ticketOrder);
+        let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
+        eventDetails = tempCart.eventDetails;
+        ticketInfo = tempCart.ticketInfo;
+        orderTotals = tempCart.orderTotals;
         setPaypalArray();
         console.log("Paypal Array: ", paypalArray);
       }
-      if (localStorage.getItem(`image`)) {
-        eventLogo = JSON.parse(localStorage.getItem(`image`));
-        console.log("image: ", eventLogo);
+      if (localStorage.getItem(`image_${event}`)) {
+        eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
       }
     }
     stylingUpdate(window.innerWidth, window.innerHeight);
@@ -138,11 +145,11 @@ const Checkout = props => {
   // sets the PayPal "purchase_units.items" value populated from "ticketOrder"
   const setPaypalArray = () => {
     paypalArray = [];
-    ticketOrder.tickets.forEach(item => {
+    ticketInfo.forEach(item => {
       if (item.ticketsSelected > 0) {
         let newElement;
         newElement = {
-          name: `${ticketOrder.eventName}: ${item.ticketName}`,
+          name: `${eventDetails.eventName}: ${item.ticketName}`,
           sku: item.ticketID,
           unit_amount: {
             currency_code: "USD",
@@ -157,42 +164,45 @@ const Checkout = props => {
 
   // clears entire "ticketOrder" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
-    ticketOrder = {};
+    eventDetails = {};
+    ticketInfo = {};
+    orderTotals = {};
     eventLogo = "";
     let event = JSON.parse(localStorage.getItem("eventNum"));
     localStorage.removeItem(`cart_${event}`);
-    localStorage.removeItem(`image`);
+    localStorage.removeItem(`image_${event}`);
   };
 
   // **********
   // THIS SECTION NEEDS WORK
   // called by <PaypalButton> on a successful transaction
   const payPalExpressBuy = details => {
+      details.purchase_units[0].items = paypalArray;
     const paymentData = {
       paypalOrderDetails: details
     };
 
     setPaypalStatus(true);
     console.log("paypalStatus inside 'payPalExpressBuy': ", paypalStatus);
-
     transactionInfo = {
-      eventTitle: ticketOrder.eventName,
-      venue: ticketOrder.location.venueName,
-      address1: ticketOrder.location.address1,
-      city: ticketOrder.location.city,
-      state: ticketOrder.location.state,
-      zipPostalCode: ticketOrder.location.zipPostalCode,
-      dateTime: ticketOrder.startDateTime,
+      eventTitle: eventDetails.eventTitle,
+      venue: eventDetails.location.venueName,
+      address1: eventDetails.location.address1,
+      city: eventDetails.location.city,
+      state: eventDetails.location.state,
+      zipPostalCode: eventDetails.location.zipPostalCode,
+      startDateTime: eventDetails.startDateTime,
+      endDateTime: eventDetails.endDateTime,
       paypalEmail: details.payer.email_address,
       firstName: details.payer.name.given_name,
       lastName: details.payer.name.surname,
-      numTickets: ticketOrder.ticketsPurchased,
-      totalAmount: ticketOrder.totalPurchaseAmount,
-      tickets: ticketOrder.tickets,
-      userEmail: ticketOrder.userEmail
+      numTickets: orderTotals.ticketsPurchased,
+      fullAmount: orderTotals.fullPurchaseAmount,
+      discount: orderTotals.discountAmount,
+      totalAmount: orderTotals.finalPurchaseAmount,
+      tickets: ticketInfo,
+      userEmail: eventDetails.organizerEmail,
     };
-
-    console.log("transactionInfo: ", transactionInfo);
 
     onlyShowLoadingSpinner();
     console.log("On Success 'details' object: ", details);
@@ -215,13 +225,16 @@ const Checkout = props => {
 
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
-    if (!showLoadingSpinner && !show && ticketOrder.totalPurchaseAmount > 0) {
-      return <div>${ticketOrder.totalPurchaseAmount}</div>;
+    if (!showLoadingSpinner && !show && orderTotals.finalPurchaseAmount > 0) {
+      return <div>${orderTotals.finalPurchaseAmount}</div>;
     } else {
       return null;
     }
   };
 
+  // ********************************
+  // ********************************
+  // ********************************
   // determines whether or not to display the cart and arrow
   const cartLink = show => {
     if (!showLoadingSpinner && !show) {
@@ -230,7 +243,7 @@ const Checkout = props => {
           onClick={switchShowOrderSummary}
           showStatus={showOrderSummaryOnly}
           isLoading={showLoadingSpinner}
-          ticketOrder={ticketOrder}
+          orderTotals={orderTotals}
           showDoublePane={showDoublePane}
         />
       );
@@ -250,9 +263,9 @@ const Checkout = props => {
 
   // defines and sets "orderSummary" which is displayed in right panel
   let orderSummary;
-  if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount > 0) {
-    orderSummary = <OrderSummary ticketOrder={ticketOrder} />;
-  } else if (!showLoadingSpinner && ticketOrder.totalPurchaseAmount <= 0) {
+  if (!showLoadingSpinner && orderTotals.finalPurchaseAmount > 0) {
+    orderSummary = <OrderSummary ticketOrder={ticketInfo} />;
+  } else if (!showLoadingSpinner && orderTotals.finalPurchaseAmount <= 0) {
     orderSummary = (
       <div className={styles.EmptyOrderSummary}>
         <FontAwesomeIcon
@@ -275,6 +288,14 @@ const Checkout = props => {
     </div>
   );
 
+  const appliedCode = () => {
+    if (orderTotals.promoCodeApplied) {
+      return `${eventDetails.eventNum}: ${orderTotals.promoCodeApplied}`;
+    } else {
+      return `${eventDetails.eventNum}: NO CODE`;
+    }
+  }
+
   // **********
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // POTENTIALLY NEED TO ADD BACK THE "onBLur" IN <div>
@@ -282,7 +303,7 @@ const Checkout = props => {
   const showPayPal = () => (
     // loads PayPal Smart buttons if order exists
     <div>
-      {ticketOrder.totalPurchaseAmount > 0 ? (
+      {orderTotals.finalPurchaseAmount > 0 ? (
         <div>
           <PayPalButton
             onButtonReady={() => {}}
@@ -290,15 +311,21 @@ const Checkout = props => {
               return actions.order.create({
                 purchase_units: [
                   {
-                    reference_id: ticketOrder.eventNum,
-                    description: ticketOrder.eventName,
+                    reference_id: appliedCode(),
+                    description: eventDetails.eventName,
+                    payment_descriptor: eventDetails.eventNum,
                     amount: {
                       currency_code: "USD",
-                      value: ticketOrder.totalPurchaseAmount.toString(),
+                      value: orderTotals.finalPurchaseAmount.toString(),
+
                       breakdown: {
                         item_total: {
                           currency_code: "USD",
-                          value: ticketOrder.totalPurchaseAmount.toString()
+                          value: orderTotals.fullPurchaseAmount.toString()
+                        },
+                        discount: {
+                          currency_code: "USD",
+                          value: orderTotals.discountAmount.toString()
                         }
                       }
                     },
@@ -314,7 +341,7 @@ const Checkout = props => {
               payPalExpressBuy(details);
             }}
             options={{
-              clientId: ticketOrder.clientID
+              clientId: eventDetails.gatewayClientID
             }}
             catchError={err => {
               console.log("catchError 'err': ", err);
@@ -444,15 +471,38 @@ const Checkout = props => {
 
   // defines and sets "paymentPane" view status
   if (showPaymentDetails) {
+    let dateRange;
+    if (dateFormat(eventDetails.startDateTime, "m d yy", true) === dateFormat(eventDetails.endDateTime, "m d yy", true)) {
+      dateRange = <Aux>{dateFormat(
+        eventDetails.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        eventDetails.endDateTime,
+        "shortTime",
+        true
+      )}</Aux>
+    } else {
+      dateRange = <Aux>{dateFormat(
+        eventDetails.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        eventDetails.endDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )}</Aux>
+    }
+
     paymentPane = (
       <Aux>
         <div className={styles.MainItemLeft}>
           <div className={styles.EventHeader}>
             <div className={styles.EventTitle}>
-                {ticketOrder.eventName}
+                {eventDetails.eventTitle}
             </div>
             <div className={styles.EventDate}>
-              {ticketOrder.startDateTime}
+              {dateRange}
             </div>
           </div>
 
