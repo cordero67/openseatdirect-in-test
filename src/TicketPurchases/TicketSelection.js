@@ -338,7 +338,7 @@ const TicketSelection = () => {
 
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
-    if (!isLoadingEvent && !show && orderTotals.finalPurchaseAmount > 0) {
+    if (!isLoadingEvent && !show && orderTotals.ticketsPurchased > 0) {
       return <div>${orderTotals.finalPurchaseAmount}</div>;
     } else return null;
   };
@@ -398,7 +398,7 @@ const TicketSelection = () => {
 
   // creates checkout button to proceed to checkout page
   let checkoutButton;
-  if (!isLoadingEvent && orderTotals.finalPurchaseAmount > 0) {
+  if (!isLoadingEvent && orderTotals.ticketsPurchased > 0) {
     checkoutButton = (
       <button
         onClick={purchaseTicketHandler}
