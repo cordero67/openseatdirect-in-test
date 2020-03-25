@@ -33,27 +33,6 @@ const eventData = [
     available: true
   },
   {
-    image: "https://openseatdirect.com/api/event/photo/e/81295501293",
-    title: "Cocina Candela - Private Dinner",
-    eventNum: "81295501293",
-    date: "Wed, Jan 29, 2020: 7:00 PM",
-    description: "description4",
-    location: "Montclair, NJ",
-    url: "et/cocina-candela-chef-s-table-dinner?eventID=81295501293",
-    available: true
-  },
-  {
-    image:
-      "https://s7d2.scene7.com/is/image/TWCNews/0110_n13_puerto_rico_earthquakes_slate?wid=1250&hei=703&$wide-bg$",
-    title: "Puerto Rico Earthquake Fund Raiser",
-    eventNum: "",
-    date: "Mar 13-22, 2020: 10 Day Event",
-    description: "description5",
-    location: "Online Charity Event",
-    url: "",
-    available: false
-  },
-  {
     image: TechWeekLogo,
     title: "PTW 2020 Philly Tech Week",
     eventNum: "",
@@ -83,16 +62,6 @@ const eventData = [
     url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
     available: true
   },
-  {
-    image: "https://www.openseatdirect.com/api/event/photo/e/60909827273",
-    title: "Billy Goat Hall of Fame Induction Ceremony",
-    eventNum: "60909827273",
-    date: "Fri, Jan 31, 2020: 7:30 PM",
-    description: "description6",
-    location: "Chicago, IL",
-    url: "et/billy-goat-tavern?eventID=60909827273",
-    available: true
-  }
 ];
 
 const Events = () => {

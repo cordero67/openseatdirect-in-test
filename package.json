@@ -18,9 +18,10 @@
     "react-dom": "^16.10.2",
     "react-paypal-button-v2": "^2.6.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.3.0",
+    "react-scripts": "^3.4.1",
     "react-youtube": "^7.9.0",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "webpack": "^4.42.0"
   },
   "scripts": {
     "start": "react-scripts start",
