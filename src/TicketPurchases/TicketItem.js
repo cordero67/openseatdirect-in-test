@@ -79,8 +79,6 @@ const TicketItem = props => {
           </div>
           <div className={styles.EventDescription}>
             {props.name.ticketDescription}
-            <span style={{ color: "red" }}><div>{props.name.ticketPriceFunction.form ? props.name.ticketPriceFunction.form : "NO ACTIVE PRICE FUNCTION"}</div>
-            <div>Adjusted Ticket Price{props.name.adjustedTicketPrice}</div></span>
           </div>
           <hr style={{ border: "1px solid#F2F2F2" }} />
         </Aux>
