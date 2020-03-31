@@ -152,7 +152,7 @@ const Checkout = props => {
           name: `${eventDetails.eventName}: ${item.ticketName}`,
           sku: item.ticketID,
           unit_amount: {
-            currency_code: "USD",
+            currency_code: orderTotals.currencyAbv,
             value: item.ticketPrice.toString()
           },
           quantity: item.ticketsSelected.toString()
@@ -226,7 +226,7 @@ const Checkout = props => {
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
     if (!showLoadingSpinner && !show && orderTotals.finalPurchaseAmount > 0) {
-      return <div>${orderTotals.finalPurchaseAmount}</div>;
+      return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
     } else {
       return null;
     }
@@ -264,7 +264,7 @@ const Checkout = props => {
   // defines and sets "orderSummary" which is displayed in right panel
   let orderSummary;
   if (!showLoadingSpinner && orderTotals.finalPurchaseAmount > 0) {
-    orderSummary = <OrderSummary ticketOrder={ticketInfo} />;
+    orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
   } else if (!showLoadingSpinner && orderTotals.finalPurchaseAmount <= 0) {
     orderSummary = (
       <div className={styles.EmptyOrderSummary}>
@@ -315,16 +315,16 @@ const Checkout = props => {
                     description: eventDetails.eventName,
                     payment_descriptor: eventDetails.eventNum,
                     amount: {
-                      currency_code: "USD",
+                      currency_code: orderTotals.currencyAbv,
                       value: orderTotals.finalPurchaseAmount.toString(),
 
                       breakdown: {
                         item_total: {
-                          currency_code: "USD",
+                          currency_code: orderTotals.currencyAbv,
                           value: orderTotals.fullPurchaseAmount.toString()
                         },
                         discount: {
-                          currency_code: "USD",
+                          currency_code: orderTotals.currencyAbv,
                           value: orderTotals.discountAmount.toString()
                         }
                       }
@@ -341,7 +341,8 @@ const Checkout = props => {
               payPalExpressBuy(details);
             }}
             options={{
-              clientId: eventDetails.gatewayClientID
+              clientId: eventDetails.gatewayClientID,
+              currency: orderTotals.currencyAbv
             }}
             catchError={err => {
               console.log("catchError 'err': ", err);

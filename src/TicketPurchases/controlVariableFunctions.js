@@ -1,7 +1,8 @@
 import React from "react";
 import dateFormat from "dateformat";
 import { bogox, twoferCapped, twofer } from "./pricingFunctions";
-  
+
+// initial definition of "eventDetails"
 export const loadEventDetails = event => {
   let tempGatewayURL;
   // sets the checkout page url
@@ -38,10 +39,18 @@ export const loadEventDetails = event => {
   console.log("INITIAL 'eventDetails': ", tempEventDetails)
   return tempEventDetails
 };
-  
-export const loadTicketInfo = ticket => {
+
+// initial definition of "ticketInfo"
+export const loadTicketInfo = event => {
   let tempTicketArray = [];
-  ticket.forEach(item => {
+  let tempCurrency = "$";
+  
+  if (event.baseCurrency && event.baseCurrency === "JPY") {
+    tempCurrency = "¥";
+  }
+  
+  
+  event.ticket.forEach(item => {
     let priceFunction = {};
     let pricingCode = "";
     if (item.priceFunction && item.priceFunction.form && item.usePriceFunction) {
@@ -101,7 +110,9 @@ export const loadTicketInfo = ticket => {
       minTicketOrder: minOrder,
       ticketPriceFunction: priceFunction,
       ticketPricingCodeApplied: pricingCode,
-      adjustedTicketPrice: item.currentTicketPrice
+      adjustedTicketPrice: item.currentTicketPrice,
+      ticketCurrency: tempCurrency,
+      //currency: tempCurrency
     };
     tempTicketArray.push(tempTicketItem);
   });
@@ -109,6 +120,7 @@ export const loadTicketInfo = ticket => {
   return tempTicketArray;
 }
 
+// initial definition of "promoCodeDetails"
 export const loadPromoCodeDetails = (ticket, promoCodeDetails) => {
   let tempCodesArray = [];
   ticket.forEach(tktType => {
@@ -129,31 +141,39 @@ export const loadPromoCodeDetails = (ticket, promoCodeDetails) => {
   return tempCodeDetail;
 };
 
+// initial definition of "orderTotals"
 export const loadOrderTotals = event => {
+  let tempCurrencySym = "$";
+  let tempCurrencyAbv = "USD";
+  if (event.baseCurrency && event.baseCurrency === "JPY") {
+    tempCurrencySym = "¥";
+    tempCurrencyAbv = "JPY";
+  }
+
   let tempOrderTotals = {
     ticketsPurchased: 0,
     fullPurchaseAmount: 0,
     discountAmount: 0,
     finalPurchaseAmount: 0,
+    currencySym: tempCurrencySym,
+    currencyAbv: tempCurrencyAbv,
     promoCodeApplied: ""
   };
   console.log("INITIAL 'orderTotals': ", tempOrderTotals)
   return tempOrderTotals;
 }
 
-// updates 'orderTotals" from 
+// updates 'orderTotals" from either a promo code or ticket amount change
 export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
   console.log("ticketInfo: ", ticketInfo)
   let tempTicketsPurchased = 0;
   let tempFullAmount = 0;
-  //let tempDiscountAmount = 0;
   let tempFinalAmount = 0;
   let tempTicketInfo = [...ticketInfo];
   tempTicketInfo.forEach(item => {
       tempTicketsPurchased = tempTicketsPurchased + parseInt(item.ticketsSelected);
       tempFullAmount = tempFullAmount + (item.ticketsSelected * item.ticketPrice);
       tempFinalAmount = tempFinalAmount + (item.ticketsSelected * item.adjustedTicketPrice);
-      //tempDiscountAmount = (tempFullAmount - tempFinalAmount).toFixed(2);
   });
   let tempOrderTotals;
   tempOrderTotals = {...orderTotals};
@@ -167,7 +187,6 @@ export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
   console.log("REVISED 'orderTotals': ", tempOrderTotals)
   return tempOrderTotals;
 }
-
 
 // updates "promoCodeDetails" with valid promo code instance
 export const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
@@ -230,7 +249,28 @@ export const clearTicketInfo = (ticketInfo) => {
 }
 //********** REVIEWED TO HERE
 
-// updates "ticketInfo"
+
+// updates "orderTotals" with removed promo code
+export const clearOrderTotals = (ticketInfo, orderTotals) => {
+  let tempTicketInfo;
+  let tempOrderTotals;
+  let tempTotalPurchaseAmount = 0;
+  let tempFinalPurchaseAmount = 0;
+  tempTicketInfo = [...ticketInfo];
+  tempTicketInfo.forEach((item, index) => {
+    tempTotalPurchaseAmount = tempTotalPurchaseAmount + (item.ticketsSelected * item.ticketPrice);
+    tempFinalPurchaseAmount = tempFinalPurchaseAmount + (item.ticketsSelected * item.adjustedTicketPrice);
+  })
+  tempOrderTotals = {...orderTotals};
+  tempOrderTotals.fullPurchaseAmount = tempTotalPurchaseAmount;
+  tempOrderTotals.finalPurchaseAmount = tempFinalPurchaseAmount;
+  tempOrderTotals.discountAmount = 0;
+  tempOrderTotals.promoCodeApplied = "";
+  console.log("UPDATED 'orderTotals': ", tempOrderTotals)
+  return tempOrderTotals;
+}
+
+// updates "ticketInfo" after a change in tickets selected
 export const changeTicketInfo = (event, ticketType, ticketInfo) => {
   let tempTicketInfo = [...ticketInfo];
   tempTicketInfo.forEach(item => {
@@ -274,24 +314,3 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
   console.log("UPDATED 'ticketInfo': ", tempTicketInfo)
   return(tempTicketInfo);
 };
-
-
-// updates "orderTotals" with removed promo code
-export const clearOrderTotals = (ticketInfo, orderTotals) => {
-  let tempTicketInfo;
-  let tempOrderTotals;
-  let tempTotalPurchaseAmount = 0;
-  let tempFinalPurchaseAmount = 0;
-  tempTicketInfo = [...ticketInfo];
-  tempTicketInfo.forEach((item, index) => {
-    tempTotalPurchaseAmount = tempTotalPurchaseAmount + (item.ticketsSelected * item.ticketPrice);
-    tempFinalPurchaseAmount = tempFinalPurchaseAmount + (item.ticketsSelected * item.adjustedTicketPrice);
-  })
-  tempOrderTotals = {...orderTotals};
-  tempOrderTotals.fullPurchaseAmount = tempTotalPurchaseAmount;
-  tempOrderTotals.finalPurchaseAmount = tempFinalPurchaseAmount;
-  tempOrderTotals.discountAmount = 0;
-  tempOrderTotals.promoCodeApplied = "";
-  console.log("UPDATED 'orderTotals': ", tempOrderTotals)
-  return tempOrderTotals;
-}
