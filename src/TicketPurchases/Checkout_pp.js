@@ -149,7 +149,7 @@ const Checkout = props => {
       if (item.ticketsSelected > 0) {
         let newElement;
         newElement = {
-          name: `${eventDetails.eventName}: ${item.ticketName}`,
+          name: `${eventDetails.eventTitle}: ${item.ticketName}`,
           sku: item.ticketID,
           unit_amount: {
             currency_code: orderTotals.currencyAbv,
@@ -225,7 +225,7 @@ const Checkout = props => {
 
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
-    if (!showLoadingSpinner && !show && orderTotals.finalPurchaseAmount > 0) {
+    if (!showLoadingSpinner && !show && orderTotals.ticketsPurchased > 0) {
       return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
     } else {
       return null;
@@ -263,9 +263,9 @@ const Checkout = props => {
 
   // defines and sets "orderSummary" which is displayed in right panel
   let orderSummary;
-  if (!showLoadingSpinner && orderTotals.finalPurchaseAmount > 0) {
+  if (!showLoadingSpinner && orderTotals.ticketsPurchased > 0) {
     orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
-  } else if (!showLoadingSpinner && orderTotals.finalPurchaseAmount <= 0) {
+  } else if (!showLoadingSpinner && orderTotals.ticketsPurchased <= 0) {
     orderSummary = (
       <div className={styles.EmptyOrderSummary}>
         <FontAwesomeIcon
@@ -303,7 +303,7 @@ const Checkout = props => {
   const showPayPal = () => (
     // loads PayPal Smart buttons if order exists
     <div>
-      {orderTotals.finalPurchaseAmount > 0 ? (
+      {orderTotals.ticketsPurchased > 0 ? (
         <div>
           <PayPalButton
             onButtonReady={() => {}}
