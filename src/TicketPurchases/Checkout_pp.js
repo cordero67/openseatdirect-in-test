@@ -201,6 +201,7 @@ const Checkout = props => {
       discount: orderTotals.discountAmount,
       totalAmount: orderTotals.finalPurchaseAmount,
       tickets: ticketInfo,
+      currency: orderTotals.currencySym,
       userEmail: eventDetails.organizerEmail,
     };
 
@@ -211,7 +212,10 @@ const Checkout = props => {
       .then(response => {
         console.log("order received");
         console.log("response: ", response);
-        setOrderStatus(true);
+        // check if response was true or false
+        if(response.serverVerification) {
+          setOrderStatus(true);
+        }
         console.log("Order status: ", orderStatus);
         onlyShowPurchaseConfirmation();
         purchaseConfirmHandler();
@@ -225,7 +229,7 @@ const Checkout = props => {
 
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
-    if (!showLoadingSpinner && !show && orderTotals.ticketsPurchased > 0) {
+    if (!showLoadingSpinner && !show && orderTotals.finalPurchaseAmount > 0) {
       return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
     } else {
       return null;
@@ -303,7 +307,7 @@ const Checkout = props => {
   const showPayPal = () => (
     // loads PayPal Smart buttons if order exists
     <div>
-      {orderTotals.ticketsPurchased > 0 ? (
+      {orderTotals.finalPurchaseAmount > 0 ? (
         <div>
           <PayPalButton
             onButtonReady={() => {}}
@@ -358,7 +362,7 @@ const Checkout = props => {
       ) : (
         <div>
           <span className={styles.AlertText}>
-            Your order is empty, please return to ticket selection page.
+            A zero value order cannot be processed at this time.<br></br>Please return to ticket selection page.
           </span>
         </div>
       )}
