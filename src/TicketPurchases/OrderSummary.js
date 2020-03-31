@@ -5,17 +5,39 @@ import styles from "./Order.module.css";
 
 const OrderSummary = props => {
   let purchaseTotal = 0;
+  let adjPurchaseTotal;
+  let fixedPurchaseTotal;
   props.ticketOrder.map(item => {
     if(item.ticketsSelected > 0) {
+      
       purchaseTotal += (item.ticketsSelected * item.adjustedTicketPrice);
     }
   })
-  
+  if (props.ticketCurrency === "¥") {
+    fixedPurchaseTotal = purchaseTotal.toFixed(0);
+  } else {
+    fixedPurchaseTotal = purchaseTotal.toFixed(2);
+  }
+
   return (
     <Aux>
       <div style={{ fontWeight: "600" }}>Order Summary</div>
       <br></br>
       {props.ticketOrder.map(item => {
+        
+        let fixedDiscountTotal;
+        let fixedAdjPriceTotal;
+        let fixedPriceTotal;
+        if (props.ticketCurrency === "¥") {
+          fixedPriceTotal = (item.ticketsSelected * item.ticketPrice).toFixed(0);
+          fixedAdjPriceTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(0);
+          fixedDiscountTotal = (item.ticketsSelected * (item.ticketPrice - item.adjustedTicketPrice)).toFixed(0);
+        } else {
+          fixedPriceTotal = (item.ticketsSelected * item.ticketPrice).toFixed(2);
+          fixedAdjPriceTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(2);
+          fixedDiscountTotal = (item.ticketsSelected * (item.ticketPrice - item.adjustedTicketPrice)).toFixed(2);
+        }
+
         return item.ticketsSelected > 0 ? (
           <Aux key={item.ticketID}>
             <div className={styles.RightGrid}>
@@ -23,9 +45,9 @@ const OrderSummary = props => {
                 {item.ticketsSelected} X {item.ticketName}
               </div>
                 <div style={{ textAlign: "right" }}>
-                  {item.ticketPriceFunction.form === "promo" && (item.adjustedTicketPrice !== item.ticketPrice) ?
-                    (item.ticketsSelected * item.ticketPrice).toFixed(2)
-                    : (item.ticketsSelected * item.adjustedTicketPrice).toFixed(2)
+                  {item.ticketCurrency}{item.ticketPriceFunction.form === "promo" && (item.adjustedTicketPrice !== item.ticketPrice) ?
+                    fixedPriceTotal
+                    : fixedAdjPriceTotal
                   }
                 </div>
             </div>
@@ -36,7 +58,7 @@ const OrderSummary = props => {
                   
                 </div>
                 <div style={{ textAlign: "right", color: "#4BBA00" }}>-
-                  {(item.ticketsSelected * (item.ticketPrice - item.adjustedTicketPrice)).toFixed(2)}
+                  {item.ticketCurrency}{fixedDiscountTotal}
                 </div>
               </div> :
               null
@@ -51,7 +73,7 @@ const OrderSummary = props => {
       <div className={styles.RightGrid}>
         <div style={{ fontWeight: "600" }}>Total</div>
         <div style={{ textAlign: "right", fontWeight: "600" }}>
-         ${purchaseTotal.toFixed(2)}
+         {props.ticketCurrency}{fixedPurchaseTotal}
         </div>
       </div>
       <br></br>

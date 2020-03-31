@@ -14,7 +14,15 @@ const TicketItem = props => {
     if (props.name.ticketsAvailable < 1) {
       adjTicketsAvailable = 0;
     }
-    //console.log("props.name, ", props.name)
+    let ticketPrice;
+    let adjTicketPrice;
+    if (props.name.ticketCurrency === "¥") {
+      ticketPrice = props.name.ticketPrice.toFixed(0);
+      adjTicketPrice = props.name.adjustedTicketPrice.toFixed(0);
+    } else {
+      ticketPrice = props.name.ticketPrice.toFixed(2);
+      adjTicketPrice = props.name.adjustedTicketPrice.toFixed(2);
+    }
 
     if (props.name.ticketsAvailable < 1) {
       options = (
@@ -23,10 +31,10 @@ const TicketItem = props => {
             <div style={{ color: "grey" }}>
               <div className={styles.TicketType}>{props.name.ticketName} - SOLD OUT</div>
               {props.name.ticketPricingCodeApplied && props.name.ticketPriceFunction.form === "promo" ?
-                <div className={styles.TicketPrices}>${props.name.adjustedTicketPrice.toFixed(2)} 
-                <span style={{ textDecoration: "line-through" }}>${props.name.ticketPrice.toFixed(2)}</span>
+                <div className={styles.TicketPrices}>{props.name.ticketCurrency}{adjTicketPrice} 
+                <span style={{ textDecoration: "line-through" }}>{props.name.ticketCurrency}{ticketPrice}</span>
                 </div>
-                : <div className={styles.TicketPrices}>${props.name.ticketPrice.toFixed(2)}</div>}
+                : <div className={styles.TicketPrices}>{props.name.ticketCurrency}{ticketPrice}</div>}
             </div>
             <div className={styles.TicketAmount}>
               <span style={{ color: "grey", fontWeight: "500" }}>
@@ -59,10 +67,10 @@ const TicketItem = props => {
             <div>
               <div className={styles.TicketType}>{props.name.ticketName}</div>
               {props.name.ticketPricingCodeApplied && props.name.ticketPriceFunction.form === "promo" ?
-                <div className={styles.TicketPrices}>${props.name.adjustedTicketPrice.toFixed(2)} 
-                <span style={{ textDecoration: "line-through" }}>${props.name.ticketPrice.toFixed(2)}</span>
+                <div className={styles.TicketPrices}>{props.name.ticketCurrency}{adjTicketPrice} 
+                <span style={{ textDecoration: "line-through" }}>{props.name.ticketCurrency}{ticketPrice}</span>
                 </div>
-                : <div className={styles.TicketPrices}>${props.name.ticketPrice.toFixed(2)}</div>}
+                : <div className={styles.TicketPrices}>{props.name.ticketCurrency}{ticketPrice}</div>}
             </div>
             <div className={styles.TicketAmount}>
               <select

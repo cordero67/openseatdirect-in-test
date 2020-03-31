@@ -118,7 +118,7 @@ const TicketSelection = () => {
           localStorage.removeItem(`cart_${event}`);
           localStorage.removeItem(`image_${event}`);
         } else {
-          setTicketInfo(loadTicketInfo(res.ticket));
+          setTicketInfo(loadTicketInfo(res));
           setPromoCodeDetails(loadPromoCodeDetails(res.ticket, promoCodeDetails));
           setOrderTotals(loadOrderTotals(res));
         }
@@ -291,7 +291,7 @@ const TicketSelection = () => {
     );
   }
 
-  // updated "ticketInfo" and "orderTotals" after a change in tickets selected
+  // updates "ticketInfo" and "orderTotals" after a change in tickets selected
   const updateTicketsSelected = (event, ticketType) => {
     setTicketInfo(changeTicketInfo(event, ticketType, ticketInfo));
     updateOrderTotals();
@@ -339,7 +339,7 @@ const TicketSelection = () => {
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
     if (!isLoadingEvent && !show && orderTotals.ticketsPurchased > 0) {
-      return <div>${orderTotals.finalPurchaseAmount}</div>;
+      return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
     } else return null;
   };
 
@@ -419,7 +419,7 @@ const TicketSelection = () => {
   // creates order summary section
   let orderSummary;
   if (!isLoadingEvent && orderTotals.ticketsPurchased > 0) {
-    orderSummary = <OrderSummary ticketOrder={ticketInfo} />;
+    orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
   } else if (!isLoadingEvent && orderTotals.ticketsPurchased <= 0) {
     orderSummary = (
       <div className={styles.EmptyOrderSummary}>
@@ -492,7 +492,7 @@ const TicketSelection = () => {
     </div>
   );
 
-  // creates  with promo form and ticket sectionsmain display with ticket and order panes
+  // defines main display with ticket and order panes
   let mainDisplay;
   if (showDoublePane && isSuccessfull) {
     mainDisplay = (

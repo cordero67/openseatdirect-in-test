@@ -10,6 +10,7 @@ import HaHaLogo from "./HaHaForHireFeb.png";
 import HaHaComedy from "./HaHaForHireComedyNight.png";
 import PIFFLogo from "./PIFFLogo.png";
 import TechWeekLogo from "./TechWeek.png";
+import RikaRikaLogo from "./RikaRikaStudio.png";
 
 const eventData = [
   {
@@ -56,12 +57,22 @@ const eventData = [
     image: LightLogo,
     title: "Gold Women's Business Connect Conference",
     eventNum: "",
-    date: "Fri, Mar, 2020: 8:30 AM",
+    date: "Fri, Mar 20, 2020: 8:30 AM",
     description: "description3",
     location: "Bryant Park, New York City",
     url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
     available: true
   },
+  {
+    image: RikaRikaLogo,
+    title: "AmeRikaEigo by RikaRikaStudio",
+    eventNum: "",
+    date: "Mar 30 - Apr 30, 2020",
+    description: "description3",
+    location: "Nagano, Japan",
+    url: "et/rikarikastudio?eventID=55390812012",
+    available: true
+  }
 ];
 
 const Events = () => {
@@ -108,7 +119,6 @@ const Events = () => {
   const eventSelectionHandler = (event, eventItem) => {
     if (eventItem.available) {
       setShowModal(false);
-      //window.location.href = `/ev/${eventItem.url}`;
       window.location.href = `/${eventItem.url}`;
     } else {
       setNoEventDetails({
