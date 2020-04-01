@@ -76,10 +76,16 @@ export const OrderConfirmationTT = props => {
             Total Number of Tickets: {props.transactionInfo.numTickets}
             <br></br>
             {props.transactionInfo.tickets.map(item => {
+              let subTotal;
+              if (currency === "¥") {
+                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(0)
+              } else {
+                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(2)
+              }
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: {currency}
-                  {item.ticketsSelected * item.adjustedTicketPrice}
+                  {subTotal}
                 </div>
               ) : null;
             })}
@@ -172,10 +178,16 @@ export const OrderConfirmationTF = props => {
             Total Number of Tickets: {props.transactionInfo.numTickets}
             <br></br>
             {props.transactionInfo.tickets.map(item => {
+              let subTotal;
+              if (currency === "¥") {
+                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(0)
+              } else {
+                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(2)
+              }
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: {currency}
-                  {item.ticketsSelected * item.adjustedTicketPrice}
+                  {currency}
                 </div>
               ) : null;
             })}
@@ -270,10 +282,16 @@ export const OrderConfirmationFF = props => {
             Total Number of Tickets: {props.transactionInfo.numTickets}
             <br></br>
             {props.transactionInfo.tickets.map(item => {
+              let subTotal;
+              if (currency === "¥") {
+                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(0)
+              } else {
+                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(2)
+              }
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: {currency}
-                  {item.ticketsSelected * item.adjustedTicketPrice}
+                  {currency}
                 </div>
               ) : null;
             })}
