@@ -14,6 +14,7 @@ import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import TicketSelection from "../../TicketPurchases/TicketSelection.js";
+import EventCreation from "../../EventCreation/EventCreation.js";
 
 import OSDHeader from "../Headers/OSDHeader";
 import OSDFooter from "../Footers/OSDFooter";
@@ -179,6 +180,20 @@ const Layout = () => {
           </React.Fragment>
         )}
       />
+
+
+
+      
+
+        <Route
+            path="/eventcreation"
+            exact
+            render={routeProps => (
+            <React.Fragment>
+                <EventCreation />
+            </React.Fragment>
+            )}
+        />
 
     </Aux>
   );

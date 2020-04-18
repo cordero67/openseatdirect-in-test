@@ -78,6 +78,7 @@ const TicketSelection = () => {
   useEffect(() => {
     setIsLoadingEvent(true);
     setIsSuccessfull(true);
+    // extracts the "eventID" from the URL
     eventData(queryString.parse(window.location.search).eventID);
     // determines a one or two pane display based on initial window width 
     stylingUpdate(window.innerWidth, window.innerHeight);
