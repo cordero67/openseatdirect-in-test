@@ -31,7 +31,7 @@ import {
 import Spinner from "../components/UI/Spinner/Spinner";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
-import OSDLogo from "../assets/BlueLettering_TransparentBackground/BlueLettering_TransparentBackground_1024.png";
+import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
 import TicketItem from "./TicketItem";

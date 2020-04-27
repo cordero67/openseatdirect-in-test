@@ -2,13 +2,14 @@
   position: relative;
   background: #2f5596;
   height: 100%;
+  z-index: 100;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .container_image {
-  background-image: url("../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_1024.png");
+  background-image: url("../../assets/OpenSeatDirect/WhiteLettering_BlueBackground_1024.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

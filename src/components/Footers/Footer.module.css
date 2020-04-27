@@ -1,0 +1,43 @@
+.Footer {
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  border-top: 2px solid #2f5596;
+  height: 50px;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 80px auto;
+}
+.CopyRight {
+  text-align: center;
+  padding-top: 5px;
+  padding-right: 8px;
+  color: #2F5596;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+@media (min-width: 550px) {
+  .Footer {
+    display: grid;
+    grid-template-columns: 90px auto;
+  }
+  .CopyRight {
+    padding-top: 12px;
+    padding-right: 8px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 780px) {
+  .Footer {
+    display: grid;
+    grid-template-columns: 110px auto;
+  }
+  .CopyRight {
+    font-size: 16px;
+  }
+}

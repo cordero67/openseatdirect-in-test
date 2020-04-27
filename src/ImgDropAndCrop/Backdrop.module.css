@@ -1,0 +1,59 @@
+.Backdrop {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 400;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.Editor {
+    position: fixed;
+    top: 30%;
+    left: 30%;
+    width: 600px;
+    height: 300px;
+    z-index: 800;
+    background-color: white;
+    padding: 16px 16px 10px;
+    box-sizing: border-box;
+    transition: all 0.3s ease-out;
+}
+
+.NonEditor {
+  margin: 0px;
+  padding: 5px 5px;
+  border: 1px solid lightgrey;
+  background-color: white;
+  width: 412px;
+  height: 212px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+/*
+    width: 600px;
+    left: calc(50% - 300px);
+
+    .Modal {
+  position: fixed;
+  z-index: 700;
+  background-color: lightblue;
+  width: 70%;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px black;
+  padding: 16px;
+  left: 15%;
+  top: 30%;
+  box-sizing: border-box;
+  transition: all 0.3s ease-out;
+}
+
+@media (min-width: 700px) {
+  .Modal {
+    width: 600px;
+    left: calc(50% - 300px);
+  }
+}
+*/
