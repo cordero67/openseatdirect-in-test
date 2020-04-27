@@ -1,96 +1,123 @@
-import React from "react";
-import { Route } from "react-router-dom";
+import React, { useState } from 'react';
+import { Route } from 'react-router-dom';
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
-import Main from "../HomePage/HomePage";
-import Video from "../Video/Video";
-import Events from "../../Events/Events";
-import EventDetail from "../../Events/EventDetail";
-import EventDetailHaHa from "../../Events/EventDetailHaHa";
-import EventDetailPIFF from "../../Events/EventDetailPIFF";
-import EventDetailTech from "../../Events/EventDetailTech";
-import EventDetailLight from "../../Events/EventDetailLight";
-import ContactUs from "../ContactUs/ContactUs";
-import CheckoutBT from "../../TicketPurchases/Checkout_bt";
-import CheckoutPP from "../../TicketPurchases/Checkout_pp";
-import TicketSelection from "../../TicketPurchases/TicketSelection.js";
-import EventCreation from "../../EventCreation/EventCreation.js";
+import Aux from '../../hoc/Auxiliary/Auxiliary';
+import Main from '../HomePage/HomePage';
+import Video from '../Video/Video';
+import EventCreation from '../../EventCreation/EventCreation';
+import Events from '../../Events/Events';
+import EventDetail from '../../Events/EventDetail';
+import EventDetailHaHa from '../../Events/EventDetailHaHa';
+import EventDetailPIFF from '../../Events/EventDetailPIFF';
+import EventDetailTech from '../../Events/EventDetailTech';
+import EventDetailLight from '../../Events/EventDetailLight';
+import ContactUs from '../ContactUs/ContactUs';
+import CheckoutBT from '../../TicketPurchases/Checkout_bt';
+import CheckoutPP from '../../TicketPurchases/Checkout_pp';
+import TicketSelection from '../../TicketPurchases/TicketSelection.js';
 
-import OSDHeader from "../Headers/OSDHeader";
-import OSDFooter from "../Footers/OSDFooter";
+import Header from '../Headers/Header';
+import SideDrawer from '../SideDrawer/SideDrawer';
+import Footer from '../Footers/Footer';
 
-//import LogoA from "../../assets/WhiteLettering_BlueBackground/WhiteLettering_BlueBackground_1024.png";
-//import LogoB from "../../assets/BlueLettering_WhiteBackground/BlueLettering_WhiteBackground_1024.png";
-import LogoC from "../../assets/BlueLettering_TransparentBackground/BlueLettering_TransparentBackground_1024.png";
-//import LogoD from "../../assets/BlackandWhite/Black_and_White_1024.png";
-//import LogoE from "../../assets/BlackandWhite_TransparentBackground/Black_and_White_TransparentBackground_1024.png";
+//import LogoA from '../../assets/OpenSeatDirect/WhiteLettering_BlueBackground_1024.png';
+//import LogoB from '../../assets/OpenSeatDirect/BlueLettering_WhiteBackground_1024.png';
+import LogoC from '../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png';
+//import LogoD from '../../assets/OpenSeatDirect/Black_and_White_1024.png';
+//import LogoE from '../../assets/OpenSeatDirect/Black_and_White_TransparentBackground_1024.png';
 
-const Layout = () => {
+const Routes = () => {
+
+  const [showSideDrawer, setShowSideDrawer] = useState(false)
+  
+  const closeSideDrawer = () => {
+    setShowSideDrawer(false);
+  }
+
+  const toggleSideDrawer = () => {
+    setShowSideDrawer(!showSideDrawer)
+  }
+
   return (
     <Aux>
-
       <Route
         path="/"
         exact
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
-            <OSDHeader
-              positioning="fixed"
-              logoType={LogoC}
-            ></OSDHeader>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
             <Main />
-            <OSDFooter></OSDFooter>
+            <Footer></Footer>
           </React.Fragment>
         )}
       />
       <Route
         path="/video"
         exact
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
-            <OSDHeader
-              positioning="fixed"
-              logoType={LogoC}
-            ></OSDHeader>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
             <Video />
-            <OSDFooter></OSDFooter>
+            <Footer></Footer>
           </React.Fragment>
         )}
       />
       <Route
         path="/contactus"
         exact
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
-            <OSDHeader
-              positioning="fixed"
-              logoType={LogoC}
-            ></OSDHeader>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
             <ContactUs />
-            <OSDFooter></OSDFooter>
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+
+
+      <Route
+        path="/eventcreation"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
+            <EventCreation />
+            <Footer></Footer>
           </React.Fragment>
         )}
       />
       <Route
         path="/events"
         exact
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
-            <OSDHeader
-              positioning="fixed"
-              logoType={LogoC}
-            ></OSDHeader>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
             <Events />
-            <OSDFooter></OSDFooter>
+            <Footer></Footer>
           </React.Fragment>
         )}
       />
 
-
       <Route
         path="/checkout_bt"
         exact
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
             <CheckoutBT />
           </React.Fragment>
@@ -99,7 +126,7 @@ const Layout = () => {
       <Route
         path="/checkout_pp"
         exact
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
             <CheckoutPP />
           </React.Fragment>
@@ -108,95 +135,80 @@ const Layout = () => {
 
       <Route
         path="/ed/"
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
-            <OSDHeader
-              positioning="floating"
-              logoType={LogoC}
-            ></OSDHeader>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
             <EventDetail />
-            <OSDFooter></OSDFooter>
+            <Footer></Footer>
           </React.Fragment>
         )}
       />
       <Route
         path="/edh/"
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
-            <OSDHeader
-              positioning="floating"
-              logoType={LogoC}
-            ></OSDHeader>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
             <EventDetailHaHa />
-            <OSDFooter></OSDFooter>
+            <Footer></Footer>
           </React.Fragment>
         )}
       />
       <Route
         path="/edf/"
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
-            <OSDHeader
-              positioning="floating"
-              logoType={LogoC}
-            ></OSDHeader>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
             <EventDetailPIFF />
-            <OSDFooter></OSDFooter>
+            <Footer></Footer>
           </React.Fragment>
         )}
       />
       <Route
         path="/edt/"
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
-            <OSDHeader
-              positioning="floating"
-              logoType={LogoC}
-            ></OSDHeader>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
             <EventDetailTech />
-            <OSDFooter></OSDFooter>
+            <Footer></Footer>
           </React.Fragment>
         )}
       />
       <Route
         path="/edl/"
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
-            <OSDHeader
-              positioning="floating"
-              logoType={LogoC}
-            ></OSDHeader>
+            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
+            <SideDrawer
+              open={showSideDrawer}
+              closed={closeSideDrawer}/>
             <EventDetailLight />
-            <OSDFooter></OSDFooter>
+            <Footer></Footer>
           </React.Fragment>
         )}
       />
 
       <Route
         path="/et/"
-        render={routeProps => (
+        render={(routeProps) => (
           <React.Fragment>
             <TicketSelection />
           </React.Fragment>
         )}
       />
-
-
-
-      
-
-        <Route
-            path="/eventcreation"
-            exact
-            render={routeProps => (
-            <React.Fragment>
-                <EventCreation />
-            </React.Fragment>
-            )}
-        />
-
     </Aux>
   );
 };
 
-export default Layout;
+export default Routes;

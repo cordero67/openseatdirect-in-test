@@ -5,39 +5,28 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Order.module.css";
 
 export const OrderConfirmationTT = props => {
-  let dateRange;
-  if (dateFormat(props.transactionInfo.startDateTime, "m d yy", true) === dateFormat(props.transactionInfo.endDateTime, "m d yy", true)) {
-    dateRange = <Aux>{dateFormat(
-      props.transactionInfo.startDateTime,
-      "ddd, mmm d, yyyy - h:MM TT",
-      true
-    )} to {dateFormat(
-      props.transactionInfo.endDateTime,
-      "shortTime",
-      true
-    )}</Aux>
-  } else {
-    dateRange = <Aux>{dateFormat(
-      props.transactionInfo.startDateTime,
-      "ddd, mmm d, yyyy - h:MM TT",
-      true
-    )} to {dateFormat(
-      props.transactionInfo.endDateTime,
-      "ddd, mmm d, yyyy - h:MM TT",
-      true
-    )}</Aux>
-  }
-
-  let currency = "$";
-  if (props.transactionInfo.currency === "¥") {
-    currency = "¥"}
-
-  let purchaseTotal;
-  if (props.transactionInfo.currency === "¥") {
-    purchaseTotal= props.transactionInfo.totalAmount.toFixed(0)
-  } else {
-    purchaseTotal= props.transactionInfo.totalAmount.toFixed(2)
-  }
+    let dateRange;
+    if (dateFormat(props.transactionInfo.startDateTime, "m d yy", true) === dateFormat(props.transactionInfo.endDateTime, "m d yy", true)) {
+      dateRange = <Aux>{dateFormat(
+        props.transactionInfo.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        props.transactionInfo.endDateTime,
+        "shortTime",
+        true
+      )}</Aux>
+    } else {
+      dateRange = <Aux>{dateFormat(
+        props.transactionInfo.startDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )} to {dateFormat(
+        props.transactionInfo.endDateTime,
+        "ddd, mmm d, yyyy - h:MM TT",
+        true
+      )}</Aux>
+    }
 
   return (
     <Aux>
@@ -62,10 +51,11 @@ export const OrderConfirmationTT = props => {
             <br></br>
             {props.transactionInfo.venue}
             <br></br>
-            {props.transactionInfo.address1 ? <Aux>{props.transactionInfo.address1}<br></br></Aux> : null}
-            {props.transactionInfo.city ? <Aux>{props.transactionInfo.city},{" "}</Aux> : null}
-            {props.transactionInfo.state ? <Aux>{props.transactionInfo.state}{" "}</Aux> : null}
-            {props.transactionInfo.zipPostalCode ? <Aux>{props.transactionInfo.zipPostalCode}</Aux> : null}
+            {props.transactionInfo.address1}
+            <br></br>
+            {props.transactionInfo.city}, {props.transactionInfo.state}{" "}
+            {props.transactionInfo.zipPostalCode}
+            <br></br>
           </div>
           <br></br>
           <div className={styles.OrderConfirmItems}>
@@ -76,20 +66,14 @@ export const OrderConfirmationTT = props => {
             Total Number of Tickets: {props.transactionInfo.numTickets}
             <br></br>
             {props.transactionInfo.tickets.map(item => {
-              let subTotal;
-              if (currency === "¥") {
-                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(0)
-              } else {
-                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(2)
-              }
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
-                  {item.ticketsSelected} X {item.ticketName}: {currency}
-                  {subTotal}
+                  {item.ticketsSelected} X {item.ticketName}: $
+                  {item.ticketsSelected * item.adjustedTicketPrice} per ticket
                 </div>
               ) : null;
             })}
-            Total Purchase Amount: {currency}{purchaseTotal}
+            Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
           </div>
           <br></br>
           OpenSeatDirect will be sending you a message to your email:{" "}
@@ -107,40 +91,6 @@ export const OrderConfirmationTT = props => {
 };
 
 export const OrderConfirmationTF = props => {
-  let dateRange;
-  if (dateFormat(props.transactionInfo.startDateTime, "m d yy", true) === dateFormat(props.transactionInfo.endDateTime, "m d yy", true)) {
-    dateRange = <Aux>{dateFormat(
-      props.transactionInfo.startDateTime,
-      "ddd, mmm d, yyyy - h:MM TT",
-      true
-    )} to {dateFormat(
-      props.transactionInfo.endDateTime,
-      "shortTime",
-      true
-    )}</Aux>
-  } else {
-    dateRange = <Aux>{dateFormat(
-      props.transactionInfo.startDateTime,
-      "ddd, mmm d, yyyy - h:MM TT",
-      true
-    )} to {dateFormat(
-      props.transactionInfo.endDateTime,
-      "ddd, mmm d, yyyy - h:MM TT",
-      true
-    )}</Aux>
-  }
-  
-  let currency = "$";
-  if (props.transactionInfo.currency === "¥") {
-    currency = "¥"}
-
-  let purchaseTotal;
-  if (props.transactionInfo.currency === "¥") {
-    purchaseTotal= props.transactionInfo.totalAmount.toFixed(0)
-  } else {
-    purchaseTotal= props.transactionInfo.totalAmount.toFixed(2)
-  }
-
   return (
     <Aux>
       <span className={styles.SubSectionHeader}>Order in Process</span>
@@ -160,14 +110,15 @@ export const OrderConfirmationTF = props => {
             <br></br>
             {props.transactionInfo.eventTitle}
             <br></br>
-            {dateRange}
+            {props.transactionInfo.dateTime}
             <br></br>
             {props.transactionInfo.venue}
             <br></br>
-            {props.transactionInfo.address1 ? <Aux>{props.transactionInfo.address1}<br></br></Aux> : null}
-            {props.transactionInfo.city ? <Aux>{props.transactionInfo.city},{" "}</Aux> : null}
-            {props.transactionInfo.state ? <Aux>{props.transactionInfo.state}{" "}</Aux> : null}
-            {props.transactionInfo.zipPostalCode ? <Aux>{props.transactionInfo.zipPostalCode}</Aux> : null}
+            {props.transactionInfo.address1}
+            <br></br>
+            {props.transactionInfo.city}, {props.transactionInfo.state}{" "}
+            {props.transactionInfo.zipPostalCode}
+            <br></br>
           </div>
           <br></br>
           <div style={{ paddingLeft: "30px" }}>
@@ -178,73 +129,43 @@ export const OrderConfirmationTF = props => {
             Total Number of Tickets: {props.transactionInfo.numTickets}
             <br></br>
             {props.transactionInfo.tickets.map(item => {
-              let subTotal;
-              if (currency === "¥") {
-                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(0)
-              } else {
-                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(2)
-              }
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
-                  {item.ticketsSelected} X {item.ticketName}: {currency}
-                  {currency}
+                  {item.ticketsSelected} X {item.ticketName}: $
+                  {item.ticketsSelected * item.adjustedTicketPrice} per ticket
                 </div>
               ) : null;
             })}
-            Total Purchase Amount: {currency}{purchaseTotal}
+            Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
           </div>
           <br></br>
-          We are experiencing a temporary delay in sending you an email containing your attached pdf
-          ticket(s) to print-at-home or to display on your mobile device.
+          OpenSeatDirect is experiencing a temporary delay in creating your pdf
+          ticket(s).
           <br></br>
           <br></br>
-          If you do not receive your email at "
+          Later today, OpenSeatDirect will be sending you a message to your
+          email:{" "}
           <span style={{ color: "blue", fontWeight: "600" }}>
             {props.transactionInfo.paypalEmail}
           </span>
-          " by the end of today, please contact the venue.
+          <br></br>
+          <br></br>
+          This email will contain a pdf of your ticket(s) to print-at-home or to
+          display on your mobile device.
+          <br></br>
+          <br></br>
+          If you do not receive this email by the end of today, please contact{" "}
+          <span style={{ color: "blue", fontWeight: "600" }}>
+            {props.transactionInfo.userEmail}
+          </span>
+          .
         </div>
       </div>
     </Aux>
   );
 };
 
-// NEED TO REFACTOR AND EDIT
 export const OrderConfirmationFF = props => {
-  let dateRange;
-  if (dateFormat(props.transactionInfo.startDateTime, "m d yy", true) === dateFormat(props.transactionInfo.endDateTime, "m d yy", true)) {
-    dateRange = <Aux>{dateFormat(
-      props.transactionInfo.startDateTime,
-      "ddd, mmm d, yyyy - h:MM TT",
-      true
-    )} to {dateFormat(
-      props.transactionInfo.endDateTime,
-      "shortTime",
-      true
-    )}</Aux>
-  } else {
-    dateRange = <Aux>{dateFormat(
-      props.transactionInfo.startDateTime,
-      "ddd, mmm d, yyyy - h:MM TT",
-      true
-    )} to {dateFormat(
-      props.transactionInfo.endDateTime,
-      "ddd, mmm d, yyyy - h:MM TT",
-      true
-    )}</Aux>
-  }
-  
-  let currency = "$";
-  if (props.transactionInfo.currency === "¥") {
-    currency = "¥"}
-
-  let purchaseTotal;
-  if (props.transactionInfo.currency === "¥") {
-    purchaseTotal= props.transactionInfo.totalAmount.toFixed(0)
-  } else {
-    purchaseTotal= props.transactionInfo.totalAmount.toFixed(2)
-  }
-
   return (
     <Aux>
       <span className={styles.SubSectionHeader}>Order Confirmation</span>
@@ -264,14 +185,15 @@ export const OrderConfirmationFF = props => {
             <br></br>
             {props.transactionInfo.eventTitle}
             <br></br>
-            {dateRange}
+            {props.transactionInfo.dateTime}
             <br></br>
             {props.transactionInfo.venue}
             <br></br>
-            {props.transactionInfo.address1 ? <Aux>{props.transactionInfo.address1}<br></br></Aux> : null}
-            {props.transactionInfo.city ? <Aux>{props.transactionInfo.city},{" "}</Aux> : null}
-            {props.transactionInfo.state ? <Aux>{props.transactionInfo.state}{" "}</Aux> : null}
-            {props.transactionInfo.zipPostalCode ? <Aux>{props.transactionInfo.zipPostalCode}</Aux> : null}
+            {props.transactionInfo.address1}
+            <br></br>
+            {props.transactionInfo.city}, {props.transactionInfo.state}{" "}
+            {props.transactionInfo.zipPostalCode}
+            <br></br>
           </div>
           <br></br>
           <div style={{ paddingLeft: "30px" }}>
@@ -282,20 +204,14 @@ export const OrderConfirmationFF = props => {
             Total Number of Tickets: {props.transactionInfo.numTickets}
             <br></br>
             {props.transactionInfo.tickets.map(item => {
-              let subTotal;
-              if (currency === "¥") {
-                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(0)
-              } else {
-                subTotal = (item.ticketsSelected * item.adjustedTicketPrice).toFixed(2)
-              }
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
-                  {item.ticketsSelected} X {item.ticketName}: {currency}
-                  {currency}
+                  {item.ticketsSelected} X {item.ticketName}: $
+                  {item.ticketsSelected * item.adjustedTicketPrice} per ticket
                 </div>
               ) : null;
             })}
-            Total Purchase Amount: {currency}{purchaseTotal}
+            Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
           </div>
           <br></br>
           OpenSeatDirect will be sending you a message to your email:{" "}

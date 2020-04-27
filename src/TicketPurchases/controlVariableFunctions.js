@@ -48,7 +48,8 @@ export const loadTicketInfo = event => {
   if (event.baseCurrency && event.baseCurrency === "JPY") {
     tempCurrency = "¥";
   }
-
+  
+  
   event.ticket.forEach(item => {
     let priceFunction = {};
     let pricingCode = "";
@@ -225,7 +226,7 @@ export const clearPromoDetails = (promoCodeDetails) => {
   tempPromoCodeDetails.input = true;
   tempPromoCodeDetails.errorMessage = "";
   tempPromoCodeDetails.appliedPromoCode = "";
-  tempPromoCodeDetails.inputtedPromoCode = "";
+  tempPromoCodeDetails.inputtedPromoValue = "";
   tempPromoCodeDetails.lastInvalidPromoCode = "";
   console.log("UPDATED 'promoCodeDetails': ", tempPromoCodeDetails)
   return tempPromoCodeDetails;

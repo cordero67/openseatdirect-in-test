@@ -8,11 +8,9 @@ const CategorySelector = (props) => {
             padding: "9px 10px",
             border: "1px solid lightgrey",
             boxSizing: "borderBox",
-            height: "40px",
             width: "600px",
             lineHeight: "1.75",
-            cursor: "pointer",
-            fontSize: "16px"}}
+            cursor: "pointer"}}
         type="text"
         id="input box ticket description"
         placeholder="Please select a category"
@@ -20,8 +18,7 @@ const CategorySelector = (props) => {
         defaultValue="default"
         onChange={props.onChange}
         required
-        >     <option style={{display: "none"}} value="default" disabled>Choose an event category</option>
-        
+        >
             <option value="music">Music</option>
             <option value="sports" >Sports</option>
             <option value="artTheatre">Arts & Theatre</option>
@@ -29,6 +26,8 @@ const CategorySelector = (props) => {
             <option value="charityCauses">Charity & Causes</option>
             <option value="family">Family</option>
             <option value="meeting">Meeting</option>
+            <option value="other">Other</option>
+            <option style={{display: "none"}} value="default" disabled>Choose an event category</option>
         </select>
     )
 }

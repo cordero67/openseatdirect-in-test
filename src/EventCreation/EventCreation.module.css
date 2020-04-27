@@ -1,0 +1,173 @@
+.MainContainer {
+    font-family: "Roboto", sans-serif;
+    background-color: #2f5596;
+    background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
+    padding-top: 60px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 40px;
+}
+
+.MainGrid {
+    background-color: white;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    margin: auto;
+    width: 930px;
+    box-sizing: border-box;
+    border: 1px solid grey;
+}
+
+.GridTitle {
+    margin: 10px 0px 0px 0px;
+    padding-left: 0px;
+    padding-right: 10px;
+    padding-top: 15px;
+    padding-bottom: 45px;
+    box-sizing: border-box;
+    font-size: 30px;
+    font-weight: 600;
+    height: 35px;
+}
+
+.CategoryTitle {
+    margin: 10px 0px 0px 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    box-sizing: border-box;
+    font-size: 20px;
+    font-weight: 600;
+    height: 40px;
+    background-color: black;
+    color: white;
+}
+
+.SectionTitleTight {
+    padding: 10px 10px 0px 25px;
+    height: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: #E7E7E7;
+    border-top: 1px solid lightgrey;
+    box-sizing: border-box;
+}
+
+.SectionTitle {
+    padding: 10px 10px 0px 25px;
+    height: 35px;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: #E7E7E7;
+    border-top: 1px solid lightgrey;
+    box-sizing: border-box;
+}
+
+.DateTimeHeader {
+    display: grid;
+    grid-template-columns: 110px 120px 110px 120px 330px;
+    padding: 5px 10px 5px 35px;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #E7E7E7;
+    text-align: left;
+    font-weight: 400;
+}
+
+.DateTimeInputs {
+    display: grid;
+    grid-template-columns: 110px 120px 110px 120px 330px;
+    padding: 0px 10px 10px 35px;
+    font-size: 16px;
+    background-color: #E7E7E7;
+    box-sizing: border-box;
+}
+
+.InputBox {
+    height: auto;
+    font-size: 16px;
+    padding: 5px 10px 10px 25px;
+    box-sizing: border-box;
+    background-color: #E7E7E7;
+}
+
+.InputBoxTight {
+    height: auto;
+    font-size: 16px;
+    padding: 5px 10px 0px 25px;
+    box-sizing: border-box;
+    background-color: #E7E7E7;
+}
+
+.InputBoxContent {
+    padding: 9px 10px;
+    border: 1px solid lightgrey;
+    box-sizing: border-box;
+    line-height: 1.75;
+    height: 40px;
+}
+
+.TextBox {
+    height: auto;
+    font-size: 16px;
+    padding: 5px 10px 6px 25px;
+    box-sizing: border-box;
+    background-color: #E7E7E7;
+}
+
+.SocialMediaLink {
+    display: grid;
+    grid-template-columns: 120px 400px;
+    height: 55px;
+    font-size: 16px;
+    padding: 5px 10px 10px 35px;
+    box-sizing: border-box;
+    background-color: #E7E7E7;
+}
+
+.SocialMediaName {
+    padding: 11px 5px 0px 0px;
+    text-align: right;
+}
+
+.FeatureButton {
+    font-size: 15px;
+    color: blue;
+    border: none;
+    background-color: #E7E7E7;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+}
+
+.FeatureButton:focus {
+    outline:0;
+}
+
+.PriceFeatureButton {
+    font-size: 16px;
+    color: blue;
+    border: none;
+    background-color: #E7E7E7;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+}
+
+.InfoIcon .InfoText{
+    color: blue;
+    cursor: pointer;
+}
+
+.InfoIcon:hover .InfoText{
+    color: red;
+    cursor: pointer;
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container input {
+    display: block;
+    width: 100%;
+}

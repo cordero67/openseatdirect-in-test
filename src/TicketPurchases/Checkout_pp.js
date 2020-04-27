@@ -149,7 +149,7 @@ const Checkout = props => {
       if (item.ticketsSelected > 0) {
         let newElement;
         newElement = {
-          name: `${eventDetails.eventTitle}: ${item.ticketName}`,
+          name: `${eventDetails.eventName}: ${item.ticketName}`,
           sku: item.ticketID,
           unit_amount: {
             currency_code: orderTotals.currencyAbv,
@@ -201,7 +201,6 @@ const Checkout = props => {
       discount: orderTotals.discountAmount,
       totalAmount: orderTotals.finalPurchaseAmount,
       tickets: ticketInfo,
-      currency: orderTotals.currencySym,
       userEmail: eventDetails.organizerEmail,
     };
 
@@ -212,10 +211,7 @@ const Checkout = props => {
       .then(response => {
         console.log("order received");
         console.log("response: ", response);
-        // check if response was true or false
-        if(response.serverVerification) {
-          setOrderStatus(true);
-        }
+        setOrderStatus(true);
         console.log("Order status: ", orderStatus);
         onlyShowPurchaseConfirmation();
         purchaseConfirmHandler();
@@ -267,9 +263,9 @@ const Checkout = props => {
 
   // defines and sets "orderSummary" which is displayed in right panel
   let orderSummary;
-  if (!showLoadingSpinner && orderTotals.ticketsPurchased > 0) {
+  if (!showLoadingSpinner && orderTotals.finalPurchaseAmount > 0) {
     orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
-  } else if (!showLoadingSpinner && orderTotals.ticketsPurchased <= 0) {
+  } else if (!showLoadingSpinner && orderTotals.finalPurchaseAmount <= 0) {
     orderSummary = (
       <div className={styles.EmptyOrderSummary}>
         <FontAwesomeIcon
@@ -362,7 +358,7 @@ const Checkout = props => {
       ) : (
         <div>
           <span className={styles.AlertText}>
-            A zero value order cannot be processed at this time.<br></br>Please return to ticket selection page.
+            Your order is empty, please return to ticket selection page.
           </span>
         </div>
       )}

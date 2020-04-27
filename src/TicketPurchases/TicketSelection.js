@@ -31,7 +31,7 @@ import {
 import Spinner from "../components/UI/Spinner/Spinner";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
-import OSDLogo from "../assets/BlueLettering_TransparentBackground/BlueLettering_TransparentBackground_1024.png";
+import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
 import TicketItem from "./TicketItem";
@@ -78,7 +78,6 @@ const TicketSelection = () => {
   useEffect(() => {
     setIsLoadingEvent(true);
     setIsSuccessfull(true);
-    // extracts the "eventID" from the URL
     eventData(queryString.parse(window.location.search).eventID);
     // determines a one or two pane display based on initial window width 
     stylingUpdate(window.innerWidth, window.innerHeight);

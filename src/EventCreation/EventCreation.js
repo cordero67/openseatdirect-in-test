@@ -1,52 +1,52 @@
 import React, { useState } from "react";
-import { Button, Form, Radio } from 'semantic-ui-react';
 
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
-import DayPickerInput from "react-day-picker/DayPickerInput";
-import { formatDate, parseDate } from "react-day-picker/moment";
-import "react-day-picker/lib/style.css";
+import { Editor } from '@tinymce/tinymce-react';
+import ReactHtmlParser from 'react-html-parser';
 
-
+import DateSelector from './DateSelector';
 import TimeSelector from './TimeSelector';
+import TimeZoneSelector from './TimeZoneSelector';
+import CountrySelector from './CountrySelector';
 import CategorySelector from "./CategorySelector";
+import RadioForm from './RadioForm';
 
+import ImgDropAndCrop from '../ImgDropAndCrop/ImgDropAndCrop'
+
+import classes from './EventCreation.module.css';
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt, faGripVertical, faCog } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faTrashAlt, faGripVertical, faCog } from "@fortawesome/free-solid-svg-icons";
+import { Button, Form, Radio } from 'semantic-ui-react';
 
 const EventCreation = () => {
 
-    
+    const getFormattedDate = () => {
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = (1 + date.getMonth()).toString();
+        month = month.length > 1 ? month : '0' + month;
+        let day = date.getDate().toString();
+        day = day.length > 1 ? day : '0' + day;
+        return month + '/' + day + '/' + year;
+    }
 
-
-
-const getFormattedDate = () => {
-    let date = new Date();
-
-    let year = date.getFullYear();
-
-    let month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : '0' + month;
-
-    let day = date.getDate().toString();
-    day = day.length > 1 ? day : '0' + day;
-    
-    return month + '/' + day + '/' + year;
-}
-
+    const [textEditor, setTextEditor] = useState("");
+        const handleEditorChange = (editorContent) => {
+        setTextEditor(editorContent);
+    };
 
     // stores all Event Description variables
     const [eventDescription, setEventDescription] = useState({
         eventTitle: "",
-        eventType: "none",
+        eventType: "",
         onlineInfo: "",
         liveInfo: "",
         location: {
             venue: "",
             address1: "",
             address2: "",
+            additional: "",
             city: "",
             state: "",
             postalCode: "",
@@ -63,6 +63,7 @@ const getFormattedDate = () => {
         eventCategory: "",
         facebookUrl: "",
         twitterUrl: "",
+        linkedinUrl: "",
         instagramUrl: "",
         eventUrl: "",
         vanityUrl: "",
@@ -71,34 +72,45 @@ const getFormattedDate = () => {
     });
 
     // stores all Ticket Details variables
-    const [ticketDetails, setTicketDetails] = useState([
-        {
-            key: "1",
-            ticketName: "",
-            ticketQuantity: "",
-            ticketPrice: "",
-            settings: false,
-            ticketDescription: "",
-            orderMin: "",
-            orderMax: "",
-            priceFeature: "none",
-            promoCodes: [{key: "1", name: "", amount: ""}],
-            promoCodeNames: [],
-            promoCodeWarning: "",
-            functionArgs: {},
-        }
-    ]);
+    const [ticketDetails, setTicketDetails] = useState([{
+        key: "1",
+        ticketName: "",
+        ticketQuantity: "",
+        ticketPrice: "",
+        settings: false,
+        ticketDescription: "",
+        orderMin: "",
+        orderMax: "",
+        priceFeature: "none",
+        promoCodes: [{key: "1", name: "", amount: ""}],
+        promoCodeNames: [],
+        promoCodeWarning: "",
+        functionArgs: {},
+    }]);
+
+    const eventTypeChange = (event, value) => {
+        console.log("Changing event type to ", value);
+        let tempDescription = {...eventDescription};
+        tempDescription.eventType = value.value;
+        console.log("Changing event type to ", tempDescription.eventType);
+        setEventDescription(tempDescription);
+        console.log("Event Description ", tempDescription);
+    }
 
     const refundPolicyChange = (event, value) => {
+        console.log("Changing refund policy to ", value);
         let tempDescription = {...eventDescription};
         tempDescription.refundPolicy = value.value;
+        console.log("Changing refund policy to ", tempDescription.refundPolicy);
         setEventDescription(tempDescription);
         console.log("Event Description ", tempDescription);
     }
 
     const ticketDeliveryChange = (event, value) => {
+        console.log("Changing ticket delivery to ", value);
         let tempDescription = {...eventDescription};
         tempDescription.ticketDelivery = value.value;
+        console.log("Changing ticket delivery to ", tempDescription.ticketDelivery);
         setEventDescription(tempDescription);
         console.log("Event Description ", tempDescription);
     }
@@ -128,7 +140,6 @@ const getFormattedDate = () => {
         })
         setTicketDetails(tempDetails);
         console.log("Ticket Details: ", ticketDetails)
-        
     }
 
     const createNewTicketHandler = () => {
@@ -188,27 +199,38 @@ const getFormattedDate = () => {
 
     const deletePromoCode = (event, ticket, promoKey) => {
         if (ticket.promoCodes.length === 1) {
+            // delete all promoCode info and set back to default in this specific ticket
+            console.log("Only one promo code, therefore set to default");
 
             let tempTicketDetails = [...ticketDetails];
             tempTicketDetails.forEach( (item, index) => {
                 if (item.key === ticket.key) {
+                    console.log("ticket match at position ", index);
+                    console.log("these are the promo codes in this ticket: ", item.promoCodes);
                     item.promoCodes = [{key: "1", name: "", amount: ""}];
+                    console.log("new promo codes in this ticket: ", item.promoCodes);
                 }
             setTicketDetails(tempTicketDetails);
             })
         } else {
+            // delete specifc promoCode in this specific ticket
+            console.log("More than one promo code, therefore delete this promo code");
 
             let tempTicketDetails = [...ticketDetails];
             tempTicketDetails.forEach( (item, index1) => {
                 if (item.key === ticket.key) {
+                    console.log("ticket match at position ", index1);
+                    console.log("these are the promo codes in this ticket: ", item.promoCodes)
                     let tempCodes = [...item.promoCodes];
                     tempCodes.forEach( (code, index2) => {
                         if (code.key === promoKey) {
+                            console.log("current promo match at position ", index2);
                             let removed = tempCodes.splice(index2,1);
+                            console.log("updated promo match at position ", tempCodes);
                         }
                     item.promoCodes = tempCodes;
                     })
-
+                    console.log("new promo codes in this ticket: ", item.promoCodes);
                 }
             })
             setTicketDetails(tempTicketDetails);
@@ -286,6 +308,7 @@ const getFormattedDate = () => {
         tempTicketDetails.forEach( item => {
             if (item.key === key) {
                 item.settings = !item.settings;
+                console.log("New ticket settings: ", item.settings);
             }
         })
         setTicketDetails(tempTicketDetails);
@@ -364,11 +387,10 @@ const getFormattedDate = () => {
         console.log("Ticket Details: ", tempDetails)
     }
 
-
-    //onChange={event => {changePromoCodesName(event, ticket.key, item.key)}}
     const changePromoCodesName = (event, ticketKey, promoKey) => {
         let tempDetails = [...ticketDetails];
         tempDetails.forEach( item => {
+            console.log("Inside changePromoCodesName");
             if (item.key === ticketKey) {
                 let tempCodes = [...item.promoCodes]
                 tempCodes.forEach( code => {
@@ -386,6 +408,7 @@ const getFormattedDate = () => {
     const changePromoCodesAmount = (event, ticketKey, promoKey) => {
         let tempDetails = [...ticketDetails];
         tempDetails.forEach( item => {
+            console.log("Inside changePromoCodesName");
             if (item.key === ticketKey) {
                 let tempCodes = [...item.promoCodes]
                 tempCodes.forEach( code => {
@@ -398,19 +421,6 @@ const getFormattedDate = () => {
         })
         setTicketDetails(tempDetails);
         console.log("Ticket Details: ", tempDetails)
-    }
-
-    const changeEventTitle = (event) => {
-        let tempInfo = {...eventDescription};
-        tempInfo.eventTitle = event.target.value;
-        setEventDescription(tempInfo);
-    }
-
-    const changeEventType = (event, type) => {
-        let tempInfo = {...eventDescription};
-        tempInfo.eventType = type;
-        setEventDescription(tempInfo);
-        console.log("Event Details: ", tempInfo)
     }
 
     const changeStartDate = (event) => {
@@ -437,9 +447,9 @@ const getFormattedDate = () => {
         setEventDescription(tempInfo);
     }
 
-    const changeTimeZone = (event) => {
+    const changeTimeZone = (value) => {
         let tempInfo = {...eventDescription};
-        tempInfo.timeZone = event.target.value;
+        tempInfo.timeZone = value;
         setEventDescription(tempInfo);
     }
 
@@ -449,45 +459,15 @@ const getFormattedDate = () => {
         setEventDescription(tempInfo);
     }
 
-    const changeShortDescription = (event) => {
-        let tempInfo = {...eventDescription};
-        tempInfo.shortDescription = event.target.value;
-        setEventDescription(tempInfo);
-    }
-
     const changeLongDescription = (event) => {
         let tempInfo = {...eventDescription};
         tempInfo.longDescription = event.target.value;
         setEventDescription(tempInfo);
     }
 
-    const changeFacebookUrl = (event) => {
+    const changeEventDescription = (event) => {
         let tempInfo = {...eventDescription};
-        tempInfo.facebookUrl = event.target.value;
-        setEventDescription(tempInfo);
-    }
-
-    const changeTwitterUrl = (event) => {
-        let tempInfo = {...eventDescription};
-        tempInfo.twitterUrl = event.target.value;
-        setEventDescription(tempInfo);
-    }
-
-    const changeInstagramUrl = (event) => {
-        let tempInfo = {...eventDescription};
-        tempInfo.instagramUrl = event.target.value;
-        setEventDescription(tempInfo);
-    }
-
-    const changeEventUrl = (event) => {
-        let tempInfo = {...eventDescription};
-        tempInfo.eventUrl = event.target.value;
-        setEventDescription(tempInfo);
-    }
-
-    const changeVanityUrl = (event) => {
-        let tempInfo = {...eventDescription};
-        tempInfo.vanityUrl = event.target.value;
+        tempInfo[event.target.name] = event.target.value;
         setEventDescription(tempInfo);
     }
 
@@ -577,7 +557,6 @@ const getFormattedDate = () => {
 
                         <div style={{
                             padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
                             boxSizing: "borderBox",                   
                             fontWeight: 600}}>
                             Advanced Pricing Features (<span style={{fontStyle: "italic"}}>optional </span>): please select one
@@ -588,16 +567,7 @@ const getFormattedDate = () => {
                         boxSizing: "borderBox",
                         backgroundColor: "#E7E7E7",
                         height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "16px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
+                        <button className={classes.PriceFeatureButton}
                         onClick={event => priceFeatureChangeHandler(event, "promo", ticket.key)}>Promo Code(s)</button>
                     </div>
                     <div style={{
@@ -605,16 +575,7 @@ const getFormattedDate = () => {
                         boxSizing: "borderBox",
                         backgroundColor: "#E7E7E7",
                         height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "16px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
+                        <button className={classes.PriceFeatureButton}
                         onClick={event => priceFeatureChangeHandler(event, "bogof", ticket.key)}>Buy One Get One Free</button>
                     </div>
                     <div style={{
@@ -622,16 +583,7 @@ const getFormattedDate = () => {
                         boxSizing: "borderBox",
                         backgroundColor: "#E7E7E7",
                         height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "16px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
+                        <button className={classes.PriceFeatureButton}
                         onClick={event => priceFeatureChangeHandler(event, "bogod", ticket.key)}>Buy One Get One at a Discount</button>
                     </div>
                     <div style={{
@@ -639,16 +591,7 @@ const getFormattedDate = () => {
                         boxSizing: "borderBox",
                         backgroundColor: "#E7E7E7",
                         height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "16px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
+                        <button className={classes.PriceFeatureButton}
                         onClick={event => priceFeatureChangeHandler(event, "twofer", ticket.key)}>Two for One</button>
                     </div>
                 </Aux>
@@ -667,7 +610,11 @@ const getFormattedDate = () => {
                             padding: "10px 10px 0px 25px",
                             boxSizing: "borderBox",
                             fontWeight: 600}}>
-                            Promo Codes Price Feature
+                            Promo Codes Price Feature{" "}
+                            <FontAwesomeIcon
+                                color = "blue"
+                                cursor = "pointer"
+                                icon={faInfoCircle}/>
                         </div>
                     </div>
 
@@ -719,19 +666,8 @@ const getFormattedDate = () => {
                             }}
                             onClick={event => addPromoCode(event, ticket.key)}>Add additional promo code
                         </button>
+                        <button className={classes.FeatureButton} style={{padding: "0px", textAlign: "left"}}
 
-                        <button 
-                            style={{
-                                padding: "0px",
-                                fontSize: "15px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none",
-                                textAlign: "left"
-                            }}
                         onClick={event => switchPriceFeature(event, ticket.key)}>Select different pricing feature</button>
                     </div>  
                 </Aux>        
@@ -797,16 +733,7 @@ const getFormattedDate = () => {
                         boxSizing: "borderBox",
                         backgroundColor: "#E7E7E7",
                         height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "15px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
+                        <button className={classes.FeatureButton}
                         onClick={event => switchPriceFeature(event, ticket.key)}>Select different pricing feature</button>
                     </div>
                 </Aux>        
@@ -887,16 +814,7 @@ const getFormattedDate = () => {
                         boxSizing: "borderBox",
                         backgroundColor: "#E7E7E7",
                         height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "15px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
+                        <button className={classes.FeatureButton}
                         onClick={event => switchPriceFeature(event, ticket.key)}>Select different pricing feature</button>
                     </div>
                 </Aux>        
@@ -962,35 +880,7 @@ const getFormattedDate = () => {
                         boxSizing: "borderBox",
                         backgroundColor: "#E7E7E7",
                         height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "15px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
-                        onClick={event => switchPriceFeature(event, ticket.key)}>Select different pricing feature</button>
-                    </div>
-                </Aux>        
-            )
-        } else {
-            return (
-                <Aux>
-                    <div>Bad Pricing Option: Go back</div>                    
-                    <div>
-                        <button 
-                            style={{
-                                fontSize: "15px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "white",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
+                        <button className={classes.FeatureButton}
                         onClick={event => switchPriceFeature(event, ticket.key)}>Select different pricing feature</button>
                     </div>
                 </Aux>        
@@ -1241,8 +1131,6 @@ const getFormattedDate = () => {
         return display;
     }
 
-
-
     const minStartDay = (days) => {
         let today = new Date();
         let number = days; // Days you want to subtract
@@ -1278,863 +1166,429 @@ const getFormattedDate = () => {
         setEventDescription(tempDescription);
     }
 
+    const [eventTitleWarning, setEventTitleWarning] = useState(false);
+    const [shortDescriptionWarning, setShortDescriptionWarning] = useState(false);
+    const [eventLocationWarning, setEventLocationWarning] = useState(false);
+    const [eventAddress1Warning, setEventAddress1Warning] = useState(false);
+    const [eventAddress2Warning, setEventAddress2Warning] = useState(false);
+    const [eventAdditionalWarning, setEventAdditionalWarning] = useState(false);
+
+    const displayMessage = (limit, variable) => {
+        if (variable.length >= limit) {
+            return (
+                <div style={{paddingLeft: "10px", height: "14px", color: "red", fontSize: "12px", fontWeight: "700"}}>
+                    Maximum characters used
+                </div>
+            )
+        } else if (variable.length >= (limit - 10)) {
+            return (
+                <div style={{paddingLeft: "10px", height: "14px", color: "red", fontSize: "12px"}}>
+                    Remaining {limit - variable.length}
+                </div>
+            )
+        } else {
+            return (
+                <div style={{paddingLeft: "10px", height: "14px", color: "black", fontSize: "12px"}}>
+                    Remaining {limit - variable.length}
+                </div>
+            )
+        }
+    }
+
+    const eventTypeList = [
+        {label: 'Live Event only', value:'live'},
+        {label: 'Online Event only', value:'online'},
+        {label: 'Both Live and Online Event', value:'both'}
+    ]
+
+    const refundPolicyList = [
+        {label: '1 day: Attendees can receive refunds up to 1 day before your event start date.', value:'1day'},
+        {label: '7 days: Attendees can receive refunds up to 7 days before your event start date.', value:'7days'},
+        {label: '30 days: Attendees can receive refunds up to 30 days before your event start date.', value:'30days'},
+        {label: 'Undefined: I will respond to attendee refund requests on a case by case basis.', value:'case'},
+        {label: 'No refunds: No refunds at any time.', value:'none'}
+    ]
+
+    const ticketDeliveryList = [
+        {label: 'Print-at-home paper ticket to be emailed', value:'print'},
+        {label: 'Mobile only', value:'mobile'}
+    ]
+
     return (
-        <div style={{
-            fontFamily: "'Roboto', sans-serif",
-            backgroundColor: `#2f5596`,
-            backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
-            paddingTop: `10px`,
-            paddingLeft: `0px`,
-            paddingRight: `0px`,
-            paddingBottom: `10px`
-        }}>
+        <div className={classes.MainContainer}>
+            <div className={classes.MainGrid}>
+                <div className={classes.GridTitle}>Event Creation</div>
+                    <div className={classes.CategoryTitle} style={{width: "140px"}}>Event Details</div>
+                    <div style={{border: "1px solid grey"}}>
+                        <div className={classes.SectionTitleTight}>Event Title</div>
 
-            <div style={{
-                backgroundColor: `white`,
-                paddingLeft: "15px",
-                paddingRight: "15px",
-                paddingBottom: "15px",
-                margin: "auto",
-                width: "930px",
-                boxSizing: "borderBox",
-                border: "1px solid grey"
-            }}>
-                <div style={{
-                    margin: "10px 0px 0px 0px",
-                    paddingLeft: "0px",
-                    paddingRight: "10px",
-                    paddingTop: "15px",
-                    paddingBottom: "15px",
-                    boxSizing: "borderBox",
-                    fontSize: "30px",
-                    fontWeight: "600",
-                    height: "35px"}}>
-                    Event Creation
-                </div>
-
-                <br></br>
-                <div style={{
-                    margin: "10px 0px 0px 0px",
-                    paddingLeft: "10px",
-                    paddingRight: "10px",
-                    paddingTop: "10px",
-                    boxSizing: "borderBox",
-                    fontSize: "20px",
-                    fontWeight: "600",
-                    height: "40px",
-                    width: "140px",
-                    backgroundColor: "black",
-                    color: "white"}}>
-                    Event Details
-                </div>
-                
-                <div style={{border: "1px solid grey"}}>
-
-                    <div style={{
-                        height: "30px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            Event Title
-                        </div>
-                    </div>
-                    <div style={{
-                        height: "55px",
-                        fontSize: "16px",
-                        padding: "5px 10px 10px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "600px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="Short title of event: limit 75 characters"
-                            value={eventDescription.eventTitle}
-                            onChange={event => {changeEventTitle(event)}}
-                        >
-                        </input>
-                    </div>
-
-                    
-
-                    <div style={{
-                        height: "35px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            {eventDescription. eventType === "none" ? "Event Type: please select one" : null}
-                            {eventDescription. eventType === "live" ? "Event Location" : null}
-                            {eventDescription. eventType === "online" ? "Event Type" : null}
-                        </div>
-                    </div>
-
-
-                    {eventDescription.eventType === "none" ?
-                    <Aux>
-
-                    <div style={{
-                        padding: "5px 10px 0px 30px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7",
-                        height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "16px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
-                        onClick={event => changeEventType(event, "live")}>Live Event</button>
-                    </div>
-
-
-                                        <div style={{
-                        padding: "5px 10px 0px 30px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7",
-                        height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "16px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
-                        onClick={event => changeEventType(event, "online")}>Online Event</button>
-                    </div>
-                    </Aux>
-                     : null}         
-
-
-                    {eventDescription.eventType === "live" ?
-                    <Aux>
-                    
-
-
-                    <div style={{
-                        height: "45px",
-                        fontSize: "16px",
-                        padding: "5px 10px 0px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "600px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="Venue Name: limit 140 characters"
-                            value={eventDescription.location.venue}
-                            onChange={(event) => {
-                                let tempDescription = {...eventDescription};
-                                tempDescription.location.venue = event.target.value;
-                                setEventDescription(tempDescription)
-                            }}
-                        >
-                        </input>
-                    </div>
-
-                    <div style={{
-                        height: "45px",
-                        fontSize: "16px",
-                        padding: "5px 10px 0px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "600px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="Address: limit 32 characters"
-                            value={eventDescription.location.address1}
-                            onChange={(event) => {
-                                let tempDescription = {...eventDescription};
-                                tempDescription.location.address1 = event.target.value;
-                                setEventDescription(tempDescription)
-                            }}
-                        >
-                        </input>
-                    </div>
-
-                    <div style={{
-                        height: "45px",
-                        fontSize: "16px",
-                        padding: "5px 10px 0px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "600px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="Address 2: limit 32 characters"
-                            value={eventDescription.location.address2}
-                            onChange={(event) => {
-                                let tempDescription = {...eventDescription};
-                                tempDescription.location.address2 = event.target.value;
-                                setEventDescription(tempDescription)
-                            }}
-                        >
-                        </input>
-                    </div>
-
-
-                    <div style={{
-                        height: "45px",
-                        fontSize: "16px",
-                        padding: "5px 10px 0px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "600px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="City"
-                            value={eventDescription.location.city}
-                            onChange={(event) => {
-                                let tempDescription = {...eventDescription};
-                                tempDescription.location.city = event.target.value;
-                                setEventDescription(tempDescription)
-                            }}
-                        >
-                        </input>
-                    </div>
-
-                    <div style={{
-                        display: `grid`,
-                        gridTemplateColumns: "300px 300px",
-                        height: "45px",
-                        fontSize: "16px",
-                        padding: "5px 10px 0px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <div>
-                            <input style={{
-                                padding: "9px 10px",
-                                border: "1px solid lightgrey",
-                                boxSizing: "borderBox",
-                                height: "40px",
-                                lineHeight: "1.75",
-                                fontSize: "16px",
-                                width: "295px"}}
+                        <div className={classes.InputBox}>
+                            <input className={classes.InputBoxContent} style={{width: "600px"}}
+                                onFocus={() => setEventTitleWarning(true)}
+                                onBlur={() => setEventTitleWarning(false)}
                                 type="text"
                                 id="input box ticket description"
-                                placeholder="State"
-                                value={eventDescription.location.state}
-                                onChange={(event) => {
-                                    let tempDescription = {...eventDescription};
-                                    tempDescription.location.state = event.target.value;
-                                    setEventDescription(tempDescription)
-                                }}
+                                maxlength = "75"
+                                placeholder="Short title of event: limit 75 characters"
+                                name="eventTitle"
+                                value={eventDescription.eventTitle}
+                                onChange={event => {changeEventDescription(event)}}
                             >
                             </input>
-                        </div>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "300px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="Zip/Postal"
-                            value={eventDescription.location.postalCode}
-                            onChange={(event) => {
-                                let tempDescription = {...eventDescription};
-                                tempDescription.location.postalCode = event.target.value;
-                                setEventDescription(tempDescription)
-                            }}
-                        >
-                        </input>
-                    </div>
-
-
-                    <div style={{
-                        height: "55px",
-                        fontSize: "16px",
-                        padding: "5px 10px 10px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "600px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="under construction"
-                            value={eventDescription.location.country}
-                            onChange={(event) => {
-                                let tempDescription = {...eventDescription};
-                                tempDescription.location.country = event.target.value;
-                                setEventDescription(tempDescription)
-                            }}
-                        >
-                        </input>
-                    </div>
-                    
-                    <div style={{
-                        padding: "0px 10px 0px 30px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7",
-                        height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "14px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
-                        onClick={event => changeEventType(event, "online")}>Change to Online Event</button>
-                    </div>
-
-                    </Aux>
-                     : null}
-
-
-                    {eventDescription.eventType === "online" ?
-                    <Aux>
-
-                    <div style={{
-                        height: "30px",
-                        fontSize: "16px",
-                        padding: "5px 10px 0px 35px",
-                        boxSizing: "borderBox",
-                        fontWeight: "bold",
-                        backgroundColor: "#E7E7E7"}}>
-                    Online Event
-                    </div>
-
-
-                    <div style={{
-                        padding: "5px 10px 0px 30px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7",
-                        height: "30px"}}>
-                        <button 
-                            style={{
-                                fontSize: "14px",
-                                color: "blue",
-                                border: "none",
-                                backgroundColor: "#E7E7E7",
-                                cursor: "pointer",
-                                display: "inlineBlock",
-                                outline: "none"
-                            }}
-                        onClick={event => changeEventType(event, "live")}>Change to Live Event</button>
-                    </div>
-                    </Aux>
-                     : null}
-
-
-                    <div style={{
-                        height: "35px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            Event Date and Time
-                        </div>
-                    </div>
-
-                    <div style={{
-                        display: `grid`,
-                        gridTemplateColumns: "115px 120px 115px 120px 330px",
-                        padding: "5px 10px 5px 35px",
-                        height: "30px",
-                        fontSize: "16px",
-                        backgroundColor: "#E7E7E7",
-                        border: "0px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-
-                        <div style={{
-                            border: "0px solid green",
-                            boxSizing: "borderBox",
-                            textAlign: "left",
-                            fontWeight: 400}}>
-                            Start Date
+                            {eventTitleWarning ? displayMessage(75, eventDescription.eventTitle) : null}
                         </div>
 
-                        <div style={{
-                            border: "0px solid green",
-                            boxSizing: "borderBox",
-                            textAlign: "left",
-                            fontWeight: 400}}>
-                            Start Time
-                        </div>
-
-                        <div style={{
-                            border: "0px solid green",
-                            boxSizing: "borderBox",
-                            textAlign: "left",
-                            fontWeight: 400}}>
-                            End Date
-                        </div>
-
-                        <div style={{
-                            border: "0px solid green",
-                            boxSizing: "borderBox",
-                            textAlign: "left",
-                            fontWeight: 400}}>
-                            End Time
-                        </div>
-
-                        <div style={{
-                            border: "0px solid green",
-                            boxSizing: "borderBox",
-                            textAlign: "left",
-                            fontWeight: 400}}>
-                            Time Zone
-                        </div>
-                    </div>
-
-                    <div style={{
-                        display: `grid`,
-                        gridTemplateColumns: "115px 120px 115px 120px 330px",
-                        height: "50px",
-                        fontSize: "16px",
-                        padding: "0px 10px 10px 35px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-
-                        <DayPickerInput
-                        value={eventDescription.startDate}
-                        inputProps={{ style: {
-                            paddingLeft: 9,
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            width: 110,
-                            height: 40,
-                            fontSize: "16px",
-                            color: "black",
-                            textAlign: "left",
-                            cursor: "pointer"
-                        } }}
-                        
-                        format="MM/DD/YYYY"
-                        formatDate={formatDate}
-                        parseDate={parseDate}
-                        placeholder="select date"
-                        onDayChange={startDateChange}
-                        dayPickerProps={{
-                            format: "MM-DD-YYYY",
-                            disabledDays: {
-                            before: new Date()
-                            },
-                        }}/>
-
-                        <TimeSelector
-                            onChange={event => {
-                                changeStartTime(event);
-                            }}
-                            start={""}
-                            end={""}
+                        <div className={classes.SectionTitle}>Event Type: please select one</div>
+                        <RadioForm
+                            details={eventTypeList}
+                            group='eventTypeGroup'
+                            current={eventDescription.eventType}
+                            change={eventTypeChange}
                         />
 
-                        <DayPickerInput
-                        value={eventDescription.endDate}
-                        inputProps={{ style: {
-                            paddingLeft: 9,
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            width: 110,
-                            height: 40,
-                            fontSize: "16px",
-                            color: "black",
-                            textAlign: "left",
-                            cursor: "pointer"
-                        } }}
+                        {(eventDescription.eventType === "live" || eventDescription.eventType === "both") ?
+                            <Aux>
+                                <div className={classes.SectionTitleTight}>Event Location</div>
+
+                                <div className={classes.InputBoxTight}>
+                                    <input className={classes.InputBoxContent} style={{width: "600px"}}
+                                        onFocus={() => setEventLocationWarning(true)}
+                                        onBlur={() => setEventLocationWarning(false)}
+                                        type="text"
+                                        id="input box ticket description"
+                                        maxlength = "140"
+                                        placeholder="Venue Name: limit 140 characters"
+                                        value={eventDescription.location.venue}
+                                        onChange={(event) => {
+                                            let tempDescription = {...eventDescription};
+                                            tempDescription.location.venue = event.target.value;
+                                            setEventDescription(tempDescription)
+                                        }}
+                                    >
+                                    </input>
+                                    {eventLocationWarning ? displayMessage(140, eventDescription.location.venue) : null}
+                                </div>
+
+                                <div className={classes.InputBoxTight}>
+                                    <input className={classes.InputBoxContent} style={{width: "600px"}}
+                                        onFocus={() => setEventAddress1Warning(true)}
+                                        onBlur={() => setEventAddress1Warning(false)}
+                                        type="text"
+                                        id="input box ticket description"
+                                        maxlength = "32"
+                                        placeholder="Address1: limit 32 characters"
+                                        value={eventDescription.location.address1}
+                                        onChange={(event) => {
+                                            let tempDescription = {...eventDescription};
+                                            tempDescription.location.address1 = event.target.value;
+                                            setEventAddress1Warning(tempDescription)
+                                        }}
+                                    >
+                                    </input>
+                                    {eventAddress1Warning ? displayMessage(32, eventDescription.location.address1) : null}
+                                </div>
+
+                                <div className={classes.InputBoxTight}>
+                                    <input className={classes.InputBoxContent} style={{width: "600px"}}
+                                        onFocus={() => setEventAddress2Warning(true)}
+                                        onBlur={() => setEventAddress2Warning(false)}
+                                        type="text"
+                                        id="input box ticket description"
+                                        maxlength = "32"
+                                        placeholder="Address2: limit 32 characters"
+                                        value={eventDescription.location.address2}
+                                        onChange={(event) => {
+                                            let tempDescription = {...eventDescription};
+                                            tempDescription.location.address2 = event.target.value;
+                                            setEventAddress2Warning(tempDescription)
+                                        }}
+                                    >
+                                    </input>
+                                    {eventAddress2Warning ? displayMessage(32, eventDescription.location.address2) : null}
+                                </div>
+
+                                <div className={classes.InputBoxTight}>
+                                    <input className={classes.InputBoxContent} style={{width: "600px"}}
+                                        onFocus={() => setEventAdditionalWarning(true)}
+                                        onBlur={() => setEventAdditionalWarning(false)}
+                                        type="text"
+                                        id="input box ticket description"
+                                        maxlength = "64"
+                                        placeholder="Additional instructions: limit 64 characters"
+                                        value={eventDescription.location.additional}
+                                        onChange={(event) => {
+                                            let tempDescription = {...eventDescription};
+                                            tempDescription.location.additional = event.target.value;
+                                            setEventAdditionalWarning(tempDescription)
+                                        }}
+                                    >
+                                    </input>
+                                    {eventAdditionalWarning ? displayMessage(64, eventDescription.location.additional) : null}
+                                </div>
+
+                            <div className={classes.InputBoxTight}>
+                                <input className={classes.InputBoxContent} style={{width: "600px"}}
+                                    type="text"
+                                    id="input box ticket description"
+                                    placeholder="City"
+                                    value={eventDescription.location.city}
+                                    onChange={(event) => {
+                                        let tempDescription = {...eventDescription};
+                                        tempDescription.location.city = event.target.value;
+                                        setEventDescription(tempDescription)
+                                    }}
+                                >
+                                </input>
+                            </div>
+
+                            <div className={classes.InputBoxTight} style={{
+                                display: `grid`,
+                                gridTemplateColumns: "300px 300px"}}>
+                                <input className={classes.InputBoxContent} style={{width: "295px"}}
+                                    type="text"
+                                    id="input box ticket description"
+                                    placeholder="State"
+                                    value={eventDescription.location.state}
+                                    onChange={(event) => {
+                                        let tempDescription = {...eventDescription};
+                                        tempDescription.location.state = event.target.value;
+                                        setEventDescription(tempDescription)
+                                    }}
+                                ></input>
+                            
+                                <input className={classes.InputBoxContent} style={{width: "300px"}}
+                                    type="text"
+                                    id="input box ticket description"
+                                    placeholder="Zip/Postal"
+                                    value={eventDescription.location.postalCode}
+                                    onChange={(event) => {
+                                        let tempDescription = {...eventDescription};
+                                        tempDescription.location.postalCode = event.target.value;
+                                        setEventDescription(tempDescription)
+                                    }}
+                                ></input>
+                            </div>
+
+                            <div className={classes.InputBox}>
+                                <CountrySelector
+                                    className={classes.InputBoxContent} style={{width: "600px"}}
+                                    getTimeZone={changeTimeZone}
+                                    defaultValue=""
+                                    onChange={(event) => {
+                                        let tempDescription = {...eventDescription};
+                                        tempDescription.location.country = event.target.value;
+                                        setEventDescription(tempDescription);
+                                        console.log("Country: ",event.target.value)
+                                    }}
+                                />
+                            </div>
+                        </Aux>
+                        : null}
+
+                    {(eventDescription.eventType == "online" || eventDescription.eventType == "both" ) ?
+                        <Aux>
+                            <div className={classes.SectionTitleTight}>Online Instructions</div>
+
+                            <div className={classes.InputBox}>
+                                <input className={classes.InputBoxContent} style={{width: "600px"}}
+                                    type="text"
+                                    id="input box ticket description"
+                                    placeholder="Please provide additional online inforamtion"
+                                    value={eventDescription.onlineInfo}
+                                    onChange={(event) => {
+                                        let tempDescription = {...eventDescription};
+                                        tempDescription.onlineInfo = event.target.value;
+                                        setEventDescription(tempDescription)
+                                    }}
+                                >
+                                </input>
+                            </div>
+                        </Aux>
+                        : null}
+
+                        <div className={classes.SectionTitle}>Event Dates and Time</div>
+                        <div className={classes.DateTimeHeader}>
+                            <div>Start Date</div>
+                            <div>Start Time</div>
+                            <div>End Date</div>
+                            <div>End Time</div>
+                            <div>Time Zone</div>
+                        </div>
+
+                        <div className={classes.DateTimeInputs}>
+                            <DateSelector
+                                start={eventDescription.startDate}
+                                change={startDateChange}
+                                beforeDate={new Date()}
+                            />
+                            <TimeSelector
+                                onChange={changeStartTime}
+                                start={""}
+                                end={""}
+                            />
+                            <DateSelector
+                                end={eventDescription.startDate}
+                                change={endDateChange}
+                                beforeDate={minEndDay()}
+                            />
+                            <TimeSelector
+                                onChange={changeEndTime}
+                                start={""}
+                                end={""}
+                            />
+                            <TimeZoneSelector
+                                getTimeZone={changeTimeZone}
+                                defaultValue="Eastern Time - New York"/>
+                        </div>
                         
-                        format="MM/DD/YYYY"
-                        formatDate={formatDate}
-                        parseDate={parseDate}
-                        placeholder="select date"
-                        onDayChange={endDateChange}
-                        dayPickerProps={{
-                            format: "MM-DD-YYYY",
-                            disabledDays: {
-                            before: minEndDay()
-                            },
-                        }}/>
-
-                        <TimeSelector
-                            onChange={event => {
-                                changeEndTime(event);
-                            }}
-                            start={""}
-                            end={""}
-                        />
-
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="under construction"
-                            value={eventDescription.timeZone}
-                            onChange={event => {changeTimeZone(event)}}
-                        >
-                        </input>
-                    </div>
-
-
-                    <div style={{
-                        height: "30px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
+                        <div className={classes.SectionTitleTight}>Event Image{" "}
+                            <FontAwesomeIcon
+                                color = "blue"
+                                cursor = "pointer"
+                                icon={faInfoCircle}/>
+                        </div>
 
                         <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            Event Image
-                        </div>
-                    </div>
-                    <div style={{
-                        height: "165px",
-                        fontSize: "16px",
-                        padding: "5px 10px 10px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "150px",
-                            textAlign: "center",
+                            height: "227px",
                             fontSize: "16px",
-                            width: "600px"}}
-                            disabled
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="Add Image Here"
-                        >
-                        </input>
-                    </div>
-
-                    <div style={{
-                        height: "30px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            Event Short Description
+                            padding: "5px 10px 10px 25px",
+                            boxSizing: "borderBox",
+                            backgroundColor: "#E7E7E7"}}>
+                            <ImgDropAndCrop/>
                         </div>
-                    </div>
-                    <div style={{
-                        padding: "5px 10px 10px 25px",
-                        border: "0px solid green",
-                        boxSizing: "borderBox",
-                        height: "95px",
-                        backgroundColor: "#E7E7E7"}}>
+
+                    <div className={classes.SectionTitleTight}>Event Short Description</div>
+                    <div className={classes.TextBox}>
                         <textarea style={{
                             padding: "9px 10px",
                             border: "1px solid lightgrey",
                             boxSizing: "borderBox",
                             lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "600px",
                             height: "80px",
-                            resize: "vertical"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="Short description of event for social media posts: limit 140 characters"
-                            value={eventDescription.shortDescription}
-                            onChange={event => {changeShortDescription(event)}}
-                        >
-                        </textarea>
-                    </div>
-
-                    <div style={{
-                        height: "30px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            Event Long Description
-                        </div>
-                    </div>
-                    <div style={{
-                        padding: "5px 10px 10px 25px",
-                        border: "0px solid green",
-                        boxSizing: "borderBox",
-                        height: "195px",
-                        backgroundColor: "#E7E7E7"}}>
-                        <textarea style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
                             width: "600px",
-                            height: "180px",
                             resize: "vertical"}}
+                            onFocus={() => setShortDescriptionWarning(true)}
+                            onBlur={() => setShortDescriptionWarning(false)}
                             type="text"
                             id="input box ticket description"
-                            placeholder="Long description of event for Event Description page: limit 5000 characters"
-                            value={eventDescription.longDescription}
-                            onChange={event => {changeLongDescription(event)}}
+                            maxlength = "140"
+                            placeholder="Short description of event for social media posts: limit 140 characters"
+                            name="shortDescription"
+                            value={eventDescription.shortDescription}
+                            onChange={event => {changeEventDescription(event)}}
                         >
                         </textarea>
+                        {shortDescriptionWarning ? displayMessage(140, eventDescription.shortDescription) : null}
                     </div>
 
-                    <div style={{
-                        height: "30px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            Event Category
-                        </div>
-                    </div>
+                    <div className={classes.SectionTitleTight}>Event Long Description</div>
 
-                    <div style={{
-                        height: "55px",
-                        fontSize: "16px",
-                        padding: "5px 10px 10px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
+            <div style={{
+                padding: "5px 270px 10px 25px",
+                border: "0px solid green",
+                boxSizing: "borderBox",
+                height: "auto",
+                backgroundColor: "#E7E7E7"}}>
+                    <Editor
+                        apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
+                        onEditorChange={handleEditorChange}
+                        plugins="wordcount autoresize"
+                        init={{
+                            toolbar: 'undo redo | fontsizeselect fontselect | bold italic underline | forecolor backcolor ',
+                            toolbar_items_size: 'small',
+                            autoresize_bottom_margin: 0,
+                            padding: "0 0 0 0",
+                            icons: "jam",
+                            skin: "fabric",
+                            resize: true,
+                            menubar: 'edit format'
+                        }}
+                    />
+            </div>
+
+                    <div className={classes.SectionTitleTight}>Event Category</div>
+                    <div className={classes.InputBox} >
                         <CategorySelector
                             onChange={event => {
                                 changeEventCategory(event);
                             }}/>
                     </div>
 
-                    <div style={{
-                        height: "30px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            Social Media Links
-                        </div>
-                    </div>
-                    <div style={{
-                        display: `grid`,
-                        gridTemplateColumns: "120px 400px",
-                        height: "45px",
-                        fontSize: "16px",
-                        padding: "5px 10px 0px 35px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <div style={{
-                            padding: "11px 5px 0px 0px",
-                            textAlign: "right"}}>
-                            facebook.com/{" "}
-                        </div>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "400px"}}
+                    <div className={classes.SectionTitleTight}>Social Media Links</div>
+                    <div className={classes.SocialMediaLink} style={{height: "45px"}}>
+                        <div className={classes.SocialMediaName}>facebook.com/{" "}</div>
+                        <input className={classes.InputBoxContent} style={{width: "400px"}}
                             type="text"
                             id="input box ticket description"
                             placeholder="your facebook address"
+                            name="facebookUrl"
                             value={eventDescription.facebookUrl}
-                            onChange={event => {changeFacebookUrl(event)}}
+                            onChange={event => {changeEventDescription(event)}}
                         >
                         </input>
                     </div>
 
-                    <div style={{
-                        display: `grid`,
-                        gridTemplateColumns: "120px 400px",
-                        height: "45px",
-                        fontSize: "16px",
-                        padding: "5px 10px 0px 35px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <div style={{
-                            padding: "11px 5px 0px 0px",
-                            textAlign: "right"}}>
-                            twitter.com/{" "}
-                        </div>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "400px"}}
+                    <div className={classes.SocialMediaLink} style={{height: "45px"}}>
+                        <div className={classes.SocialMediaName}>twitter.com/{" "}</div>
+                        <input className={classes.InputBoxContent} style={{width: "400px"}}
                             type="text"
                             id="input box ticket description"
                             placeholder="your twitter address"
+                            name="twitterUrl"
                             value={eventDescription.twitterUrl}
-                            onChange={event => {changeTwitterUrl(event)}}
+                            onChange={event => {changeEventDescription(event)}}
                         >
                         </input>
                     </div>
-                    <div style={{
-                        display: `grid`,
-                        gridTemplateColumns: "120px 400px",
-                        height: "55px",
-                        fontSize: "16px",
-                        padding: "5px 10px 10px 35px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <div style={{
-                            padding: "11px 5px 0px 0px",
-                            textAlign: "right"}}>
-                            instagram.com/{" "}
-                        </div>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "400px"}}
+                    
+                    <div className={classes.SocialMediaLink} style={{height: "45px"}}>
+                        <div className={classes.SocialMediaName}>linkedin.com/{" "}</div>
+                        <input className={classes.InputBoxContent} style={{width: "400px"}}
+                            type="text"
+                            id="input box ticket description"
+                            placeholder="your linkedin address"
+                            name="linkedinUrl"
+                            value={eventDescription.linkedinUrl}
+                            onChange={event => {changeEventDescription(event)}}
+                        >
+                        </input>
+                    </div>
+
+                    <div className={classes.SocialMediaLink} style={{height: "55px"}}>
+                        <div className={classes.SocialMediaName}>instagram.com/{" "}</div>
+                        <input className={classes.InputBoxContent} style={{width: "400px"}}
                             type="text"
                             id="input box ticket description"
                             placeholder="your instagram address"
+                            name="instagramUrl"
                             value={eventDescription.instagramUrl}
-                            onChange={event => {changeInstagramUrl(event)}}
+                            onChange={event => {changeEventDescription(event)}}
                         >
                         </input>
                     </div>
 
-                    <div style={{
-                        height: "30px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            Event URL
-                        </div>
+                    <div className={classes.SectionTitleTight}>Event URL{" "}
+                        <span className={classes.InfoIcon}>
+                            <FontAwesomeIcon
+                                color = "blue"
+                                cursor = "pointer"
+                                icon={faInfoCircle}/>
+                        </span>
+
                     </div>
-                    <div style={{
-                        height: "55px",
-                        fontSize: "16px",
-                        padding: "5px 10px 10px 25px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "400px"}}
+                    <div className={classes.InputBox}>
+                        <input className={classes.InputBoxContent} style={{width: "400px"}}
                             type="text"
                             id="input box ticket description"
                             placeholder="your event's website address"
+                            name="eventUrl"
                             value={eventDescription.eventUrl}
-                            onChange={event => {changeEventUrl(event)}}
+                            onChange={event => {changeEventDescription(event)}}
                         >
                         </input>
                     </div>
 
-                    <div style={{
-                        height: "30px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",          
-                            fontWeight: 600}}>
-                            OpenSeatDirect Vanity URL
-                        </div>
-                    </div>
+                    <div className={classes.SectionTitleTight}>OpenSeatDirect Vanity URL</div>
                     <div style={{
                         display: `grid`,
                         gridTemplateColumns: "220px 300px",
@@ -2143,44 +1597,22 @@ const getFormattedDate = () => {
                         padding: "5px 10px 10px 35px",
                         boxSizing: "borderBox",
                         backgroundColor: "#E7E7E7"}}>
-                        <div style={{
-                            padding: "11px 5px 0px 0px",
-                            textAlign: "right"}}>
-                            www.openseatdirect.com/et/{" "}
-                        </div>
-                        <input style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
-                            boxSizing: "borderBox",
-                            height: "40px",
-                            lineHeight: "1.75",
-                            fontSize: "16px",
-                            width: "400px"}}
+                        <div className={classes.SocialMediaName}>www.openseatdirect.com/et/{" "}</div>
+                        <input className={classes.InputBoxContent} style={{width: "400px"}}
                             type="text"
                             id="input box ticket description"
                             placeholder="vanity address for Event Description page url"
+                            name="vanityUrl"
                             value={eventDescription.vanityUrl}
-                            onChange={event => {changeVanityUrl(event)}}
+                            onChange={event => {changeEventDescription(event)}}
                         >
                         </input>
                     </div>
                 </div>
 
                 <br></br>
-                <div style={{
-                    margin: "10px 0px 0px 0px",
-                    paddingLeft: "10px",
-                    paddingRight: "10px",
-                    paddingTop: "10px",
-                    boxSizing: "borderBox",
-                    fontSize: "20px",
-                    fontWeight: "600",
-                    height: "40px",
-                    width: "160px",
-                    backgroundColor: "black",
-                    color: "white"}}>
-                    Ticket Creation
-                </div>
+                <div className={classes.CategoryTitle} style={{width: "160px"}}>Ticket Creation</div>
+
                 <div style={{border: "1px solid grey"}}>
                     <div style={{
                         display: `grid`,
@@ -2192,7 +1624,6 @@ const getFormattedDate = () => {
 
                         <div style={{
                             padding: "10px 10px 10px 25px",
-                            border: "0px solid green",
                             boxSizing: "borderBox",                   
                             fontWeight: 600}}>
                             Ticket Name
@@ -2200,7 +1631,6 @@ const getFormattedDate = () => {
 
                         <div style={{
                             padding: "10px 10px 10px 5px",
-                            border: "0px solid green",
                             boxSizing: "borderBox",                   
                             fontWeight: 600}}>
                             Quantity
@@ -2208,15 +1638,13 @@ const getFormattedDate = () => {
 
                         <div style={{
                             padding: "10px 10px 10px 10px",
-                            border: "0px solid green",
                             boxSizing: "borderBox",
                             fontWeight: 600}}>
                             Price
                         </div>
 
                         <div style={{
-                            padding: "10px 5px 10px 5px",
-                            border: "0px solid green",
+                            padding: "10px 10px 10px 5px",
                             boxSizing: "borderBox",
                             fontWeight: 600}}>
                             Settings
@@ -2242,124 +1670,23 @@ const getFormattedDate = () => {
                     </div>
                 </div>
 
-            
                 <br></br>
-                <div style={{
-                    margin: "10px 0px 0px 0px",
-                    paddingLeft: "10px",
-                    paddingRight: "10px",
-                    paddingTop: "10px",
-                    boxSizing: "borderBox",
-                    fontSize: "20px",
-                    fontWeight: "600",
-                    height: "40px",
-                    width: "195px",
-                    backgroundColor: "black",
-                    color: "white"}}>
-                    Additional Settings
-                </div>
-
+                <div className={classes.CategoryTitle} style={{width: "195px"}}>Additional Settings</div>
                 <div style={{border: "1px solid grey"}}>
-                    <div style={{
-                        height: "35px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        boxSizing: "borderBox"}}>
-
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            boxSizing: "borderBox",                   
-                            fontWeight: 600}}>
-                            Refund policy: please select one
-                        </div>
-                    </div>
-                    
-                    <Form style={{padding: "0px 0px 0px 35px", fontSize: "16px", backgroundColor: "#E7E7E7"}}>
-                        <Form.Field style={{height: "30px", padding: "5px", margin: "0px"}}>
-                            <Radio style={{fontSize: "16px"}}
-                                label='1 day: Attendees can receive refunds up to 1 day before your event start date.'
-                                name='refundGroup'
-                                value='1day'
-                                checked={eventDescription.refundPolicy === '1day'}
-                                onChange={ (event, { value }) => refundPolicyChange(event, { value })}
-                            />
-                        </Form.Field>
-                        <Form.Field style={{height: "30px", padding: "5px", margin: "0px"}}>
-                            <Radio style={{fontSize: "16px"}}
-                                label='7 days: Attendees can receive refunds up to 7 days before your event start date.'
-                                name='refundGroup'
-                                value='7days'
-                                checked={eventDescription.refundPolicy === '7days'}
-                                onChange={ (event, { value }) => refundPolicyChange(event, { value })}
-                            />
-                        </Form.Field>
-                        <Form.Field style={{height: "30px", padding: "5px", margin: "0px"}}>
-                            <Radio style={{fontSize: "16px"}}
-                                label='30 days: Attendees can receive refunds up to 30 days before your event start date.'
-                                name='refundGroup'
-                                value='30days'
-                                checked={eventDescription.refundPolicy === '30days'}
-                                onChange={ (event, { value }) => refundPolicyChange(event, { value })}
-                            />
-                        </Form.Field>
-                        <Form.Field style={{height: "30px", padding: "5px", margin: "0px"}}>
-                            <Radio style={{fontSize: "16px"}}
-                                label='Undefined: I will respond to attendee refund requests on a case by case basis.'
-                                name='refundGroup'
-                                value='case'
-                                checked={eventDescription.refundPolicy === 'case'}
-                                onChange={ (event, { value }) => refundPolicyChange(event, { value })}
-                            />
-                        </Form.Field>
-                        <Form.Field style={{height: "30px", padding: "5px", margin: "0px"}}>
-                            <Radio style={{fontSize: "16px"}}
-                                label='No refunds: No refunds at any time.'
-                                name='refundGroup'
-                                value='none'
-                                checked={eventDescription.refundPolicy === 'none'}
-                                onChange={ (event, { value }) => refundPolicyChange(event, { value })}
-                            
-                        />
-                        </Form.Field>
-                    </Form>
-
-                    <div style={{
-                        height: "35px",
-                        fontSize: "15px",
-                        backgroundColor: "#E7E7E7",
-                        borderTop: "1px solid lightgrey",
-                        boxSizing: "borderBox"}}>
-
-                        <div style={{
-                            padding: "10px 10px 0px 25px",
-                            border: "0px solid green",
-                            boxSizing: "borderBox",                   
-                            fontWeight: 600}}>
-                            Ticket delivery: please select one
-                        </div>
-                    </div>
-                    
-                    <Form style={{padding: "0px 0px 0px 35px", fontSize: "16px", backgroundColor: "#E7E7E7"}}>
-                        <Form.Field style={{height: "30px", padding: "5px", margin: "0px"}}>
-                            <Radio style={{fontSize: "16px"}}
-                                label='Print-at-home paper ticket to be emailed'
-                                name='ticketGroup'
-                                value='print'
-                                checked={eventDescription.ticketDelivery === 'print'}
-                                onChange={ (event, { value }) => ticketDeliveryChange(event, { value })}
-                            />
-                        </Form.Field>
-                        <Form.Field style={{height: "30px", padding: "5px", margin: "0px"}}>
-                            <Radio style={{fontSize: "16px"}}
-                                label='Mobile only'
-                                name='ticketGroup'
-                                value='mobile'
-                                checked={eventDescription.ticketDelivery === 'mobile'}
-                                onChange={ (event, { value }) => ticketDeliveryChange(event, { value })}
-                            />
-                        </Form.Field>
-                    </Form>
-
+                    <div className={classes.SectionTitle}>Refund Policy: please select one</div>
+                    <RadioForm
+                        details={refundPolicyList}
+                        group='refundGroup'
+                        current={eventDescription.refundPolicy}
+                        change={refundPolicyChange}
+                    />
+                    <div className={classes.SectionTitle}>Ticket delivery: please select one</div>
+                    <RadioForm
+                        details={ticketDeliveryList}
+                        group='ticketGroup'
+                        current={eventDescription.ticketDelivery}
+                        change={ticketDeliveryChange}
+                    />
                 </div>
             </div>
         </div>

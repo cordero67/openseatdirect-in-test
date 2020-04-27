@@ -62,6 +62,16 @@ const eventData = [
     location: "Bryant Park, New York City",
     url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
     available: true
+  },
+  {
+    image: RikaRikaLogo,
+    title: "AmeRikaEigo by RikaRikaStudio",
+    eventNum: "",
+    date: "Mar 30 - Apr 30, 2020",
+    description: "description3",
+    location: "Nagano, Japan",
+    url: "et/rikarikastudio?eventID=55390812012",
+    available: true
   }
 ];
 
