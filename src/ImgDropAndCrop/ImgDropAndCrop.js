@@ -14,6 +14,11 @@ import {base64StringtoFile,
     extractImageFileExtensionFromBase64,
     image64toCanvasRef,image64toCanvasRef2} from './ResuableUtils'
 
+import { Button } from 'semantic-ui-react';
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
+
 const imageMaxSize = 1000000 // bytes
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => {return item.trim()})
@@ -34,7 +39,8 @@ class ImgDropAndCrop extends Component {
                 width: 400,
                 height: 200
             },
-            showEditor: true
+            showModal: true,
+            rafaelNewimageData64: ""
         }
     }
     
@@ -128,9 +134,29 @@ class ImgDropAndCrop extends Component {
         const canvasRef = this.imagePreviewCanvasRef.current;
         const {imgSrc}  = this.state;
         image64toCanvasRef2(canvasRef, imgSrc, pixelCrop, crop);
+        console.log("Before imagePreviewCanvasRef: ",this.imagePreviewCanvasRef);
+        console.log ("magePreviewCanvasRef.current.width and height" ,this.imagePreviewCanvasRef.current.width,this.imagePreviewCanvasRef.current.height)
+    }
+
+    addImage = (event) => {
+        event.preventDefault()
+        const {imgSrc} = this.state;
+        if (imgSrc) {
+            const canvasRef = this.imagePreviewCanvasRef.current;        
+            const {imgSrcExt} =  this.state;
+            const tempImage = canvasRef.toDataURL('image/jpeg', 0.5);
+
+            this.setState({rafaelNewimageData64: tempImage});
+            console.log("rafaelNewimageData64: ", this.state.rafaelNewimageData64)
+            console.log("rafaelNewimageData64: ", tempImage)
+            console.log("height: ", tempImage.height)
+            console.log("width: ", tempImage.width)
+        }
+        this.changeBackground();
     }
 
 // NOT NECESSARY
+/*
     handleDownloadClick = (event) => {
         console.log ("handleDownloadClick", event);
         event.preventDefault()
@@ -140,6 +166,7 @@ class ImgDropAndCrop extends Component {
             const canvasRef = this.imagePreviewCanvasRef.current;
             const {imgSrcExt} =  this.state;
             const imageData64 = canvasRef.toDataURL('image/' + imgSrcExt);
+            
             const myFilename = "previewFile." + imgSrcExt;
             const myNewCroppedFile = base64StringtoFile(imageData64, myFilename);
             
@@ -149,9 +176,11 @@ class ImgDropAndCrop extends Component {
             // download file
             downloadBase64File(imageData64, myFilename);
             //this.handleClearToDefault();
+            
         }
             this.changeBackground();
     }
+    */
 
     handleClearToDefault = event =>{
         console.log ("handleClearToDefault", event);
@@ -169,6 +198,23 @@ class ImgDropAndCrop extends Component {
             }
         })
         this.fileInputRef.current.value = null
+    }
+
+    newClear = event =>{
+        console.log ("newClear", event);
+        if (event) event.preventDefault()
+
+        this.setState({
+            imgSrc: null,
+            imgSrcExt: null,
+            crop: {
+                aspect: 2/1,
+                ruleOfThirds: true
+            }
+        })
+        this.fileInputRef.current.value = null;
+        this.setState({rafaelNewimageData64: ""});
+        this.setState({showModal: true});
     }
 
     handleFileSelect = event => {
@@ -194,56 +240,94 @@ class ImgDropAndCrop extends Component {
     }
 
     changeBackground = () => {
-        this.setState({showEditor: !this.state.showEditor})
+        this.setState({showModal: !this.state.showModal})
     }
 
     render () {
         const {imgSrc} = this.state
 
         const display = () => {
-            if (imgSrc !== null & this.state.showEditor) {
+            if (imgSrc !== null & this.state.showModal) {
                 return (
-                    <Aux>
-                        <Backdrop show={this.state.showEditor} clicked={this.changeBackground}/>
-                        <div className={classes.Editor}>
-                            <h2>Crop Your Photo</h2>
+                    <div>
+                        <Backdrop show={this.state.showModal} clicked={this.changeBackground}/>
+                        <div className={classes.CropBox}>
+                            <h2>Crop image</h2>
                             <ReactCrop 
-                                style={{zIndex: 800}}
+                                style={{zIndex: 800, maxHeight: "400px", maxWidth: "600px"}}
                                 src={imgSrc} 
                                 crop={this.state.crop} 
                                 onImageLoaded={this.handleImageLoaded}
                                 onComplete = {this.handleOnCropComplete}
                                 onChange={this.handleOnCropChange}
                             />
-                            <div>
-                            <button  onClick={this.handleClearToDefault}>Cancel</button>
-                            <button  onClick={this.handleDownloadClick}>Accept</button>
+                            <div  className={classes.CropBoxControls}>
+                                <div style={{width: "150px", textAlign: "right", paddingTop: "5px", paddingLeft: "5px"}}>
+                                    <Button
+                                        content="Cancel"
+                                        icon="cancel"
+                                        color="red"
+                                        onClick={this.handleClearToDefault}
+                                    />
+                                </div>
+                                <div style={{width: "150px", textAlign: "left", paddingTop: "5px", paddingLeft: "5px"}}>
+                                    <Button
+                                        content="Create"
+                                        icon="create image"
+                                        color="green"
+                                        onClick={this.addImage}
+                                    />
+                                </div>
                             </div>
                         </div>
-                        <div className={classes.NonEditor}>
-                            <div >Preview Canvas Crop Bottom</div>
-                            <canvas ref={this.imagePreviewCanvasRef}></canvas>
-                            <div>
-                                <button onClick={this.handleClearToDefault}>Cancel</button>
-                                <button onClick={this.changeBackground}>Re-Crop</button>
-                            </div>
-                        </div>
-                    </Aux>
-                )
-            } else if (imgSrc !== null & !this.state.showEditor) {
-                return (
-                    <div className={classes.NonEditor}>
-                        <div >Preview Canvas Crop Bottom</div>
-                        <canvas ref={this.imagePreviewCanvasRef}>CANVAS</canvas>
                         <div>
-                            <button onClick={this.handleClearToDefault}>Cancel</button>
-                            <button onClick={this.changeBackground}>Re-Crop</button>
+                            <canvas 
+                                className={classes.ImageBox}
+                                ref={this.imagePreviewCanvasRef}>
+                            </canvas>
+                        </div>
+                    </div>
+                )
+            } else if (imgSrc !== null & !this.state.showModal) {
+                return (
+                    <div>
+                        <div>
+                            <img className={classes.ImageBox}
+                                src={this.state.rafaelNewimageData64}
+                                alt="Event Logo Coming Soon!!!"
+                            />
+                            <div className={classes.ImageControls}>
+                                <button
+                                    style={{
+                                        fontSize: "15px",
+                                        color: "red",
+                                        border: "none",
+                                        backgroundColor: "#E7E7E7",
+                                        cursor: "pointer",
+                                        display: "inlineBlock",
+                                        outline: "none"
+                                        }}
+                                    onClick={this.newClear}
+                                >Delete Image</button>
+                                <button
+                                    style={{
+                                        fontSize: "15px",
+                                        color: "blue",
+                                        border: "none",
+                                        backgroundColor: "#E7E7E7",
+                                        cursor: "pointer",
+                                        display: "inlineBlock",
+                                        outline: "none"
+                                        }}
+                                    onClick={this.changeBackground}
+                                >Re-Adjust Image</button>
+                            </div>
                         </div>
                     </div>
                 )
             } else  {
                 return (
-                    <Aux>
+                    <div>
                         <Dropzone
                             onDrop={this.handleOnDrop}
                             accept={acceptedFileTypes}
@@ -265,20 +349,27 @@ class ImgDropAndCrop extends Component {
                                     <input {...getInputProps()} />
                                     <div
                                         style={{textAlign: "center",
+                                        color: "blue",
                                         border: "1px dashed blue",
+                                        paddingTop: "10px",
                                         width: "400px",
                                         height: "200px",
                                         boxSizing: "borderBox",
                                         cursor: "pointer"}}>
+                                        <FontAwesomeIcon
+                                            size = '4x'
+                                            cursor = "pointer"
+                                            icon={faImage}/>
                                         <br></br>
-                                        Drag 'n' drop your files here
+                                        <br></br>
+                                        Drag 'n' drop your image file here
                                         <br></br>or<br></br>
-                                        click to select files
+                                        click to select an image file
                                     </div>
                                 </div>
                             )}
                         </Dropzone>
-                    </Aux>
+                    </div>
                 )
             }
         }

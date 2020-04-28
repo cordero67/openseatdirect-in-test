@@ -1483,28 +1483,30 @@ const EventCreation = () => {
 
                     <div className={classes.SectionTitleTight}>Event Long Description</div>
 
-            <div style={{
-                padding: "5px 270px 10px 25px",
-                border: "0px solid green",
-                boxSizing: "borderBox",
-                height: "auto",
-                backgroundColor: "#E7E7E7"}}>
-                    <Editor
-                        apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
-                        onEditorChange={handleEditorChange}
-                        plugins="wordcount autoresize"
-                        init={{
-                            toolbar: 'undo redo | fontsizeselect fontselect | bold italic underline | forecolor backcolor ',
-                            toolbar_items_size: 'small',
-                            autoresize_bottom_margin: 0,
-                            padding: "0 0 0 0",
-                            icons: "jam",
-                            skin: "fabric",
-                            resize: true,
-                            menubar: 'edit format'
-                        }}
-                    />
-            </div>
+                    <div style={{
+                        padding: "5px 270px 10px 25px",
+                        border: "0px solid green",
+                        boxSizing: "borderBox",
+                        height: "auto",
+                        backgroundColor: "#E7E7E7"}}>
+                            <Editor
+                                apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
+                                onEditorChange={handleEditorChange}
+                                plugins="wordcount autoresize"
+                                init={{
+                                    toolbar: 'undo redo | fontsizeselect fontselect | bold italic underline | forecolor ',
+                                    toolbar_items_size: 'small',
+                                    autoresize_bottom_margin: 0,
+                                    padding: "0 0 0 0",
+                                    min_height: 250,
+                                    max_height: 400,
+                                    icons: "jam",
+                                    skin: "fabric",
+                                    resize: true,
+                                    menubar: 'edit format'
+                                }}
+                            />
+                    </div>
 
                     <div className={classes.SectionTitleTight}>Event Category</div>
                     <div className={classes.InputBox} >
