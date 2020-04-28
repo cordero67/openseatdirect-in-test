@@ -8,28 +8,44 @@
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-.Editor {
-    position: fixed;
-    top: 30%;
-    left: 30%;
-    width: 600px;
-    height: 300px;
-    z-index: 800;
-    background-color: white;
-    padding: 16px 16px 10px;
-    box-sizing: border-box;
-    transition: all 0.3s ease-out;
+.CropBox {
+  position: fixed;
+  top: 20%;
+  left: 30%;
+  width: 600px;
+  height: auto;
+  max-height: 600px;
+  z-index: 800;
+  text-align: center;  
+  background-color: white;
+  padding: 16px 16px 10px;
+  box-sizing: border-box;
+  transition: all 0.3s ease-out;
 }
 
-.NonEditor {
+.CropBoxControls {
+  margin: auto;
+  width: 300px;
+  display: grid;
+  grid-template-columns: auto auto;
+  padding-top: 5px;
+}
+
+.ImageBox{
   margin: 0px;
   padding: 5px 5px;
   border: 1px solid lightgrey;
   background-color: white;
-  width: 412px;
-  height: 212px;
+  width: 362px;
+  height: 187px;
   box-sizing: border-box;
   z-index: 100;
+}
+
+.ImageControls {
+  display: grid;
+  grid-template-columns: 180px 180px;
+  padding-top: 5px;
 }
 
 /*
