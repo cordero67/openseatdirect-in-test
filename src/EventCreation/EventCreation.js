@@ -1140,19 +1140,21 @@ const EventCreation = () => {
     }
 
     const changeStartDate = (day, fieldName) => {
-        let tempDescription = {...eventDescription};
+        let tempDescription = {...eventDescription};//
         let today = new Date();
+
         tempDescription.startDate = day;
         if (tempDescription.startDate > tempDescription.endDate) {
             tempDescription.endDate = day;
         }
-        setEventDescription(tempDescription);
+        setEventDescription(tempDescription);//
     }
 
     const changeEndDate = (day) => {
         let tempDescription = {...eventDescription};//
+
         tempDescription.endDate = day;
-        setEventDescription(tempDescription);
+        setEventDescription(tempDescription);//
     }
 
     const [eventTitleWarning, setEventTitleWarning] = useState(false);
@@ -1409,7 +1411,7 @@ const EventCreation = () => {
                                 type={"startDate"}
                                 startDate={eventDescription.startDate}
                                 current={eventDescription.startDate}
-                                change={changeStartDate}
+                                change={(date) => changeStartDate(date, "start")}
                                 beforeDate={new Date()}
                             />
                             <TimeSelector
