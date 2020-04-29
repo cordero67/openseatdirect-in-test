@@ -18,18 +18,9 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faTrashAlt, faGripVertical, faCog } from "@fortawesome/free-solid-svg-icons";
 import { Button, Form, Radio } from 'semantic-ui-react';
+import { faFacebook, faInstagram, faLinkedin, faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 const EventCreation = () => {
-
-    const getFormattedDate = () => {
-        let date = new Date();
-        let year = date.getFullYear();
-        let month = (1 + date.getMonth()).toString();
-        month = month.length > 1 ? month : '0' + month;
-        let day = date.getDate().toString();
-        day = day.length > 1 ? day : '0' + day;
-        return month + '/' + day + '/' + year;
-    }
 
     const [textEditor, setTextEditor] = useState("");
         const handleEditorChange = (editorContent) => {
@@ -52,9 +43,9 @@ const EventCreation = () => {
             postalCode: "",
             country: ""
         },
-        startDate: getFormattedDate(),
+        startDate: new Date(),
         startTime: "",
-        endDate: getFormattedDate(),
+        endDate: new Date(),
         endTime: "",
         timeZone: '',
         eventImage: "",
@@ -423,21 +414,9 @@ const EventCreation = () => {
         console.log("Ticket Details: ", tempDetails)
     }
 
-    const changeStartDate = (event) => {
-        let tempInfo = {...eventDescription};
-        tempInfo.startDate = event.target.value;
-        setEventDescription(tempInfo);
-    }
-
     const changeStartTime = (event) => {
         let tempInfo = {...eventDescription};
         tempInfo.startTime = event.target.value;
-        setEventDescription(tempInfo);
-    }
-
-    const changeEndDate = (event) => {
-        let tempInfo = {...eventDescription};
-        tempInfo.endDate = event.target.value;
         setEventDescription(tempInfo);
     }
 
@@ -479,16 +458,16 @@ const EventCreation = () => {
                         <Aux>
                             <div style={{
                                 display: `grid`,
-                                gridTemplateColumns: "250px 250px 50px",
-                                padding: "0px 10px 0px 25px",
+                                gridTemplateColumns: "180px 140px 30px 155px 180px 25px",
+                                padding: "0px 10px 0px 35px",
                                 border: "0px solid green",
                                 boxSizing: "borderBox",
                                 backgroundColor: "#E7E7E7",
                                 height: "50px",
                                 fontSize: "16px"}}>
                                 <div style={{
-                                    padding: "0px 10px 0px 5px",
-                                    textAlign: "center"
+                                    padding: "0px 0px 0px 0px",
+                                    textAlign: "left"
                                 }}>
                                     <input style={{
                                         padding: "9px 10px",
@@ -506,15 +485,15 @@ const EventCreation = () => {
                                     </input>
                                 </div>
                                 <div style={{
-                                    padding: "0px 10px 0px 5px",
-                                    textAlign: "center"
+                                    padding: "0px 0px 0px 0px",
+                                    textAlign: "left"
                                 }}>
                                     <input style={{
                                         padding: "9px 10px",
                                         border: "1px solid lightgrey",
                                         boxSizing: "borderBox",
                                         textAlign: "left",
-                                        width: "150px",
+                                        width: "130px",
                                         height: "40px"}}
                                         type="text"
                                         id="input box order max1"
@@ -523,6 +502,31 @@ const EventCreation = () => {
                                         onChange={event => {changePromoCodesAmount(event, ticket.key, item.key)}}
                                     >
                                     </input>
+                                </div>
+                                <div style={{paddingTop: "10px"}}>OR</div>
+                                <div style={{
+                                    padding: "0px 0px 0px 0px",
+                                    textAlign: "left"
+                                }}>
+                                    <input style={{
+                                        padding: "9px 10px",
+                                        border: "1px solid lightgrey",
+                                        boxSizing: "borderBox",
+                                        textAlign: "left",
+                                        width: "130px",
+                                        height: "40px"}}
+                                        type="text"
+                                        id="input box order max1"
+                                        placeholder="10.00"
+                                        value={item.amount}
+                                        onChange={event => {changePromoCodesAmount(event, ticket.key, item.key)}}
+                                    >
+                                    </input>
+                                </div>
+                                <div style={{
+                                    padding: "0px 0px 0px 0px",
+                                    textAlign: "left"
+                                }}>
                                 </div>
                                 
                                 <div style={{
@@ -621,8 +625,8 @@ const EventCreation = () => {
 
                     <div style={{
                         display: `grid`,
-                        gridTemplateColumns: "250px 250px",
-                        padding: "5px 10px 5px 74px",
+                        gridTemplateColumns: "180px 325px 180px",
+                        padding: "5px 10px 5px 35px",
                         height: "30px",
                         fontSize: "16px",
                         backgroundColor: "#E7E7E7",
@@ -633,11 +637,15 @@ const EventCreation = () => {
                             fontWeight: 400}}>
                             Promo Code
                         </div>
-
                         <div style={{
                             boxSizing: "borderBox",
                             fontWeight: 400}}>
-                            Discounted Price
+                            Discount Amount
+                        </div>
+                        <div style={{
+                            boxSizing: "borderBox",
+                            fontWeight: 400}}>
+                            Final Discounted Price
                         </div>
                     </div>
 
@@ -646,7 +654,7 @@ const EventCreation = () => {
                     <div style={{
                         display: `grid`,
                         gridTemplateColumns: "250px 250px",
-                        padding: "5px 10px 5px 74px",
+                        padding: "5px 10px 5px 35px",
                         height: "30px",
                         fontSize: "15px",
                         backgroundColor: "#E7E7E7",
@@ -944,7 +952,7 @@ const EventCreation = () => {
                         padding: "10px 10px 0px 25px",
                         boxSizing: "borderBox",                   
                         fontWeight: 600}}>
-                        Order Size Restrictions
+                        Tickets Allowed per Order
                     </div>
                 </div>
 
@@ -1131,26 +1139,7 @@ const EventCreation = () => {
         return display;
     }
 
-    const minStartDay = (days) => {
-        let today = new Date();
-        let number = days; // Days you want to subtract
-        let date = new Date(today.getTime() - (number * 24 * 60 * 60 * 1000));
-        return date;
-    }
-
-    const minEndDay = () => {
-        let startDate = eventDescription.startDate
-        let today = new Date();
-        let date;
-        if (startDate && startDate > today) {
-            date = startDate;
-        } else {
-            date = today;
-        }
-        return date;
-    }
-
-    const startDateChange = (day) => {
+    const changeStartDate = (day, fieldName) => {
         let tempDescription = {...eventDescription};
         let today = new Date();
         tempDescription.startDate = day;
@@ -1160,8 +1149,8 @@ const EventCreation = () => {
         setEventDescription(tempDescription);
     }
 
-    const endDateChange = (day) => {
-        let tempDescription = {...eventDescription};
+    const changeEndDate = (day) => {
+        let tempDescription = {...eventDescription};//
         tempDescription.endDate = day;
         setEventDescription(tempDescription);
     }
@@ -1347,7 +1336,7 @@ const EventCreation = () => {
                                 <input className={classes.InputBoxContent} style={{width: "295px"}}
                                     type="text"
                                     id="input box ticket description"
-                                    placeholder="State"
+                                    placeholder="State/Province"
                                     value={eventDescription.location.state}
                                     onChange={(event) => {
                                         let tempDescription = {...eventDescription};
@@ -1417,8 +1406,10 @@ const EventCreation = () => {
 
                         <div className={classes.DateTimeInputs}>
                             <DateSelector
-                                start={eventDescription.startDate}
-                                change={startDateChange}
+                                type={"startDate"}
+                                startDate={eventDescription.startDate}
+                                current={eventDescription.startDate}
+                                change={changeStartDate}
                                 beforeDate={new Date()}
                             />
                             <TimeSelector
@@ -1427,9 +1418,11 @@ const EventCreation = () => {
                                 end={""}
                             />
                             <DateSelector
-                                end={eventDescription.startDate}
-                                change={endDateChange}
-                                beforeDate={minEndDay()}
+                                type={"endDate"}
+                                startDate={eventDescription.startDate}
+                                current={eventDescription.endDate}
+                                change={changeEndDate}
+                                beforeDate={eventDescription.startDate}
                             />
                             <TimeSelector
                                 onChange={changeEndTime}
@@ -1518,6 +1511,10 @@ const EventCreation = () => {
 
                     <div className={classes.SectionTitleTight}>Social Media Links</div>
                     <div className={classes.SocialMediaLink} style={{height: "45px"}}>
+                    <FontAwesomeIcon
+                        className={classes.SocialMediaIcon}
+                        style={{color: "#43609c"}}
+                        icon={faFacebook}/>
                         <div className={classes.SocialMediaName}>facebook.com/{" "}</div>
                         <input className={classes.InputBoxContent} style={{width: "400px"}}
                             type="text"
@@ -1531,6 +1528,10 @@ const EventCreation = () => {
                     </div>
 
                     <div className={classes.SocialMediaLink} style={{height: "45px"}}>
+                        <FontAwesomeIcon
+                            className={classes.SocialMediaIcon}
+                            style={{color: "#0084b4"}}
+                            icon={faTwitter}/>
                         <div className={classes.SocialMediaName}>twitter.com/{" "}</div>
                         <input className={classes.InputBoxContent} style={{width: "400px"}}
                             type="text"
@@ -1544,6 +1545,10 @@ const EventCreation = () => {
                     </div>
                     
                     <div className={classes.SocialMediaLink} style={{height: "45px"}}>
+                        <FontAwesomeIcon
+                            className={classes.SocialMediaIcon}
+                            style={{color: "#0e76a8"}}
+                            icon={faLinkedin}/>
                         <div className={classes.SocialMediaName}>linkedin.com/{" "}</div>
                         <input className={classes.InputBoxContent} style={{width: "400px"}}
                             type="text"
@@ -1557,6 +1562,10 @@ const EventCreation = () => {
                     </div>
 
                     <div className={classes.SocialMediaLink} style={{height: "55px"}}>
+                        <FontAwesomeIcon
+                            className={classes.SocialMediaIcon}
+                            style={{color: "#8a3ab9"}}
+                            icon={faInstagram}/>
                         <div className={classes.SocialMediaName}>instagram.com/{" "}</div>
                         <input className={classes.InputBoxContent} style={{width: "400px"}}
                             type="text"
