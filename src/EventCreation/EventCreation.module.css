@@ -20,15 +20,24 @@
 }
 
 .GridTitle {
-    margin: 10px 0px 0px 0px;
-    padding-left: 0px;
-    padding-right: 10px;
-    padding-top: 15px;
-    padding-bottom: 45px;
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: 400px 150px 150px 150px;
     box-sizing: border-box;
     font-size: 30px;
     font-weight: 600;
-    height: 35px;
+    height: 70px;
+}
+
+.GridBottom {
+    padding-top: 20px;
+    padding-left: 225px;
+    display: grid;
+    grid-template-columns: 150px 150px 150px;
+    box-sizing: border-box;
+    font-size: 30px;
+    font-weight: 600;
+    height: 70px;
 }
 
 .CategoryTitle {

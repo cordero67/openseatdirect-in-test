@@ -10,9 +10,9 @@ const RadioForm = (props) => {
     const formField = () => {
         return (
             <Aux>
-                {props.details.map(item => {
+                {props.details.map((item, index) => {
                     return (
-                        <Form.Field style={{height: "30px", padding: "5px", margin: "0px"}}>
+                        <Form.Field key={index} style={{height: "30px", padding: "5px", margin: "0px"}}>
                             <Radio style={{fontSize: "16px"}}
                                 label={item.label}
                                 name={props.group}

@@ -20,8 +20,8 @@ const CountrySelector = (props) => {
         onChange={props.onChange}
         required
         >
-        {countries.map(item => {
-            return <option>{item}</option>
+        {countries.map((item, index) => {
+            return <option key={index} >{item}</option>
         })}
         </select>
     )
