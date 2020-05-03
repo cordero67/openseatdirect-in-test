@@ -7,10 +7,15 @@ import { formatDate, parseDate } from "react-day-picker/moment";
 import "react-day-picker/lib/style.css";
 
 const DateSelector = (props) => {
+    let minDate = props.current;
+
+    if (props.type === "endDate" && (props.current < props.startDate)) {
+        minDate = props.current;
+    }
 
     return (
         <DayPickerInput
-        value={props.start}
+        value={minDate}
         inputProps={{ style: {
             paddingLeft: 9,
             border: "1px solid lightgrey",

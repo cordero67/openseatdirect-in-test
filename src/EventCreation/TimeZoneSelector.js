@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 
 import { timeZones } from './CategoryLists';
 
-
-
 const TimeZoneSelector = (props) => {
 
     let transformedTimeZones = Object.keys(timeZones);
@@ -26,8 +24,8 @@ const TimeZoneSelector = (props) => {
         }}
         required
         >
-            {transformedTimeZones.map(zone => {
-                return <option>{zone}</option>
+            {transformedTimeZones.map((zone, index) => {
+                return <option key={index} >{zone}</option>
             })}
 
         </select>

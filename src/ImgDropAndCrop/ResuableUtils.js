@@ -58,7 +58,7 @@ export function image64toCanvasRef2 (canvasRef, image64, pixelCrop) {
   console.log ( "canvas w h:",canvas.width, canvas.height);
 
   image.onload = function () {
-    console.log (">>> image64, pixelCrop,crop, image:", image64, " >pixelCrop:", pixelCrop);
+    console.log (" >pixelCrop:", pixelCrop);
     console.log ("***** : image.width:", image.width);
     console.log ("***** : image.height:", image.height);
     console.log ("***** : pixelCrop.width:", pixelCrop.width);

@@ -20,15 +20,24 @@
 }
 
 .GridTitle {
-    margin: 10px 0px 0px 0px;
-    padding-left: 0px;
-    padding-right: 10px;
-    padding-top: 15px;
-    padding-bottom: 45px;
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: 400px 150px 150px 150px;
     box-sizing: border-box;
     font-size: 30px;
     font-weight: 600;
-    height: 35px;
+    height: 70px;
+}
+
+.GridBottom {
+    padding-top: 20px;
+    padding-left: 225px;
+    display: grid;
+    grid-template-columns: 150px 150px 150px;
+    box-sizing: border-box;
+    font-size: 30px;
+    font-weight: 600;
+    height: 70px;
 }
 
 .CategoryTitle {
@@ -118,12 +127,19 @@
 
 .SocialMediaLink {
     display: grid;
-    grid-template-columns: 120px 400px;
+    grid-template-columns: 40px 120px 400px;
     height: 55px;
     font-size: 16px;
     padding: 5px 10px 10px 35px;
     box-sizing: border-box;
     background-color: #E7E7E7;
+}
+
+.SocialMediaIcon {
+    margin: auto;
+    padding-top: 1px;
+    /*padding: 11px 5px 0px 0px;
+    text-align: left;*/
 }
 
 .SocialMediaName {
@@ -164,6 +180,7 @@
     color: red;
     cursor: pointer;
 }
+
 
 .react-datepicker-wrapper,
 .react-datepicker__input-container,
