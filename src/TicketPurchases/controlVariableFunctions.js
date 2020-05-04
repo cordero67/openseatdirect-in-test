@@ -1,5 +1,3 @@
-import React from "react";
-import dateFormat from "dateformat";
 import { bogox, twoferCapped, twofer } from "./pricingFunctions";
 
 // initial definition of "eventDetails"
@@ -125,7 +123,7 @@ export const loadPromoCodeDetails = (ticket, promoCodeDetails) => {
   let tempCodesArray = [];
   ticket.forEach(tktType => {
     if (tktType.priceFunction && tktType.priceFunction.form === "promo" && tktType.usePriceFunction) {
-      tktType.priceFunction.args.promocodes.map(tktPromo => {
+      tktType.priceFunction.args.promocodes.forEach(tktPromo => {
         if (!tempCodesArray.includes(tktPromo.name.toUpperCase())) {
           tempCodesArray.push(tktPromo.name.toUpperCase());
         }
@@ -235,8 +233,8 @@ export const clearPromoDetails = (promoCodeDetails) => {
 // updates "ticketInfo" with removed promo code
 export const clearTicketInfo = (ticketInfo) => {
   let tempTicketInfo;
-  let tempTotalPurchaseAmount = 0;
-  let tempFinalPurchaseAmount = 0;
+  //let tempTotalPurchaseAmount = 0;
+  //let tempFinalPurchaseAmount = 0;
   tempTicketInfo = [...ticketInfo];
   tempTicketInfo.forEach((item, index) => {
     if (item.ticketPriceFunction.form === "promo") {

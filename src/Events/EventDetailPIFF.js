@@ -23,7 +23,7 @@ const EventDetail = props => {
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
 
   // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
+  //const [isRestyling, setIsRestyling] = useState(false);
 
   // MOVE TO API FILE
   const handleErrors = response => {
@@ -346,11 +346,11 @@ const EventDetail = props => {
     bottomDisplay = (
       <div className={styles.LowerGrid}>
         <div className={styles.LeftLowerGrid}>
-          {eventDetails.descriptions.map(item1 => {return (
-            <Aux>
+          {eventDetails.descriptions.map((item1, index1) => {return (
+            <Aux key={index1}>
               <div className={styles.TitleLeft}>{item1.title}</div>
-                {item1.text.map(item2 => {return (
-                <Aux>
+                {item1.text.map((item2, index2) => {return (
+                <Aux key={index2}>
                   <div className={styles.TextLeft}>{item2}</div>
                   <br></br>
                 </Aux>
@@ -363,9 +363,9 @@ const EventDetail = props => {
           {dateRange}
           <br></br>
           <div className={styles.TitleRight}>Location</div>
-          {eventDetails.location.address.map(add => {
+          {eventDetails.location.address.map((add, index) => {
             return (
-              <div className={styles.TextLeft}>{add}</div>
+              <div key={index} className={styles.TextLeft}>{add}</div>
             )
           })}
           <div className={styles.TextRight}>{eventDetails.location.city}, {eventDetails.location.state} {eventDetails.location.zipPostalCode}</div>

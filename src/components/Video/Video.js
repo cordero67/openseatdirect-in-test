@@ -7,7 +7,7 @@ import styles from "./Video.module.css";
 
 const Video = () => {
   // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
+  // [isRestyling, setIsRestyling] = useState(false);
   const [youTubeDimensions, setYouTubeDimensions] = useState({
     width: "640",
     height: "360"
@@ -31,7 +31,7 @@ const Video = () => {
   };
 
   const resetOpts = (newWidth, newHeight) => {
-    setIsRestyling(true);
+    //setIsRestyling(true);
     setYouTubeDimensions({
       width: newWidth,
       height: newHeight
@@ -48,7 +48,7 @@ const Video = () => {
         rel: 0
       }
     };
-    setIsRestyling(false);
+    //setIsRestyling(false);
   };
 
   const stylingUpdate = (inWidth, inHeight) => {

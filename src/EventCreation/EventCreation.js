@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import { Editor } from '@tinymce/tinymce-react';
 import ReactHtmlParser from 'react-html-parser';
 
+import { Editor } from '@tinymce/tinymce-react';
 import DateSelector from './DateSelector';
 import TimeSelector from './TimeSelector';
 import TimeZoneSelector from './TimeZoneSelector';
@@ -10,7 +10,6 @@ import CountrySelector from './CountrySelector';
 import CurrencySelector from './CurrencySelector';
 import CategorySelector from "./CategorySelector";
 import RadioForm from './RadioForm';
-
 import ImgDropAndCrop from '../ImgDropAndCrop/ImgDropAndCrop'
 
 import classes from './EventCreation.module.css';
@@ -18,13 +17,14 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faTrashAlt, faGripVertical, faCog } from "@fortawesome/free-solid-svg-icons";
-import { Button, Form, Radio, Popup } from 'semantic-ui-react';
+import { Button, Popup } from 'semantic-ui-react';
 import { faFacebook, faInstagram, faLinkedin, faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 const EventCreation = () => {
 
     const [textEditor, setTextEditor] = useState("");
-        const handleEditorChange = (editorContent) => {
+
+    const handleEditorChange = (editorContent) => {
         setTextEditor(editorContent);
     };
 
@@ -78,24 +78,35 @@ const EventCreation = () => {
         orderMax: "",
         ticketsRemaining: "never",
         priceFeature: "none",
-        promoCodes: [{key: "1", name: "", amount: null, percent: null}],
+        promoCodes: [{key: "1", name: "", amount: "", percent: ""}],
         promoCodeNames: [],
         promoCodeWarning: "",
         functionArgs: {},
     }]);
 
-    const eventTypeChange = (event, value) => {
-        console.log("Changing event type to ", value);
-        let tempDescription = {...eventDescription};
-        tempDescription.eventType = value.value;
-        console.log("Changing event type to ", tempDescription.eventType);
-        setEventDescription(tempDescription);
-        console.log("Event Description ", tempDescription);
+    // EVENT DESCRIPTION HANDLERS
+    const changeEventDescription = (event) => {
+        let tempInfo = {...eventDescription};
+        tempInfo[event.target.name] = event.target.value;
+        if (event.target.name === "eventTitle") {
+            tempInfo.vanityUrl = event.target.value
+                .replace(/\s+/g, '-')
+                .replace(/[^a-zA-Z0-9-]/g, "")
+                .toLowerCase();
+        }
+        setEventDescription(tempInfo);
+        console.log("Event Description: ", tempInfo)
     }
 
+    const changeEventDescriptionRadio = (event, value, name) => {
+        let tempDescription = {...eventDescription};
+        tempDescription[name] = value.value;
+        setEventDescription(tempDescription);
+        console.log("Event Description: ", tempDescription)
+    }
+
+    // TICKET DETAILS HANDLERS
     const ticketsRemainingChange = (event, value, key) => {
-        console.log("recheaded handler");
-        console.log("event, value, key ",event, value, key)
         let tempDetails = [...ticketDetails];
         tempDetails.forEach( item => {
             if (item.key === key) {
@@ -106,36 +117,49 @@ const EventCreation = () => {
         console.log("Ticket Details: ", ticketDetails)
     }
 
-    const refundPolicyChange = (event, value) => {
-        console.log("Changing refund policy to ", value);
-        let tempDescription = {...eventDescription};
-        tempDescription.refundPolicy = value.value;
-        console.log("Changing refund policy to ", tempDescription.refundPolicy);
-        setEventDescription(tempDescription);
-        console.log("Event Description ", tempDescription);
+    const changeTicketDetail = (event, id) => {
+        let tempTicketDetails = [...ticketDetails];
+        tempTicketDetails.forEach( item => {
+            if (item.key === id) {
+                item[event.target.name] = event.target.value;
+            }
+        })
+        setTicketDetails(tempTicketDetails);
+        console.log("Ticket Details: ", ticketDetails)
     }
 
-    const ticketDeliveryChange = (event, value) => {
-        console.log("Changing ticket delivery to ", value);
-        let tempDescription = {...eventDescription};
-        tempDescription.ticketDelivery = value.value;
-        console.log("Changing ticket delivery to ", tempDescription.ticketDelivery);
-        setEventDescription(tempDescription);
-        console.log("Event Description ", tempDescription);
+    const switchTicketSettings = (event, key) => {
+        let tempTicketDetails = [...ticketDetails];
+        tempTicketDetails.forEach( item => {
+            if (item.key === key) {
+                item.settings = !item.settings;
+            }
+        })
+        setTicketDetails(tempTicketDetails);
+        console.log("Ticket Details: ", ticketDetails)
+    }
+    
+    const changeArgument = (event, key) => {
+        let tempDetails = [...ticketDetails];
+        tempDetails.forEach( item => {
+            if (item.key === key) {
+                item.functionArgs[event.target.name] = event.target.value;
+            }
+        })
+        setTicketDetails(tempDetails);
+        console.log("Ticket Details: ", tempDetails)
     }
 
+    // STOPPED
     const priceFeatureChangeHandler = (event, value, key) => {
       let tempDetails = [...ticketDetails];
         tempDetails.forEach( item => {
             if (item.key === key) {
                 item.priceFeature = value;
-                item.promoCodes = [{key: "1", name: "", amount: null, percent: null}];
+                item.promoCodes = [{key: "1", name: "", amount: "", percent: ""}];
                 item.promoCodeNames = [];
                 item.promoCodeWarning = "";
                 item.functionArgs = {};
-                if (value === "promo") {
-                    item.promoCodes = [{key: "1", name: "", amount: null, percent: null}]
-                }
                 if(value === "bogof") {
                     item.functionArgs = {buy: "", get: "", discount: 1}
                 }
@@ -167,7 +191,7 @@ const EventCreation = () => {
             orderMax: "",
             ticketsRemaining: "never",
             priceFeature: "none",
-            promoCodes: [{key: newPromoKey, name: "", amount: null, percent: null}],
+            promoCodes: [{key: newPromoKey, name: "", amount: "", percent: ""}],
             promoCodeNames: [],
             promoCodeWarning: "",
             functionArgs: {}
@@ -191,7 +215,7 @@ const EventCreation = () => {
                     orderMax: "",
                     ticketsRemaining: "never",
                     priceFeature: "none",
-                    promoCodes: [{key: "1", name: "", amount: null, percent: null}],
+                    promoCodes: [{key: "1", name: "", amount: "", percent: ""}],
                     promoCodeNames: [],
                     promoCodeWarning: "",
                     functionArgs: {}
@@ -201,7 +225,8 @@ const EventCreation = () => {
             let tempTicketDetails = [...ticketDetails];
             tempTicketDetails.forEach( (item, index) => {
                 if (item.key === id) {
-                    let removed = tempTicketDetails.splice(index,1);
+                    //let removed = tempTicketDetails.splice(index,1);
+                    tempTicketDetails.splice(index,1);
                 }
             })
             setTicketDetails(tempTicketDetails);
@@ -219,7 +244,7 @@ const EventCreation = () => {
                 if (item.key === ticket.key) {
                     console.log("ticket match at position ", index);
                     console.log("these are the promo codes in this ticket: ", item.promoCodes);
-                    item.promoCodes = [{key: "1", name: "", amount: null, percent: null}];
+                    item.promoCodes = [{key: "1", name: "", amount: "", percent: ""}];
                     console.log("new promo codes in this ticket: ", item.promoCodes);
                 }
             setTicketDetails(tempTicketDetails);
@@ -237,7 +262,8 @@ const EventCreation = () => {
                     tempCodes.forEach( (code, index2) => {
                         if (code.key === promoKey) {
                             console.log("current promo match at position ", index2);
-                            let removed = tempCodes.splice(index2,1);
+                            //let removed = tempCodes.splice(index2,1);
+                            tempCodes.splice(index2,1);
                             console.log("updated promo match at position ", tempCodes);
                         }
                     item.promoCodes = tempCodes;
@@ -249,90 +275,12 @@ const EventCreation = () => {
         }
     }
 
-    const changeTicketDescriptionHandler = (event, id) => {
-        let tempTicketDetails = [...ticketDetails];
-        tempTicketDetails.forEach( item => {
-            if (item.key === id) {
-                item.ticketDescription = event.target.value;
-            }
-        })
-        setTicketDetails(tempTicketDetails);
-        console.log("Ticket Details: ", ticketDetails)
-    }
-
-    const changeOrderMinHandler = (event, id) => {
-        let tempTicketDetails = [...ticketDetails];
-        tempTicketDetails.forEach( item => {
-            if (item.key === id) {
-                item.orderMin = event.target.value;
-            }
-        })
-        setTicketDetails(tempTicketDetails);
-        console.log("Ticket Details: ", ticketDetails)
-    }
-
-    const changeOrderMaxHandler = (event, id) => {
-        let tempTicketDetails = [...ticketDetails];
-        tempTicketDetails.forEach( item => {
-            if (item.key === id) {
-                item.orderMax = event.target.value;
-            }
-        })
-        setTicketDetails(tempTicketDetails);
-        console.log("Ticket Details: ", ticketDetails)
-    }
-
-    const changeTicketNameHandler = (event, id) => {
-        let tempTicketDetails = [...ticketDetails];
-        tempTicketDetails.forEach( item => {
-            if (item.key === id) {
-                item.ticketName = event.target.value;
-            }
-        })
-        setTicketDetails(tempTicketDetails);
-        console.log("Ticket Details: ", ticketDetails)
-    }
-
-    const changeTicketQuantityHandler = (event, id) => {
-        let tempTicketDetails = [...ticketDetails];
-        tempTicketDetails.forEach( item => {
-            if (item.key === id) {
-                item.ticketQuantity = event.target.value;
-            }
-        })
-        setTicketDetails(tempTicketDetails);
-        console.log("Ticket Details: ", ticketDetails)
-    }
-
-    const changeTicketPriceHandler = (event, id) => {
-        let tempTicketDetails = [...ticketDetails];
-        tempTicketDetails.forEach( item => {
-            if (item.key === id) {
-                item.ticketPrice = event.target.value;
-            }
-        })
-        setTicketDetails(tempTicketDetails);
-        console.log("Ticket Details: ", ticketDetails)
-    }
-
-    const switchTicketSettings = (event, key) => {
-        let tempTicketDetails = [...ticketDetails];
-        tempTicketDetails.forEach( item => {
-            if (item.key === key) {
-                item.settings = !item.settings;
-                console.log("New ticket settings: ", item.settings);
-            }
-        })
-        setTicketDetails(tempTicketDetails);
-        console.log("Ticket Details: ", ticketDetails)
-    }
-
     const switchPriceFeature = (event, key) => {
         let tempDetails = [...ticketDetails];
         tempDetails.forEach( item => {
             if (item.key === key) {
                 item.priceFeature = "none";
-                item.promoCodes = [{key: "", name: "", amount: null, percent: null}];
+                item.promoCodes = [{key: "", name: "", amount: "", percent: ""}];
                 item.promoCodeNames = [];
                 item.promoCodeWarning = "";
                 item.functionArgs = {};
@@ -347,52 +295,8 @@ const EventCreation = () => {
         let tempDetails = [...ticketDetails];
         tempDetails.forEach( item => {
             if (item.key === key) {
-                let newPromo = {key: newPromoKey, name: "", amount: null, percent: null};
+                let newPromo = {key: newPromoKey, name: "", amount: "", percent: ""};
                 item.promoCodes.push(newPromo);
-            }
-        })
-        setTicketDetails(tempDetails);
-        console.log("Ticket Details: ", tempDetails)
-    }
-
-    const changeBuyArgument = (event, key) => {
-        let tempDetails = [...ticketDetails];
-        tempDetails.forEach( item => {
-            if (item.key === key) {
-                item.functionArgs.buy = event.target.value;
-            }
-        })
-        setTicketDetails(tempDetails);
-        console.log("Ticket Details: ", tempDetails)
-    }
-
-    const changeGetArgument = (event, key) => {
-        let tempDetails = [...ticketDetails];
-        tempDetails.forEach( item => {
-            if (item.key === key) {
-                item.functionArgs.get = event.target.value;
-            }
-        })
-        setTicketDetails(tempDetails);
-        console.log("Ticket Details: ", tempDetails)
-    }
-
-    const changeDiscountArgument = (event, key) => {
-        let tempDetails = [...ticketDetails];
-        tempDetails.forEach( item => {
-            if (item.key === key) {
-                item.functionArgs.discount = event.target.value;
-            }
-        })
-        setTicketDetails(tempDetails);
-        console.log("Ticket Details: ", tempDetails)
-    }
-
-    const changeForArgument = (event, key) => {
-        let tempDetails = [...ticketDetails];
-        tempDetails.forEach( item => {
-            if (item.key === key) {
-                item.functionArgs.for = event.target.value;
             }
         })
         setTicketDetails(tempDetails);
@@ -402,7 +306,6 @@ const EventCreation = () => {
     const changePromoCodesName = (event, ticketKey, promoKey) => {
         let tempDetails = [...ticketDetails];
         tempDetails.forEach( item => {
-            console.log("Inside changePromoCodesName");
             if (item.key === ticketKey) {
                 let tempCodes = [...item.promoCodes]
                 tempCodes.forEach( code => {
@@ -439,7 +342,6 @@ const EventCreation = () => {
     const changePromoCodesAmount = (event, ticketKey, promoKey) => {
         let tempDetails = [...ticketDetails];
         tempDetails.forEach( item => {
-            console.log("Inside changePromoCodesName");
             if (item.key === ticketKey) {
                 let tempCodes = [...item.promoCodes]
                 tempCodes.forEach( code => {
@@ -482,18 +384,11 @@ const EventCreation = () => {
         let tempInfo = {...eventDescription};
         tempInfo.eventCategory = event.target.value;
         setEventDescription(tempInfo);
-        console.log("tempInfo.eventCategory ",tempInfo.eventCategory)
     }
 
     const changeLongDescription = (event) => {
         let tempInfo = {...eventDescription};
         tempInfo.longDescription = event.target.value;
-        setEventDescription(tempInfo);
-    }
-
-    const changeEventDescription = (event) => {
-        let tempInfo = {...eventDescription};
-        tempInfo[event.target.name] = event.target.value;
         setEventDescription(tempInfo);
     }
 
@@ -520,7 +415,7 @@ const EventCreation = () => {
                     }
 
                     return (
-                        <Aux>
+                        <Aux key={index}>
                             <div style={{
                                 display: `grid`,
                                 gridTemplateColumns: "180px 165px 30px 115px 180px 25px",
@@ -541,7 +436,7 @@ const EventCreation = () => {
                                         width: "150px",
                                         height: "40px"}}
                                         type="text"
-                                        id="input box order min1"
+                                        id="promoName"
                                         placeholder="unique name"
                                         value={item.name}
                                         onChange={event => {changePromoCodesName(event, ticket.key, item.key)}}
@@ -568,7 +463,7 @@ const EventCreation = () => {
                                         border: "0px solid lightgrey",
                                         boxSizing: "borderBox"}}
                                         type="text"
-                                        id="input box ticket price"
+                                        id="promoAmount"
                                         placeholder=""
                                         value={item.amount}
                                         onChange={event => {changePromoCodesAmount(event, ticket.key, item.key)}}
@@ -592,7 +487,7 @@ const EventCreation = () => {
                                         border: "0px solid lightgrey",
                                         boxSizing: "borderBox"}}
                                         type="text"
-                                        id="input box ticket price"
+                                        id="promoPercent"
                                         placeholder=""
                                         value={item.percent}
                                         onChange={event => {changePromoCodesPercent(event, ticket.key, item.key)}}
@@ -798,10 +693,11 @@ const EventCreation = () => {
                                 width: "100px",
                                 height: "40px"}}
                                 type="text"
-                                id="input box buy arg bogof"
+                                id="functionArgBuyBogof"
                                 placeholder="# of tickets"
+                                name="buy"
                                 value={ticket.functionArgs.buy}
-                                onChange={event => {changeBuyArgument(event, ticket.key)}}
+                                onChange={event => {changeArgument(event, ticket.key)}}
                             >
                             </input>
                             {" "}ticket(s) and get{" "}
@@ -812,10 +708,11 @@ const EventCreation = () => {
                                 width: "100px",
                                 height: "40px"}}
                                 type="text"
-                                id="input box get arg bogof"
+                                id="functionArgGetBogof"
                                 placeholder="# of tickets"
+                                name="get"
                                 value={ticket.functionArgs.get}
-                                onChange={event => {changeGetArgument(event, ticket.key)}}
+                                onChange={event => {changeArgument(event, ticket.key)}}
                             >
                             </input>
                             {" "}ticket(s) for free.
@@ -865,10 +762,11 @@ const EventCreation = () => {
                                 width: "100px",
                                 height: "40px"}}
                                 type="text"
-                                id="input box buy arg bogod"
+                                id="functionArgBuyBogod"
                                 placeholder="# of tickets"
+                                name="buy"
                                 value={ticket.functionArgs.buy}
-                                onChange={event => {changeBuyArgument(event, ticket.key)}}
+                                onChange={event => {changeArgument(event, ticket.key)}}
                             >
                             </input>
                             {" "}ticket(s) and buy an additional{" "}
@@ -879,10 +777,11 @@ const EventCreation = () => {
                                 width: "100px",
                                 height: "40px"}}
                                 type="text"
-                                id="input box get arg bogod"
+                                id="functionArgGetBogod"
                                 placeholder="# of tickets"
+                                name="get"
                                 value={ticket.functionArgs.get}
-                                onChange={event => {changeGetArgument(event, ticket.key)}}
+                                onChange={event => {changeArgument(event, ticket.key)}}
                             >
                             </input>
                             {" "}ticket(s) for a{" "}
@@ -893,10 +792,11 @@ const EventCreation = () => {
                                 width: "100px",
                                 height: "40px"}}
                                 type="text"
-                                id="input box for arg bogod"
+                                id="functionArgDiscountBogod"
                                 placeholder="percentage"
+                                name="discount"
                                 value={ticket.functionArgs.discount}
-                                onChange={event => {changeDiscountArgument(event, ticket.key)}}
+                                onChange={event => {changeArgument(event, ticket.key)}}
                             >
                             </input>
                             {" "}discount.
@@ -945,10 +845,11 @@ const EventCreation = () => {
                                 width: "100px",
                                 height: "40px"}}
                                 type="text"
-                                id="input box buy arg twofer"
+                                id="functionArgBuy2fer"
                                 placeholder="# of tickets"
+                                name="buy"
                                 value={ticket.functionArgs.buy}
-                                onChange={event => {changeBuyArgument(event, ticket.key)}}
+                                onChange={event => {changeArgument(event, ticket.key)}}
                             >
                             </input>
                             {" "}ticket(s) for the price of{" "}
@@ -959,10 +860,11 @@ const EventCreation = () => {
                                 width: "100px",
                                 height: "40px"}}
                                 type="text"
-                                id="input box for arg twofer"
+                                id="functionArgFor2fer"
                                 placeholder="# of tickets"
+                                name="for"
                                 value={ticket.functionArgs.for}
-                                onChange={event => {changeForArgument(event, ticket.key)}}
+                                onChange={event => {changeArgument(event, ticket.key)}}
                             >
                             </input>
                             {" "}ticket(s).
@@ -1039,10 +941,11 @@ const EventCreation = () => {
                         height: "95px",
                         resize: "vertical"}}
                         type="text"
-                        id="input box ticket description"
+                        id="ticketDescription"
                         placeholder="Brief description of ticket and what it includes: limit 1000 characters"
+                        name="ticketDescription"
                         value={ticket.ticketDescription}
-                        onChange={event => {changeTicketDescriptionHandler(event, ticket.key)}}
+                        onChange={event => {changeTicketDetail(event, ticket.key)}}
                     >
                     </textarea>
                 </div>
@@ -1080,10 +983,11 @@ const EventCreation = () => {
                             width: "100px",
                             height: "40px"}}
                             type="text"
-                            id="input box order min2"
+                            id="orderMin"
                             placeholder="# of tickets"
+                            name="orderMin"
                             value={ticket.orderMin}
-                            onChange={event => {changeOrderMinHandler(event, ticket.key)}}
+                            onChange={event => {changeTicketDetail(event, ticket.key)}}
                         >
                         </input>
                         {" "}ticket(s)
@@ -1097,10 +1001,11 @@ const EventCreation = () => {
                             width: "100px",
                             height: "40px"}}
                             type="text"
-                            id="input box order max2"
+                            id="orderMax"
                             placeholder="# of tickets"
+                            name="orderMax"
                             value={ticket.orderMax}
-                            onChange={event => {changeOrderMaxHandler(event, ticket.key)}}
+                            onChange={event => {changeTicketDetail(event, ticket.key)}}
                         >
                         </input>
                         {" "}ticket(s)
@@ -1171,10 +1076,11 @@ const EventCreation = () => {
                                         border: "1px solid lightgrey",
                                         boxSizing: "borderBox"}}
                                         type="text"
-                                        id="input box ticket name"
+                                        id="ticketName"
                                         placeholder="GA, VIP, etc: limit 32 characters"
+                                        name="ticketName"
                                         value={item.ticketName}
-                                        onChange={event => {changeTicketNameHandler(event, item.key)}}
+                                        onChange={event => {changeTicketDetail(event, item.key)}}
                                     >
                                     </input>
                                 </div>
@@ -1189,10 +1095,11 @@ const EventCreation = () => {
                                         width: "90px",
                                         height: "40px"}}
                                         type="text"
-                                        id="input box ticket quantity"
+                                        id="ticketQuantity"
                                         placeholder="100"
+                                        name="ticketQuantity"
                                         value={item.ticketQuantity}
-                                        onChange={event => {changeTicketQuantityHandler(event, item.key)}}
+                                        onChange={event => {changeTicketDetail(event, item.key)}}
                                     >
                                     </input>
                                 </div>
@@ -1215,10 +1122,11 @@ const EventCreation = () => {
                                         border: "0px solid lightgrey",
                                         boxSizing: "borderBox"}}
                                         type="text"
-                                        id="input box ticket price"
+                                        id="ticketPice"
                                         placeholder="10.00"
+                                        name="ticketPrice"
                                         value={item.ticketPrice}
-                                        onChange={event => {changeTicketPriceHandler(event, item.key)}}
+                                        onChange={event => {changeTicketDetail(event, item.key)}}
                                     >
                                     </input>
                                 </div>
@@ -1263,7 +1171,7 @@ const EventCreation = () => {
         if(fieldName === "start") {
             //console.log("Start Date Change Info")
             tempDescription.startDate = tempDate;
-            let newDate = new Date(tempDescription.startDate);
+            //let newDate = new Date(tempDescription.startDate);
             //console.log(newDate);
             console.log("start date: ", tempDescription.startDate)
             if (tempDescription.startDate > tempDescription.endDate) {
@@ -1273,7 +1181,7 @@ const EventCreation = () => {
         } else if (fieldName === "end") {
             //console.log("End Date Change Info")
             tempDescription.endDate = tempDate;
-            let newDate = new Date(tempDescription.startDate);
+            //let newDate = new Date(tempDescription.startDate);
             //console.log(newDate);
             console.log("end date: ", tempDescription.endDate)
         }
@@ -1318,8 +1226,7 @@ const EventCreation = () => {
 
     const ticketsRemaining = [
         {label: 'Never show number of tickets remaining', value:'never'},
-        {label: 'Always show number of tickets remaining', value:'always'},
-        {label: 'Customize display', value:'custom'}
+        {label: 'Always show number of tickets remaining', value:'always'}
     ]
 
     const refundPolicyList = [
@@ -1341,12 +1248,7 @@ const EventCreation = () => {
                 <div className={classes.GridTitle}>
                     <div
                         style={{paddingTop: "10px"}}>Event Creation</div>
-                    <div style={{
-                        boxSizing: "borderBox",
-                        paddingTop: "10px",
-                        height: "40px",
-                        fontSize: "14px",
-                        textAlign: "center"}}>
+                        <div className={classes.ButtonBox} >
                         <button
                             style={{
                                 border: "2px solid green",
@@ -1357,12 +1259,7 @@ const EventCreation = () => {
                                 width: "100px"}}
                         >Save</button>
                     </div>
-                    <div style={{
-                        boxSizing: "borderBox",
-                        paddingTop: "10px",
-                        height: "40px",
-                        fontSize: "14px",
-                        textAlign: "center"}}>
+                    <div className={classes.ButtonBox} >
                         <button
                             style={{
                                 border: "2px solid blue",
@@ -1373,12 +1270,7 @@ const EventCreation = () => {
                                 width: "100px"}}
                         >Preview</button>
                     </div>
-                    <div style={{
-                        boxSizing: "borderBox",
-                        paddingTop: "10px",
-                        height: "40px",
-                        fontSize: "14px",
-                        textAlign: "center"}}>
+                    <div className={classes.ButtonBox} >
                         <button
                             style={{
                                 border: "2px solid red",
@@ -1402,7 +1294,7 @@ const EventCreation = () => {
                                 onFocus={() => setEventTitleWarning(true)}
                                 onBlur={() => setEventTitleWarning(false)}
                                 type="text"
-                                id="input box ticket description"
+                                id="eventTitle"
                                 maxLength = "75"
                                 placeholder="Short title of event: limit 75 characters"
                                 name="eventTitle"
@@ -1418,7 +1310,7 @@ const EventCreation = () => {
                             details={eventTypeList}
                             group='eventTypeGroup'
                             current={eventDescription.eventType}
-                            change={eventTypeChange}
+                            change={(event, value) => changeEventDescriptionRadio(event, value, "eventType")}
                         />
 
                         {(eventDescription.eventType === "live" || eventDescription.eventType === "both") ?
@@ -1430,7 +1322,7 @@ const EventCreation = () => {
                                         onFocus={() => setEventLocationWarning(true)}
                                         onBlur={() => setEventLocationWarning(false)}
                                         type="text"
-                                        id="input box ticket description"
+                                        id="locationVenue"
                                         maxLength = "140"
                                         placeholder="Venue Name: limit 140 characters"
                                         value={eventDescription.location.venue}
@@ -1449,7 +1341,7 @@ const EventCreation = () => {
                                         onFocus={() => setEventAddress1Warning(true)}
                                         onBlur={() => setEventAddress1Warning(false)}
                                         type="text"
-                                        id="input box ticket description"
+                                        id="locationAddress1"
                                         maxLength = "32"
                                         placeholder="Address1: limit 32 characters"
                                         value={eventDescription.location.address1}
@@ -1468,7 +1360,7 @@ const EventCreation = () => {
                                         onFocus={() => setEventAddress2Warning(true)}
                                         onBlur={() => setEventAddress2Warning(false)}
                                         type="text"
-                                        id="input box ticket description"
+                                        id="locationAddress2"
                                         maxLength = "32"
                                         placeholder="Address2: limit 32 characters"
                                         value={eventDescription.location.address2}
@@ -1485,7 +1377,7 @@ const EventCreation = () => {
                                 <div className={classes.InputBoxTight}>
                                     <input className={classes.InputBoxContent} style={{width: "600px"}}
                                         type="text"
-                                        id="input box ticket description"
+                                        id="locationCity"
                                         placeholder="City"
                                         value={eventDescription.location.city}
                                         onChange={(event) => {
@@ -1502,7 +1394,7 @@ const EventCreation = () => {
                                     gridTemplateColumns: "300px 300px"}}>
                                     <input className={classes.InputBoxContent} style={{width: "295px"}}
                                         type="text"
-                                        id="input box ticket description"
+                                        id="locationState"
                                         placeholder="State/Province"
                                         value={eventDescription.location.state}
                                         onChange={(event) => {
@@ -1514,7 +1406,7 @@ const EventCreation = () => {
                                 
                                     <input className={classes.InputBoxContent} style={{width: "300px"}}
                                         type="text"
-                                        id="input box ticket description"
+                                        id="locationPostalCode"
                                         placeholder="Zip/Postal"
                                         value={eventDescription.location.postalCode}
                                         onChange={(event) => {
@@ -1544,7 +1436,7 @@ const EventCreation = () => {
                                         onFocus={() => setEventAdditionalWarning(true)}
                                         onBlur={() => setEventAdditionalWarning(false)}
                                         type="text"
-                                        id="input box ticket description"
+                                        id="locationAddressAdditional"
                                         maxLength = "64"
                                         placeholder="Notes: 'e.g. Enter through backdoor' limit 64 characters"
                                         value={eventDescription.location.additional}
@@ -1558,28 +1450,33 @@ const EventCreation = () => {
                                     {eventAdditionalWarning ? displayMessage(64, eventDescription.location.additional) : null}
                                 </div>
                             </Aux>
-                            : null}
-
-                    {(eventDescription.eventType == "online" || eventDescription.eventType == "both" ) ?
-                        <Aux>
-                            <div className={classes.SectionTitleTight}>Online Instructions</div>
-
-                            <div className={classes.InputBox}>
-                                <input className={classes.InputBoxContent} style={{width: "600px"}}
-                                    type="text"
-                                    id="input box ticket description"
-                                    placeholder="Please provide additional online inforamtion"
-                                    value={eventDescription.onlineInfo}
-                                    onChange={(event) => {
-                                        let tempDescription = {...eventDescription};
-                                        tempDescription.onlineInfo = event.target.value;
-                                        setEventDescription(tempDescription)
-                                    }}
-                                >
-                                </input>
-                            </div>
-                        </Aux>
                         : null}
+
+
+
+                        {(eventDescription.eventType === "online" || eventDescription.eventType === "both" ) ?
+                            <Aux>
+                                <div className={classes.SectionTitleTight}>Online Instructions</div>
+
+                                <div className={classes.InputBox}>
+                                    <input className={classes.InputBoxContent} style={{width: "600px"}}
+                                        type="text"
+                                        id="onlineInfo"
+                                        placeholder="Please provide additional online inforamtion"
+                                        value={eventDescription.onlineInfo}
+                                        onChange={(event) => {
+                                            let tempDescription = {...eventDescription};
+                                            tempDescription.onlineInfo = event.target.value;
+                                            setEventDescription(tempDescription)
+                                        }}
+                                    >
+                                    </input>
+                                </div>
+                            </Aux>
+                        : null}
+
+
+
 
                         <div className={classes.SectionTitle}>Event Dates and Time</div>
                         <div className={classes.DateTimeHeader}>
@@ -1623,7 +1520,7 @@ const EventCreation = () => {
                                 getTimeZone={changeTimeZone}
                                 defaultValue="Eastern Time - New York"/>
                         </div>
-                        
+                            
                         <div className={classes.SectionTitleTight}>Event Image{" "}
                             <Popup 
                                 position="right center"
@@ -1644,177 +1541,176 @@ const EventCreation = () => {
                             <ImgDropAndCrop/>
                         </div>
 
-                    <div className={classes.SectionTitleTight}>Event Short Description</div>
-                    <div className={classes.TextBox}>
-                        <textarea style={{
-                            padding: "9px 10px",
-                            border: "1px solid lightgrey",
+                        <div className={classes.SectionTitleTight}>Event Short Description</div>
+                        <div className={classes.TextBox}>
+                            <textarea style={{
+                                padding: "9px 10px",
+                                border: "1px solid lightgrey",
+                                boxSizing: "borderBox",
+                                lineHeight: "1.75",
+                                height: "80px",
+                                width: "600px",
+                                resize: "vertical"}}
+                                onFocus={() => setShortDescriptionWarning(true)}
+                                onBlur={() => setShortDescriptionWarning(false)}
+                                type="text"
+                                id="shortDescription"
+                                maxLength = "140"
+                                placeholder="Short description of event for social media posts: limit 140 characters"
+                                name="shortDescription"
+                                value={eventDescription.shortDescription}
+                                onChange={event => {changeEventDescription(event)}}
+                            >
+                            </textarea>
+                            {shortDescriptionWarning ? displayMessage(140, eventDescription.shortDescription) : null}
+                        </div>
+
+                        <div className={classes.SectionTitleTight}>Event Long Description</div>
+                        <div style={{
+                            padding: "5px 270px 10px 25px",
+                            border: "0px solid green",
                             boxSizing: "borderBox",
-                            lineHeight: "1.75",
-                            height: "80px",
-                            width: "600px",
-                            resize: "vertical"}}
-                            onFocus={() => setShortDescriptionWarning(true)}
-                            onBlur={() => setShortDescriptionWarning(false)}
-                            type="text"
-                            id="input box ticket description"
-                            maxLength = "140"
-                            placeholder="Short description of event for social media posts: limit 140 characters"
-                            name="shortDescription"
-                            value={eventDescription.shortDescription}
-                            onChange={event => {changeEventDescription(event)}}
-                        >
-                        </textarea>
-                        {shortDescriptionWarning ? displayMessage(140, eventDescription.shortDescription) : null}
-                    </div>
+                            height: "auto",
+                            backgroundColor: "#E7E7E7"}}>
+                                <Editor
+                                    apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
+                                    onEditorChange={handleEditorChange}
+                                    plugins="wordcount autoresize"
+                                    init={{
+                                        toolbar: 'undo redo | fontsizeselect fontselect | bold italic underline | forecolor ',
+                                        toolbar_items_size: 'small',
+                                        autoresize_bottom_margin: 0,
+                                        padding: "0 0 0 0",
+                                        min_height: 250,
+                                        max_height: 400,
+                                        icons: "jam",
+                                        skin: "fabric",
+                                        resize: true,
+                                        menubar: 'edit format'
+                                    }}
+                                />
+                        </div>
 
-                    <div className={classes.SectionTitleTight}>Event Long Description</div>
+                        <div className={classes.SectionTitleTight}>Event Category</div>
+                        <div className={classes.InputBox} >
+                            <CategorySelector
+                                onChange={event => {
+                                    changeEventCategory(event);
+                                }}/>
+                        </div>
 
-                    <div style={{
-                        padding: "5px 270px 10px 25px",
-                        border: "0px solid green",
-                        boxSizing: "borderBox",
-                        height: "auto",
-                        backgroundColor: "#E7E7E7"}}>
-                            <Editor
-                                apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
-                                onEditorChange={handleEditorChange}
-                                plugins="wordcount autoresize"
-                                init={{
-                                    toolbar: 'undo redo | fontsizeselect fontselect | bold italic underline | forecolor ',
-                                    toolbar_items_size: 'small',
-                                    autoresize_bottom_margin: 0,
-                                    padding: "0 0 0 0",
-                                    min_height: 250,
-                                    max_height: 400,
-                                    icons: "jam",
-                                    skin: "fabric",
-                                    resize: true,
-                                    menubar: 'edit format'
-                                }}
-                            />
-                    </div>
-
-                    <div className={classes.SectionTitleTight}>Event Category</div>
-                    <div className={classes.InputBox} >
-                        <CategorySelector
-                            onChange={event => {
-                                changeEventCategory(event);
-                            }}/>
-                    </div>
-
-                    <div className={classes.SectionTitleTight}>Social Media Links</div>
-                    <div className={classes.SocialMediaLink} style={{height: "45px"}}>
-                    <FontAwesomeIcon
-                        className={classes.SocialMediaIcon}
-                        style={{color: "#43609c"}}
-                        icon={faFacebook}/>
-                        <div className={classes.SocialMediaName}>facebook.com/{" "}</div>
-                        <input className={classes.InputBoxContent} style={{width: "400px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="your facebook address"
-                            name="facebookUrl"
-                            value={eventDescription.facebookUrl}
-                            onChange={event => {changeEventDescription(event)}}
-                        >
-                        </input>
-                    </div>
-
-                    <div className={classes.SocialMediaLink} style={{height: "45px"}}>
+                        <div className={classes.SectionTitleTight}>Social Media Links</div>
+                        <div className={classes.SocialMediaLink} style={{height: "45px"}}>
                         <FontAwesomeIcon
                             className={classes.SocialMediaIcon}
-                            style={{color: "#0084b4"}}
-                            icon={faTwitter}/>
-                        <div className={classes.SocialMediaName}>twitter.com/{" "}</div>
-                        <input className={classes.InputBoxContent} style={{width: "400px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="your twitter address"
-                            name="twitterUrl"
-                            value={eventDescription.twitterUrl}
-                            onChange={event => {changeEventDescription(event)}}
-                        >
-                        </input>
-                    </div>
-                    
-                    <div className={classes.SocialMediaLink} style={{height: "45px"}}>
-                        <FontAwesomeIcon
-                            className={classes.SocialMediaIcon}
-                            style={{color: "#0e76a8"}}
-                            icon={faLinkedin}/>
-                        <div className={classes.SocialMediaName}>linkedin.com/{" "}</div>
-                        <input className={classes.InputBoxContent} style={{width: "400px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="your linkedin address"
-                            name="linkedinUrl"
-                            value={eventDescription.linkedinUrl}
-                            onChange={event => {changeEventDescription(event)}}
-                        >
-                        </input>
-                    </div>
+                            style={{color: "#43609c"}}
+                            icon={faFacebook}/>
+                            <div className={classes.SocialMediaName}>facebook.com/{" "}</div>
+                            <input className={classes.InputBoxContent} style={{width: "400px"}}
+                                type="text"
+                                id="facebookUrl"
+                                placeholder="your facebook address"
+                                name="facebookUrl"
+                                value={eventDescription.facebookUrl}
+                                onChange={event => {changeEventDescription(event)}}
+                            >
+                            </input>
+                        </div>
 
-                    <div className={classes.SocialMediaLink} style={{height: "55px"}}>
-                        <FontAwesomeIcon
-                            className={classes.SocialMediaIcon}
-                            style={{color: "#8a3ab9"}}
-                            icon={faInstagram}/>
-                        <div className={classes.SocialMediaName}>instagram.com/{" "}</div>
-                        <input className={classes.InputBoxContent} style={{width: "400px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="your instagram address"
-                            name="instagramUrl"
-                            value={eventDescription.instagramUrl}
-                            onChange={event => {changeEventDescription(event)}}
-                        >
-                        </input>
-                    </div>
+                        <div className={classes.SocialMediaLink} style={{height: "45px"}}>
+                            <FontAwesomeIcon
+                                className={classes.SocialMediaIcon}
+                                style={{color: "#0084b4"}}
+                                icon={faTwitter}/>
+                            <div className={classes.SocialMediaName}>twitter.com/{" "}</div>
+                            <input className={classes.InputBoxContent} style={{width: "400px"}}
+                                type="text"
+                                id="twitterUrl"
+                                placeholder="your twitter address"
+                                name="twitterUrl"
+                                value={eventDescription.twitterUrl}
+                                onChange={event => {changeEventDescription(event)}}
+                            >
+                            </input>
+                        </div>
+                        
+                        <div className={classes.SocialMediaLink} style={{height: "45px"}}>
+                            <FontAwesomeIcon
+                                className={classes.SocialMediaIcon}
+                                style={{color: "#0e76a8"}}
+                                icon={faLinkedin}/>
+                            <div className={classes.SocialMediaName}>linkedin.com/{" "}</div>
+                            <input className={classes.InputBoxContent} style={{width: "400px"}}
+                                type="text"
+                                id="linkedinUrl"
+                                placeholder="your linkedin address"
+                                name="linkedinUrl"
+                                value={eventDescription.linkedinUrl}
+                                onChange={event => {changeEventDescription(event)}}
+                            >
+                            </input>
+                        </div>
 
-                    <div className={classes.SectionTitleTight}>Event URL{" "}
-                            <Popup 
-                                position="right center"
-                                content="Additional information"
-                                header="Event Url"
-                                trigger={<FontAwesomeIcon
-                                    color = "blue"
-                                    cursor = "pointer"
-                                    icon={faInfoCircle}/>} />
-                    </div>
-                    <div className={classes.InputBox}>
-                        <input className={classes.InputBoxContent} style={{width: "400px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="your event's website address"
-                            name="eventUrl"
-                            value={eventDescription.eventUrl}
-                            onChange={event => {changeEventDescription(event)}}
-                        >
-                        </input>
-                    </div>
+                        <div className={classes.SocialMediaLink} style={{height: "55px"}}>
+                            <FontAwesomeIcon
+                                className={classes.SocialMediaIcon}
+                                style={{color: "#8a3ab9"}}
+                                icon={faInstagram}/>
+                            <div className={classes.SocialMediaName}>instagram.com/{" "}</div>
+                            <input className={classes.InputBoxContent} style={{width: "400px"}}
+                                type="text"
+                                id="instagramUrl"
+                                placeholder="your instagram address"
+                                name="instagramUrl"
+                                value={eventDescription.instagramUrl}
+                                onChange={event => {changeEventDescription(event)}}
+                            >
+                            </input>
+                        </div>
 
-                    <div className={classes.SectionTitleTight}>OpenSeatDirect Vanity URL</div>
-                    <div style={{
-                        display: `grid`,
-                        gridTemplateColumns: "220px 300px",
-                        height: "55px",
-                        fontSize: "16px",
-                        padding: "5px 10px 10px 35px",
-                        boxSizing: "borderBox",
-                        backgroundColor: "#E7E7E7"}}>
-                        <div className={classes.SocialMediaName}>www.openseatdirect.com/et/{" "}</div>
-                        <input className={classes.InputBoxContent} style={{width: "400px"}}
-                            type="text"
-                            id="input box ticket description"
-                            placeholder="vanity address for Event Description page url"
-                            name="vanityUrl"
-                            value={eventDescription.vanityUrl}
-                            onChange={event => {changeEventDescription(event)}}
-                        >
-                        </input>
+                        <div className={classes.SectionTitleTight}>Event URL{" "}
+                                <Popup 
+                                    position="right center"
+                                    content="Additional information"
+                                    header="Event Url"
+                                    trigger={<FontAwesomeIcon
+                                        color = "blue"
+                                        cursor = "pointer"
+                                        icon={faInfoCircle}/>} />
+                        </div>
+                        <div className={classes.InputBox}>
+                            <input className={classes.InputBoxContent} style={{width: "400px"}}
+                                type="text"
+                                id="eventUrl"
+                                placeholder="your event's website address"
+                                name="eventUrl"
+                                value={eventDescription.eventUrl}
+                                onChange={event => {changeEventDescription(event)}}
+                            >
+                            </input>
+                        </div>
+
+                        <div className={classes.SectionTitleTight}>Customize OpenSeatDirect Vanity URL</div>
+                        <div style={{
+                            display: `grid`,
+                            gridTemplateColumns: "220px 300px",
+                            height: "55px",
+                            fontSize: "16px",
+                            padding: "5px 10px 10px 35px",
+                            boxSizing: "borderBox",
+                            backgroundColor: "#E7E7E7"}}>
+                            <div className={classes.SocialMediaName}>www.openseatdirect.com/et/{" "}</div>
+                            <input className={classes.InputBoxContent} style={{width: "400px"}}
+                                type="text"
+                                id="vanityUrl"
+                                placeholder="vanity address for Event Description page url"
+                                name="vanityUrl"
+                                value={eventDescription.vanityUrl}
+                                onChange={event => {changeEventDescription(event)}}
+                            >
+                            </input>
+                        </div>
                     </div>
-                </div>
 
                 <br></br>
                 <div className={classes.CategoryTitle} style={{width: "160px"}}>Ticket Creation</div>
@@ -1883,24 +1779,21 @@ const EventCreation = () => {
                         details={refundPolicyList}
                         group='refundGroup'
                         current={eventDescription.refundPolicy}
-                        change={refundPolicyChange}
+                        change={(event, value) => changeEventDescriptionRadio(event, value, "refundPolicy")}
+
                     />
                     <div className={classes.SectionTitle}>Ticket delivery: please select one</div>
                     <RadioForm
                         details={ticketDeliveryList}
                         group='ticketGroup'
                         current={eventDescription.ticketDelivery}
-                        change={ticketDeliveryChange}
+                        change={(event, value) => changeEventDescriptionRadio(event, value, "ticketDelivery")}
+
                     />
                 </div>
                 <div style={{margin: "auto", textAlign: "center"}}>
                     <div className={classes.GridBottom}>
-                        <div style={{
-                            boxSizing: "borderBox",
-                            paddingTop: "10px",
-                            height: "40px",
-                            fontSize: "14px",
-                            textAlign: "center"}}>
+                        <div className={classes.ButtonBox} >
                             <button
                                 style={{
                                     border: "2px solid green",
@@ -1911,12 +1804,7 @@ const EventCreation = () => {
                                     width: "100px"}}
                             >Save</button>
                         </div>
-                        <div style={{
-                            boxSizing: "borderBox",
-                            paddingTop: "10px",
-                            height: "40px",
-                            fontSize: "14px",
-                            textAlign: "center"}}>
+                        <div className={classes.ButtonBox} >
                             <button
                                 style={{
                                     border: "2px solid blue",
@@ -1927,12 +1815,7 @@ const EventCreation = () => {
                                     width: "100px"}}
                             >Preview</button>
                         </div>
-                        <div style={{
-                            boxSizing: "borderBox",
-                            paddingTop: "10px",
-                            height: "40px",
-                            fontSize: "14px",
-                            textAlign: "center"}}>
+                        <div className={classes.ButtonBox} >
                             <button
                                 style={{
                                     border: "2px solid red",
@@ -1946,7 +1829,6 @@ const EventCreation = () => {
                     </div>
                 </div>
             </div>
-            
         </div>
     )
 }
