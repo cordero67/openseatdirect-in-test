@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./TicketItem.module.css";
@@ -10,10 +10,6 @@ const TicketItem = props => {
     let ticketsAvailableArray = [];
     let i;
     let maxAmount;
-    let adjTicketsAvailable = props.name.ticketsAvailable;
-    if (props.name.ticketsAvailable < 1) {
-      adjTicketsAvailable = 0;
-    }
     let ticketPrice;
     let adjTicketPrice;
     if (props.name.ticketCurrency === "¥") {
@@ -81,7 +77,7 @@ const TicketItem = props => {
                 className={styles.SelectionBox}
                 onChange={props.onChange}
               >
-              {ticketsAvailableArray.map(opt => <option>{opt}</option>)}
+              {ticketsAvailableArray.map((opt, index) => <option key={index}>{opt}</option>)}
               </select>
             </div>
           </div>

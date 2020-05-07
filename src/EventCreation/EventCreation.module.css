@@ -181,6 +181,20 @@
     cursor: pointer;
 }
 
+.ButtonBox {
+    box-sizing: border-box;
+    padding-top: 10px;
+    height: 40px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.Button {
+    border-radius: 4px;
+    background-color: white;
+    height: 30px;
+    width: 100px;
+}
 
 .react-datepicker-wrapper,
 .react-datepicker__input-container,

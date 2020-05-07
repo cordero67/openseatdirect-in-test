@@ -10,7 +10,7 @@ import styles from "./HomePage.module.css";
 
 const Home = () => {
   // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
+  //const [isRestyling, setIsRestyling] = useState(false);
   const [displaySize, setDisplaySize] = useState("large");
 
   const stylingUpdate = (inWidth) => {
@@ -28,7 +28,6 @@ const Home = () => {
     stylingUpdate(window.innerWidth);
   }, []);
 
-  let windowWidth;
   //DID NOT MAKE A CHANGE
   window.onresize = function(event) {
     stylingUpdate(window.innerWidth);

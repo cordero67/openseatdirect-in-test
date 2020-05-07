@@ -23,7 +23,7 @@ const EventDetail = props => {
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
 
   // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
+  //const [isRestyling, setIsRestyling] = useState(false);
 
   // MOVE TO API FILE
   const handleErrors = response => {

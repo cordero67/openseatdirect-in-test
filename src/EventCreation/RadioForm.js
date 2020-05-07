@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 
-import classes from './EventCreation.module.css';
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { Form, Radio } from 'semantic-ui-react';

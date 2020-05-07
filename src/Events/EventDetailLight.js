@@ -23,7 +23,7 @@ const EventDetail = props => {
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
 
   // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
+  //const [isRestyling, setIsRestyling] = useState(false);
 
   // MOVE TO API FILE
   const handleErrors = response => {
@@ -407,9 +407,9 @@ const EventDetail = props => {
           {dateRange}
           <br></br>
           <div className={styles.TitleRight}>Location</div>
-          {eventDetails.location.address.map(add => {
+          {eventDetails.location.address.map((add, index) => {
             return (
-              <div className={styles.TextLeft}>{add}</div>
+              <div key={index} className={styles.TextLeft}>{add}</div>
             )
           })}
         </div>

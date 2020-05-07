@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { timeZones } from './CategoryLists';
 
 const TimeZoneSelector = (props) => {
 
     let transformedTimeZones = Object.keys(timeZones);
+    let currentZone;
+
+    transformedTimeZones.map((zone, index) => {
+        if (props.current === timeZones[zone]) {
+            currentZone = zone;
+        }
+    })
 
     return (
         <select
@@ -17,7 +24,7 @@ const TimeZoneSelector = (props) => {
             cursor: "pointer"}}
         type="number"
         id="input box ticket description"
-        placeholder="Eastern Time - New York"
+        value={currentZone}
         name="ticketsSelected"
         onChange={(e) => {
             props.getTimeZone(timeZones[e.target.value]);

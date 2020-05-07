@@ -61,10 +61,12 @@ const SideDrawerItems = (props) => {
                     {showSubItems ? 
                     (<FontAwesomeIcon
                         cursor = "pointer"
+                        color = "red"
                         onClick={() => changeShowItems(false)}
                         icon={faMinus}
                     />) : (<FontAwesomeIcon
                         cursor = "pointer"
+                        color = "green"
                         onClick={() => changeShowItems(true)}
                         icon={faPlus}
                     />)}

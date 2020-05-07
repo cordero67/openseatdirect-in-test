@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { timeMilliseconds } from './CategoryLists';
 
@@ -38,6 +38,7 @@ const TimeSelector = (props) => {
       type="number"
       id="input box ticket description"
       placeholder="12:00 PM"
+      name={props.name}
       onChange={props.change}
       required
     >
