@@ -39,7 +39,7 @@ class ImgDropAndCrop extends Component {
                 width: 400,
                 height: 200
             },
-            rafaelNewimageData64: null,
+            newimageData64: null,
             isCropping: false, 
             pixelcrop: {
                 x: null,
@@ -153,7 +153,7 @@ class ImgDropAndCrop extends Component {
     }
 
     handleOnCropChange = (crop) => {
-        console.log("**handleOnCropChange", crop)
+        //console.log("**handleOnCropChange", crop)
         this.setState({crop:crop})
     }
 
@@ -176,9 +176,10 @@ class ImgDropAndCrop extends Component {
             const {imgSrcExt} =  this.state;
             const tempImage = canvasRef.toDataURL('image/jpeg', 0.5);
 
-            this.setState({rafaelNewimageData64: tempImage});
-            console.log("rafaelNewimageData64: ", this.state.rafaelNewimageData64)
-            console.log("rafaelNewimageData64: ", tempImage)
+            this.setState({newimageData64: tempImage});
+            console.log("newimageData64: ", this.state.newimageData64)
+            console.log("newimageData64: ", tempImage)
+            this.props.change(tempImage);
             console.log("height: ", tempImage.height)
             console.log("width: ", tempImage.width)
         }
@@ -189,7 +190,7 @@ class ImgDropAndCrop extends Component {
         console.log ("handleClearToDefault", event);
 
         if (event) event.preventDefault()
-        if (this.state.rafaelNewimageData64 === null) {
+        if (this.state.newimageData64 === null) {
         //if (!this.imagePreviewCanvasRef) {
             const canvas = this.imagePreviewCanvasRef.current
             const ctx = canvas.getContext('2d');
@@ -235,7 +236,7 @@ class ImgDropAndCrop extends Component {
         })
         this.fileInputRef.current.value = null;
         this.setState({
-            rafaelNewimageData64: null,
+            newimageData64: null,
             isCropping: false
         });
     }
@@ -278,7 +279,9 @@ class ImgDropAndCrop extends Component {
                                     src={imgSrc} 
                                     crop={this.state.crop} 
                                     onImageLoaded={this.handleImageLoaded}
-                                    onComplete = {this.handleOnCropComplete}
+                                    onComplete = {async (crop, pixelCrop)=>{
+                                        await this.handleOnCropComplete(crop, pixelCrop);
+                                        }}
                                     onChange={this.handleOnCropChange}
                                 />
                                 <div  className={classes.CropBoxControls}>
@@ -293,7 +296,6 @@ class ImgDropAndCrop extends Component {
                                     <div style={{width: "150px", textAlign: "left", paddingTop: "5px", paddingLeft: "5px"}}>
                                         <Button
                                             content="Create"
-                                            icon="create image"
                                             color="green"
                                             onClick={this.handleCreateCroppedImage}
                                         />
@@ -313,7 +315,7 @@ class ImgDropAndCrop extends Component {
                         <div>
                             <div>
                                 <img className={classes.ImageBox}
-                                    src={this.state.rafaelNewimageData64}
+                                    src={this.state.newimageData64}
                                     alt="Event Logo Coming Soon!!!"
                                 />
                                 <div className={classes.ImageControls}>

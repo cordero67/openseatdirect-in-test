@@ -189,6 +189,12 @@
     text-align: center;
 }
 
+.Button {
+    border-radius: 4px;
+    background-color: white;
+    height: 30px;
+    width: 100px;
+}
 
 .react-datepicker-wrapper,
 .react-datepicker__input-container,

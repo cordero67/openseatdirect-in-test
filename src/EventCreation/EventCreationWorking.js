@@ -13,7 +13,6 @@ import RadioForm from './RadioForm';
 import ImgDropAndCrop from '../ImgDropAndCrop/ImgDropAndCrop';
 
 import TicketType from './TicketType';
-import Modal from "./Modal/Modal";
 
 import classes from './EventCreation.module.css';
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -78,7 +77,6 @@ const EventCreation = () => {
         promoCodeNames: [],
         promoCodeWarning: "",
         functionArgs: {},
-        viewModal: false
     }]);
 
     // EVENT DESCRIPTION HANDLERS
@@ -282,15 +280,14 @@ const EventCreation = () => {
             promoCodes: [{key: newPromoKey, name: "", amount: "", percent: ""}],
             promoCodeNames: [],
             promoCodeWarning: "",
-            functionArgs: {},
-            viewModal: false
+            functionArgs: {}
         }
         let tempDetails = [...ticketDetails];
         tempDetails.push(newItem);
         setTicketDetails(tempDetails);
     }
 
-    const deleteTicket = (id) => {
+    const deleteTicket = (event, id) => {
         if (ticketDetails.length === 1) {
             setTicketDetails([
                 {
@@ -1068,28 +1065,6 @@ const EventCreation = () => {
             </div>
         )
     }
-
-    const activateShowModal = (ticket) => {
-        let tempDetails = [...ticketDetails];
-        tempDetails.forEach( item => {
-            if (item.key === ticket.key) {
-                item.viewModal = true
-            } else {
-                item.viewModal = false;
-            }
-        })
-        setTicketDetails(tempDetails);
-        console.log("Ticket Details: ", tempDetails)
-    }
-
-    const deactivateShowModal = (ticket) => {
-        let tempDetails = [...ticketDetails];
-        tempDetails.forEach( item => {
-            item.viewModal = false
-        })
-        setTicketDetails(tempDetails);
-        console.log("Ticket Details: ", tempDetails)
-    }
     
     const ticketTypeDisplay = () => {
         let display = (
@@ -1189,6 +1164,7 @@ const EventCreation = () => {
                                             onClick={event => switchTicketSettings(event, item.key)}
                                             icon={faCog}/>
                                 </div>
+
                                 <div style={{
                                     padding: "20px 5px",
                                     boxSizing: "borderBox",
@@ -1196,29 +1172,11 @@ const EventCreation = () => {
                                         <FontAwesomeIcon
                                             color = "blue"
                                             cursor = "pointer"
-                                            onClick={() => {
-                                                activateShowModal(item);
-                                                console.log("Ticket Detail: ",ticketDetails)
-                                            }}
+                                            onClick={event => deleteTicket(event, item.key)}
                                             icon={faTrashAlt}/>
                                 </div>
+                                
                             </div>
-                            {item.viewModal ? 
-                                (<Aux>
-                                    <Modal
-                                        show={true}
-                                        details={item}
-                                        closeModal={() => {
-                                            deactivateShowModal(item);
-                                        }}
-                                        deleteTicket={() => {
-                                            console.log("Delete ticket", item.ticketName)
-                                            console.log("Ticket key", item.key)
-                                            deleteTicket(item.key)
-                                        }}
-                                    ></Modal>
-                                </Aux>) : null
-                            }
                             {item.settings ? additionalSettings(item) : null}
                         </div>
                     )

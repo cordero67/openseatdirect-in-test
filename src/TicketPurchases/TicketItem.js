@@ -10,10 +10,6 @@ const TicketItem = props => {
     let ticketsAvailableArray = [];
     let i;
     let maxAmount;
-    //let adjTicketsAvailable = props.name.ticketsAvailable;
-    //if (props.name.ticketsAvailable < 1) {
-    //  adjTicketsAvailable = 0;
-    //}
     let ticketPrice;
     let adjTicketPrice;
     if (props.name.ticketCurrency === "¥") {

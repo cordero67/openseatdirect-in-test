@@ -15,7 +15,7 @@ const CurrencySelector = (props) => {
         id="input box ticket description"
         placeholder="Please select a category"
 
-        name="eventCategory"
+        name={props.name}
         value={props.value}
         onChange={props.change}
         required
@@ -51,32 +51,5 @@ const CurrencySelector = (props) => {
         </select>
     )
 }
-/*
 
-const currencies2 = {
-    "United States Dollar (USD) $": "US$",
-    "Canada Dollar (CAD) $": "CA$",
-    "Mexico Peso (MXN) $": "MX$",
-    "Euro Member Countries (EUR) €": "€",
-    "United Kingdom Pound (GBP) £": "£",
-    "Czech Republic Koruna (CZK) Kc": "Kc",
-    "Denmark Krone (DKK) kr": "kr",
-    "Hungary Forint (HUF) Ft": "Ft",
-    "Norway Krone (NOK) kr": "kr",
-    "Poland Zloty (PLN) zl": "zl",
-    "Sweden Krona (SEK) kr": "kr",
-    "Switzerland Franc (CHF) CHF": "CHF",
-    "Japan Yen (JPY) ¥": "¥",
-    "Australia Dollar (AUD) $": "$",
-    "New Zealand Dollar (NZD) $": "$",
-    "Hong Kong Dollar (HKD) $": "$",
-    "Singapore Dollar (SGD) $": "$",
-    "Israel Shekel (ILS) ₪": "₪",
-    "Philippines Peso (PHP) ₱": "₱",
-    "Taiwan New Dollar (TWD) NT$": "NT$",
-    "Thailand Baht (THB) ฿": "฿",
-    "Russia Ruble (RUB) ₽": "₽",
-}
-
-*/
 export default CurrencySelector;
