@@ -1,0 +1,29 @@
+.DragAndDrop {
+    display: grid;
+    grid-template-columns: 300px 300px 300px;
+    align-items: start;
+    gap: 50px;
+    padding: 0.5rem;
+}
+
+.DNDGroup {
+    padding: 5px;
+    background-color: grey;
+}
+
+.DNDItem {
+    background-color: lightgrey;
+    border: 1px solid red;
+    min-height: 150px;
+    padding: 4px;
+    margin: 4px;
+
+}
+
+.Current {
+    background-color: grey;
+    border: 1px solid red;
+    min-height: 150px;
+    padding: 4px;
+    margin: 4px;
+}

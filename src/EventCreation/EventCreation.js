@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import ReactHtmlParser from 'react-html-parser';
 
@@ -1090,34 +1090,98 @@ const EventCreation = () => {
         setTicketDetails(tempDetails);
         console.log("Ticket Details: ", tempDetails)
     }
-    
-    const ticketTypeDisplay = () => {
+
+
+
+
+    const [dragging, setDragging] = useState(false);
+
+    const dragItem = useRef();
+    const dragNode = useRef();
+
+    const handleDragStart = (event, index) => {
+        console.log("Dragging");
+        console.log("Index: ", index);
+        dragItem.current = index;
+        console.log("dragItem.current: ", dragItem.current);
+        console.log("event.target ", event.target);
+        dragNode.current = event.target;
+        console.log("dragNode.current: ", dragNode.current);
+        dragNode.current.addEventListener('dragend', handleDragEnd);
+        setTimeout(() => {
+            setDragging(true);
+        },0);
+    }
+
+    const handleDragEnd = () => {
+        console.log("Ending Drag...")
+        dragNode.current.removeEventListener('dragend', handleDragEnd);
+        setDragging(false);
+        dragItem.current = null;
+        dragNode.current = null;
+    }
+
+    const handleDragEnter = (event, index) => {
+        console.log("Entering handleDragEnter");
+        console.log("event.target ", event.target);
+        console.log("dragNode.current ",dragNode.current);
+        console.log("index ", index);
+        console.log("dragItem.current ",dragItem.current);
+
+        if (index !== dragItem.current) {
+            console.log("DIFFERENT TARGET")
+            console.log("dragItem.current: ", dragItem.current)
+            console.log("ticketDetails: ", ticketDetails)
+            
+            const currentItem = dragItem.current;
+            setTicketDetails(oldDetails => {
+                let newDetails = JSON.parse(JSON.stringify(oldDetails))
+                console.log("newDetails: ", newDetails)
+                console.log("newDetails[index]: ", newDetails[index])
+                newDetails.splice(index, 0, newDetails.splice(currentItem,1)[0]);
+                console.log("newDetails: ", newDetails)
+                dragItem.current = index;
+                console.log("ticketDetails: ", ticketDetails)
+                return newDetails;});
+        } else {
+            console.log("SAME TARGET")
+        }
+    }
+
+    const ticketTypeDisplay = (index) => {
         let display = (
-            <div>
+            <Aux>
                 {ticketDetails.map( (item, index) => {
                     
                     return (
                         <div key={index}>
-                            <div style={{
-                                display: `grid`,
-                                gridTemplateColumns: "360px 100px 165px 80px 80px",
-                                height: "60px",
-                                fontSize: "16px",
-                                borderTop: "1px solid lightgrey",
-                                boxSizing: "borderBox"}}>
+                            <div 
+                                className={dragging && dragItem.current === index ?
+                                    classes.DraggedTicketBox :
+                                    classes.TicketBox}
+                                >
 
-                                <div style={{
-                                    padding: "10px 5px",
-                                    boxSizing: "borderBox",
-                                    display: `grid`,
-                                    gridTemplateColumns: "20px 330px"}}>
-                                    <div style={{
-                                        padding: "9px 0px 9px 3px",
-                                        boxSizing: "borderBox"}}>
-                                    <FontAwesomeIcon
-                                        cursor = "pointer"
-                                        icon={faGripVertical}
-                                    />
+                                <div  
+                                    style={{
+                                        padding: "10px 5px",
+                                        boxSizing: "borderBox",
+                                        display: `grid`,
+                                        gridTemplateColumns: "20px 330px"
+                                    }}
+                                >
+                                    <div 
+                                        draggable
+                                        onDragStart={(event) => handleDragStart(event, index)}
+                                        onDragEnter={dragging ? (event) => handleDragEnter(event, index) : null}
+                                        style={{
+                                            padding: "9px 0px 9px 3px",
+                                            boxSizing: "borderBox"
+                                        }}
+                                    >
+                                        <FontAwesomeIcon
+                                            cursor = "pointer"
+                                            icon={faGripVertical}
+                                        />
                                     </div>
                                     <input style={{
                                         padding: "9px 10px",
@@ -1223,7 +1287,7 @@ const EventCreation = () => {
                         </div>
                     )
                 })}
-            </div>
+            </Aux>
         );
         return display;
     }
@@ -1522,7 +1586,7 @@ const EventCreation = () => {
                                 type={"endDate"}
                                 startDate={eventDescription.startDate}
                                 current={eventDescription.endDate}
-                                change={(date) => changeEventDescription(date, "end")}
+                                change={(date) => changeEventDate(date, "end")}
                                 beforeDate={eventDescription.startDate}
                             />
                             <TimeSelector

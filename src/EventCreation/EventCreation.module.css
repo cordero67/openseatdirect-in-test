@@ -196,6 +196,25 @@
     width: 100px;
 }
 
+.TicketBox {
+    display: grid;
+    grid-template-columns: 360px 100px 165px 80px 80px;
+    height: 60px;
+    font-size: 16px;
+    border-top: 1px solid lightgrey;
+    box-sizing: border-box;
+}
+
+.DraggedTicketBox {
+    background-color: #F0F7FC;
+    display: grid;
+    grid-template-columns: 360px 100px 165px 80px 80px;
+    height: 60px;
+    font-size: 16px;
+    border-top: 1px solid lightgrey;
+    box-sizing: border-box;
+}
+
 .react-datepicker-wrapper,
 .react-datepicker__input-container,
 .react-datepicker__input-container input {
