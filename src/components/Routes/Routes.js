@@ -5,6 +5,7 @@ import Aux from '../../hoc/Auxiliary/Auxiliary';
 import Main from '../HomePage/HomePage';
 import Video from '../Video/Video';
 import EventCreation from '../../EventCreation/EventCreation';
+import DragAndDrop from '../../EventCreation/DragAndDrop';
 import Events from '../../Events/Events';
 import EventDetail from '../../Events/EventDetail';
 import EventDetailHaHa from '../../Events/EventDetailHaHa';
@@ -85,6 +86,15 @@ const Routes = () => {
 
 
 
+<Route
+        path="/draganddrop"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <DragAndDrop />
+          </React.Fragment>
+        )}
+      />
       <Route
         path="/eventcreation"
         exact
