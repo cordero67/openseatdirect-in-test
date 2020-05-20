@@ -315,8 +315,9 @@ const TicketSelection = () => {
   if (!isLoadingEvent) {
     ticketItems = (
       <div>
-        {ticketInfo.map(item => {
+        {ticketInfo.map((item, index) => {
           return (
+            <div key={index}>
             <TicketItem
               name={item}
               key={item.ticketID}
@@ -324,6 +325,7 @@ const TicketSelection = () => {
                 updateTicketsSelected(event, item);
               }}
             ></TicketItem>
+            </div>
           );
         })}
       </div>

@@ -27,6 +27,7 @@ const form = props => {
       </p>
     );
   }
+  
   switch (props.elementType) {
     case "input":
       inputItem = (

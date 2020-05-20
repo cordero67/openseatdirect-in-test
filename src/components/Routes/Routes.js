@@ -1,43 +1,49 @@
-import React, { useState } from 'react';
-import { Route } from 'react-router-dom';
+import React, { useState } from "react";
+import { Route, Redirect } from "react-router-dom";
 
-import Aux from '../../hoc/Auxiliary/Auxiliary';
-import Main from '../HomePage/HomePage';
-import Video from '../Video/Video';
-import EventCreation from '../../EventCreation/EventCreation';
-import DragAndDrop from '../../EventCreation/DragAndDrop';
-import Events from '../../Events/Events';
-import EventDetail from '../../Events/EventDetail';
-import EventDetailHaHa from '../../Events/EventDetailHaHa';
-import EventDetailPIFF from '../../Events/EventDetailPIFF';
-import EventDetailTech from '../../Events/EventDetailTech';
-import EventDetailLight from '../../Events/EventDetailLight';
-import ContactUs from '../ContactUs/ContactUs';
-import CheckoutBT from '../../TicketPurchases/Checkout_bt';
-import CheckoutPP from '../../TicketPurchases/Checkout_pp';
-import TicketSelection from '../../TicketPurchases/TicketSelection.js';
+import Aux from "../../hoc/Auxiliary/Auxiliary";
+import Main from "../HomePage/HomePage";
+import Video from "../Video/Video";
+import EventCreation from "../../EventCreation/EventCreation";
+import Events from "../../Events/Events";
+import EventDetail from "../../Events/EventDetail";
+import EventDetailHaHa from "../../Events/EventDetailHaHa";
+import EventDetailPIFF from "../../Events/EventDetailPIFF";
+import EventDetailTech from "../../Events/EventDetailTech";
+import EventDetailLight from "../../Events/EventDetailLight";
+import ContactUs from "../ContactUs/ContactUs";
+import CheckoutBT from "../../TicketPurchases/Checkout_bt";
+import CheckoutPP from "../../TicketPurchases/Checkout_pp";
+import TicketSelection from "../../TicketPurchases/TicketSelection";
+import SignIn from "../../Users/SignIn";
+import SignUp from "../../Users/SignUp";
+import PasswordRecovery from "../../Users/PasswordRecovery";
+import PrivateRoute from "./PrivateRoute";
+import UserDashboard from "../../Users/UserDashboard";
+import VendorEvents from "../../Users/VendorEvents";
+import VendorEventDetails from "../../Users/VendorEventDetails";
+import VendorOrders from "../../Users/VendorOrders";
+import VendorAccount from "../../Users/VendorAccount";
+import AdminEvents from "../../Users/AdminEvents";
+import AdminOrders from "../../Users/AdminOrders";
+import AdminAccount from "../../Users/AdminAccount";
 
-import Header from '../Headers/Header';
-import SideDrawer from '../SideDrawer/SideDrawer';
-import Footer from '../Footers/Footer';
+import Header from "../Headers/Header";
+import SideDrawer from "../SideDrawer/SideDrawer";
+import Footer from "../Footers/Footer";
 
-//import LogoA from '../../assets/OpenSeatDirect/WhiteLettering_BlueBackground_1024.png';
-//import LogoB from '../../assets/OpenSeatDirect/BlueLettering_WhiteBackground_1024.png';
-import LogoC from '../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png';
-//import LogoD from '../../assets/OpenSeatDirect/Black_and_White_1024.png';
-//import LogoE from '../../assets/OpenSeatDirect/Black_and_White_TransparentBackground_1024.png';
+import LogoC from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 
 const Routes = () => {
+  const [showSideDrawer, setShowSideDrawer] = useState(false);
 
-  const [showSideDrawer, setShowSideDrawer] = useState(false)
-  
   const closeSideDrawer = () => {
     setShowSideDrawer(false);
-  }
+  };
 
   const toggleSideDrawer = () => {
-    setShowSideDrawer(!showSideDrawer)
-  }
+    setShowSideDrawer(!showSideDrawer);
+  };
 
   return (
     <Aux>
@@ -46,64 +52,250 @@ const Routes = () => {
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Main />
             <Footer></Footer>
           </React.Fragment>
         )}
       />
+
+      <Route
+        path="/signup"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <SignUp />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/signin"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <SignIn />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/passwordrecovery"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PasswordRecovery />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/adminevents"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={AdminEvents} role="2" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/adminorders"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={AdminOrders} role="2" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/adminaccount"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={AdminAccount} role="2" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/userdashboard"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={UserDashboard} role="0" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/vendorevents"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={VendorEvents} role="1" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/vendoreventdetails"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={VendorEventDetails} role="1" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/vendororders"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={VendorOrders} role="1" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/vendoraccount"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <VendorAccount />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
       <Route
         path="/video"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Video />
             <Footer></Footer>
           </React.Fragment>
         )}
       />
+
       <Route
         path="/contactus"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <ContactUs />
             <Footer></Footer>
           </React.Fragment>
         )}
       />
 
-
-
-<Route
-        path="/draganddrop"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <DragAndDrop />
-          </React.Fragment>
-        )}
-      />
       <Route
         path="/eventcreation"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventCreation />
             <Footer></Footer>
           </React.Fragment>
@@ -114,10 +306,12 @@ const Routes = () => {
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Events />
             <Footer></Footer>
           </React.Fragment>
@@ -147,10 +341,12 @@ const Routes = () => {
         path="/ed/"
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDetail />
             <Footer></Footer>
           </React.Fragment>
@@ -160,10 +356,12 @@ const Routes = () => {
         path="/edh/"
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDetailHaHa />
             <Footer></Footer>
           </React.Fragment>
@@ -173,10 +371,12 @@ const Routes = () => {
         path="/edf/"
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDetailPIFF />
             <Footer></Footer>
           </React.Fragment>
@@ -186,10 +386,12 @@ const Routes = () => {
         path="/edt/"
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDetailTech />
             <Footer></Footer>
           </React.Fragment>
@@ -199,10 +401,12 @@ const Routes = () => {
         path="/edl/"
         render={(routeProps) => (
           <React.Fragment>
-            <Header positioning="fixed" logo={LogoC} clicked={toggleSideDrawer}/>
-            <SideDrawer
-              open={showSideDrawer}
-              closed={closeSideDrawer}/>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDetailLight />
             <Footer></Footer>
           </React.Fragment>

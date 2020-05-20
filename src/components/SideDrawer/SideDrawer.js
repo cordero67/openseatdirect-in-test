@@ -28,9 +28,10 @@ const SideDrawer = ( props ) => {
             <div className={attachedClasses.join(' ' )}>
                 <div className={classes.Title}>
                     <Logo source={logo} placement="side"/>
-                    <div style={{paddingTop: "7px"}}>
+                    <div style={{paddingTop: "10px", paddingLeft: "12px", fontSize: "20px"}}>
                     <FontAwesomeIcon
-                        size="2x"
+                        size="1x"
+                        color="grey"
                         cursor = "pointer"
                         onClick={props.closed}
                         icon={faTimes}
