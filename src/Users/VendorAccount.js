@@ -93,55 +93,6 @@ const VendorAccount = () => {
                 Account Settings
               </div>
             </div>
-            <div
-              style={{
-                fontSize: "26px",
-                paddingTop: "20px",
-                paddingLeft: "20px",
-                paddingRight: "30px",
-                paddingBottom: "5px",
-              }}
-            >
-              <div style={{ fontSize: "20px" }}>Password Reset</div>
-              <br></br>
-
-              <form style={{ paddingLeft: "20px" }}>
-                <div className="form-group">
-                  <label style={{ fontSize: "12px" }}>Current Password</label>
-                  <input
-                    style={{ width: "350px" }}
-                    type="text"
-                    name="name"
-                    className="form-control"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label style={{ fontSize: "12px" }}>New Password</label>
-                  <input
-                    style={{ width: "350px" }}
-                    type="email"
-                    name="email"
-                    className="form-control"
-                    placeholder="Must contain a number and special character"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label style={{ fontSize: "12px" }}>
-                    Re-Enter New Password
-                  </label>
-                  <input
-                    style={{ width: "350px" }}
-                    type="password"
-                    name="password"
-                    className="form-control"
-                  />
-                </div>
-
-                <button className="btn btn-primary">Submit</button>
-              </form>
-            </div>
             <br></br>
 
             <div
@@ -236,8 +187,8 @@ const VendorAccount = () => {
                     backgroundColor: "#f8f8f8",
                     paddingTop: "20px",
                     fontSize: "16px",
-                    width: "400px",
-                    gridTemplateColumns: "105px 250px",
+                    width: "910px",
+                    gridTemplateColumns: "105px 800px",
                   }}
                 >
                   <div style={{ paddingTop: "5px", textAlign: "right" }}>
@@ -254,8 +205,8 @@ const VendorAccount = () => {
                     backgroundColor: "#f8f8f8",
                     paddingTop: "20px",
                     fontSize: "16px",
-                    width: "400px",
-                    gridTemplateColumns: "105px 250px",
+                    width: "910px",
+                    gridTemplateColumns: "105px 800px",
                   }}
                 >
                   <div style={{ paddingTop: "5px", textAlign: "right" }}>

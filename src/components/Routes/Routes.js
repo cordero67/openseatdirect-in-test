@@ -23,6 +23,7 @@ import UserDashboard from "../../Users/UserDashboard";
 import VendorEvents from "../../Users/VendorEvents";
 import VendorEventDetails from "../../Users/VendorEventDetails";
 import VendorOrders from "../../Users/VendorOrders";
+import VendorProflle from "../../Users/VendorProflle";
 import VendorAccount from "../../Users/VendorAccount";
 import AdminEvents from "../../Users/AdminEvents";
 import AdminOrders from "../../Users/AdminOrders";
@@ -229,6 +230,23 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <PrivateRoute component={VendorOrders} role="1" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/vendorproflle"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <VendorProflle />
             <Footer></Footer>
           </React.Fragment>
         )}

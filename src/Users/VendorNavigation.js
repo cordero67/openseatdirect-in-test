@@ -41,6 +41,15 @@ const VendorNavigation = (props) => {
 
         <li>
           <NavLink
+            to="/vendorproflle"
+            style={isActive(props.currentPage, "/vendorproflle")}
+          >
+            Profile
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
             to="/vendoraccount"
             style={isActive(props.currentPage, "/vendoraccount")}
           >

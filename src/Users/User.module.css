@@ -44,7 +44,7 @@
   background-color: white;
   box-sizing: border-box;
   margin: auto;
-  width: 930px;
+  width: 1200px;
   height: calc(100vh - 115px);
   padding-top: 0px;
   padding-left: 0px;
@@ -82,7 +82,6 @@
 }
 
 .DashboardNavigation {
-  /*border: 1px solid red;*/
   background-color: #e7e7e7;
   height: calc(100% - 77px);
   height: 100%;
@@ -96,7 +95,6 @@
 }
 
 .NavigationItem {
-  /*border: 1px solid red;*/
   font-weight: 500;
   background-color: #e7e7e7;
   font-size: 16px;
