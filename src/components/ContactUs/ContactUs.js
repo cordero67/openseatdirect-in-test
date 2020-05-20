@@ -89,22 +89,6 @@ const ContactUs = () => {
       touched: false,
       message: "Please provide your phone number."
     },
-    /*
-    number: {
-      label: "OPTION:",
-      elementType: "select",
-      controlId: "formNumber",
-      elementConfig: {
-        type: "text",
-        placeHolder: "1",
-        as: "select",
-        options: ["a", "b", "c", "d"]
-      },
-      value: "a",
-      validation: {},
-      valid: true
-    },
-    */
     message: {
       label: "MESSAGE:",
       elementType: "textarea",

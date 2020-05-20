@@ -1,6 +1,8 @@
 import React from 'react';
 import { NavLink } from "react-router-dom";
 
+import { isAuthenticated } from '../../Users/apiUsers';
+
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import classes from './HeaderItems.module.css';
 
@@ -27,14 +29,27 @@ const NavigationItems = (props) => {
                 </NavLink>
             </li>
 
+            {!isAuthenticated() && 
+                <li>
+                    <NavLink
+                        to="/signin"
+                        style={isActive(props.currentPage, "/signin")}
+                    >SIGN IN
+                    </NavLink>
+                </li>
+            }
 
-            <li>
-                <NavLink
-                    to="/"
-                    style={isActive(props.currentPage, "/")}
-                >SIGN OUT
-                </NavLink>
-            </li>
+            {isAuthenticated() && 
+                <li>
+                    <NavLink
+                        to="/signin"
+                        onClick={props.signOut}
+                        style={{color: "#000"}}
+                    >SIGN OUT
+                    </NavLink>
+                </li>
+            }
+
 
         </ul>
     )
