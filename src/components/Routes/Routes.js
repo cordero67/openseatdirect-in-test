@@ -5,6 +5,7 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import EventCreation from "../../EventCreation/EventCreation";
+import EventCreationEdit from "../../EventCreation/EventCreationEdit";
 import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
 import EventDetailHaHa from "../../Events/EventDetailHaHa";
@@ -319,6 +320,28 @@ const Routes = () => {
           </React.Fragment>
         )}
       />
+
+      <Route
+        path="/eventcreationedit"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <EventCreationEdit />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+
+
+
+
       <Route
         path="/events"
         exact

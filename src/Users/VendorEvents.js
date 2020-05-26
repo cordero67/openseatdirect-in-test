@@ -369,10 +369,12 @@ const VendorEvents = () => {
                 }}
               >
                 <div></div>
-                <div style={{
+                <div style={{display: "grid",
+                  gridTemplateColumns: "80px 380px",
                   borderBottom: "1px solid lightgrey"}}
                 >
-                ${item.price.toFixed(2)}{" - "}{item.name}
+                  <div style={{textAlign: "right", paddingRight: "5px"}}>${item.price.toFixed(2)}{":"}</div>
+                  <div style={{textAlign: "left", paddingLeft: "5px"}}>{item.name}</div>
                 </div>
                 <div style={{ borderBottom: "1px solid lightgrey", textAlign: "center", fontWeight: "500" }}>{item.sold}/##</div>
                 <div style={{ borderBottom: "1px solid lightgrey", textAlign: "right", fontWeight: "500", paddingRight: "10px"}}>
@@ -440,56 +442,3 @@ const VendorEvents = () => {
 };
 
 export default VendorEvents;
-
-/*
-          {activeTickets.map((item, index) => {
-            totalTickets += item.sold;
-            totalRevenue += item.revenue;
-            return (
-              <div key={index} className={classes.TicketSummary}>
-                <div>N/A</div>
-                <div>{item.name}</div>
-                <div>price</div>
-                <div style={{ textAlign: "right" }}>{item.sold}</div>
-                <div style={{ textAlign: "right" }}>
-                  {Math.round(item.revenue)}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        
-
-
-
-            <div>Date</div>
-            <div>Ticket description</div>
-            <div style={{textAlign: "center"}}>Price</div>
-            <div style={{textAlign: "center"}}>Sold</div>
-            <div>Revenue</div>
-            <div>Details</div>
-
-          <a href="/vendorevent">
-            <button
-              name="details"
-              style={{
-                fontFamily: "Roboto, sans-serif",
-                fontSize: "14px",
-                fontWeight: "600",
-                paddingLeft: "20px",
-                color: "blue",
-                border: "none",
-                backgroundColor: "white",
-                cursor: "pointer",
-                display: "inlineBlock",
-                outline: "none",
-              }}
-              onClick={() => {
-                console.log("get more detail")
-              }}
-            >
-              More detail
-            </button>
-          </a>
-          */

@@ -1,8 +1,17 @@
 import React from "react";
 
-import { countries } from './CategoryLists';
+import { countryCodes } from './CategoryLists';
 
 const CountrySelector = (props) => {
+
+    let transformedCountries = Object.keys(countryCodes);
+    let currentCountry;
+
+    transformedCountries.map((country, index) => {
+        if (props.current === countryCodes[country]) {
+            currentCountry = country;
+        }
+    })
 
     return (
         <select
@@ -16,13 +25,17 @@ const CountrySelector = (props) => {
         type="number"
         id="input box ticket description"
         placeholder="12:00 PM"
+        value={currentCountry}
         name="ticketsSelected"
-        onChange={props.onChange}
+        onChange={(e) => {
+            props.getCountry(countryCodes[e.target.value]);
+        }}
         required
+
         >
-        {countries.map((item, index) => {
-            return <option key={index} >{item}</option>
-        })}
+            {transformedCountries.map((item, index) => {
+                return <option key={index} >{item}</option>
+            })}
         </select>
     )
 }
