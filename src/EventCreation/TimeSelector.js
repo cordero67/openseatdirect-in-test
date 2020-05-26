@@ -1,9 +1,9 @@
 import React from "react";
 
-import { timeMilliseconds } from './CategoryLists';
+import { timeMilliseconds2 } from './CategoryLists';
 
 const TimeSelector = (props) => {
-  let transformedTimes = Object.keys(timeMilliseconds);
+  let transformedTimes = Object.keys(timeMilliseconds2);
 
   /*
   milliseconds in ah hour 360000
@@ -43,7 +43,7 @@ const TimeSelector = (props) => {
       required
     >
       {transformedTimes.map((time, index) => {
-        return <option key={index} value={timeMilliseconds[time]} name={time}
+        return <option key={index} value={timeMilliseconds2[time]} name={time}
           >{time}</option>
       })}
     </select>
