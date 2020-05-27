@@ -4,11 +4,9 @@ import { Form } from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faShoppingCart,
   faChevronUp,
   faChevronDown,
   faEllipsisV,
-  faEllipsisv
 } from "@fortawesome/free-solid-svg-icons";
 
 import VendorNavigation from "./VendorNavigation";
@@ -16,15 +14,43 @@ import VendorNavigation from "./VendorNavigation";
 import classes from "./User.module.css";
 
 const VendorEvents = () => {
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
-  const monthAbbr = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-    "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+  const monthAbbr = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
   ];
 
-  const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-    "Sunday"
+  const weekDays = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
   ];
 
   let vendorInfo = {};
@@ -61,7 +87,7 @@ const VendorEvents = () => {
       .then((result) => {
         let js = JSON.parse(result);
         console.log("eventDetails: ", js);
-        let tempjs = [...js]
+        let tempjs = [...js];
         js.sort(compareValues("createdAt", "asc"));
         console.log("js: ", js);
         setEventDetails(js);
@@ -73,9 +99,9 @@ const VendorEvents = () => {
         js.map((item, index) => {
           let newElement;
           newElement = {
-            [item.eventNum]: false
-          }
-          tempArray.push(newElement)
+            [item.eventNum]: false,
+          };
+          tempArray.push(newElement);
         });
         console.log("tempArray: ", tempArray);
         setExpandDetails(tempArray);
@@ -93,10 +119,8 @@ const VendorEvents = () => {
         // property doesn't exist on either object
         return 0;
       }
-      const varA = (typeof a[key] === 'string')
-        ? a[key].toUpperCase() : a[key];
-      const varB = (typeof b[key] === 'string')
-        ? b[key].toUpperCase() : b[key];
+      const varA = typeof a[key] === "string" ? a[key].toUpperCase() : a[key];
+      const varB = typeof b[key] === "string" ? b[key].toUpperCase() : b[key];
 
       let comparison = 0;
       if (varA > varB) {
@@ -104,11 +128,9 @@ const VendorEvents = () => {
       } else if (varA < varB) {
         comparison = -1;
       }
-      return (
-        (order === 'desc') ? (comparison * -1) : comparison
-      );
+      return order === "desc" ? comparison * -1 : comparison;
     };
-  }
+  };
 
   const handleGetAttendees = (eventNum) => {
     console.log("vendorInfo: ", vendorInfo);
@@ -201,16 +223,16 @@ const VendorEvents = () => {
               paddingRight: "30px",
             }}
           >
-            <div style={{textAlign: "center"}}>Date</div>
+            <div style={{ textAlign: "center" }}>Date</div>
             <div></div>
-            <div className={classes.Expand} >Event</div>
-            <div style={{textAlign: "center"}}>Sold</div>
-            <div style={{textAlign: "center"}}>Revenue</div>
-            <div style={{textAlign: "center"}}>Status</div>
+            <div className={classes.Expand}>Event</div>
+            <div style={{ textAlign: "center" }}>Sold</div>
+            <div style={{ textAlign: "center" }}>Revenue</div>
+            <div style={{ textAlign: "center" }}>Status</div>
           </div>
 
           <div></div>
-          <div style={{marginTop: "110px", overflowY: "auto"}}>
+          <div style={{ marginTop: "110px", overflowY: "auto" }}>
             {eventDetails.map((item, index) => {
               let tempDateTime;
               let tempMonthAbbr;
@@ -223,7 +245,7 @@ const VendorEvents = () => {
               let tempMinutes;
               let tempLongDateTime;
               tempDateTime = new Date(item.createdAt);
-              console.log("tempDateTime: ",tempDateTime)
+              console.log("tempDateTime: ", tempDateTime);
               tempMonthAbbr = monthAbbr[tempDateTime.getMonth()];
               tempMonthNames = monthNames[tempDateTime.getMonth()];
               tempDate = tempDateTime.getDate();
@@ -242,9 +264,20 @@ const VendorEvents = () => {
                 tempMinutes = "0" + tempDateTime.getMinutes();
               }
 
-              tempLongDateTime = tempDay + ", " + tempMonthNames + " " + tempDate + ", " + tempYear
-               + " - " + tempHours + ":" + tempMinutes + tempAmPm;
-              console.log("tempLongDateTime: ",tempLongDateTime)
+              tempLongDateTime =
+                tempDay +
+                ", " +
+                tempMonthNames +
+                " " +
+                tempDate +
+                ", " +
+                tempYear +
+                " - " +
+                tempHours +
+                ":" +
+                tempMinutes +
+                tempAmPm;
+              console.log("tempLongDateTime: ", tempLongDateTime);
 
               return (
                 <div key={index}>
@@ -253,89 +286,123 @@ const VendorEvents = () => {
                       display: "grid",
                       columnGap: "10px",
                       backgroundColor: "#fff",
-                      gridTemplateColumns: "60px 20px 480px 100px 110px 90px 60px",
+                      gridTemplateColumns:
+                        "60px 20px 480px 100px 110px 90px 60px",
                       fontSize: "16px",
                       paddingTop: "15px",
                       paddingLeft: "20px",
                       paddingBottom: "10px",
-                      paddingRight: "30px"
+                      paddingRight: "30px",
                     }}
                   >
-                    <div
-                      style={{textAlign: "center"}}
-                    >
-                      <span style={{fontSize: "12px", fontWeight: "400", color: "red"}}>{tempMonthAbbr}</span>
+                    <div style={{ textAlign: "center" }}>
+                      <span
+                        style={{
+                          fontSize: "12px",
+                          fontWeight: "400",
+                          color: "red",
+                        }}
+                      >
+                        {tempMonthAbbr}
+                      </span>
                       <br></br>
-                      <span style={{fontSize: "18px", color: "black"}}>{tempDate}</span>
+                      <span style={{ fontSize: "18px", color: "black" }}>
+                        {tempDate}
+                      </span>
                     </div>
-                    <div style={{fontSize: "12px", textAlign: "center"}}>
-
-                    {expandDetails[item.eventNum] === true ?
-                      <FontAwesomeIcon
-                        className={classes.faChevronUp}
-                        color="black"
-                        size="sm"
-                        cursor = "pointer"
-                        onClick={() => {
-                          setActiveTickets("");
-                          setActiveEvent("");
-                          //handleGetAttendees(item.eventNum);
-                          let tempDetails = [...expandDetails];
-                          tempDetails[item.eventNum] = false;
-                          setExpandDetails(tempDetails);
-                        }}
-                        icon={faChevronUp}
-                      />
-                    :
-                      <FontAwesomeIcon
-                        className={classes.faChevronUp}
-                        color="black"
-                        size="sm"
-                        cursor = "pointer"
-                        onClick={() => {
-                          handleGetAttendees(item.eventNum);
-                          let tempDetails = [...expandDetails];
-                          tempDetails[item.eventNum] = true;
-                          setExpandDetails(tempDetails);
-                        }}
-                        icon={faChevronDown}
-                      />}
+                    <div style={{ fontSize: "12px", textAlign: "center" }}>
+                      {expandDetails[item.eventNum] === true ? (
+                        <FontAwesomeIcon
+                          className={classes.faChevronUp}
+                          color="black"
+                          size="sm"
+                          cursor="pointer"
+                          onClick={() => {
+                            setActiveTickets("");
+                            setActiveEvent("");
+                            //handleGetAttendees(item.eventNum);
+                            let tempDetails = [...expandDetails];
+                            tempDetails[item.eventNum] = false;
+                            setExpandDetails(tempDetails);
+                          }}
+                          icon={faChevronUp}
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          className={classes.faChevronUp}
+                          color="black"
+                          size="sm"
+                          cursor="pointer"
+                          onClick={() => {
+                            handleGetAttendees(item.eventNum);
+                            let tempDetails = [...expandDetails];
+                            tempDetails[item.eventNum] = true;
+                            setExpandDetails(tempDetails);
+                          }}
+                          icon={faChevronDown}
+                        />
+                      )}
                     </div>
                     <div
                       className={classes.Expand}
                       style={{ fontSize: "16px" }}
                     >
-                      {item.eventTitle}<br></br><span style={{fontSize: "13px", fontWeight: "500"}}>{tempLongDateTime}</span>
+                      {item.eventTitle}
+                      <br></br>
+                      <span style={{ fontSize: "13px", fontWeight: "500" }}>
+                        {tempLongDateTime}
+                      </span>
                     </div>
-                    <div style={{textAlign: "center", fontWeight: "500"}}>25/100</div>
-                    <div style={{fontWeight: "500", textAlign: "right", paddingRight: "10px"}}>$10000</div>
-                    <div style={{textAlign: "center", fontWeight: "500"}}>
+                    <div style={{ textAlign: "center", fontWeight: "500" }}>
+                      25/100
+                    </div>
+                    <div
+                      style={{
+                        fontWeight: "500",
+                        textAlign: "right",
+                        paddingRight: "10px",
+                      }}
+                    >
+                      $10000
+                    </div>
+                    <div style={{ textAlign: "center", fontWeight: "500" }}>
                       Draft
                     </div>
-                    <div style={{fontSize: "12px", textAlign: "center", position: "relative"}}>
-
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        textAlign: "center",
+                        position: "relative",
+                      }}
+                    >
                       <FontAwesomeIcon
                         className={classes.faChevronUp}
-                        style={{zIndex: "100"}}
+                        style={{ zIndex: "100" }}
                         color="black"
                         size="lg"
-                        cursor = "pointer"
-                        onClick={() => console.log("Clicked ellises")}
+                        cursor="pointer"
+                        onClick={() => {
+                          console.log("Clicked ellises");
+                          console.log("item.eventNum: ", item.eventNum);
+
+                          window.location.href = `/eventcreation/?eventID=${item.eventNum}`;
+                        }}
                         icon={faEllipsisV}
                       />
                     </div>
                   </div>
-                    
+
                   <div>
                     {activeEvent === item.eventNum ? (
-                      <div style={{ fontSize: "14px" }}>{listTicketTypes()}</div>
-                      ) : null}
+                      <div style={{ fontSize: "14px" }}>
+                        {listTicketTypes()}
+                      </div>
+                    ) : null}
                   </div>
-
                 </div>
-                )
-              })}
-              </div>
+              );
+            })}
+          </div>
         </div>
       );
     } else {
@@ -348,7 +415,7 @@ const VendorEvents = () => {
       let totalTickets = 0;
       let totalRevenue = 0;
       return (
-        <div style={{paddingBottom: "5px"}}>
+        <div style={{ paddingBottom: "5px" }}>
           {activeTickets.map((item, index) => {
             totalTickets += item.sold;
             totalRevenue += item.revenue;
@@ -365,19 +432,42 @@ const VendorEvents = () => {
                   paddingTop: "4px",
                   paddingLeft: "20px",
                   paddingBottom: "1px",
-                  paddingRight: "30px"
+                  paddingRight: "30px",
                 }}
               >
                 <div></div>
-                <div style={{display: "grid",
-                  gridTemplateColumns: "80px 380px",
-                  borderBottom: "1px solid lightgrey"}}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "80px 380px",
+                    borderBottom: "1px solid lightgrey",
+                  }}
                 >
-                  <div style={{textAlign: "right", paddingRight: "5px"}}>${item.price.toFixed(2)}{":"}</div>
-                  <div style={{textAlign: "left", paddingLeft: "5px"}}>{item.name}</div>
+                  <div style={{ textAlign: "right", paddingRight: "5px" }}>
+                    ${item.price.toFixed(2)}
+                    {":"}
+                  </div>
+                  <div style={{ textAlign: "left", paddingLeft: "5px" }}>
+                    {item.name}
+                  </div>
                 </div>
-                <div style={{ borderBottom: "1px solid lightgrey", textAlign: "center", fontWeight: "500" }}>{item.sold}/##</div>
-                <div style={{ borderBottom: "1px solid lightgrey", textAlign: "right", fontWeight: "500", paddingRight: "10px"}}>
+                <div
+                  style={{
+                    borderBottom: "1px solid lightgrey",
+                    textAlign: "center",
+                    fontWeight: "500",
+                  }}
+                >
+                  {item.sold}/##
+                </div>
+                <div
+                  style={{
+                    borderBottom: "1px solid lightgrey",
+                    textAlign: "right",
+                    fontWeight: "500",
+                    paddingRight: "10px",
+                  }}
+                >
                   ${Math.round(item.revenue)}
                 </div>
                 <div></div>
@@ -396,7 +486,7 @@ const VendorEvents = () => {
               fontSize: "16px",
               paddingTop: "5px",
               paddingBottom: "5px",
-              paddingRight: "30px"
+              paddingRight: "30px",
             }}
           >
             No tickets exist for this event.
@@ -409,31 +499,32 @@ const VendorEvents = () => {
   return (
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
-        <div className={classes.DashboardTitle}>{vendorInfo.name}{" "}Dashboard</div>
+        <div className={classes.DashboardTitle}>
+          {vendorInfo.name} Dashboard
+        </div>
         <div className={classes.DashboardMain}>
           <div className={classes.DashboardNavigation}>
             <VendorNavigation></VendorNavigation>
           </div>
           <div className={classes.DashboardPanel}>
-              <div
-                style={{
-                  position: "fixed",
-                  top: "135px",
-                  backgroundColor: "#fff",
-                  zIndex: "200",
-                  width: "1015px",
-                  fontSize: "26px",
-                  paddingTop: "20px",
-                  paddingLeft: "20px",
-                  paddingRight: "30px",
-                  paddingBottom: "20px",
-                  borderBottom: "1px solid lightgrey",
-                }}
-              >
-                Events
-              </div>
             <div
-              style={{overflowY: "auto"}}>{mainDisplay()}</div>
+              style={{
+                position: "fixed",
+                top: "135px",
+                backgroundColor: "#fff",
+                zIndex: "200",
+                width: "1015px",
+                fontSize: "26px",
+                paddingTop: "20px",
+                paddingLeft: "20px",
+                paddingRight: "30px",
+                paddingBottom: "20px",
+                borderBottom: "1px solid lightgrey",
+              }}
+            >
+              Events
+            </div>
+            <div style={{ overflowY: "auto" }}>{mainDisplay()}</div>
           </div>
         </div>
       </div>

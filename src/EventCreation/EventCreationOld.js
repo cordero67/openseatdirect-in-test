@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import ReactHtmlParser from 'react-html-parser';
 
@@ -13,6 +13,7 @@ import RadioForm from './RadioForm';
 import ImgDropAndCrop from '../ImgDropAndCrop/ImgDropAndCrop';
 
 import TicketType from './TicketType';
+import Modal from "./Modal/Modal";
 
 import classes from './EventCreation.module.css';
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -77,6 +78,7 @@ const EventCreation = () => {
         promoCodeNames: [],
         promoCodeWarning: "",
         functionArgs: {},
+        viewModal: false
     }]);
 
     // EVENT DESCRIPTION HANDLERS
@@ -280,14 +282,15 @@ const EventCreation = () => {
             promoCodes: [{key: newPromoKey, name: "", amount: "", percent: ""}],
             promoCodeNames: [],
             promoCodeWarning: "",
-            functionArgs: {}
+            functionArgs: {},
+            viewModal: false
         }
         let tempDetails = [...ticketDetails];
         tempDetails.push(newItem);
         setTicketDetails(tempDetails);
     }
 
-    const deleteTicket = (event, id) => {
+    const deleteTicket = (id) => {
         if (ticketDetails.length === 1) {
             setTicketDetails([
                 {
@@ -1065,34 +1068,120 @@ const EventCreation = () => {
             </div>
         )
     }
-    
-    const ticketTypeDisplay = () => {
+
+    const activateShowModal = (ticket) => {
+        let tempDetails = [...ticketDetails];
+        tempDetails.forEach( item => {
+            if (item.key === ticket.key) {
+                item.viewModal = true
+            } else {
+                item.viewModal = false;
+            }
+        })
+        setTicketDetails(tempDetails);
+        console.log("Ticket Details: ", tempDetails)
+    }
+
+    const deactivateShowModal = (ticket) => {
+        let tempDetails = [...ticketDetails];
+        tempDetails.forEach( item => {
+            item.viewModal = false
+        })
+        setTicketDetails(tempDetails);
+        console.log("Ticket Details: ", tempDetails)
+    }
+
+
+
+
+    const [dragging, setDragging] = useState(false);
+
+    const dragItem = useRef();
+    const dragNode = useRef();
+
+    const handleDragStart = (event, index) => {
+        console.log("Dragging");
+        console.log("Index: ", index);
+        dragItem.current = index;
+        console.log("dragItem.current: ", dragItem.current);
+        console.log("event.target ", event.target);
+        dragNode.current = event.target;
+        console.log("dragNode.current: ", dragNode.current);
+        dragNode.current.addEventListener('dragend', handleDragEnd);
+        setTimeout(() => {
+            setDragging(true);
+        },0);
+    }
+
+    const handleDragEnd = () => {
+        console.log("Ending Drag...")
+        dragNode.current.removeEventListener('dragend', handleDragEnd);
+        setDragging(false);
+        dragItem.current = null;
+        dragNode.current = null;
+    }
+
+    const handleDragEnter = (event, index) => {
+        console.log("Entering handleDragEnter");
+        console.log("event.target ", event.target);
+        console.log("dragNode.current ",dragNode.current);
+        console.log("index ", index);
+        console.log("dragItem.current ",dragItem.current);
+
+        if (index !== dragItem.current) {
+            console.log("DIFFERENT TARGET")
+            console.log("dragItem.current: ", dragItem.current)
+            console.log("ticketDetails: ", ticketDetails)
+            
+            const currentItem = dragItem.current;
+            setTicketDetails(oldDetails => {
+                let newDetails = JSON.parse(JSON.stringify(oldDetails))
+                console.log("newDetails: ", newDetails)
+                console.log("newDetails[index]: ", newDetails[index])
+                newDetails.splice(index, 0, newDetails.splice(currentItem,1)[0]);
+                console.log("newDetails: ", newDetails)
+                dragItem.current = index;
+                console.log("ticketDetails: ", ticketDetails)
+                return newDetails;});
+        } else {
+            console.log("SAME TARGET")
+        }
+    }
+
+    const ticketTypeDisplay = (index) => {
         let display = (
-            <div>
+            <Aux>
                 {ticketDetails.map( (item, index) => {
                     
                     return (
                         <div key={index}>
-                            <div style={{
-                                display: `grid`,
-                                gridTemplateColumns: "360px 100px 165px 80px 80px",
-                                height: "60px",
-                                fontSize: "16px",
-                                borderTop: "1px solid lightgrey",
-                                boxSizing: "borderBox"}}>
+                            <div 
+                                className={dragging && dragItem.current === index ?
+                                    classes.DraggedTicketBox :
+                                    classes.TicketBox}
+                                >
 
-                                <div style={{
-                                    padding: "10px 5px",
-                                    boxSizing: "borderBox",
-                                    display: `grid`,
-                                    gridTemplateColumns: "20px 330px"}}>
-                                    <div style={{
-                                        padding: "9px 0px 9px 3px",
-                                        boxSizing: "borderBox"}}>
-                                    <FontAwesomeIcon
-                                        cursor = "pointer"
-                                        icon={faGripVertical}
-                                    />
+                                <div  
+                                    style={{
+                                        padding: "10px 5px",
+                                        boxSizing: "borderBox",
+                                        display: `grid`,
+                                        gridTemplateColumns: "20px 330px"
+                                    }}
+                                >
+                                    <div 
+                                        draggable
+                                        onDragStart={(event) => handleDragStart(event, index)}
+                                        onDragEnter={dragging ? (event) => handleDragEnter(event, index) : null}
+                                        style={{
+                                            padding: "9px 0px 9px 3px",
+                                            boxSizing: "borderBox"
+                                        }}
+                                    >
+                                        <FontAwesomeIcon
+                                            cursor = "pointer"
+                                            icon={faGripVertical}
+                                        />
                                     </div>
                                     <input style={{
                                         padding: "9px 10px",
@@ -1164,7 +1253,6 @@ const EventCreation = () => {
                                             onClick={event => switchTicketSettings(event, item.key)}
                                             icon={faCog}/>
                                 </div>
-
                                 <div style={{
                                     padding: "20px 5px",
                                     boxSizing: "borderBox",
@@ -1172,16 +1260,34 @@ const EventCreation = () => {
                                         <FontAwesomeIcon
                                             color = "blue"
                                             cursor = "pointer"
-                                            onClick={event => deleteTicket(event, item.key)}
+                                            onClick={() => {
+                                                activateShowModal(item);
+                                                console.log("Ticket Detail: ",ticketDetails)
+                                            }}
                                             icon={faTrashAlt}/>
                                 </div>
-                                
                             </div>
+                            {item.viewModal ? 
+                                (<Aux>
+                                    <Modal
+                                        show={true}
+                                        details={item}
+                                        closeModal={() => {
+                                            deactivateShowModal(item);
+                                        }}
+                                        deleteTicket={() => {
+                                            console.log("Delete ticket", item.ticketName)
+                                            console.log("Ticket key", item.key)
+                                            deleteTicket(item.key)
+                                        }}
+                                    ></Modal>
+                                </Aux>) : null
+                            }
                             {item.settings ? additionalSettings(item) : null}
                         </div>
                     )
                 })}
-            </div>
+            </Aux>
         );
         return display;
     }
@@ -1480,7 +1586,7 @@ const EventCreation = () => {
                                 type={"endDate"}
                                 startDate={eventDescription.startDate}
                                 current={eventDescription.endDate}
-                                change={(date) => changeEventDescription(date, "end")}
+                                change={(date) => changeEventDate(date, "end")}
                                 beforeDate={eventDescription.startDate}
                             />
                             <TimeSelector

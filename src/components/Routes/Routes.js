@@ -4,8 +4,8 @@ import { Route, Redirect } from "react-router-dom";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
+import EventCreationOld from "../../EventCreation/EventCreationOld";
 import EventCreation from "../../EventCreation/EventCreation";
-import EventCreationEdit from "../../EventCreation/EventCreationEdit";
 import Events from "../../Events/Events";
 import EventDetail from "../../Events/EventDetail";
 import EventDetailHaHa from "../../Events/EventDetailHaHa";
@@ -322,7 +322,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/eventcreationedit"
+        path="/eventcreationold"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -332,15 +332,11 @@ const Routes = () => {
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventCreationEdit />
+            <EventCreationOld />
             <Footer></Footer>
           </React.Fragment>
         )}
       />
-
-
-
-
 
       <Route
         path="/events"
