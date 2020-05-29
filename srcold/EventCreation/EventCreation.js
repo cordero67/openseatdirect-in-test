@@ -34,12 +34,203 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 
+const eventTixOrig = {
+  // sample data
+  _id: "5e8199fdfc33db465d140c4b",
+  isDraft: false,
+  isVisible: false,
+  ticket: [],
+  repeat: "None",
+  eventStatus: "EventScheduled",
+  eventTitle: "RikaRikaStudio オンライン英語家庭教師",
+  onlineInfo: "Podcast link",
+  eventType: "liveOnline",
+  eventCategory: "sports",
+  startDateTime: "2020-06-23T23:00:00.000Z",
+  endDateTime: "2020-06-25T19:30:00.000Z",
+  timeZone: "America/Halifax",
+  longDescription: "<p>Rika's</p><p>Event</p>↵<p>Added text</p>",
+  shortDescription:
+    "AmeRikaEigo\nNYデザイナーが皆様の英語学習をお手伝いいたします！",
+  createUserId: "5da53eba74a2f98516d9b62c",
+  eventNum: 75959989768,
+  eventUrl: "rikarikastudio-",
+  accountId: "5e600072110cbc31b17fa33c",
+  createdAt: "2020-03-30T07:04:29.683Z",
+  updatedAt: "2020-04-15T01:52:49.339Z",
+  locationVenueName: "Nagano Stadium",
+  locationNote: "take your shoes off",
+  locationAddress1: "111 Blossom Road",
+  locationAddress2: "4th Floor",
+  locationCity: "Nagano",
+  locationState: "Chūbu‎",
+  locationCountryCode: "Japan",
+  locationZipPostalCode: "903338",
+  facebookLink: "my event f",
+  twitterLink: "my event t",
+  linkedinLink: "my event l",
+  instagramLink: "my event i",
+  refundPolicy: "7days",
+  __v: 0,
+  tickets: [
+    {
+      eventId: "5e8199fdfc33db465d140c4b",
+      ticketType: { type: "String", enum: ["Free", "Paid", "Donation"] },
+      freeTicket: { type: "Boolean" },
+      usePriceFunction: true,
+      priceFunction: {
+        form: "twofer",
+        args: {
+          buy: 2,
+          for: 15,
+        },
+      },
+      ticketName: "初回コンサルテーション",
+      currency: "USD",
+      language: "JPN",
+      ticketDescription:
+        "レッスンを始める前の１５分間のコンサルテーションです。ゴールの設定やクラスの進め方、又、ご自身のレベルが分からなかったり、ご質問がある場合にもお気軽にご相談ください。",
+      showTicketDescOnEventPage: { type: "Boolean" },
+      minTicketsAllowedPerOrder: 1,
+      maxTicketsAllowedPerOrder: 10,
+      initialTicketPrice: 0,
+      currentTicketPrice: 0,
+      initialQuantity: 20000,
+      remainingQuantity: 19991,
+      sort: 0,
+      startVisibilityDateTime: { type: "Date" },
+      endVisibilityDateTime: { type: "Date" },
+      startSaleDateTime: { type: "Date" },
+      endSaleDateTime: { type: "Date" },
+      smartContractAddress: { type: "String" },
+      isZombie: { type: "Boolean" },
+      _id: "5e819c06fc33db465d140c4c",
+      updatedAt: "2020-03-31T22:57:27.610Z",
+      createdAt: "2020-03-30T07:13:10.901Z",
+      __v: 0,
+    },
+    {
+      eventId: "5e8199fdfc33db465d140c4b",
+      ticketType: { type: "String", enum: ["Free", "Paid", "Donation"] },
+      freeTicket: { type: "Boolean" },
+      usePriceFunction: true,
+      priceFunction: {
+        form: "bogo",
+        args: {
+          buy: 2,
+          get: 1,
+        },
+      },
+      ticketName: "オンラインプライベート英語レッスン",
+      currency: "JPY",
+      language: "JPN",
+      ticketDescription:
+        "オンライン30分プライベートコースです。イキイキと楽しみながら、自信を持って技術やテクニックをレベルアップしていただけるプライベートレッスンです。一回づつお気軽にも、お得なパッケージ料金もございます",
+      showTicketDescOnEventPage: { type: "Boolean" },
+      initialTicketPrice: 2000,
+      currentTicketPrice: 2000,
+      initialQuantity: 20000,
+      remainingQuantity: 19978,
+      sort: 1,
+      startVisibilityDateTime: { type: "Date" },
+      endVisibilityDateTime: { type: "Date" },
+      startSaleDateTime: { type: "Date" },
+      endSaleDateTime: { type: "Date" },
+      smartContractAddress: { type: "String" },
+      isZombie: { type: "Boolean" },
+      _id: "5e819c8c43c286568ea23d85",
+      updatedAt: "2020-03-31T22:57:27.616Z",
+      createdAt: "2020-03-30T07:15:24.734Z",
+      __v: 0,
+    },
+    {
+      eventId: "5e8199fdfc33db465d140c4b",
+      ticketType: { type: "String", enum: ["Free", "Paid", "Donation"] },
+      freeTicket: { type: "Boolean" },
+      usePriceFunction: true,
+      priceFunction: {
+        form: "bogo",
+        args: {
+          buy: 5,
+          get: 2,
+          discount: 0.9,
+        },
+      },
+      ticketName: "ウィークリーエヴリディ",
+      currency: "USD",
+      language: "JPN",
+      ticketDescription:
+        "１週間毎日受講いただけるお得なプランです。１週間有効 英語３０分プライベートレッスンオンライン。１日１レッスンまでとします。",
+      showTicketDescOnEventPage: { type: "Boolean" },
+      maxTicketsAllowedPerOrder: 5,
+      initialTicketPrice: 7200,
+      currentTicketPrice: 7200,
+      initialQuantity: 20000,
+      remainingQuantity: 19994,
+      sort: 3,
+      startVisibilityDateTime: { type: "Date" },
+      endVisibilityDateTime: { type: "Date" },
+      startSaleDateTime: { type: "Date" },
+      endSaleDateTime: { type: "Date" },
+      smartContractAddress: { type: "String" },
+      isZombie: { type: "Boolean" },
+      _id: "5e819cbf43c286568ea23d86",
+      updatedAt: "2020-03-31T19:25:00.309Z",
+      createdAt: "2020-03-30T07:16:15.583Z",
+      __v: 0,
+    },
+    {
+      eventId: "5e8199fdfc33db465d140c4b",
+      ticketType: { type: "String", enum: ["Free", "Paid", "Donation"] },
+      freeTicket: { type: "Boolean" },
+      usePriceFunction: false,
+      priceFunction: {
+        form: "promo",
+        args: {
+          promocodes: [
+            {
+              name: "flyers",
+              amount: 0,
+            },
+            {
+              name: "eagles",
+              amount: 10,
+            },
+          ],
+        },
+      },
+      ticketName: "マンスリー10回",
+      currency: "JPY",
+      language: "JPN",
+      ticketDescription:
+        "３０日間有効の合計１０回のプランです。Valid for one month Select • 英語３０分プライベートレッ",
+      showTicketDescOnEventPage: { type: "Boolean" },
+      minTicketsAllowedPerOrder: 2,
+      initialTicketPrice: 18000,
+      currentTicketPrice: 18000,
+      initialQuantity: 200,
+      remainingQuantity: 196,
+      sort: 4,
+      startVisibilityDateTime: { type: "Date" },
+      endVisibilityDateTime: { type: "Date" },
+      startSaleDateTime: { type: "Date" },
+      endSaleDateTime: { type: "Date" },
+      smartContractAddress: { type: "String" },
+      isZombie: { type: "Boolean" },
+      _id: "5e819cec43c286568ea23d87",
+      updatedAt: "2020-03-31T19:25:00.312Z",
+      createdAt: "2020-03-30T07:17:00.628Z",
+      __v: 0,
+    },
+  ],
+};
+
 const dataFields = {
   isDraft: { type: "Boolean", required: true }, // fetch
   eventType: {
     type: "String",
     required: true,
-    enum: ["live", "online", "tba"],
+    enum: ["live", "online", "liveOnline"],
   }, // fetch
   hasAlwaysBeenDraft: { type: "Boolean", required: true },
   eventTitle: { type: "String", required: true, maxlength: 64 }, // fetch
@@ -58,7 +249,6 @@ const dataFields = {
   locationNote: { type: "String", maxlength: 100 }, // fetch
   webinarLink: { type: "String", maxlength: 256 },
   onlineInformation: { type: "String", maxlength: 256 },
-  tbaInformation: { type: "String", maxlength: 256 },
   eventCategory: {
     type: "String",
     enum: [
@@ -79,7 +269,7 @@ const dataFields = {
   twitterLink: { type: "String", maxlength: 64 }, // fetch
   instagramLink: { type: "String", maxlength: 64 }, // fetch
   linkedinLink: { type: "String", maxlength: 64 }, // fetch
-  vanityLink: { type: "String", required: true }, // fetch
+  eventUrl: { type: "String", required: true }, // fetch
   refundPolicy: "", // fetch
   photo: { type: "object" }, // fetch
   _id: { type: "object" },
@@ -126,19 +316,19 @@ const EventCreation = () => {
   const [ticketDetails, setTicketDetails] = useState([
     {
       key: "1", // fetch
-      sort: null, // fetch
-      ticketName: null, // fetch
-      ticketQuantity: null, // fetch
-      ticketPrice: null, // fetch
+      sort: "", // fetch
+      ticketName: "", // fetch
+      ticketQuantity: "", // fetch
+      ticketPrice: "", // fetch
       currency: "", // fetch
       settings: false,
-      ticketDescription: null,
-      orderMin: null, // fetch
-      orderMax: null, // fetch
+      ticketDescription: "",
+      orderMin: "", // fetch
+      orderMax: "", // fetch
       priceFeature: "none", // fetch via temp variable
-      promoCodes: [{ key: "1", name: null, amount: null, percent: null }], // fetch via temp variable
+      promoCodes: [{ key: "1", name: "", amount: "", percent: "" }], // fetch via temp variable
       promoCodeNames: [],
-      promoCodeWarning: null,
+      promoCodeWarning: "",
       functionArgs: {}, // fetch via temp variable
       viewModal: false,
     },
@@ -146,37 +336,37 @@ const EventCreation = () => {
 
   // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
-    eventNum: null, // fetch
-    eventTitle: null, // fetch
+    eventNum: "", // fetch
+    eventTitle: "", // fetch
     isDraft: true, // fetch
     eventType: "live", // fetch
-    webinarLink: null,
-    onlineInformation: null,
-    tbaInformation: null,
-    locationVenueName: null, // fetch
-    locationAddress1: null, // fetch
-    locationAddress2: null, // fetch
-    locationCity: null, // fetch
-    locationState: null, // fetch
-    locationZipPostalCode: null, // fetch
-    locationCountryCode: null, // fetch
-    locationNote: null, // fetch
+    webinarLink: "",
+    onlineInformation: "",
+    onlineInfo: "",
+    locationVenueName: "", // fetch
+    locationAddress1: "", // fetch
+    locationAddress2: "", // fetch
+    locationCity: "", // fetch
+    locationState: "", // fetch
+    locationZipPostalCode: "", // fetch
+    locationCountryCode: "", // fetch
+    locationNote: "", // fetch
     startDate: new Date(new Date().toDateString()),
-    startTime: null,
-    startDateTime: null,
+    startTime: "",
+    startDateTime: "",
     endDate: new Date(new Date().toDateString()),
-    endTime: null,
-    endDateTime: null,
+    endTime: "",
+    endDateTime: "",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // fetch
     eventImage: null,
-    shortDescription: null, // fetch
-    longDescription: null, // fetch
-    eventCategory: null, // fetch
-    facebookLink: null, // fetch
-    twitterLink: null, // fetch
-    linkedinLink: null, // fetch
-    instagramLink: null, // fetch
-    vanityLink: null, // fetch
+    shortDescription: "", // fetch
+    longDescription: "", // fetch
+    eventCategory: "", // fetch
+    facebookLink: "", // fetch
+    twitterLink: "", // fetch
+    linkedinLink: "", // fetch
+    instagramLink: "", // fetch
+    eventUrl: "", // fetch
     refundPolicy: "noRefunds",
   });
 
@@ -186,11 +376,10 @@ const EventCreation = () => {
 
   useEffect(() => {
     // stores original "eventTixOrig" fields
-    //console.log("eventTixOrig: ", eventTixOrig);
-    //console.log("JSON.stringify(eventTixOrig): ", JSON.stringify(eventTixOrig));
-    //localStorage.setItem("eventTixOrig", JSON.stringify(eventTixOrig));
+    console.log("eventTixOrig: ", eventTixOrig);
+    console.log("JSON.stringify(eventTixOrig): ", JSON.stringify(eventTixOrig));
+    localStorage.setItem("eventTixOrig", JSON.stringify(eventTixOrig));
 
-    // checks if an event is identified and user is valiadated
     if (
       queryString.parse(window.location.search).eventID &&
       localStorage.getItem("user")
@@ -231,21 +420,26 @@ const EventCreation = () => {
     } else {
       console.log("there is NO event");
     }
+
+    //if (localStorage.getItem("eventTix")) {
   }, []);
 
   const loadEventInfo = (eventTix) => {
     console.log("Inside 'loadEventInfo': ", loadEventInfo);
+    //if (localStorage.getItem("eventTix")) {
+    //   eventTix = JSON.parse(localStorage.getItem("eventTix"));
+    //   console.log("eventTix: ", eventTix);
+    // I don't think that the "event.Tix" filed needs to exist, it will return "undefined"
     let tempDescription = { ...eventDescription };
     tempDescription.eventTitle = eventTix.eventTitle; // fetch
     tempDescription.eventNum = eventTix.eventNum; // fetch
-    tempDescription.isDraft = eventTix.isDraft; // fetch
+    tempDescription.isDraft = eventTix.isDraft ? eventTix.isDraft : true; // fetch
     tempDescription.eventType = eventTix.eventType
       ? eventTix.eventType
       : "live"; // fetch
-    tempDescription.vanityLink = eventTix.vanityLink; // fetch
+    tempDescription.eventUrl = eventTix.eventUrl; // fetch
     tempDescription.webinarLink = eventTix.webinarLink;
-    tempDescription.onlineInformation = eventTix.onlineInformation;
-    tempDescription.tbaInformation = eventTix.tbaInformation;
+    tempDescription.onlineInfo = eventTix.onlineInformation;
     tempDescription.shortDescription = eventTix.shortDescription; // fetch
     tempDescription.longDescription = eventTix.longDescription; // fetch
     tempDescription.eventCategory = eventTix.eventCategory; // fetch
@@ -322,61 +516,69 @@ const EventCreation = () => {
     setEventDescription(tempDescription);
 
     // now populate the ticketsDetails variable
-    if (eventTix.tickets && eventTix.tickets.length !== 0) {
-      let tempArray = [];
-      eventTix.tickets.forEach((tix, index) => {
-        let tempPriceFeature = "none";
-        let tempPromoCodes;
-        let tempFunctionArgs;
-        if (tix.priceFunction && tix.priceFunction.form) {
-          tempPriceFeature = tix.priceFunction.form;
-          if (tempPriceFeature === "promo") {
-            tempPromoCodes = tix.priceFunction.args.promocodes;
-          } else if (tempPriceFeature === "bogo") {
+    let tempArray = [];
+    eventTix.tickets.forEach((tix, index) => {
+      console.log("new ticket type");
+      console.log("index: ", index);
+      console.log("tix.priceFunction: ", tix.priceFunction);
+      //tempPriceFunction = tix.priceFunction.form ? tix.priceFunction.form : "none"
+      let tempPriceFeature;
+      let tempPromoCodes;
+      let tempFunctionArgs;
+      if (!tix.priceFunction) {
+        tempPriceFeature = "none";
+        tempPromoCodes = "none";
+        tempFunctionArgs = "none";
+      } else {
+        tempPriceFeature = tix.priceFunction.form;
+        if (tempPriceFeature === "promo") {
+          tempPromoCodes = tix.priceFunction.args.promocodes;
+          tempFunctionArgs = "none";
+        } else if (tempPriceFeature === "bogo") {
+          tempPromoCodes = "none";
+          if (tix.priceFunction.args.discount) {
+            tempPriceFeature = "bogod";
             tempFunctionArgs = {
               buy: tix.priceFunction.args.buy,
               get: tix.priceFunction.args.get,
               discount: tix.priceFunction.args.discount * 100,
             };
-            if (tix.priceFunction.args.discount === 1) {
-              tempPriceFeature = "bogof";
-            }
-            if (tix.priceFunction.args.discount !== 1) {
-              tempPriceFeature = "bogod";
-            }
-          } else  if (tempPriceFeature === "twofer") {
-              tempFunctionArgs = {
-              buy: tix.priceFunction.args.buy,
-              for: tix.priceFunction.args.for
-            };
+          } else {
+            tempPriceFeature = "bogof";
+            tempFunctionArgs = tix.priceFunction.args;
           }
+        } else {
+          tempFunctionArgs = tix.priceFunction.args;
         }
-        console.log("tempPriceFeature before setting newItem: ", tempPriceFeature)
-        console.log("tempFunctionArgs before setting newItem: ", tempFunctionArgs)
-        console.log("tempPromoCodes before setting newItem: ", tempPromoCodes)
-        let newItem = {
-          key: tix.sort ? tix.sort : index, // fetch
-          sort: tix.sort ? tix.sort : index, // fetch
-          ticketName: tix.ticketName, // fetch
-          ticketQuantity: "", // fetch NEED TO WAIT FOR ORDERS API
-          ticketPrice: tix.currentTicketPrice, // fetch
-          currency: tix.currency, // fetch
-          settings: false,
-          ticketDescription: tix.ticketDescription, // fetch
-          orderMin: tix.minTicketsAllowedPerOrder, // fetch
-          orderMax: tix.maxTicketsAllowedPerOrder, // fetch
-          priceFeature: tempPriceFeature, // fetch via temp variable
-          promoCodes: tempPromoCodes, // fetch via temp variable
-          promoCodeNames: [],
-          promoCodeWarning: null,
-          functionArgs: tempFunctionArgs, // fetch via temp variable
-          viewModal: false,
-        };
-        tempArray.push(newItem);
-        console.log("tempArray: ", tempArray);
-      });
-      setTicketDetails(tempArray);
-    }
+      }
+
+      let newItem = {
+        key: tix.sort ? tix.sort : index, // fetch
+        sort: tix.sort ? tix.sort : index, // fetch
+        ticketName: tix.ticketName ? tix.ticketName : "", // fetch
+        ticketQuantity: "", // fetch NEED TO WAIT FOR ORDERS API
+        ticketPrice: tix.currentTicketPrice ? tix.currentTicketPrice : "", // fetch
+        currency: tix.currency ? tix.currency : "", // fetch
+        settings: false,
+        ticketDescription: tix.ticketDescription ? tix.ticketDescription : "", // fetch
+        orderMin: tix.minTicketsAllowedPerOrder
+          ? tix.minTicketsAllowedPerOrder
+          : "", // fetch
+        orderMax: tix.maxTicketsAllowedPerOrder
+          ? tix.maxTicketsAllowedPerOrder
+          : "", // fetch
+        priceFeature: tempPriceFeature, // fetch via temp variable
+        promoCodes: tempPromoCodes, // fetch via temp variable
+        promoCodeNames: [],
+        promoCodeWarning: "",
+        functionArgs: tempFunctionArgs, // fetch via temp variable
+        viewModal: false,
+      };
+      tempArray.push(newItem);
+      console.log("tempArray: ", tempArray);
+    });
+    setTicketDetails(tempArray);
+    // }
   };
 
   // EVENT DESCRIPTION HANDLERS
@@ -384,8 +586,8 @@ const EventCreation = () => {
     let tempDescription = { ...eventDescription };
     tempDescription[event.target.name] = event.target.value;
     if (event.target.name === "eventTitle") {
-      // updates "vanityLink" whenever "eventTitle" is changed
-      tempDescription.vanityLink = event.target.value
+      // updates "eventUrl" whenever "eventTitle" is changed
+      tempDescription.eventUrl = event.target.value
         .replace(/\s+/g, "-")
         .replace(/[^a-zA-Z0-9-]/g, "")
         .toLowerCase();
@@ -496,13 +698,52 @@ const EventCreation = () => {
     console.log("we are saving");
 
     let eventData = {
+      /*
+"dataFields"
+  //isDraft: {type: "Boolean", required: true}, // fetch
+  //eventType: {type: "String", required: true, enum: ["live", "online", "liveOnline"]}, // fetch
+  //eventNum: {type: "Number", required: true}, // fetch
+  hasAlwaysBeenDraft: {type: "Boolean", required: true},
+  //eventTitle: {type: "String", required: true, maxlength: 64}, // fetch
+  //longDescription: {type: "String", maxlength: 100000}, // fetch
+  //shortDescription:{type: "String", maxlength: 140}, // fetch
+  //startDateTime: {type: "Date", required: true},
+  //endDateTime: {type: "Date"},
+  //timeZone: {type: "String"}, // fetch
+  //locationVenueName: {type: "String", required: true, maxlength: 140}, // fetch
+  //locationAddress1:{type: "String", maxlength: 32}, // fetch
+  //locationAddress2: {type: "String", maxlength: 32}, // fetch
+  //locationCity: {type: "String", maxlength: 32}, // fetch
+  //locationState: {type: "String", maxlength: 2}, // fetch
+  //locationZipPostalCode: {type: "String", maxlength: 6}, // fetch
+  //locationCountryCode: {type: "String", maxlength: 3}, // fetch
+  //locationNote: {type: "String", maxlength: 100}, // fetch
+  webinarLink
+  onlineInfo
+  //eventCategory: {type: "String", enum: ["Music", "Sports", "Arts & Theater", "Food & Drink", "Charity & Causes", "Family", "Meeting"]}, // fetch
+  createUserId: {type: "ObjectId", required: true},
+  updateUserId: {type: "ObjectId"}, accountId: {type: "ObjectId"},
+  //facebookLink: {type: "String", maxlength: 64}, // fetch
+  //twitterLink: {type: "String", maxlength: 64}, // fetch
+  //instagramLink: {type: "String", maxlength: 64}, // fetch
+  //linkedinLink: {type: "String", maxlength: 64}, // fetch
+  //eventUrl: {type: "String", required: true}, // fetch
+  //refundPolicy: ""
+  photo: {type: "object"},
+  _id: {type: "object"},
+  updatedAt: {type: "Date"},
+  createdAt: {type: "Date"},
+  __v: {type: "Number"},
+
+
+"eventDescription"
+*/
       isDraft: eventDescription.isDraft, // fetch
       eventNum: eventDescription.eventNum, // fetch
       eventTitle: eventDescription.eventTitle, // fetch
       eventType: eventDescription.eventType, // fetch
       webinarLink: eventDescription.webinarLink,
       onlineInformation: eventDescription.onlineInformation,
-      tbaInformation: eventDescription.tbaInformation,
       locationVenueName: eventDescription.locationVenueName, // fetch
       locationAddress1: eventDescription.locationAddress1, // fetch
       locationAddress2: eventDescription.locationAddress2, // fetch
@@ -511,16 +752,14 @@ const EventCreation = () => {
       locationZipPostalCode: eventDescription.locationZipPostalCode, // fetch
       locationCountryCode: eventDescription.locationCountryCode, // fetch
       locationNote: eventDescription.locationNote, // fetch
-      //startDate: new Date(new Date().toDateString()),
-      //startTime: "",
-      // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
-      startDateTime: eventDescription.startDate,
-      //endDate: new Date(new Date().toDateString()),
-      //endTime: "",
-      // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
-      endDateTime: eventDescription.endDate,
+      //eventDescription.startDate: new Date(new Date().toDateString()),
+      //eventDescription.startTime: "",
+      startDateTime: eventDescription.startDateTime,
+      //eventDescription.endDate: new Date(new Date().toDateString()),
+      //eventDescription.endTime: "",
+      endDateTime: eventDescription.endDateTime,
       timeZone: eventDescription.timeZone, // fetch
-      //eventImage:, // fetch
+      //eventDescription.eventImage:, // fetch
       shortDescription: eventDescription.shortDescription, // fetch
       longDescription: eventDescription.longDescription, // fetch
       eventCategory: eventDescription.eventCategory, // fetch
@@ -528,49 +767,20 @@ const EventCreation = () => {
       twitterLink: eventDescription.twitterLink, // fetch
       linkedinLink: eventDescription.linkedinLink, // fetch
       instagramLink: eventDescription.instagramLink, // fetch
-      vanityLink: eventDescription.vanityLink, // fetch
+      eventUrl: eventDescription.eventUrl, // fetch
       refundPolicy: eventDescription.refundPolicy, // fetch
     };
     console.log("eventData: ", eventData);
     let form = {
-      
-      isDraft: false, // fetch
-      
-      //webinarLink: eventDescription.webinarLink,
-      //onlineInformation: eventDescription.onlineInformation,
-      //tbaInformation: eventDescription.tbaInformation,
-
-      //timeZone: eventDescription.timeZone, // fetch
-      //eventCategory: eventData.eventCategory, // fetch
-      facebookLink: eventData.facebookLink, // fetch
-      twitterLink: eventData.twitterLink, // fetch
-      linkedinLink: eventData.linkedinLink, // fetch
-      instagramLink: eventData.instagramLink, // fetch
-      //vanityLink: eventDescription.vanityLink, // fetch
-      //refundPolicy: eventDescription.refundPolicy, // fetch
-
-      eventTitle: eventData.eventTitle,
-      eventType: eventData.eventType,
-      locationVenueName: eventData.locationVenueName,
-      locationAddress1: eventData.locationAddress1,
-      locationAddress2: eventData.locationAddress2,
-      locationCity: eventData.locationCity,
-      locationState: eventData.locationState,
-      locationZipPostalCode: eventData.locationZipPostalCode,
-      locationCountryCode: eventData.locationCountryCode,
-      locationNote: eventData.locationNote,
-      
-      startDateTime: eventData.startDateTime,
+      eventTitle: eventDescription.eventTitle,
+      locationVenueName: eventDescription.locationVenueName,
+      startDateTime: eventDescription.startDate,
       photo:
         eventDescription.eventImage === null
           ? undefined
           : eventDescription.eventImage,
-      shortDescription: eventData.shortDescription,
-      longDescription: eventData.longDescription,
-      tickets: [
-        { ticketName: "tick1", currentTicketPrice: 10, remainingQuantity: 55 },
-        { ticketName: "tick2", currentTicketPrice: 33, remainingQuantity: 99 },
-      ],
+      shortDescription: eventDescription.shortDescription,
+      longDescription: eventDescription.longDescription,
     };
     console.log("Form data: ", form);
     let js = JSON.stringify(form);
@@ -579,8 +789,8 @@ const EventCreation = () => {
       "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDlkNzIzN2VjODAwYjZlOTM1NTg4ODgiLCJpYXQiOjE1ODg2ODgwOTJ9.URrxmyn4C4rcl5D4QubreEjRIN16fg4ao86Ym_u1fIc";
     const userid = "5d9d7237ec800b6e93558888";
     const APIURL = "https://www.openseatdirect.com/api";
-    let apiurl = `${APIURL}/eventix/${userid}`;
-
+    let apiurl = `${APIURL}/event/create/${userid}`;
+    /*
     fetch(apiurl, {
       method: "post",
       headers: {
@@ -602,6 +812,7 @@ const EventCreation = () => {
       .catch((err) => {
         console.log("**ERROR THROWN", err);
       });
+      */
   };
 
   // STOPPED
@@ -1892,7 +2103,7 @@ const EventCreation = () => {
   const [eventAdditionalWarning, setEventAdditionalWarning] = useState(false);
 
   const displayMessage = (limit, variable) => {
-    if (variable && variable.length >= limit) {
+    if (variable.length >= limit) {
       return (
         <div
           style={{
@@ -1906,26 +2117,13 @@ const EventCreation = () => {
           Maximum characters used
         </div>
       );
-    } else if (variable && variable.length >= limit - 10) {
+    } else if (variable.length >= limit - 10) {
       return (
         <div
           style={{
             paddingLeft: "10px",
             height: "14px",
             color: "red",
-            fontSize: "12px",
-          }}
-        >
-          Remaining {limit - variable.length}
-        </div>
-      );
-    } else if (variable) {
-      return (
-        <div
-          style={{
-            paddingLeft: "10px",
-            height: "14px",
-            color: "black",
             fontSize: "12px",
           }}
         >
@@ -1942,16 +2140,16 @@ const EventCreation = () => {
             fontSize: "12px",
           }}
         >
-          Remaining {limit}
+          Remaining {limit - variable.length}
         </div>
       );
     }
   };
 
   const eventTypeList = [
-    { label: "Live Event", value: "live" },
+    { label: "Live Event only", value: "live" },
     { label: "Online Event only", value: "online" },
-    { label: "To be announced", value: "tba" },
+    { label: "Both Live and Online Event", value: "liveOnline" },
   ];
 
   const refundPolicyList = [
@@ -2005,7 +2203,7 @@ const EventCreation = () => {
               style={{ border: "2px solid green", color: "green" }}
               onClick={saveEvent}
             >
-              Save as Draft
+              Save
             </button>
           </div>
           <div className={classes.ButtonBox}>
@@ -2021,7 +2219,7 @@ const EventCreation = () => {
               className={classes.Button}
               style={{ border: "2px solid red", color: "red" }}
             >
-              Go Live Now
+              Go Live!
             </button>
           </div>
         </div>
@@ -2065,7 +2263,8 @@ const EventCreation = () => {
             }
           />
 
-          {eventDescription.eventType === "live" ? (
+          {eventDescription.eventType === "live" ||
+          eventDescription.eventType === "liveOnline" ? (
             <Aux>
               <div className={classes.SectionTitleTight}>Event Location</div>
 
@@ -2215,6 +2414,12 @@ const EventCreation = () => {
                   ? displayMessage(64, eventDescription.locationNote)
                   : null}
               </div>
+            </Aux>
+          ) : null}
+
+          {eventDescription.eventType === "online" ||
+          eventDescription.eventType === "liveOnline" ? (
+            <Aux>
               <div className={classes.SectionTitleTight}>
                 Online Information
               </div>
@@ -2248,73 +2453,6 @@ const EventCreation = () => {
                   onChange={(event) => {
                     let tempDescription = { ...eventDescription };
                     tempDescription.onlineInformation = event.target.value;
-                    setEventDescription(tempDescription);
-                  }}
-                ></input>
-              </div>
-            </Aux>
-          ) : null}
-
-          {eventDescription.eventType === "online" ? (
-            <Aux>
-              <div className={classes.SectionTitleTight}>
-                Online Information
-              </div>
-
-              <div className={classes.InputBoxTight}>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "600px" }}
-                  type="text"
-                  id="webinarLink"
-                  maxLength="256"
-                  placeholder="Webinar Link: limit 256 characters"
-                  value={eventDescription.webinarLink}
-                  onChange={(event) => {
-                    let tempDescription = { ...eventDescription };
-                    tempDescription.webinarLink = event.target.value;
-                    setEventDescription(tempDescription);
-                  }}
-                ></input>
-              </div>
-
-              <div className={classes.InputBox}>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "600px" }}
-                  type="text"
-                  id="onlineInformation"
-                  maxLength="256"
-                  placeholder="Additional Information: limit 256 characters"
-                  value={eventDescription.onlineInformation}
-                  onChange={(event) => {
-                    let tempDescription = { ...eventDescription };
-                    tempDescription.onlineInformation = event.target.value;
-                    setEventDescription(tempDescription);
-                  }}
-                ></input>
-              </div>
-            </Aux>
-          ) : null}
-
-          {eventDescription.eventType === "tba" ? (
-            <Aux>
-              <div className={classes.SectionTitleTight}>
-                To be announced information
-              </div>
-
-              <div className={classes.InputBox}>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "600px" }}
-                  type="text"
-                  id="tbaInformation"
-                  maxLength="256"
-                  placeholder="Additional instructions: limit 256 characters"
-                  value={eventDescription.tbaInformation}
-                  onChange={(event) => {
-                    let tempDescription = { ...eventDescription };
-                    tempDescription.tbaInformation = event.target.value;
                     setEventDescription(tempDescription);
                   }}
                 ></input>
@@ -2580,10 +2718,10 @@ const EventCreation = () => {
               className={classes.InputBoxContent}
               style={{ width: "400px" }}
               type="text"
-              id="vanityLink"
+              id="eventUrl"
               placeholder="vanity address for Event Description page url"
-              name="vanityLink"
-              value={eventDescription.vanityLink}
+              name="eventUrl"
+              value={eventDescription.eventUrl}
               onChange={(event) => {
                 changeEventDescription(event);
               }}
@@ -2693,7 +2831,7 @@ const EventCreation = () => {
                 style={{ border: "2px solid green", color: "green" }}
                 onClick={saveEvent}
               >
-                Save as Draft
+                Save
               </button>
             </div>
             <div className={classes.ButtonBox}>
@@ -2709,7 +2847,7 @@ const EventCreation = () => {
                 className={classes.Button}
                 style={{ border: "2px solid red", color: "red" }}
               >
-                Go Live Now
+                Go Live!
               </button>
             </div>
           </div>
