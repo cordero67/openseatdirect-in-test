@@ -22,7 +22,7 @@ const CategorySelector = (props) => {
         >
             <option value="music">Music</option>
             <option value="sports" >Sports</option>
-            <option value="artTheatre">Arts & Theatre</option>
+            <option value="artTheatrer">Arts & Theatre</option>
             <option value="foodDrink">Food & Drink</option>
             <option value="charityCauses">Charity & Causes</option>
             <option value="family">Family</option>
