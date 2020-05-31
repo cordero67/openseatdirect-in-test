@@ -98,6 +98,7 @@
   font-size: 16px;
   padding: 5px 10px 10px 25px;
   box-sizing: border-box;
+  border-color: red;
   background-color: #e7e7e7;
 }
 
@@ -112,6 +113,14 @@
 .InputBoxContent {
   padding: 9px 10px;
   border: 1px solid lightgrey;
+  box-sizing: border-box;
+  line-height: 1.75;
+  height: 40px;
+}
+
+.InputBoxContentError {
+  padding: 9px 10px;
+  border: 1px solid red;
   box-sizing: border-box;
   line-height: 1.75;
   height: 40px;

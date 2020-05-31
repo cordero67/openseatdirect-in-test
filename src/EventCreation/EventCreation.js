@@ -132,11 +132,11 @@ const EventCreation = () => {
       ticketPrice: null, // fetch
       currency: "", // fetch
       settings: false,
-      ticketDescription: null,
-      orderMin: null, // fetch
-      orderMax: null, // fetch
+      ticketDescription: undefined,
+      orderMin: undefined, // fetch
+      orderMax: undefined, // fetch
       priceFeature: "none", // fetch via temp variable
-      promoCodes: [{ key: "1", name: null, amount: null, percent: null }], // fetch via temp variable
+      promoCodes: [{ key: "1", name: undefined, amount: undefined, percent: undefined }], // fetch via temp variable
       promoCodeNames: [],
       promoCodeWarning: null,
       functionArgs: {}, // fetch via temp variable
@@ -150,17 +150,17 @@ const EventCreation = () => {
     eventTitle: null, // fetch
     isDraft: true, // fetch
     eventType: "live", // fetch
-    webinarLink: null,
-    onlineInformation: null,
-    tbaInformation: null,
-    locationVenueName: null, // fetch
-    locationAddress1: null, // fetch
-    locationAddress2: null, // fetch
-    locationCity: null, // fetch
-    locationState: null, // fetch
-    locationZipPostalCode: null, // fetch
-    locationCountryCode: null, // fetch
-    locationNote: null, // fetch
+    webinarLink: undefined,
+    onlineInformation: undefined,
+    tbaInformation: undefined,
+    locationVenueName: undefined, // fetch
+    locationAddress1: undefined, // fetch
+    locationAddress2: undefined, // fetch
+    locationCity: undefined, // fetch
+    locationState: undefined, // fetch
+    locationZipPostalCode: undefined, // fetch
+    locationCountryCode: undefined, // fetch
+    locationNote: undefined, // fetch
     startDate: new Date(new Date().toDateString()),
     startTime: null,
     startDateTime: null,
@@ -168,15 +168,15 @@ const EventCreation = () => {
     endTime: null,
     endDateTime: null,
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // fetch
-    eventImage: null,
-    shortDescription: null, // fetch
-    longDescription: null, // fetch
-    eventCategory: null, // fetch
-    facebookLink: null, // fetch
-    twitterLink: null, // fetch
-    linkedinLink: null, // fetch
-    instagramLink: null, // fetch
-    vanityLink: null, // fetch
+    eventImage: undefined,
+    shortDescription: undefined, // fetch
+    longDescription: undefined, // fetch
+    eventCategory: undefined, // fetch
+    facebookLink: undefined, // fetch
+    twitterLink: undefined, // fetch
+    linkedinLink: undefined, // fetch
+    instagramLink: undefined, // fetch
+    vanityLink: undefined, // fetch
     refundPolicy: "noRefunds",
   });
 
@@ -197,8 +197,13 @@ const EventCreation = () => {
     ) {
       console.log("there is an event");
       let user = JSON.parse(localStorage.getItem("user")).user._id;
+      let token = JSON.parse(localStorage.getItem("user")).token;
       //console.log("user:", user);
       console.log("user.user._id: ", user);
+
+
+     // myHeaders.append("Content-Type", "application/json");
+    //myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
 
       // extracts all event data, non-transactional
       const APIURL = "https://www.openseatdirect.com/api";
@@ -211,6 +216,7 @@ const EventCreation = () => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
         },
       })
         //.then(handleErrors)
@@ -223,7 +229,7 @@ const EventCreation = () => {
           console.log("****res=", res);
           console.log(res);
           eventTix = res;
-          loadEventInfo(eventTix[0]);
+          loadEventInfo(eventTix);
         })
         .catch((err) => {
           console.log("jumping here", err);
@@ -266,6 +272,7 @@ const EventCreation = () => {
     tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode; // fetch
     tempDescription.locationCountryCode = eventTix.locationCountryCode; // fetch
     tempDescription.timeZone = eventTix.timeZone; // fetch
+
     /*
       console.log(
         "(2020-06-23T23:00:00.000Z) eventTix.startDateTime: ",
@@ -317,7 +324,8 @@ const EventCreation = () => {
         tempDescription.endDateTime.toDateString()
       );
       console.log("tempDescription.startDate: ", tempDescription.endDate);
-*/
+    */
+
     console.log("tempDescription: ", tempDescription);
     setEventDescription(tempDescription);
 
@@ -495,113 +503,127 @@ const EventCreation = () => {
   const saveEvent = () => {
     console.log("we are saving");
 
-    let eventData = {
-      isDraft: eventDescription.isDraft, // fetch
-      eventNum: eventDescription.eventNum, // fetch
-      eventTitle: eventDescription.eventTitle, // fetch
-      eventType: eventDescription.eventType, // fetch
-      webinarLink: eventDescription.webinarLink,
-      onlineInformation: eventDescription.onlineInformation,
-      tbaInformation: eventDescription.tbaInformation,
-      locationVenueName: eventDescription.locationVenueName, // fetch
-      locationAddress1: eventDescription.locationAddress1, // fetch
-      locationAddress2: eventDescription.locationAddress2, // fetch
-      locationCity: eventDescription.locationCity, // fetch
-      locationState: eventDescription.locationState, // fetch
-      locationZipPostalCode: eventDescription.locationZipPostalCode, // fetch
-      locationCountryCode: eventDescription.locationCountryCode, // fetch
-      locationNote: eventDescription.locationNote, // fetch
-      //startDate: new Date(new Date().toDateString()),
-      //startTime: "",
-      // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
-      startDateTime: eventDescription.startDate,
-      //endDate: new Date(new Date().toDateString()),
-      //endTime: "",
-      // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
-      endDateTime: eventDescription.endDate,
-      timeZone: eventDescription.timeZone, // fetch
-      //eventImage:, // fetch
-      shortDescription: eventDescription.shortDescription, // fetch
-      longDescription: eventDescription.longDescription, // fetch
-      eventCategory: eventDescription.eventCategory, // fetch
-      facebookLink: eventDescription.facebookLink, // fetch
-      twitterLink: eventDescription.twitterLink, // fetch
-      linkedinLink: eventDescription.linkedinLink, // fetch
-      instagramLink: eventDescription.instagramLink, // fetch
-      vanityLink: eventDescription.vanityLink, // fetch
-      refundPolicy: eventDescription.refundPolicy, // fetch
-    };
-    console.log("eventData: ", eventData);
-    let form = {
-      
-      isDraft: false, // fetch
-      
-      //webinarLink: eventDescription.webinarLink,
-      //onlineInformation: eventDescription.onlineInformation,
-      //tbaInformation: eventDescription.tbaInformation,
+    if (!eventDescription.eventTitle) {
+      console.log("You need to complete these fields");
+      !eventDescription.eventTitle ? setEventTitleOmission(true) : setEventTitleOmission(false);
+      //!eventDescription.locationVenueName ? setEventTitleOmission(true) : setEventTitleOmission(false);
+      //setEventTitleOmission(true)
+    } else {
+        let ticketData = [];
+        ticketDetails.map((ticket, index) => {
+          let tempObject = {
+            ticketName: ticket.ticketName,
+            currentTicketPrice: ticket.ticketPrice,
+            remainingQuantity: ticket.ticketQuantity,
+            //currency: 
+            //priceFunction:
+            //ticketDescription:
+            //currency:
+            //maxTicketsAllowedPerOrder:
+            //minTicketsAllowedPerOrder:
+            sort: 10 + 10 * index
+          };
+          ticketData.push(tempObject);
+        })
+        console.log("ticketData: ", ticketData)
+        let form = {
+          isDraft: eventDescription.isDraft, // fetch
+          eventNum: eventDescription.eventNum,
+          webinarLink: eventDescription.webinarLink,
+          onlineInformation: eventDescription.onlineInformation,
+          tbaInformation: eventDescription.tbaInformation,
+          timeZone: eventDescription.timeZone, // fetch
+          eventCategory: eventDescription.eventCategory, // fetch
+          facebookLink: eventDescription.facebookLink,
+          twitterLink: eventDescription.twitterLink,
+          linkedinLink: eventDescription.linkedinLink,
+          instagramLink: eventDescription.instagramLink,
+          vanityLink: eventDescription.vanityLink, // fetch
+          refundPolicy: eventDescription.refundPolicy, // fetch
+          eventTitle: eventDescription.eventTitle,
+          eventType: eventDescription.eventType,
+          locationVenueName: eventDescription.locationVenueName,
+          locationAddress1: eventDescription.locationAddress1,
+          locationAddress2: eventDescription.locationAddress2,
+          locationCity: eventDescription.locationCity,
+          locationState: eventDescription.locationState,
+          locationZipPostalCode: eventDescription.locationZipPostalCode,
+          locationCountryCode: eventDescription.locationCountryCode,
+          locationNote: eventDescription.locationNote,
+          // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
+          startDateTime: eventDescription.startDate,
+          // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
+          endDateTime: eventDescription.endDate,
+          photo:
+            eventDescription.eventImage === null
+              ? undefined
+              : eventDescription.eventImage,
+          shortDescription: eventDescription.shortDescription,
+          longDescription: eventDescription.longDescription,
+          tickets: ticketData
+        };
+        console.log("Form data: ", form);
+        let js = JSON.stringify(form);
+        console.log("JSON Form data: ", js);
+        const authstring =
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDlkNzIzN2VjODAwYjZlOTM1NTg4ODgiLCJpYXQiOjE1ODg2ODgwOTJ9.URrxmyn4C4rcl5D4QubreEjRIN16fg4ao86Ym_u1fIc";
+        const userid = "5d9d7237ec800b6e93558888";
+        const APIURL = "https://www.openseatdirect.com/api";
 
-      //timeZone: eventDescription.timeZone, // fetch
-      //eventCategory: eventData.eventCategory, // fetch
-      facebookLink: eventData.facebookLink, // fetch
-      twitterLink: eventData.twitterLink, // fetch
-      linkedinLink: eventData.linkedinLink, // fetch
-      instagramLink: eventData.instagramLink, // fetch
-      //vanityLink: eventDescription.vanityLink, // fetch
-      //refundPolicy: eventDescription.refundPolicy, // fetch
+        let apiurl;
 
-      eventTitle: eventData.eventTitle,
-      eventType: eventData.eventType,
-      locationVenueName: eventData.locationVenueName,
-      locationAddress1: eventData.locationAddress1,
-      locationAddress2: eventData.locationAddress2,
-      locationCity: eventData.locationCity,
-      locationState: eventData.locationState,
-      locationZipPostalCode: eventData.locationZipPostalCode,
-      locationCountryCode: eventData.locationCountryCode,
-      locationNote: eventData.locationNote,
-      
-      startDateTime: eventData.startDateTime,
-      photo:
-        eventDescription.eventImage === null
-          ? undefined
-          : eventDescription.eventImage,
-      shortDescription: eventData.shortDescription,
-      longDescription: eventData.longDescription,
-      tickets: [
-        { ticketName: "tick1", currentTicketPrice: 10, remainingQuantity: 55 },
-        { ticketName: "tick2", currentTicketPrice: 33, remainingQuantity: 99 },
-      ],
-    };
-    console.log("Form data: ", form);
-    let js = JSON.stringify(form);
-    console.log("JSON Form data: ", js);
-    const authstring =
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDlkNzIzN2VjODAwYjZlOTM1NTg4ODgiLCJpYXQiOjE1ODg2ODgwOTJ9.URrxmyn4C4rcl5D4QubreEjRIN16fg4ao86Ym_u1fIc";
-    const userid = "5d9d7237ec800b6e93558888";
-    const APIURL = "https://www.openseatdirect.com/api";
-    let apiurl = `${APIURL}/eventix/${userid}`;
-
-    fetch(apiurl, {
-      method: "post",
-      headers: {
-        Authorization: authstring,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: js,
-      redirect: "follow",
-    })
-      .then(handleErrors)
-      .then((response) => {
-        console.log("response in event/create", response);
-        return response.json();
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log("**ERROR THROWN", err);
-      });
+        if (eventDescription.eventNum) {
+          console.log("editting an existing event");
+          apiurl = `${APIURL}/eventix/${userid}/${eventDescription.eventNum}`;
+          console.log("apiurl: ", apiurl)
+          fetch(apiurl, {
+            method: "patch",
+            headers: {
+              Authorization: authstring,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: js,
+            redirect: "follow",
+          })
+          .then(handleErrors)
+          .then((response) => {
+            console.log("response in event/create", response);
+            return response.json();
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log("**ERROR THROWN", err);
+          });
+        } else {
+          console.log("creating a new event");
+          apiurl = `${APIURL}/eventix/${userid}`;
+          fetch(apiurl, {
+            method: "post",
+            headers: {
+              Authorization: authstring,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: js,
+            redirect: "follow",
+          })
+          .then(handleErrors)
+          .then((response) => {
+            console.log("response in event/create", response);
+            return response.json();
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log("**ERROR THROWN", err);
+          });
+        
+        }
+    }
   };
 
   // STOPPED
@@ -1885,6 +1907,7 @@ const EventCreation = () => {
   };
 
   const [eventTitleWarning, setEventTitleWarning] = useState(false);
+  const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [shortDescriptionWarning, setShortDescriptionWarning] = useState(false);
   const [eventLocationWarning, setEventLocationWarning] = useState(false);
   const [eventAddress1Warning, setEventAddress1Warning] = useState(false);
@@ -2030,14 +2053,19 @@ const EventCreation = () => {
           Event Details
         </div>
         <div style={{ border: "1px solid grey" }}>
-          <div className={classes.SectionTitleTight}>Event Title</div>
-
+          <div className={classes.SectionTitleTight}>Event Title<span style={{color: "red"}}>*</span></div>
           <div className={classes.InputBox}>
             <input
-              className={classes.InputBoxContent}
+              className={eventTitleOmission ? classes.InputBoxContentError : classes.InputBoxContent}
               style={{ width: "600px" }}
-              onFocus={() => setEventTitleWarning(true)}
-              onBlur={() => setEventTitleWarning(false)}
+              onFocus={() => {
+                setEventTitleWarning(true)
+                setEventTitleOmission(false)
+              }}
+              onBlur={() => {
+                setEventTitleWarning(false)
+                setEventTitleOmission(false)
+              }}
               type="text"
               id="eventTitle"
               maxLength="75"
@@ -2051,6 +2079,18 @@ const EventCreation = () => {
             {eventTitleWarning
               ? displayMessage(75, eventDescription.eventTitle)
               : null}
+            {eventTitleOmission
+              ? <div
+                  style={{
+                    paddingLeft: "10px",
+                    height: "14px",
+                    color: "red",
+                    fontSize: "12px",
+                    fontWeight: "700",
+                  }}
+                >This is a required field
+                </div>
+                : null}
           </div>
 
           <div className={classes.SectionTitle}>
@@ -2324,8 +2364,8 @@ const EventCreation = () => {
 
           <div className={classes.SectionTitle}>Event Dates and Time</div>
           <div className={classes.DateTimeHeader}>
-            <div>Start Date</div>
-            <div>Start Time</div>
+            <div>Start Date<span style={{color: "red"}}>*</span></div>
+            <div>Start Time<span style={{color: "red"}}>*</span></div>
             <div>End Date</div>
             <div>End Time</div>
             <div>Time Zone</div>
@@ -2446,7 +2486,7 @@ const EventCreation = () => {
             <Editor
               apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
               onEditorChange={changeLongDescription}
-              initialValue={eventTix.longDescription}
+              initialValue={eventDescription.longDescription}
               plugins="wordcount autoresize"
               init={{
                 toolbar:
@@ -2614,7 +2654,7 @@ const EventCreation = () => {
                 fontWeight: 600,
               }}
             >
-              Ticket Name
+              Ticket Name<span style={{color: "red"}}>*</span>
             </div>
 
             <div
@@ -2624,7 +2664,7 @@ const EventCreation = () => {
                 fontWeight: 600,
               }}
             >
-              Quantity
+              Quantity<span style={{color: "red"}}>*</span>
             </div>
 
             <div
@@ -2634,7 +2674,7 @@ const EventCreation = () => {
                 fontWeight: 600,
               }}
             >
-              Price
+              Price<span style={{color: "red"}}>*</span>
             </div>
 
             <div
