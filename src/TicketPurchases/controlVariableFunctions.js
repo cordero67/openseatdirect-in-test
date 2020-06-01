@@ -40,6 +40,7 @@ export const loadEventDetails = event => {
 
 // initial definition of "ticketInfo"
 export const loadTicketInfo = event => {
+  console.log("Inside 'loadTicketInfo'");
   let tempTicketArray = [];
   let tempCurrency = "$";
   
@@ -47,8 +48,9 @@ export const loadTicketInfo = event => {
     tempCurrency = "¥";
   }
   
-  
-  event.ticket.forEach(item => {
+  console.log("event.tickets: ",event.tickets)
+  event.tickets.forEach((item, index) => {
+    console.log("tickets array index",index);
     let priceFunction = {};
     let pricingCode = "";
     if (item.priceFunction && item.priceFunction.form && item.usePriceFunction) {
@@ -119,9 +121,9 @@ export const loadTicketInfo = event => {
 }
 
 // initial definition of "promoCodeDetails"
-export const loadPromoCodeDetails = (ticket, promoCodeDetails) => {
+export const loadPromoCodeDetails = (tickets, promoCodeDetails) => {
   let tempCodesArray = [];
-  ticket.forEach(tktType => {
+  tickets.forEach(tktType => {
     if (tktType.priceFunction && tktType.priceFunction.form === "promo" && tktType.usePriceFunction) {
       tktType.priceFunction.args.promocodes.forEach(tktPromo => {
         if (!tempCodesArray.includes(tktPromo.name.toUpperCase())) {

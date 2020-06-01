@@ -122,7 +122,7 @@ const EventDetail = props => {
       eventNum: event.eventNum,
       eventTitle: event.eventTitle,
       eventStatus: event.eventStatus,
-      organizer: "Light of Gold PR, Marketing, and Consulting",
+      organizer: "",
       organizerEmail: event.accountId.accountEmail,
       startDateTime: event.startDateTime,
       endDateTime: event.endDateTime,

@@ -14,6 +14,9 @@ const handleErrors = response => {
 
 // extracts specific event data, non-transactional
 export const getEventData = eventId => {
+
+  //host_url+ "/api/event/all/" + USER_ID,
+  //return fetch(`${API}/event/all/${eventId}`, {
   return fetch(`${API}/event/e/${eventId}`, {
     method: "GET"
   })
