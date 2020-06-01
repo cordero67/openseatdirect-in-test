@@ -118,9 +118,13 @@ const TicketSelection = () => {
           localStorage.removeItem(`cart_${event}`);
           localStorage.removeItem(`image_${event}`);
         } else {
+          console.log("ticketInfo: ", loadTicketInfo(res));
+          console.log("res: ",res);
           setTicketInfo(loadTicketInfo(res));
-          setPromoCodeDetails(loadPromoCodeDetails(res.ticket, promoCodeDetails));
+          console.log("return from 'loadTicketInfo'")
+          setPromoCodeDetails(loadPromoCodeDetails(res.tickets, promoCodeDetails));
           setOrderTotals(loadOrderTotals(res));
+          setIsLoadingEvent(false);
         }
         getEventImage(eventID)
           .then(res => {
@@ -135,6 +139,8 @@ const TicketSelection = () => {
       })
       .catch(err => {
         // NEED TO ADDRESS THESE SITUATIONS
+        console.log("Inside the catch")
+        console.log("err: ",err)
         if (err === "Error: Error: 400") {
         }
         if (err === undefined) {
@@ -496,37 +502,45 @@ const TicketSelection = () => {
 
   // defines main display with ticket and order panes
   let mainDisplay;
-  if (showDoublePane && isSuccessfull) {
-    mainDisplay = (
-      <Aux>
-        <div style={MainGrid}>
-          {ticketPane}
-          {orderPane}
-        </div>
-      </Aux>
-    );
-  } else if (!showOrderSummaryOnly && isSuccessfull) {
-    mainDisplay = (
-      <Aux>
-        <div style={MainGrid}>{ticketPane}</div>
-      </Aux>
-    );
-  } else if (isSuccessfull) {
-    mainDisplay = (
-      <Aux>
-        <div style={MainGrid}>{orderPane}</div>
-      </Aux>
-    );
+  if (isLoadingEvent) {
+    console.log("else isLoadingEvent: ",isLoadingEvent)
+    console.log("else isSuccessful: ",isSuccessfull)
+    mainDisplay = (<div>Wait</div>)
   } else {
-    mainDisplay = (
-      <Aux>
-        <div className={styles.BlankCanvas}>
-          <h5>
-            <span style={{ color: "red" }}>This event does not exist.</span>
-          </h5>
-        </div>
-      </Aux>
-    );
+    console.log("else isLoadingEvent: ",isLoadingEvent)
+    console.log("else isSuccessful: ",isSuccessfull)
+    if (showDoublePane && isSuccessfull) {
+      mainDisplay = (
+        <Aux>
+          <div style={MainGrid}>
+            {ticketPane}
+            {orderPane}
+          </div>
+        </Aux>
+      );
+    } else if (!showOrderSummaryOnly && isSuccessfull) {
+      mainDisplay = (
+        <Aux>
+          <div style={MainGrid}>{ticketPane}</div>
+        </Aux>
+      );
+    } else if (isSuccessfull) {
+      mainDisplay = (
+        <Aux>
+          <div style={MainGrid}>{orderPane}</div>
+        </Aux>
+      );
+    } else {
+      mainDisplay = (
+        <Aux>
+          <div className={styles.BlankCanvas}>
+            <h5>
+              <span style={{ color: "red" }}>This event does not exist.</span>
+            </h5>
+          </div>
+        </Aux>
+      );
+    }
   }
 
   return (

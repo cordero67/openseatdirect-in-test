@@ -88,7 +88,7 @@ const VendorEvents = () => {
         let js = JSON.parse(result);
         console.log("eventDetails: ", js);
         let tempjs = [...js];
-        js.sort(compareValues("createdAt", "asc"));
+        js.sort(compareValues("startDateTime", "asc"));
         console.log("js: ", js);
         setEventDetails(js);
         return js;
@@ -229,6 +229,7 @@ const VendorEvents = () => {
             <div style={{ textAlign: "center" }}>Sold</div>
             <div style={{ textAlign: "center" }}>Revenue</div>
             <div style={{ textAlign: "center" }}>Status</div>
+            <div style={{ textAlign: "center" }}>Edit</div>
           </div>
 
           <div></div>
@@ -244,7 +245,7 @@ const VendorEvents = () => {
               let tempHours;
               let tempMinutes;
               let tempLongDateTime;
-              tempDateTime = new Date(item.createdAt);
+              tempDateTime = new Date(item.startDateTime);
               console.log("tempDateTime: ", tempDateTime);
               tempMonthAbbr = monthAbbr[tempDateTime.getMonth()];
               tempMonthNames = monthNames[tempDateTime.getMonth()];

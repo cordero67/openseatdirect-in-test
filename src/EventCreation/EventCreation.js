@@ -136,7 +136,7 @@ const EventCreation = () => {
       orderMin: undefined, // fetch
       orderMax: undefined, // fetch
       priceFeature: "none", // fetch via temp variable
-      promoCodes: [{ key: "1", name: undefined, amount: undefined, percent: undefined }], // fetch via temp variable
+      promoCodes: [{ key: "1", name: undefined, amount: undefined, percent: false }], // fetch via temp variable
       promoCodeNames: [],
       promoCodeWarning: null,
       functionArgs: {}, // fetch via temp variable
@@ -185,10 +185,6 @@ const EventCreation = () => {
   let eventTix = {};
 
   useEffect(() => {
-    // stores original "eventTixOrig" fields
-    //console.log("eventTixOrig: ", eventTixOrig);
-    //console.log("JSON.stringify(eventTixOrig): ", JSON.stringify(eventTixOrig));
-    //localStorage.setItem("eventTixOrig", JSON.stringify(eventTixOrig));
 
     // checks if an event is identified and user is valiadated
     if (
@@ -198,12 +194,10 @@ const EventCreation = () => {
       console.log("there is an event");
       let user = JSON.parse(localStorage.getItem("user")).user._id;
       let token = JSON.parse(localStorage.getItem("user")).token;
-      //console.log("user:", user);
       console.log("user.user._id: ", user);
 
-
-     // myHeaders.append("Content-Type", "application/json");
-    //myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
+      //myHeaders.append("Content-Type", "application/json");
+      //myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
 
       // extracts all event data, non-transactional
       const APIURL = "https://www.openseatdirect.com/api";
@@ -227,7 +221,6 @@ const EventCreation = () => {
         })
         .then((res) => {
           console.log("****res=", res);
-          console.log(res);
           eventTix = res;
           loadEventInfo(eventTix);
         })
@@ -334,22 +327,34 @@ const EventCreation = () => {
       let tempArray = [];
       eventTix.tickets.forEach((tix, index) => {
         let tempPriceFeature = "none";
-        let tempPromoCodes;
+        let tempPromoCodes = [];
+        let tempPromoCodesArray = [];
         let tempFunctionArgs;
         if (tix.priceFunction && tix.priceFunction.form) {
           tempPriceFeature = tix.priceFunction.form;
           if (tempPriceFeature === "promo") {
+            console.log("priceFunction: ", tix.priceFunction);
+            console.log("tix.priceFunction.args.promocodes: ",tix.priceFunction.args.promocodes)
             tempPromoCodes = tix.priceFunction.args.promocodes;
+            tempPromoCodes.map((promo, index) => {
+              let element = {
+                  key: index,
+                  name: promo.name,
+                  amount: promo.amount,
+                  percent: promo.percent
+                }
+              tempPromoCodesArray.push(element);
+            })
           } else if (tempPriceFeature === "bogo") {
             tempFunctionArgs = {
               buy: tix.priceFunction.args.buy,
               get: tix.priceFunction.args.get,
-              discount: tix.priceFunction.args.discount * 100,
+              discount: tix.priceFunction.args.discount,
             };
-            if (tix.priceFunction.args.discount === 1) {
+            if (tix.priceFunction.args.discount === 100) {
               tempPriceFeature = "bogof";
             }
-            if (tix.priceFunction.args.discount !== 1) {
+            if (tix.priceFunction.args.discount !== 100) {
               tempPriceFeature = "bogod";
             }
           } else  if (tempPriceFeature === "twofer") {
@@ -366,17 +371,17 @@ const EventCreation = () => {
           key: tix.sort ? tix.sort : index, // fetch
           sort: tix.sort ? tix.sort : index, // fetch
           ticketName: tix.ticketName, // fetch
-          ticketQuantity: "", // fetch NEED TO WAIT FOR ORDERS API
+          ticketQuantity: tix.remainingQuantity, // fetch NEED TO WAIT FOR ORDERS API
           ticketPrice: tix.currentTicketPrice, // fetch
-          currency: tix.currency, // fetch
+          currency: tix.currency ? tix.currency : "USD", // fetch
           settings: false,
           ticketDescription: tix.ticketDescription, // fetch
           orderMin: tix.minTicketsAllowedPerOrder, // fetch
           orderMax: tix.maxTicketsAllowedPerOrder, // fetch
           priceFeature: tempPriceFeature, // fetch via temp variable
-          promoCodes: tempPromoCodes, // fetch via temp variable
+          promoCodes: tempPromoCodesArray, // fetch via temp variable
           promoCodeNames: [],
-          promoCodeWarning: null,
+          promoCodeWarning: null, //NEED TO POPULATE!!!
           functionArgs: tempFunctionArgs, // fetch via temp variable
           viewModal: false,
         };
@@ -500,32 +505,78 @@ const EventCreation = () => {
     return response;
   };
 
-  const saveEvent = () => {
+  const saveEvent = (preview) => {
     console.log("we are saving");
 
     if (!eventDescription.eventTitle) {
       console.log("You need to complete these fields");
       !eventDescription.eventTitle ? setEventTitleOmission(true) : setEventTitleOmission(false);
-      //!eventDescription.locationVenueName ? setEventTitleOmission(true) : setEventTitleOmission(false);
-      //setEventTitleOmission(true)
     } else {
         let ticketData = [];
+
+
         ticketDetails.map((ticket, index) => {
+
+                  let tempPriceFunction = {};
+
+                  // for "promo"
+                  if (ticket.priceFeature === "promo") {
+                    let promoCodesArray = [];
+                    ticket.promoCodes.map((item, index) => {
+                      let promoCodeElement = {
+                        key: item.key,
+                        name: item.name,
+                        amount: item.amount,
+                        percent: item.percent
+                      }
+                      promoCodesArray.push(promoCodeElement);
+                      console.log("promoCodesArray: ", promoCodesArray)
+                    })
+                    tempPriceFunction = {
+                      form: "promo",
+                      args: {
+                        promocodes: promoCodesArray
+                      }
+                    }
+                  }
+                  // for "bogod" and "bogof"
+                  if (ticket.priceFeature === "bogod" || ticket.priceFeature === "bogof") {
+                    tempPriceFunction = {
+                      form: "bogo",
+                      args: {
+                        buy: ticket.functionArgs.buy,
+                        get: ticket.functionArgs.get,
+                        discount: ticket.functionArgs.discount
+                      }
+                    }
+                  }
+                  // for "twofer"
+                  if (ticket.priceFeature === "twofer") {
+                    tempPriceFunction = {
+                      form: "twofer",
+                      args: {
+                        buy: ticket.functionArgs.buy,
+                        for: ticket.functionArgs.for
+                      }
+                    }
+                  }
+                  
           let tempObject = {
             ticketName: ticket.ticketName,
             currentTicketPrice: ticket.ticketPrice,
             remainingQuantity: ticket.ticketQuantity,
-            //currency: 
-            //priceFunction:
-            //ticketDescription:
-            //currency:
-            //maxTicketsAllowedPerOrder:
-            //minTicketsAllowedPerOrder:
+            priceFunction: tempPriceFunction,
+            ticketDescription: ticket.ticketDescription,
+            currency: ticket.currency,
+            maxTicketsAllowedPerOrder: ticket.orderMax,
+            minTicketsAllowedPerOrder: ticket.orderMin,
             sort: 10 + 10 * index
           };
           ticketData.push(tempObject);
         })
         console.log("ticketData: ", ticketData)
+
+
         let form = {
           isDraft: eventDescription.isDraft, // fetch
           eventNum: eventDescription.eventNum,
@@ -577,11 +628,12 @@ const EventCreation = () => {
           apiurl = `${APIURL}/eventix/${userid}/${eventDescription.eventNum}`;
           console.log("apiurl: ", apiurl)
           fetch(apiurl, {
-            method: "patch",
+            method: "post",
             headers: {
               Authorization: authstring,
               Accept: "application/json",
               "Content-Type": "application/json",
+              //"Content-Type": "text/plain"
             },
             body: js,
             redirect: "follow",
@@ -593,6 +645,9 @@ const EventCreation = () => {
           })
           .then((res) => {
             console.log(res);
+            if (preview) {
+              window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
+            }
           })
           .catch((err) => {
             console.log("**ERROR THROWN", err);
@@ -617,6 +672,9 @@ const EventCreation = () => {
           })
           .then((res) => {
             console.log(res);
+            if (preview) {
+              window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
+            }
           })
           .catch((err) => {
             console.log("**ERROR THROWN", err);
@@ -632,12 +690,12 @@ const EventCreation = () => {
     tempDetails.forEach((item) => {
       if (item.key === key) {
         item.priceFeature = value;
-        item.promoCodes = [{ key: "1", name: "", amount: "", percent: "" }];
+        item.promoCodes = [{ key: "1", name: "", amount: "", percent: false }];
         item.promoCodeNames = [];
         item.promoCodeWarning = "";
         item.functionArgs = {};
         if (value === "bogof") {
-          item.functionArgs = { buy: "", get: "", discount: 1 };
+          item.functionArgs = { buy: "", get: "", discount: 100 };
         }
         if (value === "bogod") {
           item.functionArgs = { buy: "", get: "", discount: "" };
@@ -666,7 +724,7 @@ const EventCreation = () => {
       orderMin: "",
       orderMax: "",
       priceFeature: "none",
-      promoCodes: [{ key: newPromoKey, name: "", amount: "", percent: "" }],
+      promoCodes: [{ key: newPromoKey, name: "", amount: "", percent: false }],
       promoCodeNames: [],
       promoCodeWarning: "",
       functionArgs: {},
@@ -692,7 +750,7 @@ const EventCreation = () => {
           orderMin: "",
           orderMax: "",
           priceFeature: "none",
-          promoCodes: [{ key: "1", name: "", amount: "", percent: "" }],
+          promoCodes: [{ key: "1", name: "", amount: "", percent: false }],
           promoCodeNames: [],
           promoCodeWarning: "",
           functionArgs: {},
@@ -716,7 +774,7 @@ const EventCreation = () => {
       let tempDetails = [...ticketDetails];
       tempDetails.forEach((item, index) => {
         if (item.key === ticket.key) {
-          item.promoCodes = [{ key: "1", name: "", amount: "", percent: "" }];
+          item.promoCodes = [{ key: "1", name: "", amount: "", percent: false }];
         }
         setTicketDetails(tempDetails);
       });
@@ -743,7 +801,7 @@ const EventCreation = () => {
     tempDetails.forEach((item) => {
       if (item.key === key) {
         item.priceFeature = "none";
-        item.promoCodes = [{ key: "", name: "", amount: "", percent: "" }];
+        item.promoCodes = [{ key: "", name: "", amount: "", percent: false }];
         item.promoCodeNames = [];
         item.promoCodeWarning = "";
         item.functionArgs = {};
@@ -758,7 +816,7 @@ const EventCreation = () => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
       if (item.key === key) {
-        let newPromo = { key: newPromoKey, name: "", amount: "", percent: "" };
+        let newPromo = { key: newPromoKey, name: "", amount: "", percent: false };
         item.promoCodes.push(newPromo);
       }
     });
@@ -790,8 +848,8 @@ const EventCreation = () => {
         let tempCodes = [...item.promoCodes];
         tempCodes.forEach((code) => {
           if (code.key === promoKey) {
-            code.amount = "";
-            code.percent = event.target.value;
+            code.amount = event.target.value;
+            code.percent = true;
           }
         });
         item.promoCodes = tempCodes;
@@ -808,8 +866,8 @@ const EventCreation = () => {
         let tempCodes = [...item.promoCodes];
         tempCodes.forEach((code) => {
           if (code.key === promoKey) {
-            code.percent = "";
             code.amount = event.target.value;
+            code.percent = false;
           }
         });
         item.promoCodes = tempCodes;
@@ -823,13 +881,15 @@ const EventCreation = () => {
     let display = (
       <div>
         {ticket.promoCodes.map((item, index) => {
+          console.log("item: ", item)
+          console.log("item.amount: ",item.amount)
           let finalPrice = "";
-          if (item.amount !== "" && item.percent === "") {
+          if (item.percent === false) {
             finalPrice = (ticket.ticketPrice - item.amount).toFixed(2);
-          } else if (item.percent !== "" && item.amount === "") {
+          } else if (item.percent === true) {
             finalPrice = (
               ticket.ticketPrice *
-              (1 - item.percent / 100)
+              (1 - item.amount / 100)
             ).toFixed(2);
           }
 
@@ -900,7 +960,7 @@ const EventCreation = () => {
                     type="text"
                     id="promoAmount"
                     placeholder=""
-                    value={item.amount}
+                    value={!item.percent ? item.amount : ""}
                     onChange={(event) => {
                       changePromoCodesAmount(event, ticket.key, item.key);
                     }}
@@ -930,7 +990,7 @@ const EventCreation = () => {
                     type="text"
                     id="promoPercent"
                     placeholder=""
-                    value={item.percent}
+                    value={item.percent ? item.amount : ""}
                     onChange={(event) => {
                       changePromoCodesPercent(event, ticket.key, item.key);
                     }}
@@ -2026,7 +2086,7 @@ const EventCreation = () => {
             <button
               className={classes.Button}
               style={{ border: "2px solid green", color: "green" }}
-              onClick={saveEvent}
+              onClick={() => saveEvent(false)}
             >
               Save as Draft
             </button>
@@ -2035,6 +2095,7 @@ const EventCreation = () => {
             <button
               className={classes.Button}
               style={{ border: "2px solid blue", color: "blue" }}
+              onClick={() => saveEvent(true)}
             >
               Preview
             </button>
@@ -2754,7 +2815,6 @@ const EventCreation = () => {
             </div>
           </div>
         </div>
-        <div>{ReactHtmlParser(eventDescription.longDescription)}</div>
       </div>
     </div>
   );
