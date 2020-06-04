@@ -153,33 +153,48 @@ class ImgDropAndCrop extends Component {
     }
 
     handleOnCropChange = (crop) => {
-        //console.log("**handleOnCropChange", crop)
+        console.log("**handleOnCropChange", crop)
+        //this.props.change(crop);
         this.setState({crop:crop})
     }
+
+    handleOnCropComplete = (crop, pixelCrop) =>{
+        console.log("handleOnCropCompleted crop pixelcrop:", crop, "pixcelCrop= ", pixelCrop);
+        const canvasRef = this.imagePreviewCanvasRef.current;
+        const {imgSrc}  = this.state;
+        this.setState ({pixelcrop:pixelCrop});
+        this.setState ({image2send: this.imagePreviewCanvasRef.current});
+        image64toCanvasRef2(canvasRef, imgSrc, pixelCrop, crop);
+    }
+
 
     handleOnCropComplete = (crop, pixelCrop) =>{
         this.setState({pixelcrop: pixelCrop});
         console.log("pixelCrop: ", pixelCrop)
         console.log("handleOnCropCompleted crop:", crop);
-        const canvasRef = this.imagePreviewCanvasRef.current;
-        const {imgSrc}  = this.state;
+        const canvasRef = this.imagePreviewCanvasRef.current;//
+        this.props.change(this.imagePreviewCanvasRef.current);
+        //this.props.change(canvasRef);
+        const {imgSrc}  = this.state;//
         image64toCanvasRef2(canvasRef, imgSrc, pixelCrop, crop);
+        //this.props.change(this.imagePreviewCanvasRef);
         console.log("Before imagePreviewCanvasRef: ",this.imagePreviewCanvasRef);
+
         console.log ("magePreviewCanvasRef.current.width and height" ,this.imagePreviewCanvasRef.current.width,this.imagePreviewCanvasRef.current.height)
     }
 
-    handleCreateCroppedImage = (event) => {
+    handleCreateCroppedImage = async (event) => {
         event.preventDefault()
         const {imgSrc} = this.state;
         if (imgSrc) {
             const canvasRef = this.imagePreviewCanvasRef.current;        
             const {imgSrcExt} =  this.state;
             const tempImage = canvasRef.toDataURL('image/jpeg', 0.5);
-
             this.setState({newimageData64: tempImage});
             console.log("newimageData64: ", this.state.newimageData64)
             console.log("newimageData64: ", tempImage)
-            this.props.change(tempImage);
+            console.log("tempImage typeof: ", typeof tempImage)
+            //this.props.change(canvasRef);
             console.log("height: ", tempImage.height)
             console.log("width: ", tempImage.width)
         }
@@ -281,6 +296,7 @@ class ImgDropAndCrop extends Component {
                                     onImageLoaded={this.handleImageLoaded}
                                     onComplete = {async (crop, pixelCrop)=>{
                                         await this.handleOnCropComplete(crop, pixelCrop);
+                                        this.props.change(this.imagePreviewCanvasRef.current);
                                         }}
                                     onChange={this.handleOnCropChange}
                                 />
