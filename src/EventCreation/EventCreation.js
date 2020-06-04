@@ -122,32 +122,20 @@ const dataFields = {
 };
 
 const EventCreation = () => {
-  // stores all Ticket Details variables
-  const [ticketDetails, setTicketDetails] = useState([
-    {
-      key: "1", // fetch
-      sort: null, // fetch
-      ticketName: null, // fetch
-      ticketQuantity: null, // fetch
-      ticketPrice: null, // fetch
-      currency: "", // fetch
-      settings: false,
-      ticketDescription: undefined,
-      orderMin: undefined, // fetch
-      orderMax: undefined, // fetch
-      priceFeature: "none", // fetch via temp variable
-      promoCodes: [{ key: "1", name: undefined, amount: undefined, percent: false }], // fetch via temp variable
-      promoCodeNames: [],
-      promoCodeWarning: null,
-      functionArgs: {}, // fetch via temp variable
-      viewModal: false,
-    },
-  ]);
+  let vendorInfo = {};
+  let tempUser = {};
+  tempUser = JSON.parse(localStorage.getItem("user"));
+  vendorInfo.token = tempUser.token;
+  vendorInfo.name = tempUser.user.name;
+  vendorInfo.email = tempUser.user.email;
+  vendorInfo.role = tempUser.user.role;
+  vendorInfo.id = tempUser.user._id;
+  console.log("vendorInfo: ",vendorInfo)
 
   // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
-    eventNum: null, // fetch
-    eventTitle: null, // fetch
+    eventNum: undefined, // fetch
+    eventTitle: undefined, // fetch
     isDraft: true, // fetch
     eventType: "live", // fetch
     webinarLink: undefined,
@@ -162,11 +150,11 @@ const EventCreation = () => {
     locationCountryCode: undefined, // fetch
     locationNote: undefined, // fetch
     startDate: new Date(new Date().toDateString()),
-    startTime: null,
-    startDateTime: null,
+    startTime: undefined,
+    startDateTime: undefined,
     endDate: new Date(new Date().toDateString()),
-    endTime: null,
-    endDateTime: null,
+    endTime: undefined,
+    endDateTime: undefined,
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // fetch
     eventImage: undefined,
     shortDescription: undefined, // fetch
@@ -180,6 +168,29 @@ const EventCreation = () => {
     refundPolicy: "noRefunds",
   });
 
+  // stores all Ticket Details variables
+  const [ticketDetails, setTicketDetails] = useState([
+    {
+      key: "1", // fetch
+      sort: undefined, // fetch
+      _id: undefined,
+      ticketName: undefined, // fetch
+      remainingQuantity: undefined, // fetch
+      currentTicketPrice: undefined, // fetch
+      currency: "", // fetch
+      settings: false,
+      ticketDescription: undefined,
+      minTicketsAllowedPerOrder: undefined, // fetch
+      maxTicketsAllowedPerOrder: undefined, // fetch
+      priceFeature: "none", // fetch via temp variable
+      promoCodes: [{ key: "1", name: undefined, amount: undefined, percent: false }], // fetch via temp variable
+      promoCodeNames: [],
+      promoCodeWarning: undefined,
+      functionArgs: {}, // fetch via temp variable
+      viewModal: false,
+    },
+  ]);
+
   const [isLoading, setIsLoading] = useState(true);
 
   let eventTix = {};
@@ -192,12 +203,9 @@ const EventCreation = () => {
       localStorage.getItem("user")
     ) {
       console.log("there is an event");
-      let user = JSON.parse(localStorage.getItem("user")).user._id;
-      let token = JSON.parse(localStorage.getItem("user")).token;
+      let user = vendorInfo.id;
+      let token = vendorInfo.token;
       console.log("user.user._id: ", user);
-
-      //myHeaders.append("Content-Type", "application/json");
-      //myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
 
       // extracts all event data, non-transactional
       const APIURL = "https://www.openseatdirect.com/api";
@@ -265,6 +273,7 @@ const EventCreation = () => {
     tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode; // fetch
     tempDescription.locationCountryCode = eventTix.locationCountryCode; // fetch
     tempDescription.timeZone = eventTix.timeZone; // fetch
+    tempDescription.eventImage = eventTix.photo;
 
     /*
       console.log(
@@ -370,14 +379,15 @@ const EventCreation = () => {
         let newItem = {
           key: tix.sort ? tix.sort : index, // fetch
           sort: tix.sort ? tix.sort : index, // fetch
+          _id: tix._id,
           ticketName: tix.ticketName, // fetch
-          ticketQuantity: tix.remainingQuantity, // fetch NEED TO WAIT FOR ORDERS API
-          ticketPrice: tix.currentTicketPrice, // fetch
+          remainingQuantity: tix.remainingQuantity, // fetch NEED TO WAIT FOR ORDERS API
+          currentTicketPrice: tix.currentTicketPrice, // fetch
           currency: tix.currency ? tix.currency : "USD", // fetch
           settings: false,
           ticketDescription: tix.ticketDescription, // fetch
-          orderMin: tix.minTicketsAllowedPerOrder, // fetch
-          orderMax: tix.maxTicketsAllowedPerOrder, // fetch
+          minTicketsAllowedPerOrder: tix.minTicketsAllowedPerOrder, // fetch
+          maxTicketsAllowedPerOrder: tix.maxTicketsAllowedPerOrder, // fetch
           priceFeature: tempPriceFeature, // fetch via temp variable
           promoCodes: tempPromoCodesArray, // fetch via temp variable
           promoCodeNames: [],
@@ -389,6 +399,251 @@ const EventCreation = () => {
         console.log("tempArray: ", tempArray);
       });
       setTicketDetails(tempArray);
+    }
+  };
+
+  const saveEvent = async (preview) => {
+    console.log("we are saving");
+
+    if (!eventDescription.eventTitle) {
+      console.log("You need to complete these fields");
+      !eventDescription.eventTitle ? setEventTitleOmission(true) : setEventTitleOmission(false);
+    } else {
+      /*
+        let ticketData = [];
+        ticketDetails.map((ticket, index) => {
+
+                  let tempPriceFunction = {};
+                  // for "promo"
+                  if (ticket.priceFeature === "promo") {
+                    let promoCodesArray = [];
+                    ticket.promoCodes.map((item, index) => {
+                      let promoCodeElement = {
+                        key: item.key,
+                        name: item.name,
+                        amount: item.amount,
+                        percent: item.percent
+                      }
+                      promoCodesArray.push(promoCodeElement);
+                      console.log("promoCodesArray: ", promoCodesArray)
+                    })
+                    tempPriceFunction = {
+                      form: "promo",
+                      args: {
+                        promocodes: promoCodesArray
+                      }
+                    }
+                  }
+                  // for "bogod" and "bogof"
+                  if (ticket.priceFeature === "bogod" || ticket.priceFeature === "bogof") {
+                    tempPriceFunction = {
+                      form: "bogo",
+                      args: {
+                        buy: ticket.functionArgs.buy,
+                        get: ticket.functionArgs.get,
+                        discount: ticket.functionArgs.discount
+                      }
+                    }
+                  }
+                  // for "twofer"
+                  if (ticket.priceFeature === "twofer") {
+                    tempPriceFunction = {
+                      form: "twofer",
+                      args: {
+                        buy: ticket.functionArgs.buy,
+                        for: ticket.functionArgs.for
+                      }
+                    }
+                  }
+                  
+        let tempObject = {
+          ticketName: ticket.ticketName,
+          currentTicketPrice: ticket.currentTicketPrice,
+          remainingQuantity: ticket.remainingQuantity,
+          priceFunction: tempPriceFunction,
+          ticketDescription: ticket.ticketDescription,
+          currency: ticket.currency,
+          maxTicketsAllowedPerOrder: ticket.maxTicketsAllowedPerOrder,
+          minTicketsAllowedPerOrder: ticket.minTicketsAllowedPerOrder,
+          _id: ticket._id,
+          sort: 10 + 10 * index
+        };
+        ticketData.push(tempObject);
+      })
+      console.log("ticketData: ", ticketData)
+    */
+
+        
+        let eventDescriptionFields = [
+          "isDraft",
+          "eventNum",
+          "eventTitle",
+          "eventType",
+          "locationVenueName",
+          "locationAddress1",
+          "locationAddress2",
+          "locationCity",
+          "locationState",
+          "locationZipPostalCode",
+          "locationCountryCode",
+          "locationNote",
+          "webinarLink",
+          "onlineInformation",
+          "tbaInformation",
+          "timeZone",
+          "shortDescription",
+          "longDescription",
+          "eventCategory",
+          "facebookLink",
+          "twitterLink",
+          "linkedinLink",
+          "instagramLink",
+          "vanityLink",
+          "refundPolicy",
+        ]
+
+        var formData = new FormData();
+        
+        eventDescriptionFields.forEach(field => {
+          //console.log("event field: ", field, " its value: ", eventDescription[field])
+          if (eventDescription[field]) {
+            formData.append(`${field}`, eventDescription[field])
+            console.log("this is the input: ", `${field}`, `${eventDescription[field]}`)
+          }
+        })
+        
+        // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
+        formData.append("startDateTime", eventDescription.startDate);
+        // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
+        //formData.append("endDateTime", eventDescription.endDate);
+
+        let imageBlob = null;
+
+        if (eventDescription.eventImage){
+            imageBlob = await new Promise (resolve => eventDescription.eventImage.toBlob(resolve, 'image/png'));
+            formData.append("photo", imageBlob);
+        } else {
+          console.log("there is no image");
+        };
+
+        let ticketDetailsFields = [
+          "ticketName",
+          "remainingQuantity",
+          "currentTicketPrice",
+          "ticketDescription",
+          "maxTicketsAllowedPerOrder",
+          "minTicketsAllowedPerOrder",
+          "_id"
+        ]
+
+        ticketDetails.forEach((ticket, index) => {
+          console.log("ticket #: index");
+          formData.append(`tickets[${index}][sort]`, 10 + 10 * index)
+          if (ticket.currency) {
+            formData.append(`tickets[${index}][currency]`, ticket.currency.slice(0,3))
+          }
+
+          ticketDetailsFields.forEach(field => {
+            //console.log("event field: ", field, " its value: ", eventDescription[field])
+            if (ticket[field]) {
+              formData.append(`tickets[${index}][${field}]`, ticket[field])
+              //console.log("this is the input: ", `${field}`, `${eventDescription[field]}`)
+            }
+          })
+        });
+
+        /*
+          // for "bogod" and "bogof"
+          if (ticket.priceFeature === "bogod" || ticket.priceFeature === "bogof") {
+            formData.append(`tickets[${index}][priceFunction][form]`, "bogo");
+            formData.append(`tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy);
+            formData.append(`tickets[${index}][priceFunction][args][get]`, ticket.functionArgs.get);
+            formData.append(`tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount);
+          }
+          // for "twofer"
+          if (ticket.priceFeature === "twofer") {
+            formData.append(`tickets[${index}][priceFunction][form]`, "twofer");
+            formData.append(`tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy);
+            formData.append(`tickets[${index}][priceFunction][args][for]`, ticket.functionArgs.for);
+          }
+          // for "promo"
+          if (ticket.priceFeature === "promo") {
+            formData.append(`tickets[${index}][priceFunction][form]`, "promo");
+            ticket.promoCodes.map((item, number) => {
+              console.log("New promo details: key-", item.key, ", name-", item.name, ", amount-", item.amount, ", percent-", item.percent)
+              formData.append(`tickets[${index}][priceFunction][args[${number}]][key]`, item.key);
+              formData.append(`tickets[${index}][priceFunction][args[${number}]][name]`, item.name);
+              formData.append(`tickets[${index}][priceFunction][args[${number}]][amount]`, item.amount);
+              formData.append(`tickets[${index}][priceFunction][args[${number}]][percent]`, item.percent);
+            })
+          }
+      */
+
+        // Display the key/value pairs
+        for (var pair of formData.entries()) {
+          console.log(pair[0]+ ', ' + pair[1]); 
+        }
+
+        let userid = vendorInfo.id;
+        let token = vendorInfo.token;
+        const authstring =
+          `Bearer ${token}`;
+        const APIURL = "https://www.openseatdirect.com/api";
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", authstring);
+
+        let apiurl;
+
+        if (eventDescription.eventNum) {
+        //if (false) {
+          console.log("editting an existing event");
+          apiurl = `${APIURL}/eventix/${userid}/${eventDescription.eventNum}`;
+          console.log("apiurl: ", apiurl)
+          fetch(apiurl, {
+            method: "post",
+            headers: myHeaders,
+            body: formData,
+            redirect: "follow",
+          })
+          .then(handleErrors)
+          .then((response) => {
+            console.log("response in event/create", response);
+            console.log("apiurl: ", apiurl)
+            return response.json();
+          })
+          .then((res) => {
+            console.log(res);
+            if (preview) {
+              window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
+            }
+          })
+          .catch((err) => {
+            console.log("**ERROR THROWN", err);
+          });
+        } else {
+          console.log("creating a new event");
+          apiurl = `${APIURL}/eventix/${userid}`;
+          fetch(apiurl, {
+            method: "post",
+            headers: myHeaders,
+            body: formData,
+            redirect: "follow",
+          })
+          .then(handleErrors)
+          .then((response) => {
+            console.log("response in event/create", response);
+            return response.json();
+          })
+          .then((res) => {
+            console.log(res);
+            if (preview) {
+              window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
+            }
+          })
+          .catch((err) => {
+            console.log("**ERROR THROWN", err);
+          });
+        }
     }
   };
 
@@ -447,12 +702,15 @@ const EventCreation = () => {
     setEventDescription(tempDescription);
   };
 
-  const changeEventImage = (image) => {
+  const changeEventImage = async (image) => {
     //console.log("Received crop: ", crop)
     //console.log("Received pixelCrop: ", pixelCrop)
     console.log("Received image: ", image);
+    let imageBlob;
+    imageBlob = await new Promise (resolve => image.toBlob(resolve, 'image/png'));
+    console.log("Convert image: ", imageBlob);
     let tempDescription = { ...eventDescription };
-    tempDescription.eventImage = image;
+    tempDescription.eventImage = imageBlob;
     console.log("temp image: ", tempDescription.eventImage);
     setEventDescription(tempDescription);
   };
@@ -505,185 +763,6 @@ const EventCreation = () => {
     return response;
   };
 
-  const saveEvent = (preview) => {
-    console.log("we are saving");
-
-    if (!eventDescription.eventTitle) {
-      console.log("You need to complete these fields");
-      !eventDescription.eventTitle ? setEventTitleOmission(true) : setEventTitleOmission(false);
-    } else {
-        let ticketData = [];
-
-
-        ticketDetails.map((ticket, index) => {
-
-                  let tempPriceFunction = {};
-
-                  // for "promo"
-                  if (ticket.priceFeature === "promo") {
-                    let promoCodesArray = [];
-                    ticket.promoCodes.map((item, index) => {
-                      let promoCodeElement = {
-                        key: item.key,
-                        name: item.name,
-                        amount: item.amount,
-                        percent: item.percent
-                      }
-                      promoCodesArray.push(promoCodeElement);
-                      console.log("promoCodesArray: ", promoCodesArray)
-                    })
-                    tempPriceFunction = {
-                      form: "promo",
-                      args: {
-                        promocodes: promoCodesArray
-                      }
-                    }
-                  }
-                  // for "bogod" and "bogof"
-                  if (ticket.priceFeature === "bogod" || ticket.priceFeature === "bogof") {
-                    tempPriceFunction = {
-                      form: "bogo",
-                      args: {
-                        buy: ticket.functionArgs.buy,
-                        get: ticket.functionArgs.get,
-                        discount: ticket.functionArgs.discount
-                      }
-                    }
-                  }
-                  // for "twofer"
-                  if (ticket.priceFeature === "twofer") {
-                    tempPriceFunction = {
-                      form: "twofer",
-                      args: {
-                        buy: ticket.functionArgs.buy,
-                        for: ticket.functionArgs.for
-                      }
-                    }
-                  }
-                  
-          let tempObject = {
-            ticketName: ticket.ticketName,
-            currentTicketPrice: ticket.ticketPrice,
-            remainingQuantity: ticket.ticketQuantity,
-            priceFunction: tempPriceFunction,
-            ticketDescription: ticket.ticketDescription,
-            currency: ticket.currency,
-            maxTicketsAllowedPerOrder: ticket.orderMax,
-            minTicketsAllowedPerOrder: ticket.orderMin,
-            sort: 10 + 10 * index
-          };
-          ticketData.push(tempObject);
-        })
-        console.log("ticketData: ", ticketData)
-
-
-        let form = {
-          isDraft: eventDescription.isDraft, // fetch
-          eventNum: eventDescription.eventNum,
-          webinarLink: eventDescription.webinarLink,
-          onlineInformation: eventDescription.onlineInformation,
-          tbaInformation: eventDescription.tbaInformation,
-          timeZone: eventDescription.timeZone, // fetch
-          eventCategory: eventDescription.eventCategory, // fetch
-          facebookLink: eventDescription.facebookLink,
-          twitterLink: eventDescription.twitterLink,
-          linkedinLink: eventDescription.linkedinLink,
-          instagramLink: eventDescription.instagramLink,
-          vanityLink: eventDescription.vanityLink, // fetch
-          refundPolicy: eventDescription.refundPolicy, // fetch
-          eventTitle: eventDescription.eventTitle,
-          eventType: eventDescription.eventType,
-          locationVenueName: eventDescription.locationVenueName,
-          locationAddress1: eventDescription.locationAddress1,
-          locationAddress2: eventDescription.locationAddress2,
-          locationCity: eventDescription.locationCity,
-          locationState: eventDescription.locationState,
-          locationZipPostalCode: eventDescription.locationZipPostalCode,
-          locationCountryCode: eventDescription.locationCountryCode,
-          locationNote: eventDescription.locationNote,
-          // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
-          startDateTime: eventDescription.startDate,
-          // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
-          endDateTime: eventDescription.endDate,
-          photo:
-            eventDescription.eventImage === null
-              ? undefined
-              : eventDescription.eventImage,
-          shortDescription: eventDescription.shortDescription,
-          longDescription: eventDescription.longDescription,
-          tickets: ticketData
-        };
-        console.log("Form data: ", form);
-        let js = JSON.stringify(form);
-        console.log("JSON Form data: ", js);
-        const authstring =
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDlkNzIzN2VjODAwYjZlOTM1NTg4ODgiLCJpYXQiOjE1ODg2ODgwOTJ9.URrxmyn4C4rcl5D4QubreEjRIN16fg4ao86Ym_u1fIc";
-        const userid = "5d9d7237ec800b6e93558888";
-        const APIURL = "https://www.openseatdirect.com/api";
-
-        let apiurl;
-
-        if (eventDescription.eventNum) {
-          console.log("editting an existing event");
-          apiurl = `${APIURL}/eventix/${userid}/${eventDescription.eventNum}`;
-          console.log("apiurl: ", apiurl)
-          fetch(apiurl, {
-            method: "post",
-            headers: {
-              Authorization: authstring,
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              //"Content-Type": "text/plain"
-            },
-            body: js,
-            redirect: "follow",
-          })
-          .then(handleErrors)
-          .then((response) => {
-            console.log("response in event/create", response);
-            return response.json();
-          })
-          .then((res) => {
-            console.log(res);
-            if (preview) {
-              window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
-            }
-          })
-          .catch((err) => {
-            console.log("**ERROR THROWN", err);
-          });
-        } else {
-          console.log("creating a new event");
-          apiurl = `${APIURL}/eventix/${userid}`;
-          fetch(apiurl, {
-            method: "post",
-            headers: {
-              Authorization: authstring,
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: js,
-            redirect: "follow",
-          })
-          .then(handleErrors)
-          .then((response) => {
-            console.log("response in event/create", response);
-            return response.json();
-          })
-          .then((res) => {
-            console.log(res);
-            if (preview) {
-              window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
-            }
-          })
-          .catch((err) => {
-            console.log("**ERROR THROWN", err);
-          });
-        
-        }
-    }
-  };
-
   // STOPPED
   const priceFeatureChangeHandler = (event, value, key) => {
     let tempDetails = [...ticketDetails];
@@ -715,14 +794,15 @@ const EventCreation = () => {
     let newItem = {
       key: newTicketKey,
       sort: "",
+      _id: "",
       ticketName: "",
-      ticketQuantity: "",
-      ticketPrice: "",
+      remainingQuantity: "",
+      currentTicketPrice: "",
       currency: "",
       settings: false,
       ticketDescription: "",
-      orderMin: "",
-      orderMax: "",
+      minTicketsAllowedPerOrder: "",
+      maxTicketsAllowedPerOrder: "",
       priceFeature: "none",
       promoCodes: [{ key: newPromoKey, name: "", amount: "", percent: false }],
       promoCodeNames: [],
@@ -741,14 +821,15 @@ const EventCreation = () => {
         {
           key: "1",
           sort: "",
+          _id: "",
           ticketName: "",
-          ticketQuantity: "",
-          ticketPrice: "",
+          remainingQuantity: "",
+          currentTicketPrice: "",
           currency: "",
           settings: false,
           ticketDescription: "",
-          orderMin: "",
-          orderMax: "",
+          minTicketsAllowedPerOrder: "",
+          maxTicketsAllowedPerOrder: "",
           priceFeature: "none",
           promoCodes: [{ key: "1", name: "", amount: "", percent: false }],
           promoCodeNames: [],
@@ -885,10 +966,10 @@ const EventCreation = () => {
           console.log("item.amount: ",item.amount)
           let finalPrice = "";
           if (item.percent === false) {
-            finalPrice = (ticket.ticketPrice - item.amount).toFixed(2);
+            finalPrice = (ticket.currentTicketPrice - item.amount).toFixed(2);
           } else if (item.percent === true) {
             finalPrice = (
-              ticket.ticketPrice *
+              ticket.currentTicketPrice *
               (1 - item.amount / 100)
             ).toFixed(2);
           }
@@ -1659,10 +1740,10 @@ const EventCreation = () => {
                 height: "40px",
               }}
               type="text"
-              id="orderMin"
+              id="minTicketsAllowedPerOrder"
               placeholder="# of tickets"
-              name="orderMin"
-              value={ticket.orderMin}
+              name="minTicketsAllowedPerOrder"
+              value={ticket.minTicketsAllowedPerOrder}
               onChange={(event) => {
                 changeTicketDetail(event, ticket.key);
               }}
@@ -1680,10 +1761,10 @@ const EventCreation = () => {
                 height: "40px",
               }}
               type="text"
-              id="orderMax"
+              id="maxTicketsAllowedPerOrder"
               placeholder="# of tickets"
-              name="orderMax"
-              value={ticket.orderMax}
+              name="maxTicketsAllowedPerOrder"
+              value={ticket.maxTicketsAllowedPerOrder}
               onChange={(event) => {
                 changeTicketDetail(event, ticket.key);
               }}
@@ -1863,10 +1944,10 @@ const EventCreation = () => {
                       height: "40px",
                     }}
                     type="text"
-                    id="ticketQuantity"
+                    id="remainingQuantity"
                     placeholder="100"
-                    name="ticketQuantity"
-                    value={item.ticketQuantity}
+                    name="remainingQuantity"
+                    value={item.remainingQuantity}
                     onChange={(event) => {
                       changeTicketDetail(event, item.key);
                     }}
@@ -1899,10 +1980,10 @@ const EventCreation = () => {
                       boxSizing: "borderBox",
                     }}
                     type="text"
-                    id="ticketPice"
+                    id="currentTicketPrice"
                     placeholder="10.00"
-                    name="ticketPrice"
-                    value={item.ticketPrice}
+                    name="currentTicketPrice"
+                    value={item.currentTicketPrice}
                     onChange={(event) => {
                       changeTicketDetail(event, item.key);
                     }}
@@ -2498,7 +2579,16 @@ const EventCreation = () => {
               backgroundColor: "#E7E7E7",
             }}
           >
-            <ImgDropAndCrop icon="create image" change={changeEventImage} />
+            <ImgDropAndCrop icon="create image" change={(image) => {
+              //console.log("inside drop and crop")
+              console.log("image: ", image);
+              console.log("typeof image: ", typeof image);
+              
+              let tempDescription = {...eventDescription };
+              tempDescription.eventImage = image;
+              setEventDescription(tempDescription);
+              console.log("tempDescription.eventImage: ", tempDescription.eventImage)
+            }} />
           </div>
 
           <div className={classes.SectionTitleTight}>
@@ -2821,3 +2911,7 @@ const EventCreation = () => {
 };
 
 export default EventCreation;
+
+
+
+           // <ImgDropAndCrop icon="create image" change={changeEventImage} />
