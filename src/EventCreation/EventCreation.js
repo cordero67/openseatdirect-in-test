@@ -15,6 +15,10 @@ import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 
 import TicketType from "./TicketType";
 import Modal from "./Modal/Modal";
+import {base64StringtoFile,
+    downloadBase64File,
+    extractImageFileExtensionFromBase64,
+    image64toCanvasRef,image64toCanvasRef2} from '../ImgDropAndCrop/ResuableUtils'
 
 import classes from "./EventCreation.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -238,6 +242,48 @@ const EventCreation = () => {
     } else {
       console.log("there is NO event");
     }
+
+
+
+      const url = "https://www.openseatdirect.com/api/event/photo/e/89448291753";
+
+        fetch(url, {
+          method: 'GET',
+          redirect: 'follow'
+          })
+        .then(response => {
+            console.log (">>>>>>>>response in eventix", response);
+            return response.arrayBuffer(); 
+        })
+        .then (buffer =>{
+          console.log ("response.arrayBuffer():");
+          console.log (buffer);
+          const uint8 = new Uint8Array(buffer);
+          let bin ='';
+          const len =  uint8.byteLength;
+          for (let i = 0; i < len; i++)
+              bin += String.fromCharCode(uint8[i]);
+          const header ='data:image/png;base64,'; // hard codes image/png  
+          const photodat = header+window.btoa(bin);
+          const srcExt = extractImageFileExtensionFromBase64(photodat);
+          console.log ("photodat for imgSrc:", photodat);
+          console.log ("photodat for srcExt:", srcExt);
+
+          let tempDescription = {...eventDescription};
+          tempDescription.eventImage = photodat;
+          setEventDescription(tempDescription);
+          //this.setState({
+            //    imgSrc: photodat,
+            //   imgSrcExt: srcExt,
+          //})
+        })
+        .catch(err => {
+          console.log("**ERROR THROWN", err);
+        });
+
+
+
+    
   }, []);
 
   const loadEventInfo = (eventTix) => {
@@ -2580,16 +2626,22 @@ const EventCreation = () => {
               backgroundColor: "#E7E7E7",
             }}
           >
-            <ImgDropAndCrop icon="create image" change={(image) => {
-              //console.log("inside drop and crop")
-              console.log("image: ", image);
-              console.log("typeof image: ", typeof image);
-              
-              let tempDescription = {...eventDescription };
-              tempDescription.eventImage = image;
-              setEventDescription(tempDescription);
-              console.log("tempDescription.eventImage: ", tempDescription.eventImage)
-            }} />
+
+            <ImgDropAndCrop
+              icon="create image"
+              initial={"temp"}
+              change={(image) => {
+                //console.log("inside drop and crop")
+                console.log("image: ", image);
+                console.log("typeof image: ", typeof image);
+                
+                let tempDescription = {...eventDescription };
+                tempDescription.eventImage = image;
+                setEventDescription(tempDescription);
+                console.log("tempDescription.eventImage: ", tempDescription.eventImage)
+              }}
+            />
+
           </div>
 
           <div className={classes.SectionTitleTight}>

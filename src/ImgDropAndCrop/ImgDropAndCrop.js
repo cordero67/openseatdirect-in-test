@@ -173,7 +173,6 @@ class ImgDropAndCrop extends Component {
         console.log("pixelCrop: ", pixelCrop)
         console.log("handleOnCropCompleted crop:", crop);
         const canvasRef = this.imagePreviewCanvasRef.current;//
-        this.props.change(this.imagePreviewCanvasRef.current);
         //this.props.change(canvasRef);
         const {imgSrc}  = this.state;//
         image64toCanvasRef2(canvasRef, imgSrc, pixelCrop, crop);
