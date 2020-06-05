@@ -139,8 +139,7 @@ const TicketSelection = () => {
       })
       .catch(err => {
         // NEED TO ADDRESS THESE SITUATIONS
-        console.log("Inside the catch")
-        console.log("err: ",err)
+        console.log("Inside the catch, err: ",err)
         if (err === "Error: Error: 400") {
         }
         if (err === undefined) {

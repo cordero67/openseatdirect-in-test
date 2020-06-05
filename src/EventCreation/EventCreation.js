@@ -274,6 +274,7 @@ const EventCreation = () => {
     tempDescription.locationCountryCode = eventTix.locationCountryCode; // fetch
     tempDescription.timeZone = eventTix.timeZone; // fetch
     tempDescription.eventImage = eventTix.photo;
+    console.log("eventImage: ", tempDescription.eventImage);
 
     /*
       console.log(
@@ -515,7 +516,7 @@ const EventCreation = () => {
         // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
         formData.append("startDateTime", eventDescription.startDate);
         // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
-        //formData.append("endDateTime", eventDescription.endDate);
+        formData.append("endDateTime", eventDescription.endDate);
 
         let imageBlob = null;
 

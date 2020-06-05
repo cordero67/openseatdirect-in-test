@@ -10,18 +10,6 @@
   margin: auto;
   box-sizing: border-box;
 }
-/*
-.MainContainer {
-  font-family: "Roboto", sans-serif;
-  background-color: #2f5596;
-  background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
-  padding-top: 60px;
-  padding-left: 0px;
-  padding-right: 0px;
-  padding-bottom: 40px;
-}
-
-*/
 .UpperGrid {
   background-color: #fff;
   border-bottom: 2px solid lightgrey;
@@ -91,12 +79,6 @@
 }
 
 @media (max-width: 730px) {
-  /*
-  .MainContainer {
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
-  */
   .UpperGrid {
     height: calc((100vw - 17px) / 2);
     width: 100%;
@@ -230,12 +212,6 @@
 }
 
 @media (min-width: 730px) {
-  /*
-  .MainContainer {
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
-  */
   .UpperGrid {
     height: calc((100vw - 17px) / 2);
     width: 100%;
@@ -356,12 +332,6 @@
 }
 
 @media (min-width: 800px) {
-  /*
-  .MainContainer {
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
-  */
   .UpperGrid {
     height: calc((100vw - 17px) / 3);
     width: 100%;
@@ -495,12 +465,6 @@
 }
 
 @media (min-width: 1097px) {
-  /*
-  .MainContainer {
-    padding-top: 20px;
-    padding-bottom: 40px;
-  }
-  */
   .UpperGrid {
     height: 360px;
     width: 1080px;
@@ -582,7 +546,6 @@
     font-size: 15px;
     font-weight: 500;
   }
-
   .LeftLowerGrid {
     padding: 20px 40px 20px 20px;
     box-sizing: border-box;
@@ -596,7 +559,6 @@
     font-weight: 400;
     color: #6f7287;
   }
-
   .RightLowerGrid {
     padding: 20px;
     box-sizing: border-box;
