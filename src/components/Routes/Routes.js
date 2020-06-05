@@ -7,7 +7,7 @@ import Video from "../Video/Video";
 import EventCreationOld from "../../EventCreation/EventCreationOld";
 import EventCreation from "../../EventCreation/EventCreation";
 import Events from "../../Events/Events";
-import EventDetail from "../../Events/EventDetail";
+import EventDetails from "../../Events/EventDetails";
 import EventDetailHaHa from "../../Events/EventDetailHaHa";
 import EventDetailPIFF from "../../Events/EventDetailPIFF";
 import EventDetailTech from "../../Events/EventDetailTech";
@@ -384,7 +384,7 @@ const Routes = () => {
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventDetail />
+            <EventDetails />
             <Footer></Footer>
           </React.Fragment>
         )}

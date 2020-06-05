@@ -4,7 +4,7 @@ import dateFormat from "dateformat";
 
 import { API } from "../config";
 
-import styles from "./EventDetail.module.css";
+import styles from "./EventDetails.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
