@@ -3,6 +3,8 @@ import queryString from "query-string";
 
 import ReactHtmlParser from "react-html-parser";
 
+import { extractImageFileExtensionFromBase64 } from '../ImgDropAndCrop/ResuableUtils'
+
 import { Editor } from "@tinymce/tinymce-react";
 import DateSelector from "./DateSelector";
 import TimeSelector from "./TimeSelector";
@@ -15,10 +17,6 @@ import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 
 import TicketType from "./TicketType";
 import Modal from "./Modal/Modal";
-import {base64StringtoFile,
-    downloadBase64File,
-    extractImageFileExtensionFromBase64,
-    image64toCanvasRef,image64toCanvasRef2} from '../ImgDropAndCrop/ResuableUtils'
 
 import classes from "./EventCreation.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -195,6 +193,13 @@ const EventCreation = () => {
     },
   ]);
 
+  const [photoData, setPhotoData] = useState({
+    imgSrc: "",
+    imgSrcExt: ""
+  })
+  
+
+
   const [isLoading, setIsLoading] = useState(true);
 
   let eventTix = {};
@@ -207,6 +212,7 @@ const EventCreation = () => {
       localStorage.getItem("user")
     ) {
       console.log("there is an event");
+      setIsLoading(true);
       let user = vendorInfo.id;
       let token = vendorInfo.token;
       console.log("user.user._id: ", user);
@@ -225,35 +231,29 @@ const EventCreation = () => {
           "Authorization": "Bearer " + token
         },
       })
-        //.then(handleErrors)
-        .then((response) => {
-          console.log("response in event get", response);
-          //console.log("response.json() in event get", response.json());
-          return response.json();
-        })
-        .then((res) => {
-          console.log("****res=", res);
-          eventTix = res;
-          loadEventInfo(eventTix);
-        })
-        .catch((err) => {
-          console.log("jumping here", err);
-        });
-    } else {
-      console.log("there is NO event");
-    }
+      //.then(handleErrors)
+      .then((response) => {
+        console.log("response in event get", response);
+        //console.log("response.json() in event get", response.json());
+        return response.json();
+      })
+      .then((res) => {
+        console.log("****res=", res);
+        eventTix = res;
+        loadEventInfo(eventTix);
 
+      })
+      .then((res) => {
 
-
-      const url = "https://www.openseatdirect.com/api/event/photo/e/89448291753";
-
+        console.log("about to call image api");
+        const url = "https://www.openseatdirect.com/api/event/photo/e/89448291753";
         fetch(url, {
           method: 'GET',
           redirect: 'follow'
-          })
+        })
         .then(response => {
-            console.log (">>>>>>>>response in eventix", response);
-            return response.arrayBuffer(); 
+          console.log (">>>>>>>>response in eventix", response);
+          return response.arrayBuffer(); 
         })
         .then (buffer =>{
           console.log ("response.arrayBuffer():");
@@ -265,25 +265,30 @@ const EventCreation = () => {
               bin += String.fromCharCode(uint8[i]);
           const header ='data:image/png;base64,'; // hard codes image/png  
           const photodat = header+window.btoa(bin);
-          const srcExt = extractImageFileExtensionFromBase64(photodat);
+          const srcExt = extractImageFileExtensionFromBase64 (photodat);
           console.log ("photodat for imgSrc:", photodat);
           console.log ("photodat for srcExt:", srcExt);
-
-          let tempDescription = {...eventDescription};
-          tempDescription.eventImage = photodat;
-          setEventDescription(tempDescription);
-          //this.setState({
-            //    imgSrc: photodat,
-            //   imgSrcExt: srcExt,
-          //})
+          
+          setPhotoData({
+            imgSrc: photodat,
+            imgSrcExt: srcExt
+          })
+          
+          
+          setIsLoading(false);
         })
         .catch(err => {
           console.log("**ERROR THROWN", err);
+          setIsLoading(false);
         });
 
-
-
-    
+      })
+      .catch((err) => {
+        console.log("jumping here", err);
+      });
+    } else {
+      console.log("there is NO event");
+    }
   }, []);
 
   const loadEventInfo = (eventTix) => {
@@ -2626,12 +2631,11 @@ const EventCreation = () => {
               backgroundColor: "#E7E7E7",
             }}
           >
-
+          {!isLoading ?
             <ImgDropAndCrop
               icon="create image"
-              initial={"temp"}
+              info={photoData}
               change={(image) => {
-                //console.log("inside drop and crop")
                 console.log("image: ", image);
                 console.log("typeof image: ", typeof image);
                 
@@ -2640,8 +2644,7 @@ const EventCreation = () => {
                 setEventDescription(tempDescription);
                 console.log("tempDescription.eventImage: ", tempDescription.eventImage)
               }}
-            />
-
+            />  : <div> still loading </div> }
           </div>
 
           <div className={classes.SectionTitleTight}>

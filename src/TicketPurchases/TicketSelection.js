@@ -502,8 +502,12 @@ const TicketSelection = () => {
   // defines main display with ticket and order panes
   let mainDisplay;
   if (isLoadingEvent) {
+    console.log("else isLoadingEvent: ",isLoadingEvent)
+    console.log("else isSuccessful: ",isSuccessfull)
     mainDisplay = (<div>Wait</div>)
   } else {
+    console.log("else isLoadingEvent: ",isLoadingEvent)
+    console.log("else isSuccessful: ",isSuccessfull)
     if (showDoublePane && isSuccessfull) {
       mainDisplay = (
         <Aux>
