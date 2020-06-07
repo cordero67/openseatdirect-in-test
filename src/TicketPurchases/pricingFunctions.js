@@ -19,6 +19,8 @@ export const twofer = (i,u,n,tp ) => {
     return (Math.min((i*u),result));
 }
 
+
+// NEED TO ADDRESS THE TIMEZONE VALUE
 export const DateRange = props => {
     if (dateFormat(props.start, "m d yy", true) === dateFormat(props.end, "m d yy", true)) {
         return (<Aux>{dateFormat(

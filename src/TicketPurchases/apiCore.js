@@ -14,26 +14,42 @@ const handleErrors = response => {
 
 // extracts specific event data, non-transactional
 export const getEventData = eventId => {
-
-  //host_url+ "/api/event/all/" + USER_ID,
-  //return fetch(`${API}/event/all/${eventId}`, {
   return fetch(`${API}/event/e/${eventId}`, {
     method: "GET"
   })
     .then(handleErrors)
     .then(response => {
-      //console.log("'apiCore' - 'getEventData()' - '.then' block");
       return response.json();
     })
     .catch(err => {
-      //console.log("Inside '.catch' block of 'getEventData()', this is the error:", err);
       throw Error(err);
     });
 };
 
-// extracts specific event data, non-transactional
+
+
+
+
 export const getEventImage = eventId => {
-  //console.log("Inside apiCore and the 'getEventImage' function call");
+    console.log("Inside apiCore and the 'getEventImage' function call");
+    return fetch(`${API}/event/photo/e/${eventId}`, {
+      method: "GET"
+    })
+    .then(handleErrors)
+    .then(response => {
+    console.log("Inside apiCore and the 'getEventImage' .then block");
+    console.log("response: ", response, " response.url: ", response.url);
+    return response.url;
+    })
+    .catch(err => {
+    console.log("jumping here", err);
+    throw Error(err);
+    });
+};
+
+/*
+// retrieves the event image
+export const getEventImage = eventId => {
   return fetch(`${API}/event/photo/e/${eventId}`, {
     method: "GET"
   })
@@ -43,10 +59,10 @@ export const getEventImage = eventId => {
       return response.url;
     })
     .catch(err => {
-      //console.log("jumping here", err);
       throw Error(err);
     });
 };
+*/
 
 var expandedLog = (function() {
   var MAX_DEPTH = 100;

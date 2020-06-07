@@ -25,8 +25,9 @@ const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => {retur
 
 class ImgDropAndCrop extends Component {
     constructor(props){
-        console.log("props.photoData: ", props.info);
         super(props)
+        console.log("this.props: ", this.props)
+        //console.log("props.photoData: ", props.info);
         this.imagePreviewCanvasRef = React.createRef()
         this.fileInputRef = React.createRef()
         console.log("NO new image info found")
@@ -58,39 +59,50 @@ class ImgDropAndCrop extends Component {
     IMAGE_HEIGHT = 0;
 
     componentDidMount() {
-        const url = "https://www.openseatdirect.com/api/event/photo/e/89448291753";
-
-        fetch(url, {
-            method: 'GET',
-            redirect: 'follow'
-        })
-        .then(response => {
-            console.log (">>>>>>>>response in eventix", response);
-            return response.arrayBuffer(); 
-        })
-        .then (buffer =>{
-            console.log ("response.arrayBuffer():");
-            console.log (buffer);
-            const uint8 = new Uint8Array(buffer);
-            let bin ='';
-            const len =  uint8.byteLength;
-            for (let i = 0; i < len; i++)
-                bin += String.fromCharCode(uint8[i]);
-            const header ='data:image/png;base64,'; // hard codes image/png  
-            const photodat = header+window.btoa(bin);
-            const srcExt = extractImageFileExtensionFromBase64 (photodat);
-            console.log ("photodat for imgSrc:", photodat);
-            console.log ("photodat for srcExt:", srcExt);
-            this.setState({
-                imgSrc: photodat,
-                imgSrcExt: srcExt,
+        console.log("Inside componentDidMount")
+        console.log("this.props.event: ", this.props.event)
+        if (this.props.event) {
+            //const url = "https://www.openseatdirect.com/api/event/photo/e/42375345534";
+            console.log("https://www.openseatdirect.com/api/event/photo/e/42375345534");
+            const url = (`https://www.openseatdirect.com/api/event/photo/e/${this.props.event.toString()}`);
+            if (url === "https://www.openseatdirect.com/api/event/photo/e/42375345534") {
+                console.log("they are equal")
+            } else {
+                console.log("they are NOT equal")
+            }
+            console.log(`https://www.openseatdirect.com/api/event/photo/e/${this.props.event}`);
+            fetch(url, {
+                method: 'GET',
+                redirect: 'follow'
             })
-            console.log("state after image api: ", this.state)
-        })
-        .catch(err => {
-            console.log("**ERROR THROWN", err);
-        });
-        this.forceUpdate();
+            .then(response => {
+                console.log (">>>>>>>>response in eventix", response);
+                return response.arrayBuffer(); 
+            })
+            .then (buffer =>{
+                console.log ("response.arrayBuffer():");
+                console.log (buffer);
+                const uint8 = new Uint8Array(buffer);
+                let bin ='';
+                const len =  uint8.byteLength;
+                for (let i = 0; i < len; i++)
+                    bin += String.fromCharCode(uint8[i]);
+                const header ='data:image/png;base64,'; // hard codes image/png  
+                const photodat = header+window.btoa(bin);
+                const srcExt = extractImageFileExtensionFromBase64 (photodat);
+                console.log ("photodat for imgSrc:", photodat);
+                console.log ("photodat for srcExt:", srcExt);
+                this.setState({
+                    imgSrc: photodat,
+                    imgSrcExt: srcExt,
+                })
+                console.log("state after image api: ", this.state)
+            })
+            .catch(err => {
+                console.log("**ERROR THROWN", err);
+            });
+            //this.forceUpdate();
+        }
     }
 
     verifyFile = (files) => {

@@ -3,27 +3,24 @@
     padding-top: 5px;
     padding-left: 5px;
     padding-right: 5px;
-    height: 60px;
+    height: 50px;
     border-bottom: 1px solid lightgrey;
 }
 .EventTitle {
-    font-size: 1.0rem;
+    font-size: 0.8rem;
     font-weight: 600;
 }
 .EventDate {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 400;
 }
 .EventDescription {
     font-weight: 400;
     padding-bottom: 5px;
-    font-size: 0.875rem
 }
 .EventFooter {
     display: grid;
     grid-template-columns: auto 80px 130px;
-    padding-left: 15px;
-    padding-right: 15px;
     padding-top: 18px;
     padding-bottom: 18px;
     border-top: 1px solid lightgrey;
@@ -43,8 +40,8 @@
 }
 
 .Image {
-    height: auto;
-    width: 100%;
+    max-width: 100%;
+    max-height: auto;
 }
 .ImageBox {
     max-height: auto;
@@ -118,7 +115,6 @@
 .PromoGrid {
     height: 48px;
     display: grid;
-    grid-template-columns: auto 80px;
 }
 .Red {
     border: 1px solid red
@@ -188,11 +184,43 @@
     vertical-align: center;
     height: 100vh;
     padding-top: 30px;
-    padding-left: 15px;
-    padding-right: 10px;
     text-align: left;
     overflow-y: auto;
     box-sizing: border-box;
+}
+
+@media (min-width: 400px) {
+    .EventHeader {
+        height: 60px;
+    }
+    .EventTitle {
+        font-size: 1.0rem;
+        font-weight: 600;
+    }
+    .EventDate {
+        font-size: 0.8rem;
+        font-weight: 400;
+    }
+}
+
+@media (max-width: 480px) {
+    .EventDescription {
+        font-size: 1rem;
+    }
+    .EventFooter {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .PromoGrid {
+        grid-template-columns: auto 80px;
+    }
+
+    .BlankCanvas {
+        padding-top: 30px;
+        padding-left: 15px;
+        padding-right: 10px;
+    }
 }
 
 @media (min-width: 480px) {
@@ -204,9 +232,16 @@
         font-size: 0.9rem;
         font-weight: 400;
     }
+    .EventDescription {
+        font-size: 1rem;
+    }
     .EventFooter {
         padding-left: 25px;
         padding-right: 25px;
+    }
+
+    .PromoGrid {
+        grid-template-columns: auto 80px;
     }
 
     .BlankCanvas {
@@ -217,9 +252,22 @@
 }
 
 @media (min-width: 660px) {
+    .EventDescription {
+        font-size: 1rem;
+    }
     .EventFooter {
-        padding-left: 50px;
-        padding-right: 50px;
+        padding-left: 80px;
+        padding-right: 80px;
+    }
+
+    .PromoGrid {
+        grid-template-columns: auto 80px;
+    }
+
+    .BlankCanvas {
+        padding-top: 30px;
+        padding-left: 25px;
+        padding-right: 25px;
     }
 
     @media (min-height: 720px) {
@@ -230,9 +278,35 @@
 }
 
 @media (min-width: 790px) {
+    .EventDescription {
+        font-size: 1rem;
+    }
     .EventFooter {
         padding-left: 25px;
         padding-right: 25px;
+    }
+
+    .PromoGrid {
+        grid-template-columns: auto 80px;
+    }
+
+    .BlankCanvas {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+}
+
+@media (min-width: 960px) {
+    .EventDescription {
+        font-size: 0.875rem;
+    }
+    .EventFooter {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+
+    .PromoGrid {
+        grid-template-columns: auto 80px;
     }
 
     .BlankCanvas {
@@ -242,9 +316,12 @@
 }
 
 @media (min-width: 1140px) {
+    .EventDescription {
+        font-size: 0.875rem;
+    }
     .EventFooter {
-        padding-left: 50px;
-        padding-right: 50px;
+        padding-left: 80px;
+        padding-right: 80px;
     }
 
     .PromoGrid {
@@ -253,7 +330,7 @@
 
     .BlankCanvas {
         width: 1080px;
-        padding-left: 50px;
-        padding-right: 50px;
+        padding-left: 80px;
+        padding-right: 80px;
     }
 }

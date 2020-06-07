@@ -28,23 +28,23 @@ const EventDetail = props => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
 
-  // receives Event Data from server and then populates several control variables
+  // executes all api calls to the sever
   const eventData = eventID => {
     getEventData(eventID)
     .then(res => {
       console.log("EVENT DATA OBJECT received from Server in 'getEventData()': ", res);
       loadEventDetails(res);
       getEventImage(eventID)
-        .then(res => {
+      .then(res => {
         console.log("EVENT IMAGE received from Server in 'getEventData()': ", res);
-          eventLogo = res;
-        })
-        .catch(err => {
-          eventLogo = DefaultLogo;
-        })
-        .finally(() => {
-          setIsLoadingEvent(false);
-        });
+        eventLogo = res;
+      })
+      .catch(err => {
+        eventLogo = DefaultLogo;
+      })
+      .finally(() => {
+        setIsLoadingEvent(false);
+      });
     })
     .catch(err => {
       // NEED TO ADDRESS THESE SITUATIONS
