@@ -18,8 +18,10 @@ const CartLink = props => {
     if (!props.isLoading && !show && props.orderTotals.ticketsPurchased > 0) {
       return (
         <Aux>
-          <span className={styles.cartBadge}>
-            <sup>{props.orderTotals.ticketsPurchased}</sup>
+          <span
+            onClick={props.onClick}
+            className={styles.cartBadge}>
+            {props.orderTotals.ticketsPurchased}
           </span>
         </Aux>
       );

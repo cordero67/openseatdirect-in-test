@@ -1,5 +1,48 @@
 import { bogox, twoferCapped, twofer } from "./pricingFunctions";
 
+/*
+  const loadEventDetails = event => {
+    // defines the eniter "eventDetails" variable
+    eventDetails = {
+      eventNum: event.eventNum,//
+      eventTitle: event.eventTitle,//
+      eventType: event.eventType,//
+      isDraft: event.isDarft,//
+      eventCategory: event.eventCategory,//
+      facebookLink: event.facebookLink,//
+      twitterLink: event.twitterLink,//
+      instagramLink: event.instagramLink,//
+      linkedinLink: event.linkedinLink,//
+      organizer: "", // Need to add this field to "Event" object from server
+      organizerEmail: event.accountId.accountEmail,//
+      startDateTime: event.startDateTime,//
+      endDateTime: event.endDateTime,//
+      timeZone: event.timeZone,//
+      eventUrl: event.eventUrl,//
+      refundPolicy: event.refundPolicy,//
+      locationVenueName: event.locationVenueName,//
+      locationAddress1: event.locationAddress1,//
+      locationAddress2: event.locationAddress2,//
+      locationCity: event.locationCity,//
+      locationState: event.locationState,//
+      locationZipPostalCode: event.locationZipPostalCode,//
+      locationCountryCode: event.locationCountryCode,//
+      locationNote: event.locationNote,//
+      tbaInformation: event.tbaInformation,//
+      webinarLink: event.webinarLink,//
+      onlineInformation: event.onlineInformation,//
+      shortDescription: event.shortDescription,//
+      longDescription: event.longDescription,//
+      tickets: event.tickets,
+    };
+    console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
+  };
+
+*/
+
+
+
+// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE
 // initial definition of "eventDetails"
 export const loadEventDetails = event => {
   let tempGatewayURL;
@@ -13,18 +56,33 @@ export const loadEventDetails = event => {
   }
   // defines the entire "eventDetails" variable
   let tempEventDetails = {
-    eventNum: event.eventNum,
-    eventTitle: event.eventTitle,
-    eventStatus: event.eventStatus,
-    organizer: event.organizerName,
-    organizerEmail: event.accountId.accountEmail,
+    eventNum: event.eventNum,//
+    eventTitle: event.eventTitle,//
+    eventType: event.eventType,//
+    isDraft: event.isDarft,//
+    organizer: "", // Need to add this field to "Event" object from server
+    organizerEmail: event.accountId.accountEmail,//
     gateway: event.accountId.paymentGatewayType,
     gatewayClientID: event.accountId.paypalExpress_client_id,
     gatewayURL: tempGatewayURL,
-    startDateTime: event.startDateTime,
-    endDateTime: event.endDateTime,
-    organizerUrl: event.organizerUrl,
-    eventUrl: event.eventUrl,
+    startDateTime: event.startDateTime,//
+    endDateTime: event.endDateTime,//
+    timeZone: event.timeZone,//
+    eventUrl: event.eventUrl,//
+    locationVenueName: event.locationVenueName,//
+    locationAddress1: event.locationAddress1,//
+    locationAddress2: event.locationAddress2,//
+    locationCity: event.locationCity,//
+    locationState: event.locationState,//
+    locationZipPostalCode: event.locationZipPostalCode,//
+    locationCountryCode: event.locationCountryCode,//
+    locationNote: event.locationNote,//
+    tbaInformation: event.tbaInformation,//
+    webinarLink: event.webinarLink,//
+    onlineInformation: event.onlineInformation,//
+    
+    // I DON'T THINK I NEED THIS ANYMORE
+    /*
     location: {
       venueName: event.locationVenueName,
       address1: event.locationAddress1,
@@ -33,11 +91,14 @@ export const loadEventDetails = event => {
       zipPostalCode: event.locationZipPostalCode,
       countryCode: event.locationCountryCode
     }
+    */
+
   };
   console.log("INITIAL 'eventDetails': ", tempEventDetails)
   return tempEventDetails
 };
 
+// THIS FUNCTION NEEDS TO BE REFACTORED ONCE THE tickets FIELD HAS BEEN POPULATED BY THE SERVER
 // initial definition of "ticketInfo"
 export const loadTicketInfo = event => {
   console.log("Inside 'loadTicketInfo'");
@@ -120,6 +181,7 @@ export const loadTicketInfo = event => {
   return tempTicketArray;
 }
 
+// THIS FUNCTION NEEDS TO BE REFACTORED ONCE THE tickets FIELD HAS BEEN POPULATED BY THE SERVER
 // initial definition of "promoCodeDetails"
 export const loadPromoCodeDetails = (tickets, promoCodeDetails) => {
   let tempCodesArray = [];
@@ -141,6 +203,8 @@ export const loadPromoCodeDetails = (tickets, promoCodeDetails) => {
   return tempCodeDetail;
 };
 
+// THIS CURRENTLY CAPTURES CURRENCY ON AN EVENT LEVEL, NOT AT A TICEKT LEVEL
+// i.e. IS NOT CAPABLE OF HANDLING MULTIPLE CURRENCIES
 // initial definition of "orderTotals"
 export const loadOrderTotals = event => {
   let tempCurrencySym = "$";

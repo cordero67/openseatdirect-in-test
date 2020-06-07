@@ -197,22 +197,19 @@ const EventCreation = () => {
     imgSrc: "",
     imgSrcExt: ""
   })
-  
-
 
   const [isLoading, setIsLoading] = useState(true);
 
   let eventTix = {};
 
   useEffect(() => {
-
     // checks if an event is identified and user is valiadated
     if (
       queryString.parse(window.location.search).eventID &&
       localStorage.getItem("user")
     ) {
       console.log("there is an event");
-      setIsLoading(true);
+      //setIsLoading(true);
       let user = vendorInfo.id;
       let token = vendorInfo.token;
       console.log("user.user._id: ", user);
@@ -241,10 +238,9 @@ const EventCreation = () => {
         console.log("****res=", res);
         eventTix = res;
         loadEventInfo(eventTix);
-
+        return res;
       })
       .then((res) => {
-
         console.log("about to call image api");
         const url = "https://www.openseatdirect.com/api/event/photo/e/89448291753";
         fetch(url, {
@@ -273,13 +269,9 @@ const EventCreation = () => {
             imgSrc: photodat,
             imgSrcExt: srcExt
           })
-          
-          
-          setIsLoading(false);
         })
         .catch(err => {
           console.log("**ERROR THROWN", err);
-          setIsLoading(false);
         });
 
       })
@@ -289,6 +281,7 @@ const EventCreation = () => {
     } else {
       console.log("there is NO event");
     }
+    setIsLoading(false);
   }, []);
 
   const loadEventInfo = (eventTix) => {
@@ -2194,6 +2187,30 @@ const EventCreation = () => {
     { label: "No refunds: No refunds at any time.", value: "noRefunds" },
   ];
 
+  const imageCanvas = () => {
+    if (isLoading || !eventDescription.eventNum) {
+      return null
+    } else {
+      console.log("eventDescription.eventNum: ", eventDescription.eventNum)
+      return (
+        <ImgDropAndCrop
+          icon="create image"
+          info={photoData}
+          event={eventDescription.eventNum}
+          change={(image) => {
+            console.log("image: ", image);
+            console.log("typeof image: ", typeof image);
+            
+            let tempDescription = {...eventDescription };
+            tempDescription.eventImage = image;
+            setEventDescription(tempDescription);
+            console.log("tempDescription.eventImage: ", tempDescription.eventImage)
+          }}
+        />
+      )
+    }
+  }
+
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
@@ -2631,20 +2648,7 @@ const EventCreation = () => {
               backgroundColor: "#E7E7E7",
             }}
           >
-          {!isLoading ?
-            <ImgDropAndCrop
-              icon="create image"
-              info={photoData}
-              change={(image) => {
-                console.log("image: ", image);
-                console.log("typeof image: ", typeof image);
-                
-                let tempDescription = {...eventDescription };
-                tempDescription.eventImage = image;
-                setEventDescription(tempDescription);
-                console.log("tempDescription.eventImage: ", tempDescription.eventImage)
-              }}
-            />  : <div> still loading </div> }
+          {imageCanvas()}
           </div>
 
           <div className={classes.SectionTitleTight}>

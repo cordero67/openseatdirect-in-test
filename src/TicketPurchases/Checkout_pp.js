@@ -12,7 +12,7 @@ import {
   EventTicketSectionStyling,
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling
-} from "./Styling";
+} from "./StylingOLD";
 import { expressPaymentOnSuccess } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -184,15 +184,23 @@ const Checkout = props => {
 
     setPaypalStatus(true);
     console.log("paypalStatus inside 'payPalExpressBuy': ", paypalStatus);
+
     transactionInfo = {
       eventTitle: eventDetails.eventTitle,
-      venue: eventDetails.location.venueName,
-      address1: eventDetails.location.address1,
-      city: eventDetails.location.city,
-      state: eventDetails.location.state,
-      zipPostalCode: eventDetails.location.zipPostalCode,
+      venue: eventDetails.locationVenueName,
+      address1: eventDetails.locationAddress1,
+      address2: eventDetails.locationAddress2,
+      city: eventDetails.locationCity,
+      state: eventDetails.locationState,
+      zipPostalCode: eventDetails.locationZipPostalCode,
+      countryCode: eventDetails.locationCountryCode,
+      locationNote: eventDetails.locationNote,
+      webinarLink: eventDetails.webinarLink,
+      onlineInformation: eventDetails.onlineInformation,
+      tbaInformation: eventDetails.tbaInformation,
       startDateTime: eventDetails.startDateTime,
       endDateTime: eventDetails.endDateTime,
+      timeZone: eventDetails.timeZone,
       paypalEmail: details.payer.email_address,
       firstName: details.payer.name.given_name,
       lastName: details.payer.name.surname,
@@ -201,7 +209,7 @@ const Checkout = props => {
       discount: orderTotals.discountAmount,
       totalAmount: orderTotals.finalPurchaseAmount,
       tickets: ticketInfo,
-      userEmail: eventDetails.organizerEmail,
+      organizerEmail: eventDetails.organizerEmail,
     };
 
     onlyShowLoadingSpinner();

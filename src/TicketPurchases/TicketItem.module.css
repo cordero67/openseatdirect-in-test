@@ -144,7 +144,7 @@
 
 @media (min-width: 1140px) {
     .LeftGrid {
-        grid-template-columns: 480px 80px;
+        grid-template-columns: 540px 80px;
     }
 
     .TicketType {

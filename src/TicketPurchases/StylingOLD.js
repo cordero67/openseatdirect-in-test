@@ -37,6 +37,45 @@ export const MainContainerStyling = (inWidth, inHeight) => {
   return MainContainer;
 };
 
+export const MainContainerStyling2 = (inWidth, inHeight) => {
+  let MainContainer2 = {};
+
+  if (inWidth < 660) {
+    MainContainer2 = {
+      fontFamily: "'Roboto', sans-serif",
+      backgroundColor: `#fff`,
+      height: `${inHeight}px`,
+      paddingTop: `0px`,
+      paddingLeft: `0px`,
+      paddingRight: `0px`,
+      paddingBottom: `0px`
+    };
+  } else if (inHeight < 720) {
+    MainContainer2 = {
+      fontFamily: "'Roboto', sans-serif",
+      backgroundColor: `#fff`,
+      backgroundImage: `linear-gradient(180deg, red 0%, #000000 100%)`,
+      height: `${inHeight}px`,
+      paddingTop: `0px`,
+      paddingLeft: `25px`,
+      paddingRight: `25px`,
+      paddingBottom: `0px`
+    };
+  } else {
+    MainContainer2 = {
+      fontFamily: "'Roboto', sans-serif",
+      backgroundColor: `#fff`,
+      backgroundImage: `linear-gradient(180deg, red 0%, #000000 100%)`,
+      paddingTop: `calc((${inHeight}px - 720px) / 2)`,
+      paddingLeft: `25px`,
+      paddingRight: `25px`,
+      paddingBottom: `calc((${inHeight}px - 720px) / 2)`
+    };
+  }
+
+  return MainContainer2;
+};
+
 export const MainGridStyling = (inWidth, inHeight) => {
   let MainGrid;
 
@@ -142,7 +181,18 @@ export const MainGridStyling = (inWidth, inHeight) => {
 
 export const EventTicketSectionStyling = (inWidth, inHeight) => {
   let EventTicketSection;
-  if (inWidth < 480) {
+  if (inWidth < 400) {
+    // width < 480px, height does not matter
+    EventTicketSection = {
+      backgroundColor: `#fff`,
+      height: `calc(${inHeight}px - 130px)`,
+      paddingTop: `30px`,
+      paddingLeft: `15px`,
+      paddingRight: `10px`,
+      textAlign: `left`,
+      overflowY: `auto`
+    };
+  } else if (inWidth < 480) {
     // width < 480px, height does not matter
     EventTicketSection = {
       backgroundColor: `#fff`,
@@ -172,8 +222,8 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
-        paddingLeft: `50px`,
-        paddingRight: `50px`,
+        paddingLeft: `80px`,
+        paddingRight: `80px`,
         textAlign: `left`,
         overflowY: `auto`
       };
@@ -183,8 +233,33 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         height: `580px`,
         paddingTop: `30px`,
-        paddingLeft: `50px`,
-        paddingRight: `50px`,
+        paddingLeft: `80px`,
+        paddingRight: `80px`,
+        textAlign: `left`,
+        overflowY: `auto`
+      };
+    }
+  } else if (inWidth < 960) {
+    // width < 960px, NEED TO CHECK HEIGHT
+    if (inHeight < 720) {
+      // height < 720px
+      EventTicketSection = {
+        backgroundColor: `#fff`,
+        height: `calc(${inHeight}px - 140px)`,
+        paddingTop: `30px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        textAlign: `left`,
+        overflowY: `auto`
+      };
+    } else {
+      // height >= 720px
+      EventTicketSection = {
+        backgroundColor: `#fff`,
+        height: `580px`,
+        paddingTop: `30px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
         textAlign: `left`,
         overflowY: `auto`
       };
@@ -222,8 +297,8 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
-        paddingLeft: `50px`,
-        paddingRight: `50px`,
+        paddingLeft: `80px`,
+        paddingRight: `80px`,
         textAlign: `left`,
         overflowY: `auto`
       };
@@ -233,8 +308,8 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         height: `580px`,
         paddingTop: `30px`,
-        paddingLeft: `50px`,
-        paddingRight: `50px`,
+        paddingLeft: `80px`,
+        paddingRight: `80px`,
         textAlign: `left`,
         overflowY: `auto`
       };
@@ -313,8 +388,6 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
   return OrderSummarySection;
 };
 
-// Refactored to here
-
 export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
   let OrderSummarySectionAlt;
 
@@ -329,8 +402,33 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
       paddingRight: `25px`,
       overflowY: `auto`
     };
-  } else {
+  } else if (inWidth < 960) {
     // width < 960px, NEED TO CHECK HEIGHT
+    if (inHeight < 720) {
+      // height < 720px
+      OrderSummarySectionAlt = {
+        backgroundColor: `#E7E7E7`,
+        fontSize: `0.875rem`,
+        height: `calc(${inHeight}px - 80px)`,
+        paddingTop: `20px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        overflowY: `auto`
+      };
+    } else {
+      // height >= 720px
+      OrderSummarySectionAlt = {
+        backgroundColor: `#E7E7E7`,
+        fontSize: `0.875rem`,
+        height: `640px`,
+        paddingTop: `20px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        overflowY: `auto`
+      };
+    }
+  } else {
+    // width >= 960px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
       // height < 720px
       OrderSummarySectionAlt = {

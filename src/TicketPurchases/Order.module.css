@@ -88,9 +88,10 @@
   height: 80px;
 }
 .Image {
-  max-width: 100%;
-  max-height: auto;
+  height: auto;
+  width: 100%;
 }
+
 .OrderSummary {
   background-color: #e5e5e5;
   font-size: 0.875rem;
@@ -242,6 +243,7 @@
 }
 .faShoppingCart:hover {
   border-color: transparent;
+  cursor: pointer;
 }
 .faChevronUp {
   font-size: 0.75rem;
@@ -249,6 +251,7 @@
 }
 .faChevronUp:hover {
   border-color: transparent;
+  cursor: pointer;
 }
 .faChevronDown {
   font-size: 0.75rem;
@@ -256,17 +259,21 @@
 }
 .faChevronDown:hover {
   border-color: transparent;
+  cursor: pointer;
 }
 .cartBadge {
   border-radius: 50%;
   vertical-align: super;
-  font-size: 16px;
+  font-size: 14px;
   text-align: center;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
   color: white;
   font-style: italic;
   background: red;
+}
+.cartBadge:hover {
+  cursor: pointer;
 }
 .TotalAmount {
   text-align: right;

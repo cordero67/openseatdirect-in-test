@@ -35,7 +35,7 @@ import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackgroun
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
 import TicketItem from "./TicketItem";
-import styles from "./TicketSelection.module.css";
+import styles from "./TicketSelectionOriginal.module.css";
 
 let eventDetails; // defines an event's NON ticket type specific information
 let eventLogo = ""; // defines an event's image
@@ -69,15 +69,15 @@ const TicketSelection = () => {
     eventPromoCodes: []
   });
 
-  // tracks ticket order ticket specific information
+  // tracks ticket order specific information
   const [ticketInfo, setTicketInfo] = useState([]);
 
   // tracks ticket order general information
   const [orderTotals, setOrderTotals] = useState([]);
 
   useEffect(() => {
-    // setIsLoadingEvent(true);
-    // setIsSuccessfull(true);
+    setIsLoadingEvent(true);
+    setIsSuccessfull(true);
     eventData(queryString.parse(window.location.search).eventID);
     // determines a one or two pane display based on initial window width 
     stylingUpdate(window.innerWidth, window.innerHeight);
@@ -103,60 +103,50 @@ const TicketSelection = () => {
   // receives Event Data from server and populates several control variables
   const eventData = eventID => {
     getEventData(eventID)
-    .then(res => {
-      console.log("EVENT DATA OBJECT from Server: ", res);
-      eventDetails = loadEventDetails(res);
-
-      // checks if an order exists in local storage
-      if (
-        typeof window !== "undefined" &&
-        localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
-      ) {
-        let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
-
-        //NEED TO REVIEW THESE THREE LINES
-        setTicketInfo(cart.ticketInfo);
-        setPromoCodeDetails(cart.promoCodeDetails);
-        setOrderTotals(cart.orderTotals);
-        //NEED TO REVIEW THESE THREE LINES
-
-        let event = JSON.parse(localStorage.getItem("eventNum"));
-        localStorage.removeItem(`cart_${event}`);
-        localStorage.removeItem(`image_${event}`);
-        
-      } else {
-        console.log("ticketInfo: ", loadTicketInfo(res));
-        console.log("res: ",res);
-        
-        //NEED TO REVIEW THESE THREE LINES
-        setTicketInfo(loadTicketInfo(res));
-        setPromoCodeDetails(loadPromoCodeDetails(res.tickets, promoCodeDetails));
-        setOrderTotals(loadOrderTotals(res));
-        //NEED TO REVIEW THESE THREE LINES
-      }
-
-      // only asks for image if event has been successfully imported
-      getEventImage(eventID)
       .then(res => {
-        eventLogo = res;
+        console.log("EVENT DATA OBJECT from Server: ", res);
+        eventDetails = loadEventDetails(res);
+        if (
+          typeof window !== "undefined" &&
+          localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
+        ) {
+          let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+          setPromoCodeDetails(cart.promoCodeDetails);
+          setTicketInfo(cart.ticketInfo);
+          setOrderTotals(cart.orderTotals);
+          let event = JSON.parse(localStorage.getItem("eventNum"));
+          localStorage.removeItem(`cart_${event}`);
+          localStorage.removeItem(`image_${event}`);
+        } else {
+          console.log("ticketInfo: ", loadTicketInfo(res));
+          console.log("res: ",res);
+          setTicketInfo(loadTicketInfo(res));
+          console.log("return from 'loadTicketInfo'")
+          setPromoCodeDetails(loadPromoCodeDetails(res.tickets, promoCodeDetails));
+          setOrderTotals(loadOrderTotals(res));
+          setIsLoadingEvent(false);
+        }
+        getEventImage(eventID)
+          .then(res => {
+            eventLogo = res;
+          })
+          .catch(err => {
+            eventLogo = DefaultLogo;
+          })
+          .finally(() => {
+            setIsLoadingEvent(false);
+          });
       })
       .catch(err => {
-        eventLogo = DefaultLogo;
+        // NEED TO ADDRESS THESE SITUATIONS
+        console.log("Inside the catch, err: ",err)
+        if (err === "Error: Error: 400") {
+        }
+        if (err === undefined) {
+        }
+        setIsLoadingEvent(true);
+        setIsSuccessfull(false);
       })
-      .finally(() => {
-        setIsLoadingEvent(false);
-      });
-    })
-    .catch(err => {
-      // NEED TO ADDRESS THESE SITUATIONS
-      console.log("Inside the catch, err: ",err)
-      if (err === "Error: Error: 400") {
-      }
-      if (err === undefined) {
-      }
-      setIsSuccessfull(false);
-      setIsLoadingEvent(false);
-    })
   };
   
   // determines width and height of window upon resizing by user
@@ -164,7 +154,6 @@ const TicketSelection = () => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
-  // REFACTORED TO HERE
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
   const updateOrderTotals = (promoCode) => {
     setOrderTotals(changeOrderTotals(ticketInfo, orderTotals, promoCode));
@@ -346,6 +335,12 @@ const TicketSelection = () => {
         })}
       </div>
     );
+  } else {
+    ticketItems = (
+      <Aux>
+        <Spinner></Spinner>
+      </Aux>
+    );
   }
 
   // determines whether or not to display the purchase amount
@@ -465,10 +460,10 @@ const TicketSelection = () => {
           <div style={OrderSummarySectionAlt}>{orderSummary}</div>
         </div>
         <div className={styles.EventFooter}>
-          <div className={styles.CartLink}>
+        <div className={styles.CartLink}>
             {cartLink(showDoublePane)}
           </div>
-          <div className={styles.TotalAmount}>
+        <div className={styles.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
           <div style={{ textAlign: "right" }}>{checkoutButton}</div>
@@ -509,35 +504,40 @@ const TicketSelection = () => {
   if (isLoadingEvent) {
     console.log("else isLoadingEvent: ",isLoadingEvent)
     console.log("else isSuccessful: ",isSuccessfull)
-    mainDisplay = 
-      <div className={styles.BlankCanvas}>
-        <Spinner></Spinner>
-      </div>
+    mainDisplay = (<div>Wait</div>)
   } else {
     console.log("else isLoadingEvent: ",isLoadingEvent)
     console.log("else isSuccessful: ",isSuccessfull)
     if (showDoublePane && isSuccessfull) {
       mainDisplay = (
-        <div style={MainGrid}>
-          {ticketPane}
-          {orderPane}
-        </div>
+        <Aux>
+          <div style={MainGrid}>
+            {ticketPane}
+            {orderPane}
+          </div>
+        </Aux>
       );
     } else if (!showOrderSummaryOnly && isSuccessfull) {
       mainDisplay = (
-        <div style={MainGrid}>{ticketPane}</div>
+        <Aux>
+          <div style={MainGrid}>{ticketPane}</div>
+        </Aux>
       );
     } else if (isSuccessfull) {
       mainDisplay = (
-        <div style={MainGrid}>{orderPane}</div>
+        <Aux>
+          <div style={MainGrid}>{orderPane}</div>
+        </Aux>
       );
     } else {
       mainDisplay = (
-        <div className={styles.BlankCanvas}>
-          <h5>
-            <span style={{ color: "red" }}>This event does not exist.</span>
-          </h5>
-        </div>
+        <Aux>
+          <div className={styles.BlankCanvas}>
+            <h5>
+              <span style={{ color: "red" }}>This event does not exist.</span>
+            </h5>
+          </div>
+        </Aux>
       );
     }
   }
