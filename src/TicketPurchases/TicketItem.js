@@ -12,6 +12,7 @@ const TicketItem = props => {
     let maxAmount;
     let ticketPrice;
     let adjTicketPrice;
+    console.log("props.name: ", props.name)
     if (props.name.ticketCurrency === "¥") {
       ticketPrice = props.name.ticketPrice.toFixed(0);
       adjTicketPrice = props.name.adjustedTicketPrice.toFixed(0);
@@ -48,8 +49,8 @@ const TicketItem = props => {
       )
       return options;
     } else {
-      if (props.name.maxTicketOrder) {
-        maxAmount = Math.min(props.name.maxTicketOrder, props.name.ticketsAvailable);
+      if (props.name.maxTicketsAllowedPerOrder) {
+        maxAmount = Math.min(props.name.maxTicketsAllowedPerOrder, props.name.ticketsAvailable);
       }
       else {
         maxAmount = Math.min(25, props.name.ticketsAvailable);
@@ -87,8 +88,8 @@ const TicketItem = props => {
           <hr style={{ border: "1px solid#F2F2F2" }} />
         </Aux>
       )
+      return options;
     }
-    return options;
   }
 
   return (

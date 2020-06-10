@@ -149,7 +149,7 @@ const EventCreation = () => {
     locationCity: undefined, // fetch
     locationState: undefined, // fetch
     locationZipPostalCode: undefined, // fetch
-    locationCountryCode: undefined, // fetch
+    locationCountryCode: "US", // fetch
     locationNote: undefined, // fetch
     startDate: new Date(new Date().toDateString()),
     startTime: undefined,
@@ -376,10 +376,14 @@ const EventCreation = () => {
     console.log("tempDescription: ", tempDescription);
     setEventDescription(tempDescription);
 
+
+    console.log("eventTix.tickets: ", eventTix.tickets)
+    console.log("eventTix.tickets.length: ", eventTix.tickets.length)
     // now populate the ticketsDetails variable
     if (eventTix.tickets && eventTix.tickets.length !== 0) {
       let tempArray = [];
       eventTix.tickets.forEach((tix, index) => {
+        console.log("in ticket #: ", index);
         let tempPriceFeature = "none";
         let tempPromoCodes = [];
         let tempPromoCodesArray = [];
@@ -388,8 +392,8 @@ const EventCreation = () => {
           tempPriceFeature = tix.priceFunction.form;
           if (tempPriceFeature === "promo") {
             console.log("priceFunction: ", tix.priceFunction);
-            console.log("tix.priceFunction.args.promocodes: ",tix.priceFunction.args.promocodes)
-            tempPromoCodes = tix.priceFunction.args.promocodes;
+            console.log("tix.priceFunction.args: ",tix.priceFunction.args)
+            tempPromoCodes = tix.priceFunction.args;
             tempPromoCodes.map((promo, index) => {
               let element = {
                   key: index,
@@ -454,136 +458,75 @@ const EventCreation = () => {
       console.log("You need to complete these fields");
       !eventDescription.eventTitle ? setEventTitleOmission(true) : setEventTitleOmission(false);
     } else {
-      /*
-        let ticketData = [];
-        ticketDetails.map((ticket, index) => {
+        
+      let eventDescriptionFields = [
+        "isDraft",
+        "eventNum",
+        "eventTitle",
+        "eventType",
+        "locationVenueName",
+        "locationAddress1",
+        "locationAddress2",
+        "locationCity",
+        "locationState",
+        "locationZipPostalCode",
+        "locationCountryCode",
+        "locationNote",
+        "webinarLink",
+        "onlineInformation",
+        "tbaInformation",
+        "timeZone",
+        "shortDescription",
+        "longDescription",
+        "eventCategory",
+        "facebookLink",
+        "twitterLink",
+        "linkedinLink",
+        "instagramLink",
+        "vanityLink",
+        "refundPolicy",
+      ]
 
-                  let tempPriceFunction = {};
-                  // for "promo"
-                  if (ticket.priceFeature === "promo") {
-                    let promoCodesArray = [];
-                    ticket.promoCodes.map((item, index) => {
-                      let promoCodeElement = {
-                        key: item.key,
-                        name: item.name,
-                        amount: item.amount,
-                        percent: item.percent
-                      }
-                      promoCodesArray.push(promoCodeElement);
-                      console.log("promoCodesArray: ", promoCodesArray)
-                    })
-                    tempPriceFunction = {
-                      form: "promo",
-                      args: {
-                        promocodes: promoCodesArray
-                      }
-                    }
-                  }
-                  // for "bogod" and "bogof"
-                  if (ticket.priceFeature === "bogod" || ticket.priceFeature === "bogof") {
-                    tempPriceFunction = {
-                      form: "bogo",
-                      args: {
-                        buy: ticket.functionArgs.buy,
-                        get: ticket.functionArgs.get,
-                        discount: ticket.functionArgs.discount
-                      }
-                    }
-                  }
-                  // for "twofer"
-                  if (ticket.priceFeature === "twofer") {
-                    tempPriceFunction = {
-                      form: "twofer",
-                      args: {
-                        buy: ticket.functionArgs.buy,
-                        for: ticket.functionArgs.for
-                      }
-                    }
-                  }
-                  
-        let tempObject = {
-          ticketName: ticket.ticketName,
-          currentTicketPrice: ticket.currentTicketPrice,
-          remainingQuantity: ticket.remainingQuantity,
-          priceFunction: tempPriceFunction,
-          ticketDescription: ticket.ticketDescription,
-          currency: ticket.currency,
-          maxTicketsAllowedPerOrder: ticket.maxTicketsAllowedPerOrder,
-          minTicketsAllowedPerOrder: ticket.minTicketsAllowedPerOrder,
-          _id: ticket._id,
-          sort: 10 + 10 * index
-        };
-        ticketData.push(tempObject);
+      var formData = new FormData();
+      
+      eventDescriptionFields.forEach(field => {
+        //console.log("event field: ", field, " its value: ", eventDescription[field])
+        if (eventDescription[field]) {
+          formData.append(`${field}`, eventDescription[field])
+          console.log("this is the input: ", `${field}`, `${eventDescription[field]}`)
+        }
       })
-      console.log("ticketData: ", ticketData)
-    */
-
         
-        let eventDescriptionFields = [
-          "isDraft",
-          "eventNum",
-          "eventTitle",
-          "eventType",
-          "locationVenueName",
-          "locationAddress1",
-          "locationAddress2",
-          "locationCity",
-          "locationState",
-          "locationZipPostalCode",
-          "locationCountryCode",
-          "locationNote",
-          "webinarLink",
-          "onlineInformation",
-          "tbaInformation",
-          "timeZone",
-          "shortDescription",
-          "longDescription",
-          "eventCategory",
-          "facebookLink",
-          "twitterLink",
-          "linkedinLink",
-          "instagramLink",
-          "vanityLink",
-          "refundPolicy",
-        ]
+      // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
+      formData.append("startDateTime", eventDescription.startDate);
+      // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
+      formData.append("endDateTime", eventDescription.endDate);
 
-        var formData = new FormData();
-        
-        eventDescriptionFields.forEach(field => {
-          //console.log("event field: ", field, " its value: ", eventDescription[field])
-          if (eventDescription[field]) {
-            formData.append(`${field}`, eventDescription[field])
-            console.log("this is the input: ", `${field}`, `${eventDescription[field]}`)
-          }
-        })
-        
-        // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
-        formData.append("startDateTime", eventDescription.startDate);
-        // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
-        formData.append("endDateTime", eventDescription.endDate);
+      let imageBlob = null;
 
-        let imageBlob = null;
+      if (eventDescription.eventImage){
+          imageBlob = await new Promise (resolve => eventDescription.eventImage.toBlob(resolve, 'image/png'));
+          formData.append("photo", imageBlob);
+      } else {
+        console.log("there is no image");
+      };
 
-        if (eventDescription.eventImage){
-            imageBlob = await new Promise (resolve => eventDescription.eventImage.toBlob(resolve, 'image/png'));
-            formData.append("photo", imageBlob);
-        } else {
-          console.log("there is no image");
-        };
+      let ticketDetailsFields = [
+        "ticketName",
+        "remainingQuantity",
+        "currentTicketPrice",
+        "ticketDescription",
+        "maxTicketsAllowedPerOrder",
+        "minTicketsAllowedPerOrder",
+        "_id"
+      ]
 
-        let ticketDetailsFields = [
-          "ticketName",
-          "remainingQuantity",
-          "currentTicketPrice",
-          "ticketDescription",
-          "maxTicketsAllowedPerOrder",
-          "minTicketsAllowedPerOrder",
-          "_id"
-        ]
-
-        ticketDetails.forEach((ticket, index) => {
-          console.log("ticket #: index");
+      ticketDetails.forEach((ticket, index) => {
+        console.log("ticket #: index");
+        if (ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice) {
+          console.log("adding ticket ", index)
           formData.append(`tickets[${index}][sort]`, 10 + 10 * index)
+
           if (ticket.currency) {
             formData.append(`tickets[${index}][currency]`, ticket.currency.slice(0,3))
           }
@@ -595,9 +538,7 @@ const EventCreation = () => {
               //console.log("this is the input: ", `${field}`, `${eventDescription[field]}`)
             }
           })
-        });
 
-        /*
           // for "bogod" and "bogof"
           if (ticket.priceFeature === "bogod" || ticket.priceFeature === "bogof") {
             formData.append(`tickets[${index}][priceFunction][form]`, "bogo");
@@ -622,73 +563,76 @@ const EventCreation = () => {
               formData.append(`tickets[${index}][priceFunction][args[${number}]][percent]`, item.percent);
             })
           }
-      */
-
-        // Display the key/value pairs
-        for (var pair of formData.entries()) {
-          console.log(pair[0]+ ', ' + pair[1]); 
-        }
-
-        let userid = vendorInfo.id;
-        let token = vendorInfo.token;
-        const authstring =
-          `Bearer ${token}`;
-        const APIURL = "https://www.openseatdirect.com/api";
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", authstring);
-
-        let apiurl;
-
-        if (eventDescription.eventNum) {
-        //if (false) {
-          console.log("editting an existing event");
-          apiurl = `${APIURL}/eventix/${userid}/${eventDescription.eventNum}`;
-          console.log("apiurl: ", apiurl)
-          fetch(apiurl, {
-            method: "post",
-            headers: myHeaders,
-            body: formData,
-            redirect: "follow",
-          })
-          .then(handleErrors)
-          .then((response) => {
-            console.log("response in event/create", response);
-            console.log("apiurl: ", apiurl)
-            return response.json();
-          })
-          .then((res) => {
-            console.log(res);
-            if (preview) {
-              window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
-            }
-          })
-          .catch((err) => {
-            console.log("**ERROR THROWN", err);
-          });
         } else {
-          console.log("creating a new event");
-          apiurl = `${APIURL}/eventix/${userid}`;
-          fetch(apiurl, {
-            method: "post",
-            headers: myHeaders,
-            body: formData,
-            redirect: "follow",
-          })
-          .then(handleErrors)
-          .then((response) => {
-            console.log("response in event/create", response);
-            return response.json();
-          })
-          .then((res) => {
-            console.log(res);
-            if (preview) {
-              window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
-            }
-          })
-          .catch((err) => {
-            console.log("**ERROR THROWN", err);
-          });
+          console.log("skipped ticket ", index)
         }
+      });
+
+      // Display the key/value pairs
+      for (var pair of formData.entries()) {
+        console.log(pair[0]+ ', ' + pair[1]); 
+      }
+
+      let userid = vendorInfo.id;
+      let token = vendorInfo.token;
+      const authstring =
+        `Bearer ${token}`;
+      const APIURL = "https://www.openseatdirect.com/api";
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", authstring);
+
+      let apiurl;
+
+      if (eventDescription.eventNum) {
+      //if (false) {
+        console.log("editting an existing event");
+        apiurl = `${APIURL}/eventix/${userid}/${eventDescription.eventNum}`;
+        console.log("apiurl: ", apiurl)
+        fetch(apiurl, {
+          method: "post",
+          headers: myHeaders,
+          body: formData,
+          redirect: "follow",
+        })
+        .then(handleErrors)
+        .then((response) => {
+          console.log("response in event/create", response);
+          console.log("apiurl: ", apiurl)
+          return response.json();
+        })
+        .then((res) => {
+          console.log(res);
+          if (!preview) {
+            window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
+          }
+        })
+        .catch((err) => {
+          console.log("**ERROR THROWN", err);
+        });
+      } else {
+        console.log("creating a new event");
+        apiurl = `${APIURL}/eventix/${userid}`;
+        fetch(apiurl, {
+          method: "post",
+          headers: myHeaders,
+          body: formData,
+          redirect: "follow",
+        })
+        .then(handleErrors)
+        .then((response) => {
+          console.log("response in event/create", response);
+          return response.json();
+        })
+        .then((res) => {
+          console.log(res);
+          if (!preview) {
+            window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
+          }
+        })
+        .catch((err) => {
+          console.log("**ERROR THROWN", err);
+        });
+      }
     }
   };
 
@@ -2188,10 +2132,10 @@ const EventCreation = () => {
   ];
 
   const imageCanvas = () => {
-    if (isLoading || !eventDescription.eventNum) {
-      return null
-    } else {
-      console.log("eventDescription.eventNum: ", eventDescription.eventNum)
+    //if (isLoading || !eventDescription.eventNum) {
+    //  return null
+    //} else {
+    //  console.log("eventDescription.eventNum: ", eventDescription.eventNum)
       return (
         <ImgDropAndCrop
           icon="create image"
@@ -2208,7 +2152,7 @@ const EventCreation = () => {
           }}
         />
       )
-    }
+    //}
   }
 
   return (
@@ -2232,22 +2176,14 @@ const EventCreation = () => {
               </div>
             </div>
           )}
+          <div></div>
           <div className={classes.ButtonBox}>
             <button
               className={classes.Button}
               style={{ border: "2px solid green", color: "green" }}
-              onClick={() => saveEvent(false)}
+                onClick={saveEvent}
             >
               Save as Draft
-            </button>
-          </div>
-          <div className={classes.ButtonBox}>
-            <button
-              className={classes.Button}
-              style={{ border: "2px solid blue", color: "blue" }}
-              onClick={() => saveEvent(true)}
-            >
-              Preview
             </button>
           </div>
           <div className={classes.ButtonBox}>
@@ -2938,6 +2874,7 @@ const EventCreation = () => {
         </div>
         <div style={{ margin: "auto", textAlign: "center" }}>
           <div className={classes.GridBottom}>
+            <div></div>
             <div className={classes.ButtonBox}>
               <button
                 className={classes.Button}
@@ -2945,14 +2882,6 @@ const EventCreation = () => {
                 onClick={saveEvent}
               >
                 Save as Draft
-              </button>
-            </div>
-            <div className={classes.ButtonBox}>
-              <button
-                className={classes.Button}
-                style={{ border: "2px solid blue", color: "blue" }}
-              >
-                Preview
               </button>
             </div>
             <div className={classes.ButtonBox}>
@@ -2975,3 +2904,27 @@ export default EventCreation;
 
 
            // <ImgDropAndCrop icon="create image" change={changeEventImage} />
+
+/*           
+            <div className={classes.ButtonBox}>
+              <button
+                className={classes.Button}
+                style={{ border: "2px solid blue", color: "blue" }}
+                onClick={saveEvent}
+              >
+                Preview
+              </button>
+            </div>
+
+
+          <div className={classes.ButtonBox}>
+            <button
+              className={classes.Button}
+              style={{ border: "2px solid blue", color: "blue" }}
+              onClick={() => saveEvent(true)}
+            >
+              Preview
+            </button>
+          </div>
+
+*/

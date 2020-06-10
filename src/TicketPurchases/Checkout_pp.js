@@ -113,6 +113,8 @@ const Checkout = props => {
         orderTotals = tempCart.orderTotals;
         setPaypalArray();
         console.log("Paypal Array: ", paypalArray);
+        console.log("orderTotals: ", orderTotals);
+        console.log("ticketInfo: ", ticketInfo);
       }
       if (localStorage.getItem(`image_${event}`)) {
         eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
@@ -211,6 +213,8 @@ const Checkout = props => {
       tickets: ticketInfo,
       organizerEmail: eventDetails.organizerEmail,
     };
+
+    console.log("transactionInfo: ",transactionInfo)
 
     onlyShowLoadingSpinner();
     console.log("On Success 'details' object: ", details);

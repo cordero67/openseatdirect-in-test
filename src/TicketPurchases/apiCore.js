@@ -26,10 +26,6 @@ export const getEventData = eventId => {
     });
 };
 
-
-
-
-
 export const getEventImage = eventId => {
     console.log("Inside apiCore and the 'getEventImage' function call");
     return fetch(`${API}/event/photo/e/${eventId}`, {

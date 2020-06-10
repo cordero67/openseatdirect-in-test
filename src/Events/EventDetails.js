@@ -8,6 +8,7 @@ import { getEventData, getEventImage } from "./apiEvents";
 
 import styles from "./EventDetails.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
+import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
 
@@ -20,6 +21,7 @@ let eventLogo;
 const EventDetail = props => {
   // defines data loading control variables
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
+  const [isSuccessfull, setIsSuccessfull] = useState(true);
   const [showLargerDoublePane, setShowLargerDoublePane] = useState(false);
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
 
@@ -52,6 +54,7 @@ const EventDetail = props => {
       }
       if (err === undefined) {
       }
+      setIsSuccessfull(false);
       setIsLoadingEvent(false);
     })
     .finally(() => {
@@ -277,7 +280,7 @@ const EventDetail = props => {
     } 
   }
 
-  const topDisplay2 = () => {
+  const topDisplay = () => {
     if (showLargerDoublePane) {
       return (
         <div className={styles.UpperGrid}>
@@ -292,7 +295,7 @@ const EventDetail = props => {
     }
   }
 
-  const middleDisplay2 = () => {
+  const middleDisplay = () => {
     if (!showLargerDoublePane && !isLoadingEvent) {
       if (showSmallerDoublePane) {
         return (
@@ -328,14 +331,91 @@ const EventDetail = props => {
     }
   }
 
+  // defines main display with ticket and order panes
+  const mainDisplay = () => {
+    if (isLoadingEvent) {
+      return (
+        <div className={styles.BlankCanvas}>
+          <Spinner></Spinner>
+        </div>
+      )
+    } else {
+      if (isSuccessfull) {
+        return (
+          <div>
+            {topDisplay()}
+            {ticketDisplay()}
+            {middleDisplay()}
+            {bottomDisplay()}
+          </div>
+        )
+      } else {
+        return (
+          <div className={styles.BlankCanvas}>
+            <h5>
+              <span style={{ color: "red" }}>This event does not exist.</span>
+            </h5>
+          </div>
+        );
+      }
+    }
+  }
+
+/*
+  };
+  if (isLoadingEvent) {
+    console.log("else isLoadingEvent: ",isLoadingEvent)
+    console.log("else isSuccessful: ",isSuccessfull)
+    mainDisplay = 
+      <div className={styles.BlankCanvas}>
+        <Spinner></Spinner>
+      </div>
+  } else {
+    console.log("else isLoadingEvent: ",isLoadingEvent)
+    console.log("else isSuccessful: ",isSuccessfull)
+    if (showDoublePane && isSuccessfull) {
+      mainDisplay = (
+        <div style={MainGrid}>
+          {ticketPane}
+          {orderPane}
+        </div>
+      );
+    } else if (!showOrderSummaryOnly && isSuccessfull) {
+      mainDisplay = (
+        <div style={MainGrid}>{ticketPane}</div>
+      );
+    } else if (isSuccessfull) {
+      mainDisplay = (
+        <div style={MainGrid}>{orderPane}</div>
+      );
+    } else {
+      mainDisplay = (
+        <div className={styles.BlankCanvas}>
+          <h5>
+            <span style={{ color: "red" }}>This event does not exist.</span>
+          </h5>
+        </div>
+      );
+    }
+  }
+
+*/
+
+
+
   return (
     <div className={styles.MainContainer}>
-      {topDisplay2()}
-      {ticketDisplay()}
-      {middleDisplay2()}
-      {bottomDisplay()}
+      {mainDisplay()}
     </div>
   );
 };
 
 export default EventDetail;
+
+/*
+
+      {topDisplay()}
+      {ticketDisplay()}
+      {middleDisplay()}
+      {bottomDisplay()}
+      */

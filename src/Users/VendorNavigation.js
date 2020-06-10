@@ -31,6 +31,34 @@ const VendorNavigation = (props) => {
         </li>
 
         <li>
+          <NavLink to="/eventcreation" style={{ color: "#000" }}>
+            Create New Event
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/signin"
+            style={{color: "#000"}}
+            onClick={() => {
+              signout(() => {
+                //history.push("/");
+              })
+            }}
+          >Sign Out
+          </NavLink>
+        </li>
+      </ul>
+    </Fragment>
+  );
+};
+
+export default VendorNavigation;
+
+/*
+
+
+        <li>
           <NavLink
             to="/vendororders"
             style={isActive(props.currentPage, "/vendororders")}
@@ -56,28 +84,4 @@ const VendorNavigation = (props) => {
             Account Settings
           </NavLink>
         </li>
-
-        <li>
-          <NavLink to="/eventcreation" style={{ color: "#000" }}>
-            Create New Event
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/signin"
-            style={{color: "#000"}}
-            onClick={() => {
-              signout(() => {
-                //history.push("/");
-              })
-            }}
-          >Sign Out
-          </NavLink>
-        </li>
-      </ul>
-    </Fragment>
-  );
-};
-
-export default VendorNavigation;
+        */

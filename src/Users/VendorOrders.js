@@ -43,7 +43,7 @@ const VendorOrders = () => {
     };
     let fetchstr =
       //"https://www.openseatdirect.com/api/event/all/" + tempInfo.id;
-  "https://www.openseatdirect.com/api/admin/orders/" + vendorInfo.id;
+  "https://www.openseatdirect.com/api/orders/" + vendorInfo.id;
     console.log("about to fetch: ", fetchstr, requestOptions);
     fetch(fetchstr, requestOptions)
       .then((response) => response.text())
