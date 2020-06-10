@@ -39,16 +39,6 @@ const SideDrawerItems = (props) => {
         </NavLink>
       </li>
 
-      <li>
-        <NavLink
-          to="/eventcreation"
-          style={isActive(props.currentPage, "/eventcreation")}
-          onClick={props.clicked}
-        >
-          EVENT CREATION
-        </NavLink>
-      </li>
-
       {isAuthenticated() && isAuthenticated().user.role === 2 ? (
         <li>
           <NavLink
@@ -174,3 +164,16 @@ const SideDrawerItems = (props) => {
 };
 
 export default SideDrawerItems;
+
+
+/*
+      <li>
+        <NavLink
+          to="/eventcreation"
+          style={isActive(props.currentPage, "/eventcreation")}
+          onClick={props.clicked}
+        >
+          EVENT CREATION
+        </NavLink>
+      </li>
+      */

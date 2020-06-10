@@ -120,13 +120,6 @@ const SignIn = () => {
           value={password}
         />
       </div>
-
-      <div>
-        Forgot your{" "}
-        <Link to="/passwordrecovery" style={{ color: "blue" }}>
-          password.
-        </Link>
-      </div>
       <br></br>
       <button onClick={submitValues} className="btn btn-primary">
         Submit
@@ -151,12 +144,6 @@ const SignIn = () => {
           {redirectUser()}
         </div>
         <br></br>
-        <div className={classes.Section}>
-          Don't have an account, go to{" "}
-          <Link to="/signup" style={{ color: "blue" }}>
-            Sign Up.
-          </Link>
-        </div>
       </div>
     </div>
   );
@@ -165,32 +152,18 @@ const SignIn = () => {
 export default SignIn;
 
 /*
+      <div>
+        Forgot your{" "}
+        <Link to="/passwordrecovery" style={{ color: "blue" }}>
+          password.
+        </Link>
+      </div>
 
-          {showError()}
-          {showLoading()}
-
-    <Form>
-      <Form.Group>
-            <Form.Label>E-mail Address
-            </Form.Label>
-            <Form.Control/>
-            <Form.Label>Password
-            </Form.Label>
-            <Form.Control/>
-          </Form.Group>
-          
-        <button>
-          SUBMIT
-        </button>
-      <br></br>
-      <br></br>
-      <div className={styles.Header}>
-        Don't have an account, go to{" "}
-        <span style={{color: "blue"}}> 
-          <Link to="/signup">
+      
+        <div className={classes.Section}>
+          Don't have an account, go to{" "}
+          <Link to="/signup" style={{ color: "blue" }}>
             Sign Up.
           </Link>
-        </span>
-      </div>
-    </Form>
+        </div>
     */

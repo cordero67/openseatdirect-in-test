@@ -10,6 +10,19 @@
   margin: auto;
   box-sizing: border-box;
 }
+.BlankCanvas {
+  background-color: #fff;
+  border-bottom: 2px solid lightgrey;
+  margin: auto;
+  height: calc(100vh - 155px);
+  width: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 100%;
+}
+.SpinnerBox {
+  padding-top: 40px;
+}
 .UpperGrid {
   background-color: #fff;
   border-bottom: 2px solid lightgrey;
@@ -229,6 +242,9 @@
 }
 
 @media (min-width: 1097px) {
+  .BlankCanvas {
+    width: 1080px;
+  }
   .UpperGrid {
     height: 360px;
     width: 1080px;

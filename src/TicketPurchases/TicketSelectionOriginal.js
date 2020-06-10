@@ -57,7 +57,6 @@ const TicketSelection = () => {
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
 
-  // NEED TO REFACTOR THIS CONTROL VARIABLE
   // defines an event's specific ticket type promo codes
   const [promoCodeDetails, setPromoCodeDetails] = useState({
     available: false,
@@ -69,7 +68,6 @@ const TicketSelection = () => {
     lastInvalidPromoCode: "",
     eventPromoCodes: []
   });
-  // NEED TO REFACTOR THIS CONTROL VARIABLE
 
   // tracks ticket order ticket specific information
   const [ticketInfo, setTicketInfo] = useState([]);
@@ -116,11 +114,11 @@ const TicketSelection = () => {
       ) {
         let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
 
-        //NEED TO REFACTOR THESE THREE LINES
+        //NEED TO REVIEW THESE THREE LINES
         setTicketInfo(cart.ticketInfo);
         setPromoCodeDetails(cart.promoCodeDetails);
         setOrderTotals(cart.orderTotals);
-        //NEED TO REFACTOR THESE THREE LINES
+        //NEED TO REVIEW THESE THREE LINES
 
         let event = JSON.parse(localStorage.getItem("eventNum"));
         localStorage.removeItem(`cart_${event}`);
@@ -129,13 +127,14 @@ const TicketSelection = () => {
       } else {
         console.log("ticketInfo: ", loadTicketInfo(res));
         console.log("res: ",res);
-        
-        setTicketInfo(loadTicketInfo(res));
-        setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
+
+        setTicketInfo(loadTicketInfo(res));        
+        //NEED TO REVIEW THESE THREE LINES
+        setPromoCodeDetails(loadPromoCodeDetails(res.tickets, promoCodeDetails));
         setOrderTotals(loadOrderTotals(res));
+        //NEED TO REVIEW THESE THREE LINES
       }
 
-      // CURRENTLY ASKS FOR IMAGE SEPARATELY< IS THIS WHAT WE WANT TO DO?
       // only asks for image if event has been successfully imported
       getEventImage(eventID)
       .then(res => {
@@ -165,6 +164,7 @@ const TicketSelection = () => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
+  // REFACTORED TO HERE
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
   const updateOrderTotals = (promoCode) => {
     setOrderTotals(changeOrderTotals(ticketInfo, orderTotals, promoCode));
@@ -187,127 +187,125 @@ const TicketSelection = () => {
 
   // updates "promoCodeDetails", "ticketInfo" and "orderTotals" based on promo code removal
   const clearPromoCodes = () => {
-    setPromoCodeDetails(clearPromoDetails(promoCodeDetails)); // I THINK THIS IS CORRECT!!!
-    setTicketInfo(clearTicketInfo(ticketInfo)); // I THINK THIS IS CORRECT!!!
-    setOrderTotals(clearOrderTotals(ticketInfo, orderTotals)); // I THINK THIS IS CORRECT!!!
+    setPromoCodeDetails(clearPromoDetails(promoCodeDetails));
+    setTicketInfo(clearTicketInfo(ticketInfo));
+    setOrderTotals(clearOrderTotals(ticketInfo, orderTotals));
   }
 
-  const inputPromoCode = () => {
-    if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
-      return (
-        <Aux>
-          <form onSubmit={(event) => {
-            applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toUpperCase());
-          }}>
-            <div className={[styles.PromoGrid, styles.Red].join(' ')}>
-              <input
-                type="text"
-                id="input box"
-                className={styles.PromoCodeInputBoxRed}
-                value={promoCodeDetails.inputtedPromoValue}
-                onChange={event => {
-                  let tempobject = { ...promoCodeDetails };
-                  tempobject.inputtedPromoValue = event.target.value;
-                  tempobject.errorMessage = "";
-                  setPromoCodeDetails(tempobject);
-                }}
-              ></input>
-              <button className={styles.PromoCodeButtonRed}
-                onClick={() => {
-                  let temp = { ...promoCodeDetails };
-                  temp.inputtedPromoValue = "";
-                  temp.errorMessage = "";
-                  setPromoCodeDetails(temp);
-                }}
-              >Clear</button>
-            </div>
-            <div style={{ color: "red", fontSize: "12px" }}>
-              {promoCodeDetails.errorMessage !== "" ? promoCodeDetails.errorMessage : null}
-            </div>
-          </form>
-        </Aux>
-      );
-    } else {
-      return (
-        <Aux>
-          <form onSubmit={(event) => {
-            applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toUpperCase());
-          }}>
-            <div className={[styles.PromoGrid, styles.Blue].join(' ')}>
-              <input
-                type="text"
-                id="input box"
-                placeholder="Enter Promo Code"
-                className={styles.PromoCodeInputBoxBlack}
-                value={promoCodeDetails.inputtedPromoValue}
-                onChange={event => {
-                  let tempDetails = { ...promoCodeDetails };
-                  tempDetails.inputtedPromoValue = event.target.value;
-                  tempDetails.errorMessage = "";
-                  setPromoCodeDetails(tempDetails);
-                }}
-              ></input>
-              <button className={styles.PromoCodeButtonBlue}
-                disabled={!promoCodeDetails.inputtedPromoValue}
-              >Apply</button>
-            </div>
-          </form>
-          <div style={{ color: "blue", fontSize: "12px" }}>
+  // *********************************
+  // REFACTOR THIS SECTION LOOK TO MAKE AN <InputPromoCode> COMPONENT
+  // creates promo code input form
+  let inputPromoCode;
+  if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
+    inputPromoCode = (
+      <Aux>
+        <form onSubmit={(event) => {
+          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toUpperCase());
+        }}>
+          <div className={[styles.PromoGrid, styles.Red].join(' ')}>
+            <input
+              type="text"
+              id="input box"
+              className={styles.PromoCodeInputBoxRed}
+              value={promoCodeDetails.inputtedPromoValue}
+              onChange={event => {
+                let tempobject = { ...promoCodeDetails };
+                tempobject.inputtedPromoValue = event.target.value;
+                tempobject.errorMessage = "";
+                setPromoCodeDetails(tempobject);
+              }}
+            ></input>
+            <button className={styles.PromoCodeButtonRed}
+              onClick={() => {
+                let temp = { ...promoCodeDetails };
+                temp.inputtedPromoValue = "";
+                temp.errorMessage = "";
+                setPromoCodeDetails(temp);
+              }}
+            >Clear</button>
+          </div>
+          <div style={{ color: "red", fontSize: "12px" }}>
             {promoCodeDetails.errorMessage !== "" ? promoCodeDetails.errorMessage : null}
           </div>
-        </Aux>
-      );
-    }
+        </form>
+      </Aux>
+    );
+  } else {
+    inputPromoCode = (
+      <Aux>
+        <form onSubmit={(event) => {
+          applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toUpperCase());
+        }}>
+          <div className={[styles.PromoGrid, styles.Blue].join(' ')}>
+            <input
+              type="text"
+              id="input box"
+              placeholder="Enter Promo Code"
+              className={styles.PromoCodeInputBoxBlack}
+              value={promoCodeDetails.inputtedPromoValue}
+              onChange={event => {
+                let tempDetails = { ...promoCodeDetails };
+                tempDetails.inputtedPromoValue = event.target.value;
+                tempDetails.errorMessage = "";
+                setPromoCodeDetails(tempDetails);
+              }}
+            ></input>
+            <button className={styles.PromoCodeButtonBlue}
+              disabled={!promoCodeDetails.inputtedPromoValue}
+            >Apply</button>
+          </div>
+        </form>
+        <div style={{ color: "blue", fontSize: "12px" }}>
+          {promoCodeDetails.errorMessage !== "" ? promoCodeDetails.errorMessage : null}
+        </div>
+      </Aux>
+    );
   }
 
   // creates contents inside promo code input form
-  const promoOption = () => {
-    if (!promoCodeDetails.available) {
-      return null;
-    } else if (promoCodeDetails.applied) {
-      return (
-        <Aux>
-        <div className={styles.AppliedPromoCode}>
-          <FontAwesomeIcon
-            className={styles.faCheckCircle}
-            icon={faCheckCircle}
-          />{" "}Code{" "}
-          <span style={{ fontWeight: "600" }}>{" ",promoCodeDetails.appliedPromoCode} </span>applied.{" "}
-          <span
-            className={styles.RemovePromoCode}
-            onClick={() => {clearPromoCodes();
-            }}
-          >Remove</span></div>
-          <br></br>
-        </Aux>
-      );
-    }
-    else if (promoCodeDetails.input) {
-      return (
-        <Aux>
-          {inputPromoCode()}
-          <br></br>
-        </Aux>
-      );
-    } else if (!promoCodeDetails.input) {
-      return (
-        <Aux>
-          <div
-            className={styles.EnterPromoCode}
-            onClick={() => {
-              let tempPromoCodeDetails;
-              tempPromoCodeDetails = { ...promoCodeDetails };
-              tempPromoCodeDetails.input = true;
-              setPromoCodeDetails(tempPromoCodeDetails);
-            }}
-          >Enter Promo Code</div>
-          <br></br>
-        </Aux>
-      );
-    }
+  let promoOption;
+  if (!promoCodeDetails.available) {
+    promoOption = null;
+  } else if (promoCodeDetails.available && promoCodeDetails.applied) {
+    promoOption = (
+      <Aux>
+      <div className={styles.AppliedPromoCode}>
+        <FontAwesomeIcon
+          className={styles.faCheckCircle}
+          icon={faCheckCircle}
+        />{" "}Code{" "}
+        <span style={{ fontWeight: "600" }}>{" ",promoCodeDetails.appliedPromoCode} </span>applied.{" "}
+        <span
+          className={styles.RemovePromoCode}
+          onClick={() => {clearPromoCodes();
+          }}
+        >Remove</span></div>
+        <br></br>
+      </Aux>
+    );
+  } else if (promoCodeDetails.input) {
+    promoOption = (
+      <Aux>
+        {inputPromoCode}
+        <br></br>
+      </Aux>
+    );
+  } else if (!promoCodeDetails.input) {
+    promoOption = (
+      <Aux>
+        <div
+          className={styles.EnterPromoCode}
+          onClick={() => {
+            let tempPromoCodeDetails;
+            tempPromoCodeDetails = { ...promoCodeDetails };
+            tempPromoCodeDetails.input = true;
+            setPromoCodeDetails(tempPromoCodeDetails);
+          }}
+        >Enter Promo Code</div>
+        <br></br>
+      </Aux>
+    );
   }
-
-  // REFACTORED TO HERE
 
   // updates "ticketInfo" and "orderTotals" after a change in tickets selected
   const updateTicketsSelected = (event, ticketType) => {
@@ -328,32 +326,27 @@ const TicketSelection = () => {
     );
   } else eventHeader = null;
 
-  // REFACTORED FROM HERE
   // creates list of ticket types and ticket selection functionality
-  const ticketItems = () => {
-    if (!isLoadingEvent) {
-      return (
-        <div>
-          {ticketInfo.map((ticket, index) => {
-            return (
-              <div key={index}>
-                <TicketItem
-                  name={ticket}
-                  key={ticket.ticketID}
-                  onChange={event => {
-                    updateTicketsSelected(event, ticket);
-                  }}
-                ></TicketItem>
-              </div>
-            );
-          })}
-        </div>
-      );
-    } else {
-      return null;
-    }
+  let ticketItems;
+  if (!isLoadingEvent) {
+    ticketItems = (
+      <div>
+        {ticketInfo.map((item, index) => {
+          return (
+            <div key={index}>
+            <TicketItem
+              name={item}
+              key={item.ticketID}
+              onChange={event => {
+                updateTicketsSelected(event, item);
+              }}
+            ></TicketItem>
+            </div>
+          );
+        })}
+      </div>
+    );
   }
-  // REFACTORED TO HERE
 
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
@@ -489,8 +482,8 @@ const TicketSelection = () => {
     <div className={styles.MainItemLeft}>
       <div className={styles.EventHeader}>{eventHeader}</div>
       <div style={EventTicketSection}>
-        {promoOption()}
-        {ticketItems()}
+        {promoOption}
+        {ticketItems}
         <div className={styles.EventDescription}>
           Powered by{" "}
           <NavLink to="/" exact>
@@ -511,86 +504,18 @@ const TicketSelection = () => {
     </div>
   );
 
-  // REFACTORED TO THE END
   // defines main display with ticket and order panes
-  const mainDisplay = () => {
-    if (isLoadingEvent) {
-      return (
-        <div className={styles.BlankCanvas}>
-          <Spinner></Spinner>
-        </div>
-      )
-    }  else {
-      if (showDoublePane && isSuccessfull) {
-        return (
-          <div style={MainGrid}>
-            {ticketPane}
-            {orderPane}
-          </div>
-        );
-      } else if (!showOrderSummaryOnly && isSuccessfull) {
-      return (
-        <div style={MainGrid}>{ticketPane}</div>
-      );
-      } else if (isSuccessfull) {
-        return (
-          <div style={MainGrid}>{orderPane}</div>
-        );
-      } else {
-        return (
-          <div className={styles.BlankCanvas}>
-            <h5>
-              <span style={{ color: "red" }}>This event does not exist.</span>
-            </h5>
-          </div>
-        );
-      }
-    }
-  }
-
-  return (
-    <Aux>
-      <div style={MainContainer}>{mainDisplay()}</div>
-    </Aux>
-  );
-};
-
-export default TicketSelection;
-
-
-
-
-/*
-  let ticketItems;
-  if (!isLoadingEvent) {
-    ticketItems = (
-      <div>
-        {ticketInfo.map((ticket, index) => {
-          return (
-            <div key={index}>
-              <TicketItem
-                name={ticket}
-                key={ticket.ticketID}
-                onChange={event => {
-                  updateTicketsSelected(event, ticket);
-                }}
-              ></TicketItem>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-  */
-
-/*
   let mainDisplay;
   if (isLoadingEvent) {
+    console.log("else isLoadingEvent: ",isLoadingEvent)
+    console.log("else isSuccessful: ",isSuccessfull)
     mainDisplay = 
       <div className={styles.BlankCanvas}>
         <Spinner></Spinner>
       </div>
   } else {
+    console.log("else isLoadingEvent: ",isLoadingEvent)
+    console.log("else isSuccessful: ",isSuccessfull)
     if (showDoublePane && isSuccessfull) {
       mainDisplay = (
         <div style={MainGrid}>
@@ -616,4 +541,12 @@ export default TicketSelection;
       );
     }
   }
-  */
+
+  return (
+    <Aux>
+      <div style={MainContainer}>{mainDisplay}</div>
+    </Aux>
+  );
+};
+
+export default TicketSelection;
