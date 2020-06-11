@@ -3,7 +3,10 @@ import { NavLink } from "react-router-dom";
 import dateFormat from "dateformat";
 import queryString from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingCart, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faShoppingCart,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import { getEventData, getEventImage } from "./apiCore";
@@ -18,15 +21,15 @@ import {
   amendTicketInfo,
   clearPromoDetails,
   clearTicketInfo,
-  clearOrderTotals
-} from "./TicketSelectionFunctions"
-import { bogox, twoferCapped, twofer, DateRange } from "./pricingFunctions";
+  clearOrderTotals,
+} from "./TicketSelectionFunctions";
+import { DateRange } from "./pricingFunctions";
 import {
   MainContainerStyling,
   MainGridStyling,
   EventTicketSectionStyling,
   OrderSummarySectionStyling,
-  OrderSummarySectionAltStyling
+  OrderSummarySectionAltStyling,
 } from "./Styling";
 import Spinner from "../components/UI/Spinner/Spinner";
 
@@ -67,7 +70,7 @@ const TicketSelection = () => {
     appliedPromoCode: "",
     inputtedPromoValue: "",
     lastInvalidPromoCode: "",
-    eventPromoCodes: []
+    eventPromoCodes: [],
   });
   // NEED TO REFACTOR THIS CONTROL VARIABLE
 
@@ -78,10 +81,8 @@ const TicketSelection = () => {
   const [orderTotals, setOrderTotals] = useState([]);
 
   useEffect(() => {
-    // setIsLoadingEvent(true);
-    // setIsSuccessfull(true);
     eventData(queryString.parse(window.location.search).eventID);
-    // determines a one or two pane display based on initial window width 
+    // determines a one or two pane display based on initial window width
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
 
@@ -103,82 +104,85 @@ const TicketSelection = () => {
   };
 
   // receives Event Data from server and populates several control variables
-  const eventData = eventID => {
+  const eventData = (eventID) => {
     getEventData(eventID)
-    .then(res => {
-      console.log("EVENT DATA OBJECT from Server: ", res);
-      eventDetails = loadEventDetails(res);
+      .then((res) => {
+        console.log("EVENT DATA OBJECT from Server: ", res);
+        eventDetails = loadEventDetails(res);
 
-      // checks if an order exists in local storage
-      if (
-        typeof window !== "undefined" &&
-        localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
-      ) {
-        let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+        // checks if an order exists in local storage
+        if (
+          typeof window !== "undefined" &&
+          localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
+        ) {
+          let cart = JSON.parse(
+            localStorage.getItem(`cart_${eventDetails.eventNum}`)
+          );
 
-        //NEED TO REFACTOR THESE THREE LINES
-        setTicketInfo(cart.ticketInfo);
-        setPromoCodeDetails(cart.promoCodeDetails);
-        setOrderTotals(cart.orderTotals);
-        //NEED TO REFACTOR THESE THREE LINES
+          //NEED TO REFACTOR THESE THREE LINES
+          setTicketInfo(cart.ticketInfo);
+          setPromoCodeDetails(cart.promoCodeDetails);
+          setOrderTotals(cart.orderTotals);
+          //NEED TO REFACTOR THESE THREE LINES
 
-        let event = JSON.parse(localStorage.getItem("eventNum"));
-        localStorage.removeItem(`cart_${event}`);
-        localStorage.removeItem(`image_${event}`);
-        
-      } else {
-        console.log("ticketInfo: ", loadTicketInfo(res));
-        console.log("res: ",res);
-        
-        setTicketInfo(loadTicketInfo(res));
-        setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
-        setOrderTotals(loadOrderTotals(res));
-      }
+          let event = JSON.parse(localStorage.getItem("eventNum"));
+          localStorage.removeItem(`cart_${event}`);
+          localStorage.removeItem(`image_${event}`);
+        } else {
+          console.log("ticketInfo: ", loadTicketInfo(res));
+          console.log("res: ", res);
 
-      // CURRENTLY ASKS FOR IMAGE SEPARATELY< IS THIS WHAT WE WANT TO DO?
-      // only asks for image if event has been successfully imported
-      getEventImage(eventID)
-      .then(res => {
-        eventLogo = res;
+          setTicketInfo(loadTicketInfo(res));
+          setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
+          setOrderTotals(loadOrderTotals(res));
+        }
+
+        // CURRENTLY ASKS FOR IMAGE SEPARATELY< IS THIS WHAT WE WANT TO DO?
+        // only asks for image if event has been successfully imported
+        getEventImage(eventID)
+          .then((res) => {
+            eventLogo = res;
+          })
+          .catch((err) => {
+            eventLogo = DefaultLogo;
+          })
+          .finally(() => {
+            setIsLoadingEvent(false);
+          });
       })
-      .catch(err => {
-        eventLogo = DefaultLogo;
-      })
-      .finally(() => {
+      .catch((err) => {
+        // NEED TO ADDRESS THESE SITUATIONS
+        console.log("Inside the catch, err: ", err);
+        if (err === "Error: Error: 400") {
+        }
+        if (err === undefined) {
+        }
+        setIsSuccessfull(false);
         setIsLoadingEvent(false);
       });
-    })
-    .catch(err => {
-      // NEED TO ADDRESS THESE SITUATIONS
-      console.log("Inside the catch, err: ",err)
-      if (err === "Error: Error: 400") {
-      }
-      if (err === undefined) {
-      }
-      setIsSuccessfull(false);
-      setIsLoadingEvent(false);
-    })
   };
-  
+
   // determines width and height of window upon resizing by user
-  window.onresize = function(event) {
+  window.onresize = function (event) {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
   const updateOrderTotals = (promoCode) => {
     setOrderTotals(changeOrderTotals(ticketInfo, orderTotals, promoCode));
-  }
+  };
 
   // updates "promoCodeDetails", "ticketInfo" and "orderTotals" based on promo code change
   const applyPromoCodeHandler = (event, inputtedPromoCode) => {
     event.preventDefault();
     if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
-      setPromoCodeDetails(amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails));
+      setPromoCodeDetails(
+        amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails)
+      );
       setTicketInfo(amendTicketInfo(inputtedPromoCode, ticketInfo));
       updateOrderTotals(inputtedPromoCode);
     } else {
-      let tempobject = {...promoCodeDetails };
+      let tempobject = { ...promoCodeDetails };
       tempobject.errorMessage = "Sorry, that promo code is invalid";
       tempobject.lastInvalidPromoCode = inputtedPromoCode;
       setPromoCodeDetails(tempobject);
@@ -190,39 +194,49 @@ const TicketSelection = () => {
     setPromoCodeDetails(clearPromoDetails(promoCodeDetails)); // I THINK THIS IS CORRECT!!!
     setTicketInfo(clearTicketInfo(ticketInfo)); // I THINK THIS IS CORRECT!!!
     setOrderTotals(clearOrderTotals(ticketInfo, orderTotals)); // I THINK THIS IS CORRECT!!!
-  }
+  };
 
   const inputPromoCode = () => {
     if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
       return (
         <Aux>
-          <form onSubmit={(event) => {
-            applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toUpperCase());
-          }}>
-            <div className={[styles.PromoGrid, styles.Red].join(' ')}>
+          <form
+            onSubmit={(event) => {
+              applyPromoCodeHandler(
+                event,
+                promoCodeDetails.inputtedPromoValue.toUpperCase()
+              );
+            }}
+          >
+            <div className={[styles.PromoGrid, styles.Red].join(" ")}>
               <input
                 type="text"
                 id="input box"
                 className={styles.PromoCodeInputBoxRed}
                 value={promoCodeDetails.inputtedPromoValue}
-                onChange={event => {
+                onChange={(event) => {
                   let tempobject = { ...promoCodeDetails };
                   tempobject.inputtedPromoValue = event.target.value;
                   tempobject.errorMessage = "";
                   setPromoCodeDetails(tempobject);
                 }}
               ></input>
-              <button className={styles.PromoCodeButtonRed}
+              <button
+                className={styles.PromoCodeButtonRed}
                 onClick={() => {
                   let temp = { ...promoCodeDetails };
                   temp.inputtedPromoValue = "";
                   temp.errorMessage = "";
                   setPromoCodeDetails(temp);
                 }}
-              >Clear</button>
+              >
+                Clear
+              </button>
             </div>
             <div style={{ color: "red", fontSize: "12px" }}>
-              {promoCodeDetails.errorMessage !== "" ? promoCodeDetails.errorMessage : null}
+              {promoCodeDetails.errorMessage !== ""
+                ? promoCodeDetails.errorMessage
+                : null}
             </div>
           </form>
         </Aux>
@@ -230,35 +244,45 @@ const TicketSelection = () => {
     } else {
       return (
         <Aux>
-          <form onSubmit={(event) => {
-            applyPromoCodeHandler(event, promoCodeDetails.inputtedPromoValue.toUpperCase());
-          }}>
-            <div className={[styles.PromoGrid, styles.Blue].join(' ')}>
+          <form
+            onSubmit={(event) => {
+              applyPromoCodeHandler(
+                event,
+                promoCodeDetails.inputtedPromoValue.toUpperCase()
+              );
+            }}
+          >
+            <div className={[styles.PromoGrid, styles.Blue].join(" ")}>
               <input
                 type="text"
                 id="input box"
                 placeholder="Enter Promo Code"
                 className={styles.PromoCodeInputBoxBlack}
                 value={promoCodeDetails.inputtedPromoValue}
-                onChange={event => {
+                onChange={(event) => {
                   let tempDetails = { ...promoCodeDetails };
                   tempDetails.inputtedPromoValue = event.target.value;
                   tempDetails.errorMessage = "";
                   setPromoCodeDetails(tempDetails);
                 }}
               ></input>
-              <button className={styles.PromoCodeButtonBlue}
+              <button
+                className={styles.PromoCodeButtonBlue}
                 disabled={!promoCodeDetails.inputtedPromoValue}
-              >Apply</button>
+              >
+                Apply
+              </button>
             </div>
           </form>
           <div style={{ color: "blue", fontSize: "12px" }}>
-            {promoCodeDetails.errorMessage !== "" ? promoCodeDetails.errorMessage : null}
+            {promoCodeDetails.errorMessage !== ""
+              ? promoCodeDetails.errorMessage
+              : null}
           </div>
         </Aux>
       );
     }
-  }
+  };
 
   // creates contents inside promo code input form
   const promoOption = () => {
@@ -267,22 +291,29 @@ const TicketSelection = () => {
     } else if (promoCodeDetails.applied) {
       return (
         <Aux>
-        <div className={styles.AppliedPromoCode}>
-          <FontAwesomeIcon
-            className={styles.faCheckCircle}
-            icon={faCheckCircle}
-          />{" "}Code{" "}
-          <span style={{ fontWeight: "600" }}>{" ",promoCodeDetails.appliedPromoCode} </span>applied.{" "}
-          <span
-            className={styles.RemovePromoCode}
-            onClick={() => {clearPromoCodes();
-            }}
-          >Remove</span></div>
+          <div className={styles.AppliedPromoCode}>
+            <FontAwesomeIcon
+              className={styles.faCheckCircle}
+              icon={faCheckCircle}
+            />{" "}
+            Code{" "}
+            <span style={{ fontWeight: "600" }}>
+              {(" ", promoCodeDetails.appliedPromoCode)}{" "}
+            </span>
+            applied.{" "}
+            <span
+              className={styles.RemovePromoCode}
+              onClick={() => {
+                clearPromoCodes();
+              }}
+            >
+              Remove
+            </span>
+          </div>
           <br></br>
         </Aux>
       );
-    }
-    else if (promoCodeDetails.input) {
+    } else if (promoCodeDetails.input) {
       return (
         <Aux>
           {inputPromoCode()}
@@ -300,13 +331,14 @@ const TicketSelection = () => {
               tempPromoCodeDetails.input = true;
               setPromoCodeDetails(tempPromoCodeDetails);
             }}
-          >Enter Promo Code</div>
+          >
+            Enter Promo Code
+          </div>
           <br></br>
         </Aux>
       );
     }
-  }
-  // REFACTORED TO HERE
+  };
 
   // updates "ticketInfo" and "orderTotals" after a change in tickets selected
   const updateTicketsSelected = (event, ticketType) => {
@@ -314,7 +346,6 @@ const TicketSelection = () => {
     updateOrderTotals();
   };
 
-  // REFACTORED FROM HERE
   // creates event header with date/time range
   const eventHeader = () => {
     if (!isLoadingEvent) {
@@ -322,14 +353,17 @@ const TicketSelection = () => {
         <Aux>
           <div className={styles.EventTitle}>{eventDetails.eventTitle}</div>
           <div className={styles.EventDate}>
-            <DateRange start={eventDetails.startDateTime} end={eventDetails.endDateTime}/>
+            <DateRange
+              start={eventDetails.startDateTime}
+              end={eventDetails.endDateTime}
+            />
           </div>
         </Aux>
       );
     } else {
       return null;
     }
-  }
+  };
 
   // creates list of ticket types and ticket selection functionality
   const ticketItems = () => {
@@ -342,7 +376,7 @@ const TicketSelection = () => {
                 <TicketItem
                   name={ticket}
                   key={ticket.ticketID}
-                  onChange={event => {
+                  onChange={(event) => {
                     updateTicketsSelected(event, ticket);
                   }}
                 ></TicketItem>
@@ -354,18 +388,23 @@ const TicketSelection = () => {
     } else {
       return null;
     }
-  }
+  };
 
   // determines whether or not to display the purchase amount
-  const totalAmount = show => {
+  const totalAmount = (show) => {
     if (!isLoadingEvent && !show && orderTotals.ticketsPurchased > 0) {
-      return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
+      return (
+        <div>
+          {orderTotals.currencySym}
+          {orderTotals.finalPurchaseAmount}
+        </div>
+      );
     } else return null;
   };
 
   // determines whether or not to display the cart and arrow
   // "showDoublePane" must be false
-  const cartLink = show => {
+  const cartLink = (show) => {
     if (!isLoadingEvent && !show) {
       return (
         <CartLink
@@ -380,127 +419,141 @@ const TicketSelection = () => {
   };
 
   // toggles between "order pane" views
-  const switchShowOrderSummary = event => {
+  const switchShowOrderSummary = (event) => {
     if (showOrderSummaryOnly) {
       setShowOrderSummaryOnly(false);
     } else {
       setShowOrderSummaryOnly(true);
     }
   };
-  // REFACTORED TO HERE
 
   // stores "orderTotals" and "eventLogo" in "localStorage"
-  const purchaseTicketHandler = event => {
+  const purchaseTicketHandler = (event) => {
     if (typeof window !== "undefined") {
-      localStorage.setItem(`image_${eventDetails.eventNum}`, JSON.stringify(eventLogo));
+      localStorage.setItem(
+        `image_${eventDetails.eventNum}`,
+        JSON.stringify(eventLogo)
+      );
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
-      localStorage.setItem(`cart_${eventDetails.eventNum}`, JSON.stringify({
-        eventDetails: eventDetails,
-        promoCodeDetails: promoCodeDetails,
-        ticketInfo: ticketInfo,
-        orderTotals: orderTotals
-      }));
+      localStorage.setItem(
+        `cart_${eventDetails.eventNum}`,
+        JSON.stringify({
+          eventDetails: eventDetails,
+          promoCodeDetails: promoCodeDetails,
+          ticketInfo: ticketInfo,
+          orderTotals: orderTotals,
+        })
+      );
     }
     window.location.href = eventDetails.gatewayURL;
   };
 
   // creates checkout button to proceed to checkout page
-  let checkoutButton;
-  if (!isLoadingEvent && orderTotals.ticketsPurchased > 0) {
-    checkoutButton = (
-      <button
-        onClick={purchaseTicketHandler}
-        disabled={false}
-        className={styles.ButtonRed}
-      >
-        <span style={{ color: "white" }}>Checkout</span>
-      </button>
-    );
-  } else if (!isLoadingEvent) {
-    checkoutButton = (
-      <button disabled={true} className={styles.ButtonGrey}>
-        Checkout
-      </button>
-    );
-  } else checkoutButton = null;
+  const checkoutButton = () => {
+    if (!isLoadingEvent && orderTotals.ticketsPurchased > 0) {
+      return (
+        <button
+          onClick={purchaseTicketHandler}
+          disabled={false}
+          className={styles.ButtonRed}
+        >
+          <span style={{ color: "white" }}>Checkout</span>
+        </button>
+      );
+    } else if (!isLoadingEvent) {
+      return (
+        <button disabled={true} className={styles.ButtonGrey}>
+          Checkout
+        </button>
+      );
+    } else return null;
+  };
 
   // creates order summary section
-  let orderSummary;
-  if (!isLoadingEvent && orderTotals.ticketsPurchased > 0) {
-    orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
-  } else if (!isLoadingEvent && orderTotals.ticketsPurchased <= 0) {
-    orderSummary = (
-      <div className={styles.EmptyOrderSummary}>
-        <FontAwesomeIcon
-          className={styles.faShoppingCart}
-          icon={faShoppingCart}
+  const orderSummary = () => {
+    if (!isLoadingEvent && orderTotals.ticketsPurchased > 0) {
+      return (
+        <OrderSummary
+          ticketOrder={ticketInfo}
+          ticketCurrency={orderTotals.currencySym}
         />
-      </div>
-    );
-  } else {
-    orderSummary = null;
-  }
+      );
+    } else if (!isLoadingEvent && orderTotals.ticketsPurchased <= 0) {
+      return (
+        <div className={styles.EmptyOrderSummary}>
+          <FontAwesomeIcon
+            className={styles.faShoppingCart}
+            icon={faShoppingCart}
+          />
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
 
   // creates order pane with image and order summary sections
-  let orderPane;
-  if (showDoublePane) {
-    orderPane = (
-      <div>
-        <img
-          className={styles.Image}
-          src={eventLogo}
-          alt="Event Logo Coming Soon!!!"
-        />
-        <div style={OrderSummarySection}>{orderSummary}</div>
-      </div>
-    );
-  } else {
-    orderPane = (
-      <Aux>
+  const orderPane = () => {
+    if (showDoublePane) {
+      return (
         <div>
-          <div style={OrderSummarySectionAlt}>{orderSummary}</div>
+          <img
+            className={styles.Image}
+            src={eventLogo}
+            alt="Event Logo Coming Soon!!!"
+          />
+          <div style={OrderSummarySection}>{orderSummary()}</div>
+        </div>
+      );
+    } else {
+      return (
+        <Aux>
+          <div>
+            <div style={OrderSummarySectionAlt}>{orderSummary()}</div>
+          </div>
+          <div className={styles.EventFooter}>
+            <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
+            <div className={styles.TotalAmount}>
+              {totalAmount(showDoublePane)}
+            </div>
+            <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
+          </div>
+        </Aux>
+      );
+    }
+  };
+
+  // creates ticket pane with promo form and ticket sections
+  const ticketPane = () => {
+    return (
+      <div className={styles.MainItemLeft}>
+        <div className={styles.EventHeader}>{eventHeader()}</div>
+        <div style={EventTicketSection}>
+          {promoOption()}
+          {ticketItems()}
+          <div className={styles.EventDescription}>
+            Powered by{" "}
+            <NavLink to="/" exact>
+              <img
+                className={styles.ImageBox}
+                src={OSDLogo}
+                alt="OpenSeatDirect Logo"
+              />
+            </NavLink>
+          </div>
+          <br></br>
         </div>
         <div className={styles.EventFooter}>
-          <div className={styles.CartLink}>
-            {cartLink(showDoublePane)}
-          </div>
+          <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
           <div className={styles.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
-          <div style={{ textAlign: "right" }}>{checkoutButton}</div>
+          <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
         </div>
-      </Aux>
+      </div>
     );
-  }
+  };
 
-  // creates ticket pane with promo form and ticket sections
-  let ticketPane = (
-    <div className={styles.MainItemLeft}>
-      <div className={styles.EventHeader}>{eventHeader()}</div>
-      <div style={EventTicketSection}>
-        {promoOption()}
-        {ticketItems()}
-        <div className={styles.EventDescription}>
-          Powered by{" "}
-          <NavLink to="/" exact>
-            <img className={styles.ImageBox} src={OSDLogo} alt="OpenSeatDirect Logo" />
-          </NavLink>
-        </div>
-        <br></br>
-      </div>
-      <div className={styles.EventFooter}>
-        <div className={styles.CartLink}>
-          {cartLink(showDoublePane)}
-        </div>
-        <div className={styles.TotalAmount}>
-          {totalAmount(showDoublePane)}
-        </div>
-        <div style={{ textAlign: "right" }}>{checkoutButton}</div>
-      </div>
-    </div>
-  );
-
-  // REFACTORED TO THE END
   // defines main display with ticket and order panes
   const mainDisplay = () => {
     if (isLoadingEvent) {
@@ -508,23 +561,19 @@ const TicketSelection = () => {
         <div className={styles.BlankCanvas}>
           <Spinner></Spinner>
         </div>
-      )
-    }  else {
+      );
+    } else {
       if (showDoublePane && isSuccessfull) {
         return (
           <div style={MainGrid}>
-            {ticketPane}
-            {orderPane}
+            {ticketPane()}
+            {orderPane()}
           </div>
         );
       } else if (!showOrderSummaryOnly && isSuccessfull) {
-      return (
-        <div style={MainGrid}>{ticketPane}</div>
-      );
+        return <div style={MainGrid}>{ticketPane()}</div>;
       } else if (isSuccessfull) {
-        return (
-          <div style={MainGrid}>{orderPane}</div>
-        );
+        return <div style={MainGrid}>{orderPane()}</div>;
       } else {
         return (
           <div className={styles.BlankCanvas}>
@@ -535,7 +584,7 @@ const TicketSelection = () => {
         );
       }
     }
-  }
+  };
 
   return (
     <Aux>
@@ -545,9 +594,6 @@ const TicketSelection = () => {
 };
 
 export default TicketSelection;
-
-
-
 
 /*
   // determines whether or not to display the number of tickets purchased
@@ -561,7 +607,6 @@ export default TicketSelection;
     } else return null;
   };
   */
-
 
 /*
   let ticketItems;

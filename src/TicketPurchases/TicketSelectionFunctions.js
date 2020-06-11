@@ -47,7 +47,7 @@ export const loadEventDetails = event => {
 };
 
 // THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE
-// STILL NEED TO CORRECT THE CURRENCY DATA AND usePriceFunction ISSUE
+// STILL NEED TO CORRECT THE CURRENCY DATA (MORE CURRENCIES TO ADD) AND usePriceFunction(true/false) ISSUE
 // initial definition of "ticketInfo"
 export const loadTicketInfo = event => {
   console.log("Inside 'loadTicketInfo'");
@@ -197,11 +197,7 @@ export const loadOrderTotals = event => {
   return tempOrderTotals;
 }
 
-
-
-
-//*************************
-//I THINK I NEED TO ROUND adjustedTicketPrice TO TWO DIGITS IN OTHER FUNCTIONS/SHOULD BE FIXED
+// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE/ I THINK!!!
 // updates 'orderTotals" from either a promo code or ticket amount change
 export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
   console.log("ticketInfo: ", ticketInfo)
@@ -210,7 +206,7 @@ export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
   let tempFinalAmount = 0;
   let tempTicketInfo = [...ticketInfo];
   tempTicketInfo.forEach(item => {
-      tempTicketsPurchased = tempTicketsPurchased + parseInt(item.ticketsSelected);
+      tempTicketsPurchased = tempTicketsPurchased + item.ticketsSelected;
       tempFullAmount = tempFullAmount + (item.ticketsSelected * item.ticketPrice);
       tempFinalAmount = tempFinalAmount + (item.ticketsSelected * item.adjustedTicketPrice);
   });
@@ -315,14 +311,14 @@ export const clearOrderTotals = (ticketInfo, orderTotals) => {
   return tempOrderTotals;
 }
 
-//*************************
+// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE/ I THINK!!!
 // updates "ticketInfo" after a change in tickets selected
 export const changeTicketInfo = (event, ticketType, ticketInfo) => {
   let tempTicketInfo = [...ticketInfo];
   tempTicketInfo.forEach(item => {
     // finds a ticketID match
     if (item.ticketID === ticketType.ticketID) {
-      item.ticketsSelected = event.target.value;
+      item.ticketsSelected = parseInt(event.target.value);
       if (item.ticketPriceFunction.form === "bogo") {
         let totalPurchase = bogox(
           event.target.value,
@@ -337,10 +333,10 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
           : item.adjustedTicketPrice = item.ticketPrice};
       } else if (item.ticketPriceFunction.form === "twofer") {
         let totalPurchase = twofer(
-          event.target.value,
-          item.ticketPrice,
-          item.ticketPriceFunction.args.buy,
-          item.ticketPriceFunction.args.for
+          event.target.value,//
+          item.ticketPrice,//
+          item.ticketPriceFunction.args.buy,//
+          (item.ticketPriceFunction.args.for*item.ticketPrice)
         );
         console.log("totalPurchase: ", totalPurchase)
         {event.target.value > 0 ?
@@ -351,7 +347,7 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
           event.target.value,
           item.ticketPrice,
           item.ticketPriceFunction.args.buy,
-          item.ticketPriceFunction.args.for
+          (item.ticketPriceFunction.args.for*item.ticketPrice)
         );
         console.log("totalPurchase: ", totalPurchase)
         {event.target.value > 0 ?
