@@ -3,7 +3,10 @@ import queryString from "query-string";
 
 import ReactHtmlParser from "react-html-parser";
 
+import { API } from "../config";
+
 import { extractImageFileExtensionFromBase64 } from '../ImgDropAndCrop/ResuableUtils'
+
 
 import { Editor } from "@tinymce/tinymce-react";
 import DateSelector from "./DateSelector";
@@ -215,10 +218,9 @@ const EventCreation = () => {
       console.log("user.user._id: ", user);
 
       // extracts all event data, non-transactional
-      const APIURL = "https://www.openseatdirect.com/api";
       const userId = user;
       const eventNum = queryString.parse(window.location.search).eventID;
-      let apiurl = `${APIURL}/eventix/${userId}/${eventNum}`;
+      let apiurl = `${API}/eventix/${userId}/${eventNum}`;
       console.log("apiurl: ", apiurl);
       fetch(apiurl, {
         method: "GET",
@@ -242,7 +244,7 @@ const EventCreation = () => {
       })
       .then((res) => {
         console.log("about to call image api");
-        const url = "https://www.openseatdirect.com/api/event/photo/e/89448291753";
+        const url = `${API}/event/photo/e/${eventNum}`;
         fetch(url, {
           method: 'GET',
           redirect: 'follow'
@@ -577,7 +579,6 @@ const EventCreation = () => {
       let token = vendorInfo.token;
       const authstring =
         `Bearer ${token}`;
-      const APIURL = "https://www.openseatdirect.com/api";
       var myHeaders = new Headers();
       myHeaders.append("Authorization", authstring);
 
@@ -586,7 +587,7 @@ const EventCreation = () => {
       if (eventDescription.eventNum) {
       //if (false) {
         console.log("editting an existing event");
-        apiurl = `${APIURL}/eventix/${userid}/${eventDescription.eventNum}`;
+        apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
         console.log("apiurl: ", apiurl)
         fetch(apiurl, {
           method: "post",
@@ -611,7 +612,7 @@ const EventCreation = () => {
         });
       } else {
         console.log("creating a new event");
-        apiurl = `${APIURL}/eventix/${userid}`;
+        apiurl = `${API}/eventix/${userid}`;
         fetch(apiurl, {
           method: "post",
           headers: myHeaders,

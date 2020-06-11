@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Form } from "react-bootstrap";
 
+import { API } from "../config";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronUp,
@@ -79,8 +81,8 @@ const VendorEvents = () => {
       headers: myHeaders,
       redirect: "follow",
     };
-    let fetchstr =
-      "https://www.openseatdirect.com/api/event/all/" + vendorInfo.id;
+
+    let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
     console.log("about to fetch: ", fetchstr, requestOptions);
     fetch(fetchstr, requestOptions)
       .then((response) => response.text())
@@ -144,11 +146,12 @@ const VendorEvents = () => {
       redirect: "follow",
     };
     console.log(myHeaders);
-    let fetchstr =
-      "https://www.openseatdirect.com/api/eventdoor/" +
-      eventNum +
-      "/attendees/" +
-      vendorInfo.id;
+
+
+    //let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
+
+
+    let fetchstr = `${API}/eventdoor/${eventNum}/attendees/${vendorInfo.id}`
     console.log("about to fetch: ", fetchstr, requestOptions);
     fetch(fetchstr, requestOptions)
       .then((response) => response.text())

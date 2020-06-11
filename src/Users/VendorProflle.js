@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import VendorNavigation from "./VendorNavigation";
 
+import { API } from "../config";
 import classes from "./User.module.css";
 
 const VendorAccount = () => {
@@ -28,7 +29,7 @@ const VendorAccount = () => {
       redirect: "follow",
     };
     let fetchstr =
-      "https://www.openseatdirect.com/api/event/all/" + vendorInfo.id;
+      `${API}/event/all/${vendorInfo.id}`;
     console.log("about to fetch: ", fetchstr, requestOptions);
     fetch(fetchstr, requestOptions)
       .then((response) => response.text())

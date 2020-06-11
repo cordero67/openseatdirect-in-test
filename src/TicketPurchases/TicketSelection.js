@@ -306,7 +306,6 @@ const TicketSelection = () => {
       );
     }
   }
-
   // REFACTORED TO HERE
 
   // updates "ticketInfo" and "orderTotals" after a change in tickets selected
@@ -315,20 +314,23 @@ const TicketSelection = () => {
     updateOrderTotals();
   };
 
-  // creates event header with date/time range
-  let eventHeader;
-  if (!isLoadingEvent) {
-    eventHeader = (
-      <Aux>
-        <div className={styles.EventTitle}>{eventDetails.eventTitle}</div>
-        <div className={styles.EventDate}>
-          <DateRange start={eventDetails.startDateTime} end={eventDetails.endDateTime}/>
-        </div>
-      </Aux>
-    );
-  } else eventHeader = null;
-
   // REFACTORED FROM HERE
+  // creates event header with date/time range
+  const eventHeader = () => {
+    if (!isLoadingEvent) {
+      return (
+        <Aux>
+          <div className={styles.EventTitle}>{eventDetails.eventTitle}</div>
+          <div className={styles.EventDate}>
+            <DateRange start={eventDetails.startDateTime} end={eventDetails.endDateTime}/>
+          </div>
+        </Aux>
+      );
+    } else {
+      return null;
+    }
+  }
+
   // creates list of ticket types and ticket selection functionality
   const ticketItems = () => {
     if (!isLoadingEvent) {
@@ -353,25 +355,11 @@ const TicketSelection = () => {
       return null;
     }
   }
-  // REFACTORED TO HERE
 
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
     if (!isLoadingEvent && !show && orderTotals.ticketsPurchased > 0) {
       return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
-    } else return null;
-  };
-
-  // determines whether or not to display the number of tickets purchased
-  const ticketAmount = show => {
-    if (!isLoadingEvent && !show && orderTotals.ticketsPurchased > 0) {
-      return (
-        <Aux>
-          <span className={styles.cartBadge}>
-            <sup>{orderTotals.ticketsPurchased}</sup>
-          </span>
-        </Aux>
-      );
     } else return null;
   };
 
@@ -399,6 +387,7 @@ const TicketSelection = () => {
       setShowOrderSummaryOnly(true);
     }
   };
+  // REFACTORED TO HERE
 
   // stores "orderTotals" and "eventLogo" in "localStorage"
   const purchaseTicketHandler = event => {
@@ -487,7 +476,7 @@ const TicketSelection = () => {
   // creates ticket pane with promo form and ticket sections
   let ticketPane = (
     <div className={styles.MainItemLeft}>
-      <div className={styles.EventHeader}>{eventHeader}</div>
+      <div className={styles.EventHeader}>{eventHeader()}</div>
       <div style={EventTicketSection}>
         {promoOption()}
         {ticketItems()}
@@ -558,6 +547,20 @@ const TicketSelection = () => {
 export default TicketSelection;
 
 
+
+
+/*
+  // determines whether or not to display the number of tickets purchased
+  const ticketAmount = show => {
+    if (!isLoadingEvent && !show && orderTotals.ticketsPurchased > 0) {
+      return (
+          <span className={styles.cartBadge}>
+            <sup>{orderTotals.ticketsPurchased}</sup>
+          </span>
+      );
+    } else return null;
+  };
+  */
 
 
 /*
