@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import { API } from "../config";
+
 import AdminNavigation from "./AdminNavigation";
 
 import classes from "./User.module.css";
@@ -29,7 +31,7 @@ const AdminAccount = () => {
       redirect: "follow",
     };
     let fetchstr =
-      "https://www.openseatdirect.com/api/event/all/" + vendorInfo.id;
+      `${API}/event/all/${vendorInfo.id}`;
     console.log("about to fetch: ", fetchstr, requestOptions);
     fetch(fetchstr, requestOptions)
       .then((response) => response.text())

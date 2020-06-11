@@ -3,6 +3,7 @@ import dateFormat from "dateformat";
 
 import VendorNavigation from "./VendorNavigation";
 
+import { API } from "../config";
 import classes from "./User.module.css";
 
 const VendorEventDetails = () => {
@@ -56,7 +57,7 @@ const VendorEventDetails = () => {
       redirect: "follow",
     };
     let fetchstr =
-      "https://www.openseatdirect.com/api/event/all/" + vendorInfo.id;
+      `${API}/event/all/${vendorInfo.id}`;
     console.log("about to fetch: ", fetchstr, requestOptions);
     // requests event details
     fetch(fetchstr, requestOptions)
@@ -114,10 +115,7 @@ const VendorEventDetails = () => {
       redirect: "follow",
     };
     let fetchstr1 =
-      "https://www.openseatdirect.com/api/event/" +
-      vendorInfo.id +
-      "/tickets/" +
-      selectedEvent;
+      `${API}/event/${vendorInfo.id}/tickets/${selectedEvent}`;
     console.log("about to fetch: ", fetchstr1, requestOptions);
     // requests ticket details of a specific event
     fetch(fetchstr1, requestOptions)
@@ -160,10 +158,7 @@ const VendorEventDetails = () => {
       redirect: "follow",
     };
     let fetchstr =
-      "https://www.openseatdirect.com/api/eventdoor/" +
-      eventNum +
-      "/attendees/" +
-      vendorInfo.id;
+      `${API}/eventdoor/${eventNum}/attendees/${vendorInfo.id}`;
     console.log("about to fetch: ", fetchstr, requestOptions);
 
     fetch(fetchstr, requestOptions)

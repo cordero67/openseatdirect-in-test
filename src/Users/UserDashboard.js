@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Form } from "react-bootstrap";
 
+import { API } from "../config";
 import { signin, authenticate, isAuthenticated } from "./apiUsers";
 
 import classes from "./User.module.css";
@@ -25,7 +26,7 @@ const UserDashboard = () => {
           redirect: 'follow'
         };
         console.log (myHeaders);
-        let fetchstr = "https://www.openseatdirect.com/api/event/" + USER_ID;
+        let fetchstr = `${API}/event/${USER_ID}`;
         console.log ("about to fetch: ", fetchstr, requestOptions );
         fetch(fetchstr, requestOptions)
           .then(response => response.text())

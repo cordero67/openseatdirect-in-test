@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import ReactHtmlParser from 'react-html-parser';
 
+import { API } from "../config";
+
 import { Editor } from '@tinymce/tinymce-react';
 import DateSelector from './DateSelector';
 import TimeSelector from './TimeSelector';
@@ -212,8 +214,7 @@ const EventCreation = () => {
         console.log("JSON Form data: ", js);
         const authstring = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDlkNzIzN2VjODAwYjZlOTM1NTg4ODgiLCJpYXQiOjE1ODg2ODgwOTJ9.URrxmyn4C4rcl5D4QubreEjRIN16fg4ao86Ym_u1fIc";
         const userid = '5d9d7237ec800b6e93558888';
-        const APIURL = "https://www.openseatdirect.com/api";
-        let apiurl = `${APIURL}/event/create/${userid}`;
+        let apiurl = `${API}/event/create/${userid}`;
 
         fetch(apiurl, {
             method: 'post',

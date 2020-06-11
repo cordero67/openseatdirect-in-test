@@ -4,6 +4,8 @@ import Dropzone from 'react-dropzone'
 import ReactCrop from 'react-image-crop'
 import './custom-image-crop.css';
 
+import { API } from "../config";
+
 import Backdrop from './Backdrop';
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
@@ -62,15 +64,8 @@ class ImgDropAndCrop extends Component {
         console.log("Inside componentDidMount")
         console.log("this.props.event: ", this.props.event)
         if (this.props.event) {
-            //const url = "https://www.openseatdirect.com/api/event/photo/e/42375345534";
-            console.log("https://www.openseatdirect.com/api/event/photo/e/42375345534");
-            const url = (`https://www.openseatdirect.com/api/event/photo/e/${this.props.event.toString()}`);
-            if (url === "https://www.openseatdirect.com/api/event/photo/e/42375345534") {
-                console.log("they are equal")
-            } else {
-                console.log("they are NOT equal")
-            }
-            console.log(`https://www.openseatdirect.com/api/event/photo/e/${this.props.event}`);
+            const url = (`${API}/api/event/photo/e/${this.props.event.toString()}`);
+            console.log(`${API}/api/event/photo/e/${this.props.event}`);
             fetch(url, {
                 method: 'GET',
                 redirect: 'follow'

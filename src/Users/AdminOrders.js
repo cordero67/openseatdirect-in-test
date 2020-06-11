@@ -3,6 +3,8 @@ import { Link, Redirect } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import moment from "moment";
 
+import { API } from "../config";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faShoppingCart,
@@ -43,7 +45,7 @@ const AdminOrders = () => {
       redirect: "follow",
     };
     let fetchstr =
-      "https://www.openseatdirect.com/api/admin/orders/" + vendorInfo.id;
+      `${API}/admin/orders/${vendorInfo.id}`;
     console.log("about to fetch: ", fetchstr, requestOptions);
     fetch(fetchstr, requestOptions)
       .then((response) => response.text())
