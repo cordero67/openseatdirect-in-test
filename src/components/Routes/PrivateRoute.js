@@ -7,7 +7,7 @@ import { isAuthenticated } from "../../Users/apiUsers";
 // arguments are the "Component"'s props
 const PrivateRoute = ({ component: Component, role: role }) => {
   console.log("role: ", role);
-  console.log("isAuthenticated().user.role: ", isAuthenticated().user.role);
+  //console.log("isAuthenticated().user.role: ", isAuthenticated().user.role);
   console.log("isAuthenticated: ", isAuthenticated());
   console.log(
     "isAuthenticated JSON.stringify: ",

@@ -17,7 +17,14 @@ const SignIn = () => {
 
   // destructors the "values" object
   const { email, password, error, loading, redirectToReferrer } = values;
-
+/*
+  if (
+    typeof window === "undefined" &&
+    localStorage.getItem(`user`) === null
+  ) {
+    window.location.href = "/signin";
+  }
+*/
   // destructoring of "user" object in "localStorage" "data" variable
   const { user: user } = isAuthenticated();
 

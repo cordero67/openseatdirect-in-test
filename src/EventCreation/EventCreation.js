@@ -1,12 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import queryString from "query-string";
 
-import ReactHtmlParser from "react-html-parser";
-
 import { API } from "../config";
 
-import { extractImageFileExtensionFromBase64 } from '../ImgDropAndCrop/ResuableUtils'
-
+import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
 
 import { Editor } from "@tinymce/tinymce-react";
 import DateSelector from "./DateSelector";
@@ -18,8 +15,8 @@ import CategorySelector from "./CategorySelector";
 import RadioForm from "./RadioForm";
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 
-import TicketType from "./TicketType";
-import Modal from "./Modal/Modal";
+import TicketModal from "./Modals/TicketModal";
+import SavedModal from "./Modals/SavedModal";
 
 import classes from "./EventCreation.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -39,186 +36,116 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 
-const dataFields = {
-  isDraft: { type: "Boolean", required: true }, // fetch
-  eventType: {
-    type: "String",
-    required: true,
-    enum: ["live", "online", "tba"],
-  }, // fetch
-  hasAlwaysBeenDraft: { type: "Boolean", required: true },
-  eventTitle: { type: "String", required: true, maxlength: 64 }, // fetch
-  longDescription: { type: "String", maxlength: 100000 }, // fetch
-  shortDescription: { type: "String", maxlength: 140 }, // fetch
-  startDateTime: { type: "Date", required: true }, // fetch
-  endDateTime: { type: "Date" }, // fetch
-  timeZone: { type: "String" }, // fetch
-  locationVenueName: { type: "String", required: true, maxlength: 140 }, // fetch
-  locationAddress1: { type: "String", maxlength: 32 }, // fetch
-  locationAddress2: { type: "String", maxlength: 32 }, // fetch
-  locationCity: { type: "String", maxlength: 32 }, // fetch
-  locationState: { type: "String", maxlength: 2 }, // fetch
-  locationZipPostalCode: { type: "String", maxlength: 6 }, // fetch
-  locationCountryCode: { type: "String", maxlength: 3 }, // fetch
-  locationNote: { type: "String", maxlength: 100 }, // fetch
-  webinarLink: { type: "String", maxlength: 256 },
-  onlineInformation: { type: "String", maxlength: 256 },
-  tbaInformation: { type: "String", maxlength: 256 },
-  eventCategory: {
-    type: "String",
-    enum: [
-      "Music",
-      "Sports",
-      "Arts & Theater",
-      "Food & Drink",
-      "Charity & Causes",
-      "Family",
-      "Meeting",
-    ],
-  }, // fetch
-  createUserId: { type: "ObjectId", required: true },
-  updateUserId: { type: "ObjectId" },
-  accountId: { type: "ObjectId" },
-  eventNum: { type: "Number", required: true }, // fetch
-  facebookLink: { type: "String", maxlength: 64 }, // fetch
-  twitterLink: { type: "String", maxlength: 64 }, // fetch
-  instagramLink: { type: "String", maxlength: 64 }, // fetch
-  linkedinLink: { type: "String", maxlength: 64 }, // fetch
-  vanityLink: { type: "String", required: true }, // fetch
-  refundPolicy: "", // fetch
-  photo: { type: "object" }, // fetch
-  _id: { type: "object" },
-  updatedAt: { type: "Date" },
-  createdAt: { type: "Date" },
-  __v: { type: "Number" },
-  tickets: {
-    eventId: { type: "ObjectId", required: true },
-    ticketType: { type: "String", enum: ["Free", "Paid", "Donation"] },
-    freeTicket: { type: "Boolean" },
-    usePriceFunction: { type: "Boolean" },
-    priceFunction: { type: "object" }, // fetch via temp variable
-    ticketName: { type: "String", required: true, maxlength: 32 }, // ticketDetails // fetch
-    currency: { type: "String", enum: ["USD", "JPY", "EUR", "GBP"] }, // ticketDetails // fetch
-    language: { type: "String", enum: ["ENG", "JPN", "SPA"] },
-    ticketDescription: { type: "String", maxlength: 1000 }, // ticketDetails // fetch
-    showTicketDescOnEventPage: { type: "Boolean" },
-    minTicketsAllowedPerOrder: { type: "Number", validate: "isInteger" }, // ticketDetails // fetch
-    maxTicketsAllowedPerOrder: { type: "Number", validate: "isInteger" }, // ticketDetails // fetch
-    initialTicketPrice: { type: "Number", required: true }, // ticketDetails
-    currentTicketPrice: { type: "Number", required: true }, // fetch
-    initialQuantity: { type: "Number", required: true, validate: "isInteger" }, // ticketDetails
-    remainingQuantity: {
-      type: "Number",
-      required: true,
-      validate: "isInteger",
-    }, // fetch
-    sort: { type: "Number" }, // ticketDetails // fetch
-    startVisibilityDateTime: { type: "Date" },
-    endVisibilityDateTime: { type: "Date" },
-    startSaleDateTime: { type: "Date" },
-    endSaleDateTime: { type: "Date" },
-    smartContractAddress: { type: "String" },
-    isZombie: { type: "Boolean" },
-    _id: { type: "object" },
-    updatedAt: { type: "Date" },
-    createdAt: { type: "Date" },
-    __v: { type: "Number" },
-  },
-};
+// holds sign-in information
+let vendorInfo = {};
 
 const EventCreation = () => {
-  let vendorInfo = {};
-  let tempUser = {};
-  tempUser = JSON.parse(localStorage.getItem("user"));
-  vendorInfo.token = tempUser.token;
-  vendorInfo.name = tempUser.user.name;
-  vendorInfo.email = tempUser.user.email;
-  vendorInfo.role = tempUser.user.role;
-  vendorInfo.id = tempUser.user._id;
-  console.log("vendorInfo: ",vendorInfo)
-
   // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
-    eventNum: undefined, // fetch
-    eventTitle: undefined, // fetch
-    isDraft: true, // fetch
-    eventType: "live", // fetch
+    eventNum: undefined,
+    eventTitle: undefined,
+    isDraft: true,
+    eventType: "live",
     webinarLink: undefined,
     onlineInformation: undefined,
     tbaInformation: undefined,
-    locationVenueName: undefined, // fetch
-    locationAddress1: undefined, // fetch
-    locationAddress2: undefined, // fetch
-    locationCity: undefined, // fetch
-    locationState: undefined, // fetch
-    locationZipPostalCode: undefined, // fetch
-    locationCountryCode: "US", // fetch
-    locationNote: undefined, // fetch
+    locationVenueName: undefined,
+    locationAddress1: undefined,
+    locationAddress2: undefined,
+    locationCity: undefined,
+    locationState: undefined,
+    locationZipPostalCode: undefined,
+    locationCountryCode: "US",
+    locationNote: undefined,
     startDate: new Date(new Date().toDateString()),
     startTime: undefined,
     startDateTime: undefined,
     endDate: new Date(new Date().toDateString()),
     endTime: undefined,
     endDateTime: undefined,
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // fetch
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     eventImage: undefined,
-    shortDescription: undefined, // fetch
-    longDescription: undefined, // fetch
-    eventCategory: undefined, // fetch
-    facebookLink: undefined, // fetch
-    twitterLink: undefined, // fetch
-    linkedinLink: undefined, // fetch
-    instagramLink: undefined, // fetch
-    vanityLink: undefined, // fetch
+    shortDescription: undefined,
+    longDescription: undefined,
+    eventCategory: undefined,
+    facebookLink: undefined,
+    twitterLink: undefined,
+    linkedinLink: undefined,
+    instagramLink: undefined,
+    vanityLink: undefined,
     refundPolicy: "noRefunds",
   });
 
   // stores all Ticket Details variables
   const [ticketDetails, setTicketDetails] = useState([
     {
-      key: "1", // fetch
-      sort: undefined, // fetch
+      key: "1",
+      sort: undefined,
       _id: undefined,
-      ticketName: undefined, // fetch
-      remainingQuantity: undefined, // fetch
-      currentTicketPrice: undefined, // fetch
-      currency: "", // fetch
+      ticketName: undefined,
+      remainingQuantity: undefined,
+      currentTicketPrice: undefined,
+      currency: "",
       settings: false,
       ticketDescription: undefined,
-      minTicketsAllowedPerOrder: undefined, // fetch
-      maxTicketsAllowedPerOrder: undefined, // fetch
-      priceFeature: "none", // fetch via temp variable
-      promoCodes: [{ key: "1", name: undefined, amount: undefined, percent: false }], // fetch via temp variable
+      minTicketsAllowedPerOrder: undefined,
+      maxTicketsAllowedPerOrder: undefined,
+      priceFeature: "none",
+      promoCodes: [
+        { key: "1", name: undefined, amount: undefined, percent: false },
+      ],
       promoCodeNames: [],
       promoCodeWarning: undefined,
-      functionArgs: {}, // fetch via temp variable
+      functionArgs: {},
       viewModal: false,
+      nameWarning: false
     },
   ]);
 
   const [photoData, setPhotoData] = useState({
     imgSrc: "",
-    imgSrcExt: ""
-  })
+    imgSrcExt: "",
+  });
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [eventStatus, setEventStatus] = useState({
+    status: "",
+    savedMessage: "Congratulations, your event was saved!",
+    liveMessage: "Congratulations, your event is live!",
+    errorMessage: "Sorry, your event request cannot be prossessed.",
+    subMessage: "What next!",
+    eventNum: "",
+    isDraft: true,
+  });
+
+  //const [isLoading, setIsLoading] = useState(false);
 
   let eventTix = {};
 
   useEffect(() => {
-    // checks if an event is identified and user is valiadated
+    // checks if 'user' exists in local storage
+    //setIsLoading(true);
+
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      // loads sign-in data
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      vendorInfo.token = tempUser.token;
+      vendorInfo.id = tempUser.user._id;
+    } else {
+      window.location.href = "/signin";
+    }
+
+    // checks if an 'eventNum' is in url
     if (
       queryString.parse(window.location.search).eventID &&
       localStorage.getItem("user")
     ) {
-      console.log("there is an event");
-      //setIsLoading(true);
-      let user = vendorInfo.id;
-      let token = vendorInfo.token;
-      console.log("user.user._id: ", user);
-
-      // extracts all event data, non-transactional
-      const userId = user;
+      console.log("an event exists");
+      // retrieves all non-transactional event data,
+      const userId = vendorInfo.id;
+      const token = vendorInfo.token;
       const eventNum = queryString.parse(window.location.search).eventID;
       let apiurl = `${API}/eventix/${userId}/${eventNum}`;
       console.log("apiurl: ", apiurl);
@@ -227,99 +154,100 @@ const EventCreation = () => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
+          Authorization: "Bearer " + token,
         },
       })
-      //.then(handleErrors)
-      .then((response) => {
-        console.log("response in event get", response);
-        //console.log("response.json() in event get", response.json());
-        return response.json();
-      })
-      .then((res) => {
-        console.log("****res=", res);
-        eventTix = res;
-        loadEventInfo(eventTix);
-        return res;
-      })
-      .then((res) => {
-        console.log("about to call image api");
-        const url = `${API}/event/photo/e/${eventNum}`;
-        fetch(url, {
-          method: 'GET',
-          redirect: 'follow'
-        })
-        .then(response => {
-          console.log (">>>>>>>>response in eventix", response);
-          return response.arrayBuffer(); 
-        })
-        .then (buffer =>{
-          console.log ("response.arrayBuffer():");
-          console.log (buffer);
-          const uint8 = new Uint8Array(buffer);
-          let bin ='';
-          const len =  uint8.byteLength;
-          for (let i = 0; i < len; i++)
-              bin += String.fromCharCode(uint8[i]);
-          const header ='data:image/png;base64,'; // hard codes image/png  
-          const photodat = header+window.btoa(bin);
-          const srcExt = extractImageFileExtensionFromBase64 (photodat);
-          console.log ("photodat for imgSrc:", photodat);
-          console.log ("photodat for srcExt:", srcExt);
-          
-          setPhotoData({
-            imgSrc: photodat,
-            imgSrcExt: srcExt
+        .then(handleErrors)
+        .then((response) => response.json())
+        .then((res) => {
+          console.log("res: ", res);
+          console.log("about to call image api");
+          const url = `${API}/event/photo/e/${eventNum}`;
+          fetch(url, {
+            method: "GET",
+            redirect: "follow",
           })
+            .then((response) => {
+              console.log("event image from server: ", response);
+              return response.arrayBuffer();
+            })
+            .then((buffer) => {
+              console.log("response.arrayBuffer():");
+              console.log(buffer);
+              const uint8 = new Uint8Array(buffer);
+              let bin = "";
+              const len = uint8.byteLength;
+              for (let i = 0; i < len; i++)
+                bin += String.fromCharCode(uint8[i]);
+              const header = "data:image/png;base64,"; // hard codes image/png
+              const photodat = header + window.btoa(bin);
+              const srcExt = extractImageFileExtensionFromBase64(photodat);
+              
+              // *******************
+              // needs to be removed
+              // temporarily not storing the photo
+              let noPhoto = "";
+              loadEventInfo(res, noPhoto);
+              //loadEventInfo(res, photodat);
+              
+              console.log("photodat for imgSrc:", photodat);
+              console.log("photodat for srcExt:", srcExt);
+              setPhotoData({
+                imgSrc: photodat,
+                imgSrcExt: srcExt,
+              });
+            })
+            .catch((err) => {
+              console.log("Image not found", err);
+              let tempPhoto = "";
+              loadEventInfo(res, tempPhoto);
+            });
         })
-        .catch(err => {
-          console.log("**ERROR THROWN", err);
-        });
+        .catch((err) => {
+          console.log("This event does not exist", err);
+          // since no event info is loaded, the page acts as "Event Creation"
 
-      })
-      .catch((err) => {
-        console.log("jumping here", err);
-      });
+        });
     } else {
-      console.log("there is NO event");
+      console.log("an event does not exists");
     }
-    setIsLoading(false);
+    //setIsLoading(false);
   }, []);
 
-  const loadEventInfo = (eventTix) => {
+  const loadEventInfo = (eventTix, photo) => {
     console.log("Inside 'loadEventInfo': ", loadEventInfo);
     let tempDescription = { ...eventDescription };
-    tempDescription.eventTitle = eventTix.eventTitle; // fetch
-    tempDescription.eventNum = eventTix.eventNum; // fetch
-    tempDescription.isDraft = eventTix.isDraft; // fetch
+    tempDescription.eventTitle = eventTix.eventTitle;
+    tempDescription.eventNum = eventTix.eventNum;
+    tempDescription.isDraft = eventTix.isDraft;
     tempDescription.eventType = eventTix.eventType
       ? eventTix.eventType
-      : "live"; // fetch
-    tempDescription.vanityLink = eventTix.vanityLink; // fetch
+      : "live";
+    tempDescription.vanityLink = eventTix.vanityLink;
     tempDescription.webinarLink = eventTix.webinarLink;
     tempDescription.onlineInformation = eventTix.onlineInformation;
     tempDescription.tbaInformation = eventTix.tbaInformation;
-    tempDescription.shortDescription = eventTix.shortDescription; // fetch
-    tempDescription.longDescription = eventTix.longDescription; // fetch
-    tempDescription.eventCategory = eventTix.eventCategory; // fetch
-    tempDescription.facebookLink = eventTix.facebookLink; // fetch
-    tempDescription.twitterLink = eventTix.twitterLink; // fetch
-    tempDescription.linkedinLink = eventTix.linkedinLink; // fetch
-    tempDescription.instagramLink = eventTix.instagramLink; // fetch
+    tempDescription.shortDescription = eventTix.shortDescription;
+    tempDescription.longDescription = eventTix.longDescription;
+    tempDescription.eventCategory = eventTix.eventCategory;
+    tempDescription.facebookLink = eventTix.facebookLink;
+    tempDescription.twitterLink = eventTix.twitterLink;
+    tempDescription.linkedinLink = eventTix.linkedinLink;
+    tempDescription.instagramLink = eventTix.instagramLink;
     tempDescription.refundPolicy = eventTix.refundPolicy
       ? eventTix.refundPolicy
-      : "noRefunds"; // fetch
-    tempDescription.eventNum = eventTix.eventNum; // fetch
-    tempDescription.locationVenueName = eventTix.locationVenueName; // fetch
-    tempDescription.locationAddress1 = eventTix.locationAddress1; // fetch
-    tempDescription.locationAddress2 = eventTix.locationAddress2; // fetch
-    tempDescription.locationNote = eventTix.locationNote; // fetch
-    tempDescription.locationCity = eventTix.locationCity; // fetch
-    tempDescription.locationState = eventTix.locationState; // fetch
-    tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode; // fetch
-    tempDescription.locationCountryCode = eventTix.locationCountryCode; // fetch
-    tempDescription.timeZone = eventTix.timeZone; // fetch
-    tempDescription.eventImage = eventTix.photo;
+      : "noRefunds";
+    tempDescription.eventNum = eventTix.eventNum;
+    tempDescription.locationVenueName = eventTix.locationVenueName;
+    tempDescription.locationAddress1 = eventTix.locationAddress1;
+    tempDescription.locationAddress2 = eventTix.locationAddress2;
+    tempDescription.locationNote = eventTix.locationNote;
+    tempDescription.locationCity = eventTix.locationCity;
+    tempDescription.locationState = eventTix.locationState;
+    tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode;
+    tempDescription.locationCountryCode = eventTix.locationCountryCode;
+    tempDescription.timeZone = eventTix.timeZone;
+    tempDescription.eventImage = photo;
     console.log("eventImage: ", tempDescription.eventImage);
 
     /*
@@ -378,9 +306,7 @@ const EventCreation = () => {
     console.log("tempDescription: ", tempDescription);
     setEventDescription(tempDescription);
 
-
-    console.log("eventTix.tickets: ", eventTix.tickets)
-    console.log("eventTix.tickets.length: ", eventTix.tickets.length)
+    console.log("eventTix.tickets: ", eventTix.tickets);
     // now populate the ticketsDetails variable
     if (eventTix.tickets && eventTix.tickets.length !== 0) {
       let tempArray = [];
@@ -394,17 +320,17 @@ const EventCreation = () => {
           tempPriceFeature = tix.priceFunction.form;
           if (tempPriceFeature === "promo") {
             console.log("priceFunction: ", tix.priceFunction);
-            console.log("tix.priceFunction.args: ",tix.priceFunction.args)
+            console.log("tix.priceFunction.args: ", tix.priceFunction.args);
             tempPromoCodes = tix.priceFunction.args;
             tempPromoCodes.map((promo, index) => {
               let element = {
-                  key: index,
-                  name: promo.name,
-                  amount: promo.amount,
-                  percent: promo.percent
-                }
+                key: index,
+                name: promo.name,
+                amount: promo.amount,
+                percent: promo.percent,
+              };
               tempPromoCodesArray.push(element);
-            })
+            });
           } else if (tempPriceFeature === "bogo") {
             tempFunctionArgs = {
               buy: tix.priceFunction.args.buy,
@@ -417,33 +343,31 @@ const EventCreation = () => {
             if (tix.priceFunction.args.discount !== 100) {
               tempPriceFeature = "bogod";
             }
-          } else  if (tempPriceFeature === "twofer") {
-              tempFunctionArgs = {
+          } else if (tempPriceFeature === "twofer") {
+            tempFunctionArgs = {
               buy: tix.priceFunction.args.buy,
-              for: tix.priceFunction.args.for
+              for: tix.priceFunction.args.for,
             };
           }
         }
-        console.log("tempPriceFeature before setting newItem: ", tempPriceFeature)
-        console.log("tempFunctionArgs before setting newItem: ", tempFunctionArgs)
-        console.log("tempPromoCodes before setting newItem: ", tempPromoCodes)
+        console.log("tempPromoCodes before setting newItem: ", tempPromoCodes);
         let newItem = {
-          key: tix.sort ? tix.sort : index, // fetch
-          sort: tix.sort ? tix.sort : index, // fetch
+          key: tix.sort ? tix.sort : index,
+          sort: tix.sort ? tix.sort : index,
           _id: tix._id,
-          ticketName: tix.ticketName, // fetch
+          ticketName: tix.ticketName,
           remainingQuantity: tix.remainingQuantity, // fetch NEED TO WAIT FOR ORDERS API
-          currentTicketPrice: tix.currentTicketPrice, // fetch
-          currency: tix.currency ? tix.currency : "USD", // fetch
+          currentTicketPrice: tix.currentTicketPrice,
+          currency: tix.currency ? tix.currency : "USD",
           settings: false,
-          ticketDescription: tix.ticketDescription, // fetch
-          minTicketsAllowedPerOrder: tix.minTicketsAllowedPerOrder, // fetch
-          maxTicketsAllowedPerOrder: tix.maxTicketsAllowedPerOrder, // fetch
-          priceFeature: tempPriceFeature, // fetch via temp variable
-          promoCodes: tempPromoCodesArray, // fetch via temp variable
+          ticketDescription: tix.ticketDescription,
+          minTicketsAllowedPerOrder: tix.minTicketsAllowedPerOrder,
+          maxTicketsAllowedPerOrder: tix.maxTicketsAllowedPerOrder,
+          priceFeature: tempPriceFeature,
+          promoCodes: tempPromoCodesArray,
           promoCodeNames: [],
           promoCodeWarning: null, //NEED TO POPULATE!!!
-          functionArgs: tempFunctionArgs, // fetch via temp variable
+          functionArgs: tempFunctionArgs,
           viewModal: false,
         };
         tempArray.push(newItem);
@@ -453,14 +377,28 @@ const EventCreation = () => {
     }
   };
 
-  const saveEvent = async (preview) => {
-    console.log("we are saving");
+  const saveEvent = async (status) => {
+    console.log("status: ", status);
+
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      // loads sign-in data
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      vendorInfo.token = tempUser.token;
+      vendorInfo.id = tempUser.user._id;
+    } else {
+      window.location.href = "/signin";
+    }
+
 
     if (!eventDescription.eventTitle) {
       console.log("You need to complete these fields");
-      !eventDescription.eventTitle ? setEventTitleOmission(true) : setEventTitleOmission(false);
+      !eventDescription.eventTitle
+        ? setEventTitleOmission(true)
+        : setEventTitleOmission(false);
     } else {
-        
       let eventDescriptionFields = [
         "isDraft",
         "eventNum",
@@ -487,32 +425,36 @@ const EventCreation = () => {
         "instagramLink",
         "vanityLink",
         "refundPolicy",
-      ]
+      ];
 
       var formData = new FormData();
-      
-      eventDescriptionFields.forEach(field => {
-        //console.log("event field: ", field, " its value: ", eventDescription[field])
+
+      eventDescriptionFields.forEach((field) => {
         if (eventDescription[field]) {
-          formData.append(`${field}`, eventDescription[field])
-          console.log("this is the input: ", `${field}`, `${eventDescription[field]}`)
+          formData.append(`${field}`, eventDescription[field]);
+          console.log(
+            "this is the input: ",
+            `${field}`,
+            `${eventDescription[field]}`
+          );
         }
-      })
-        
+      });
+
       // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
       formData.append("startDateTime", eventDescription.startDate);
       // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
       formData.append("endDateTime", eventDescription.endDate);
 
       let imageBlob = null;
-
-      if (eventDescription.eventImage){
-          imageBlob = await new Promise (resolve => eventDescription.eventImage.toBlob(resolve, 'image/png'));
-          formData.append("photo", imageBlob);
+      if (eventDescription.eventImage) {
+        console.log("eventDescription.eventImage: ", eventDescription.eventImage)
+        imageBlob = await new Promise((resolve) =>
+          eventDescription.eventImage.toBlob(resolve, "image/png")
+        );
+        formData.append("photo", imageBlob);
       } else {
         console.log("there is no image");
-      };
-
+      }
       let ticketDetailsFields = [
         "ticketName",
         "remainingQuantity",
@@ -520,121 +462,221 @@ const EventCreation = () => {
         "ticketDescription",
         "maxTicketsAllowedPerOrder",
         "minTicketsAllowedPerOrder",
-        "_id"
-      ]
+        "_id",
+      ];
 
       ticketDetails.forEach((ticket, index) => {
-        console.log("ticket #: index");
-        if (ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice) {
-          console.log("adding ticket ", index)
-          formData.append(`tickets[${index}][sort]`, 10 + 10 * index)
+        //console.log("ticket #: index");
+        if (
+          ticket.ticketName &&
+          ticket.remainingQuantity &&
+          ticket.currentTicketPrice
+        ) {
+          //console.log("adding ticket ", index);
+          formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
 
           if (ticket.currency) {
-            formData.append(`tickets[${index}][currency]`, ticket.currency.slice(0,3))
+            formData.append(
+              `tickets[${index}][currency]`,
+              ticket.currency.slice(0, 3)
+            );
           }
 
-          ticketDetailsFields.forEach(field => {
-            //console.log("event field: ", field, " its value: ", eventDescription[field])
+          ticketDetailsFields.forEach((field) => {
             if (ticket[field]) {
-              formData.append(`tickets[${index}][${field}]`, ticket[field])
-              //console.log("this is the input: ", `${field}`, `${eventDescription[field]}`)
+              formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
-          })
+          });
 
           // for "bogod" and "bogof"
-          if (ticket.priceFeature === "bogod" || ticket.priceFeature === "bogof") {
+          if (
+            ticket.priceFeature === "bogod" ||
+            ticket.priceFeature === "bogof"
+          ) {
             formData.append(`tickets[${index}][priceFunction][form]`, "bogo");
-            formData.append(`tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy);
-            formData.append(`tickets[${index}][priceFunction][args][get]`, ticket.functionArgs.get);
-            formData.append(`tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount);
+            formData.append(
+              `tickets[${index}][priceFunction][args][buy]`,
+              ticket.functionArgs.buy
+            );
+            formData.append(
+              `tickets[${index}][priceFunction][args][get]`,
+              ticket.functionArgs.get
+            );
+            formData.append(
+              `tickets[${index}][priceFunction][args][discount]`,
+              ticket.functionArgs.discount
+            );
           }
           // for "twofer"
           if (ticket.priceFeature === "twofer") {
             formData.append(`tickets[${index}][priceFunction][form]`, "twofer");
-            formData.append(`tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy);
-            formData.append(`tickets[${index}][priceFunction][args][for]`, ticket.functionArgs.for);
+            formData.append(
+              `tickets[${index}][priceFunction][args][buy]`,
+              ticket.functionArgs.buy
+            );
+            formData.append(
+              `tickets[${index}][priceFunction][args][for]`,
+              ticket.functionArgs.for
+            );
           }
           // for "promo"
           if (ticket.priceFeature === "promo") {
             formData.append(`tickets[${index}][priceFunction][form]`, "promo");
             ticket.promoCodes.map((item, number) => {
-              console.log("New promo details: key-", item.key, ", name-", item.name, ", amount-", item.amount, ", percent-", item.percent)
-              formData.append(`tickets[${index}][priceFunction][args[${number}]][key]`, item.key);
-              formData.append(`tickets[${index}][priceFunction][args[${number}]][name]`, item.name);
-              formData.append(`tickets[${index}][priceFunction][args[${number}]][amount]`, item.amount);
-              formData.append(`tickets[${index}][priceFunction][args[${number}]][percent]`, item.percent);
-            })
+              console.log(
+                "New promo details: key-",
+                item.key,
+                ", name-",
+                item.name,
+                ", amount-",
+                item.amount,
+                ", percent-",
+                item.percent
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args[${number}]][key]`,
+                item.key
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args[${number}]][name]`,
+                item.name
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args[${number}]][amount]`,
+                item.amount
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args[${number}]][percent]`,
+                item.percent
+              );
+            });
           }
-        } else {
-          console.log("skipped ticket ", index)
         }
+        else {
+          console.log("skipped ticket ", index);
+        }
+
       });
 
       // Display the key/value pairs
       for (var pair of formData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]); 
+        //console.log(pair[0] + ", " + pair[1]);
       }
 
       let userid = vendorInfo.id;
+
+      //let userid = "5ebad880b70b9045faa9c111"
+      //let userid = "5ebad880b70b9045faa9c537"
+      console.log("userid: ", userid);
       let token = vendorInfo.token;
-      const authstring =
-        `Bearer ${token}`;
+      console.log("token: ", token);
+      const authstring = `Bearer ${token}`;
       var myHeaders = new Headers();
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
 
       if (eventDescription.eventNum) {
-      //if (false) {
         console.log("editting an existing event");
         apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
-        console.log("apiurl: ", apiurl)
-        fetch(apiurl, {
-          method: "post",
-          headers: myHeaders,
-          body: formData,
-          redirect: "follow",
-        })
-        .then(handleErrors)
-        .then((response) => {
-          console.log("response in event/create", response);
-          console.log("apiurl: ", apiurl)
-          return response.json();
-        })
-        .then((res) => {
-          console.log(res);
-          if (!preview) {
-            window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
-          }
-        })
-        .catch((err) => {
-          console.log("**ERROR THROWN", err);
-        });
+        console.log("apiurl: ", apiurl);
       } else {
         console.log("creating a new event");
         apiurl = `${API}/eventix/${userid}`;
-        fetch(apiurl, {
-          method: "post",
-          headers: myHeaders,
-          body: formData,
-          redirect: "follow",
-        })
+        console.log("apiurl: ", apiurl);
+      }
+
+      fetch(apiurl, {
+        method: "post",
+        headers: myHeaders,
+        body: formData,
+        redirect: "follow",
+      })
         .then(handleErrors)
         .then((response) => {
           console.log("response in event/create", response);
           return response.json();
         })
         .then((res) => {
-          console.log(res);
-          if (!preview) {
-            window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`
+          console.log("Event was saved/went live");
+          console.log("res: ", res);
+
+          let tempDescription = { ...eventDescription };
+          let tempStatus = { ...eventStatus };
+          tempStatus.eventNum = res.result.eventNum;
+          
+          if (status === "save") {
+            tempDescription.isDraft = true;
+            tempStatus.status = "saved";
+          } else if (status === "live") {
+            tempDescription.isDraft = false;
+            tempStatus.status = "live";
           }
+          setEventDescription(tempDescription);
+          setEventStatus(tempStatus);
         })
         .catch((err) => {
           console.log("**ERROR THROWN", err);
+          let tempStatus = { ...eventStatus };
+          tempStatus.status = "declined";
+          tempStatus.eventNum = "";
+          setEventStatus(tempStatus);
         });
       }
     }
+
+  const savedDisplayed = () => {
+    console.log("inside savedDisplay");
+    console.log("savedDisplay: ", eventStatus);
+    if (eventStatus.status === "declined") {
+      return (
+        <Aux>
+          <SavedModal
+            show={true}
+            details={eventStatus}
+            toDashboard={() => {
+              window.location.href = `/vendorevents`;
+            }}
+            editEvent={() => {
+              let tempStatus = { ...eventStatus };
+              tempStatus.status = "";
+              tempStatus.eventNum = "";
+              tempStatus.isDraft = true;
+              setEventStatus(tempStatus);
+            }}
+            tryAgain={() => {
+              // window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`;
+              // deactivateShowModal(item);
+            }}
+          ></SavedModal>
+        </Aux>
+      );
+    } else if (
+      eventStatus.status === "saved" ||
+      eventStatus.status === "live"
+    ) {
+      return (
+        <Aux>
+          <SavedModal
+            show={true}
+            details={eventStatus}
+            toDashboard={() => {
+              window.location.href = `/vendorevents`;
+            }}
+            createEvent={() => {
+              window.location.href = `/eventcreation`;
+            }}
+            editEvent={() => {
+              let tempStatus = { ...eventStatus };
+              tempStatus.status = "";
+              tempStatus.eventNum = "";
+              tempStatus.isDraft = true;
+              setEventStatus(tempStatus);
+            }}
+          ></SavedModal>
+        </Aux>
+      );
+    } else return null;
   };
 
   // EVENT DESCRIPTION HANDLERS
@@ -697,7 +739,9 @@ const EventCreation = () => {
     //console.log("Received pixelCrop: ", pixelCrop)
     console.log("Received image: ", image);
     let imageBlob;
-    imageBlob = await new Promise (resolve => image.toBlob(resolve, 'image/png'));
+    imageBlob = await new Promise((resolve) =>
+      image.toBlob(resolve, "image/png")
+    );
     console.log("Convert image: ", imageBlob);
     let tempDescription = { ...eventDescription };
     tempDescription.eventImage = imageBlob;
@@ -845,7 +889,9 @@ const EventCreation = () => {
       let tempDetails = [...ticketDetails];
       tempDetails.forEach((item, index) => {
         if (item.key === ticket.key) {
-          item.promoCodes = [{ key: "1", name: "", amount: "", percent: false }];
+          item.promoCodes = [
+            { key: "1", name: "", amount: "", percent: false },
+          ];
         }
         setTicketDetails(tempDetails);
       });
@@ -887,7 +933,12 @@ const EventCreation = () => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
       if (item.key === key) {
-        let newPromo = { key: newPromoKey, name: "", amount: "", percent: false };
+        let newPromo = {
+          key: newPromoKey,
+          name: "",
+          amount: "",
+          percent: false,
+        };
         item.promoCodes.push(newPromo);
       }
     });
@@ -952,8 +1003,8 @@ const EventCreation = () => {
     let display = (
       <div>
         {ticket.promoCodes.map((item, index) => {
-          console.log("item: ", item)
-          console.log("item.amount: ",item.amount)
+          console.log("item: ", item);
+          console.log("item.amount: ", item.amount);
           let finalPrice = "";
           if (item.percent === false) {
             finalPrice = (ticket.currentTicketPrice - item.amount).toFixed(2);
@@ -1791,6 +1842,7 @@ const EventCreation = () => {
     );
   };
 
+  // garuantees that only one ticket has a "true" "viewModal" value
   const activateShowModal = (ticket) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1804,6 +1856,7 @@ const EventCreation = () => {
     console.log("Ticket Details: ", tempDetails);
   };
 
+  // clears "viewModal" value for all tickets
   const deactivateShowModal = (ticket) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -2014,7 +2067,7 @@ const EventCreation = () => {
               </div>
               {item.viewModal ? (
                 <Aux>
-                  <Modal
+                  <TicketModal
                     show={true}
                     details={item}
                     closeModal={() => {
@@ -2025,7 +2078,7 @@ const EventCreation = () => {
                       console.log("Ticket key", item.key);
                       deleteTicket(item.key);
                     }}
-                  ></Modal>
+                  ></TicketModal>
                 </Aux>
               ) : null}
               {item.settings ? additionalSettings(item) : null}
@@ -2043,7 +2096,18 @@ const EventCreation = () => {
   const [eventLocationWarning, setEventLocationWarning] = useState(false);
   const [eventAddress1Warning, setEventAddress1Warning] = useState(false);
   const [eventAddress2Warning, setEventAddress2Warning] = useState(false);
+  const [eventStateWarning, setEventStateWarning] = useState(false);
   const [eventAdditionalWarning, setEventAdditionalWarning] = useState(false);
+  const [webinarLinkWarning, setWebinarLinkWarning] = useState(false);
+  const [webinarInfoWarning, setWebinarInfoWarning] = useState(false);
+  const [tbaInfoWarning, setTbaInfoWarning] = useState(false);
+  const [vanityWarning, setVanityWarning] = useState(false);
+
+
+
+  
+
+  //const [eventAdditionalWarning, setEventAdditionalWarning] = useState(false);
 
   const displayMessage = (limit, variable) => {
     if (variable && variable.length >= limit) {
@@ -2137,28 +2201,32 @@ const EventCreation = () => {
     //  return null
     //} else {
     //  console.log("eventDescription.eventNum: ", eventDescription.eventNum)
-      return (
-        <ImgDropAndCrop
-          icon="create image"
-          info={photoData}
-          event={eventDescription.eventNum}
-          change={(image) => {
-            console.log("image: ", image);
-            console.log("typeof image: ", typeof image);
-            
-            let tempDescription = {...eventDescription };
-            tempDescription.eventImage = image;
-            setEventDescription(tempDescription);
-            console.log("tempDescription.eventImage: ", tempDescription.eventImage)
-          }}
-        />
-      )
+    return (
+      <ImgDropAndCrop
+        icon="create image"
+        info={photoData}
+        event={eventDescription.eventNum}
+        change={(image) => {
+          console.log("image: ", image);
+          console.log("typeof image: ", typeof image);
+
+          let tempDescription = { ...eventDescription };
+          tempDescription.eventImage = image;
+          setEventDescription(tempDescription);
+          console.log(
+            "tempDescription.eventImage: ",
+            tempDescription.eventImage
+          );
+        }}
+      />
+    );
     //}
-  }
+  };
 
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
+        {savedDisplayed()}
         <div className={classes.GridTitle}>
           {!eventDescription.eventNum ? (
             <div style={{ paddingTop: "10px" }}>Event Creation</div>
@@ -2178,41 +2246,66 @@ const EventCreation = () => {
             </div>
           )}
           <div></div>
-          <div className={classes.ButtonBox}>
-            <button
-              className={classes.Button}
-              style={{ border: "2px solid green", color: "green" }}
-                onClick={saveEvent}
-            >
-              Save as Draft
-            </button>
-          </div>
-          <div className={classes.ButtonBox}>
-            <button
-              className={classes.Button}
-              style={{ border: "2px solid red", color: "red" }}
-            >
-              Go Live Now
-            </button>
-          </div>
+          <Button
+            style={{
+              marginTop: "5px",
+              width: "130px",
+              height: "30px",
+              textAlign: "center",
+              paddingTop: "7px",
+            }}
+            content="Save as Draft"
+            basic
+            color="green"
+            onClick={() => {
+              let tempDescription = { ...eventDescription };
+              tempDescription.isDraft = true;
+              setEventDescription(tempDescription);
+              saveEvent("save");
+            }}
+          />
+          <Button
+            style={{
+              marginTop: "5px",
+              width: "130px",
+              height: "30px",
+              textAlign: "center",
+              paddingTop: "7px",
+            }}
+            content="Go Live Now"
+            basic
+            color="red"
+            onClick={() => {
+              let tempDescription = { ...eventDescription };
+              tempDescription.isDraft = false;
+              setEventDescription(tempDescription);
+              saveEvent("live");
+            }}
+          />
         </div>
 
         <div className={classes.CategoryTitle} style={{ width: "140px" }}>
           Event Details
         </div>
         <div style={{ border: "1px solid grey" }}>
-          <div className={classes.SectionTitleTight}>Event Title<span style={{color: "red"}}>*</span></div>
+          <div className={classes.SectionTitleTight}>
+            Event Title<span style={{ color: "red" }}>*</span>
+          </div>
           <div className={classes.InputBox}>
             <input
-              className={eventTitleOmission ? classes.InputBoxContentError : classes.InputBoxContent}
+              className={
+                eventTitleOmission
+                  ? classes.InputBoxContentError
+                  : classes.InputBoxContent
+              }
               style={{ width: "600px" }}
               onFocus={() => {
-                setEventTitleWarning(true)
-                setEventTitleOmission(false)
+                setEventTitleWarning(true);
+                setEventTitleOmission(false);
               }}
               onBlur={() => {
-                setEventTitleWarning(false)
-                setEventTitleOmission(false)
+                setEventTitleWarning(false);
+                setEventTitleOmission(false);
               }}
               type="text"
               id="eventTitle"
@@ -2227,18 +2320,19 @@ const EventCreation = () => {
             {eventTitleWarning
               ? displayMessage(75, eventDescription.eventTitle)
               : null}
-            {eventTitleOmission
-              ? <div
-                  style={{
-                    paddingLeft: "10px",
-                    height: "14px",
-                    color: "red",
-                    fontSize: "12px",
-                    fontWeight: "700",
-                  }}
-                >This is a required field
-                </div>
-                : null}
+            {eventTitleOmission ? (
+              <div
+                style={{
+                  paddingLeft: "10px",
+                  height: "14px",
+                  color: "red",
+                  fontSize: "12px",
+                  fontWeight: "700",
+                }}
+              >
+                This is a required field
+              </div>
+            ) : null}
           </div>
 
           <div className={classes.SectionTitle}>
@@ -2346,9 +2440,12 @@ const EventCreation = () => {
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "295px" }}
+                  onFocus={() => setEventStateWarning(true)}
+                  onBlur={() => setEventStateWarning(false)}
                   type="text"
                   id="locationState"
-                  placeholder="State/Province"
+                  maxLength="2"
+                  placeholder="State/Province 2 digit code"
                   value={eventDescription.locationState}
                   onChange={(event) => {
                     let tempDescription = { ...eventDescription };
@@ -2370,6 +2467,10 @@ const EventCreation = () => {
                     setEventDescription(tempDescription);
                   }}
                 ></input>
+                
+                {eventStateWarning
+                  ? displayMessage(2, eventDescription.locationState)
+                  : null}
               </div>
 
               <div className={classes.InputBoxTight}>
@@ -2411,10 +2512,12 @@ const EventCreation = () => {
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "600px" }}
+                  onFocus={() => setWebinarLinkWarning(true)}
+                  onBlur={() => setWebinarLinkWarning(false)}
                   type="text"
                   id="webinarLink"
-                  maxLength="256"
-                  placeholder="Webinar Link: limit 256 characters"
+                  maxLength="64"
+                  placeholder="Webinar Link: limit 64 characters"
                   value={eventDescription.webinarLink}
                   onChange={(event) => {
                     let tempDescription = { ...eventDescription };
@@ -2422,16 +2525,21 @@ const EventCreation = () => {
                     setEventDescription(tempDescription);
                   }}
                 ></input>
+                {webinarLinkWarning
+                  ? displayMessage(64, eventDescription.webinarLink)
+                  : null}
               </div>
 
               <div className={classes.InputBox}>
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "600px" }}
+                  onFocus={() => setWebinarInfoWarning(true)}
+                  onBlur={() => setWebinarInfoWarning(false)}
                   type="text"
                   id="onlineInformation"
-                  maxLength="256"
-                  placeholder="Additional Instructions: limit 256 characters"
+                  maxLength="128"
+                  placeholder="Additional Instructions: limit 128 characters"
                   value={eventDescription.onlineInformation}
                   onChange={(event) => {
                     let tempDescription = { ...eventDescription };
@@ -2439,6 +2547,9 @@ const EventCreation = () => {
                     setEventDescription(tempDescription);
                   }}
                 ></input>
+                {webinarInfoWarning
+                  ? displayMessage(128, eventDescription.onlineInformation)
+                  : null}
               </div>
             </Aux>
           ) : null}
@@ -2453,10 +2564,12 @@ const EventCreation = () => {
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "600px" }}
+                  onFocus={() => setWebinarLinkWarning(true)}
+                  onBlur={() => setWebinarLinkWarning(false)}
                   type="text"
                   id="webinarLink"
-                  maxLength="256"
-                  placeholder="Webinar Link: limit 256 characters"
+                  maxLength="64"
+                  placeholder="Webinar Link: limit 64 characters"
                   value={eventDescription.webinarLink}
                   onChange={(event) => {
                     let tempDescription = { ...eventDescription };
@@ -2464,16 +2577,21 @@ const EventCreation = () => {
                     setEventDescription(tempDescription);
                   }}
                 ></input>
+                {webinarLinkWarning
+                  ? displayMessage(64, eventDescription.webinarLink)
+                  : null}
               </div>
 
               <div className={classes.InputBox}>
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "600px" }}
+                  onFocus={() => setWebinarInfoWarning(true)}
+                  onBlur={() => setWebinarInfoWarning(false)}
                   type="text"
                   id="onlineInformation"
-                  maxLength="256"
-                  placeholder="Additional Information: limit 256 characters"
+                  maxLength="128"
+                  placeholder="Additional Instructions: limit 128 characters"
                   value={eventDescription.onlineInformation}
                   onChange={(event) => {
                     let tempDescription = { ...eventDescription };
@@ -2481,6 +2599,9 @@ const EventCreation = () => {
                     setEventDescription(tempDescription);
                   }}
                 ></input>
+                {webinarInfoWarning
+                  ? displayMessage(128, eventDescription.onlineInformation)
+                  : null}
               </div>
             </Aux>
           ) : null}
@@ -2495,10 +2616,12 @@ const EventCreation = () => {
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "600px" }}
+                  onFocus={() => setTbaInfoWarning(true)}
+                  onBlur={() => setTbaInfoWarning(false)}
                   type="text"
                   id="tbaInformation"
-                  maxLength="256"
-                  placeholder="Additional instructions: limit 256 characters"
+                  maxLength="128"
+                  placeholder="Additional Instructions: limit 128 characters"
                   value={eventDescription.tbaInformation}
                   onChange={(event) => {
                     let tempDescription = { ...eventDescription };
@@ -2506,14 +2629,21 @@ const EventCreation = () => {
                     setEventDescription(tempDescription);
                   }}
                 ></input>
+                {tbaInfoWarning
+                  ? displayMessage(128, eventDescription.tbaInformation)
+                  : null}
               </div>
             </Aux>
           ) : null}
 
           <div className={classes.SectionTitle}>Event Dates and Time</div>
           <div className={classes.DateTimeHeader}>
-            <div>Start Date<span style={{color: "red"}}>*</span></div>
-            <div>Start Time<span style={{color: "red"}}>*</span></div>
+            <div>
+              Start Date<span style={{ color: "red" }}>*</span>
+            </div>
+            <div>
+              Start Time<span style={{ color: "red" }}>*</span>
+            </div>
             <div>End Date</div>
             <div>End Time</div>
             <div>Time Zone</div>
@@ -2585,7 +2715,7 @@ const EventCreation = () => {
               backgroundColor: "#E7E7E7",
             }}
           >
-          {imageCanvas()}
+            {imageCanvas()}
           </div>
 
           <div className={classes.SectionTitleTight}>
@@ -2753,8 +2883,8 @@ const EventCreation = () => {
           <div
             style={{
               display: `grid`,
-              gridTemplateColumns: "220px 300px",
-              height: "55px",
+              gridTemplateColumns: "220px 500px",
+              height: "45px",
               fontSize: "16px",
               padding: "5px 10px 10px 35px",
               boxSizing: "borderBox",
@@ -2766,17 +2896,40 @@ const EventCreation = () => {
             </div>
             <input
               className={classes.InputBoxContent}
-              style={{ width: "400px" }}
+              style={{ width: "500px" }}
+              onFocus={() => setVanityWarning(true)}
+              onBlur={() => setVanityWarning(false)}
               type="text"
               id="vanityLink"
-              placeholder="vanity address for Event Description page url"
+              maxLength="75"
+              placeholder="vanity url: limit 75 characters"
               name="vanityLink"
               value={eventDescription.vanityLink}
               onChange={(event) => {
-                changeEventDescription(event);
+                let tempDescription = { ...eventDescription };
+                tempDescription.vanityLink = event.target.value;
+                setEventDescription(tempDescription);
               }}
             ></input>
           </div>
+
+          <div
+            style={{
+              display: `grid`,
+              gridTemplateColumns: "220px 500px",
+              height: "18px",
+              fontSize: "10px",
+              padding: "0px 10px 0px 35px",
+              boxSizing: "borderBox",
+              backgroundColor: "#E7E7E7",
+            }}
+          >
+            <div>{" "}</div>
+            {vanityWarning
+              ? displayMessage(75, eventDescription.vanityLink)
+              : null}
+          </div>
+
         </div>
 
         <br></br>
@@ -2802,7 +2955,7 @@ const EventCreation = () => {
                 fontWeight: 600,
               }}
             >
-              Ticket Name<span style={{color: "red"}}>*</span>
+              Ticket Name<span style={{ color: "red" }}>*</span>
             </div>
 
             <div
@@ -2812,7 +2965,7 @@ const EventCreation = () => {
                 fontWeight: 600,
               }}
             >
-              Quantity<span style={{color: "red"}}>*</span>
+              Quantity<span style={{ color: "red" }}>*</span>
             </div>
 
             <div
@@ -2822,7 +2975,7 @@ const EventCreation = () => {
                 fontWeight: 600,
               }}
             >
-              Price<span style={{color: "red"}}>*</span>
+              Price<span style={{ color: "red" }}>*</span>
             </div>
 
             <div
@@ -2876,23 +3029,36 @@ const EventCreation = () => {
         <div style={{ margin: "auto", textAlign: "center" }}>
           <div className={classes.GridBottom}>
             <div></div>
-            <div className={classes.ButtonBox}>
-              <button
-                className={classes.Button}
-                style={{ border: "2px solid green", color: "green" }}
-                onClick={saveEvent}
-              >
-                Save as Draft
-              </button>
-            </div>
-            <div className={classes.ButtonBox}>
-              <button
-                className={classes.Button}
-                style={{ border: "2px solid red", color: "red" }}
-              >
-                Go Live Now
-              </button>
-            </div>
+            <Button
+              style={{
+                marginTop: "5px",
+                width: "130px",
+                height: "30px",
+                textAlign: "center",
+                paddingTop: "7px",
+              }}
+              content="Save as Draft"
+              basic
+              color="green"
+              onClick={() => {
+                saveEvent(true);
+              }}
+            />
+            <Button
+              style={{
+                marginTop: "5px",
+                width: "130px",
+                height: "30px",
+                textAlign: "center",
+                paddingTop: "7px",
+              }}
+              content="Go Live Now"
+              basic
+              color="red"
+              onClick={() => {
+                saveEvent(false);
+              }}
+            />
           </div>
         </div>
       </div>
@@ -2902,9 +3068,7 @@ const EventCreation = () => {
 
 export default EventCreation;
 
-
-
-           // <ImgDropAndCrop icon="create image" change={changeEventImage} />
+// <ImgDropAndCrop icon="create image" change={changeEventImage} />
 
 /*           
             <div className={classes.ButtonBox}>

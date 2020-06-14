@@ -92,6 +92,20 @@ export const isAuthenticated = () => {
 };
 
 /*
+export const isAuthenticated = () => {
+  if (
+    typeof window !== "undefined" &&
+    localStorage.getItem(`user`) !== null
+  ) {
+    return JSON.parse(localStorage.getItem("user"));
+  } else {
+    window.location.href = "/signin";
+  }
+};
+*/
+
+
+/*
 export const getAllUserEvents = (token) => {
     return fetch(`${API}/getAllUserEvents`, {
         method: "GET",
