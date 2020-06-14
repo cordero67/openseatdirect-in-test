@@ -3,8 +3,7 @@ import React from "react";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./TicketItem.module.css";
 
-const TicketItem = props => {
-
+const TicketItem = (props) => {
   const ticketTypeDisplay = () => {
     let options;
     let ticketsAvailableArray = [];
@@ -12,7 +11,6 @@ const TicketItem = props => {
     let maxAmount;
     let ticketPrice;
     let adjTicketPrice;
-    console.log("props.name: ", props.name)
     if (props.name.ticketCurrency === "¥") {
       ticketPrice = props.name.ticketPrice.toFixed(0);
       adjTicketPrice = props.name.adjustedTicketPrice.toFixed(0);
@@ -26,17 +24,28 @@ const TicketItem = props => {
         <Aux>
           <div className={styles.LeftGrid}>
             <div style={{ color: "grey" }}>
-              <div className={styles.TicketType}>{props.name.ticketName} - SOLD OUT</div>
-              {props.name.ticketPricingCodeApplied && props.name.ticketPriceFunction.form === "promo" ?
-                <div className={styles.TicketPrices}>{props.name.ticketCurrency}{adjTicketPrice} 
-                <span style={{ textDecoration: "line-through" }}>{props.name.ticketCurrency}{ticketPrice}</span>
+              <div className={styles.TicketType}>
+                {props.name.ticketName} - SOLD OUT
+              </div>
+              {props.name.ticketPricingCodeApplied &&
+              props.name.ticketPriceFunction.form === "promo" ? (
+                <div className={styles.TicketPrices}>
+                  {props.name.ticketCurrency}
+                  {adjTicketPrice}
+                  <span style={{ textDecoration: "line-through" }}>
+                    {props.name.ticketCurrency}
+                    {ticketPrice}
+                  </span>
                 </div>
-                : <div className={styles.TicketPrices}>{props.name.ticketCurrency}{ticketPrice}</div>}
+              ) : (
+                <div className={styles.TicketPrices}>
+                  {props.name.ticketCurrency}
+                  {ticketPrice}
+                </div>
+              )}
             </div>
             <div className={styles.TicketAmount}>
-              <span style={{ color: "grey", fontWeight: "500" }}>
-                Sold Out
-              </span>
+              <span style={{ color: "grey", fontWeight: "500" }}>Sold Out</span>
             </div>
           </div>
           <div className={styles.EventDescription}>
@@ -46,13 +55,15 @@ const TicketItem = props => {
           </div>
           <hr style={{ border: "1px solid#F2F2F2" }} />
         </Aux>
-      )
+      );
       return options;
     } else {
       if (props.name.maxTicketsAllowedPerOrder) {
-        maxAmount = Math.min(props.name.maxTicketsAllowedPerOrder, props.name.ticketsAvailable);
-      }
-      else {
+        maxAmount = Math.min(
+          props.name.maxTicketsAllowedPerOrder,
+          props.name.ticketsAvailable
+        );
+      } else {
         maxAmount = Math.min(25, props.name.ticketsAvailable);
       }
       for (i = 0; i <= maxAmount; i++) {
@@ -63,11 +74,22 @@ const TicketItem = props => {
           <div className={styles.LeftGrid}>
             <div>
               <div className={styles.TicketType}>{props.name.ticketName}</div>
-              {props.name.ticketPricingCodeApplied && props.name.ticketPriceFunction.form === "promo" ?
-                <div className={styles.TicketPrices}>{props.name.ticketCurrency}{adjTicketPrice} 
-                <span style={{ textDecoration: "line-through" }}>{props.name.ticketCurrency}{ticketPrice}</span>
+              {props.name.ticketPricingCodeApplied &&
+              props.name.ticketPriceFunction.form === "promo" ? (
+                <div className={styles.TicketPrices}>
+                  {props.name.ticketCurrency}
+                  {adjTicketPrice}
+                  <span style={{ textDecoration: "line-through" }}>
+                    {props.name.ticketCurrency}
+                    {ticketPrice}
+                  </span>
                 </div>
-                : <div className={styles.TicketPrices}>{props.name.ticketCurrency}{ticketPrice}</div>}
+              ) : (
+                <div className={styles.TicketPrices}>
+                  {props.name.ticketCurrency}
+                  {ticketPrice}
+                </div>
+              )}
             </div>
             <div className={styles.TicketAmount}>
               <select
@@ -78,7 +100,9 @@ const TicketItem = props => {
                 className={styles.SelectionBox}
                 onChange={props.onChange}
               >
-              {ticketsAvailableArray.map((opt, index) => <option key={index}>{opt}</option>)}
+                {ticketsAvailableArray.map((opt, index) => (
+                  <option key={index}>{opt}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -87,16 +111,12 @@ const TicketItem = props => {
           </div>
           <hr style={{ border: "1px solid#F2F2F2" }} />
         </Aux>
-      )
+      );
       return options;
     }
-  }
+  };
 
-  return (
-    <Aux>
-        {ticketTypeDisplay()}
-    </Aux>
-  );
+  return <Aux>{ticketTypeDisplay()}</Aux>;
 };
 
 export default TicketItem;

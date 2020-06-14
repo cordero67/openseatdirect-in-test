@@ -4,7 +4,6 @@ import { Route, Redirect } from "react-router-dom";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
-import EventCreationOld from "../../EventCreation/EventCreationOld";
 import EventCreation from "../../EventCreation/EventCreation";
 import Events from "../../Events/Events";
 import EventDetails from "../../Events/EventDetails";
@@ -314,23 +313,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventCreation />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/eventcreationold"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventCreationOld />
             <Footer></Footer>
           </React.Fragment>
         )}
