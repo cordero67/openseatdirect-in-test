@@ -1981,15 +1981,15 @@ const EventCreation = () => {
   let detailsMinimal =
     fullNameProvided && regsuper.test(contactInformation.email);
   let detailsMessage = null;
+*/
 
-
-let result = RegExp("^(0|[1-9][0-9]{0,1})$")
+let result = RegExp("^(0|[1-9][0-9]{0,})$")
   .test ("14");
 console.log("the result is ", result);
 
-let newResult = RegExp("^(0|[a-zA-Z1-9]{0,1})$").test("1");
+let newResult = RegExp("^(0|[a-zA-Z1-9]{0,})$").test("1");
 console.log("the newResult is ", newResult);
-
+/*
 false
 >  RegExp("^(0|[1-9][0-9]{0,1})$").test ("04.4")
 false
