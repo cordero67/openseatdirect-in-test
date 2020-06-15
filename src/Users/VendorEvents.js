@@ -387,7 +387,7 @@ const VendorEvents = () => {
                           console.log("Clicked ellises");
                           console.log("item.eventNum: ", item.eventNum);
 
-                          window.location.href = `/eventcreation/?eventID=${item.eventNum}`;
+                          window.location.href = `/eventedit/?eventID=${item.eventNum}`;
                         }}
                         icon={faEllipsisV}
                       />

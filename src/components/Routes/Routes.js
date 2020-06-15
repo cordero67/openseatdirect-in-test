@@ -5,6 +5,7 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import EventCreation from "../../EventCreation/EventCreation";
+import EventEdit from "../../EventCreation/EventEdit";
 import EventCreationDashboard from "../../EventCreation/EventCreationDashboard";
 import Events from "../../Events/Events";
 import EventDetails from "../../Events/EventDetails";
@@ -331,6 +332,23 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventCreation />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/eventedit"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <EventEdit />
             <Footer></Footer>
           </React.Fragment>
         )}

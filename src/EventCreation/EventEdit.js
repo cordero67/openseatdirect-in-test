@@ -17,9 +17,9 @@ import RadioForm from "./RadioForm";
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 
 import TicketModal from "./Modals/TicketModal";
-import SavedModal from "./Modals/SavedModalNew";
+import SavedModal from "./Modals/SavedModal";
 
-import classes from "./EventCreationNew.module.css";
+import classes from "./EventCreation.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -40,8 +40,8 @@ import {
 // holds sign-in information
 let vendorInfo = {};
 
-const EventCreation = () => {
-  // stores all Event Description values
+const EventEdit = () => {
+  // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
     eventNum: "",
     eventTitle: "",
@@ -68,7 +68,7 @@ const EventCreation = () => {
     eventImage: "",
     shortDescription: "",
     longDescription: "",
-    eventCategory: "other",
+    eventCategory: "",
     facebookLink: "",
     twitterLink: "",
     linkedinLink: "",
@@ -77,7 +77,7 @@ const EventCreation = () => {
     refundPolicy: "noRefunds",
   });
 
-  // stores all Ticket Details values
+  // stores all Ticket Details variables
   const [ticketDetails, setTicketDetails] = useState([
     {
       key: "1",
@@ -103,7 +103,6 @@ const EventCreation = () => {
     },
   ]);
 
-  //
   const [photoData, setPhotoData] = useState({
     imgSrc: "",
     imgSrcExt: "",
@@ -114,16 +113,19 @@ const EventCreation = () => {
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
     errorMessage: "Sorry, your event request cannot be prossessed.",
+    subMessage: "What next!",
     eventNum: "",
     isDraft: true,
   });
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   let eventTix = {};
 
   useEffect(() => {
     // checks if 'user' exists in local storage
+    //setIsLoading(true);
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -135,15 +137,265 @@ const EventCreation = () => {
     } else {
       window.location.href = "/signin";
     }
-    
+
+    // checks if an 'eventNum' is in url
+    if (
+      queryString.parse(window.location.search).eventID &&
+      localStorage.getItem("user")
+    ) {
+      console.log("an event exists");
+      // retrieves all non-transactional event data,
+      const userId = vendorInfo.id;
+      const token = vendorInfo.token;
+      const eventNum = queryString.parse(window.location.search).eventID;
+      let apiurl = `${API}/eventix/${userId}/${eventNum}`;
+      console.log("apiurl: ", apiurl);
+      fetch(apiurl, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      })
+        .then(handleErrors)
+        .then((response) => response.json())
+        .then((res) => {
+          console.log("res: ", res);
+          console.log("about to call image api");
+          const url = `${API}/event/photo/e/${eventNum}`;
+          fetch(url, {
+            method: "GET",
+            redirect: "follow",
+          })
+            .then((response) => {
+              console.log("event image from server: ", response);
+              return response.arrayBuffer();
+            })
+            .then((buffer) => {
+              console.log("response.arrayBuffer():");
+              console.log(buffer);
+              const uint8 = new Uint8Array(buffer);
+              let bin = "";
+              const len = uint8.byteLength;
+              for (let i = 0; i < len; i++)
+                bin += String.fromCharCode(uint8[i]);
+              const header = "data:image/png;base64,"; // hard codes image/png
+              const photodat = header + window.btoa(bin);
+              const srcExt = extractImageFileExtensionFromBase64(photodat);
+              
+              // *******************
+              // needs to be removed
+              // temporarily not storing the photo
+              let noPhoto = "";
+              loadEventInfo(res, noPhoto);
+              //loadEventInfo(res, photodat);
+              
+              console.log("photodat for imgSrc:", photodat);
+              console.log("photodat for srcExt:", srcExt);
+              setPhotoData({
+                imgSrc: photodat,
+                imgSrcExt: srcExt,
+              });
+              setIsLoading(false);
+            })
+            .catch((err) => {
+              console.log("Image not found", err);
+              let tempPhoto = "";
+              loadEventInfo(res, tempPhoto);
+              setIsLoading(false);
+            });
+        })
+        .catch((err) => {
+          console.log("This event does not exist", err);
+          window.location.href = "/vendorevents";
+
+        });
+    } else {
+      console.log("an event does not exists");
+      setIsLoading(false);
+    }
   }, []);
 
+  const loadEventInfo = (eventTix, photo) => {
+    console.log("Inside 'loadEventInfo': ", loadEventInfo);
+    let tempDescription = { ...eventDescription };
+    tempDescription.eventTitle = eventTix.eventTitle;
+    tempDescription.eventNum = eventTix.eventNum;
+    tempDescription.isDraft = eventTix.isDraft;
+    tempDescription.eventType = eventTix.eventType
+      ? eventTix.eventType
+      : "live";
+    tempDescription.vanityLink = eventTix.vanityLink;
+    tempDescription.webinarLink = eventTix.webinarLink;
+    tempDescription.onlineInformation = eventTix.onlineInformation;
+    tempDescription.tbaInformation = eventTix.tbaInformation;
+    tempDescription.shortDescription = eventTix.shortDescription;
+    tempDescription.longDescription = eventTix.longDescription;
+    tempDescription.eventCategory = eventTix.eventCategory;
+    tempDescription.facebookLink = eventTix.facebookLink;
+    tempDescription.twitterLink = eventTix.twitterLink;
+    tempDescription.linkedinLink = eventTix.linkedinLink;
+    tempDescription.instagramLink = eventTix.instagramLink;
+    tempDescription.refundPolicy = eventTix.refundPolicy
+      ? eventTix.refundPolicy
+      : "noRefunds";
+    tempDescription.eventNum = eventTix.eventNum;
+    tempDescription.locationVenueName = eventTix.locationVenueName;
+    tempDescription.locationAddress1 = eventTix.locationAddress1;
+    tempDescription.locationAddress2 = eventTix.locationAddress2;
+    tempDescription.locationNote = eventTix.locationNote;
+    tempDescription.locationCity = eventTix.locationCity;
+    tempDescription.locationState = eventTix.locationState;
+    tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode;
+    tempDescription.locationCountryCode = eventTix.locationCountryCode;
+    tempDescription.timeZone = eventTix.timeZone;
+    tempDescription.eventImage = photo;
+    console.log("eventImage: ", tempDescription.eventImage);
+
+    /*
+      console.log(
+        "(2020-06-23T23:00:00.000Z) eventTix.startDateTime: ",
+        eventTix.startDateTime
+      );
+
+      tempDescription.startDateTime = new Date(eventTix.startDateTime);
+      console.log(
+        "new Date(eventTix.startDateTime): ",
+        tempDescription.startDateTime
+      );
+
+      //tempDescription.startDateTime = (new Date(eventTix.startDateTime));
+      console.log(
+        "new Date(eventTix.startDateTime): ",
+        tempDescription.startDateTime.getFullYear()
+      );
+      console.log(
+        "new Date(eventTix.startDateTime): ",
+        tempDescription.startDateTime.getDate()
+      );
+      console.log(
+        "new Date(eventTix.startDateTime): ",
+        tempDescription.startDateTime.getMonth()
+      );
+      console.log(
+        "new Date(eventTix.startDateTime): ",
+        tempDescription.startDateTime.getHours()
+      );
+
+      tempDescription.startDate = new Date(tempDescription.startDateTime);
+      console.log("tempDescription.startDate: ", tempDescription.startDate);
+
+      tempDescription.startDate = new Date(
+        tempDescription.startDateTime.toDateString()
+      );
+      console.log("tempDescription.startDate: ", tempDescription.startDate);
+
+      let tempNum = tempDescription.startDate.toISOString();
+      console.log("tempNum: ", tempNum);
+
+      tempDescription.endDateTime = new Date(eventTix.endDateTime);
+      console.log(
+        "tempDescription.startDateTime: ",
+        tempDescription.endDateTime
+      );
+
+      tempDescription.endDate = new Date(
+        tempDescription.endDateTime.toDateString()
+      );
+      console.log("tempDescription.startDate: ", tempDescription.endDate);
+    */
+
+    console.log("tempDescription: ", tempDescription);
+    setEventDescription(tempDescription);
+
+    console.log("eventTix.tickets: ", eventTix.tickets);
+    // now populate the ticketsDetails variable
+    if (eventTix.tickets && eventTix.tickets.length !== 0) {
+      let tempArray = [];
+      eventTix.tickets.forEach((tix, index) => {
+        //console.log("in ticket #: ", index);
+        let tempPriceFeature = "none";
+        let tempPromoCodes = [];
+        let tempPromoCodesArray = [];
+        let tempFunctionArgs;
+        if (tix.priceFunction && tix.priceFunction.form) {
+          tempPriceFeature = tix.priceFunction.form;
+          if (tempPriceFeature === "promo") {
+            console.log("priceFunction: ", tix.priceFunction);
+            console.log("tix.priceFunction.args: ", tix.priceFunction.args);
+            tempPromoCodes = tix.priceFunction.args;
+            tempPromoCodes.map((promo, index) => {
+              let tempPercent;
+              if (promo.percent === "true") {
+                tempPercent = true;
+                console.log("percent is true");
+              } else if (promo.percent === "false") {
+                tempPercent = false;
+                console.log("percent is false");
+              }
+              let element = {
+                key: index,
+                name: promo.name,
+                amount: promo.amount,
+                percent: tempPercent,
+              };
+              tempPromoCodesArray.push(element);
+            });
+          } else if (tempPriceFeature === "bogo") {
+            tempFunctionArgs = {
+              buy: tix.priceFunction.args.buy,
+              get: tix.priceFunction.args.get,
+              discount: tix.priceFunction.args.discount,
+            };
+            if (tix.priceFunction.args.discount === 100) {
+              tempPriceFeature = "bogof";
+            }
+            if (tix.priceFunction.args.discount !== 100) {
+              tempPriceFeature = "bogod";
+            }
+          } else if (tempPriceFeature === "twofer") {
+            tempFunctionArgs = {
+              buy: tix.priceFunction.args.buy,
+              for: tix.priceFunction.args.for,
+            };
+          }
+        }
+        
+        let newItem = {
+          key: tix.sort ? tix.sort : index,
+          sort: tix.sort ? tix.sort : index,
+          _id: tix._id,
+          ticketName: tix.ticketName,
+          remainingQuantity: tix.remainingQuantity, // fetch NEED TO WAIT FOR ORDERS API
+          currentTicketPrice: tix.currentTicketPrice,
+          currency: tix.currency ? tix.currency : "USD",
+          settings: false,
+          ticketDescription: tix.ticketDescription,
+          minTicketsAllowedPerOrder: tix.minTicketsAllowedPerOrder,
+          maxTicketsAllowedPerOrder: tix.maxTicketsAllowedPerOrder,
+          priceFeature: tempPriceFeature,
+          promoCodes: tempPromoCodesArray,
+          promoCodeNames: [],
+          promoCodeWarning: null, //NEED TO POPULATE!!!
+          functionArgs: tempFunctionArgs,
+          viewModal: false,
+        };
+        tempArray.push(newItem);
+      });
+      console.log("tempArray: ", tempArray);
+      setTicketDetails(tempArray);
+    }
+  };
+
   const saveEvent = async (status) => {
-    // checks if user is logged in
+    console.log("status: ", status);
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
+      // loads sign-in data
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
@@ -323,6 +575,8 @@ const EventCreation = () => {
 
       let userid = vendorInfo.id;
 
+      //let userid = "5ebad880b70b9045faa9c111"
+      //let userid = "5ebad880b70b9045faa9c537"
       console.log("userid: ", userid);
       let token = vendorInfo.token;
       console.log("token: ", token);
@@ -359,8 +613,7 @@ const EventCreation = () => {
 
           let tempDescription = { ...eventDescription };
           let tempStatus = { ...eventStatus };
-          console.log("res.eventresult.eventNum: ", res.eventresult.eventNum);
-          tempStatus.eventNum = res.eventresult.eventNum;
+          tempStatus.eventNum = res.result.eventNum;
           
           if (status === "save") {
             tempDescription.isDraft = true;
@@ -400,6 +653,10 @@ const EventCreation = () => {
               tempStatus.eventNum = "";
               tempStatus.isDraft = true;
               setEventStatus(tempStatus);
+            }}
+            tryAgain={() => {
+              // window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`;
+              // deactivateShowModal(item);
             }}
           ></SavedModal>
         </Aux>
@@ -489,6 +746,8 @@ const EventCreation = () => {
   };
 
   const changeEventImage = async (image) => {
+    //console.log("Received crop: ", crop)
+    //console.log("Received pixelCrop: ", pixelCrop)
     console.log("Received image: ", image);
     let imageBlob;
     imageBlob = await new Promise((resolve) =>
@@ -1861,7 +2120,18 @@ const EventCreation = () => {
   const [instagramWarning, setInstagramWarning] = useState(false);
   const [linkedinWarning, setLinkedinWarning] = useState(false);
   const [twitterWarning, setTwitterWarning] = useState(false);
+
+
+
+  
+
   const [vanityWarning, setVanityWarning] = useState(false);
+
+
+
+  
+
+  //const [eventAdditionalWarning, setEventAdditionalWarning] = useState(false);
 
   const displayMessage = (limit, variable) => {
     if (variable && variable.length >= limit) {
@@ -1951,6 +2221,10 @@ const EventCreation = () => {
   ];
 
   const imageCanvas = () => {
+    //if (isLoading || !eventDescription.eventNum) {
+    //  return null
+    //} else {
+    //  console.log("eventDescription.eventNum: ", eventDescription.eventNum)
     return (
       <ImgDropAndCrop
         icon="create image"
@@ -1972,36 +2246,45 @@ const EventCreation = () => {
     //}
   };
 
-    /*
-    // determines what "contact information" has been filled out by the ticket buyer
-  let fullNameProvided =
-    contactInformation.firstName !== "" && contactInformation.lastName !== "";
-  const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  let validEmail = regsuper.test(contactInformation.email);
-  let detailsMinimal =
-    fullNameProvided && regsuper.test(contactInformation.email);
-  let detailsMessage = null;
-
-
-let result = RegExp("^(0|[1-9][0-9]{0,1})$")
-  .test ("14");
-console.log("the result is ", result);
-
-let newResult = RegExp("^(0|[a-zA-Z1-9]{0,1})$").test("1");
-console.log("the newResult is ", newResult);
-
-false
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("04.4")
-false
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("0")
-true
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("99")
-true
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("100")
-false
-*/
-
   const mainDisplay = () => {
+    if (isLoading) {
+      return (
+      <div>
+      <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <Spinner></Spinner>
+      <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+      <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+      <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+      <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+      <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+      </div>)
+    } else {
       return (
         <div className={classes.MainContainer}>
           <div className={classes.MainGrid}>
@@ -2276,6 +2559,9 @@ false
                       : null}
                     </div>
 
+
+                    
+    
                   <div className={classes.InputBoxTight}>
                     <CountrySelector
                       className={classes.InputBoxContent}
@@ -2628,6 +2914,8 @@ false
                   </div>)
                   : null}
 
+
+    
               <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
                 <FontAwesomeIcon
                   className={classes.SocialMediaIcon}
@@ -2911,14 +3199,885 @@ false
           </div>
         </div>
       );
+    }
 
   }
 
   return (
     <div>
       <div>{mainDisplay()}</div>
+      <div>Loading</div>
     </div>
   )
 };
 
+export default EventEdit;
+/*
+    <div className={classes.MainContainer}>
+      <div className={classes.MainGrid}>
+        {savedDisplayed()}
+        <div className={classes.GridTitle}>
+          {!eventDescription.eventNum ? (
+            <div style={{ paddingTop: "10px" }}>Event Creation</div>
+          ) : (
+            <div style={{ paddingTop: "10px" }}>
+              <div>
+                Event Edit:{" "}
+                <span style={{ fontSize: "26px", fontWeight: "500" }}>
+                  {eventDescription.eventNum} -{" "}
+                  {eventDescription.isDraft === true ? (
+                    <span style={{ color: "green" }}>DRAFT</span>
+                  ) : (
+                    <span style={{ color: "red" }}>LIVE</span>
+                  )}
+                </span>
+              </div>
+            </div>
+          )}
+          <div></div>
+          <Button
+            style={{
+              marginTop: "5px",
+              width: "130px",
+              height: "30px",
+              textAlign: "center",
+              paddingTop: "7px",
+            }}
+            content="Save as Draft"
+            basic
+            color="green"
+            onClick={() => {
+              let tempDescription = { ...eventDescription };
+              tempDescription.isDraft = true;
+              setEventDescription(tempDescription);
+              saveEvent("save");
+            }}
+          />
+          <Button
+            style={{
+              marginTop: "5px",
+              width: "130px",
+              height: "30px",
+              textAlign: "center",
+              paddingTop: "7px",
+            }}
+            content="Go Live Now"
+            basic
+            color="red"
+            onClick={() => {
+              let tempDescription = { ...eventDescription };
+              tempDescription.isDraft = false;
+              setEventDescription(tempDescription);
+              saveEvent("live");
+            }}
+          />
+        </div>
+
+        <div className={classes.CategoryTitle} style={{ width: "140px" }}>
+          Event Details
+        </div>
+        <div style={{ border: "1px solid grey" }}>
+          <div className={classes.SectionTitleTight}>
+            Event Title<span style={{ color: "red" }}>*</span>
+          </div>
+          <div className={classes.InputBox}>
+            <input
+              className={
+                eventTitleOmission
+                  ? classes.InputBoxContentError
+                  : classes.InputBoxContent
+              }
+              style={{ width: "600px" }}
+              onFocus={() => {
+                setEventTitleWarning(true);
+                setEventTitleOmission(false);
+              }}
+              onBlur={() => {
+                setEventTitleWarning(false);
+                setEventTitleOmission(false);
+              }}
+              type="text"
+              id="eventTitle"
+              maxLength="75"
+              placeholder="Short title of event: limit 75 characters"
+              name="eventTitle"
+              value={eventDescription.eventTitle}
+              onChange={(event) => {
+                changeEventDescription(event);
+              }}
+            ></input>
+            {eventTitleWarning
+              ? displayMessage(75, eventDescription.eventTitle)
+              : null}
+            {eventTitleOmission ? (
+              <div
+                style={{
+                  paddingLeft: "10px",
+                  height: "14px",
+                  color: "red",
+                  fontSize: "12px",
+                  fontWeight: "700",
+                }}
+              >
+                This is a required field
+              </div>
+            ) : null}
+          </div>
+
+          <div className={classes.SectionTitle}>
+            Event Type: please select one
+          </div>
+          <RadioForm
+            details={eventTypeList}
+            group="eventTypeGroup"
+            current={eventDescription.eventType}
+            change={(event, value) =>
+              changeEventDescriptionRadio(event, value, "eventType")
+            }
+          />
+
+          {eventDescription.eventType === "live" ? (
+            <Aux>
+              <div className={classes.SectionTitleTight}>Event Location</div>
+
+              <div className={classes.InputBoxTight}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  onFocus={() => setEventLocationWarning(true)}
+                  onBlur={() => setEventLocationWarning(false)}
+                  type="text"
+                  id="locationVenueName"
+                  maxLength="140"
+                  name="locationVenueName"
+                  placeholder="Venue Name: limit 140 characters"
+                  value={eventDescription.locationVenueName}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></input>
+                {eventLocationWarning
+                  ? displayMessage(140, eventDescription.locationVenueName)
+                  : null}
+              </div>
+
+              <div className={classes.InputBoxTight}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  onFocus={() => setEventAddress1Warning(true)}
+                  onBlur={() => setEventAddress1Warning(false)}
+                  type="text"
+                  id="locationAddress1"
+                  name="locationAddress1"
+                  maxLength="32"
+                  placeholder="Address1: limit 32 characters"
+                  value={eventDescription.locationAddress1}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></input>
+                {eventAddress1Warning
+                  ? displayMessage(32, eventDescription.locationAddress1)
+                  : null}
+              </div>
+
+              <div className={classes.InputBoxTight}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  onFocus={() => setEventAddress2Warning(true)}
+                  onBlur={() => setEventAddress2Warning(false)}
+                  type="text"
+                  id="locationAddress2"
+                  name="locationAddress2"
+                  maxLength="32"
+                  placeholder="Address2: limit 32 characters"
+                  value={eventDescription.locationAddress2}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></input>
+                {eventAddress2Warning
+                  ? displayMessage(32, eventDescription.locationAddress2)
+                  : null}
+              </div>
+
+              <div className={classes.InputBoxTight}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  type="text"
+                  id="locationCity"
+                  placeholder="City"
+                  value={eventDescription.locationCity}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.locationCity = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+              </div>
+
+              <div
+                className={classes.InputBoxTight}
+                style={{
+                  display: `grid`,
+                  gridTemplateColumns: "300px 300px",
+                }}
+              >
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "295px" }}
+                  onFocus={() => setEventStateWarning(true)}
+                  onBlur={() => setEventStateWarning(false)}
+                  type="text"
+                  id="locationState"
+                  maxLength="2"
+                  placeholder="State/Province 2 digit code"
+                  value={eventDescription.locationState}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.locationState = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "300px" }}
+                  type="text"
+                  id="locationPostalCode"
+                  placeholder="Zip/Postal"
+                  value={eventDescription.locationZipPostalCode}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.locationZipPostalCode = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+                
+                {eventStateWarning
+                  ? displayMessage(2, eventDescription.locationState)
+                  : null}
+              </div>
+
+              <div className={classes.InputBoxTight}>
+                <CountrySelector
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  current={eventDescription.locationCountryCode}
+                  defaultValue="United States of America"
+                  getCountry={changeCountryCode}
+                />
+              </div>
+
+              <div className={classes.InputBox}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  onFocus={() => setEventAdditionalWarning(true)}
+                  onBlur={() => setEventAdditionalWarning(false)}
+                  type="text"
+                  id="locationAddressAdditional"
+                  maxLength="64"
+                  placeholder="Notes: 'e.g. Enter through backdoor' limit 64 characters"
+                  value={eventDescription.locationNote}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.locationNote = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+                {eventAdditionalWarning
+                  ? displayMessage(64, eventDescription.locationNote)
+                  : null}
+              </div>
+              <div className={classes.SectionTitleTight}>
+                Online Information
+              </div>
+
+              <div className={classes.InputBoxTight}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  onFocus={() => setWebinarLinkWarning(true)}
+                  onBlur={() => setWebinarLinkWarning(false)}
+                  type="text"
+                  id="webinarLink"
+                  maxLength="64"
+                  placeholder="Webinar Link: limit 64 characters"
+                  value={eventDescription.webinarLink}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.webinarLink = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+                {webinarLinkWarning
+                  ? displayMessage(64, eventDescription.webinarLink)
+                  : null}
+              </div>
+
+              <div className={classes.InputBox}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  onFocus={() => setWebinarInfoWarning(true)}
+                  onBlur={() => setWebinarInfoWarning(false)}
+                  type="text"
+                  id="onlineInformation"
+                  maxLength="128"
+                  placeholder="Additional Instructions: limit 128 characters"
+                  value={eventDescription.onlineInformation}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.onlineInformation = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+                {webinarInfoWarning
+                  ? displayMessage(128, eventDescription.onlineInformation)
+                  : null}
+              </div>
+            </Aux>
+          ) : null}
+
+          {eventDescription.eventType === "online" ? (
+            <Aux>
+              <div className={classes.SectionTitleTight}>
+                Online Information
+              </div>
+
+              <div className={classes.InputBoxTight}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  onFocus={() => setWebinarLinkWarning(true)}
+                  onBlur={() => setWebinarLinkWarning(false)}
+                  type="text"
+                  id="webinarLink"
+                  maxLength="64"
+                  placeholder="Webinar Link: limit 64 characters"
+                  value={eventDescription.webinarLink}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.webinarLink = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+                {webinarLinkWarning
+                  ? displayMessage(64, eventDescription.webinarLink)
+                  : null}
+              </div>
+
+              <div className={classes.InputBox}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  onFocus={() => setWebinarInfoWarning(true)}
+                  onBlur={() => setWebinarInfoWarning(false)}
+                  type="text"
+                  id="onlineInformation"
+                  maxLength="128"
+                  placeholder="Additional Instructions: limit 128 characters"
+                  value={eventDescription.onlineInformation}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.onlineInformation = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+                {webinarInfoWarning
+                  ? displayMessage(128, eventDescription.onlineInformation)
+                  : null}
+              </div>
+            </Aux>
+          ) : null}
+
+          {eventDescription.eventType === "tba" ? (
+            <Aux>
+              <div className={classes.SectionTitleTight}>
+                To be announced information
+              </div>
+
+              <div className={classes.InputBox}>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "600px" }}
+                  onFocus={() => setTbaInfoWarning(true)}
+                  onBlur={() => setTbaInfoWarning(false)}
+                  type="text"
+                  id="tbaInformation"
+                  maxLength="128"
+                  placeholder="Additional Instructions: limit 128 characters"
+                  value={eventDescription.tbaInformation}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.tbaInformation = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+                {tbaInfoWarning
+                  ? displayMessage(128, eventDescription.tbaInformation)
+                  : null}
+              </div>
+            </Aux>
+          ) : null}
+
+          <div className={classes.SectionTitle}>Event Dates and Time</div>
+          <div className={classes.DateTimeHeader}>
+            <div>
+              Start Date<span style={{ color: "red" }}>*</span>
+            </div>
+            <div>
+              Start Time<span style={{ color: "red" }}>*</span>
+            </div>
+            <div>End Date</div>
+            <div>End Time</div>
+            <div>Time Zone</div>
+          </div>
+
+          <div className={classes.DateTimeInputs}>
+            <DateSelector
+              type={"startDate"}
+              startDate={eventDescription.startDate}
+              current={eventDescription.startDate}
+              change={(date) => changeEventDate(date, "start")}
+              beforeDate={new Date()}
+            />
+            <TimeSelector
+              value={eventDescription.startTime}
+              name="startTime"
+              change={(event) => {
+                console.log("event.target.value: ", event.target.value);
+                changeEventDescription(event);
+              }}
+              startDate={eventDescription.startDate}
+              startTime={eventDescription.startTime}
+              endDate={eventDescription.endDate}
+            />
+            <DateSelector
+              type={"endDate"}
+              startDate={eventDescription.startDate}
+              current={eventDescription.endDate}
+              change={(date) => changeEventDate(date, "end")}
+              beforeDate={eventDescription.startDate}
+            />
+            <TimeSelector
+              value={eventDescription.startTime}
+              name="endTime"
+              change={(event) => changeEventDescription(event)}
+              startDate={parseInt(eventDescription.startDate)}
+              startTime={parseInt(eventDescription.startTime)}
+              endDate={eventDescription.endDate}
+            />
+            <TimeZoneSelector
+              getTimeZone={changeTimeZone}
+              current={eventDescription.timeZone}
+              defaultValue="Eastern Time - New York"
+            />
+          </div>
+
+          <div className={classes.SectionTitleTight}>
+            Event Image{" "}
+            <Popup
+              position="right center"
+              content="Additional information"
+              header="Event Image"
+              trigger={
+                <FontAwesomeIcon
+                  color="blue"
+                  cursor="pointer"
+                  icon={faInfoCircle}
+                />
+              }
+            />
+          </div>
+
+          <div
+            style={{
+              height: "227px",
+              fontSize: "16px",
+              padding: "5px 10px 10px 25px",
+              boxSizing: "borderBox",
+              backgroundColor: "#E7E7E7",
+            }}
+          >
+            {imageCanvas()}
+          </div>
+
+          <div className={classes.SectionTitleTight}>
+            Event Short Description
+          </div>
+          <div className={classes.TextBox}>
+            <textarea
+              style={{
+                padding: "9px 10px",
+                border: "1px solid lightgrey",
+                boxSizing: "borderBox",
+                lineHeight: "1.75",
+                height: "80px",
+                width: "600px",
+                resize: "vertical",
+              }}
+              onFocus={() => setShortDescriptionWarning(true)}
+              onBlur={() => setShortDescriptionWarning(false)}
+              type="text"
+              id="shortDescription"
+              maxLength="140"
+              placeholder="Short description of event for social media posts: limit 140 characters"
+              name="shortDescription"
+              value={eventDescription.shortDescription}
+              onChange={(event) => {
+                changeEventDescription(event);
+              }}
+            ></textarea>
+            {shortDescriptionWarning
+              ? displayMessage(140, eventDescription.shortDescription)
+              : null}
+          </div>
+
+          <div className={classes.SectionTitleTight}>
+            Event Long Description
+          </div>
+          <div
+            style={{
+              padding: "5px 270px 10px 25px",
+              border: "0px solid green",
+              boxSizing: "borderBox",
+              height: "auto",
+              backgroundColor: "#E7E7E7",
+            }}
+          >
+            <Editor
+              apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
+              onEditorChange={changeLongDescription}
+              initialValue={eventDescription.longDescription}
+              plugins="wordcount autoresize"
+              init={{
+                toolbar:
+                  "undo redo | fontsizeselect fontselect | bold italic underline | forecolor ",
+                toolbar_items_size: "small",
+                autoresize_bottom_margin: 0,
+                padding: "0 0 0 0",
+                min_height: 250,
+                max_height: 400,
+                icons: "jam",
+                skin: "fabric",
+                resize: true,
+                menubar: "edit format",
+              }}
+            />
+          </div>
+
+          <div className={classes.SectionTitleTight}>Event Category</div>
+          <div className={classes.InputBox}>
+            <CategorySelector
+              value={eventDescription.eventCategory}
+              onChange={changeEventDescription}
+            />
+          </div>
+
+          <div className={classes.SectionTitleTight}>
+            Event Specific Social Media Links
+          </div>
+          <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
+            <FontAwesomeIcon
+              className={classes.SocialMediaIcon}
+              style={{ color: "#43609c" }}
+              icon={faFacebook}
+            />
+            <div className={classes.SocialMediaName}>facebook.com/ </div>
+            <input
+              className={classes.InputBoxContent}
+              style={{ width: "400px" }}
+              type="text"
+              id="facebookLink"
+              placeholder="your facebook address"
+              name="facebookLink"
+              value={eventDescription.facebookLink}
+              onChange={(event) => {
+                changeEventDescription(event);
+              }}
+            ></input>
+          </div>
+
+          <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
+            <FontAwesomeIcon
+              className={classes.SocialMediaIcon}
+              style={{ color: "#0084b4" }}
+              icon={faTwitter}
+            />
+            <div className={classes.SocialMediaName}>twitter.com/ </div>
+            <input
+              className={classes.InputBoxContent}
+              style={{ width: "400px" }}
+              type="text"
+              id="twitterLink"
+              placeholder="your twitter address"
+              name="twitterLink"
+              value={eventDescription.twitterLink}
+              onChange={(event) => {
+                changeEventDescription(event);
+              }}
+            ></input>
+          </div>
+
+          <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
+            <FontAwesomeIcon
+              className={classes.SocialMediaIcon}
+              style={{ color: "#0e76a8" }}
+              icon={faLinkedin}
+            />
+            <div className={classes.SocialMediaName}>linkedin.com/ </div>
+            <input
+              className={classes.InputBoxContent}
+              style={{ width: "400px" }}
+              type="text"
+              id="linkedinLink"
+              placeholder="your linkedin address"
+              name="linkedinLink"
+              value={eventDescription.linkedinLink}
+              onChange={(event) => {
+                changeEventDescription(event);
+              }}
+            ></input>
+          </div>
+
+          <div className={classes.SocialMediaLink} style={{ height: "55px" }}>
+            <FontAwesomeIcon
+              className={classes.SocialMediaIcon}
+              style={{ color: "#8a3ab9" }}
+              icon={faInstagram}
+            />
+            <div className={classes.SocialMediaName}>instagram.com/ </div>
+            <input
+              className={classes.InputBoxContent}
+              style={{ width: "400px" }}
+              type="text"
+              id="instagramLink"
+              placeholder="your instagram address"
+              name="instagramLink"
+              value={eventDescription.instagramLink}
+              onChange={(event) => {
+                changeEventDescription(event);
+              }}
+            ></input>
+          </div>
+
+          <div className={classes.SectionTitleTight}>
+            Customize OpenSeatDirect Vanity URL
+          </div>
+          <div
+            style={{
+              display: `grid`,
+              gridTemplateColumns: "220px 500px",
+              height: "45px",
+              fontSize: "16px",
+              padding: "5px 10px 10px 35px",
+              boxSizing: "borderBox",
+              backgroundColor: "#E7E7E7",
+            }}
+          >
+            <div className={classes.SocialMediaName}>
+              www.openseatdirect.com/et/{" "}
+            </div>
+            <input
+              className={classes.InputBoxContent}
+              style={{ width: "500px" }}
+              onFocus={() => setVanityWarning(true)}
+              onBlur={() => setVanityWarning(false)}
+              type="text"
+              id="vanityLink"
+              maxLength="75"
+              placeholder="vanity url: limit 75 characters"
+              name="vanityLink"
+              value={eventDescription.vanityLink}
+              onChange={(event) => {
+                let tempDescription = { ...eventDescription };
+                tempDescription.vanityLink = event.target.value;
+                setEventDescription(tempDescription);
+              }}
+            ></input>
+          </div>
+
+          <div
+            style={{
+              display: `grid`,
+              gridTemplateColumns: "220px 500px",
+              height: "18px",
+              fontSize: "10px",
+              padding: "0px 10px 0px 35px",
+              boxSizing: "borderBox",
+              backgroundColor: "#E7E7E7",
+            }}
+          >
+            <div>{" "}</div>
+            {vanityWarning
+              ? displayMessage(75, eventDescription.vanityLink)
+              : null}
+          </div>
+
+        </div>
+
+        <br></br>
+        <div className={classes.CategoryTitle} style={{ width: "160px" }}>
+          Ticket Creation
+        </div>
+
+        <div style={{ border: "1px solid grey" }}>
+          <div
+            style={{
+              display: `grid`,
+              gridTemplateColumns: "360px 100px 165px 80px",
+              height: "40px",
+              fontSize: "15px",
+              backgroundColor: "#E7E7E7",
+              boxSizing: "borderBox",
+            }}
+          >
+            <div
+              style={{
+                padding: "10px 10px 10px 25px",
+                boxSizing: "borderBox",
+                fontWeight: 600,
+              }}
+            >
+              Ticket Name<span style={{ color: "red" }}>*</span>
+            </div>
+
+            <div
+              style={{
+                padding: "10px 10px 10px 5px",
+                boxSizing: "borderBox",
+                fontWeight: 600,
+              }}
+            >
+              Quantity<span style={{ color: "red" }}>*</span>
+            </div>
+
+            <div
+              style={{
+                padding: "10px 10px 10px 5px",
+                boxSizing: "borderBox",
+                fontWeight: 600,
+              }}
+            >
+              Price<span style={{ color: "red" }}>*</span>
+            </div>
+
+            <div
+              style={{
+                padding: "10px 10px 10px 5px",
+                boxSizing: "borderBox",
+                fontWeight: 600,
+              }}
+            >
+              Features
+            </div>
+          </div>
+          {ticketTypeDisplay()}
+
+          <div
+            style={{
+              padding: "10px 5px 10px 5px",
+              borderTop: "1px solid lightgrey",
+              boxSizing: "borderBox",
+              height: "56px",
+              textAlign: "center",
+              fontWeight: 600,
+            }}
+          >
+            <Button
+              content="Add a ticket"
+              icon="add circle"
+              color="green"
+              onClick={createNewTicketHandler}
+            />
+          </div>
+        </div>
+
+        <br></br>
+        <div className={classes.CategoryTitle} style={{ width: "195px" }}>
+          Additional Settings
+        </div>
+        <div style={{ border: "1px solid grey" }}>
+          <div className={classes.SectionTitle}>
+            Refund Policy: please select one
+          </div>
+          <RadioForm
+            details={refundPolicyList}
+            group="refundGroup"
+            current={eventDescription.refundPolicy}
+            change={(event, value) =>
+              changeEventDescriptionRadio(event, value, "refundPolicy")
+            }
+          />
+        </div>
+        <div style={{ margin: "auto", textAlign: "center" }}>
+          <div className={classes.GridBottom}>
+            <div></div>
+            <Button
+              style={{
+                marginTop: "5px",
+                width: "130px",
+                height: "30px",
+                textAlign: "center",
+                paddingTop: "7px",
+              }}
+              content="Save as Draft"
+              basic
+              color="green"
+              onClick={() => {
+                saveEvent(true);
+              }}
+            />
+            <Button
+              style={{
+                marginTop: "5px",
+                width: "130px",
+                height: "30px",
+                textAlign: "center",
+                paddingTop: "7px",
+              }}
+              content="Go Live Now"
+              basic
+              color="red"
+              onClick={() => {
+                saveEvent(false);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default EventCreation;
+
+// <ImgDropAndCrop icon="create image" change={changeEventImage} />
+ 
+            <div className={classes.ButtonBox}>
+              <button
+                className={classes.Button}
+                style={{ border: "2px solid blue", color: "blue" }}
+                onClick={saveEvent}
+              >
+                Preview
+              </button>
+            </div>
+
+
+          <div className={classes.ButtonBox}>
+            <button
+              className={classes.Button}
+              style={{ border: "2px solid blue", color: "blue" }}
+              onClick={() => saveEvent(true)}
+            >
+              Preview
+            </button>
+          </div>
+
+*/
