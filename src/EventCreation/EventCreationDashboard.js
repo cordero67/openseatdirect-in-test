@@ -4,6 +4,8 @@ import queryString from "query-string";
 import { API } from "../config";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
+import VendorNavigation from "../Users/VendorNavigation";
+
 import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
 
 import { Editor } from "@tinymce/tinymce-react";
@@ -81,22 +83,22 @@ const EventCreation = () => {
   const [ticketDetails, setTicketDetails] = useState([
     {
       key: "1",
-      sort: "",
-      _id: "",
-      ticketName: "",
-      remainingQuantity: "",
-      currentTicketPrice: "",
+      sort: undefined,
+      _id: undefined,
+      ticketName: undefined,
+      remainingQuantity: undefined,
+      currentTicketPrice: undefined,
       currency: "",
       settings: false,
-      ticketDescription: "",
-      minTicketsAllowedPerOrder: "",
-      maxTicketsAllowedPerOrder: "",
+      ticketDescription: undefined,
+      minTicketsAllowedPerOrder: undefined,
+      maxTicketsAllowedPerOrder: undefined,
       priceFeature: "none",
       promoCodes: [
-        { key: "1", name: "", amount: "", percent: false },
+        { key: "1", name: undefined, amount: undefined, percent: false },
       ],
       promoCodeNames: [],
-      promoCodeWarning: "",
+      promoCodeWarning: undefined,
       functionArgs: {},
       viewModal: false,
       nameWarning: false
@@ -440,14 +442,14 @@ const EventCreation = () => {
       var formData = new FormData();
 
       eventDescriptionFields.forEach((field) => {
-        //if (eventDescription[field]) {
+        if (eventDescription[field]) {
           formData.append(`${field}`, eventDescription[field]);
           console.log(
             "this is the input: ",
             `${field}`,
             `${eventDescription[field]}`
           );
-        //}
+        }
       });
 
       // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
@@ -570,7 +572,7 @@ const EventCreation = () => {
 
       // Display the key/value pairs
       for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
+        //console.log(pair[0] + ", " + pair[1]);
       }
 
       let userid = vendorInfo.id;
@@ -1746,7 +1748,6 @@ const EventCreation = () => {
               resize: "vertical",
             }}
             type="text"
-            maxLength="1000"
             id="ticketDescription"
             placeholder="Brief description of ticket and what it includes: limit 1000 characters"
             name="ticketDescription"
@@ -1981,9 +1982,8 @@ const EventCreation = () => {
                       boxSizing: "borderBox",
                     }}
                     type="text"
-                    maxLength="64"
                     id="ticketName"
-                    placeholder="GA, VIP, etc: limit 64 characters"
+                    placeholder="GA, VIP, etc: limit 32 characters"
                     name="ticketName"
                     value={item.ticketName}
                     onChange={(event) => {
@@ -2116,22 +2116,11 @@ const EventCreation = () => {
   const [eventLocationWarning, setEventLocationWarning] = useState(false);
   const [eventAddress1Warning, setEventAddress1Warning] = useState(false);
   const [eventAddress2Warning, setEventAddress2Warning] = useState(false);
-  const [eventCityWarning, setEventCityWarning] = useState(false);
   const [eventStateWarning, setEventStateWarning] = useState(false);
-  const [eventZipPostalWarning, setEventZipPostalWarning] = useState(false);
   const [eventAdditionalWarning, setEventAdditionalWarning] = useState(false);
   const [webinarLinkWarning, setWebinarLinkWarning] = useState(false);
   const [webinarInfoWarning, setWebinarInfoWarning] = useState(false);
   const [tbaInfoWarning, setTbaInfoWarning] = useState(false);
-  const [facebookWarning, setFacebookWarning] = useState(false);
-  const [instagramWarning, setInstagramWarning] = useState(false);
-  const [linkedinWarning, setLinkedinWarning] = useState(false);
-  const [twitterWarning, setTwitterWarning] = useState(false);
-
-
-
-  
-
   const [vanityWarning, setVanityWarning] = useState(false);
 
 
@@ -2293,10 +2282,10 @@ const EventCreation = () => {
       </div>)
     } else {
       return (
-        <div className={classes.MainContainer}>
-          <div className={classes.MainGrid}>
+        <div className={classes.MainContainerV}>
+          <div className={classes.MainGridV}>
             {savedDisplayed()}
-            <div className={classes.GridTitle}>
+            <div className={classes.GridTitleV}>
               {!eventDescription.eventNum ? (
                 <div style={{ paddingTop: "10px" }}>Event Creation</div>
               ) : (
@@ -2378,8 +2367,8 @@ const EventCreation = () => {
                   }}
                   type="text"
                   id="eventTitle"
-                  maxLength="64"
-                  placeholder="Short title of event: limit 64 characters"
+                  maxLength="75"
+                  placeholder="Short title of event: limit 75 characters"
                   name="eventTitle"
                   value={eventDescription.eventTitle}
                   onChange={(event) => {
@@ -2387,7 +2376,7 @@ const EventCreation = () => {
                   }}
                 ></input>
                 {eventTitleWarning
-                  ? displayMessage(64, eventDescription.eventTitle)
+                  ? displayMessage(75, eventDescription.eventTitle)
                   : null}
                 {eventTitleOmission ? (
                   <div
@@ -2450,15 +2439,15 @@ const EventCreation = () => {
                       type="text"
                       id="locationAddress1"
                       name="locationAddress1"
-                      maxLength="64"
-                      placeholder="Address1: limit 64 characters"
+                      maxLength="32"
+                      placeholder="Address1: limit 32 characters"
                       value={eventDescription.locationAddress1}
                       onChange={(event) => {
                         changeEventDescription(event);
                       }}
                     ></input>
                     {eventAddress1Warning
-                      ? displayMessage(64, eventDescription.locationAddress1)
+                      ? displayMessage(32, eventDescription.locationAddress1)
                       : null}
                   </div>
     
@@ -2471,15 +2460,15 @@ const EventCreation = () => {
                       type="text"
                       id="locationAddress2"
                       name="locationAddress2"
-                      maxLength="64"
-                      placeholder="Address2: limit 64 characters"
+                      maxLength="32"
+                      placeholder="Address2: limit 32 characters"
                       value={eventDescription.locationAddress2}
                       onChange={(event) => {
                         changeEventDescription(event);
                       }}
                     ></input>
                     {eventAddress2Warning
-                      ? displayMessage(64, eventDescription.locationAddress2)
+                      ? displayMessage(32, eventDescription.locationAddress2)
                       : null}
                   </div>
     
@@ -2487,13 +2476,9 @@ const EventCreation = () => {
                     <input
                       className={classes.InputBoxContent}
                       style={{ width: "600px" }}
-                      onFocus={() => setEventCityWarning(true)}
-                      onBlur={() => setEventCityWarning(false)}
                       type="text"
                       id="locationCity"
-                      name="locationCity"
-                      maxLength="64"
-                      placeholder="City: limit 64 characters"
+                      placeholder="City"
                       value={eventDescription.locationCity}
                       onChange={(event) => {
                         let tempDescription = { ...eventDescription };
@@ -2501,9 +2486,6 @@ const EventCreation = () => {
                         setEventDescription(tempDescription);
                       }}
                     ></input>
-                    {eventCityWarning
-                      ? displayMessage(64, eventDescription.locationCity)
-                      : null}
                   </div>
     
                   <div
@@ -2521,7 +2503,7 @@ const EventCreation = () => {
                       type="text"
                       id="locationState"
                       maxLength="2"
-                      placeholder="State: 2 digit code"
+                      placeholder="State/Province 2 digit code"
                       value={eventDescription.locationState}
                       onChange={(event) => {
                         let tempDescription = { ...eventDescription };
@@ -2533,11 +2515,8 @@ const EventCreation = () => {
                     <input
                       className={classes.InputBoxContent}
                       style={{ width: "300px" }}
-                      onFocus={() => setEventZipPostalWarning(true)}
-                      onBlur={() => setEventZipPostalWarning(false)}
                       type="text"
                       id="locationPostalCode"
-                      maxLength="5"
                       placeholder="Zip/Postal"
                       value={eventDescription.locationZipPostalCode}
                       onChange={(event) => {
@@ -2546,28 +2525,11 @@ const EventCreation = () => {
                         setEventDescription(tempDescription);
                       }}
                     ></input>
-              
-                    {eventStateWarning
-                        ? (<div>
-                          {displayMessage(2, eventDescription.locationState)}
-                        </div>)
-                        : null}
-              
-                    {eventZipPostalWarning
-                      ? (<div>
-                        <div>{" "}</div>
-                      </div>)
-                      : null}
-
-                    {eventZipPostalWarning
-                      ? (<div>
-                        {displayMessage(5, eventDescription.locationZipPostalCode)}
-                      </div>)
-                      : null}
-                    </div>
-
-
                     
+                    {eventStateWarning
+                      ? displayMessage(2, eventDescription.locationState)
+                      : null}
+                  </div>
     
                   <div className={classes.InputBoxTight}>
                     <CountrySelector
@@ -2587,8 +2549,8 @@ const EventCreation = () => {
                       onBlur={() => setEventAdditionalWarning(false)}
                       type="text"
                       id="locationAddressAdditional"
-                      maxLength="256"
-                      placeholder="Notes: 'e.g. Enter through backdoor' limit 256 characters"
+                      maxLength="64"
+                      placeholder="Notes: 'e.g. Enter through backdoor' limit 64 characters"
                       value={eventDescription.locationNote}
                       onChange={(event) => {
                         let tempDescription = { ...eventDescription };
@@ -2597,7 +2559,7 @@ const EventCreation = () => {
                       }}
                     ></input>
                     {eventAdditionalWarning
-                      ? displayMessage(256, eventDescription.locationNote)
+                      ? displayMessage(64, eventDescription.locationNote)
                       : null}
                   </div>
                   <div className={classes.SectionTitleTight}>
@@ -2612,8 +2574,8 @@ const EventCreation = () => {
                       onBlur={() => setWebinarLinkWarning(false)}
                       type="text"
                       id="webinarLink"
-                      maxLength="254"
-                      placeholder="Webinar Link: limit 256 characters"
+                      maxLength="64"
+                      placeholder="Webinar Link: limit 64 characters"
                       value={eventDescription.webinarLink}
                       onChange={(event) => {
                         let tempDescription = { ...eventDescription };
@@ -2622,7 +2584,7 @@ const EventCreation = () => {
                       }}
                     ></input>
                     {webinarLinkWarning
-                      ? displayMessage(256, eventDescription.webinarLink)
+                      ? displayMessage(64, eventDescription.webinarLink)
                       : null}
                   </div>
     
@@ -2634,8 +2596,8 @@ const EventCreation = () => {
                       onBlur={() => setWebinarInfoWarning(false)}
                       type="text"
                       id="onlineInformation"
-                      maxLength="1000"
-                      placeholder="Additional Instructions: limit 1000 characters"
+                      maxLength="128"
+                      placeholder="Additional Instructions: limit 128 characters"
                       value={eventDescription.onlineInformation}
                       onChange={(event) => {
                         let tempDescription = { ...eventDescription };
@@ -2644,7 +2606,7 @@ const EventCreation = () => {
                       }}
                     ></input>
                     {webinarInfoWarning
-                      ? displayMessage(1000, eventDescription.onlineInformation)
+                      ? displayMessage(128, eventDescription.onlineInformation)
                       : null}
                   </div>
                 </Aux>
@@ -2664,8 +2626,8 @@ const EventCreation = () => {
                       onBlur={() => setWebinarLinkWarning(false)}
                       type="text"
                       id="webinarLink"
-                      maxLength="256"
-                      placeholder="Webinar Link: limit 256 characters"
+                      maxLength="64"
+                      placeholder="Webinar Link: limit 64 characters"
                       value={eventDescription.webinarLink}
                       onChange={(event) => {
                         let tempDescription = { ...eventDescription };
@@ -2674,7 +2636,7 @@ const EventCreation = () => {
                       }}
                     ></input>
                     {webinarLinkWarning
-                      ? displayMessage(256, eventDescription.webinarLink)
+                      ? displayMessage(64, eventDescription.webinarLink)
                       : null}
                   </div>
     
@@ -2686,8 +2648,8 @@ const EventCreation = () => {
                       onBlur={() => setWebinarInfoWarning(false)}
                       type="text"
                       id="onlineInformation"
-                      maxLength="1000"
-                      placeholder="Additional Instructions: limit 1000 characters"
+                      maxLength="128"
+                      placeholder="Additional Instructions: limit 128 characters"
                       value={eventDescription.onlineInformation}
                       onChange={(event) => {
                         let tempDescription = { ...eventDescription };
@@ -2696,7 +2658,7 @@ const EventCreation = () => {
                       }}
                     ></input>
                     {webinarInfoWarning
-                      ? displayMessage(1000, eventDescription.onlineInformation)
+                      ? displayMessage(128, eventDescription.onlineInformation)
                       : null}
                   </div>
                 </Aux>
@@ -2716,8 +2678,8 @@ const EventCreation = () => {
                       onBlur={() => setTbaInfoWarning(false)}
                       type="text"
                       id="tbaInformation"
-                      maxLength="1000"
-                      placeholder="Additional Instructions: limit 1000 characters"
+                      maxLength="128"
+                      placeholder="Additional Instructions: limit 128 characters"
                       value={eventDescription.tbaInformation}
                       onChange={(event) => {
                         let tempDescription = { ...eventDescription };
@@ -2726,7 +2688,7 @@ const EventCreation = () => {
                       }}
                     ></input>
                     {tbaInfoWarning
-                      ? displayMessage(1000, eventDescription.tbaInformation)
+                      ? displayMessage(128, eventDescription.tbaInformation)
                       : null}
                   </div>
                 </Aux>
@@ -2899,29 +2861,16 @@ const EventCreation = () => {
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "400px" }}
-                  onFocus={() => setFacebookWarning(true)}
-                  onBlur={() => setFacebookWarning(false)}
                   type="text"
                   id="facebookLink"
-                  maxLength="64"
-                  placeholder="your facebook address: limit 64 characters"
+                  placeholder="your facebook address"
                   name="facebookLink"
                   value={eventDescription.facebookLink}
                   onChange={(event) => {
                     changeEventDescription(event);
                   }}
                 ></input>
-                </div>
-              
-              {facebookWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.facebookLink)}
-                  </div>)
-                  : null}
-
-
+              </div>
     
               <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
                 <FontAwesomeIcon
@@ -2933,12 +2882,9 @@ const EventCreation = () => {
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "400px" }}
-                  onFocus={() => setTwitterWarning(true)}
-                  onBlur={() => setTwitterWarning(false)}
                   type="text"
-                  maxLength="64"
                   id="twitterLink"
-                  placeholder="your twitter address: limit 64 characters"
+                  placeholder="your twitter address"
                   name="twitterLink"
                   value={eventDescription.twitterLink}
                   onChange={(event) => {
@@ -2946,14 +2892,6 @@ const EventCreation = () => {
                   }}
                 ></input>
               </div>
-              
-              {twitterWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.twitterLink)}
-                  </div>)
-                  : null}
     
               <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
                 <FontAwesomeIcon
@@ -2965,12 +2903,9 @@ const EventCreation = () => {
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "400px" }}
-                  onFocus={() => setLinkedinWarning(true)}
-                  onBlur={() => setLinkedinWarning(false)}
                   type="text"
-                  maxLength="64"
                   id="linkedinLink"
-                  placeholder="your linkedin address: limit 64 characters"
+                  placeholder="your linkedin address"
                   name="linkedinLink"
                   value={eventDescription.linkedinLink}
                   onChange={(event) => {
@@ -2978,14 +2913,6 @@ const EventCreation = () => {
                   }}
                 ></input>
               </div>
-              
-              {linkedinWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.linkedinLink)}
-                  </div>)
-                  : null}
     
               <div className={classes.SocialMediaLink} style={{ height: "55px" }}>
                 <FontAwesomeIcon
@@ -2997,12 +2924,9 @@ const EventCreation = () => {
                 <input
                   className={classes.InputBoxContent}
                   style={{ width: "400px" }}
-                  onFocus={() => setInstagramWarning(true)}
-                  onBlur={() => setInstagramWarning(false)}
                   type="text"
-                  maxLength="64"
                   id="instagramLink"
-                  placeholder="your instagram address: limit 64 characters"
+                  placeholder="your instagram address"
                   name="instagramLink"
                   value={eventDescription.instagramLink}
                   onChange={(event) => {
@@ -3010,14 +2934,6 @@ const EventCreation = () => {
                   }}
                 ></input>
               </div>
-              
-              {instagramWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.instagramLink)}
-                  </div>)
-                  : null}
     
               <div className={classes.SectionTitleTight}>
                 Customize OpenSeatDirect Vanity URL
@@ -3211,15 +3127,34 @@ const EventCreation = () => {
   }
 
   return (
-    <div>
-      <div>{mainDisplay()}</div>
-      <div>Loading</div>
+    <div className={classes.DashboardContainer}>
+      <div className={classes.DashboardCanvas}>
+        <div className={classes.DashboardTitle}>
+          {vendorInfo.name} Dashboard
+        </div>
+        <div className={classes.DashboardMain}>
+          <div className={classes.DashboardNavigation}>
+            <VendorNavigation></VendorNavigation>
+          </div>
+          <div>{mainDisplay()}</div>
+        </div>
+      </div>
     </div>
   )
 };
 
 export default EventCreation;
 /*
+
+
+
+
+
+    <div>
+      <div>{mainDisplay()}</div>
+    </div>
+
+
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
         {savedDisplayed()}
