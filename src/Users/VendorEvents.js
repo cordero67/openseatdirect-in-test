@@ -71,6 +71,8 @@ const VendorEvents = () => {
   const [activeEvent, setActiveEvent] = useState("");
   const [activeTickets, setActiveTickets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSuccessful, setIsSuccessful] = useState(true);
+  const [isEmpty, setIsEmpty] = useState(true);
 
   useEffect(() => {
     let myHeaders = new Headers();
@@ -89,7 +91,6 @@ const VendorEvents = () => {
       .then((result) => {
         let js = JSON.parse(result);
         console.log("eventDetails: ", js);
-        let tempjs = [...js];
         js.sort(compareValues("startDateTime", "asc"));
         console.log("js: ", js);
         setEventDetails(js);
@@ -111,6 +112,7 @@ const VendorEvents = () => {
       })
       .catch((error) => {
         console.log("error", error);
+        setIsSuccessful(false)
         setIsLoading(false);
       });
   }, []);
@@ -146,10 +148,6 @@ const VendorEvents = () => {
       redirect: "follow",
     };
     console.log(myHeaders);
-
-
-    //let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
-
 
     let fetchstr = `${API}/eventdoor/${eventNum}/attendees/${vendorInfo.id}`
     console.log("about to fetch: ", fetchstr, requestOptions);

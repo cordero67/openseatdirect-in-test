@@ -43,6 +43,7 @@ const TimeSelector = (props) => {
       required
     >
       {transformedTimes.map((time, index) => {
+        //console.log("time: ", time)
         return <option key={index} value={timeMilliseconds2[time]} name={time}
           >{time}</option>
       })}

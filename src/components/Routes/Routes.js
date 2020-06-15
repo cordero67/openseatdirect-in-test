@@ -5,6 +5,7 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import EventCreation from "../../EventCreation/EventCreation";
+import EventCreationDashboard from "../../EventCreation/EventCreationDashboard";
 import Events from "../../Events/Events";
 import EventDetails from "../../Events/EventDetails";
 import EventDetailHaHa from "../../Events/EventDetailHaHa";
@@ -194,6 +195,23 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <PrivateRoute component={VendorEvents} role="1" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/vendoreventcreation"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={EventCreationDashboard} role="1" />
             <Footer></Footer>
           </React.Fragment>
         )}
