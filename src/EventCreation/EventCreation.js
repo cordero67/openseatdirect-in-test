@@ -439,13 +439,13 @@ const EventCreation = () => {
     if (event.target.name === "eventTitle") {
       // updates "vanityLink" whenever "eventTitle" is changed
       tempDescription.vanityLink = event.target.value
-        .replace(/\s+/g, "-")
-        .replace(/[^a-zA-Z0-9-]/g, "")
+        .replace(/\s+/g, "-") // any oddball character
+        .replace(/[^a-zA-Z0-9-]/g, "") // anything but "a-zA-Z0-9"
         .toLowerCase();
     }
     setEventDescription(tempDescription);
     console.log("Event Description: ", tempDescription);
-  };
+  };  
 
   const changeEventDate = (day, fieldName) => {
     console.log("day from Date selector: ", day);
@@ -1675,11 +1675,55 @@ const EventCreation = () => {
   };
 
   const ticketTypeDisplay = (index) => {
+
+/*
+            0|
+            0\.|
+            0\.[0-9]|
+            0\.[0-9][0-9]|
+
+            \.|
+            \.[0-9]|
+            \.[0-9][0-9]|
+
+            [1-9][0-9]+|
+            [1-9][0-9]+\.|
+            [1-9][0-9]+\.[0-9]|
+            [1-9][0-9]+\.[0-9][0-9]|
+
+            
+            [0-9]|
+            [0-9]\.|
+            [0-9]\.[0-9]|
+            [0-9]\.[0-9][0-9]|
+            */
+
+
     let display = (
       <Aux>
         {ticketDetails.map((item, index) => {
+          let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
+          let testPrice = item.currentTicketPrice;
+          let priceResult;
+          if(!item.currentTicketPrice) {
+            priceResult = true;
+          } else {
+            priceResult = priceRegex.test(testPrice);
+          }
+          console.log("priceResult: ", priceResult)
+
+          let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
+          let testQuantity = item.remainingQuantity;
+          let quantityResult;
+          if(!item.remainingQuantity) {
+            quantityResult = true;
+          } else {
+            quantityResult = quantityRegex.test(testQuantity);
+          }
+          console.log("testQuantity: ", quantityResult)
+
           return (
-            <div key={index}>
+            <Aux key={index}>
               <div
                 className={
                   dragging && dragItem.current === index
@@ -1835,8 +1879,21 @@ const EventCreation = () => {
                   ></TicketModal>
                 </Aux>
               ) : null}
+              <div
+                className={
+                  dragging && dragItem.current === index
+                    ? classes.DraggedTicketBox
+                    : classes.TicketBox
+                }
+                style={{ height: "16px", fontSize: "12px", color: "red", paddingLeft: "10px"}}
+              >
+                <div>{" "}</div>
+                <div>{quantityResult ? null : "Only whole numbers"}</div>
+                <div>{priceResult ? null : "Incorrect number type"}</div>
+              </div>
               {item.settings ? additionalSettings(item) : null}
-            </div>
+
+            </Aux>
           );
         })}
       </Aux>
@@ -1983,13 +2040,62 @@ const EventCreation = () => {
   let detailsMessage = null;
 */
 
-let result = RegExp("^(0|[1-9][0-9]{0,})$")
-  .test ("14");
-console.log("the result is ", result);
-
-let newResult = RegExp("^(0|[a-zA-Z1-9]{0,})$").test("1");
-console.log("the newResult is ", newResult);
 /*
+>  RegExp("^(0|[1-9]\d{0,1})$")
+    .test ("04")
+false
+>  RegExp("^(0|[1-9][0-9]{0,1})$").test ("04.4")
+false
+>  RegExp("^(0|[1-9][0-9]{0,1})$").test ("0")
+true
+>  RegExp("^(0|[1-9][0-9]{0,1})$").test ("99")
+true
+>  RegExp("^(0|[1-9][0-9]{0,1})$").test ("100")
+false
+*/
+
+/*
+let regexp = /^(0|[0-9]\.[0-9][0-9]|[1-9]+\.[0-9][0-9])$/;
+
+let testValue1 = "17878978.76";
+let floatNumber1 = regexp.test(testValue1); // true
+console.log(`the ${testValue1} wholeNumber is `, floatNumber1);
+
+let testValue2 = "0.76";
+let floatNumber2 = regexp.test(testValue2); // true
+console.log(`the ${testValue2} wholeNumber is `, floatNumber2);
+
+let testValue3 = "01.76";
+let floatNumber3 = regexp.test(testValue3); // false
+console.log(`the ${testValue3} wholeNumber is `, floatNumber3);
+
+let testValue4 = "17878978.762";
+let floatNumber4 = regexp.test(testValue4); // false
+console.log(`the ${testValue4} wholeNumber is `, floatNumber4);
+
+let testValue5 = "1787.8978.76";
+let floatNumber5 = regexp.test(testValue5); // false
+console.log(`the ${testValue5} wholeNumber is `, floatNumber5);
+
+let testValue6 = "17878978..76";
+let floatNumber6 = regexp.test(testValue6); // false
+console.log(`the ${testValue6} wholeNumber is `, floatNumber6);
+
+
+let result = RegExp("^([0-9]\.|[1-9]{0}[0-9]{1,})+(\.[0-9][0-9])?$").test(testValue);
+console.log(`the ${testValue} newResult is `, result);
+
+//let newResult = RegExp("^(0|[a-zA-Z1-9][a-zA-Z0-9]\.{0,})$").test(testValue);
+//console.log(`the ${testValue} newResult is `, newResult);
+
+//let numResult = RegExp("^(0|[1-9][0-9]\.{0,})$+(\.[0-9][0-9]?)").test(testValue);
+//console.log(`the ${testValue} numResult is `, numResult);
+
+let newNumResult = RegExp('^(10|\d)(\.\d{1,2})?$').test("90.87");
+console.log(`the ${testValue} newNumResult is `, newNumResult);
+
+
+
 false
 >  RegExp("^(0|[1-9][0-9]{0,1})$").test ("04.4")
 false
