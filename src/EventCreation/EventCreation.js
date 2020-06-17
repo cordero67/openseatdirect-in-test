@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import queryString from "query-string";
 
+import dateFnsFormat from 'date-fns/format';
+
 import { API } from "../config";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
@@ -499,6 +501,12 @@ const EventCreation = () => {
     let tempDescription = { ...eventDescription };
     let tempDate = new Date(day.toDateString());
     let dateString = tempDate.toDateString();
+    console.log("dateString: ", dateString)
+
+    //var newDate = new Date(oldDate.toDateString());
+
+    let date = dateFnsFormat(day,'MM/dd/yyyy');
+    console.log("date from dateFnsFormat: ", date);
 
     if (fieldName === "start") {
       tempDescription.startDate = tempDate;
@@ -961,6 +969,7 @@ const EventCreation = () => {
   };
 
   const priceFeatureSettings = (ticket) => {
+
     if (ticket.priceFeature === "none") {
       return (
         <Aux>
@@ -1167,6 +1176,56 @@ const EventCreation = () => {
         </Aux>
       );
     } else if (ticket.priceFeature === "bogof") {
+
+
+          // defines warnings for Buy-One-Get-One-Free price feature
+          let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
+
+          console.log("buy: ", ticket.functionArgs.buy)
+          console.log("get: ", ticket.functionArgs.get)
+          let testBuy = ticket.functionArgs.buy;
+          let testGet = ticket.functionArgs.get;
+/*
+          if(!ticket.minTicketsAllowedPerOrder) {
+            ticket.minWarning = false;
+          } else {
+            ticket.minWarning = !quantityRegex.test(testMin);
+            console.log("ticket.minWarning: ",ticket.minWarning)
+          }
+
+          if(!ticket.maxTicketsAllowedPerOrder) {
+            ticket.maxWarning = false;
+          } else {
+            ticket.maxWarning = !quantityRegex.test(testMax);
+            console.log("ticket.maxWarning: ",ticket.maxWarning)
+          }
+
+          // defines styling for the order min and max line
+          let tempMinWarning;
+          let tempMaxWarning;
+          
+          if (ticket.minWarning) {
+            tempMinWarning = classes.OrderBoxWarning;///
+          } else {
+            tempMinWarning = classes.OrderBox;///
+          }
+          
+          if (ticket.maxWarning) {
+            tempMaxWarning = classes.OrderBoxWarning;///
+          } else {
+            tempMaxWarning = classes.OrderBox;///
+          }
+          console.log("ticket.minWarning: ", ticket.minWarning)
+          console.log("ticket.maxWarning: ", ticket.maxWarning)
+          
+          // defines styling for the error line
+
+
+*/
+
+
+
+
       return (
         <Aux>
           <div
@@ -1605,7 +1664,7 @@ const EventCreation = () => {
 
         <div className={classes.OrderLine}>
           <div>
-            Minimumm{" "}
+            Minimum{" "}
             <input className={tempMinWarning}
               type="text"
               id="minTicketsAllowedPerOrder"
@@ -1753,29 +1812,6 @@ const EventCreation = () => {
   };
 
   const ticketTypeDisplay = (index) => {
-
-/*
-            0|
-            0\.|
-            0\.[0-9]|
-            0\.[0-9][0-9]|
-
-            \.|
-            \.[0-9]|
-            \.[0-9][0-9]|
-
-            [1-9][0-9]+|
-            [1-9][0-9]+\.|
-            [1-9][0-9]+\.[0-9]|
-            [1-9][0-9]+\.[0-9][0-9]|
-
-            
-            [0-9]|
-            [0-9]\.|
-            [0-9]\.[0-9]|
-            [0-9]\.[0-9][0-9]|
-            */
-
 
     let display = (
       <Aux>
@@ -2350,7 +2386,7 @@ const EventCreation = () => {
                       type="text"
                       id="locationState"
                       maxLength="2"
-                      placeholder="State: 2 digit code"
+                      placeholder="State: 2 letter code"
                       value={eventDescription.locationState}
                       onChange={(event) => {
                         let tempDescription = { ...eventDescription };
@@ -2993,39 +3029,7 @@ const EventCreation = () => {
               />
             </div>
             <div style={{ margin: "auto", textAlign: "center" }}>
-              <div className={classes.GridBottom}>
-                <div></div>
-                <Button
-                  style={{
-                    marginTop: "5px",
-                    width: "130px",
-                    height: "30px",
-                    textAlign: "center",
-                    paddingTop: "7px",
-                  }}
-                  content="Save as Draft"
-                  basic
-                  color="green"
-                  onClick={() => {
-                    saveEvent(true);
-                  }}
-                />
-                <Button
-                  style={{
-                    marginTop: "5px",
-                    width: "130px",
-                    height: "30px",
-                    textAlign: "center",
-                    paddingTop: "7px",
-                  }}
-                  content="Go Live Now"
-                  basic
-                  color="red"
-                  onClick={() => {
-                    saveEvent(false);
-                  }}
-                />
-              </div>
+
             </div>
           </div>
         </div>

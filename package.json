@@ -12,6 +12,7 @@
     "braintree-dropin-react": "^0.1.1",
     "braintree-web": "^3.54.2",
     "braintree-web-drop-in-react": "^1.1.0",
+    "date-fns": "^2.14.0",
     "dateformat": "^3.0.3",
     "moment": "^2.24.0",
     "query-string": "^6.8.3",
