@@ -125,7 +125,7 @@ const dataFields = {
     __v: { type: "Number" },
   },
 };
-
+ 
 const EventCreation = () => {
   let vendorInfo = {};
   let tempUser = {};
@@ -196,10 +196,14 @@ const EventCreation = () => {
     },
   ]);
 
-  const [photoData, setPhotoData] = useState({
-    imgSrc: "",
-    imgSrcExt: ""
-  })
+  const [photoData, setPhotoData] = useState({imgSrc:null, imgSrcExt: null, isLoaded:false});
+
+//  const [isLoadingPhoto, setIsLoadingPhoto] = useState(true);
+
+  //  const [photoData, setPhotoData] = useState({
+  //    imgSrc: "",
+  //    imgSrcExt: ""
+  //  })
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -207,19 +211,19 @@ const EventCreation = () => {
 
   useEffect(() => {
     // checks if an event is identified and user is valiadated
-    if (
-      queryString.parse(window.location.search).eventID &&
-      localStorage.getItem("user")
-    ) {
+    debugger;
+    const  tmpuser = JSON.parse(localStorage.getItem("user"));
+    const eventNum = queryString.parse(window.location.search).eventID;
+  
+    if ( eventNum && tmpuser) {
       console.log("there is an event");
       //setIsLoading(true);
-      let user = vendorInfo.id;
-      let token = vendorInfo.token;
-      console.log("user.user._id: ", user);
+      const userId = tmpuser.user._id;
+      const token = tmpuser.token;
+      console.log("userId: ", userId);
 
       // extracts all event data, non-transactional
-      const userId = user;
-      const eventNum = queryString.parse(window.location.search).eventID;
+
       let apiurl = `${API}/eventix/${userId}/${eventNum}`;
       console.log("apiurl: ", apiurl);
       fetch(apiurl, {
@@ -230,7 +234,7 @@ const EventCreation = () => {
           "Authorization": "Bearer " + token
         },
       })
-      //.then(handleErrors)
+      .then(handleErrors)
       .then((response) => {
         console.log("response in event get", response);
         //console.log("response.json() in event get", response.json());
@@ -240,6 +244,7 @@ const EventCreation = () => {
         console.log("****res=", res);
         eventTix = res;
         loadEventInfo(eventTix);
+        setIsLoading(false);
         return res;
       })
       .then((res) => {
@@ -249,8 +254,10 @@ const EventCreation = () => {
           method: 'GET',
           redirect: 'follow'
         })
+        .then (handleErrors)
         .then(response => {
           console.log (">>>>>>>>response in eventix", response);
+          //TODO: add check for no photo here and stop 
           return response.arrayBuffer(); 
         })
         .then (buffer =>{
@@ -259,31 +266,35 @@ const EventCreation = () => {
           const uint8 = new Uint8Array(buffer);
           let bin ='';
           const len =  uint8.byteLength;
+          if (len ==0){ // no photo data
+              setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+              return;
+          };
           for (let i = 0; i < len; i++)
               bin += String.fromCharCode(uint8[i]);
-          const header ='data:image/png;base64,'; // hard codes image/png  
+          const header ='data:image/png;base64,'; // hard codes image/png 
+         // MMTODO: extrat file extension from Context.Type
+         // server side:   res.set('Content-Type', req.event.photo.contentType)
+
           const photodat = header+window.btoa(bin);
           const srcExt = extractImageFileExtensionFromBase64 (photodat);
           console.log ("photodat for imgSrc:", photodat);
           console.log ("photodat for srcExt:", srcExt);
-          
-          setPhotoData({
-            imgSrc: photodat,
-            imgSrcExt: srcExt
-          })
+          setPhotoData({imgSrc:photodat, imgSrcExt: srcExt, isLoaded:true});
+          // imgSrcExt: srcExt
+          // })
         })
         .catch(err => {
           console.log("**ERROR THROWN", err);
-        });
-
+        })
       })
       .catch((err) => {
         console.log("jumping here", err);
       });
     } else {
       console.log("there is NO event");
-    }
-    setIsLoading(false);
+    };
+//    setIsLoading(false);
   }, []);
 
   const loadEventInfo = (eventTix) => {
@@ -376,10 +387,10 @@ const EventCreation = () => {
     */
 
     console.log("tempDescription: ", tempDescription);
+    console.log ("seting Event Desc....");
     setEventDescription(tempDescription);
 
-
-    console.log("eventTix.tickets: ", eventTix.tickets)
+    console.log("eventTix.tickets: >>>", eventTix.tickets)
     console.log("eventTix.tickets.length: ", eventTix.tickets.length)
     // now populate the ticketsDetails variable
     if (eventTix.tickets && eventTix.tickets.length !== 0) {
@@ -2133,14 +2144,14 @@ const EventCreation = () => {
   ];
 
   const imageCanvas = () => {
-    //if (isLoading || !eventDescription.eventNum) {
-    //  return null
-    //} else {
-    //  console.log("eventDescription.eventNum: ", eventDescription.eventNum)
+    if (!photoData.isLoaded) {
+      return <p>  Loading .... </p>
+    } else {
+ 
       return (
         <ImgDropAndCrop
           icon="create image"
-          info={photoData}
+          imagein={photoData}
           event={eventDescription.eventNum}
           change={(image) => {
             console.log("image: ", image);
@@ -2153,8 +2164,8 @@ const EventCreation = () => {
           }}
         />
       )
-    //}
-  }
+    }
+  } /// end imageCanvas
 
   return (
     <div className={classes.MainContainer}>
