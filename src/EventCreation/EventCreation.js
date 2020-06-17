@@ -41,6 +41,9 @@ import {
 let vendorInfo = {};
 
 const EventCreation = () => {
+  const [eventTitleOmission, setEventTitleOmission] = useState(false);
+  const [pageErrors, setPageErrors] = useState(false);
+
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
     eventNum: "",
@@ -85,12 +88,16 @@ const EventCreation = () => {
       _id: "",
       ticketName: "",
       remainingQuantity: "",
+      quantityWarning: false,
       currentTicketPrice: "",
+      priceWarning: false,
       currency: "",
       settings: false,
       ticketDescription: "",
       minTicketsAllowedPerOrder: "",
+      minWarning: false,
       maxTicketsAllowedPerOrder: "",
+      maxWarning: false,
       priceFeature: "none",
       promoCodes: [
         { key: "1", name: "", amount: "", percent: false },
@@ -138,7 +145,19 @@ const EventCreation = () => {
     
   }, []);
 
+  useEffect(() => {
+    if (true) {
+      console.log("Hello world")
+    }
+  }, [pageErrors]);
+
   const saveEvent = async (status) => {
+    let tempPageErrors = false;
+    let tempEventTitleOmission = false;
+
+    setPageErrors(false);
+    setEventTitleOmission(false);
+    
     // checks if user is logged in
     if (
       typeof window !== "undefined" &&
@@ -151,12 +170,40 @@ const EventCreation = () => {
       window.location.href = "/signin";
     }
 
+    ticketDetails.map((ticket, index) => {
+      console.log("Ticket index: ", index)
+      if(ticket.quantityWarning) {
+        console.log("Quantity Warning, ticket : ", index)
+        setPageErrors(true);
+        tempPageErrors = true;
+      }
+      if(ticket.priceWarning) {
+        console.log("Price Warning, ticket : ", index)
+        setPageErrors(true);
+        tempPageErrors = true;
+      }
+      if(ticket.minWarning) {
+        console.log("Min Warning, ticket : ", index)
+        setPageErrors(true);
+        tempPageErrors = true;
+      }
+      if(ticket.maxWarning) {
+        console.log("Min Warning, ticket : ", index)
+        setPageErrors(true);
+        tempPageErrors = true;
+      }
+    })
+
     if (!eventDescription.eventTitle) {
       console.log("You need to complete these fields");
-      !eventDescription.eventTitle
-        ? setEventTitleOmission(true)
-        : setEventTitleOmission(false);
-    } else {
+      setEventTitleOmission(true);
+      tempEventTitleOmission = true;
+    }
+    console.log("pageErrors: ", pageErrors)
+    console.log("eventTitleOmission: ", eventTitleOmission)
+
+    if (!tempPageErrors && !tempEventTitleOmission) {
+      console.log("Inside the formData section")
       let eventDescriptionFields = [
         "isDraft",
         "eventNum",
@@ -1409,6 +1456,50 @@ const EventCreation = () => {
   };
 
   const additionalSettings = (ticket) => {
+          // defines warnings for order min and max
+          let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
+          console.log("ticket: ", ticket.minTicketsAllowedPerOrder)
+          console.log("maxTicketsAllowedPerOrder: ", ticket.maxTicketsAllowedPerOrder)
+          let testMin = ticket.minTicketsAllowedPerOrder;
+          let testMax = ticket.maxTicketsAllowedPerOrder;
+          console.log("testMax: ", testMax)
+          console.log("testMin`: ", testMin)
+
+          if(!ticket.minTicketsAllowedPerOrder) {
+            ticket.minWarning = false;
+          } else {
+            ticket.minWarning = !quantityRegex.test(testMin);
+            console.log("ticket.minWarning: ",ticket.minWarning)
+          }
+
+          if(!ticket.maxTicketsAllowedPerOrder) {
+            ticket.maxWarning = false;
+          } else {
+            ticket.maxWarning = !quantityRegex.test(testMax);
+            console.log("ticket.maxWarning: ",ticket.maxWarning)
+          }
+
+          // defines styling for the order min and max line
+          let tempMinWarning;
+          let tempMaxWarning;
+          
+          if (ticket.minWarning) {
+            tempMinWarning = classes.OrderBoxWarning;///
+          } else {
+            tempMinWarning = classes.OrderBox;///
+          }
+          
+          if (ticket.maxWarning) {
+            tempMaxWarning = classes.OrderBoxWarning;///
+          } else {
+            tempMaxWarning = classes.OrderBox;///
+          }
+          console.log("ticket.minWarning: ", ticket.minWarning)
+          console.log("ticket.maxWarning: ", ticket.maxWarning)
+          
+          // defines styling for the error line
+
+
     return (
       <div>
         <div
@@ -1512,33 +1603,17 @@ const EventCreation = () => {
           </div>
         </div>
 
-        <div
-          style={{
-            display: `grid`,
-            gridTemplateColumns: "300px 300px",
-            padding: "5px 10px 10px 35px",
-            boxSizing: "borderBox",
-            backgroundColor: "#E7E7E7",
-            height: "55px",
-            fontSize: "16px",
-          }}
-        >
+        <div className={classes.OrderLine}>
           <div>
-            Minimum{" "}
-            <input
-              style={{
-                padding: "9px 10px",
-                border: "1px solid lightgrey",
-                boxSizing: "borderBox",
-                width: "100px",
-                height: "40px",
-              }}
+            Minimumm{" "}
+            <input className={tempMinWarning}
               type="text"
               id="minTicketsAllowedPerOrder"
               placeholder="# of tickets"
               name="minTicketsAllowedPerOrder"
               value={ticket.minTicketsAllowedPerOrder}
               onChange={(event) => {
+                console.log("ticket: ", ticket)
                 changeTicketDetail(event, ticket.key);
               }}
             ></input>{" "}
@@ -1546,26 +1621,29 @@ const EventCreation = () => {
           </div>
           <div>
             Maximum{" "}
-            <input
-              style={{
-                padding: "9px 10px",
-                border: "1px solid lightgrey",
-                boxSizing: "borderBox",
-                width: "100px",
-                height: "40px",
-              }}
+            <input className={tempMaxWarning}
               type="text"
               id="maxTicketsAllowedPerOrder"
               placeholder="# of tickets"
               name="maxTicketsAllowedPerOrder"
               value={ticket.maxTicketsAllowedPerOrder}
               onChange={(event) => {
+                console.log("ticket: ", ticket)
                 changeTicketDetail(event, ticket.key);
               }}
             ></input>{" "}
             ticket(s)
           </div>
         </div>
+
+          {ticket.minWarning || ticket.maxWarning
+            ? <div className={classes.OrderLineWarning}
+            >
+              <div style={{ paddingLeft: "5px"}}> {ticket.minWarning ? "Not a whole number" : null}</div>
+              <div style={{ paddingRight: "5px", textAlign: "left"}}> {ticket.maxWarning ? "Not a whole number" : null}</div>
+            </div>
+            : null
+          }
 
         {priceFeatureSettings(ticket)}
         <div
@@ -1702,34 +1780,50 @@ const EventCreation = () => {
     let display = (
       <Aux>
         {ticketDetails.map((item, index) => {
-          let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
-          let testPrice = item.currentTicketPrice;
-          let priceResult;
-          if(!item.currentTicketPrice) {
-            priceResult = true;
-          } else {
-            priceResult = priceRegex.test(testPrice);
-          }
-          console.log("priceResult: ", priceResult)
-
+          // defines warnings for ticekt quantity and price
           let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
           let testQuantity = item.remainingQuantity;
-          let quantityResult;
           if(!item.remainingQuantity) {
-            quantityResult = true;
+            item.quantityWarning = false;
           } else {
-            quantityResult = quantityRegex.test(testQuantity);
+            item.quantityWarning = !quantityRegex.test(testQuantity);
           }
-          console.log("testQuantity: ", quantityResult)
+
+          let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
+          let testPrice = item.currentTicketPrice;
+          if(!item.currentTicketPrice) {
+            item.priceWarning = false;
+          } else {
+            item.priceWarning = !priceRegex.test(testPrice);
+          }
+
+          // defines styling for the ticekt name, quantity and price line
+          let tempTicketStyling;
+          let tempPriceBox;
+          let tempQuantityBox;
+
+          if (dragging && dragItem.current === index) {
+            tempTicketStyling = classes.DraggedTicketLine;
+          } else {
+            tempTicketStyling = classes.TicketLine;
+          }
+
+          if (item.priceWarning) {
+            tempPriceBox = classes.PriceBoxWarning;
+          } else {
+            tempPriceBox = classes.PriceBox;
+          }
+
+          if (item.quantityWarning) {
+            tempQuantityBox = classes.QuantityBoxWarning;
+          } else {
+            tempQuantityBox = classes.QuantityBox;
+          }
 
           return (
             <Aux key={index}>
               <div
-                className={
-                  dragging && dragItem.current === index
-                    ? classes.DraggedTicketBox
-                    : classes.TicketBox
-                }
+                className={tempTicketStyling}
               >
                 <div
                   style={{
@@ -1776,14 +1870,7 @@ const EventCreation = () => {
                     boxSizing: "borderBox",
                   }}
                 >
-                  <input
-                    style={{
-                      padding: "9px 10px",
-                      border: "1px solid lightgrey",
-                      boxSizing: "borderBox",
-                      width: "90px",
-                      height: "40px",
-                    }}
+                  <input className={tempQuantityBox}
                     type="text"
                     id="remainingQuantity"
                     placeholder="100"
@@ -1795,14 +1882,7 @@ const EventCreation = () => {
                   ></input>
                 </div>
 
-                <div
-                  style={{
-                    margin: "10px 5px",
-                    border: "1px solid lightgrey",
-                    boxSizing: "borderBox",
-                    display: `grid`,
-                    gridTemplateColumns: "70px 80px",
-                  }}
+                <div className={tempPriceBox}
                 >
                   <div
                     style={{
@@ -1815,9 +1895,11 @@ const EventCreation = () => {
                   </div>
                   <input
                     style={{
+                      backgroundColor: "fff",
                       padding: "9px 5px 9px 0px",
                       textAlign: "right",
-                      border: "0px solid lightgrey",
+                      borderStyle: "none",
+                      outline: "none",
                       boxSizing: "borderBox",
                     }}
                     type="text"
@@ -1879,18 +1961,18 @@ const EventCreation = () => {
                   ></TicketModal>
                 </Aux>
               ) : null}
-              <div
-                className={
-                  dragging && dragItem.current === index
-                    ? classes.DraggedTicketBox
-                    : classes.TicketBox
-                }
-                style={{ height: "16px", fontSize: "12px", color: "red", paddingLeft: "10px"}}
-              >
-                <div>{" "}</div>
-                <div>{quantityResult ? null : "Only whole numbers"}</div>
-                <div>{priceResult ? null : "Incorrect number type"}</div>
-              </div>
+
+              {item.priceWarning || item.quantityWarning
+                ? <div
+                  className={classes.TicketLineWarning}
+                >
+                  <div>{" "}</div>
+                  <div style={{ paddingLeft: "5px"}}> {item.quantityWarning ? "Not a whole number" : null}</div>
+                  <div style={{ paddingRight: "5px", textAlign: "right"}}> {item.priceWarning ? "Incorrect number type" : null}</div>
+                </div>
+                : null
+              }
+
               {item.settings ? additionalSettings(item) : null}
 
             </Aux>
@@ -1902,7 +1984,6 @@ const EventCreation = () => {
   };
 
   const [eventTitleWarning, setEventTitleWarning] = useState(false);
-  const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [shortDescriptionWarning, setShortDescriptionWarning] = useState(false);
   const [eventLocationWarning, setEventLocationWarning] = useState(false);
   const [eventAddress1Warning, setEventAddress1Warning] = useState(false);
@@ -2029,83 +2110,13 @@ const EventCreation = () => {
     //}
   };
 
-    /*
-    // determines what "contact information" has been filled out by the ticket buyer
-  let fullNameProvided =
-    contactInformation.firstName !== "" && contactInformation.lastName !== "";
-  const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  let validEmail = regsuper.test(contactInformation.email);
-  let detailsMinimal =
-    fullNameProvided && regsuper.test(contactInformation.email);
-  let detailsMessage = null;
-*/
-
-/*
->  RegExp("^(0|[1-9]\d{0,1})$")
-    .test ("04")
-false
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("04.4")
-false
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("0")
-true
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("99")
-true
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("100")
-false
-*/
-
-/*
-let regexp = /^(0|[0-9]\.[0-9][0-9]|[1-9]+\.[0-9][0-9])$/;
-
-let testValue1 = "17878978.76";
-let floatNumber1 = regexp.test(testValue1); // true
-console.log(`the ${testValue1} wholeNumber is `, floatNumber1);
-
-let testValue2 = "0.76";
-let floatNumber2 = regexp.test(testValue2); // true
-console.log(`the ${testValue2} wholeNumber is `, floatNumber2);
-
-let testValue3 = "01.76";
-let floatNumber3 = regexp.test(testValue3); // false
-console.log(`the ${testValue3} wholeNumber is `, floatNumber3);
-
-let testValue4 = "17878978.762";
-let floatNumber4 = regexp.test(testValue4); // false
-console.log(`the ${testValue4} wholeNumber is `, floatNumber4);
-
-let testValue5 = "1787.8978.76";
-let floatNumber5 = regexp.test(testValue5); // false
-console.log(`the ${testValue5} wholeNumber is `, floatNumber5);
-
-let testValue6 = "17878978..76";
-let floatNumber6 = regexp.test(testValue6); // false
-console.log(`the ${testValue6} wholeNumber is `, floatNumber6);
-
-
-let result = RegExp("^([0-9]\.|[1-9]{0}[0-9]{1,})+(\.[0-9][0-9])?$").test(testValue);
-console.log(`the ${testValue} newResult is `, result);
-
-//let newResult = RegExp("^(0|[a-zA-Z1-9][a-zA-Z0-9]\.{0,})$").test(testValue);
-//console.log(`the ${testValue} newResult is `, newResult);
-
-//let numResult = RegExp("^(0|[1-9][0-9]\.{0,})$+(\.[0-9][0-9]?)").test(testValue);
-//console.log(`the ${testValue} numResult is `, numResult);
-
-let newNumResult = RegExp('^(10|\d)(\.\d{1,2})?$').test("90.87");
-console.log(`the ${testValue} newNumResult is `, newNumResult);
-
-
-
-false
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("04.4")
-false
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("0")
-true
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("99")
-true
->  RegExp("^(0|[1-9][0-9]{0,1})$").test ("100")
-false
-*/
+  const errorCheck = () => {
+    if (pageErrors || eventTitleOmission) {
+      return (<div style={{ textAlign: "center", color: "red", fontSize: "16px"}}>Please correct the input errors identified below.</div>)
+    } else {
+      return null;
+    }
+  }
 
   const mainDisplay = () => {
       return (
@@ -2168,6 +2179,8 @@ false
                 }}
               />
             </div>
+
+            {errorCheck()}
     
             <div className={classes.CategoryTitle} style={{ width: "140px" }}>
               Event Details
