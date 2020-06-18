@@ -247,7 +247,6 @@ const VendorEvents = () => {
               let tempMinutes;
               let tempLongDateTime;
               tempDateTime = new Date(item.startDateTime);
-              console.log("tempDateTime: ", tempDateTime);
               tempMonthAbbr = monthAbbr[tempDateTime.getMonth()];
               tempMonthNames = monthNames[tempDateTime.getMonth()];
               tempDate = tempDateTime.getDate();
@@ -279,7 +278,6 @@ const VendorEvents = () => {
                 ":" +
                 tempMinutes +
                 tempAmPm;
-              console.log("tempLongDateTime: ", tempLongDateTime);
 
               return (
                 <div key={index}>
