@@ -52,7 +52,6 @@ const EventCreation = () => {
 
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
-    eventNum: "",
     eventTitle: "",
     isDraft: true,
     eventType: "live",
@@ -68,9 +67,9 @@ const EventCreation = () => {
     locationCountryCode: "US",
     locationNote: "",
     startDate: new Date(new Date().toDateString()),
-    startTime: "",
+    startTime: "18:00.00",
     endDate: new Date(new Date().toDateString()),
-    endTime: "",
+    endTime: "17:00.00",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     eventImage: "",
     shortDescription: "",
@@ -125,7 +124,6 @@ const EventCreation = () => {
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
     errorMessage: "Sorry, your event request cannot be prossessed.",
-    eventNum: "",
     isDraft: true,
   });
 
@@ -169,6 +167,19 @@ const EventCreation = () => {
     } else {
       window.location.href = "/signin";
     }
+
+    let tempDescription = { ...eventDescription };
+    let tempStatus = { ...eventStatus };
+    
+    if (status === "save") {
+      tempDescription.isDraft = true;
+      tempStatus.status = "saved";
+    } else if (status === "live") {
+      tempDescription.isDraft = false;
+      tempStatus.status = "live";
+    }
+    setEventDescription(tempDescription);
+    setEventStatus(tempStatus);
 
     ticketDetails.map((ticket, index) => {
       console.log("Ticket index: ", index)
@@ -231,7 +242,6 @@ const EventCreation = () => {
       console.log("Inside the formData section")
       let eventDescriptionFields = [
         "isDraft",
-        "eventNum",
         "eventTitle",
         "eventType",
         "locationVenueName",
@@ -260,13 +270,14 @@ const EventCreation = () => {
       var formData = new FormData();
 
       eventDescriptionFields.forEach((field) => {
-          formData.append(`${field}`, eventDescription[field]);
-          console.log(
-            "this is the input: ",
-            `${field}`,
-            `${eventDescription[field]}`
-          );
-        //}
+          if (eventDescription[field]!=''){
+            formData.append(`${field}`, eventDescription[field]);
+            console.log(
+              "this is the input: ",
+             `${field}`,
+              `${eventDescription[field]}`
+            );
+          }
       });
 
       let tempStartDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
@@ -412,16 +423,10 @@ const EventCreation = () => {
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
+      apiurl = `${API}/eventix/${userid}`;
+      console.log("apiurl: ", apiurl);
 
-      if (eventDescription.eventNum) {
-        console.log("editting an existing event");
-        apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
-        console.log("apiurl: ", apiurl);
-      } else {
-        console.log("creating a new event");
-        apiurl = `${API}/eventix/${userid}`;
-        console.log("apiurl: ", apiurl);
-      }
+// set isDraft to false if it is live before the fetch
 
       fetch(apiurl, {
         method: "post",
@@ -431,33 +436,18 @@ const EventCreation = () => {
       })
         .then(handleErrors)
         .then((response) => {
-          console.log("response in event/create", response);
+          console.log("response in create", response);
           return response.json();
         })
         .then((res) => {
           console.log("Event was saved/went live");
           console.log("res: ", res);
 
-          let tempDescription = { ...eventDescription };
-          let tempStatus = { ...eventStatus };
-          console.log("res.eventresult.eventNum: ", res.eventresult.eventNum);
-          tempStatus.eventNum = res.eventresult.eventNum;
-          
-          if (status === "save") {
-            tempDescription.isDraft = true;
-            tempStatus.status = "saved";
-          } else if (status === "live") {
-            tempDescription.isDraft = false;
-            tempStatus.status = "live";
-          }
-          setEventDescription(tempDescription);
-          setEventStatus(tempStatus);
         })
         .catch((err) => {
           console.log("**ERROR THROWN", err);
           let tempStatus = { ...eventStatus };
           tempStatus.status = "declined";
-          tempStatus.eventNum = "";
           setEventStatus(tempStatus);
         });
       }
@@ -478,7 +468,6 @@ const EventCreation = () => {
             editEvent={() => {
               let tempStatus = { ...eventStatus };
               tempStatus.status = "";
-              tempStatus.eventNum = "";
               tempStatus.isDraft = true;
               setEventStatus(tempStatus);
             }}
@@ -503,7 +492,6 @@ const EventCreation = () => {
             editEvent={() => {
               let tempStatus = { ...eventStatus };
               tempStatus.status = "";
-              tempStatus.eventNum = "";
               tempStatus.isDraft = true;
               setEventStatus(tempStatus);
             }}
@@ -2322,7 +2310,7 @@ const EventCreation = () => {
 
   const errorCheck = () => {
     if (pageErrors || eventTitleOmission) {
-      return (<div style={{ textAlign: "center", color: "red", fontSize: "16px"}}>Please correct the input errors identified below.</div>)
+      return (<div style={{ margin: "auto", position: "fixed", zIndex: "200", top: "205px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "16px"}}>Please correct the input errors identified below.</div>)
     } else {
       return null;
     }
@@ -2331,26 +2319,8 @@ const EventCreation = () => {
   const mainDisplay = () => {
       return (
         <div className={classes.MainContainer}>
-          <div className={classes.MainGrid}>
-            {savedDisplayed()}
-            <div className={classes.GridTitle}>
-              {!eventDescription.eventNum ? (
-                <div style={{ paddingTop: "10px" }}>Event Creation</div>
-              ) : (
-                <div style={{ paddingTop: "10px" }}>
-                  <div>
-                    Event Edit:{" "}
-                    <span style={{ fontSize: "26px", fontWeight: "500" }}>
-                      {eventDescription.eventNum} -{" "}
-                      {eventDescription.isDraft === true ? (
-                        <span style={{ color: "green" }}>DRAFT</span>
-                      ) : (
-                        <span style={{ color: "red" }}>LIVE</span>
-                      )}
-                    </span>
-                  </div>
-                </div>
-              )}
+           <div className={classes.GridTitle}>
+              <div style={{ paddingTop: "10px" }}>Event Creation</div>
               <div></div>
               <Button
                 style={{
@@ -2390,7 +2360,14 @@ const EventCreation = () => {
               />
             </div>
 
-            {errorCheck()}
+
+          <div className={classes.MainGrid}>
+            {savedDisplayed()}
+ 
+
+            <div>
+              {errorCheck()}
+            </div>
     
             <div className={classes.CategoryTitle} style={{ width: "140px" }}>
               Event Details

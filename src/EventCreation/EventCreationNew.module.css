@@ -14,29 +14,29 @@
   padding-right: 15px;
   padding-bottom: 15px;
   margin: auto;
+  margin-top: 70px;
   width: 930px;
   box-sizing: border-box;
   border: 1px solid grey;
 }
 
-/*
-position: "fixed",
-top: "135px",
-backgroundColor: "#fff",
-zIndex: "200",
-top: "195px",
-width: "1015px",
-*/
-
-
 .GridTitle {
-  padding-top: 20px;
+  position: fixed;
+  top: 60px;
+  left: calc((100vw - 945px)/2);
+  border-bottom: 1px solid grey;
+  background-color: #fff;
+  z-index: 200;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
   display: grid;
   grid-template-columns: 500px 135px 135px 135px;
   box-sizing: border-box;
   font-size: 30px;
   font-weight: 600;
-  height: 70px;
+  height: 72px;
+  width: 928px;
 }
 
 .GridBottom {
