@@ -199,16 +199,6 @@
   font-size: 16px;
 }
 
-.OrderLineWarning {
-  display: grid;
-  grid-template-columns: 300px 300px;
-  padding: 5px 10px 10px 35px;
-  box-sizing: border-box;
-  background-color: #E7E7E7;
-  height: 55px;
-  font-size: 16px;
-}
-
 .TicketLine {
   display: grid;
   grid-template-columns: 360px 100px 165px 80px 80px;
@@ -296,17 +286,55 @@
   height: 22px;
   font-size: 12px;
 }
-/*
-          style={{
-            display: `grid`,
-            gridTemplateColumns: "300px 300px",
-            padding: "5px 10px 10px 35px",
-            boxSizing: "borderBox",
-            backgroundColor: "#E7E7E7",
-            height: "55px",
-            fontSize: "16px",
-          }}
-*/
+
+.BogofLineWarning {
+  padding: 0px 10px 15px 60px;
+  display: grid;
+  grid-template-columns: 230px 230px;
+  box-sizing: border-box;
+  color: red;
+  background-color: #E7E7E7;
+  height: 22px;
+  font-size: 12px;
+}
+
+.BogodLineWarning {
+  padding: 0px 10px 15px 60px;
+  display: grid;
+  grid-template-columns: 328px 203px 230px;
+  box-sizing: border-box;
+  color: red;
+  background-color: #E7E7E7;
+  height: 22px;
+  font-size: 12px;
+}
+
+.TwoferLineWarning {
+  padding: 0px 10px 15px 60px;
+  display: grid;
+  grid-template-columns: 280px 280px;
+  box-sizing: border-box;
+  color: red;
+  background-color: #E7E7E7;
+  height: 22px;
+  font-size: 12px;
+}
+
+.SpecialFeaturesBox {
+  padding: 9px 10px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  width: 100px;
+  height: 40px;
+}
+
+.SpecialFeaturesBoxWarning {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+  width: 100px;
+  height: 40px;
+}
 
 .react-datepicker-wrapper,
 .react-datepicker__input-container,
