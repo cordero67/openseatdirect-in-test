@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import queryString from "query-string";
 
 import dateFnsFormat from 'date-fns/format';
 
@@ -10,7 +9,6 @@ priceFeatureSettings
 */
 
 import { API } from "../config";
-import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
 
@@ -130,10 +128,6 @@ const EventCreation = () => {
     eventNum: "",
     isDraft: true,
   });
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  let eventTix = {};
 
   useEffect(() => {
     // checks if 'user' exists in local storage
@@ -266,7 +260,6 @@ const EventCreation = () => {
       var formData = new FormData();
 
       eventDescriptionFields.forEach((field) => {
-        //if (eventDescription[field]) {
           formData.append(`${field}`, eventDescription[field]);
           console.log(
             "this is the input: ",
@@ -276,23 +269,20 @@ const EventCreation = () => {
         //}
       });
 
-      let tempStartDate = dateFnsFormat(eventDescription.startDate,'MM/dd/yyyy');
+      let tempStartDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
       console.log("startDate from dateFnsFormat: ", tempStartDate);
 
-      let tempEndDate = dateFnsFormat(eventDescription.endDate,'MM/dd/yyyy');
+      let tempEndDate = dateFnsFormat(eventDescription.endDate,'yyyy-MM-dd');
       console.log("endDate from dateFnsFormat: ", tempEndDate);
 
-      let tempStartDateTime = `${tempStartDate}T${eventDescription.startTime}Z`;
+      let tempStartDateTime = `${tempStartDate} ${eventDescription.startTime}Z`;
       console.log("startDateTime: ", tempStartDateTime);
 
-      let tempEndDateTime = `${tempEndDate}T${eventDescription.endTime}Z`;
+      let tempEndDateTime = `${tempEndDate} ${eventDescription.endTime}Z`;
       console.log("endDateTime: ", tempEndDateTime);
 
-
-      // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
-      formData.append("startDateTime", eventDescription.startDate);
-      // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
-      formData.append("endDateTime", eventDescription.endDate);
+      formData.append("startDateTime", tempStartDateTime);
+      formData.append("endDateTime", tempEndDateTime);
 
       let imageBlob = null;
       if (eventDescription.eventImage) {

@@ -19,6 +19,16 @@
   border: 1px solid grey;
 }
 
+/*
+position: "fixed",
+top: "135px",
+backgroundColor: "#fff",
+zIndex: "200",
+top: "195px",
+width: "1015px",
+*/
+
+
 .GridTitle {
   padding-top: 20px;
   display: grid;

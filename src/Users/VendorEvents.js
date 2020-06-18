@@ -533,3 +533,9 @@ const VendorEvents = () => {
 };
 
 export default VendorEvents;
+
+/*
+.DashboardPanel {
+  overflow-y: auto;
+}
+*/
