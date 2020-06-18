@@ -290,9 +290,9 @@ const EventCreation = () => {
 
 
       // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
-      formData.append("startDateTime", eventDescription.startDate);
+      formData.append("startDateTime", tempStartDateTime);
       // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
-      formData.append("endDateTime", eventDescription.endDate);
+      formData.append("endDateTime", tempEndDateTime);
 
       let imageBlob = null;
       if (eventDescription.eventImage) {
