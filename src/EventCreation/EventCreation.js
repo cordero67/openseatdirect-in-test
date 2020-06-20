@@ -235,11 +235,11 @@ const EventCreation = () => {
       tempEventTitleOmission = true;
     }
 
-    console.log("pageErrors: ", pageErrors)
-    console.log("eventTitleOmission: ", eventTitleOmission)
+    //console.log("pageErrors: ", pageErrors)
+    //console.log("eventTitleOmission: ", eventTitleOmission)
 
     if (!tempPageErrors && !tempEventTitleOmission) {
-      console.log("Inside the formData section")
+      //console.log("Inside the formData section")
       let eventDescriptionFields = [
         "isDraft",
         "eventTitle",
@@ -460,6 +460,8 @@ const EventCreation = () => {
   }
   
   const handleErrors = (response) => {
+    console.log("inside handle errors")
+    console.log("response: ", response)
     if (!response.ok) {
       throw Error(response.status);
       console.log("Error: ", response);
@@ -468,8 +470,8 @@ const EventCreation = () => {
   };
 
   const savedModal = () => {
-    console.log("inside savedDisplay");
-    console.log("eventStatus: ", eventStatus);
+    //console.log("inside savedDisplay");
+    //console.log("eventStatus: ", eventStatus);
     if (eventStatus.status === "failure" || eventStatus.status === "error") {
       return (
         <Aux>
@@ -514,7 +516,7 @@ const EventCreation = () => {
         .toLowerCase();
     }
     setEventDescription(tempDescription);
-    console.log("Event Description: ", tempDescription);
+    //console.log("Event Description: ", tempDescription);
   };  
 
   const changeEventDate = (day, fieldName) => {
