@@ -33,7 +33,7 @@ import {
   faInfoCircle,
   faTrashAlt,
   faGripVertical,
-  faCog,
+  faCog
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Popup } from "semantic-ui-react";
 import {
@@ -69,7 +69,7 @@ const EventCreation = () => {
     startDate: new Date(new Date().toDateString()),
     startTime: "18:00.00",
     endDate: new Date(new Date().toDateString()),
-    endTime: "17:00.00",
+    endTime: "19:00.00",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     eventImage: "",
     shortDescription: "",
@@ -113,18 +113,17 @@ const EventCreation = () => {
     },
   ]);
 
-  //
   const [photoData, setPhotoData] = useState({
     imgSrc: "",
     imgSrcExt: "",
   });
 
   const [eventStatus, setEventStatus] = useState({
-    status: "",
+    status: "", // "saved", "live", "error", "failure"
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
-    errorMessage: "Sorry, your event request cannot be prossessed.",
-    isDraft: true,
+    errorMessage: "", //["Sorry, your event contains some input errors.", "Please fix these and resubmit."],
+    failureMessage: "System error please try again.",
   });
 
   useEffect(() => {
@@ -179,10 +178,9 @@ const EventCreation = () => {
       tempStatus.status = "live";
     }
     setEventDescription(tempDescription);
-    setEventStatus(tempStatus);
 
     ticketDetails.map((ticket, index) => {
-      console.log("Ticket index: ", index)
+      //console.log("Ticket index: ", index)
       if(ticket.quantityWarning) {
         console.log("Quantity Warning, ticket : ", index)
         setPageErrors(true);
@@ -235,6 +233,7 @@ const EventCreation = () => {
       setEventTitleOmission(true);
       tempEventTitleOmission = true;
     }
+
     console.log("pageErrors: ", pageErrors)
     console.log("eventTitleOmission: ", eventTitleOmission)
 
@@ -272,25 +271,25 @@ const EventCreation = () => {
       eventDescriptionFields.forEach((field) => {
           if (eventDescription[field]!=''){
             formData.append(`${field}`, eventDescription[field]);
-            console.log(
+            /*console.log(
               "this is the input: ",
              `${field}`,
               `${eventDescription[field]}`
-            );
+            );*/
           }
       });
 
       let tempStartDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
-      console.log("startDate from dateFnsFormat: ", tempStartDate);
+      //console.log("startDate from dateFnsFormat: ", tempStartDate);
 
       let tempEndDate = dateFnsFormat(eventDescription.endDate,'yyyy-MM-dd');
-      console.log("endDate from dateFnsFormat: ", tempEndDate);
+      //console.log("endDate from dateFnsFormat: ", tempEndDate);
 
       let tempStartDateTime = `${tempStartDate} ${eventDescription.startTime}Z`;
-      console.log("startDateTime: ", tempStartDateTime);
+      //console.log("startDateTime: ", tempStartDateTime);
 
       let tempEndDateTime = `${tempEndDate} ${eventDescription.endTime}Z`;
-      console.log("endDateTime: ", tempEndDateTime);
+      //console.log("endDateTime: ", tempEndDateTime);
 
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
@@ -303,7 +302,7 @@ const EventCreation = () => {
         );
         formData.append("photo", imageBlob);
       } else {
-        console.log("there is no image");
+        //console.log("there is no image");
       }
       let ticketDetailsFields = [
         "ticketName",
@@ -403,28 +402,25 @@ const EventCreation = () => {
           }
         }
         else {
-          console.log("skipped ticket ", index);
+          //console.log("skipped ticket ", index);
         }
 
       });
 
       // Display the key/value pairs
       for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
+        //console.log(pair[0] + ", " + pair[1]);
       }
 
       let userid = vendorInfo.id;
 
-      console.log("userid: ", userid);
       let token = vendorInfo.token;
-      console.log("token: ", token);
       const authstring = `Bearer ${token}`;
       var myHeaders = new Headers();
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
       apiurl = `${API}/eventix/${userid}`;
-      console.log("apiurl: ", apiurl);
 
 // set isDraft to false if it is live before the fetch
 
@@ -434,7 +430,7 @@ const EventCreation = () => {
         body: formData,
         redirect: "follow",
       })
-        .then(handleErrors)
+        //.then(handleErrors)
         .then((response) => {
           console.log("response in create", response);
           return response.json();
@@ -442,33 +438,40 @@ const EventCreation = () => {
         .then((res) => {
           console.log("Event was saved/went live");
           console.log("res: ", res);
-
+          //if (false && false) {
+          if (!res.done && res.friendlyMessage) {
+            console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+            tempStatus.status = "error";
+            tempStatus.errorMessage = res.friendlyMessage; // uncomment once actual response field exists
+          //} else if(false && false) {
+          } else if(!res.done && !res.friendlyMessage) {
+            console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+            tempStatus.status = "failure";
+          }
+          setEventStatus(tempStatus);
+          return res;
         })
         .catch((err) => {
+          console.log("Inside the .catch")
           console.log("**ERROR THROWN", err);
-          let tempStatus = { ...eventStatus };
-          tempStatus.status = "declined";
+          tempStatus.status = "failure";
           setEventStatus(tempStatus);
         });
       }
     }
 
-  const savedDisplayed = () => {
+  const savedModal = () => {
     console.log("inside savedDisplay");
-    console.log("savedDisplay: ", eventStatus);
-    if (eventStatus.status === "declined") {
+    console.log("eventStatus: ", eventStatus);
+    if (eventStatus.status === "failure" || eventStatus.status === "error") {
       return (
         <Aux>
           <SavedModal
             show={true}
             details={eventStatus}
-            toDashboard={() => {
-              window.location.href = `/vendorevents`;
-            }}
             editEvent={() => {
               let tempStatus = { ...eventStatus };
               tempStatus.status = "";
-              tempStatus.isDraft = true;
               setEventStatus(tempStatus);
             }}
           ></SavedModal>
@@ -485,15 +488,6 @@ const EventCreation = () => {
             details={eventStatus}
             toDashboard={() => {
               window.location.href = `/vendorevents`;
-            }}
-            createEvent={() => {
-              window.location.href = `/eventcreation`;
-            }}
-            editEvent={() => {
-              let tempStatus = { ...eventStatus };
-              tempStatus.status = "";
-              tempStatus.isDraft = true;
-              setEventStatus(tempStatus);
             }}
           ></SavedModal>
         </Aux>
@@ -613,7 +607,7 @@ const EventCreation = () => {
   };
 
   const handleErrors = (response) => {
-    if (!response.ok) {
+    if (!response.ok || !response.done) {
       throw Error(response.status);
       console.log("Error: ", response);
     }
@@ -2308,66 +2302,76 @@ const EventCreation = () => {
     //}
   };
 
-  const errorCheck = () => {
+  /*
+  const errorDisplay = () => {
     if (pageErrors || eventTitleOmission) {
-      return (<div style={{ margin: "auto", position: "fixed", zIndex: "200", top: "205px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "16px"}}>Please correct the input errors identified below.</div>)
+      return (<div style={{ margin: "auto", position: "fixed", zIndex: "200", top: "135px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "16px"}}>Please correct the input errors identified below.</div>)
     } else {
       return null;
     }
   }
+  */
 
+  const errorDisplay = () => {
+    if (pageErrors || eventTitleOmission) {
+      return (<div style={{ margin: "auto", height: "16px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "14px"}}>Please correct the input errors identified below.</div>)
+    } else {
+      return (<div style={{ margin: "auto", height: "16px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "14px"}}>{" "}</div>)
+    }
+  }
   const mainDisplay = () => {
       return (
         <div className={classes.MainContainer}>
-           <div className={classes.GridTitle}>
-              <div style={{ paddingTop: "10px" }}>Event Creation</div>
-              <div></div>
-              <Button
-                style={{
-                  marginTop: "5px",
-                  width: "130px",
-                  height: "30px",
-                  textAlign: "center",
-                  paddingTop: "7px",
-                }}
-                content="Save as Draft"
-                basic
-                color="green"
-                onClick={() => {
-                  let tempDescription = { ...eventDescription };
-                  tempDescription.isDraft = true;
-                  setEventDescription(tempDescription);
-                  saveEvent("save");
-                }}
-              />
-              <Button
-                style={{
-                  marginTop: "5px",
-                  width: "130px",
-                  height: "30px",
-                  textAlign: "center",
-                  paddingTop: "7px",
-                }}
-                content="Go Live Now"
-                basic
-                color="red"
-                onClick={() => {
-                  let tempDescription = { ...eventDescription };
-                  tempDescription.isDraft = false;
-                  setEventDescription(tempDescription);
-                  saveEvent("live");
-                }}
-              />
+           <div className={classes.GridTitlePanel}>
+             <div className={classes.GridTitle}>
+                <div style={{ paddingTop: "10px" }}>Event Creation</div>
+                <div></div>
+                <Button
+                  style={{
+                    width: "130px",
+                    height: "30px",
+                    textAlign: "center",
+                    paddingTop: "7px",
+                  }}
+                  content="Save as Draft"
+                  basic
+                  color="green"
+                  onClick={() => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.isDraft = true;
+                    setEventDescription(tempDescription);
+                    saveEvent("save");
+                  }}
+                />
+                <Button
+                  style={{
+                    width: "130px",
+                    height: "30px",
+                    textAlign: "center",
+                    paddingTop: "7px",
+                  }}
+                  content="Go Live Now"
+                  basic
+                  color="red"
+                  onClick={() => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.isDraft = false;
+                    setEventDescription(tempDescription);
+                    saveEvent("live");
+                  }}
+                />
+              </div>
+              <div>
+                {errorDisplay()}
+              </div>
             </div>
 
 
           <div className={classes.MainGrid}>
-            {savedDisplayed()}
+            {savedModal()}
  
 
-            <div>
-              {errorCheck()}
-            </div>
+
     
             <div className={classes.CategoryTitle} style={{ width: "140px" }}>
               Event Details

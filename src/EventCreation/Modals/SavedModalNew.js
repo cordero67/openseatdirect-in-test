@@ -14,8 +14,10 @@ const SavedModal = (props) => {
     titleText = props.details.savedMessage;
   } else if (props.details.status === "live") {
     titleText = props.details.liveMessage;
-  } else if (props.details.status === "declined") {
+  } else if (props.details.status === "error") {
     titleText = props.details.errorMessage;
+  } else if (props.details.status === "failure") {
+    titleText = titleText = props.details.failureMessage;
   }
 
   let buttonSelection;
@@ -39,7 +41,7 @@ const SavedModal = (props) => {
         </div>
       </div>
     )
-  } else if (props.details.status === "declined") {
+  } else if (props.details.status === "error" || props.details.status === "failure") {
     buttonSelection = (
       <div className={classes.CropBoxControls}>
         <div
@@ -74,12 +76,14 @@ const SavedModal = (props) => {
         <br></br>
         <div
           style={{
-            fontSize: "30px",
+            fontSize: "24px",
+            height: "50px",
+            textAlign: "center",
+            paddingTop: "5px",
           }}
         >
           {titleText}
         </div>
-        <br></br>
         {buttonSelection}
         <br></br>
       </div>
