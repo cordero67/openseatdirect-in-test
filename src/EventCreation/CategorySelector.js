@@ -16,7 +16,6 @@ const CategorySelector = (props) => {
         placeholder="Please select a category"
         name="eventCategory"
         defaultValue="default"
-        value={props.value}
         onChange={props.onChange}
         required
         >
