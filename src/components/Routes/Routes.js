@@ -11,6 +11,7 @@ import Events from "../../Events/Events";
 import EventDetails from "../../Events/EventDetails";
 import EventDetailHaHa from "../../Events/EventDetailHaHa";
 import EventDetailLight from "../../Events/EventDetailLight";
+import EventDeletion from "../../EventCreation/DeleteEvent";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
@@ -332,6 +333,23 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventCreation />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/delete"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <EventDeletion />
             <Footer></Footer>
           </React.Fragment>
         )}

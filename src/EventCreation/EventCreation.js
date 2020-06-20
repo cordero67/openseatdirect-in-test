@@ -148,6 +148,7 @@ const EventCreation = () => {
     }
   }, [pageErrors]);
 
+
   const saveEvent = async (status) => {
     let tempPageErrors = false;
     let tempEventTitleOmission = false;
@@ -269,7 +270,7 @@ const EventCreation = () => {
       var formData = new FormData();
 
       eventDescriptionFields.forEach((field) => {
-          if (eventDescription[field]!=''){
+          if (eventDescription[field]!='') {
             formData.append(`${field}`, eventDescription[field]);
             /*console.log(
               "this is the input: ",
@@ -422,43 +423,49 @@ const EventCreation = () => {
       let apiurl;
       apiurl = `${API}/eventix/${userid}`;
 
-// set isDraft to false if it is live before the fetch
-
       fetch(apiurl, {
         method: "post",
         headers: myHeaders,
         body: formData,
         redirect: "follow",
       })
-        //.then(handleErrors)
-        .then((response) => {
-          console.log("response in create", response);
-          return response.json();
-        })
-        .then((res) => {
-          console.log("Event was saved/went live");
-          console.log("res: ", res);
-          //if (false && false) {
-          if (!res.done && res.friendlyMessage) {
-            console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-            tempStatus.status = "error";
-            tempStatus.errorMessage = res.friendlyMessage; // uncomment once actual response field exists
-          //} else if(false && false) {
-          } else if(!res.done && !res.friendlyMessage) {
-            console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-            tempStatus.status = "failure";
-          }
-          setEventStatus(tempStatus);
-          return res;
-        })
-        .catch((err) => {
-          console.log("Inside the .catch")
-          console.log("**ERROR THROWN", err);
+      .then(handleErrors)
+      .then((response) => {
+        console.log("response in create", response);
+        return response.json();
+      })
+      .then((res) => {
+        console.log("Event was saved/went live");
+        console.log("res: ", res);
+        //if (false && false) {
+        if (!res.done && res.friendlyMessage) {
+          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+          tempStatus.status = "error";
+          tempStatus.errorMessage = res.friendlyMessage;
+        //} else if(false && false) {
+        } else if(!res.done && !res.friendlyMessage) {
+          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
           tempStatus.status = "failure";
-          setEventStatus(tempStatus);
-        });
-      }
+        }
+        setEventStatus(tempStatus);
+        return res;
+      })
+      .catch((err) => {
+        console.log("Inside the .catch")
+        console.log("**ERROR THROWN", err);
+        tempStatus.status = "failure";
+        setEventStatus(tempStatus);
+      });
     }
+  }
+  
+  const handleErrors = (response) => {
+    if (!response.ok) {
+      throw Error(response.status);
+      console.log("Error: ", response);
+    }
+    return response;
+  };
 
   const savedModal = () => {
     console.log("inside savedDisplay");
@@ -604,14 +611,6 @@ const EventCreation = () => {
     });
     setTicketDetails(tempDetails);
     console.log("Ticket Details: ", tempDetails);
-  };
-
-  const handleErrors = (response) => {
-    if (!response.ok || !response.done) {
-      throw Error(response.status);
-      console.log("Error: ", response);
-    }
-    return response;
   };
 
   // STOPPED
