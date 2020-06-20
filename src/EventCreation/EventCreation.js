@@ -458,10 +458,8 @@ const EventCreation = () => {
       });
     }
   }
-  
+
   const handleErrors = (response) => {
-    console.log("inside handle errors")
-    console.log("response: ", response)
     if (!response.ok) {
       throw Error(response.status);
       console.log("Error: ", response);
