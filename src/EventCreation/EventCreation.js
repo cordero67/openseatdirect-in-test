@@ -149,10 +149,11 @@ const EventCreation = () => {
   }, [pageErrors]);
 
 
-  const saveEvent = async (status) => {
+  const saveEvent = async (newStatus) => {
+    console.log("eventDescription: ", eventDescription)
+    console.log("eventStatus: ", eventStatus)
     let tempPageErrors = false;
     let tempEventTitleOmission = false;
-
     setPageErrors(false);
     setEventTitleOmission(false);
     
@@ -168,17 +169,8 @@ const EventCreation = () => {
       window.location.href = "/signin";
     }
 
-    let tempDescription = { ...eventDescription };
     let tempStatus = { ...eventStatus };
-    
-    if (status === "save") {
-      tempDescription.isDraft = true;
-      tempStatus.status = "saved";
-    } else if (status === "live") {
-      tempDescription.isDraft = false;
-      tempStatus.status = "live";
-    }
-    setEventDescription(tempDescription);
+    tempStatus.status = newStatus;
 
     ticketDetails.map((ticket, index) => {
       //console.log("Ticket index: ", index)
@@ -235,13 +227,9 @@ const EventCreation = () => {
       tempEventTitleOmission = true;
     }
 
-    //console.log("pageErrors: ", pageErrors)
-    //console.log("eventTitleOmission: ", eventTitleOmission)
-
     if (!tempPageErrors && !tempEventTitleOmission) {
       //console.log("Inside the formData section")
       let eventDescriptionFields = [
-        "isDraft",
         "eventTitle",
         "eventType",
         "locationVenueName",
@@ -270,16 +258,33 @@ const EventCreation = () => {
       var formData = new FormData();
 
       eventDescriptionFields.forEach((field) => {
-          if (eventDescription[field]!='') {
+          if (eventDescription[field] !== '') {
+            console.log("eventDescription[field]: ", eventDescription[field] )
             formData.append(`${field}`, eventDescription[field]);
             /*console.log(
               "this is the input: ",
              `${field}`,
               `${eventDescription[field]}`
             );*/
+          } else {
+            console.log("This field was not sent: ", field )
           }
       });
+    
+      let tempDescription = { ...eventDescription };
 
+      if (newStatus === "saved") {
+        tempDescription.isDraft = true;
+        formData.append("isDraft", "true");
+        console.log("event will be saved")
+      } else if (newStatus === "live") {
+        tempDescription.isDraft = false;
+        formData.append("isDraft", "false");
+        console.log("event will be live")
+      }
+
+      setEventDescription(tempDescription);
+      
       let tempStartDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
       //console.log("startDate from dateFnsFormat: ", tempStartDate);
 
@@ -410,7 +415,7 @@ const EventCreation = () => {
 
       // Display the key/value pairs
       for (var pair of formData.entries()) {
-        //console.log(pair[0] + ", " + pair[1]);
+        console.log(pair[0] + ", " + pair[1]);
       }
 
       let userid = vendorInfo.id;
@@ -2339,7 +2344,7 @@ const EventCreation = () => {
                     let tempDescription = { ...eventDescription };
                     tempDescription.isDraft = true;
                     setEventDescription(tempDescription);
-                    saveEvent("save");
+                    saveEvent("saved");
                   }}
                 />
                 <Button
@@ -2353,7 +2358,7 @@ const EventCreation = () => {
                   basic
                   color="red"
                   onClick={() => {
-                    let tempDescription = { ...eventDescription };
+                    let tempDescription = {...eventDescription };
                     tempDescription.isDraft = false;
                     setEventDescription(tempDescription);
                     saveEvent("live");
