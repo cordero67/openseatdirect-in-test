@@ -14,10 +14,6 @@ import {
 import VendorNavigation from "./VendorNavigation";
 
 import classes from "./User.module.css";
-import { closestIndexTo } from "date-fns";
-
-let userId = JSON.parse(localStorage.getItem("user")).user._id;
-let token = JSON.parse(localStorage.getItem("user")).token;
 
 const VendorEvents = () => {
   const monthNames = [
@@ -69,40 +65,50 @@ const VendorEvents = () => {
   vendorInfo.id = tempUser.user._id;
 
   //const [vendorInfo, setVendorInfo] = useState();
-  const [eventDescriptions, setEventDescriptions] = useState();//
-  const [ticketDisplay, setTicketDisplay] = useState();
-  const [isLoading, setIsLoading] = useState(true);//
-  const [isSuccessful, setIsSuccessful] = useState(true);//
-  //const [activeEvent, setActiveEvent] = useState("");
-  //const [activeTickets, setActiveTickets] = useState([]);
-  //const [isEmpty, setIsEmpty] = useState(true);
+  const [eventDetails, setEventDetails] = useState();
+  const [expandDetails, setExpandDetails] = useState();
+  const [ticketDetails, setTicketDetails] = useState();
+  const [activeEvent, setActiveEvent] = useState("");
+  const [activeTickets, setActiveTickets] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSuccessful, setIsSuccessful] = useState(true);
+  const [isEmpty, setIsEmpty] = useState(true);
 
   useEffect(() => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + token);
-
+    myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
     let requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
 
-    let fetchstr =  `${API}/event/all/${userId}`;
+    let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
     console.log("about to fetch: ", fetchstr, requestOptions);
-
     fetch(fetchstr, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         let js = JSON.parse(result);
-        console.log("eventDescriptions: ", js);
+        console.log("eventDetails: ", js);
         js.sort(compareValues("startDateTime", "asc"));
         console.log("js: ", js);
-        setEventDescriptions(js);
-        initializeDisplays(js);
-        setIsSuccessful(true)
-        setIsLoading(false);
+        setEventDetails(js);
         return js;
+      })
+      .then((js) => {
+        console.log("inside next .then");
+        let tempArray = [];
+        js.map((item, index) => {
+          let newElement;
+          newElement = {
+            [item.eventNum]: false,
+          };
+          tempArray.push(newElement);
+        });
+        console.log("tempArray: ", tempArray);
+        setExpandDetails(tempArray);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log("error", error);
@@ -110,15 +116,6 @@ const VendorEvents = () => {
         setIsLoading(false);
       });
   }, []);
-
-  const initializeDisplays = (events) => {
-    let tempObject = {};
-    events.forEach((item, index) => {
-      tempObject[item.eventNum] = false;
-    })
-    setTicketDisplay(tempObject);
-    console.log("tempObject: ", tempObject)
-  }
 
   const compareValues = (key, order) => {
     return function innerSort(a, b) {
@@ -139,7 +136,43 @@ const VendorEvents = () => {
     };
   };
 
-  /*
+  const handleGetAttendees = (eventNum) => {
+    console.log("vendorInfo: ", vendorInfo);
+    setActiveTickets("");
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
+    let requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    console.log(myHeaders);
+
+    let fetchstr = `${API}/eventdoor/${eventNum}/attendees/${vendorInfo.id}`
+    console.log("about to fetch: ", fetchstr, requestOptions);
+    fetch(fetchstr, requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        let js = JSON.parse(result);
+        setTicketDetails(js);
+        let tempDetails = [...js];
+        parseTicketDetails(js);
+        setActiveEvent(eventNum);
+        localStorage.setItem("event", JSON.stringify(eventNum));
+        console.log("eventNum: ", eventNum);
+        eventDetails.forEach((item, index) => {
+          if (item.eventNum === eventNum) {
+            console.log("Associated event details: ", item);
+          }
+        });
+      })
+      .catch((error) => {
+        console.log("error", error);
+        //SIGNOK = false;
+      });
+  };
+
   const parseTicketDetails = (tickets) => {
     if (tickets.length > 0) {
       let ticketTypes = [];
@@ -168,7 +201,7 @@ const VendorEvents = () => {
       console.log("No ticket sales");
     }
   };
-*/
+
   const mainDisplay = () => {
     if (!isLoading) {
       return (
@@ -183,7 +216,7 @@ const VendorEvents = () => {
               backgroundColor: "#f8f8f8",
               borderBottom: "1px solid lightgrey",
               width: "1015px",
-              gridTemplateColumns: "60px 20px 480px 190px 80px",
+              gridTemplateColumns: "60px 20px 480px 100px 110px 90px 60px",
               fontSize: "15px",
               paddingTop: "15px",
               paddingBottom: "15px",
@@ -194,13 +227,15 @@ const VendorEvents = () => {
             <div style={{ textAlign: "center" }}>Date</div>
             <div></div>
             <div className={classes.Expand}>Event</div>
+            <div style={{ textAlign: "center" }}>Sold</div>
+            <div style={{ textAlign: "center" }}>Revenue</div>
             <div style={{ textAlign: "center" }}>Status</div>
             <div style={{ textAlign: "center" }}>Edit</div>
           </div>
 
           <div></div>
           <div style={{ marginTop: "110px", overflowY: "auto" }}>
-            {eventDescriptions.map((item, index) => {
+            {eventDetails.map((item, index) => {
               let tempDateTime;
               let tempMonthAbbr;
               let tempMonthNames;
@@ -252,7 +287,7 @@ const VendorEvents = () => {
                       columnGap: "10px",
                       backgroundColor: "#fff",
                       gridTemplateColumns:
-                        "60px 20px 480px 190px 80px",
+                        "60px 20px 480px 100px 110px 90px 60px",
                       fontSize: "16px",
                       paddingTop: "15px",
                       paddingLeft: "20px",
@@ -276,16 +311,19 @@ const VendorEvents = () => {
                       </span>
                     </div>
                     <div style={{ fontSize: "12px", textAlign: "center" }}>
-                      {ticketDisplay[item.eventNum] === true ? (
+                      {expandDetails[item.eventNum] === true ? (
                         <FontAwesomeIcon
                           className={classes.faChevronUp}
                           color="black"
                           size="sm"
                           cursor="pointer"
                           onClick={() => {
-                            let tempDisplay = {...ticketDisplay};
-                            tempDisplay[item.eventNum] = false;
-                            setTicketDisplay(tempDisplay);
+                            setActiveTickets("");
+                            setActiveEvent("");
+                            //handleGetAttendees(item.eventNum);
+                            let tempDetails = [...expandDetails];
+                            tempDetails[item.eventNum] = false;
+                            setExpandDetails(tempDetails);
                           }}
                           icon={faChevronUp}
                         />
@@ -296,9 +334,10 @@ const VendorEvents = () => {
                           size="sm"
                           cursor="pointer"
                           onClick={() => {
-                            let tempDisplay = {...ticketDisplay};
-                            tempDisplay[item.eventNum] = true;
-                            setTicketDisplay(tempDisplay);
+                            handleGetAttendees(item.eventNum);
+                            let tempDetails = [...expandDetails];
+                            tempDetails[item.eventNum] = true;
+                            setExpandDetails(tempDetails);
                           }}
                           icon={faChevronDown}
                         />
@@ -315,7 +354,19 @@ const VendorEvents = () => {
                       </span>
                     </div>
                     <div style={{ textAlign: "center", fontWeight: "500" }}>
-                      {item.isDraft ? "Draft": "Live"}
+                      25/100
+                    </div>
+                    <div
+                      style={{
+                        fontWeight: "500",
+                        textAlign: "right",
+                        paddingRight: "10px",
+                      }}
+                    >
+                      $10000
+                    </div>
+                    <div style={{ textAlign: "center", fontWeight: "500" }}>
+                      Draft
                     </div>
                     <div
                       style={{
@@ -341,23 +392,15 @@ const VendorEvents = () => {
                     </div>
                   </div>
 
-
                   <div>
-                    {ticketDisplay[item.eventNum] === true ? (
+                    {activeEvent === item.eventNum ? (
                       <div style={{ fontSize: "14px" }}>
-                        {listTicketTypes(item)}
+                        {listTicketTypes()}
                       </div>
                     ) : null}
                   </div>
-
-
-
                 </div>
-
-
               );
-
-
             })}
           </div>
         </div>
@@ -367,22 +410,15 @@ const VendorEvents = () => {
     }
   };
 
-/*
-  <div>
-    {activeEvent === item.eventNum ? (
-      <div style={{ fontSize: "14px" }}>
-        {listTicketTypes()}
-      </div>
-    ) : null}
-  </div>
-*/
-
-
-  const listTicketTypes = (event) => {
-    if (event.tickets.length > 0) {
+  const listTicketTypes = () => {
+    if (activeTickets.length > 0) {
+      let totalTickets = 0;
+      let totalRevenue = 0;
       return (
         <div style={{ paddingBottom: "5px" }}>
-          {event.tickets.map((ticket, index) => {
+          {activeTickets.map((item, index) => {
+            totalTickets += item.sold;
+            totalRevenue += item.revenue;
             return (
               <div
                 key={index}
@@ -391,7 +427,7 @@ const VendorEvents = () => {
                   columnGap: "10px",
                   backgroundColor: "#f8f8f8",
                   width: "1015px",
-                  gridTemplateColumns: "90px 480px",
+                  gridTemplateColumns: "90px 480px 100px 110px",
                   fontSize: "16px",
                   paddingTop: "4px",
                   paddingLeft: "20px",
@@ -408,13 +444,33 @@ const VendorEvents = () => {
                   }}
                 >
                   <div style={{ textAlign: "right", paddingRight: "5px" }}>
-                    ${ticket.currentTicketPrice.toFixed(2)}
+                    ${item.price.toFixed(2)}
                     {":"}
                   </div>
                   <div style={{ textAlign: "left", paddingLeft: "5px" }}>
-                    {ticket.ticketName}
+                    {item.name}
                   </div>
                 </div>
+                <div
+                  style={{
+                    borderBottom: "1px solid lightgrey",
+                    textAlign: "center",
+                    fontWeight: "500",
+                  }}
+                >
+                  {item.sold}/##
+                </div>
+                <div
+                  style={{
+                    borderBottom: "1px solid lightgrey",
+                    textAlign: "right",
+                    fontWeight: "500",
+                    paddingRight: "10px",
+                  }}
+                >
+                  ${Math.round(item.revenue)}
+                </div>
+                <div></div>
               </div>
             );
           })}
@@ -425,7 +481,7 @@ const VendorEvents = () => {
         <div>
           <div
             style={{
-              paddingLeft: "120px",
+              paddingLeft: "77px",
               backgroundColor: "#f8f8f8",
               fontSize: "16px",
               paddingTop: "5px",
@@ -477,43 +533,3 @@ const VendorEvents = () => {
 };
 
 export default VendorEvents;
-
-/*
-
-  const handleGetAttendees = (eventNum) => {
-    console.log("vendorInfo: ", vendorInfo);
-    setActiveTickets("");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
-    let requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    console.log(myHeaders);
-
-    let fetchstr = `${API}/eventdoor/${eventNum}/attendees/${vendorInfo.id}`
-    console.log("about to fetch: ", fetchstr, requestOptions);
-    fetch(fetchstr, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        let js = JSON.parse(result);
-        setTicketDetails(js);
-        let tempDetails = [...js];
-        parseTicketDetails(js);
-        setActiveEvent(eventNum);
-        localStorage.setItem("event", JSON.stringify(eventNum));
-        console.log("eventNum: ", eventNum);
-        eventDetails.forEach((item, index) => {
-          if (item.eventNum === eventNum) {
-            console.log("Associated event details: ", item);
-          }
-        });
-      })
-      .catch((error) => {
-        console.log("error", error);
-        //SIGNOK = false;
-      });
-  };
-*/

@@ -17,7 +17,11 @@ const SavedModal = (props) => {
   } else if (props.details.status === "error") {
     titleText = props.details.errorMessage;
   } else if (props.details.status === "failure") {
-    titleText = titleText = props.details.failureMessage;
+    if (!props.details.failureMessage ) {
+      titleText = "Please fix input errors and resubmit.";
+    } else {
+      titleText = props.details.failureMessage;
+    }
   }
 
   let buttonSelection;
