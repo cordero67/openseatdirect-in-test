@@ -14,14 +14,15 @@ const SavedModal = (props) => {
     titleText = props.details.savedMessage;
   } else if (props.details.status === "live") {
     titleText = props.details.liveMessage;
-  } else if (props.details.status === "error") {
+  } else if (props.details.status === "declined") {
     titleText = props.details.errorMessage;
-  } else if (props.details.status === "failure") {
-    if (!props.details.failureMessage ) {
-      titleText = "Please fix input errors and resubmit.";
-    } else {
-      titleText = props.details.failureMessage;
-    }
+  }
+
+  let subText;
+  if (props.details.status === "saved" || props.details.status === "live") {
+    subText = props.details.subMessage;
+  } else if (props.details.status === "declined") {
+    subText = null;
   }
 
   let buttonSelection;
@@ -37,17 +38,13 @@ const SavedModal = (props) => {
         >
           <Button
             style={{ width: "200px" }}
-            content="Continue"
+            content="Back to dashboard"
             basic
             color="blue"
             onClick={props.toDashboard}
           />
         </div>
-      </div>
-    )
-  } else if (props.details.status === "error" || props.details.status === "failure") {
-    buttonSelection = (
-      <div className={classes.CropBoxControls}>
+        <br></br>
         <div
           style={{
             margin: "auto",
@@ -57,14 +54,31 @@ const SavedModal = (props) => {
         >
           <Button
             style={{ width: "200px" }}
-            content="Continue"
+            content="Create another event"
             basic
-            color="blue"
+            color="green"
+            onClick={props.createEvent}
+          />
+        </div>
+        <br></br>
+        <div
+          style={{
+            margin: "auto",
+            textAlign: "center",
+            paddingTop: "5px",
+          }}
+        >
+          <Button
+            style={{ width: "200px" }}
+            content="Edit this event"
+            basic
+            color="red"
             onClick={props.editEvent}
           />
         </div>
       </div>
-    ) 
+    )
+
   }
 
   return (
@@ -80,14 +94,21 @@ const SavedModal = (props) => {
         <br></br>
         <div
           style={{
-            fontSize: "24px",
-            height: "50px",
-            textAlign: "center",
-            paddingTop: "5px",
+            fontSize: "30px",
           }}
         >
           {titleText}
         </div>
+        <br></br>
+        <br></br>
+        <div
+          style={{
+            fontSize: "20px",
+          }}
+        >
+          {subText}
+        </div>
+        <br></br>
         {buttonSelection}
         <br></br>
       </div>
