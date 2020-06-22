@@ -1,16 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import dateFnsFormat from 'date-fns/format';
 
-/*
-ticketTypeDisplay
-additionalSettings
-priceFeatureSettings
-*/
+import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
 
-import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
+
 
 import { Editor } from "@tinymce/tinymce-react";
 import DateSelector from "./DateSelector";
@@ -52,6 +47,7 @@ const EventCreation = () => {
 
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
+
     eventTitle: "",
     isDraft: true,
     eventType: "live",
@@ -68,8 +64,10 @@ const EventCreation = () => {
     locationNote: "",
     startDate: new Date(new Date().toDateString()),
     startTime: "18:00.00",
+
     endDate: new Date(new Date().toDateString()),
     endTime: "19:00.00",
+
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     eventImage: "",
     shortDescription: "",
@@ -112,7 +110,7 @@ const EventCreation = () => {
       nameWarning: false
     },
   ]);
-
+  // DONT KNOW IF I NEED THIS
   const [photoData, setPhotoData] = useState({
     imgSrc: "",
     imgSrcExt: "",
@@ -122,9 +120,13 @@ const EventCreation = () => {
     status: "", // "saved", "live", "error", "failure"
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
-    errorMessage: "", //["Sorry, your event contains some input errors.", "Please fix these and resubmit."],
+    errorMessage: "", //["Please fix input errors and resubmit."],
     failureMessage: "System error please try again.",
   });
+
+
+
+
 
   useEffect(() => {
     // checks if 'user' exists in local storage
@@ -139,15 +141,14 @@ const EventCreation = () => {
     } else {
       window.location.href = "/signin";
     }
-    
   }, []);
 
+  // DONT KNOW IF I NEED THIS
   useEffect(() => {
     if (true) {
       console.log("Hello world")
     }
   }, [pageErrors]);
-
 
   const saveEvent = async (newStatus) => {
     console.log("eventDescription: ", eventDescription)

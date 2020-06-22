@@ -22,7 +22,7 @@ import PasswordRecovery from "../../Users/PasswordRecovery";
 import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../../Users/UserDashboard";
 import VendorEventsOld from "../../Users/zzzVendorEvents";
-import VendorEvents from "../../Users/VendorEvents";
+import VendorEvents from "../../Users/Vendor/VendorEvents";
 import VendorEventDetails from "../../Users/VendorEventDetails";
 import VendorOrders from "../../Users/VendorOrders";
 import VendorProflle from "../../Users/VendorProflle";

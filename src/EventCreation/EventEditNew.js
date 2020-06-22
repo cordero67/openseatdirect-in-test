@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import queryString from "query-string";
 
+import dateFnsFormat from 'date-fns/format';
+
 import { API } from "../config";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
-
 import { Editor } from "@tinymce/tinymce-react";
 import DateSelector from "./DateSelector";
 import TimeSelector from "./TimeSelector";
@@ -19,7 +20,7 @@ import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
 
-import classes from "./EventCreation.module.css";
+import classes from "./EventCreationNew.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,6 +42,9 @@ import {
 let vendorInfo = {};
 
 const EventEdit = () => {
+  const [eventTitleOmission, setEventTitleOmission] = useState(false);
+  const [pageErrors, setPageErrors] = useState(false);
+
   // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
     eventNum: "",
@@ -59,16 +63,16 @@ const EventEdit = () => {
     locationCountryCode: "US",
     locationNote: "",
     startDate: new Date(new Date().toDateString()),
-    startTime: "",
+    startTime: "18:00.00",
     startDateTime: "",
     endDate: new Date(new Date().toDateString()),
-    endTime: "",
+    endTime: "19:00.00",
     endDateTime: "",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     eventImage: "",
     shortDescription: "",
     longDescription: "",
-    eventCategory: "",
+    eventCategory: "other",
     facebookLink: "",
     twitterLink: "",
     linkedinLink: "",
@@ -85,12 +89,16 @@ const EventEdit = () => {
       _id: "",
       ticketName: "",
       remainingQuantity: "",
+      quantityWarning: false,
       currentTicketPrice: "",
+      priceWarning: false,
       currency: "",
       settings: false,
       ticketDescription: "",
       minTicketsAllowedPerOrder: "",
+      minWarning: false,
       maxTicketsAllowedPerOrder: "",
+      maxWarning: false,
       priceFeature: "none",
       promoCodes: [
         { key: "1", name: "", amount: "", percent: false },
@@ -102,20 +110,18 @@ const EventEdit = () => {
       nameWarning: false
     },
   ]);
-
+  // DONT KNOW IF I NEED THIS
   const [photoData, setPhotoData] = useState({
     imgSrc: "",
     imgSrcExt: "",
   });
 
   const [eventStatus, setEventStatus] = useState({
-    status: "",
+    status: "", // "saved", "live", "error", "failure"
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
-    errorMessage: "Sorry, your event request cannot be prossessed.",
-    subMessage: "What next!",
-    eventNum: "",
-    isDraft: true,
+    errorMessage: "", //["Please fix input errors and resubmit."],
+    failureMessage: "System error please try again.",
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -124,8 +130,6 @@ const EventEdit = () => {
 
   useEffect(() => {
     // checks if 'user' exists in local storage
-    //setIsLoading(true);
-
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -138,7 +142,15 @@ const EventEdit = () => {
       window.location.href = "/signin";
     }
 
-    // checks if an 'eventNum' is in url
+    
+    // DONT KNOW IF I NEED THIS
+    useEffect(() => {
+      if (true) {
+        console.log("Hello world")
+      }
+    }, [pageErrors]);
+  
+  // checks if an 'eventNum' is in url
     if (
       queryString.parse(window.location.search).eventID &&
       localStorage.getItem("user")

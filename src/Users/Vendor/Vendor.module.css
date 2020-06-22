@@ -1,0 +1,139 @@
+.Expand {
+  font-weight: 700px;
+  font-size: 16px;
+  word-wrap: break-word;
+  max-height: 75px;
+  overflow: hidden;
+}
+
+.DashboardContainer {
+  font-family: "Roboto", sans-serif;
+  background-color: #2f5596;
+  background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
+  height: calc(100vh - 57px);
+  box-sizing: border-box;
+  padding-top: 60px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+}
+
+.DashboardCanvas {
+  width: auto;
+  background-color: white;
+  box-sizing: border-box;
+  margin: auto;
+  width: 1200px;
+  height: calc(100vh - 115px);
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  text-align: left;
+}
+
+.DashboardTitle {
+  border-bottom: 1px solid grey;
+  box-sizing: border-box;
+  height: 75px;
+  font-weight: 700;
+  padding-left: 15px;
+  padding-top: 30px;
+  font-size: 30px;
+}
+
+.DashboardMain {
+  /*border: 1px solid green;*/
+  display: grid;
+  background-color: #f8f8f8;
+  grid-template-columns: 185px auto;
+  height: calc(100% - 77px);
+  font-size: 30px;
+  font-weight: 600;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-bottom: 55px;
+  padding-left: 0px;
+}
+
+.DashboardPanel {
+  overflow-y: auto;
+}
+
+.DashboardNavigation {
+  background-color: #e7e7e7;
+  height: calc(100% - 77px);
+  height: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  padding-top: 60px;
+  padding-bottom: 0px;
+  padding-left: 20px;
+  margin-bottom: 55px;
+  overflow-y: auto;
+}
+
+.MainDisplayHeader {
+    z-index: 200;
+    display: grid;
+    position: fixed;
+    top: 195px;
+    column-gap: 10px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid lightgrey;
+    width: 1015px;
+    grid-template-columns: 60px 20px 480px 190px 80px;
+    font-size: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 20px;
+    padding-right: 30px;
+}
+
+.MainDisplay {
+    display: grid;
+    column-gap: 10px;
+    background-color: #fff;
+    grid-template-columns: 60px 20px 480px 190px 80px;
+    font-size: 16px;
+    padding-top: 15px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    padding-right: 30px;
+}
+
+.DashboardPanelHeader {
+  position: fixed;
+  top: 135px;
+  background-color: #fff;
+  z-index: 200;
+  width: 1015px;
+  font-size: 26px;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid lightgrey;
+}
+
+.TicketTypes {
+    display: grid;
+    column-gap: 10px;
+    background-color: #f8f8f8;
+    width: 1015px;
+    grid-template-columns: 90px 480px;
+    font-size: 16px;
+    padding-top: 4px;
+    padding-left: 20px;
+    padding-bottom: 1px;
+    padding-right: 30px;
+}
+
+.NoTickets {
+    padding-left: 120px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 30px;
+}
