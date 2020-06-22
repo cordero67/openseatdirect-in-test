@@ -18,7 +18,7 @@ import RadioForm from "./RadioForm";
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 
 import TicketModal from "./Modals/TicketModal";
-import SavedModal from "./Modals/SavedModalNew";
+import SavedModal from "./Modals/SavedModal";
 
 import classes from "./EventCreationNew.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -458,14 +458,11 @@ const EventCreation = () => {
   const handleErrors = (response) => {
     if (!response.ok) {
       throw Error(response.status);
-      console.log("Error: ", response);
     }
     return response;
   };
 
   const savedModal = () => {
-    //console.log("inside savedDisplay");
-    //console.log("eventStatus: ", eventStatus);
     if (eventStatus.status === "failure" || eventStatus.status === "error") {
       return (
         <Aux>
@@ -974,7 +971,6 @@ const EventCreation = () => {
   };
 
   const priceFeatureSettings = (ticket) => {
-
     if (ticket.priceFeature === "none") {
       return (
         <Aux>
@@ -1675,39 +1671,39 @@ const EventCreation = () => {
   };
 
   const additionalSettings = (ticket) => {
-          // defines warnings for order min and max
-          let orderRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
+    // defines warnings for order min and max
+    let orderRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
 
-          // determines if a min or max field warning is required
-          if(!ticket.minTicketsAllowedPerOrder) {
-            ticket.minWarning = false;
-          } else {
-            ticket.minWarning = !orderRegex.test(ticket.minTicketsAllowedPerOrder);
-            console.log("ticket.minWarning: ",ticket.minWarning)
-          }
+    // determines if a min or max field warning is required
+    if(!ticket.minTicketsAllowedPerOrder) {
+      ticket.minWarning = false;
+    } else {
+      ticket.minWarning = !orderRegex.test(ticket.minTicketsAllowedPerOrder);
+      console.log("ticket.minWarning: ",ticket.minWarning)
+    }
 
-          if(!ticket.maxTicketsAllowedPerOrder) {
-            ticket.maxWarning = false;
-          } else {
-            ticket.maxWarning = !orderRegex.test(ticket.maxTicketsAllowedPerOrder);
-            console.log("ticket.maxWarning: ",ticket.maxWarning)
-          }
+    if(!ticket.maxTicketsAllowedPerOrder) {
+      ticket.maxWarning = false;
+    } else {
+      ticket.maxWarning = !orderRegex.test(ticket.maxTicketsAllowedPerOrder);
+      console.log("ticket.maxWarning: ",ticket.maxWarning)
+    }
 
-          // defines styling for the order min and max boxes
-          let tempMinWarning;
-          let tempMaxWarning;
-          
-          if (ticket.minWarning) {
-            tempMinWarning = classes.OrderBoxWarning;
-          } else {
-            tempMinWarning = classes.OrderBox;
-          }
-          
-          if (ticket.maxWarning) {
-            tempMaxWarning = classes.OrderBoxWarning;
-          } else {
-            tempMaxWarning = classes.OrderBox;
-          }
+    // defines styling for the order min and max boxes
+    let tempMinWarning;
+    let tempMaxWarning;
+    
+    if (ticket.minWarning) {
+      tempMinWarning = classes.OrderBoxWarning;
+    } else {
+      tempMinWarning = classes.OrderBox;
+    }
+    
+    if (ticket.maxWarning) {
+      tempMaxWarning = classes.OrderBoxWarning;
+    } else {
+      tempMaxWarning = classes.OrderBox;
+    }
 
     return (
       <div>
@@ -1962,7 +1958,6 @@ const EventCreation = () => {
   };
 
   const ticketTypeDisplay = (index) => {
-
     let display = (
       <Aux>
         {ticketDetails.map((item, index) => {
@@ -2275,6 +2270,10 @@ const EventCreation = () => {
     { label: "No refunds: No refunds at any time.", value: "noRefunds" },
   ];
 
+
+
+
+
   const imageCanvas = () => {
     return (
       <ImgDropAndCrop
@@ -2296,16 +2295,6 @@ const EventCreation = () => {
     );
     //}
   };
-
-  /*
-  const errorDisplay = () => {
-    if (pageErrors || eventTitleOmission) {
-      return (<div style={{ margin: "auto", position: "fixed", zIndex: "200", top: "135px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "16px"}}>Please correct the input errors identified below.</div>)
-    } else {
-      return null;
-    }
-  }
-  */
 
   const errorDisplay = () => {
     if (pageErrors || eventTitleOmission) {
@@ -2361,13 +2350,8 @@ const EventCreation = () => {
               </div>
             </div>
 
-
           <div className={classes.MainGrid}>
             {savedModal()}
- 
-
-
-    
             <div className={classes.CategoryTitle} style={{ width: "140px" }}>
               Event Details
             </div>
