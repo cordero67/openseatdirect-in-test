@@ -332,30 +332,32 @@ const EventEdit = () => {
         setPageErrors(true);
         tempPageErrors = true;
       }
-      if(ticket.functionArgs.reqWarning) {
-        console.log("Req Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.functionArgs.buyWarning) {
-        console.log("Buy Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.functionArgs.getWarning) {
-        console.log("Get Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.functionArgs.discountWarning) {
-        console.log("Discount Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.functionArgs.forWarning) {
-        console.log("For Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
+      if (ticket.functionArgs) {
+        if(ticket.functionArgs.reqWarning) {
+          console.log("Req Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if(ticket.functionArgs.buyWarning) {
+          console.log("Buy Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if(ticket.functionArgs.getWarning) {
+          console.log("Get Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if(ticket.functionArgs.discountWarning) {
+          console.log("Discount Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if(ticket.functionArgs.forWarning) {
+          console.log("For Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
       }
     })
 
