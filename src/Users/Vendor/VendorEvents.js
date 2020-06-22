@@ -13,9 +13,7 @@ import VendorNavigation from "../VendorNavigation";
 import classes from "./Vendor.module.css";
 import { compareValues, getDates } from "../VendorFunctions";
 
-let vendorId = JSON.parse(localStorage.getItem("user")).user._id;
-let vendorToken = JSON.parse(localStorage.getItem("user")).token;
-let vendorName = JSON.parse(localStorage.getItem("user")).user.name;
+let vendorInfo = {};
 
 const VendorEvents = () => {
 
@@ -25,9 +23,27 @@ const VendorEvents = () => {
   const [isSuccessful, setIsSuccessful] = useState(true);//
 
   useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      vendorInfo.token = tempUser.token;
+      vendorInfo.id = tempUser.user._id;
+      vendorInfo.name = tempUser.name
+    } else {
+      window.location.href = "/signin";
+    }
+
+
+    //let vendorId = JSON.parse(localStorage.getItem("user")).user._id;
+    //let vendorToken = JSON.parse(localStorage.getItem("user")).token;
+    //let vendorName = JSON.parse(localStorage.getItem("user")).user.name;
+
+
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + vendorToken);
+    myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
 
     let requestOptions = {
       method: "GET",
@@ -35,7 +51,7 @@ const VendorEvents = () => {
       redirect: "follow",
     };
 
-    let fetchstr =  `${API}/event/all/${vendorId}`;
+    let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
 
     fetch(fetchstr, requestOptions)
       .then((response) => response.text())
@@ -232,7 +248,7 @@ const VendorEvents = () => {
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
         <div className={classes.DashboardTitle}>
-          {vendorName} Dashboard
+          {vendorInfo.name} Dashboard
         </div>
         <div className={classes.DashboardMain}>
           <div className={classes.DashboardNavigation}>

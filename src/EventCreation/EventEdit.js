@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import queryString from "query-string";
 
-import dateFnsFormat from 'date-fns/format';
-
 import { API } from "../config";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
+
 import { Editor } from "@tinymce/tinymce-react";
 import DateSelector from "./DateSelector";
 import TimeSelector from "./TimeSelector";
@@ -20,7 +19,7 @@ import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
 
-import classes from "./EventCreationNew.module.css";
+import classes from "./EventCreation.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -42,9 +41,6 @@ import {
 let vendorInfo = {};
 
 const EventEdit = () => {
-  const [eventTitleOmission, setEventTitleOmission] = useState(false);
-  const [pageErrors, setPageErrors] = useState(false);
-
   // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
     eventNum: "",
@@ -63,16 +59,16 @@ const EventEdit = () => {
     locationCountryCode: "US",
     locationNote: "",
     startDate: new Date(new Date().toDateString()),
-    startTime: "18:00.00",
+    startTime: "",
     startDateTime: "",
     endDate: new Date(new Date().toDateString()),
-    endTime: "19:00.00",
+    endTime: "",
     endDateTime: "",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     eventImage: "",
     shortDescription: "",
     longDescription: "",
-    eventCategory: "other",
+    eventCategory: "",
     facebookLink: "",
     twitterLink: "",
     linkedinLink: "",
@@ -89,16 +85,12 @@ const EventEdit = () => {
       _id: "",
       ticketName: "",
       remainingQuantity: "",
-      quantityWarning: false,
       currentTicketPrice: "",
-      priceWarning: false,
       currency: "",
       settings: false,
       ticketDescription: "",
       minTicketsAllowedPerOrder: "",
-      minWarning: false,
       maxTicketsAllowedPerOrder: "",
-      maxWarning: false,
       priceFeature: "none",
       promoCodes: [
         { key: "1", name: "", amount: "", percent: false },
@@ -110,18 +102,20 @@ const EventEdit = () => {
       nameWarning: false
     },
   ]);
-  // DONT KNOW IF I NEED THIS
+
   const [photoData, setPhotoData] = useState({
     imgSrc: "",
     imgSrcExt: "",
   });
 
   const [eventStatus, setEventStatus] = useState({
-    status: "", // "saved", "live", "error", "failure"
+    status: "",
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
-    errorMessage: "", //["Please fix input errors and resubmit."],
-    failureMessage: "System error please try again.",
+    errorMessage: "Sorry, your event request cannot be prossessed.",
+    subMessage: "What next!",
+    eventNum: "",
+    isDraft: true,
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -130,6 +124,8 @@ const EventEdit = () => {
 
   useEffect(() => {
     // checks if 'user' exists in local storage
+    //setIsLoading(true);
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -142,15 +138,7 @@ const EventEdit = () => {
       window.location.href = "/signin";
     }
 
-    
-    // DONT KNOW IF I NEED THIS
-    useEffect(() => {
-      if (true) {
-        console.log("Hello world")
-      }
-    }, [pageErrors]);
-  
-  // checks if an 'eventNum' is in url
+    // checks if an 'eventNum' is in url
     if (
       queryString.parse(window.location.search).eventID &&
       localStorage.getItem("user")
@@ -400,18 +388,14 @@ const EventEdit = () => {
     }
   };
 
-  const saveEvent = async (newStatus) => {
-    console.log("eventDescription: ", eventDescription)
-    console.log("eventStatus: ", eventStatus)
-    let tempPageErrors = false;
-    let tempEventTitleOmission = false;
-    setPageErrors(false);
-    setEventTitleOmission(false);
+  const saveEvent = async (status) => {
+    console.log("status: ", status);
 
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
+      // loads sign-in data
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
@@ -419,65 +403,14 @@ const EventEdit = () => {
       window.location.href = "/signin";
     }
 
-    let tempStatus = { ...eventStatus };
-    tempStatus.status = newStatus;
-
-    ticketDetails.map((ticket, index) => {
-      if(ticket.quantityWarning) {
-        console.log("Quantity Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.priceWarning) {
-        console.log("Price Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.minWarning) {
-        console.log("Min Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.maxWarning) {
-        console.log("Min Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.functionArgs.reqWarning) {
-        console.log("Req Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.functionArgs.buyWarning) {
-        console.log("Buy Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.functionArgs.getWarning) {
-        console.log("Get Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.functionArgs.discountWarning) {
-        console.log("Discount Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-      if(ticket.functionArgs.forWarning) {
-        console.log("For Warning, ticket : ", index)
-        setPageErrors(true);
-        tempPageErrors = true;
-      }
-    })
-
     if (!eventDescription.eventTitle) {
       console.log("You need to complete these fields");
-      setEventTitleOmission(true);
-      tempEventTitleOmission = true;
-    }
-
-    if (!tempPageErrors && !tempEventTitleOmission) {
+      !eventDescription.eventTitle
+        ? setEventTitleOmission(true)
+        : setEventTitleOmission(false);
+    } else {
       let eventDescriptionFields = [
+        "isDraft",
         "eventNum",
         "eventTitle",
         "eventType",
@@ -507,40 +440,20 @@ const EventEdit = () => {
       var formData = new FormData();
 
       eventDescriptionFields.forEach((field) => {
-          if (eventDescription[field] !== '') {
-            console.log("eventDescription[field]: ", eventDescription[field] )
-            formData.append(`${field}`, eventDescription[field]);
-          }
+        //if (eventDescription[field]) {
+          formData.append(`${field}`, eventDescription[field]);
+          console.log(
+            "this is the input: ",
+            `${field}`,
+            `${eventDescription[field]}`
+          );
+        //}
       });
-    
-      let tempDescription = { ...eventDescription };
 
-      if (newStatus === "saved") {
-        tempDescription.isDraft = true;
-        formData.append("isDraft", "true");
-        console.log("event will be saved")
-      } else if (newStatus === "live") {
-        tempDescription.isDraft = false;
-        formData.append("isDraft", "false");
-        console.log("event will be live")
-      }
-
-      setEventDescription(tempDescription);
-      
-      let tempStartDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
-      //console.log("startDate from dateFnsFormat: ", tempStartDate);
-
-      let tempEndDate = dateFnsFormat(eventDescription.endDate,'yyyy-MM-dd');
-      //console.log("endDate from dateFnsFormat: ", tempEndDate);
-
-      let tempStartDateTime = `${tempStartDate} ${eventDescription.startTime}Z`;
-      //console.log("startDateTime: ", tempStartDateTime);
-
-      let tempEndDateTime = `${tempEndDate} ${eventDescription.endTime}Z`;
-      //console.log("endDateTime: ", tempEndDateTime);
-
-      formData.append("startDateTime", tempStartDateTime);
-      formData.append("endDateTime", tempEndDateTime);
+      // THIS NEEDS TO BE CHANGED TO "startDateTime: eventDescription.startDateTime"
+      formData.append("startDateTime", eventDescription.startDate);
+      // THIS NEEDS TO BE CHANGED TO "endDateTime: eventDescription.endDateTime"
+      formData.append("endDateTime", eventDescription.endDate);
 
       let imageBlob = null;
       if (eventDescription.eventImage) {
@@ -550,7 +463,7 @@ const EventEdit = () => {
         );
         formData.append("photo", imageBlob);
       } else {
-        //console.log("there is no image");
+        console.log("there is no image");
       }
       let ticketDetailsFields = [
         "ticketName",
@@ -650,7 +563,7 @@ const EventEdit = () => {
           }
         }
         else {
-          //console.log("skipped ticket ", index);
+          console.log("skipped ticket ", index);
         }
 
       });
@@ -662,22 +575,26 @@ const EventEdit = () => {
 
       let userid = vendorInfo.id;
 
+      //let userid = "5ebad880b70b9045faa9c111"
+      //let userid = "5ebad880b70b9045faa9c537"
+      console.log("userid: ", userid);
       let token = vendorInfo.token;
+      console.log("token: ", token);
       const authstring = `Bearer ${token}`;
       var myHeaders = new Headers();
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
 
-      //if (eventDescription.eventNum) {
-        //console.log("editting an existing event");
+      if (eventDescription.eventNum) {
+        console.log("editting an existing event");
         apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
-        //console.log("apiurl: ", apiurl);
-      //} else {
-        //console.log("creating a new event");
-        //apiurl = `${API}/eventix/${userid}`;
-        //console.log("apiurl: ", apiurl);
-      //}
+        console.log("apiurl: ", apiurl);
+      } else {
+        console.log("creating a new event");
+        apiurl = `${API}/eventix/${userid}`;
+        console.log("apiurl: ", apiurl);
+      }
 
       fetch(apiurl, {
         method: "post",
@@ -685,57 +602,61 @@ const EventEdit = () => {
         body: formData,
         redirect: "follow",
       })
-      .then(handleErrors)
-      .then((response) => {
-        console.log("response in event/create", response);
-        return response.json();
-      })
-      .then((res) => {
-        console.log("Event was saved/went live");
-        console.log("res: ", res);
-      
-        if (!res.done && res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-          tempStatus.status = "error";
-          tempStatus.errorMessage = res.friendlyMessage;
-        //} else if(false && false) {
-        } else if(!res.done && !res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-          tempStatus.status = "failure";
-        }
-        setEventStatus(tempStatus);
-        return res;
-      })
-      .catch((err) => {
-        console.log("Inside the .catch")
-        console.log("**ERROR THROWN", err);
-        tempStatus.status = "failure";
-        setEventStatus(tempStatus);
-      });
-    }
-  }
+        .then(handleErrors)
+        .then((response) => {
+          console.log("response in event/create", response);
+          return response.json();
+        })
+        .then((res) => {
+          console.log("Event was saved/went live");
+          console.log("res: ", res);
 
-  const handleErrors = (response) => {
-    if (!response.ok) {
-      throw Error(response.status);
-      console.log("Error: ", response);
+          let tempDescription = { ...eventDescription };
+          let tempStatus = { ...eventStatus };
+          tempStatus.eventNum = res.result.eventNum;
+          
+          if (status === "save") {
+            tempDescription.isDraft = true;
+            tempStatus.status = "saved";
+          } else if (status === "live") {
+            tempDescription.isDraft = false;
+            tempStatus.status = "live";
+          }
+          setEventDescription(tempDescription);
+          setEventStatus(tempStatus);
+        })
+        .catch((err) => {
+          console.log("**ERROR THROWN", err);
+          let tempStatus = { ...eventStatus };
+          tempStatus.status = "declined";
+          tempStatus.eventNum = "";
+          setEventStatus(tempStatus);
+        });
+      }
     }
-    return response;
-  };
 
-  const savedModal = () => {
-    //console.log("inside savedDisplay");
-    //console.log("eventStatus: ", eventStatus);
-    if (eventStatus.status === "failure" || eventStatus.status === "error") {
+  const savedDisplayed = () => {
+    console.log("inside savedDisplay");
+    console.log("savedDisplay: ", eventStatus);
+    if (eventStatus.status === "declined") {
       return (
         <Aux>
           <SavedModal
             show={true}
             details={eventStatus}
+            toDashboard={() => {
+              window.location.href = `/vendorevents`;
+            }}
             editEvent={() => {
               let tempStatus = { ...eventStatus };
               tempStatus.status = "";
+              tempStatus.eventNum = "";
+              tempStatus.isDraft = true;
               setEventStatus(tempStatus);
+            }}
+            tryAgain={() => {
+              // window.location.href = `/ed/${eventDescription.eventUrl}?eventID=${eventDescription.eventNum}`;
+              // deactivateShowModal(item);
             }}
           ></SavedModal>
         </Aux>
@@ -752,6 +673,16 @@ const EventEdit = () => {
             toDashboard={() => {
               window.location.href = `/vendorevents`;
             }}
+            createEvent={() => {
+              window.location.href = `/eventcreation`;
+            }}
+            editEvent={() => {
+              let tempStatus = { ...eventStatus };
+              tempStatus.status = "";
+              tempStatus.eventNum = "";
+              tempStatus.isDraft = true;
+              setEventStatus(tempStatus);
+            }}
           ></SavedModal>
         </Aux>
       );
@@ -765,13 +696,13 @@ const EventEdit = () => {
     if (event.target.name === "eventTitle") {
       // updates "vanityLink" whenever "eventTitle" is changed
       tempDescription.vanityLink = event.target.value
-        .replace(/\s+/g, "-") // any oddball character
-        .replace(/[^a-zA-Z0-9-]/g, "") // anything but "a-zA-Z0-9"
+        .replace(/\s+/g, "-")
+        .replace(/[^a-zA-Z0-9-]/g, "")
         .toLowerCase();
     }
     setEventDescription(tempDescription);
-    //console.log("Event Description: ", tempDescription);
-  };  
+    console.log("Event Description: ", tempDescription);
+  };
 
   const changeEventDate = (day, fieldName) => {
     console.log("day from Date selector: ", day);
@@ -867,6 +798,14 @@ const EventEdit = () => {
     });
     setTicketDetails(tempDetails);
     console.log("Ticket Details: ", tempDetails);
+  };
+
+  const handleErrors = (response) => {
+    if (!response.ok) {
+      throw Error(response.status);
+      console.log("Error: ", response);
+    }
+    return response;
   };
 
   // STOPPED

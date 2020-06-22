@@ -158,7 +158,6 @@ const EventCreation = () => {
     setPageErrors(false);
     setEventTitleOmission(false);
     
-    // checks if user is logged in
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -174,7 +173,6 @@ const EventCreation = () => {
     tempStatus.status = newStatus;
 
     ticketDetails.map((ticket, index) => {
-      //console.log("Ticket index: ", index)
       if(ticket.quantityWarning) {
         console.log("Quantity Warning, ticket : ", index)
         setPageErrors(true);
@@ -229,7 +227,6 @@ const EventCreation = () => {
     }
 
     if (!tempPageErrors && !tempEventTitleOmission) {
-      //console.log("Inside the formData section")
       let eventDescriptionFields = [
         "eventTitle",
         "eventType",
@@ -262,13 +259,6 @@ const EventCreation = () => {
           if (eventDescription[field] !== '') {
             console.log("eventDescription[field]: ", eventDescription[field] )
             formData.append(`${field}`, eventDescription[field]);
-            /*console.log(
-              "this is the input: ",
-             `${field}`,
-              `${eventDescription[field]}`
-            );*/
-          } else {
-            console.log("This field was not sent: ", field )
           }
       });
     
@@ -443,7 +433,7 @@ const EventCreation = () => {
       .then((res) => {
         console.log("Event was saved/went live");
         console.log("res: ", res);
-        //if (false && false) {
+        
         if (!res.done && res.friendlyMessage) {
           console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
           tempStatus.status = "error";

@@ -1,17 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 
-
 import { API } from "../config";
+import { faBullseye } from "@fortawesome/free-solid-svg-icons";
 
-let userId = JSON.parse(localStorage.getItem("user")).user._id;
-let token = JSON.parse(localStorage.getItem("user")).token;
+let vendorInfo = {};
 
 const EventDeletion = () => {
 
     const [eventNumber, setEventNumber] = useState();
     const [eventDetails, setEventDetails] = useState();
     const [isLoading, setIsLoading] = useState(true);
-    const [isSuccessful, setIsSuccessful] = useState(true);
+    const [isSuccessfull, setIsSuccessfull] = useState(true);
 
     const changeEventNumber = (event) => {
         console.log("event: ", event);
@@ -39,9 +38,22 @@ const EventDeletion = () => {
     };
 
     useEffect(() => {
+      setIsLoading(true);
+      if (
+        typeof window !== "undefined" &&
+        localStorage.getItem(`user`) !== null
+      ) {
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        vendorInfo.token = tempUser.token;
+        vendorInfo.id = tempUser.user._id;
+        console.log("vendorInfo.id: ", vendorInfo.id)
+      } else {
+        window.location.href = "/signin";
+      }
+
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("Authorization", "Bearer " + token);
+        myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
 
         let requestOptions = {
           method: "GET",
@@ -49,7 +61,7 @@ const EventDeletion = () => {
           redirect: "follow",
         };
     
-        let fetchstr =  `${API}/event/all/${userId}`;
+        let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
         console.log("about to fetch: ", fetchstr, requestOptions);
 
         fetch(fetchstr, requestOptions)
@@ -60,19 +72,13 @@ const EventDeletion = () => {
             js.sort(compareValues("startDateTime", "asc"));
             console.log("js: ", js);
             setEventDetails(js);
-            setIsSuccessful(false)
+            setIsSuccessfull(true)
             setIsLoading(false);
             return js;
             })
-            .then((js) => {
-                js.map((event, index) => {
-                    console.log("Event title: ", event.eventTitle);
-                    console.log("Event number: ", event.eventNum);
-                })
-            })
             .catch((error) => {
             console.log("error", error);
-            setIsSuccessful(false)
+            setIsSuccessfull(false)
             setIsLoading(false);
             });
 
@@ -80,109 +86,91 @@ const EventDeletion = () => {
 
 
     const deleteEvent = () => {
-        let myHeaders = new Headers();
-        myHeaders.append("Accept", "application/json");
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("Authorization", "Bearer " + token);
+      let myHeaders = new Headers();
+      myHeaders.append("Accept", "application/json");
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
 
-        let requestOptions = {
-          method: "DELETE",
-          headers: myHeaders,
-          //redirect: "follow",
-        };
-    
-        let fetchstr =  `${API}/eventix/${userId}/${eventNumber}`;
-        console.log("about to fetch: ", fetchstr, requestOptions);
-        
-        fetch(fetchstr, requestOptions);
+      let requestOptions = {
+        method: "DELETE",
+        headers: myHeaders,
+        //redirect: "follow",
+      };
+  
+      let fetchstr =  `${API}/eventix/${vendorInfo.id}/${eventNumber}`;
+      console.log("about to fetch: ", fetchstr, requestOptions);
+      
+      fetch(fetchstr, requestOptions);
     }
 
-    //let transformedTimes = Object.keys(timeMilliseconds2);
-
-    //console.log("transformedTimes: ", transformedTimes)
+    const mainDisplay = () => {
+      if (isLoading) {
+        return <div>Is Loading</div>
+      } else if (!isLoading && !isSuccessfull) {
+        return <div>User id is not valid</div>
+      } else {
+        return (
+          <div>
+            <select
+                style={{
+                    padding: "9px 5px",
+                    border: "1px solid lightgrey",
+                    boxSizing: "borderBox",
+                    width: "400px",
+                    lineHeight: "1.75",
+                    cursor: "pointer"}}
+                    onChange={changeEventNumber}
+                    type="number"
+                    id="input box events"
+                    placeholder="select an event to delete"
+                    required
+            >
+                {eventDetails.map((event, index) => {
+                return <option key={index} value={event.eventNum} name={event}
+                    >{event.eventTitle}</option>
+                })}
+            </select>
+            
+            <br></br>
+            <br></br>
+    
+            <input
+                style={{ width: "400px" }}
+                type="text"
+                id="eventNum"
+                placeholder="Event number to Delete"
+                value={eventNumber}
+                name="facebookLink"
+                onChange={(event) => {
+                    changeEventNumber(event);
+                }}
+            ></input>
+            <br></br>
+            <br></br>
+            <button
+                onClick={deleteEvent}
+            >
+                Delete Event
+            </button>
+            <br></br>
+            <br></br>
+          </div>
+        )
+      }
+    }
 
     return (    
         <div>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        Delete an Event
-        
-        <br></br>
-        <br></br>
-        {!isLoading ? 
-        <select
-            style={{
-                padding: "9px 5px",
-                border: "1px solid lightgrey",
-                boxSizing: "borderBox",
-                width: "400px",
-                lineHeight: "1.75",
-                cursor: "pointer"}}
-                onChange={changeEventNumber}
-                type="number"
-                id="input box events"
-                placeholder="select an event to delete"
-                required
-        >
-            {eventDetails.map((event, index) => {
-            return <option key={index} value={event.eventNum} name={event}
-                >{event.eventTitle}</option>
-            })}
-        </select> : null}
-        
-        <br></br>
-        <br></br>
-
-        <input
-            style={{ width: "400px" }}
-            type="text"
-            id="eventNum"
-            placeholder="Event number to Delete"
-            value={eventNumber}
-            name="facebookLink"
-            onChange={(event) => {
-                changeEventNumber(event);
-            }}
-        ></input>
-        <br></br>
-        <br></br>
-        <button
-            onClick={deleteEvent}
-        >
-            Delete Event
-        </button>
-        <br></br>
-        <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          Delete an Event
+          {mainDisplay()}
         </div>
 
     )
 }
 
 export default EventDeletion;
-
-/*
-    {!isLoading ? 
-        <select
-            style={{
-                padding: "9px 5px",
-                border: "1px solid lightgrey",
-                boxSizing: "borderBox",
-                width: "105px",
-                lineHeight: "1.75",
-                cursor: "pointer"}}
-                type="number"
-                id="input box ticket description"
-                placeholder="12:00 PM"
-                name={props.name}
-                onChange={props.change}
-                required
-        >
-        {eventDetails.map((event, index) => {
-        return <option key={index} value={event.eventNum} name={event}
-          >{event.eventTitle}</option>
-      })}
-    </select> : null}
-*/
