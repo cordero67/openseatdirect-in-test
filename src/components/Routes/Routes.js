@@ -5,7 +5,7 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import EventCreation from "../../EventCreation/EventCreation";
-import EventEdit from "../../EventCreation/EventEditNew";
+import EventEdit from "../../EventCreation/EventEdit";
 import EventCreationDashboard from "../../EventCreation/EventCreationDashboard";
 import Events from "../../Events/Events";
 import EventDetails from "../../Events/EventDetails";
