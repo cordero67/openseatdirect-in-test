@@ -16,8 +16,6 @@ const VendorNavigation = (props) => {
     }
   };
 
-  //console.log("props.currentPage: ", props.currentPage);
-
   return (
     <Fragment>
       <ul className={classes.NavigationItems}>
@@ -54,34 +52,3 @@ const VendorNavigation = (props) => {
 };
 
 export default VendorNavigation;
-
-/*
-
-
-        <li>
-          <NavLink
-            to="/vendororders"
-            style={isActive(props.currentPage, "/vendororders")}
-          >
-            Orders
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/vendorproflle"
-            style={isActive(props.currentPage, "/vendorproflle")}
-          >
-            Profile
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/vendoraccount"
-            style={isActive(props.currentPage, "/vendoraccount")}
-          >
-            Account Settings
-          </NavLink>
-        </li>
-        */
