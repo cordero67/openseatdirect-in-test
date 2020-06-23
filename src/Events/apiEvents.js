@@ -1,16 +1,29 @@
 import { API } from "../config";
 
+const compareValues = (key, order) => {
+  return function innerSort(a, b) {
+    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+      return 0;
+    }
+    const varA = typeof a[key] === "string" ? a[key].toUpperCase() : a[key];
+    const varB = typeof b[key] === "string" ? b[key].toUpperCase() : b[key];
+
+    let comparison = 0;
+    if (varA > varB) {
+      comparison = 1;
+    } else if (varA < varB) {
+      comparison = -1;
+    }
+    return order === "desc" ? comparison * -1 : comparison;
+  };
+};
+
 const handleErrors = response => {
-// back-end server is down, i.e. response is "undefined"
-// "ERROR" will be "err"
-console.log("Inside 'apiCore' 'handleErrors()'", response);
-//console.log("json response: ", expandedLog(response, 1));
-if (!response.ok) {
-    console.log("response was false!");
-    //console.log("response.status: ", response.status);
-    throw Error(response.status);
-}
-return response;
+    console.log("Inside 'apiCore' 'handleErrors()'", response);
+    if (!response.ok) {
+        throw Error(response.status);
+    }
+    return response;
 };
 
 // extracts specific event data, non-transactional
@@ -37,12 +50,45 @@ export const getEventImage = eventId => {
     })
     .then(handleErrors)
     .then(response => {
-    console.log("Inside apiCore and the 'getEventImage' .then block");
-    console.log("response: ", response, " response.url: ", response.url);
-    return response.url;
+        console.log("Inside apiCore and the 'getEventImage' .then block");
+        console.log("response: ", response, " response.url: ", response.url);
+        return response.url;
     })
     .catch(err => {
-    console.log("jumping here", err);
-    throw Error(err);
+        console.log("Inside catch", err);
+        throw Error(err);
+    });
+};
+
+export const getEventImage2 = eventId => {
+    console.log("Inside apiCore and the 'getEventImage2' function call");
+    return eventId;
+};
+
+// retrieves all public event data (less image), non-transactional
+export const getAllEventData = () => {
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    let requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow", // what is this and when is it required
+    }
+        
+    let fetchstr = `${API}/event/all`;
+
+    return fetch(fetchstr, requestOptions)
+    .then(handleErrors)
+    .then((response) => response.text())
+    .then((result) => {
+        let js = JSON.parse(result);
+        js.sort(compareValues("startDateTime", "asc"));
+        console.log("eventDescriptions ordered: ", js);
+        return js;
+    })
+    .catch((error) => {
+        console.log("Inside getAllEventData .catch", error);
+        throw Error(error);
     });
 };

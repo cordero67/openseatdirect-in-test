@@ -1,89 +1,72 @@
 import React, { useState, useEffect } from "react";
 
+import { API } from "../config";
+
 import Aux from "../hoc/Auxiliary/Auxiliary";
+import Spinner from "../components/UI/Spinner/SpinnerNew";
+
+import { getAllEventData, getEventImage, getEventImage2 } from "./apiEvents";
+
 import styles from "./Events.module.css";
 import Event from "./Event/Event";
 import Modal from "./Modal/Modal";
-
-import LightLogo from "./LightEventUpdate.png";
-import HaHaLogo from "./HaHaForHireFeb.png";
-import HaHaComedy from "./HaHaForHireComedyNight.png";
-import PIFFLogo from "./PIFFLogo.png";
-import TechWeekLogo from "./TechWeek.png";
-import RikaRikaLogo from "./RikaRikaStudio.png";
-
-const eventData = [
-  {
-    image: HaHaComedy,
-    title: "Laugh Lounge - Weekly Showcase & Open Mic",
-    eventNum: "20806407169",
-    date: "Every Wednesday: 8:00 PM",
-    description: "description2",
-    location: "Voix Lounge, Philadelphia, PA",
-    url: "et/laugh-lounge-weekly-comedy-showcase-&-open-mic?eventID=20806407169",
-    available: true
-  },
-  {
-    image: HaHaLogo,
-    title: "HaHa For Hire: The Lineup",
-    eventNum: "85819827131",
-    date: "Thu, Feb 27, 2020: 7:30 PM",
-    description: "description1",
-    location: "Voix Lounge, Philadelphia, PA",
-    url: "edh/hahaforhire-presents-the-lineup?eventID=85819827131",
-    available: true
-  },
-  {
-    image: TechWeekLogo,
-    title: "PTW 2020 Philly Tech Week",
-    eventNum: "",
-    date: "May 6-9, 2020: 4 Day Event",
-    description: "description3",
-    location: "Philadelphia, PA",
-    url: "ed/sponsorship-2020-philly-tech-week?eventID=8681441794",
-    available: true
-  },
-  {
-    image: PIFFLogo,
-    title: "Philadelphia Independent Film Festival #13",
-    eventNum: "",
-    date: "May 6-9, 2020: 4 Day Event",
-    description: "description3",
-    location: "Philadelphia, PA",
-    url: "ed/PIFF-philadelphia-independent-film-festival?eventID=64064955878",
-    available: true
-  },
-  {
-    image: LightLogo,
-    title: "Gold Women's Business Connect Conference",
-    eventNum: "",
-    date: "Fri, Mar 20, 2020: 8:30 AM",
-    description: "description3",
-    location: "Bryant Park, New York City",
-    url: "edl/2020-gold-women-s-business-connnect-conference?eventID=46017305135",
-    available: true
-  },
-  {
-    image: RikaRikaLogo,
-    title: "AmeRikaEigo by RikaRikaStudio",
-    eventNum: "",
-    date: "Mar 30 - Apr 30, 2020",
-    description: "description3",
-    location: "Nagano, Japan",
-    url: "et/rikarikastudio?eventID=55390812012",
-    available: true
-  }
-];
+import { result } from "underscore";
 
 const Events = () => {
-  //const [isLoadingEvents, setIsLoadingEvents] = useState(true);
-  //const [isSuccessfull, setIsSuccessfull] = useState(true);
+  const [eventDescriptions, setEventDescriptions] = useState();
+  const [isLoadingEvents, setIsLoadingEvents] = useState(true);
+  const [isSuccessfull, setIsSuccessfull] = useState(true);
+
+
   const [showModal, setShowModal] = useState(false);
   const [noEventDetails, setNoEventDetails] = useState();
 
+
   useEffect(() => {
     stylingUpdate(window.innerWidth, window.innerHeight);
+    eventData();
   }, []);
+
+
+  const eventData = () => {
+    getAllEventData()
+    .then(res => {
+      console.log("EVENT DATA from 'getAllEventData()': ", res);
+      setEventDescriptions(res);
+      setIsSuccessfull(true)
+      setIsLoadingEvents(false);
+      /*
+      loadEventDetails(res);
+      getEventImage(eventID)
+      .then(res => {
+        console.log("EVENT IMAGE received from Server in 'getEventData()': ", res);
+        eventLogo = res;
+      })
+      .catch(err => {
+        eventLogo = DefaultLogo;
+      })
+      .finally(() => {
+        setIsLoadingEvent(false);
+      });
+      */
+     return res;
+    })
+    .then(res => {
+      res.forEach ((item, index) => {
+        console.log("Event Title: ", item.eventTitle)
+        let tempEvent = getEventImage(item.eventNum);
+        console.log("Event Number: ", tempEvent);
+        res[index].eventImage = tempEvent;
+      })
+      console.log("SUCCESS")
+      console.log("New res: ", res)
+    })
+    .catch(err => {
+      console.log("error", err);
+      setIsSuccessfull(false);
+      isLoadingEvents(false);
+    })
+  };
 
   const stylingUpdate = (inWidth, inHeight) => {
     // based on window width, displays one or two panes
@@ -130,25 +113,42 @@ const Events = () => {
     }
   };
 
-  const events = eventData.map((eventItem, index) => {
-    return (
-      <Event
-        key={index}
-        image={eventItem.image}
-        title={eventItem.title}
-        date={eventItem.date}
-        location={eventItem.location}
-        description={eventItem.description}
-        url={eventItem.url}
-        clicked={event => eventSelectionHandler(event, eventItem)}
-      />
-    );
-  });
+  const eventsNew = () => {
+    if (!isLoadingEvents) {
+      //if (false) {
+      if (isSuccessfull) {
+        return (
+          <Aux>
+            {eventDescriptions.map((eventItem, index) => {
+              return (
+                <Event
+                  key={index}
+                  image={eventItem.image}
+                  title={eventItem.eventTitle}
+                  date={eventItem.startDateTime}
+                  location={eventItem.locationVenueName}
+                  description={eventItem.description}
+                  url={eventItem.url}
+                  clicked={event => eventSelectionHandler(event, eventItem)}
+                />
+              )
+            })}
+          </Aux>
+        )
+      } else {
+        return (
+        <div>There are currently no events!</div>
+        )
+      }
+    } else {
+      return <div>System error please reload this page.</div>;
+    }
+  }
 
   return (
     <div className={styles.MainContainer}>
       <div className={styles.MainGrid}>
-        <section className={styles.Events}>{events}</section>
+        <section className={styles.Events}>{!isLoadingEvents ? eventsNew() : <Spinner/>}</section>
         {noDetailsModal}
       </div>
     </div>
