@@ -194,7 +194,7 @@ const EventEdit = () => {
     tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode;
     tempDescription.locationCountryCode = eventTix.locationCountryCode;
     tempDescription.timeZone = eventTix.timeZone;
-    tempDescription.eventImage = "";
+    tempDescription.eventImage = eventTix.photo;
     console.log("eventImage: ", tempDescription.eventImage);
 
     console.log("tempDescription: ", tempDescription);
