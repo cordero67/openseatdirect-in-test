@@ -8,7 +8,7 @@ import styles from "./EventDetails.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
-import HaHaLogo from "./HaHaForHireFeb.png";
+import HaHaLogo from "../OldCodeToKeep/Events/HaHaForHireFeb.png";
 
 // defines an event's NON ticket type specific information
 let eventDetails;

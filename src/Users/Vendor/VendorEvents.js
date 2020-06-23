@@ -20,7 +20,7 @@ const VendorEvents = () => {
   const [eventDescriptions, setEventDescriptions] = useState();//
   const [ticketDisplay, setTicketDisplay] = useState();
   const [isLoading, setIsLoading] = useState(true);//
-  const [isSuccessful, setIsSuccessful] = useState(true);//
+  const [isSuccessfull, setIsSuccessfull] = useState(true);//
 
   useEffect(() => {
     if (
@@ -35,11 +35,9 @@ const VendorEvents = () => {
       window.location.href = "/signin";
     }
 
-
     //let vendorId = JSON.parse(localStorage.getItem("user")).user._id;
     //let vendorToken = JSON.parse(localStorage.getItem("user")).token;
     //let vendorName = JSON.parse(localStorage.getItem("user")).user.name;
-
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -61,17 +59,18 @@ const VendorEvents = () => {
         console.log("eventDescriptions ordered: ", js);
         setEventDescriptions(js);
         initializeDisplays(js);
-        setIsSuccessful(true)
+        setIsSuccessfull(true)
         setIsLoading(false);
         return js;
       })
       .catch((error) => {
         console.log("error", error);
-        setIsSuccessful(false)
+        setIsSuccessfull(false)
         setIsLoading(false);
       });
   }, []);
 
+  // intilializes the show property of each ticket type to "false"
   const initializeDisplays = (events) => {
     let tempObject = {};
     events.forEach((item, index) => {
