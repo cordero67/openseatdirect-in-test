@@ -11,9 +11,9 @@ import Event from "./EventTombstone";
 const Events = () => {
   const [eventDescriptions, setEventDescriptions] = useState();
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
-  const [isSuccessfull, setIsSuccessfull] = useState(true);
+  const [isSuccessfull, setIsSuccessfull] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { 
     eventData();
   }, []);
 
@@ -45,12 +45,15 @@ const Events = () => {
     .then (res => {
       setEventDescriptions(res);
       setIsSuccessfull(true)
-      setIsLoadingEvents(false);
+      //setIsLoadingEvents(false);
       return res;
     })
     .catch(err => {
       console.log("error", err);
-      setIsSuccessfull(false);
+      //setIsSuccessfull(false);
+      //setIsLoadingEvents(false);
+    })
+    .finally(() => {
       setIsLoadingEvents(false);
     })
   };

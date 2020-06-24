@@ -1,11 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 
-
 import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
-
-
 
 import { Editor } from "@tinymce/tinymce-react";
 import DateSelector from "./DateSelector";
@@ -124,14 +121,10 @@ const EventCreation = () => {
     failureMessage: "System error please try again.",
   });
 
-
-
-
-
   useEffect(() => {
     // checks if 'user' exists in local storage
     if (
-      typeof window !== "undefined" &&
+      typeof window !== "undefined" &&  
       localStorage.getItem(`user`) !== null
     ) {
       // loads sign-in data
