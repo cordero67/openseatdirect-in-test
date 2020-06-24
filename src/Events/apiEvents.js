@@ -43,6 +43,8 @@ export const getEventData = eventId => {
     });
 };
 
+// NEED TO REFACTOR TO NEW TEMPLATE
+// retrieves image for a specific event
 export const getEventImage = eventId => {
     console.log("Inside apiCore and the 'getEventImage' function call");
     return fetch(`${API}/event/photo/e/${eventId}`, {
@@ -60,11 +62,7 @@ export const getEventImage = eventId => {
     });
 };
 
-export const getEventImage2 = eventId => {
-    console.log("Inside apiCore and the 'getEventImage2' function call");
-    return eventId;
-};
-
+// REFACTORED
 // retrieves all public event data (less image), non-transactional
 export const getAllEventData = () => {
     let myHeaders = new Headers();

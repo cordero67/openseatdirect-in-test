@@ -3,7 +3,6 @@ import queryString from "query-string";
 import dateFormat from "dateformat";
 import ReactHtmlParser from "react-html-parser";
 
-import { API } from "../config";
 import { getEventData, getEventImage } from "./apiEvents";
 
 import styles from "./EventDetails.module.css";
@@ -361,48 +360,6 @@ const EventDetail = props => {
     }
   }
 
-/*
-  };
-  if (isLoadingEvent) {
-    console.log("else isLoadingEvent: ",isLoadingEvent)
-    console.log("else isSuccessful: ",isSuccessfull)
-    mainDisplay = 
-      <div className={styles.BlankCanvas}>
-        <Spinner></Spinner>
-      </div>
-  } else {
-    console.log("else isLoadingEvent: ",isLoadingEvent)
-    console.log("else isSuccessful: ",isSuccessfull)
-    if (showDoublePane && isSuccessfull) {
-      mainDisplay = (
-        <div style={MainGrid}>
-          {ticketPane}
-          {orderPane}
-        </div>
-      );
-    } else if (!showOrderSummaryOnly && isSuccessfull) {
-      mainDisplay = (
-        <div style={MainGrid}>{ticketPane}</div>
-      );
-    } else if (isSuccessfull) {
-      mainDisplay = (
-        <div style={MainGrid}>{orderPane}</div>
-      );
-    } else {
-      mainDisplay = (
-        <div className={styles.BlankCanvas}>
-          <h5>
-            <span style={{ color: "red" }}>This event does not exist.</span>
-          </h5>
-        </div>
-      );
-    }
-  }
-
-*/
-
-
-
   return (
     <div className={styles.MainContainer}>
       {mainDisplay()}
@@ -411,11 +368,3 @@ const EventDetail = props => {
 };
 
 export default EventDetail;
-
-/*
-
-      {topDisplay()}
-      {ticketDisplay()}
-      {middleDisplay()}
-      {bottomDisplay()}
-      */
