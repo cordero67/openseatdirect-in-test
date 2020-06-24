@@ -12,7 +12,6 @@ const event = props => {
     image = props.image;
   }
 
-
   return (
   <article className={classes.Event} onClick={props.clicked}>
     <img
