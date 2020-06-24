@@ -6,7 +6,7 @@ import Spinner from "../components/UI/Spinner/SpinnerNew";
 import { getAllEventData, getEventImage } from "./apiEvents";
 
 import classes from "./Events.module.css";
-import Event from "./Event/Event";
+import Event from "./EventTombstone";
 
 const Events = () => {
   const [eventDescriptions, setEventDescriptions] = useState();
