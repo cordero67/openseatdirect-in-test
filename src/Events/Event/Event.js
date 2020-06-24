@@ -1,24 +1,36 @@
 import React from "react";
 
-import styles from "./Event.module.css";
+import classes from "./Event.module.css";
+import ComingSoon from "../ComingSoon.png";
 
-const event = props => (
-  <article className={styles.Event} onClick={props.clicked}>
+const event = props => {
+  let image;
+  console.log("props.EventImage: ", props.image)
+  if (!props.image) {
+    image = ComingSoon;
+  } else {
+    image = props.image;
+  }
+
+
+  return (
+  <article className={classes.Event} onClick={props.clicked}>
     <img
-      className={styles.EventImage}
-      src={props.image}
+      className={classes.EventImage}
+      src={image}
       alt="Event Logo Coming Soon!!!"
       onClick={props.clicked}
     />
-    <div className={styles.EventDetail}>
-      <div className={styles.EventDate}>{props.date}</div>
+    <div className={classes.EventDetail}>
+      <div className={classes.EventDate}>{props.date}</div>
 
-      <div className={styles.EventTitle} onClick={props.clicked}>
+      <div className={classes.EventTitle} onClick={props.clicked}>
         {props.title}
       </div>
-      <div className={styles.EventLocation}>{props.location}</div>
+      <div className={classes.EventLocation}>{props.location}</div>
     </div>
   </article>
-);
+  )
+  };
 
 export default event;

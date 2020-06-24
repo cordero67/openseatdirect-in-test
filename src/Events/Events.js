@@ -10,61 +10,56 @@ import { getAllEventData, getEventImage, getEventImage2 } from "./apiEvents";
 import styles from "./Events.module.css";
 import Event from "./Event/Event";
 import Modal from "./Modal/Modal";
-import { result } from "underscore";
 
 const Events = () => {
   const [eventDescriptions, setEventDescriptions] = useState();
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
   const [isSuccessfull, setIsSuccessfull] = useState(true);
 
-
+  // NEED TO REFACTOR
   const [showModal, setShowModal] = useState(false);
   const [noEventDetails, setNoEventDetails] = useState();
-
 
   useEffect(() => {
     stylingUpdate(window.innerWidth, window.innerHeight);
     eventData();
   }, []);
 
-
   const eventData = () => {
     getAllEventData()
     .then(res => {
       console.log("EVENT DATA from 'getAllEventData()': ", res);
-      setEventDescriptions(res);
-      setIsSuccessfull(true)
-      setIsLoadingEvents(false);
-      /*
-      loadEventDetails(res);
-      getEventImage(eventID)
-      .then(res => {
-        console.log("EVENT IMAGE received from Server in 'getEventData()': ", res);
-        eventLogo = res;
-      })
-      .catch(err => {
-        eventLogo = DefaultLogo;
-      })
-      .finally(() => {
-        setIsLoadingEvent(false);
-      });
-      */
-     return res;
+      return res;
     })
     .then(res => {
       res.forEach ((item, index) => {
         console.log("Event Title: ", item.eventTitle)
-        let tempEvent = getEventImage(item.eventNum);
-        console.log("Event Number: ", tempEvent);
-        res[index].eventImage = tempEvent;
+        getEventImage(item.eventNum)
+          .then(image => {
+            console.log("Event Image: ", image);
+            res[index].image = image;
+            console.log("Event Image: ", res);
+            return res;
+          })
+          .catch(err => {
+            console.log("Error: No image was returned")
+            res[index].image = "default logo";
+          });
+        console.log("SUCCESS");
+        console.log("New Image for event ",index, " - ",res[index].image);
       })
-      console.log("SUCCESS")
-      console.log("New res: ", res)
+      return res;
+    })
+    .then (res => {
+      setEventDescriptions(res);
+      setIsSuccessfull(true)
+      setIsLoadingEvents(false);
+      return res;
     })
     .catch(err => {
       console.log("error", err);
       setIsSuccessfull(false);
-      isLoadingEvents(false);
+      setIsLoadingEvents(false);
     })
   };
 
@@ -81,12 +76,13 @@ const Events = () => {
     }
   };
 
+  // NEED TO REFACTOR
   const backdropClickedHandler = () => {
     setShowModal(false);
   };
 
+  // NEED TO REFACTOR
   let noDetailsModal;
-
   if (showModal) {
     noDetailsModal = (
       <Aux>
@@ -99,24 +95,18 @@ const Events = () => {
     );
   } else noDetailsModal = null;
 
+  // NEED TO REFACTOR
   const eventSelectionHandler = (event, eventItem) => {
-    if (eventItem.available) {
-      setShowModal(false);
-      window.location.href = `/${eventItem.url}`;
-    } else {
-      setNoEventDetails({
-        title: eventItem.title,
-        location: eventItem.location,
-        date: eventItem.date
-      });
-      setShowModal(true);
-    }
+    //window.location.href = `/et/${eventItem.url}`;
+    window.location.href = `/ed/${eventItem.eventUrl}?eventID=${eventItem.eventNum}`;
+
+    //et/rikarikastudio?eventID=55390812012
   };
 
   const eventsNew = () => {
-    if (!isLoadingEvents) {
-      //if (false) {
-      if (isSuccessfull) {
+    if (isSuccessfull) {
+      console.log("eventDescriptions: ", eventDescriptions)
+      if (eventDescriptions.length > 0) {
         return (
           <Aux>
             {eventDescriptions.map((eventItem, index) => {
@@ -134,14 +124,16 @@ const Events = () => {
               )
             })}
           </Aux>
-        )
+        ) 
       } else {
         return (
-        <div>There are currently no events!</div>
+          <div style={{ fontSize: "20px"}}>There are currently no events!</div>
         )
       }
     } else {
-      return <div>System error please reload this page.</div>;
+      return (
+        <div style={{ fontSize: "20px", color: "red"}}>System error please reload this page.</div>
+      )
     }
   }
 

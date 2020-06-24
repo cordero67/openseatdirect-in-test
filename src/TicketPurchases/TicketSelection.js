@@ -142,6 +142,7 @@ const TicketSelection = () => {
         getEventImage(eventID)
           .then((res) => {
             eventLogo = res;
+            console.log("eventLogo: ", eventLogo)
           })
           .catch((err) => {
             eventLogo = DefaultLogo;

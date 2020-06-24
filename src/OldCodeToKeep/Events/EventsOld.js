@@ -9,18 +9,16 @@ import styles from "../../Events/Events.module.css";
 import Event from "../../Events/Event/Event";
 import Modal from "../../Events/Modal/Modal";
 
-/*
 import LightLogo from "./LightEventUpdate.png";
 import HaHaLogo from "./HaHaForHireFeb.png";
 import HaHaComedy from "./HaHaForHireComedyNight.png";
 import PIFFLogo from "./PIFFLogo.png";
 import TechWeekLogo from "./TechWeek.png";
 import RikaRikaLogo from "./RikaRikaStudio.png";
-*/
 
 const eventData = [
   {
-    //image: HaHaComedy,
+    image: HaHaComedy,
     title: "Laugh Lounge - Weekly Showcase & Open Mic",
     eventNum: "20806407169",
     date: "Every Wednesday: 8:00 PM",
@@ -30,7 +28,7 @@ const eventData = [
     available: true
   },
   {
-    //image: HaHaLogo,
+    image: HaHaLogo,
     title: "HaHa For Hire: The Lineup",
     eventNum: "85819827131",
     date: "Thu, Feb 27, 2020: 7:30 PM",
@@ -40,7 +38,7 @@ const eventData = [
     available: true
   },
   {
-    //image: TechWeekLogo,
+    image: TechWeekLogo,
     title: "PTW 2020 Philly Tech Week",
     eventNum: "",
     date: "May 6-9, 2020: 4 Day Event",
@@ -50,7 +48,7 @@ const eventData = [
     available: true
   },
   {
-    //image: PIFFLogo,
+    image: PIFFLogo,
     title: "Philadelphia Independent Film Festival #13",
     eventNum: "",
     date: "May 6-9, 2020: 4 Day Event",
@@ -60,7 +58,7 @@ const eventData = [
     available: true
   },
   {
-    //image: LightLogo,
+    image: LightLogo,
     title: "Gold Women's Business Connect Conference",
     eventNum: "",
     date: "Fri, Mar 20, 2020: 8:30 AM",
@@ -70,7 +68,7 @@ const eventData = [
     available: true
   },
   {
-    //image: RikaRikaLogo,
+    image: RikaRikaLogo,
     title: "AmeRikaEigo by RikaRikaStudio",
     eventNum: "",
     date: "Mar 30 - Apr 30, 2020",
