@@ -1,7 +1,7 @@
 import React from "react";
 
-import classes from "./Event.module.css";
-import ComingSoon from "../ComingSoon.png";
+import classes from "./EventTombstone.module.css";
+import ComingSoon from "./ComingSoon.png";
 
 const event = props => {
   let image;

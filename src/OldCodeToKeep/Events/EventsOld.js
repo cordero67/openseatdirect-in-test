@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-import { API } from "../../config";
-
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import styles from "../../Events/Events.module.css";
-import Event from "../../Events/Event/Event";
-import Modal from "../../Events/Modal/Modal";
+import Event from "../../Events/EventTombstone";
+import Modal from "./Modal";
 
 import LightLogo from "./LightEventUpdate.png";
 import HaHaLogo from "./HaHaForHireFeb.png";
