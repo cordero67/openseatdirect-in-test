@@ -110,11 +110,10 @@ const EventCreation = () => {
       nameWarning: false
     },
   ]);
-  // DONT KNOW IF I NEED THIS
-  const [photoData, setPhotoData] = useState({
-    imgSrc: "",
-    imgSrcExt: "",
-  });
+ 
+  const [photoData, setPhotoData] = useState({imgSrc:null, imgSrcExt: null, isLoaded:true});
+//  isLoaded: true forces startup with blank image or mountain looking startup text
+
 
   const [eventStatus, setEventStatus] = useState({
     status: "", // "saved", "live", "error", "failure"
@@ -2280,7 +2279,7 @@ const EventCreation = () => {
     return (
       <ImgDropAndCrop
         icon="create image"
-        info={photoData}
+        imagein={{isLoaded:true}}
         event={eventDescription.eventNum}
         change={(image) => {
           console.log("image: ", image);
