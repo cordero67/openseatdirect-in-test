@@ -110,11 +110,8 @@ const EventEdit = () => {
       nameWarning: false
     },
   ]);
-  // DONT KNOW IF I NEED THIS
-  const [photoData, setPhotoData] = useState({
-    imgSrc: "",
-    imgSrcExt: "",
-  });
+ 
+ const [photoData, setPhotoData] = useState({imgSrc:null, imgSrcExt: null, isLoaded:false});
 
   const [eventStatus, setEventStatus] = useState({
     status: "", // "saved", "live", "error", "failure"
@@ -124,9 +121,44 @@ const EventEdit = () => {
     failureMessage: "System error please try again.",
   });
 
-  const [isLoading, setIsLoading] = useState(true);
+//  const [isLoading, setIsLoading] = useState(true);
   // DONT KNOW IF I NEED THIS VARIABLE
-  let eventTix = {};
+//  let eventTix = {};
+
+
+ const initPhotoData =( resPhotoData) =>{
+    console.log ("in initPhotoData....");
+   // converts data from server fetch call to photodata for image display
+      console.log ("buffer=>", resPhotoData.data.data);
+      const ext = resPhotoData.contentType;
+    
+      if (!(resPhotoData.data && resPhotoData.data.data)){
+        setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+        return;
+      };
+
+      let header ='data:image/png;base64,'; // hard codes image/png by default
+      if (ext ==='image/png'){
+        header ='data:image/png;base64,'
+      } else if (ext ==='image/jpeg'){
+        header ='data:image/jpeg;base64,'
+      };
+
+      const uint8 = new Uint8Array(resPhotoData.data.data);
+      const len =  uint8.byteLength;
+      if (len ==0){ // no photo data
+              setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+              return;
+      };
+      let bin ='';
+      for (let i = 0; i < len; i++)
+          bin += String.fromCharCode(uint8[i]); 
+      const photodat =  header+window.btoa(bin);
+      const srcExt = extractImageFileExtensionFromBase64 (photodat);
+      setPhotoData({imgSrc:photodat, imgSrcExt: srcExt, isLoaded:true});
+ }
+ 
+
 
   useEffect(() => {
     console.log("inside useEffet")
@@ -194,8 +226,9 @@ const EventEdit = () => {
     tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode;
     tempDescription.locationCountryCode = eventTix.locationCountryCode;
     tempDescription.timeZone = eventTix.timeZone;
-    tempDescription.eventImage = eventTix.photo;
-    console.log("eventImage: ", tempDescription.eventImage);
+//    tempDescription.eventImage = eventTix.photo;
+    initPhotoData( eventTix.photo);
+ //   console.log("eventImage: ", tempDescription.eventImage);
 
     console.log("tempDescription: ", tempDescription);
     setEventDescription(tempDescription);
@@ -2414,31 +2447,27 @@ const EventEdit = () => {
 
 
 
-
   const imageCanvas = () => {
-    //if (isLoading || !eventDescription.eventNum) {
-    //  return null
-    //} else {
-    //  console.log("eventDescription.eventNum: ", eventDescription.eventNum)
-    return (
-      <ImgDropAndCrop
-        icon="create image"
-        info={photoData}
-        event={eventDescription.eventNum}
-        change={(image) => {
-          console.log("image: ", image);
-          console.log("typeof image: ", typeof image);
-          let tempDescription = { ...eventDescription };
-          tempDescription.eventImage = image;
-          setEventDescription(tempDescription);
-          console.log(
-            "tempDescription.eventImage: ",
-            tempDescription.eventImage
-          );
-        }}
-      />
-    );
-    //}
+    if (!photoData.isLoaded) {
+      return <p>  Loading .... </p>
+    } else { 
+        return (
+          <ImgDropAndCrop
+             imagein={photoData}
+            change={(image) => {
+              console.log("image: ", image);
+              console.log("typeof image: ", typeof image);
+              let tempDescription = { ...eventDescription };
+              tempDescription.eventImage = image;
+              setEventDescription(tempDescription);
+              console.log(
+                "tempDescription.eventImage: ",
+                tempDescription.eventImage
+              );
+            }}
+          />
+        )
+    }
   };
 
   const errorDisplay = () => {
