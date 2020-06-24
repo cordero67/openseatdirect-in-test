@@ -277,6 +277,10 @@ class ImgDropAndCrop extends Component {
         console.log ("in getderivedStateFromProps > nextprop: ", nextProps);
         console.log ("in getderivedStateFromProps > prevProps:  ", prevState);
         console.log ("nextProps.imagein!==prevState.imgSrc  :", nextProps.imagein!==prevState.imgSrc);
+        // this check is for eventCreation startup which does not have imagein
+        if (!nextProps.imagein ){
+            return null;
+        };
         if((nextProps.imagein.isLoaded!==prevState.imgSrcLoaded) || nextProps.imagein.imgSrc!==prevState.imgSrc){
             console.log("state change");
                 return {

@@ -129,13 +129,21 @@ const EventEdit = () => {
  const initPhotoData =( resPhotoData) =>{
     console.log ("in initPhotoData....");
    // converts data from server fetch call to photodata for image display
-      console.log ("buffer=>", resPhotoData.data.data);
-      const ext = resPhotoData.contentType;
     
-      if (!(resPhotoData.data && resPhotoData.data.data)){
+    // check for required fields
+      if (!(resPhotoData && resPhotoData.data && resPhotoData.data.data)){
         setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
         return;
       };
+
+      if (!(resPhotoData.contentType)){
+        setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+        return;
+      };
+
+      const ext = resPhotoData.contentType;
+
+      console.log ("buffer=>", resPhotoData.data.data);
 
       let header ='data:image/png;base64,'; // hard codes image/png by default
       if (ext ==='image/png'){
