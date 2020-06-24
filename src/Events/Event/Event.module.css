@@ -8,6 +8,12 @@
   cursor: pointer;
 }
 
+.ImageBox {
+  box-sizing: border-box;
+  height: auto;
+  width: 100%;
+}
+
 .EventImage {
   text-align: center;
   box-sizing: border-box;
@@ -44,17 +50,13 @@
 @media (max-width: 600px) {
   .Event {
     font-size: 16px;
-    min-width: calc(100vw-40px);
-    max-width: calc(100vw-40px);
-    min-height: calc(100vw-40px);
-    max-height: calc(100vw-40px);
+    width: calc(100vw-40px);
+    height: calc(100vw-40px);
   }
   .EventImage {
-    font-size: 20px;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 50%;
-    max-height: 50%;
+    box-sizing: border-box;
+    height: auto;
+    width: 100%;
   }
   .EventDetail {
     font-size: 16px;

@@ -5,7 +5,7 @@ import queryString from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
-import Aux from "../hoc/Auxiliary/Auxiliary";
+import Aux from "../../hoc/Auxiliary/Auxiliary";
 import { getEventData, getEventImage } from "./apiCore";
 import {
   loadEventDetails,
@@ -28,7 +28,7 @@ import {
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling
 } from "./Styling";
-import Spinner from "../components/UI/Spinner/Spinner";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
