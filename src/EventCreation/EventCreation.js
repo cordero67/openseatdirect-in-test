@@ -1,11 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 
-
 import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
-
-
 
 import { Editor } from "@tinymce/tinymce-react";
 import DateSelector from "./DateSelector";
@@ -110,10 +107,11 @@ const EventCreation = () => {
       nameWarning: false
     },
   ]);
- 
-  const [photoData, setPhotoData] = useState({imgSrc:null, imgSrcExt: null, isLoaded:true});
-//  isLoaded: true forces startup with blank image or mountain looking startup text
-
+  // DONT KNOW IF I NEED THIS
+  const [photoData, setPhotoData] = useState({
+    imgSrc: "",
+    imgSrcExt: "",
+  });
 
   const [eventStatus, setEventStatus] = useState({
     status: "", // "saved", "live", "error", "failure"
@@ -123,14 +121,10 @@ const EventCreation = () => {
     failureMessage: "System error please try again.",
   });
 
-
-
-
-
   useEffect(() => {
     // checks if 'user' exists in local storage
     if (
-      typeof window !== "undefined" &&
+      typeof window !== "undefined" &&  
       localStorage.getItem(`user`) !== null
     ) {
       // loads sign-in data
@@ -2279,7 +2273,7 @@ const EventCreation = () => {
     return (
       <ImgDropAndCrop
         icon="create image"
-        imagein={{isLoaded:true}}
+        info={photoData}
         event={eventDescription.eventNum}
         change={(image) => {
           console.log("image: ", image);

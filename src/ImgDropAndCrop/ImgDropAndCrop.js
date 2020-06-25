@@ -4,6 +4,7 @@ import Dropzone from 'react-dropzone'
 import ReactCrop from 'react-image-crop'
 import './custom-image-crop.css';
 
+import { API } from "../config";
 
 import Backdrop from './Backdrop';
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -33,9 +34,9 @@ class ImgDropAndCrop extends Component {
         this.fileInputRef = React.createRef()
         console.log("NO new image info found")
         this.state = {
+            isLoading: false,
             imgSrc: null,
             imgSrcExt: null,
-            imgSrcLoaded: false,
             crop: {
                 aspect: 2/1,
                 ruleOfThirds: true,
@@ -59,6 +60,45 @@ class ImgDropAndCrop extends Component {
     IMAGE_WIDTH = 0;
     IMAGE_HEIGHT = 0;
 
+    componentDidMount() {
+        console.log("Inside componentDidMount")
+        console.log("this.props.event: ", this.props.event)
+        if (this.props.event) {
+            const url = (`${API}/api/event/photo/e/${this.props.event.toString()}`);
+            console.log(`${API}/api/event/photo/e/${this.props.event}`);
+            fetch(url, {
+                method: 'GET',
+                redirect: 'follow'
+            })
+            .then(response => {
+                console.log (">>>>>>>>response in eventix", response);
+                return response.arrayBuffer(); 
+            })
+            .then (buffer =>{
+                console.log ("response.arrayBuffer():");
+                console.log (buffer);
+                const uint8 = new Uint8Array(buffer);
+                let bin ='';
+                const len =  uint8.byteLength;
+                for (let i = 0; i < len; i++)
+                    bin += String.fromCharCode(uint8[i]);
+                const header ='data:image/png;base64,'; // hard codes image/png  
+                const photodat = header+window.btoa(bin);
+                const srcExt = extractImageFileExtensionFromBase64 (photodat);
+                console.log ("photodat for imgSrc:", photodat);
+                console.log ("photodat for srcExt:", srcExt);
+                this.setState({
+                    imgSrc: photodat,
+                    imgSrcExt: srcExt,
+                })
+                console.log("state after image api: ", this.state)
+            })
+            .catch(err => {
+                console.log("**ERROR THROWN", err);
+            });
+            //this.forceUpdate();
+        }
+    }
 
     verifyFile = (files) => {
         if (files && files.length > 0){
@@ -272,31 +312,8 @@ class ImgDropAndCrop extends Component {
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        //lifecycle function to update child state with props set by parent
-        console.log ("in getderivedStateFromProps > nextprop: ", nextProps);
-        console.log ("in getderivedStateFromProps > prevProps:  ", prevState);
-        console.log ("nextProps.imagein!==prevState.imgSrc  :", nextProps.imagein!==prevState.imgSrc);
-        // this check is for eventCreation startup which does not have imagein
-        if (!nextProps.imagein ){
-            return null;
-        };
-        if((nextProps.imagein.isLoaded!==prevState.imgSrcLoaded) || nextProps.imagein.imgSrc!==prevState.imgSrc){
-            console.log("state change");
-                return {
-                    imgSrc: nextProps.imagein.imgSrc,
-                    imgSrcLoaded: nextProps.imagein.isLoaded
-                };
-        }
-        else return null;
-    }
-
-
     render () {
-        const {imgSrc,isLoading,imgSrcLoaded} = this.state;
-        if (!imgSrcLoaded) {
-            return <p> Still Loading .... </p>
-        }
+        const {imgSrc} = this.state
 
         const display = () => {
                 if (imgSrc !== null) {
@@ -348,8 +365,7 @@ class ImgDropAndCrop extends Component {
                             <div>
                                 <div>
                                     <img className={classes.ImageBox}
-//                                        src={this.state.newimageData64}
-                                        src={imgSrc}
+                                        src={this.state.newimageData64}
                                         alt="Event Logo Coming Soon!!!"
                                     />
                                     <div className={classes.ImageControls}>
