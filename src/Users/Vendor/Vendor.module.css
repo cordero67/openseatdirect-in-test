@@ -90,6 +90,20 @@
     padding-right: 30px;
 }
 
+.SystemDownMessage {
+    z-index: 200;
+    position: fixed;
+    top: 195px;
+    text-align: center;
+    background-color: #fff;
+    color: red;
+    height: calc(100vh - 255px);
+    width: 1015px;
+    font-size: 20px;
+    font-weight: 400;
+    padding-top: 40px;
+}
+
 .MainDisplay {
     display: grid;
     column-gap: 10px;

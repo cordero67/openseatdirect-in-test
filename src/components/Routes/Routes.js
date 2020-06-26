@@ -7,8 +7,8 @@ import Video from "../Video/Video";
 import EventCreation from "../../EventCreation/EventCreation";
 import EventEdit from "../../EventCreation/EventEdit";
 import EventCreationDashboard from "../../EventCreation/EventCreationDashboard";
-import EventsNew from "../../Events/Events";
-import Events from "../../OldCodeToKeep/Events/EventsOld";
+import Events from "../../Events/Events";
+import EventsOld from "../../OldCodeToKeep/Events/EventsOld";
 import EventDetails from "../../Events/EventDetails";
 import EventDetailHaHa from "../../Events/EventDetailHaHa";
 import EventDetailLight from "../../Events/EventDetailLight";
@@ -392,6 +392,23 @@ const Routes = () => {
       />
 
       <Route
+        path="/eventsold"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <EventsOld />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
         path="/events"
         exact
         render={(routeProps) => (
@@ -403,23 +420,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Events />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/eventsnew"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventsNew />
             <Footer></Footer>
           </React.Fragment>
         )}

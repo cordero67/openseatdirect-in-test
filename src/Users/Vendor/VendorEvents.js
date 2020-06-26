@@ -35,10 +35,6 @@ const VendorEvents = () => {
       window.location.href = "/signin";
     }
 
-    //let vendorId = JSON.parse(localStorage.getItem("user")).user._id;
-    //let vendorToken = JSON.parse(localStorage.getItem("user")).token;
-    //let vendorName = JSON.parse(localStorage.getItem("user")).user.name;
-
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
@@ -52,6 +48,7 @@ const VendorEvents = () => {
     let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
 
     fetch(fetchstr, requestOptions)
+      .then(handleErrors)
       .then((response) => response.text())
       .then((result) => {
         let js = JSON.parse(result);
@@ -69,6 +66,16 @@ const VendorEvents = () => {
         setIsLoading(false);
       });
   }, []);
+
+  
+
+const handleErrors = response => {
+  console.log("Inside 'apiCore' 'handleErrors()'", response);
+  if (!response.ok) {
+      throw Error(response.status);
+  }
+  return response;
+};
 
   // intilializes the show property of each ticket type to "false"
   const initializeDisplays = (events) => {
@@ -89,7 +96,7 @@ const VendorEvents = () => {
   }
 
   const mainDisplay = () => {
-    if (!isLoading) {
+    if (!isLoading && isSuccessfull) {
       return (
         <div>
           <div className={classes.MainDisplayHeader}>
@@ -196,6 +203,12 @@ const VendorEvents = () => {
           </div>
         </div>
       );
+    } else if (!isLoading && !isSuccessfull) {
+      return (
+        <div className={classes.SystemDownMessage}>
+          <div>System error please reload this page.</div>
+        </div>
+      )
     } else {
       return null;
     }

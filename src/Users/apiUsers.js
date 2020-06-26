@@ -1,12 +1,9 @@
 import { API } from "../config";
 
-const handleErrors = (response) => {
-  //console.log("Inside 'apiCore' 'handleErrors()'", response);
-  //console.log("json response: ", expandedLog(response, 1));
+const handleErrors = response => {
+  console.log("Inside 'apiUsers' 'handleErrors()'", response);
   if (!response.ok) {
-    console.log("error in handleErros");
-    console.log("response.status: ", response.status);
-    throw Error(response.status);
+      throw Error(response.status);
   }
   return response;
 };
@@ -28,6 +25,7 @@ export const signin = (user) => {
     .catch((err) => {
       console.log("failure");
       console.log(err);
+      throw Error(err);
     });
 };
 
