@@ -23,6 +23,7 @@ const Events = () => {
       console.log("EVENT DATA from 'getAllEventData()': ", res);
       return res;
     })
+    /*
     .then(res => {
       res.forEach ((item, index) => {
         console.log("Event Title: ", item.eventTitle)
@@ -41,17 +42,14 @@ const Events = () => {
         console.log("New Image for event ",index, " - ",res[index].image);
       })
       return res;
-    })
+    })*/
     .then (res => {
       setEventDescriptions(res);
       setIsSuccessfull(true)
-      //setIsLoadingEvents(false);
       return res;
     })
     .catch(err => {
       console.log("error", err);
-      //setIsSuccessfull(false);
-      //setIsLoadingEvents(false);
     })
     .finally(() => {
       setIsLoadingEvents(false);

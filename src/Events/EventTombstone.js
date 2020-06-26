@@ -14,6 +14,7 @@ const event = props => {
   }
 
   let newDate = dateFormat(props.date, "ddd, mmm d, yyyy - h:MM TT", true);
+  console.log("props.date: ", props.date)
 
   return (
   <article className={classes.Event} onClick={props.clicked}>
