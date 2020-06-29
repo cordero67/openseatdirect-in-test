@@ -44,7 +44,6 @@ const EventCreation = () => {
 
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
-
     eventTitle: "",
     isDraft: true,
     eventType: "live",
@@ -61,10 +60,8 @@ const EventCreation = () => {
     locationNote: "",
     startDate: new Date(new Date().toDateString()),
     startTime: "18:00.00",
-
     endDate: new Date(new Date().toDateString()),
     endTime: "19:00.00",
-
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     eventImage: "",
     shortDescription: "",
@@ -107,11 +104,6 @@ const EventCreation = () => {
       nameWarning: false
     },
   ]);
-  // DONT KNOW IF I NEED THIS
-  const [photoData, setPhotoData] = useState({
-    imgSrc: "",
-    imgSrcExt: "",
-  });
 
   const [eventStatus, setEventStatus] = useState({
     status: "", // "saved", "live", "error", "failure"
@@ -165,7 +157,7 @@ const EventCreation = () => {
     let tempStatus = { ...eventStatus };
     tempStatus.status = newStatus;
 
-    ticketDetails.map((ticket, index) => {
+    ticketDetails.forEach((ticket, index) => {
       if(ticket.quantityWarning) {
         console.log("Quantity Warning, ticket : ", index)
         setPageErrors(true);
@@ -363,7 +355,7 @@ const EventCreation = () => {
           // for "promo"
           if (ticket.priceFeature === "promo") {
             formData.append(`tickets[${index}][priceFunction][form]`, "promo");
-            ticket.promoCodes.map((item, number) => {
+            ticket.promoCodes.forEach((item, number) => {
               console.log(
                 "New promo details: key-",
                 item.key,
@@ -434,6 +426,10 @@ const EventCreation = () => {
           tempStatus.status = "error";
           tempStatus.errorMessage = res.friendlyMessage;
         //} else if(false && false) {
+        } else if(!res.done && res.error) {
+          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+          tempStatus.status = "error";
+          tempStatus.errorMessage = res.error;
         } else if(!res.done && !res.friendlyMessage) {
           console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
           tempStatus.status = "failure";
@@ -451,8 +447,15 @@ const EventCreation = () => {
   }
 
   const handleErrors = (response) => {
+    console.log("inside handleErrors")
+    console.log("response: ", response)
     if (!response.ok) {
+      console.log("bad response");
+      console.log("response: ", response.ok);
       throw Error(response.status);
+    } else {
+      console.log("good response");
+      console.log("response: ", response.ok);
     }
     return response;
   };
@@ -2273,7 +2276,6 @@ const EventCreation = () => {
     return (
       <ImgDropAndCrop
         icon="create image"
-        info={photoData}
         event={eventDescription.eventNum}
         change={(image) => {
           console.log("image: ", image);

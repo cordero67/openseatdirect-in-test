@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
-import { Form } from "react-bootstrap";
+//import { Link, Redirect } from "react-router-dom";
+//import { Form } from "react-bootstrap";
 
 import { API } from "../config";
-import { signin, authenticate, isAuthenticated } from "./apiUsers";
+//import { signin, authenticate, isAuthenticated } from "./apiUsers";
 
 import classes from "./User.module.css";
 
@@ -39,7 +39,7 @@ const UserDashboard = () => {
           .catch(error => {
             console.log('error', error);
             SIGNOK = false;
-            });
+          });
       }
 
 

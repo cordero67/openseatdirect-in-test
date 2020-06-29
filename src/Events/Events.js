@@ -23,6 +23,17 @@ const Events = () => {
       console.log("EVENT DATA from 'getAllEventData()': ", res);
       return res;
     })
+    .then(res => {
+      res.map((item, index) => {
+        console.log("new res");
+        console.log("new res event num: ", res[index].eventNum);
+        res[index]["url"] = `https://www.openseatdirect.com/api/event/photo/e/${res[index].eventNum}`;
+        //res[index].url = index;
+        item.url = "";
+      })
+      console.log("res: ", res)
+      return res;
+    })
     /*
     .then(res => {
       res.forEach ((item, index) => {
@@ -70,7 +81,7 @@ const Events = () => {
               return (
                 <Event
                   key={index}
-                  image={eventItem.image}
+                  image={eventItem.eventNum}
                   title={eventItem.eventTitle}
                   date={eventItem.startDateTime}
                   location={eventItem.locationVenueName}

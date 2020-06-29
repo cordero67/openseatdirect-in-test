@@ -6,7 +6,6 @@ import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import EventCreation from "../../EventCreation/EventCreation";
 import EventEdit from "../../EventCreation/EventEdit";
-import EventCreationDashboard from "../../EventCreation/EventCreationDashboard";
 import Events from "../../Events/Events";
 import EventsOld from "../../OldCodeToKeep/Events/EventsOld";
 import EventDetails from "../../Events/EventDetails";
@@ -216,23 +215,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <PrivateRoute component={VendorEventsOld} role="1" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/vendoreventcreation"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={EventCreationDashboard} role="1" />
             <Footer></Footer>
           </React.Fragment>
         )}

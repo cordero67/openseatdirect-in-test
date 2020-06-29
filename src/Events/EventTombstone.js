@@ -10,7 +10,9 @@ const event = props => {
   if (!props.image) {
     image = ComingSoon;
   } else {
-    image = props.image;
+    image = `https://www.openseatdirect.com/api/event/photo/e/${props.image}`;
+    //image = `https://www.openseatdirect.com/api/event/photo/e/20806407169`;
+    
   }
 
   let newDate = dateFormat(props.date, "ddd, mmm d, yyyy - h:MM TT", true);
@@ -21,6 +23,7 @@ const event = props => {
     <img
       className={classes.EventImage}
       src={image}
+      //src="https://www.openseatdirect.com/api/event/photo/e/20806407169"
       alt="Event Logo Coming Soon!!!"
       onClick={props.clicked}
     />

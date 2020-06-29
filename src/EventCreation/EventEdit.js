@@ -78,12 +78,12 @@ const EventEdit = () => {
     linkedinLink: "",
     instagramLink: "",
     vanityLink: "",
-    refundPolicy: "noRefunds",
+    refundPolicy: "noRefunds"
   });
 
   // stores all Ticket Details variables
   const [ticketDetails, setTicketDetails] = useState([
-    {
+    {/*
       key: "1",
       sort: "",
       _id: "",
@@ -108,6 +108,7 @@ const EventEdit = () => {
       functionArgs: {},
       viewModal: false,
       nameWarning: false
+      */
     },
   ]);
   // DONT KNOW IF I NEED THIS
@@ -162,8 +163,63 @@ const EventEdit = () => {
   }, [pageErrors]);
 
   const loadEventInfo = (eventTix) => {
-    console.log("Inside 'loadEventInfo': ", loadEventInfo);
+    console.log("Inside 'loadEventInfo': ", eventTix);
+    
     let tempDescription = { ...eventDescription };
+
+    let eventDescriptionFields = [
+      "eventNum",//
+      "eventTitle",
+      "isDraft",//
+      "eventType",
+      "locationVenueName",//
+      "locationAddress1",//
+      "locationAddress2",//
+      "locationCity",//
+      "locationState",//
+      "locationZipPostalCode",//
+      "locationCountryCode",//
+      "locationNote",//
+      "webinarLink",//
+      "onlineInformation",//
+      "tbaInformation",//
+      "timeZone",//
+      "shortDescription",//
+      "longDescription",//
+      "eventCategory",//
+      "facebookLink",//
+      "twitterLink",//
+      "linkedinLink",//
+      "instagramLink",//
+      "vanityLink",//
+      "refundPolicy",
+    ];
+
+    eventDescriptionFields.forEach((field) => {
+      if (eventTix[field] == null) {
+        console.log("field exists: ", field)
+        //tempDescription[field] = "";
+      } else {
+        console.log("field DOES NOT exists: ", field)
+        console.log("eventTix[", field, "]: ", eventTix[field])
+        tempDescription[field] = eventTix[field];
+        console.log("eventDescription[field]: ", tempDescription[field] )
+      }
+    });
+
+    tempDescription.eventType = eventTix.eventType
+      ? eventTix.eventType
+      : "live";
+
+    tempDescription.refundPolicy = eventTix.refundPolicy
+      ? eventTix.refundPolicy
+      : "noRefunds";
+
+    tempDescription.eventImage = eventTix.photo;
+
+    console.log("eventTix: ", tempDescription);
+
+/*
     tempDescription.eventTitle = eventTix.eventTitle;
     tempDescription.eventNum = eventTix.eventNum;
     tempDescription.isDraft = eventTix.isDraft;
@@ -196,6 +252,7 @@ const EventEdit = () => {
     tempDescription.timeZone = eventTix.timeZone;
     tempDescription.eventImage = eventTix.photo;
     console.log("eventImage: ", tempDescription.eventImage);
+    */
 
     console.log("tempDescription: ", tempDescription);
     setEventDescription(tempDescription);
@@ -398,10 +455,11 @@ const EventEdit = () => {
       var formData = new FormData();
 
       eventDescriptionFields.forEach((field) => {
-          if (eventDescription[field] !== '') {
-            console.log("eventDescription[field]: ", eventDescription[field] )
-            formData.append(`${field}`, eventDescription[field]);
-          }
+        if (eventDescription[field] !== '') {
+          console.log("eventDescription[field]: ", eventDescription[field] )
+          formData.append(`${field}`, eventDescription[field]);
+          //formData.append(`tickets[${index}][${field}]`, ticket[field]);
+        }
       });
     
       let tempDescription = { ...eventDescription };
@@ -470,8 +528,18 @@ const EventEdit = () => {
             );
           }
 
+
+          eventDescriptionFields.forEach((field) => {
+            if (eventDescription[field] !== '') {
+              console.log("eventDescription[field]: ", eventDescription[field] )
+              formData.append(`${field}`, eventDescription[field]);
+            }
+          });
+
+
           ticketDetailsFields.forEach((field) => {
-            if (ticket[field]) {
+            if (ticket[field] !== '') {
+              console.log(`tickets[${index}][${field}]: `, ticket[field] )
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
           });
@@ -2951,8 +3019,7 @@ const EventEdit = () => {
                   boxSizing: "borderBox",
                   backgroundColor: "#E7E7E7",
                 }}
-              >
-                {imageCanvas()}
+                >
               </div>
     
               <div className={classes.SectionTitleTight}>
