@@ -25,65 +25,66 @@ export function extractImageFileExtensionFromBase64 (base64Data) {
 }
 
 // Converts a Base64 Image to Canvas with a Crop
-export function image64toCanvasRef (canvasRef, image64, pixelCrop) {
+export function image64toCanvasRef (canvasRef, image64, percentCrop) {
   const canvas = canvasRef // document.createElement('canvas');
 //  const canvas = document.createElement('canvas');
-  canvas.width = pixelCrop.width
-  canvas.height = pixelCrop.height
+  canvas.width = percentCrop.width
+  canvas.height = percentCrop.height
   const ctx = canvas.getContext('2d')
   const image = new Image()
   image.src = image64
   image.onload = function () {
     ctx.drawImage(
       image,
-      pixelCrop.x,
-      pixelCrop.y,
-      pixelCrop.width,
-      pixelCrop.height,
+      percentCrop.x,
+      percentCrop.y,
+      percentCrop.width,
+      percentCrop.height,
       0,
       0,
-      pixelCrop.width,
-      pixelCrop.height
+      percentCrop.width,
+      percentCrop.height
     )
   }
 }
 
 // Converts a Base64 Image to Canvas with a Crop MM on 2 by 1 aspect
-export function image64toCanvasRef2 (canvasRef, image64, pixelCrop) {
+export function image64toCanvasRef2 (canvasRef, image64, percentCrop) {
   console.log ("** image64toCanvasRef2");
   const image = new Image();
-  image.src = image64;
   const canvas = canvasRef // document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   console.log ( "canvas w h:",canvas.width, canvas.height);
 
   image.onload = function () {
-    console.log (" >pixelCrop:", pixelCrop);
+    console.log (" >percentCrop:", percentCrop);
     console.log ("***** : image.width:", image.width);
     console.log ("***** : image.height:", image.height);
-    console.log ("***** : pixelCrop.width:", pixelCrop.width);
-    console.log ("***** : pixelCrop.height:", pixelCrop.height);
+    console.log ("***** : percentCrop.width:", percentCrop.width);
+    console.log ("***** : percentCrop.height:", percentCrop.height);
     const W = image.width;
     const H = image.height;
     console.log  (" ARGS:", 
-      pixelCrop.x*W*.01,    //OK
-      pixelCrop.y*H*.01,
-      pixelCrop.width*W*.01,
-      pixelCrop.height*H*.01,
+      percentCrop.x*W*.01,    //OK
+      percentCrop.y*H*.01,
+      percentCrop.width*W*.01,
+      percentCrop.height*H*.01,
       0,0,
-      pixelCrop.width*W*.01,
-      pixelCrop.height*H*.01);
+      percentCrop.width*W*.01,
+      percentCrop.height*H*.01);
 
     // pixcelCrop is in % but input should be in px
     ctx.drawImage(
       image,
-      pixelCrop.x*W*.01,
-      pixelCrop.y*H*.01,
-      pixelCrop.width*W*.01,
-      pixelCrop.height*H*.01,
+      percentCrop.x*W*.01,
+      percentCrop.y*H*.01,
+      percentCrop.width*W*.01,
+      percentCrop.height*H*.01,
       0,0,
       300,
       150
     );
-  }
+  };
+
+  image.src = image64;  // must be after image.onload
 }

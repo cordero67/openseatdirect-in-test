@@ -425,7 +425,6 @@ const EventCreation = () => {
           console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
           tempStatus.status = "error";
           tempStatus.errorMessage = res.friendlyMessage;
-        //} else if(false && false) {
         } else if(!res.done && res.error) {
           console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
           tempStatus.status = "error";
@@ -2269,9 +2268,28 @@ const EventCreation = () => {
   ];
 
 
+// MMs
+//***************************************
+let imagex  = null;
+
+const imageCanvas = () => {
+  return (
+    <ImgDropAndCrop
+      imagein={{isLoaded:true}}
+      change={(image) => {
+        imagex = image;
+        console.log("image: ", image);
+        console.log("imagex: ", imagex);
+
+      }}
+    />
+  );
+};
 
 
 
+//***************************************
+/* RHCs
   const imageCanvas = () => {
     return (
       <ImgDropAndCrop
@@ -2290,8 +2308,8 @@ const EventCreation = () => {
         }}
       />
     );
-    //}
   };
+*/
 
   const errorDisplay = () => {
     if (pageErrors || eventTitleOmission) {

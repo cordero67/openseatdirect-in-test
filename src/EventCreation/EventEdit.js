@@ -78,12 +78,12 @@ const EventEdit = () => {
     linkedinLink: "",
     instagramLink: "",
     vanityLink: "",
-    refundPolicy: "noRefunds"
+    refundPolicy: "noRefunds",
   });
 
   // stores all Ticket Details variables
   const [ticketDetails, setTicketDetails] = useState([
-    {/*
+    {
       key: "1",
       sort: "",
       _id: "",
@@ -108,14 +108,11 @@ const EventEdit = () => {
       functionArgs: {},
       viewModal: false,
       nameWarning: false
-      */
     },
   ]);
-  // DONT KNOW IF I NEED THIS
-  const [photoData, setPhotoData] = useState({
-    imgSrc: "",
-    imgSrcExt: "",
-  });
+
+  // MMs code
+  const [photoData, setPhotoData] = useState({imgSrc:null, imgSrcExt: null, isLoaded:false});
 
   const [eventStatus, setEventStatus] = useState({
     status: "", // "saved", "live", "error", "failure"
@@ -125,9 +122,47 @@ const EventEdit = () => {
     failureMessage: "System error please try again.",
   });
 
-  const [isLoading, setIsLoading] = useState(true);
-  // DONT KNOW IF I NEED THIS VARIABLE
-  let eventTix = {};
+  // MMs code
+  const initPhotoData =( resPhotoData) =>{
+    console.log ("in initPhotoData....");
+    // converts data from server fetch call to photodata for image display
+    
+    // check for required fields
+      if (!(resPhotoData && resPhotoData.data && resPhotoData.data.data)){
+        setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+        return;
+      };
+
+      if (!(resPhotoData.contentType)){
+        setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+        return;
+      };
+
+      const ext = resPhotoData.contentType;
+
+      console.log ("buffer=>", resPhotoData.data.data);
+
+      let header ='data:image/png;base64,'; // hard codes image/png by default
+      if (ext ==='image/png'){
+        header ='data:image/png;base64,'
+      } else if (ext ==='image/jpeg'){
+        header ='data:image/jpeg;base64,'
+      };
+
+      const uint8 = new Uint8Array(resPhotoData.data.data);
+      const len =  uint8.byteLength;
+      if (len ==0){ // no photo data
+              setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+              return;
+      };
+      let bin ='';
+      for (let i = 0; i < len; i++)
+          bin += String.fromCharCode(uint8[i]); 
+      const photodat =  header+window.btoa(bin);
+      const srcExt = extractImageFileExtensionFromBase64 (photodat);
+      console.log ("found photo> setting PhotoData:", photodat);
+      setPhotoData({imgSrc:photodat, imgSrcExt: srcExt, isLoaded:true});
+ }
 
   useEffect(() => {
     console.log("inside useEffet")
@@ -156,16 +191,48 @@ const EventEdit = () => {
   }, []);
 
   // DONT KNOW IF I NEED THIS
-  useEffect(() => {
-    if (true) {
-      console.log("Hello world")
-    }
-  }, [pageErrors]);
+  //useEffect(() => {
+  //  if (true) {
+  //    console.log("Hello world")
+  //  }
+  //}, [pageErrors]);
 
   const loadEventInfo = (eventTix) => {
     console.log("Inside 'loadEventInfo': ", eventTix);
-    
     let tempDescription = { ...eventDescription };
+
+    /*
+    tempDescription.eventTitle = eventTix.eventTitle;
+    tempDescription.eventNum = eventTix.eventNum;
+    tempDescription.isDraft = eventTix.isDraft;
+    tempDescription.eventType = eventTix.eventType
+      ? eventTix.eventType
+      : "live";
+    tempDescription.vanityLink = eventTix.vanityLink;
+    tempDescription.webinarLink = eventTix.webinarLink;
+    tempDescription.onlineInformation = eventTix.onlineInformation;
+    tempDescription.tbaInformation = eventTix.tbaInformation;
+    tempDescription.shortDescription = eventTix.shortDescription;
+    tempDescription.longDescription = eventTix.longDescription;
+    tempDescription.eventCategory = eventTix.eventCategory;
+    tempDescription.facebookLink = eventTix.facebookLink;
+    tempDescription.twitterLink = eventTix.twitterLink;
+    tempDescription.linkedinLink = eventTix.linkedinLink;
+    tempDescription.instagramLink = eventTix.instagramLink;
+    tempDescription.refundPolicy = eventTix.refundPolicy
+      ? eventTix.refundPolicy
+      : "noRefunds";
+    tempDescription.eventNum = eventTix.eventNum;
+    tempDescription.locationVenueName = eventTix.locationVenueName;
+    tempDescription.locationAddress1 = eventTix.locationAddress1;
+    tempDescription.locationAddress2 = eventTix.locationAddress2;
+    tempDescription.locationNote = eventTix.locationNote;
+    tempDescription.locationCity = eventTix.locationCity;
+    tempDescription.locationState = eventTix.locationState;
+    tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode;
+    tempDescription.locationCountryCode = eventTix.locationCountryCode;
+    tempDescription.timeZone = eventTix.timeZone;
+    */
 
     let eventDescriptionFields = [
       "eventNum",//
@@ -215,44 +282,9 @@ const EventEdit = () => {
       ? eventTix.refundPolicy
       : "noRefunds";
 
-    tempDescription.eventImage = eventTix.photo;
-
-    console.log("eventTix: ", tempDescription);
-
-/*
-    tempDescription.eventTitle = eventTix.eventTitle;
-    tempDescription.eventNum = eventTix.eventNum;
-    tempDescription.isDraft = eventTix.isDraft;
-    tempDescription.eventType = eventTix.eventType
-      ? eventTix.eventType
-      : "live";
-    tempDescription.vanityLink = eventTix.vanityLink;
-    tempDescription.webinarLink = eventTix.webinarLink;
-    tempDescription.onlineInformation = eventTix.onlineInformation;
-    tempDescription.tbaInformation = eventTix.tbaInformation;
-    tempDescription.shortDescription = eventTix.shortDescription;
-    tempDescription.longDescription = eventTix.longDescription;
-    tempDescription.eventCategory = eventTix.eventCategory;
-    tempDescription.facebookLink = eventTix.facebookLink;
-    tempDescription.twitterLink = eventTix.twitterLink;
-    tempDescription.linkedinLink = eventTix.linkedinLink;
-    tempDescription.instagramLink = eventTix.instagramLink;
-    tempDescription.refundPolicy = eventTix.refundPolicy
-      ? eventTix.refundPolicy
-      : "noRefunds";
-    tempDescription.eventNum = eventTix.eventNum;
-    tempDescription.locationVenueName = eventTix.locationVenueName;
-    tempDescription.locationAddress1 = eventTix.locationAddress1;
-    tempDescription.locationAddress2 = eventTix.locationAddress2;
-    tempDescription.locationNote = eventTix.locationNote;
-    tempDescription.locationCity = eventTix.locationCity;
-    tempDescription.locationState = eventTix.locationState;
-    tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode;
-    tempDescription.locationCountryCode = eventTix.locationCountryCode;
-    tempDescription.timeZone = eventTix.timeZone;
-    tempDescription.eventImage = eventTix.photo;
-    console.log("eventImage: ", tempDescription.eventImage);
-    */
+    //tempDescription.eventImage = eventTix.photo;
+    initPhotoData( eventTix.photo);
+    //console.log("eventTix: ", tempDescription);
 
     console.log("tempDescription: ", tempDescription);
     setEventDescription(tempDescription);
@@ -458,7 +490,6 @@ const EventEdit = () => {
         if (eventDescription[field] !== '') {
           console.log("eventDescription[field]: ", eventDescription[field] )
           formData.append(`${field}`, eventDescription[field]);
-          //formData.append(`tickets[${index}][${field}]`, ticket[field]);
         }
       });
     
@@ -512,7 +543,6 @@ const EventEdit = () => {
       ];
 
       ticketDetails.forEach((ticket, index) => {
-        //console.log("ticket #: index");
         if (
           ticket.ticketName &&
           ticket.remainingQuantity &&
@@ -528,14 +558,12 @@ const EventEdit = () => {
             );
           }
 
-
           eventDescriptionFields.forEach((field) => {
             if (eventDescription[field] !== '') {
               console.log("eventDescription[field]: ", eventDescription[field] )
               formData.append(`${field}`, eventDescription[field]);
             }
           });
-
 
           ticketDetailsFields.forEach((field) => {
             if (ticket[field] !== '') {
@@ -763,6 +791,7 @@ const EventEdit = () => {
     setEventDescription(tempDescription);
   };
 
+  /*
   const changeEventImage = async (image) => {
     console.log("Received image: ", image);
     let imageBlob;
@@ -775,6 +804,7 @@ const EventEdit = () => {
     console.log("temp image: ", tempDescription.eventImage);
     setEventDescription(tempDescription);
   };
+  */
 
   const changeLongDescription = (editorContent) => {
     let tempDescription = { ...eventDescription };
@@ -2480,14 +2510,32 @@ const EventEdit = () => {
     { label: "No refunds: No refunds at any time.", value: "noRefunds" },
   ];
 
-
-
-
+  // MMs code
   const imageCanvas = () => {
-    //if (isLoading || !eventDescription.eventNum) {
-    //  return null
-    //} else {
-    //  console.log("eventDescription.eventNum: ", eventDescription.eventNum)
+    if (!photoData.isLoaded) {
+      return <p>  Loading .... </p>
+    } else { 
+        return (
+          <ImgDropAndCrop
+            imagein={photoData}
+            change={(image) => {
+              console.log("image: ", image);
+              console.log("typeof image: ", typeof image);
+              let tempDescription = { ...eventDescription };
+              tempDescription.eventImage = image;
+              setEventDescription(tempDescription);
+              console.log(
+                "tempDescription.eventImage: ",
+                tempDescription.eventImage
+              );
+            }}
+          />
+        )
+    }
+  };
+
+  /* RHCs code
+  const imageCanvas = () => {
     return (
       <ImgDropAndCrop
         icon="create image"
@@ -2507,7 +2555,7 @@ const EventEdit = () => {
       />
     );
     //}
-  };
+  };*/
 
   const errorDisplay = () => {
     if (pageErrors || eventTitleOmission) {
@@ -3019,7 +3067,8 @@ const EventEdit = () => {
                   boxSizing: "borderBox",
                   backgroundColor: "#E7E7E7",
                 }}
-                >
+              >
+                {imageCanvas()}
               </div>
     
               <div className={classes.SectionTitleTight}>
