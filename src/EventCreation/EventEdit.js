@@ -163,6 +163,7 @@ const EventEdit = () => {
           bin += String.fromCharCode(uint8[i]); 
       const photodat =  header+window.btoa(bin);
       const srcExt = extractImageFileExtensionFromBase64 (photodat);
+      console.log ("found photo> setting PhotoData:", photodat);
       setPhotoData({imgSrc:photodat, imgSrcExt: srcExt, isLoaded:true});
  }
  

@@ -2273,24 +2273,20 @@ const EventCreation = () => {
 
 
 
-
+//        event={eventDescription.eventNum}
+//      icon="create image"
+  
+  let imagex  = null;
 
   const imageCanvas = () => {
     return (
       <ImgDropAndCrop
-        icon="create image"
         imagein={{isLoaded:true}}
-        event={eventDescription.eventNum}
         change={(image) => {
+          imagex = image;
           console.log("image: ", image);
-          console.log("typeof image: ", typeof image);
-          let tempDescription = { ...eventDescription };
-          tempDescription.eventImage = image;
-          setEventDescription(tempDescription);
-          console.log(
-            "tempDescription.eventImage: ",
-            tempDescription.eventImage
-          );
+          console.log("imagex: ", imagex);
+
         }}
       />
     );
