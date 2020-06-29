@@ -7,7 +7,7 @@ const TimeZoneSelector = (props) => {
     let transformedTimeZones = Object.keys(timeZones);
     let currentZone;
 
-    transformedTimeZones.map((zone, index) => {
+    transformedTimeZones.forEach((zone, index) => {
         if (props.current === timeZones[zone]) {
             currentZone = zone;
         }

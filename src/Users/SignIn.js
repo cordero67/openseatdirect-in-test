@@ -52,9 +52,9 @@ const SignIn = () => {
         }
       })
       .catch((err) => {
-        console.log('{"error":"Email and password do not match"}')
-        console.log("err.error: ", err.error)
-        console.log("err: ", err)
+        //console.log('{"error":"Email and password do not match"}')
+        //console.log("err.error: ", err.data.error)
+        //console.log("err: ", err)
         setValues({ ...values, error: true, loading: false });
       })
   };

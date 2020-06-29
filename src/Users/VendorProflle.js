@@ -7,7 +7,7 @@ import classes from "./User.module.css";
 
 const VendorAccount = () => {
   //const [vendorInfo, setVendorInfo] = useState();
-  const [eventDetails, setEventDetails] = useState();
+  //const [eventDetails, setEventDetails] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   let vendorInfo = {};
@@ -36,7 +36,7 @@ const VendorAccount = () => {
       .then((result) => {
         let js = JSON.parse(result);
         console.log("eventDetails: ", js);
-        setEventDetails(js);
+        //setEventDetails(js);
         //SIGNOK = true;
         setIsLoading(false);
       })

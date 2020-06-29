@@ -102,7 +102,7 @@ export const expressPaymentOnSuccess = paymentTicketData => {
       })
       // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
       .catch(err => {
-        console.log("fetch(`${API}/paypal/expressPayment`): ERROR THROWN", err);
+        console.log("fetch API/paypal/expressPayment): ERROR THROWN", err);
         throw Error(err);
       })
   );
@@ -126,7 +126,7 @@ export const processExpressPayment = paymentTicketData => {
       // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
       .catch(err => {
         console.log(
-          "fetch(`${API}/braintree/expressPayment`): ERROR THROWN",
+          "fetch API/braintree/expressPayment): ERROR THROWN",
           err
         );
         throw Error(err);
@@ -149,7 +149,7 @@ export const getExpressBraintreeClientToken = () => {
     })
     .catch(err => {
       console.log(
-        "fetch(`${API}/braintree/getExpressToken`): ERROR THROWN",
+        "fetch API/braintree/getExpressToken): ERROR THROWN",
         err
       );
       throw Error(err);

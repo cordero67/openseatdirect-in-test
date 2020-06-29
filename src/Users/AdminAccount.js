@@ -8,8 +8,8 @@ import classes from "./User.module.css";
 
 const AdminAccount = () => {
   //const [vendorInfo, setVendorInfo] = useState();
-  const [eventDetails, setEventDetails] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  //const [eventDetails, setEventDetails] = useState();
+  //const [isLoading, setIsLoading] = useState(true);
 
 
   let vendorInfo = {};
@@ -37,18 +37,19 @@ const AdminAccount = () => {
       .then((response) => response.text())
       .then((result) => {
         let js = JSON.parse(result);
-        console.log("eventDetails: ", js);
-        setEventDetails(js);
+        //console.log("eventDetails: ", js);
+        //setEventDetails(js);
         //SIGNOK = true;
-        setIsLoading(false);
+        //setIsLoading(false);
       })
       .catch((error) => {
         console.log("error", error);
         //SIGNOK = false;
-        setIsLoading(false);
+        //setIsLoading(false);
       });
   }, []);
 
+  /*
   const summaryPanel = () => {
     if (!isLoading) {
       return (
@@ -67,6 +68,7 @@ const AdminAccount = () => {
       return null;
     }
   };
+  */
 
   return (
     <div className={classes.DashboardContainer}>

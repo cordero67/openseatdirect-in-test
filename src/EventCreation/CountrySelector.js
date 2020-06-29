@@ -7,7 +7,7 @@ const CountrySelector = (props) => {
     let transformedCountries = Object.keys(countryCodes);
     let currentCountry;
 
-    transformedCountries.map((country, index) => {
+    transformedCountries.forEach((country, index) => {
         if (props.current === countryCodes[country]) {
             currentCountry = country;
         }
