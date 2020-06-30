@@ -194,39 +194,6 @@ const EventEdit = () => {
     console.log("Inside 'loadEventInfo': ", eventTix);
     let tempDescription = { ...eventDescription };
 
-    /*
-    tempDescription.eventTitle = eventTix.eventTitle;
-    tempDescription.eventNum = eventTix.eventNum;
-    tempDescription.isDraft = eventTix.isDraft;
-    tempDescription.eventType = eventTix.eventType
-      ? eventTix.eventType
-      : "live";
-    tempDescription.vanityLink = eventTix.vanityLink;
-    tempDescription.webinarLink = eventTix.webinarLink;
-    tempDescription.onlineInformation = eventTix.onlineInformation;
-    tempDescription.tbaInformation = eventTix.tbaInformation;
-    tempDescription.shortDescription = eventTix.shortDescription;
-    tempDescription.longDescription = eventTix.longDescription;
-    tempDescription.eventCategory = eventTix.eventCategory;
-    tempDescription.facebookLink = eventTix.facebookLink;
-    tempDescription.twitterLink = eventTix.twitterLink;
-    tempDescription.linkedinLink = eventTix.linkedinLink;
-    tempDescription.instagramLink = eventTix.instagramLink;
-    tempDescription.refundPolicy = eventTix.refundPolicy
-      ? eventTix.refundPolicy
-      : "noRefunds";
-    tempDescription.eventNum = eventTix.eventNum;
-    tempDescription.locationVenueName = eventTix.locationVenueName;
-    tempDescription.locationAddress1 = eventTix.locationAddress1;
-    tempDescription.locationAddress2 = eventTix.locationAddress2;
-    tempDescription.locationNote = eventTix.locationNote;
-    tempDescription.locationCity = eventTix.locationCity;
-    tempDescription.locationState = eventTix.locationState;
-    tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode;
-    tempDescription.locationCountryCode = eventTix.locationCountryCode;
-    tempDescription.timeZone = eventTix.timeZone;
-    */
-
     let eventDescriptionFields = [
       "eventNum",//
       "eventTitle",
@@ -321,14 +288,14 @@ const EventEdit = () => {
               buyWarning: false,
               get: tix.priceFunction.args.get,
               getWarning: false,
-              discount: tix.priceFunction.args.discount,
+              discount: tix.priceFunction.args.discount*100,
               discountWarning: false,
               reqWarning: false,
             };
-            if (tix.priceFunction.args.discount === 100) {
+            if (tix.priceFunction.args.discount === 1) {
               tempPriceFeature = "bogof";
             }
-            if (tix.priceFunction.args.discount !== 100) {
+            if (tix.priceFunction.args.discount !== 1) {
               tempPriceFeature = "bogod";
             }
           } else if (tempPriceFeature === "twofer") {
@@ -572,7 +539,7 @@ const EventEdit = () => {
               `tickets[${index}][priceFunction][args][get]`, ticket.functionArgs.get
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount
+              `tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount/100
             );
           }
 
@@ -600,16 +567,16 @@ const EventEdit = () => {
             formData.append(`tickets[${index}][priceFunction][form]`, "promo");
             ticket.promoCodes.forEach((item, number) => {
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes[${number}]][key]`, item.key
+                `tickets[${index}][priceFunction][args][promocodes][${number}][key]`, item.key
               );
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes[${number}]][name]`, item.name
+                `tickets[${index}][priceFunction][args][promocodes][${number}][name]`, item.name
               );
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes[${number}]][amount]`, item.amount
+                `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`, item.amount
               );
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes[${number}]][percent]`, item.percent
+                `tickets[${index}][priceFunction][args][promocodes][${number}][percent]`, item.percent
               );
               console.log(
                 "New promo details: key-",
@@ -1707,14 +1674,14 @@ const EventEdit = () => {
                 className={tempDiscountWarning}
                 type="text"
                 id="functionArgDiscountBogod"
-                placeholder="percentage"
+                placeholder="percent"
                 name="discount"
                 value={ticket.functionArgs.discount}
                 onChange={(event) => {
                   changeArgument(event, ticket.key);
                 }}
               ></input>{" "}
-              discount.
+              % discount.
             </div>
           </div>
 

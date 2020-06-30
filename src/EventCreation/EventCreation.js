@@ -278,6 +278,10 @@ const EventCreation = () => {
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
+      formData.append("photo", eventDescription.eventImage);
+      console.log("photo", eventDescription.eventImage);
+
+      /*
       let imageBlob = null;
       if (eventDescription.eventImage) {
         console.log("eventDescription.eventImage: ", eventDescription.eventImage)
@@ -288,6 +292,8 @@ const EventCreation = () => {
       } else {
         //console.log("there is no image");
       }
+      */
+
       let ticketDetailsFields = [
         "ticketName",
         "remainingQuantity",
@@ -316,8 +322,7 @@ const EventCreation = () => {
           }
 
           ticketDetailsFields.forEach((field) => {
-            if (ticket[field] !== '') {
-              console.log(`tickets[${index}][${field}]: `, ticket[field] )
+            if (ticket[field]) {
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
           });
@@ -337,7 +342,7 @@ const EventCreation = () => {
               `tickets[${index}][priceFunction][args][get]`, ticket.functionArgs.get
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount
+              `tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount/100
             );
           }
 
@@ -365,16 +370,16 @@ const EventCreation = () => {
             formData.append(`tickets[${index}][priceFunction][form]`, "promo");
             ticket.promoCodes.forEach((item, number) => {
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes[${number}]][key]`, item.key
+                `tickets[${index}][priceFunction][args][promocodes][${number}][key]`, item.key
               );
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes[${number}]][name]`, item.name
+                `tickets[${index}][priceFunction][args][promocodes][${number}][name]`, item.name
               );
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes[${number}]][amount]`, item.amount
+                `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`, item.amount
               );
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes[${number}]][percent]`, item.percent
+                `tickets[${index}][priceFunction][args][promocodes][${number}][percent]`, item.percent
               );
               console.log(
                 "New promo details: key-",
@@ -554,6 +559,7 @@ const EventCreation = () => {
     setEventDescription(tempDescription);
   };
 
+  /*
   const changeEventImage = async (image) => {
     console.log("Received image: ", image);
     let imageBlob;
@@ -566,6 +572,7 @@ const EventCreation = () => {
     console.log("temp image: ", tempDescription.eventImage);
     setEventDescription(tempDescription);
   };
+  */
 
   const changeLongDescription = (editorContent) => {
     let tempDescription = { ...eventDescription };
@@ -1480,14 +1487,14 @@ const EventCreation = () => {
                 className={tempDiscountWarning}
                 type="text"
                 id="functionArgDiscountBogod"
-                placeholder="percentage"
+                placeholder="percent"
                 name="discount"
                 value={ticket.functionArgs.discount}
                 onChange={(event) => {
                   changeArgument(event, ticket.key);
                 }}
               ></input>{" "}
-              discount.
+              % discount.
             </div>
           </div>
 
@@ -2281,7 +2288,10 @@ const imageCanvas = () => {
     <ImgDropAndCrop
       imagein={{isLoaded:true}}
       change={(image) => {
-        imagex = image;
+       // imagex = image;
+        let tempDescription = { ...eventDescription };
+        tempDescription.eventImage = image;
+        setEventDescription(tempDescription);
         console.log("image: ", image);
         console.log("imagex: ", imagex);
 
