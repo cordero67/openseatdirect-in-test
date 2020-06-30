@@ -213,6 +213,7 @@ class ImgDropAndCrop extends Component {
         }
     }
 
+
     handleCreateCroppedImage = async (event) => {
         console.log ("in handleCreateCroppedImage..");
         event.preventDefault()
@@ -222,15 +223,15 @@ class ImgDropAndCrop extends Component {
         if (canvasRef && imgSrc) { 
             const {imgSrcExt} =  this.state;
             const tempImage = canvasRef.toDataURL('image/' +imgSrcExt, 0.92);
+            const imageBlob = await new Promise((resolve) => canvasRef.toBlob(resolve, "image/png"));
             this.setState({newimageData64: tempImage});
-            this.props.change(tempImage);
-
-            console.log("newimageData64: ", this.state.newimageData64)
-            console.log("newimageData64: ", tempImage)
-            console.log("tempImage typeof: ", typeof tempImage)
+            this.props.change(imageBlob);
+            console.log("newimageData64: ", this.state.newimageData64);
+            console.log("newimageData64: ", tempImage);
+            console.log("tempImage typeof: ", typeof tempImage);
             //this.props.change(canvasRef);
-            console.log("height: ", tempImage.height)
-            console.log("width: ", tempImage.width)
+            console.log("height: ", tempImage.height);
+            console.log("width: ", tempImage.width);
         }
 
         this.setState({isCropping: false});
@@ -369,7 +370,6 @@ class ImgDropAndCrop extends Component {
                                         onImageLoaded={this.handleImageLoaded}
                                         onComplete = {async (crop, percentCrop)=>{
                                             await this.handleOnCropComplete(crop, percentCrop);
-                                            this.props.change(this.imagePreviewCanvasRef.current);
                                             }}
                                         onChange={this.handleOnCropChange}
                                     />
