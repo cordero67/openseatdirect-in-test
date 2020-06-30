@@ -278,10 +278,10 @@ const EventCreation = () => {
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      formData.append("photo", eventDescription.eventImage);
-      console.log("photo", eventDescription.eventImage);
+      //formData.append("photo", eventDescription.eventImage);
+      //console.log("photo", eventDescription.eventImage);
 
-      /*
+      
       let imageBlob = null;
       if (eventDescription.eventImage) {
         console.log("eventDescription.eventImage: ", eventDescription.eventImage)
@@ -292,7 +292,7 @@ const EventCreation = () => {
       } else {
         //console.log("there is no image");
       }
-      */
+      
 
       let ticketDetailsFields = [
         "ticketName",
