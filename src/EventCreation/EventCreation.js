@@ -316,46 +316,66 @@ const EventCreation = () => {
           }
 
           ticketDetailsFields.forEach((field) => {
-            if (ticket[field]) {
+            if (ticket[field] !== '') {
+              console.log(`tickets[${index}][${field}]: `, ticket[field] )
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
           });
 
+          // {form: "bogo",   args: {buy:5, get:4, discount:.90}}
           // for "bogod" and "bogof"
           if (
             ticket.priceFeature === "bogod" ||
             ticket.priceFeature === "bogof"
           ) {
-            formData.append(`tickets[${index}][priceFunction][form]`, "bogo");
             formData.append(
-              `tickets[${index}][priceFunction][args][buy]`,
-              ticket.functionArgs.buy
+              `tickets[${index}][priceFunction][form]`, "bogo");
+            formData.append(
+              `tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][get]`,
-              ticket.functionArgs.get
+              `tickets[${index}][priceFunction][args][get]`, ticket.functionArgs.get
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][discount]`,
-              ticket.functionArgs.discount
+              `tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount
             );
           }
+
+          // {form: "twofer", args: {buy:2,  for:15}}
           // for "twofer"
           if (ticket.priceFeature === "twofer") {
-            formData.append(`tickets[${index}][priceFunction][form]`, "twofer");
             formData.append(
-              `tickets[${index}][priceFunction][args][buy]`,
-              ticket.functionArgs.buy
+              `tickets[${index}][priceFunction][form]`, "twofer");
+            formData.append(
+              `tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][for]`,
-              ticket.functionArgs.for
+              `tickets[${index}][priceFunction][args][for]`, ticket.functionArgs.for
             );
           }
+
+          // {form: "promo",  args: {
+          //    promocodes:  [
+          //      {name:"flyers", discount: .20, pct: true} ,  // 20% off
+          //      {name:"eagles", discount:10,  pct: false }    // $10 off
+          //    ]}
+          // }
           // for "promo"
           if (ticket.priceFeature === "promo") {
             formData.append(`tickets[${index}][priceFunction][form]`, "promo");
             ticket.promoCodes.forEach((item, number) => {
+              formData.append(
+                `tickets[${index}][priceFunction][args][promocodes[${number}]][key]`, item.key
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args][promocodes[${number}]][name]`, item.name
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args][promocodes[${number}]][amount]`, item.amount
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args][promocodes[${number}]][percent]`, item.percent
+              );
               console.log(
                 "New promo details: key-",
                 item.key,
@@ -364,22 +384,6 @@ const EventCreation = () => {
                 ", amount-",
                 item.amount,
                 ", percent-",
-                item.percent
-              );
-              formData.append(
-                `tickets[${index}][priceFunction][args[${number}]][key]`,
-                item.key
-              );
-              formData.append(
-                `tickets[${index}][priceFunction][args[${number}]][name]`,
-                item.name
-              );
-              formData.append(
-                `tickets[${index}][priceFunction][args[${number}]][amount]`,
-                item.amount
-              );
-              formData.append(
-                `tickets[${index}][priceFunction][args[${number}]][percent]`,
                 item.percent
               );
             });
