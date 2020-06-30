@@ -282,26 +282,12 @@ const EventCreation = () => {
   //    console.log("photo", eventDescription.eventImage);
 
       
-      let imageBlob = null;
-/*      if (eventDescription.eventImage) {
+      if (eventDescription.eventImage) {
         console.log("eventDescription.eventImage: ", eventDescription.eventImage)
-        imageBlob = await new Promise((resolve) =>
-          eventDescription.eventImage.toBlob(resolve, "image/png")
-        );
-        formData.append("photo", imageBlob);
-      } else {
-        //console.log("there is no image");
-      }      
-*/
-
-      if (imagex) {
-//        console.log("eventDescription.eventImage: ", eventDescription.eventImage)
-        console.log ("imagex");
-        formData.append("photo", imagex);
+        formData.append("photo", eventDescription.eventImage);
       } else {
         console.log("there is no image");
-      }
-
+      }      
 
       let ticketDetailsFields = [
         "ticketName",
@@ -2297,14 +2283,10 @@ const imageCanvas = () => {
     <ImgDropAndCrop
       imagein={{isLoaded:true}}
       change={(image) => {
-        imagex = image;
-//        let tempDescription = { ...eventDescription };
- //       tempDescription.eventImage = image;
- //       setEventDescription(tempDescription);
+        let tempDescription = { ...eventDescription };
+        tempDescription.eventImage = image;
+        setEventDescription(tempDescription);
   
-        console.log(">>>>>>>CHANGING!!!! image: ", image);
-        console.log("imagex: ", imagex);
-
       }}
     />
   );
