@@ -242,9 +242,7 @@ const EventEdit = () => {
       ? eventTix.refundPolicy
       : "noRefunds";
 
-    //tempDescription.eventImage = eventTix.photo;
     initPhotoData( eventTix.photo);
-    //console.log("eventTix: ", tempDescription);
 
     console.log("tempDescription: ", tempDescription);
     setEventDescription(tempDescription);
@@ -482,16 +480,13 @@ const EventEdit = () => {
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      let imageBlob = null;
       if (eventDescription.eventImage) {
         console.log("eventDescription.eventImage: ", eventDescription.eventImage)
-        imageBlob = await new Promise((resolve) =>
-          eventDescription.eventImage.toBlob(resolve, "image/png")
-        );
-        formData.append("photo", imageBlob);
+        formData.append("photo", eventDescription.eventImage);
       } else {
-        //console.log("there is no image");
+        console.log("there is no image");
       }
+
       let ticketDetailsFields = [
         "ticketName",
         "remainingQuantity",
@@ -745,21 +740,6 @@ const EventEdit = () => {
     tempDescription[name] = value.value;
     setEventDescription(tempDescription);
   };
-
-  /*
-  const changeEventImage = async (image) => {
-    console.log("Received image: ", image);
-    let imageBlob;
-    imageBlob = await new Promise((resolve) =>
-      image.toBlob(resolve, "image/png")
-    );
-    console.log("Convert image: ", imageBlob);
-    let tempDescription = { ...eventDescription };
-    tempDescription.eventImage = imageBlob;
-    console.log("temp image: ", tempDescription.eventImage);
-    setEventDescription(tempDescription);
-  };
-  */
 
   const changeLongDescription = (editorContent) => {
     let tempDescription = { ...eventDescription };
@@ -2470,22 +2450,16 @@ const EventEdit = () => {
     if (!photoData.isLoaded) {
       return <p>  Loading .... </p>
     } else { 
-        return (
-          <ImgDropAndCrop
-            imagein={photoData}
-            change={(image) => {
-              console.log("image: ", image);
-              console.log("typeof image: ", typeof image);
-              let tempDescription = { ...eventDescription };
-              tempDescription.eventImage = image;
-              setEventDescription(tempDescription);
-              console.log(
-                "tempDescription.eventImage: ",
-                tempDescription.eventImage
-              );
-            }}
-          />
-        )
+      return (
+        <ImgDropAndCrop
+          imagein={{isLoaded:true}}
+          change={(image) => {
+            let tempDescription = { ...eventDescription };
+            tempDescription.eventImage = image;
+            setEventDescription(tempDescription);
+          }}
+        />
+      )
     }
   };
 

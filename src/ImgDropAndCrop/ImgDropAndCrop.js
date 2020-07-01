@@ -179,6 +179,7 @@ class ImgDropAndCrop extends Component {
         //this.props.change(crop);
         this.setState({crop:crop})
     }
+
     handleOnCropComplete = (crop, percentCrop) =>{
         console.log("handleOnCropCompleted crop, percentCrop:", crop, percentCrop);
         this.setState({percentCrop: percentCrop});
@@ -188,7 +189,6 @@ class ImgDropAndCrop extends Component {
         console.log("Before imagePreviewCanvasRef: ",this.imagePreviewCanvasRef);
         console.log ("magePreviewCanvasRef.current.width and height" ,this.imagePreviewCanvasRef.current.width,this.imagePreviewCanvasRef.current.height)
     }
-
 
     handleOnCropCompleteXX = (crop, percentCrop) =>{
         this.setState({percentCrop: percentCrop});
@@ -222,20 +222,18 @@ class ImgDropAndCrop extends Component {
         if (canvasRef && imgSrc) { 
             const {imgSrcExt} =  this.state;
             const tempImage = canvasRef.toDataURL('image/' +imgSrcExt, 0.92);
+            const imageBlob = await new Promise((resolve) => canvasRef.toBlob(resolve, "image/png"));
             this.setState({newimageData64: tempImage});
-            this.props.change(tempImage);
-
-            console.log("newimageData64: ", this.state.newimageData64)
-            console.log("newimageData64: ", tempImage)
-            console.log("tempImage typeof: ", typeof tempImage)
-            //this.props.change(canvasRef);
-            console.log("height: ", tempImage.height)
-            console.log("width: ", tempImage.width)
+                this.props.change(imageBlob);
+                console.log("newimageData64: ", this.state.newimageData64);
+                console.log("newimageData64: ", tempImage);
+                console.log("tempImage typeof: ", typeof tempImage);
+                console.log("height: ", tempImage.height);
+                console.log("width: ", tempImage.width);
         }
 
         this.setState({isCropping: false});
     }
-
 
     handleClearToDefault = event =>{
         console.log ("handleClearToDefault", event);
@@ -369,7 +367,6 @@ class ImgDropAndCrop extends Component {
                                         onImageLoaded={this.handleImageLoaded}
                                         onComplete = {async (crop, percentCrop)=>{
                                             await this.handleOnCropComplete(crop, percentCrop);
-                                            this.props.change(this.imagePreviewCanvasRef.current);
                                             }}
                                         onChange={this.handleOnCropChange}
                                     />

@@ -128,13 +128,6 @@ const EventCreation = () => {
     }
   }, []);
 
-  // DONT KNOW IF I NEED THIS
-  useEffect(() => {
-    if (true) {
-      console.log("Hello world")
-    }
-  }, [pageErrors]);
-
   const saveEvent = async (newStatus) => {
     console.log("eventDescription: ", eventDescription)
     console.log("eventStatus: ", eventStatus)
@@ -277,22 +270,13 @@ const EventCreation = () => {
 
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
-
-      //formData.append("photo", eventDescription.eventImage);
-      //console.log("photo", eventDescription.eventImage);
-
-      
-      let imageBlob = null;
+           
       if (eventDescription.eventImage) {
         console.log("eventDescription.eventImage: ", eventDescription.eventImage)
-        imageBlob = await new Promise((resolve) =>
-          eventDescription.eventImage.toBlob(resolve, "image/png")
-        );
-        formData.append("photo", imageBlob);
+        formData.append("photo", eventDescription.eventImage);
       } else {
-        //console.log("there is no image");
-      }
-      
+        console.log("there is no image");
+      }      
 
       let ticketDetailsFields = [
         "ticketName",
@@ -559,21 +543,6 @@ const EventCreation = () => {
     setEventDescription(tempDescription);
   };
 
-  /*
-  const changeEventImage = async (image) => {
-    console.log("Received image: ", image);
-    let imageBlob;
-    imageBlob = await new Promise((resolve) =>
-      image.toBlob(resolve, "image/png")
-    );
-    console.log("Convert image: ", imageBlob);
-    let tempDescription = { ...eventDescription };
-    tempDescription.eventImage = imageBlob;
-    console.log("temp image: ", tempDescription.eventImage);
-    setEventDescription(tempDescription);
-  };
-  */
-
   const changeLongDescription = (editorContent) => {
     let tempDescription = { ...eventDescription };
     tempDescription.longDescription = editorContent;
@@ -614,7 +583,6 @@ const EventCreation = () => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // STOPPED
   const priceFeatureChangeHandler = (event, value, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1916,13 +1884,8 @@ const EventCreation = () => {
   const dragNode = useRef();
 
   const handleDragStart = (event, index) => {
-    console.log("Dragging");
-    console.log("Index: ", index);
     dragItem.current = index;
-    console.log("dragItem.current: ", dragItem.current);
-    console.log("event.target ", event.target);
     dragNode.current = event.target;
-    console.log("dragNode.current: ", dragNode.current);
     dragNode.current.addEventListener("dragend", handleDragEnd);
     setTimeout(() => {
       setDragging(true);
@@ -2278,52 +2241,16 @@ const EventCreation = () => {
     { label: "No refunds: No refunds at any time.", value: "noRefunds" },
   ];
 
-
-// MMs
-//***************************************
-let imagex  = null;
-
-const imageCanvas = () => {
-  return (
+  const imageCanvas = () => (
     <ImgDropAndCrop
       imagein={{isLoaded:true}}
       change={(image) => {
-       // imagex = image;
         let tempDescription = { ...eventDescription };
         tempDescription.eventImage = image;
         setEventDescription(tempDescription);
-        console.log("image: ", image);
-        console.log("imagex: ", imagex);
-
       }}
     />
   );
-};
-
-
-
-//***************************************
-/* RHCs
-  const imageCanvas = () => {
-    return (
-      <ImgDropAndCrop
-        icon="create image"
-        event={eventDescription.eventNum}
-        change={(image) => {
-          console.log("image: ", image);
-          console.log("typeof image: ", typeof image);
-          let tempDescription = { ...eventDescription };
-          tempDescription.eventImage = image;
-          setEventDescription(tempDescription);
-          console.log(
-            "tempDescription.eventImage: ",
-            tempDescription.eventImage
-          );
-        }}
-      />
-    );
-  };
-*/
 
   const errorDisplay = () => {
     if (pageErrors || eventTitleOmission) {
