@@ -50,7 +50,6 @@ const SignIn = () => {
       })
   };
 
-  /*
   const showError = () => {
     console.log("entered 'showError()'");
     console.log("values.error: ", error);
@@ -58,7 +57,8 @@ const SignIn = () => {
       console.log("Error in values state object");
       return (
          <div className="form-group" style={{color: "red"}}>
-         Email and password do not match. Please try again.
+           Sign in error, please try again.
+         {/*Email and password do not match. Please try again.*/}
          </div>
       )
     } else {
@@ -66,7 +66,6 @@ const SignIn = () => {
       return null;
     }
   };
-  */
 
   const showLoading = () =>
     loading && (
@@ -135,7 +134,9 @@ const SignIn = () => {
         <br></br>
         <div className={classes.Section}>
           {values.error ?
-            <div style={{color: "red"}}>Email and password do not match. Please try again.</div> :
+            <div style={{color: "red"}}>
+            Sign in error, please try again.
+          {/*Email and password do not match. Please try again.*/}</div> :
             <div>Please sign in:</div>
           }
           

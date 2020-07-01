@@ -169,7 +169,7 @@ class ImgDropAndCrop extends Component {
 
         //https://www.npmjs.com/package/react-image-crop return false as per documentation
         // must return false in this callback if you are changing the crop object.
-//        return false;
+//        return false;  /this works without false!!
     }
 
     handleOnCropChange = (crop) => {
@@ -190,28 +190,6 @@ class ImgDropAndCrop extends Component {
         console.log ("magePreviewCanvasRef.current.width and height" ,this.imagePreviewCanvasRef.current.width,this.imagePreviewCanvasRef.current.height)
     }
 
-    handleOnCropCompleteXX = (crop, percentCrop) =>{
-        this.setState({percentCrop: percentCrop});
-
-        console.log("percentCrop: ", percentCrop)
-        console.log("handleOnCropCompleted crop:", crop);
-
-        const canvasRef = this.imagePreviewCanvasRef.current;
-        this.props.change(this.imagePreviewCanvasRef.current);
-        const {imgSrc} = this.state;
-        console.log ("this", this);
-        console.log ("this.imagePreviewCanvasRef:", this.imagePreviewCanvasRef);
-        console.log ("this.state:", this.state);
-        if (canvasRef && imgSrc){
-            console.log ("imagePreviewCanvasRef.current" ,this.imagePreviewCanvasRef.current);
-            console.log ("imgSrc:", imgSrc);
-    //        this.props.change(this.imagePreviewCanvasRef.current);
-            image64toCanvasRef2(canvasRef, imgSrc, percentCrop);//
-            console.log("Before imagePreviewCanvasRef: ",this.imagePreviewCanvasRef);
-            console.log ("imagePreviewCanvasRef.current.width and height" ,this.imagePreviewCanvasRef.current.width,this.imagePreviewCanvasRef.current.height)
-
-        }
-    }
 
     handleCreateCroppedImage = async (event) => {
         console.log ("in handleCreateCroppedImage..");
@@ -223,13 +201,8 @@ class ImgDropAndCrop extends Component {
             const {imgSrcExt} =  this.state;
             const tempImage = canvasRef.toDataURL('image/' +imgSrcExt, 0.92);
             const imageBlob = await new Promise((resolve) => canvasRef.toBlob(resolve, "image/png"));
-            this.setState({newimageData64: tempImage});
-                this.props.change(imageBlob);
-                console.log("newimageData64: ", this.state.newimageData64);
-                console.log("newimageData64: ", tempImage);
-                console.log("tempImage typeof: ", typeof tempImage);
-                console.log("height: ", tempImage.height);
-                console.log("width: ", tempImage.width);
+            this.setState({newimageData64: tempImage});  
+            this.props.change(imageBlob);  // sends imageBlob to parent using change prop
         }
 
         this.setState({isCropping: false});

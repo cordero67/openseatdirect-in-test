@@ -3,7 +3,7 @@ import { API } from "../config";
 const handleErrors = response => {
   console.log("Inside 'apiUsers' 'handleErrors()'", response);
   if (!response.ok) {
-    throw Error(response.status);
+      throw Error(response.status);
   }
   return response;
 };
