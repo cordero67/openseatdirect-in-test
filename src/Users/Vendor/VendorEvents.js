@@ -7,6 +7,7 @@ import {
   faChevronUp,
   faChevronDown,
   faEllipsisV,
+  faCog
 } from "@fortawesome/free-solid-svg-icons";
 
 import VendorNavigation from "../VendorNavigation";
@@ -30,7 +31,8 @@ const VendorEvents = () => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
-      vendorInfo.name = tempUser.name
+      vendorInfo.name = tempUser.user.name
+      console.log("vendorInfo.name: ", tempUser.user.name)
     } else {
       window.location.href = "/signin";
     }
@@ -186,7 +188,7 @@ const handleErrors = response => {
                         size="lg"
                         cursor="pointer"
                         onClick={() => editEvent(item)}
-                        icon={faEllipsisV}
+                        icon={faCog}
                       />
                     </div>
                   </div>
@@ -206,7 +208,7 @@ const handleErrors = response => {
     } else if (!isLoading && !isSuccessfull) {
       return (
         <div className={classes.SystemDownMessage}>
-          <div>System error please reload this page.</div>
+          <div>System error please refresh this page.</div>
         </div>
       )
     } else {

@@ -18,6 +18,8 @@ import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
 
 import classes from "./EventCreationNew.module.css";
+//import ComingSoon from "./ComingSoon.png";
+import cancel from "./cancel.png";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -2265,7 +2267,17 @@ const EventCreation = () => {
         <div className={classes.MainContainer}>
            <div className={classes.GridTitlePanel}>
              <div className={classes.GridTitle}>
-                <div style={{ paddingTop: "10px" }}>Event Creation</div>
+                <div style={{ paddingTop: "10px" }}>
+                  Event Creation{" "}
+                  <img
+                    style={{boxSizing: "border-box", height: "auto", width: "25px", cursor: "pointer"}}
+                    src={cancel}
+                    alt="Ecancel"
+                    onClick={() => 
+                      window.location.href = `/vendorevents`
+                    }
+                  />
+                </div>
                 <div></div>
                 <Button
                   style={{

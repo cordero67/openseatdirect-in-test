@@ -5,6 +5,7 @@ import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
+import cancel from "./cancel.png";
 
 import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
 import { Editor } from "@tinymce/tinymce-react";
@@ -2498,7 +2499,17 @@ const EventEdit = () => {
         <div className={classes.MainContainer}>
            <div className={classes.GridTitlePanel}>
              <div className={classes.GridTitle}>
-                <div style={{ paddingTop: "10px" }}>Event Edit {eventDescription.eventNum}</div>
+                <div style={{ paddingTop: "10px" }}>
+                  Event Edit{" "}
+                  <img
+                    style={{boxSizing: "border-box", height: "auto", width: "25px", cursor: "pointer"}}
+                    src={cancel}
+                    alt="Ecancel"
+                    onClick={() => 
+                      window.location.href = `/vendorevents`
+                    }
+                  />
+                </div>
                 <div></div>
                 <Button
                   style={{
