@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
-import { Form } from "react-bootstrap";
+import { Redirect } from "react-router-dom";
 
 import { signin, authenticate, isAuthenticated } from "./apiUsers";
+import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import classes from "./User.module.css";
 
@@ -17,14 +17,7 @@ const SignIn = () => {
 
   // destructors the "values" object
   const { email, password, error, loading, redirectToReferrer } = values;
-/*
-  if (
-    typeof window === "undefined" &&
-    localStorage.getItem(`user`) === null
-  ) {
-    window.location.href = "/signin";
-  }
-*/
+
   // destructoring of "user" object in "localStorage" "data" variable
   const { user: user } = isAuthenticated();
 
@@ -52,8 +45,6 @@ const SignIn = () => {
         }
       })
       .catch((err) => {
-        //console.log('{"error":"Email and password do not match"}')
-        //console.log("err.error: ", err.data.error)
         //console.log("err: ", err)
         setValues({ ...values, error: true, loading: false });
       })
@@ -78,7 +69,7 @@ const SignIn = () => {
   const showLoading = () =>
     loading && (
       <div className="aler alert-info">
-        <h2>Loading...</h2>
+        <Spinner/>
       </div>
     );
 
@@ -104,7 +95,8 @@ const SignIn = () => {
   const signInForm = () => (
     <form>
       <div className="form-group">
-        <label className="text-muted" styles={{ fontSize: "16px" }}>
+      <br></br>
+        <label styles={{ fontSize: "16px" }}>
           E-mail Address
         </label>
         <input
@@ -117,7 +109,7 @@ const SignIn = () => {
       </div>
 
       <div className="form-group">
-        <label className="text-muted">Password</label>
+        <label>Password</label>
         <input
           type="password"
           name="password"

@@ -190,49 +190,9 @@ const EventEdit = () => {
     }
   }, []);
 
-  // DONT KNOW IF I NEED THIS
-  //useEffect(() => {
-  //  if (true) {
-  //    console.log("Hello world")
-  //  }
-  //}, [pageErrors]);
-
   const loadEventInfo = (eventTix) => {
     console.log("Inside 'loadEventInfo': ", eventTix);
     let tempDescription = { ...eventDescription };
-
-    /*
-    tempDescription.eventTitle = eventTix.eventTitle;
-    tempDescription.eventNum = eventTix.eventNum;
-    tempDescription.isDraft = eventTix.isDraft;
-    tempDescription.eventType = eventTix.eventType
-      ? eventTix.eventType
-      : "live";
-    tempDescription.vanityLink = eventTix.vanityLink;
-    tempDescription.webinarLink = eventTix.webinarLink;
-    tempDescription.onlineInformation = eventTix.onlineInformation;
-    tempDescription.tbaInformation = eventTix.tbaInformation;
-    tempDescription.shortDescription = eventTix.shortDescription;
-    tempDescription.longDescription = eventTix.longDescription;
-    tempDescription.eventCategory = eventTix.eventCategory;
-    tempDescription.facebookLink = eventTix.facebookLink;
-    tempDescription.twitterLink = eventTix.twitterLink;
-    tempDescription.linkedinLink = eventTix.linkedinLink;
-    tempDescription.instagramLink = eventTix.instagramLink;
-    tempDescription.refundPolicy = eventTix.refundPolicy
-      ? eventTix.refundPolicy
-      : "noRefunds";
-    tempDescription.eventNum = eventTix.eventNum;
-    tempDescription.locationVenueName = eventTix.locationVenueName;
-    tempDescription.locationAddress1 = eventTix.locationAddress1;
-    tempDescription.locationAddress2 = eventTix.locationAddress2;
-    tempDescription.locationNote = eventTix.locationNote;
-    tempDescription.locationCity = eventTix.locationCity;
-    tempDescription.locationState = eventTix.locationState;
-    tempDescription.locationZipPostalCode = eventTix.locationZipPostalCode;
-    tempDescription.locationCountryCode = eventTix.locationCountryCode;
-    tempDescription.timeZone = eventTix.timeZone;
-    */
 
     let eventDescriptionFields = [
       "eventNum",//
@@ -264,10 +224,10 @@ const EventEdit = () => {
 
     eventDescriptionFields.forEach((field) => {
       if (eventTix[field] == null) {
-        console.log("field exists: ", field)
+        console.log("field DOES NOT exists: ", field)
         //tempDescription[field] = "";
       } else {
-        console.log("field DOES NOT exists: ", field)
+        console.log("field exists: ", field)
         console.log("eventTix[", field, "]: ", eventTix[field])
         tempDescription[field] = eventTix[field];
         console.log("eventDescription[field]: ", tempDescription[field] )
@@ -282,9 +242,7 @@ const EventEdit = () => {
       ? eventTix.refundPolicy
       : "noRefunds";
 
-    //tempDescription.eventImage = eventTix.photo;
     initPhotoData( eventTix.photo);
-    //console.log("eventTix: ", tempDescription);
 
     console.log("tempDescription: ", tempDescription);
     setEventDescription(tempDescription);
@@ -299,12 +257,12 @@ const EventEdit = () => {
         let tempPromoCodes = [];
         let tempPromoCodesArray = [];
         let tempFunctionArgs;
-        if (tix.priceFunction && tix.priceFunction.form) {
+        if (tix.priceFunction && tix.priceFunction.form && tix.priceFunction.args) {
           tempPriceFeature = tix.priceFunction.form;
           if (tempPriceFeature === "promo") {
             console.log("priceFunction: ", tix.priceFunction);
             console.log("tix.priceFunction.args: ", tix.priceFunction.args);
-            tempPromoCodes = tix.priceFunction.args;
+            tempPromoCodes = tix.priceFunction.args.promocodes;  
             tempPromoCodes.map((promo, index) => {
               let tempPercent;
               if (promo.percent === "true") {
@@ -328,14 +286,14 @@ const EventEdit = () => {
               buyWarning: false,
               get: tix.priceFunction.args.get,
               getWarning: false,
-              discount: tix.priceFunction.args.discount,
+              discount: tix.priceFunction.args.discount*100,
               discountWarning: false,
               reqWarning: false,
             };
-            if (tix.priceFunction.args.discount === 100) {
+            if (tix.priceFunction.args.discount === 1) {
               tempPriceFeature = "bogof";
             }
-            if (tix.priceFunction.args.discount !== 100) {
+            if (tix.priceFunction.args.discount !== 1) {
               tempPriceFeature = "bogod";
             }
           } else if (tempPriceFeature === "twofer") {
@@ -492,7 +450,7 @@ const EventEdit = () => {
           formData.append(`${field}`, eventDescription[field]);
         }
       });
-    
+
       let tempDescription = { ...eventDescription };
 
       if (newStatus === "saved") {
@@ -522,16 +480,13 @@ const EventEdit = () => {
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      let imageBlob = null;
       if (eventDescription.eventImage) {
         console.log("eventDescription.eventImage: ", eventDescription.eventImage)
-        imageBlob = await new Promise((resolve) =>
-          eventDescription.eventImage.toBlob(resolve, "image/png")
-        );
-        formData.append("photo", imageBlob);
+        formData.append("photo", eventDescription.eventImage);
       } else {
-        //console.log("there is no image");
+        console.log("there is no image");
       }
+
       let ticketDetailsFields = [
         "ticketName",
         "remainingQuantity",
@@ -558,55 +513,66 @@ const EventEdit = () => {
             );
           }
 
-          eventDescriptionFields.forEach((field) => {
-            if (eventDescription[field] !== '') {
-              console.log("eventDescription[field]: ", eventDescription[field] )
-              formData.append(`${field}`, eventDescription[field]);
-            }
-          });
-
           ticketDetailsFields.forEach((field) => {
-            if (ticket[field] !== '') {
-              console.log(`tickets[${index}][${field}]: `, ticket[field] )
+            if (ticket[field]) {
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
           });
 
+          // {form: "bogo",   args: {buy:5, get:4, discount:.90}}
           // for "bogod" and "bogof"
           if (
             ticket.priceFeature === "bogod" ||
             ticket.priceFeature === "bogof"
           ) {
-            formData.append(`tickets[${index}][priceFunction][form]`, "bogo");
             formData.append(
-              `tickets[${index}][priceFunction][args][buy]`,
-              ticket.functionArgs.buy
+              `tickets[${index}][priceFunction][form]`, "bogo");
+            formData.append(
+              `tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][get]`,
-              ticket.functionArgs.get
+              `tickets[${index}][priceFunction][args][get]`, ticket.functionArgs.get
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][discount]`,
-              ticket.functionArgs.discount
+              `tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount/100
             );
           }
+
+          // {form: "twofer", args: {buy:2,  for:15}}
           // for "twofer"
           if (ticket.priceFeature === "twofer") {
-            formData.append(`tickets[${index}][priceFunction][form]`, "twofer");
             formData.append(
-              `tickets[${index}][priceFunction][args][buy]`,
-              ticket.functionArgs.buy
+              `tickets[${index}][priceFunction][form]`, "twofer");
+            formData.append(
+              `tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][for]`,
-              ticket.functionArgs.for
+              `tickets[${index}][priceFunction][args][for]`, ticket.functionArgs.for
             );
           }
+
+          // {form: "promo",  args: {
+          //    promocodes:  [
+          //      {name:"flyers", discount: .20, pct: true} ,  // 20% off
+          //      {name:"eagles", discount:10,  pct: false }    // $10 off
+          //    ]}
+          // }
           // for "promo"
           if (ticket.priceFeature === "promo") {
             formData.append(`tickets[${index}][priceFunction][form]`, "promo");
-            ticket.promoCodes.map((item, number) => {
+            ticket.promoCodes.forEach((item, number) => {
+              formData.append(
+                `tickets[${index}][priceFunction][args][promocodes][${number}][key]`, item.key
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args][promocodes][${number}][name]`, item.name
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`, item.amount
+              );
+              formData.append(
+                `tickets[${index}][priceFunction][args][promocodes][${number}][percent]`, item.percent
+              );
               console.log(
                 "New promo details: key-",
                 item.key,
@@ -615,22 +581,6 @@ const EventEdit = () => {
                 ", amount-",
                 item.amount,
                 ", percent-",
-                item.percent
-              );
-              formData.append(
-                `tickets[${index}][priceFunction][args[${number}]][key]`,
-                item.key
-              );
-              formData.append(
-                `tickets[${index}][priceFunction][args[${number}]][name]`,
-                item.name
-              );
-              formData.append(
-                `tickets[${index}][priceFunction][args[${number}]][amount]`,
-                item.amount
-              );
-              formData.append(
-                `tickets[${index}][priceFunction][args[${number}]][percent]`,
                 item.percent
               );
             });
@@ -790,21 +740,6 @@ const EventEdit = () => {
     tempDescription[name] = value.value;
     setEventDescription(tempDescription);
   };
-
-  /*
-  const changeEventImage = async (image) => {
-    console.log("Received image: ", image);
-    let imageBlob;
-    imageBlob = await new Promise((resolve) =>
-      image.toBlob(resolve, "image/png")
-    );
-    console.log("Convert image: ", imageBlob);
-    let tempDescription = { ...eventDescription };
-    tempDescription.eventImage = imageBlob;
-    console.log("temp image: ", tempDescription.eventImage);
-    setEventDescription(tempDescription);
-  };
-  */
 
   const changeLongDescription = (editorContent) => {
     let tempDescription = { ...eventDescription };
@@ -1719,14 +1654,14 @@ const EventEdit = () => {
                 className={tempDiscountWarning}
                 type="text"
                 id="functionArgDiscountBogod"
-                placeholder="percentage"
+                placeholder="percent"
                 name="discount"
                 value={ticket.functionArgs.discount}
                 onChange={(event) => {
                   changeArgument(event, ticket.key);
                 }}
               ></input>{" "}
-              discount.
+              % discount.
             </div>
           </div>
 
@@ -2515,22 +2450,16 @@ const EventEdit = () => {
     if (!photoData.isLoaded) {
       return <p>  Loading .... </p>
     } else { 
-        return (
-          <ImgDropAndCrop
-            imagein={photoData}
-            change={(image) => {
-              console.log("image: ", image);
-              console.log("typeof image: ", typeof image);
-              let tempDescription = { ...eventDescription };
-              tempDescription.eventImage = image;
-              setEventDescription(tempDescription);
-              console.log(
-                "tempDescription.eventImage: ",
-                tempDescription.eventImage
-              );
-            }}
-          />
-        )
+      return (
+        <ImgDropAndCrop
+          imagein={{isLoaded:true}}
+          change={(image) => {
+            let tempDescription = { ...eventDescription };
+            tempDescription.eventImage = image;
+            setEventDescription(tempDescription);
+          }}
+        />
+      )
     }
   };
 

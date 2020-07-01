@@ -333,6 +333,7 @@
 
 .SpecialFeaturesBox {
   padding: 9px 10px;
+  text-align: center;
   border: 1px solid lightgrey;
   box-sizing: border-box;
   width: 100px;
