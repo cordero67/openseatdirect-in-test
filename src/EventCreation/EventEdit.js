@@ -2452,7 +2452,7 @@ const EventEdit = () => {
     } else { 
       return (
         <ImgDropAndCrop
-          imagein={{isLoaded:true}}
+          imagein={photoData}
           change={(image) => {
             let tempDescription = { ...eventDescription };
             tempDescription.eventImage = image;
