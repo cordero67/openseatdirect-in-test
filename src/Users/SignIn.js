@@ -50,6 +50,7 @@ const SignIn = () => {
       })
   };
 
+  /*
   const showError = () => {
     console.log("entered 'showError()'");
     console.log("values.error: ", error);
@@ -65,6 +66,7 @@ const SignIn = () => {
       return null;
     }
   };
+  */
 
   const showLoading = () =>
     loading && (
