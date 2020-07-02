@@ -61,15 +61,17 @@ export const loadTicketInfo = event => {
     if (item.Currency === "JPY") {
       tempCurrency = "¥";
     }
+    console.log("past currency");
     
     let priceFunction = {};
     let pricingCode = "";
     //if (item.priceFunction && item.priceFunction.form && item.usePriceFunction) {
     if (item.priceFunction && item.priceFunction.form) {
-      if (item.priceFunction.form === "promo" && item.priceFunction.args) {
+      if (item.priceFunction.form === "promo" && item.priceFunction.args && item.priceFunction.args.promocodes) {
         // make all promo codes upper case
         let newPromoCodes = [];
-        item.priceFunction.args.forEach(argArray => {
+        console.log("item.priceFunction.args: ", item.priceFunction.args)
+        item.priceFunction.args.promocodes.forEach(argArray => {
           let tempElement;
           tempElement = {
             name: argArray.name.toUpperCase(),
@@ -77,8 +79,10 @@ export const loadTicketInfo = event => {
             percent: argArray.percent
           }
           newPromoCodes.push(tempElement)
-          }
+          console.log("tempElement: ", tempElement)
+        }
         )
+        console.log("newPromoCodes: ", newPromoCodes)
         priceFunction = {
           form: "promo",
           args: newPromoCodes,
@@ -107,7 +111,7 @@ export const loadTicketInfo = event => {
         let tempArgs = {
           buy: parseInt(item.priceFunction.args.buy),
           get: parseInt(item.priceFunction.args.get),
-          discount: parseInt(item.priceFunction.args.discount)
+          discount: parseInt(item.priceFunction.args.discount*100)
         }
         priceFunction = {
           form: "bogo",
@@ -152,15 +156,16 @@ export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   console.log("res: ", res)
   res.tickets.forEach((tktType, index) => {
 
-    //if (tktType.priceFunction && tktType.priceFunction.form === "promo" && tktType.usePriceFunction) {
-    if (tktType.priceFunction && tktType.priceFunction.form === "promo") {
+    if (tktType.priceFunction && tktType.priceFunction.form === "promo" && tktType.usePriceFunction) {
+    //if (tktType.priceFunction && tktType.priceFunction.form === "promo") {
       console.log("There is a promo code at position: ", index)
-      tktType.priceFunction.args.forEach(tktPromo => {
+      tktType.priceFunction.args.promocodes.forEach(tktPromo => {
         if (!tempCodesArray.includes(tktPromo.name.toUpperCase())) {
           tempCodesArray.push(tktPromo.name.toUpperCase());
         }
       })
     }
+    
   })
 
   let tempCodeDetail = { ...promoCodeDetails };

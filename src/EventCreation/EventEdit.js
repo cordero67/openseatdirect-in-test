@@ -291,10 +291,11 @@ const EventEdit = () => {
               discountWarning: false,
               reqWarning: false,
             };
-            if (tix.priceFunction.args.discount === 1) {
+            console.log("bogo tempFunctionArgs: ", tempFunctionArgs)
+            if (tempFunctionArgs.discount === 100) {
               tempPriceFeature = "bogof";
             }
-            if (tix.priceFunction.args.discount !== 1) {
+            if (tempFunctionArgs.discount !== 100) {
               tempPriceFeature = "bogod";
             }
           } else if (tempPriceFeature === "twofer") {
