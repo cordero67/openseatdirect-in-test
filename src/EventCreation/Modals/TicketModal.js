@@ -2,7 +2,7 @@ import React from "react";
 
 import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
-import classes from "./Modal.module.css";
+import classes from "./TicketModal.module.css";
 
 import { Button } from "semantic-ui-react";
 

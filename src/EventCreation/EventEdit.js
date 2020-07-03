@@ -21,7 +21,7 @@ import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
 
-import classes from "./EventCreationNew.module.css";
+import classes from "./EventCreation.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -2465,92 +2465,178 @@ const EventEdit = () => {
     }
   };
 
-  /* RHCs code
-  const imageCanvas = () => {
-    return (
-      <ImgDropAndCrop
-        icon="create image"
-        info={photoData}
-        event={eventDescription.eventNum}
-        change={(image) => {
-          console.log("image: ", image);
-          console.log("typeof image: ", typeof image);
-          let tempDescription = { ...eventDescription };
-          tempDescription.eventImage = image;
-          setEventDescription(tempDescription);
-          console.log(
-            "tempDescription.eventImage: ",
-            tempDescription.eventImage
-          );
-        }}
-      />
-    );
-    //}
-  };*/
-
-  const errorDisplay = () => {
+  const subTitleDisplay = () => {
     if (pageErrors || eventTitleOmission) {
-      return (<div style={{ margin: "auto", height: "16px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "14px"}}>Please correct the input errors identified below.</div>)
+      return (
+        <div className={classes.GridSubTitle}>
+          <div style={{ textAlign: "left" }}>
+            Event Number: {eventDescription.eventNum}
+          </div>
+          <div style={{ textAlign: "center", color: "red"}}>
+            Please correct input errors identified below.
+          </div>
+        </div>
+      )
     } else {
-      return (<div style={{ margin: "auto", height: "16px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "14px"}}>{" "}</div>)
+      return (
+        <div className={classes.GridSubTitle}>
+          <div style={{ textAlign: "left" }}>
+            Event Number: {eventDescription.eventNum}
+          </div>
+        </div>
+      )
     }
   }
+
+  const currentStatus = () => {
+    if (eventDescription.isDraft) {
+      return (
+        <div
+          style={{
+            paddingTop: "6px",
+            fontSize: "20px",
+            fontWeight: "500",
+            textAlign: "center",
+            fontStyle: "italic"
+            }}>
+            in <span style={{ color: "blue", fontWeight: "600" }}>Draft</span> status
+        </div>
+      )
+    } else {
+      return (
+        <div
+          style={{
+            paddingTop: "6px",
+            fontSize: "20px",
+            fontWeight: "500",
+            textAlign: "center",
+            fontStyle: "italic"
+            }}>
+          in <span style={{ color: "green", fontWeight: "600" }}>Live</span> status
+        </div>
+      )
+    }
+  }
+
+  const buttonDisplay = () => {
+    if (eventDescription.isDraft) {
+      return (
+        <Aux>
+          <Button
+            style={{
+              fontSize: "14px",
+              width: "125px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="Update Draft"
+            basic
+            color="blue"
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = true;
+              setEventDescription(tempDescription);
+              saveEvent("saved");
+            }}
+          />
+          <Button
+            style={{
+              fontSize: "14px",
+              width: "125px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="Go Live Now"
+            basic
+            color="green"
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = false;
+              setEventDescription(tempDescription);
+              saveEvent("live");
+            }}
+          />
+        </Aux>
+      )
+    } else {
+      return (
+        <Aux>
+          <Button
+            style={{
+              fontSize: "14px",
+              width: "125px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="Save as Draft"
+            basic
+            color="blue"
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = true;
+              setEventDescription(tempDescription);
+              saveEvent("saved");
+            }}
+          />
+          <Button
+            style={{
+              fontSize: "14px",
+              width: "125px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="Update Live"
+            basic
+            color="green"
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = false;
+              setEventDescription(tempDescription);
+              saveEvent("live");
+            }}
+          />
+        </Aux>
+      )
+    }
+  }
+
   const mainDisplay = () => {
       return (
         <div className={classes.MainContainer}>
-           <div className={classes.GridTitlePanel}>
-             <div className={classes.GridTitle}>
-                <div style={{ paddingTop: "10px" }}>
-                  Event Edit{" "}
-                  <img
-                    style={{boxSizing: "border-box", height: "auto", width: "25px", cursor: "pointer"}}
-                    src={cancel}
-                    alt="Ecancel"
-                    onClick={() => 
-                      window.location.href = `/vendorevents`
-                    }
-                  />
-                </div>
-                <div></div>
-                <Button
-                  style={{
-                    width: "130px",
-                    height: "30px",
-                    textAlign: "center",
-                    paddingTop: "7px",
-                  }}
-                  content="Save as Draft"
-                  basic
-                  color="green"
-                  onClick={() => {
-                    let tempDescription = { ...eventDescription };
-                    tempDescription.isDraft = true;
-                    setEventDescription(tempDescription);
-                    saveEvent("saved");
-                  }}
-                />
-                <Button
-                  style={{
-                    width: "130px",
-                    height: "30px",
-                    textAlign: "center",
-                    paddingTop: "7px",
-                  }}
-                  content="Go Live Now"
-                  basic
-                  color="red"
-                  onClick={() => {
-                    let tempDescription = {...eventDescription };
-                    tempDescription.isDraft = false;
-                    setEventDescription(tempDescription);
-                    saveEvent("live");
-                  }}
-                />
+          <div className={classes.GridTitlePanel}>
+            <div className={classes.GridTitle}>
+              <div
+                style={{
+                  paddingTop: "5px",
+                  fontSize: "30px",
+                  fontWeight: "600",
+                  }}>
+                  Event Edit
               </div>
-              <div>
-                {errorDisplay()}
-              </div>
+              {currentStatus()}
+              {buttonDisplay()}
+              <img
+                style={{boxSizing: "border-box", height: "auto", width: "25px", paddingTop: "2px", cursor: "pointer"}}
+                src={cancel}
+                alt="Ecancel"
+                onClick={() => 
+                  window.location.href = `/vendorevents`
+                }
+              />
             </div>
+            <div>
+              {subTitleDisplay()}
+            </div>
+          </div>
+
 
           <div className={classes.MainGrid}>
             {savedModal()}
