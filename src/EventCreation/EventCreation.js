@@ -17,7 +17,7 @@ import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
 
-import classes from "./EventCreationNew.module.css";
+import classes from "./EventCreation.module.css";
 //import ComingSoon from "./ComingSoon.png";
 import cancel from "./cancel.png";
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -2255,69 +2255,93 @@ const EventCreation = () => {
     />
   );
 
-  const errorDisplay = () => {
+  const subTitleDisplay = () => {
     if (pageErrors || eventTitleOmission) {
-      return (<div style={{ margin: "auto", height: "16px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "14px"}}>Please correct the input errors identified below.</div>)
+      return (
+        <div className={classes.GridSubTitle}>
+          <div style={{ textAlign: "left" }}>
+          </div>
+          <div style={{ textAlign: "center", color: "red"}}>
+            Please correct input errors identified below.
+          </div>
+        </div>
+      )
     } else {
-      return (<div style={{ margin: "auto", height: "16px", textAlign: "center", backgroundColor: "#fff", color: "red", fontSize: "14px"}}>{" "}</div>)
+      return (
+        <div className={classes.GridSubTitle}>
+          <div style={{ textAlign: "left" }}>
+          </div>
+        </div>
+      )
     }
   }
+
   const mainDisplay = () => {
       return (
         <div className={classes.MainContainer}>
-           <div className={classes.GridTitlePanel}>
-             <div className={classes.GridTitle}>
-                <div style={{ paddingTop: "10px" }}>
-                  Event Creation{" "}
-                  <img
-                    style={{boxSizing: "border-box", height: "auto", width: "25px", cursor: "pointer"}}
-                    src={cancel}
-                    alt="Ecancel"
-                    onClick={() => 
-                      window.location.href = `/vendorevents`
-                    }
-                  />
-                </div>
-                <div></div>
-                <Button
-                  style={{
-                    width: "130px",
-                    height: "30px",
-                    textAlign: "center",
-                    paddingTop: "7px",
-                  }}
-                  content="Save as Draft"
-                  basic
-                  color="green"
-                  onClick={() => {
-                    let tempDescription = { ...eventDescription };
-                    tempDescription.isDraft = true;
-                    setEventDescription(tempDescription);
-                    saveEvent("saved");
-                  }}
-                />
-                <Button
-                  style={{
-                    width: "130px",
-                    height: "30px",
-                    textAlign: "center",
-                    paddingTop: "7px",
-                  }}
-                  content="Go Live Now"
-                  basic
-                  color="red"
-                  onClick={() => {
-                    let tempDescription = {...eventDescription };
-                    tempDescription.isDraft = false;
-                    setEventDescription(tempDescription);
-                    saveEvent("live");
-                  }}
-                />
+          <div className={classes.GridTitlePanel}>
+            <div className={classes.GridTitle}>
+              <div
+                style={{
+                  paddingTop: "5px",
+                  fontSize: "30px",
+                  fontWeight: "600",
+                  }}>
+                  Event Creation
               </div>
               <div>
-                {errorDisplay()}
               </div>
+              <Button
+                style={{
+                  fontSize: "14px",
+                  width: "125px",
+                  height: "30px",
+                  margin: "auto",
+                  textAlign: "center",
+                  padding: "0px",
+                }}
+                content="Save as Draft"
+                basic
+                color="blue"
+                onClick={() => {
+                  let tempDescription = {...eventDescription };
+                  tempDescription.isDraft = true;
+                  setEventDescription(tempDescription);
+                  saveEvent("saved");
+                }}
+              />
+              <Button
+                style={{
+                  fontSize: "14px",
+                  width: "125px",
+                  height: "30px",
+                  margin: "auto",
+                  textAlign: "center",
+                  padding: "0px",
+                }}
+                content="Go Live Now"
+                basic
+                color="green"
+                onClick={() => {
+                  let tempDescription = {...eventDescription };
+                  tempDescription.isDraft = false;
+                  setEventDescription(tempDescription);
+                  saveEvent("live");
+                }}
+              />
+              <img
+                style={{boxSizing: "border-box", height: "auto", width: "25px", paddingTop: "2px", cursor: "pointer"}}
+                src={cancel}
+                alt="Ecancel"
+                onClick={() => 
+                  window.location.href = `/vendorevents`
+                }
+              />
             </div>
+            <div>
+              {subTitleDisplay()}
+            </div>
+          </div>
 
           <div className={classes.MainGrid}>
             {savedModal()}
@@ -3147,3 +3171,14 @@ const EventCreation = () => {
 };
 
 export default EventCreation;
+
+/*
+<img
+style={{boxSizing: "border-box", height: "auto", width: "25px", cursor: "pointer"}}
+src={cancel}
+alt="Ecancel"
+onClick={() => 
+  window.location.href = `/vendorevents`
+}
+/>
+*/

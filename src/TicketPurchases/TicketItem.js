@@ -9,6 +9,7 @@ const TicketItem = (props) => {
     let ticketsAvailableArray = [];
     let i;
     let maxAmount;
+    let priceDeal;
     let ticketPrice;
     let adjTicketPrice;
     if (props.name.ticketCurrency === "¥") {
@@ -17,6 +18,16 @@ const TicketItem = (props) => {
     } else {
       ticketPrice = props.name.ticketPrice.toFixed(2);
       adjTicketPrice = props.name.adjustedTicketPrice.toFixed(2);
+    }
+
+    if (props.name.ticketPriceFunction.form === "bogo") {
+      if (props.name.ticketPriceFunction.args.discount === 100) {
+        priceDeal=`(buy ${props.name.ticketPriceFunction.args.buy} and get ${props.name.ticketPriceFunction.args.get} for free)`
+      } else {
+        priceDeal=`(buy ${props.name.ticketPriceFunction.args.buy} and get up to ${props.name.ticketPriceFunction.args.get} addtional at a ${props.name.ticketPriceFunction.args.discount}% discount)`
+      }
+    } else if (props.name.ticketPriceFunction.form === "twofer") {
+      priceDeal=`(buy ${props.name.ticketPriceFunction.args.buy} for the price of ${props.name.ticketPriceFunction.args.for})`
     }
 
     if (props.name.ticketsAvailable < 1) {
@@ -87,7 +98,7 @@ const TicketItem = (props) => {
               ) : (
                 <div className={styles.TicketPrices}>
                   {props.name.ticketCurrency}
-                  {ticketPrice}
+                  {ticketPrice}{" "}{priceDeal}
                 </div>
               )}
             </div>
