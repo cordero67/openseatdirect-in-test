@@ -73,7 +73,7 @@ const EventEdit = () => {
     eventImage: "",
     shortDescription: "",
     longDescription: "",
-    eventCategory: "other",
+    eventCategory: "",
     facebookLink: "",
     twitterLink: "",
     linkedinLink: "",
@@ -721,6 +721,13 @@ const EventEdit = () => {
     }
     setEventDescription(tempDescription);
     console.log("tempDescription: ", tempDescription);
+  };
+
+  const changeCategory = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.eventCategory = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
   };
 
   const changeCountryCode = (value) => {
@@ -2499,7 +2506,7 @@ const EventEdit = () => {
             textAlign: "center",
             fontStyle: "italic"
             }}>
-            in <span style={{ color: "blue", fontWeight: "600" }}>Draft</span> status
+            status <span style={{ color: "blue", fontWeight: "600" }}>Draft</span>
         </div>
       )
     } else {
@@ -2512,7 +2519,7 @@ const EventEdit = () => {
             textAlign: "center",
             fontStyle: "italic"
             }}>
-          in <span style={{ color: "green", fontWeight: "600" }}>Live</span> status
+          status <span style={{ color: "green", fontWeight: "600" }}>Live</span>
         </div>
       )
     }
@@ -2524,16 +2531,17 @@ const EventEdit = () => {
         <Aux>
           <Button
             style={{
-              fontSize: "14px",
-              width: "125px",
+              backgroundColor: 'white',
+              border: "1px solid blue",
+              color: "blue",
+              fontSize: "12px",
+              width: "90px",
               height: "30px",
               margin: "auto",
               textAlign: "center",
               padding: "0px",
             }}
             content="Update Draft"
-            basic
-            color="blue"
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = true;
@@ -2543,16 +2551,17 @@ const EventEdit = () => {
           />
           <Button
             style={{
-              fontSize: "14px",
-              width: "125px",
+              backgroundColor: 'white',
+              border: "1px solid green",
+              color: "green",
+              fontSize: "12px",
+              width: "90px",
               height: "30px",
               margin: "auto",
               textAlign: "center",
               padding: "0px",
             }}
             content="Go Live Now"
-            basic
-            color="green"
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = false;
@@ -2567,16 +2576,17 @@ const EventEdit = () => {
         <Aux>
           <Button
             style={{
-              fontSize: "14px",
-              width: "125px",
+              backgroundColor: 'white',
+              border: "1px solid blue",
+              color: "blue",
+              fontSize: "12px",
+              width: "90px",
               height: "30px",
               margin: "auto",
               textAlign: "center",
               padding: "0px",
             }}
             content="Save as Draft"
-            basic
-            color="blue"
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = true;
@@ -2586,16 +2596,17 @@ const EventEdit = () => {
           />
           <Button
             style={{
-              fontSize: "14px",
-              width: "125px",
+              backgroundColor: 'white',
+              border: "1px solid green",
+              color: "green",
+              fontSize: "12px",
+              width: "90px",
               height: "30px",
               margin: "auto",
               textAlign: "center",
               padding: "0px",
             }}
             content="Update Live"
-            basic
-            color="green"
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = false;
@@ -2619,17 +2630,27 @@ const EventEdit = () => {
                   fontSize: "30px",
                   fontWeight: "600",
                   }}>
-                  Event Edit
+                  Edit Event
               </div>
               {currentStatus()}
               {buttonDisplay()}
-              <img
-                style={{boxSizing: "border-box", height: "auto", width: "25px", paddingTop: "2px", cursor: "pointer"}}
-                src={cancel}
-                alt="Ecancel"
-                onClick={() => 
+
+              <Button
+                style={{
+                  backgroundColor: 'white',
+                  border: "1px solid red",
+                  color: "red",
+                  fontSize: "12px",
+                  width: "90px",
+                  height: "30px",
+                  margin: "auto",
+                  textAlign: "center",
+                  padding: "0px",
+                }}
+                content="Cancel Edit"
+                onClick={() => {
                   window.location.href = `/vendorevents`
-                }
+                }}
               />
             </div>
             <div>
@@ -2858,7 +2879,7 @@ const EventEdit = () => {
                       className={classes.InputBoxContent}
                       style={{ width: "600px" }}
                       current={eventDescription.locationCountryCode}
-                      defaultValue="United States of America"
+                      //defaultValue="United States of America"
                       getCountry={changeCountryCode}
                     />
                   </div>
@@ -3040,10 +3061,7 @@ const EventEdit = () => {
                 <TimeSelector
                   value={eventDescription.startTime}
                   name="startTime"
-                  change={(event) => {
-                    console.log("event.target.value: ", event.target.value);
-                    changeEventDescription(event);
-                  }}
+                  change={(event) => changeEventDescription(event)}
                   startDate={eventDescription.startDate}
                   startTime={eventDescription.startTime}
                   endDate={eventDescription.endDate}
@@ -3064,9 +3082,9 @@ const EventEdit = () => {
                   endDate={eventDescription.endDate}
                 />
                 <TimeZoneSelector
-                  getTimeZone={changeTimeZone}
                   current={eventDescription.timeZone}
-                  defaultValue="Eastern Time - New York"
+                  //defaultValue="Eastern Time - New York"
+                  getTimeZone={changeTimeZone}
                 />
               </div>
     
@@ -3165,8 +3183,9 @@ const EventEdit = () => {
               <div className={classes.SectionTitleTight}>Event Category</div>
               <div className={classes.InputBox}>
                 <CategorySelector
-                  value={eventDescription.eventCategory}
-                  onChange={changeEventDescription}
+                  current={eventDescription.eventCategory}
+                  //defaultValue="United States of America"
+                  getCategory={changeCategory}
                 />
               </div>
     

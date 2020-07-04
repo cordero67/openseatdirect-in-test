@@ -1,6 +1,6 @@
 import React from "react";
 
-import { countryCodes } from './CategoryLists';
+import { countryCodes } from './Selectors/CategoryLists';
 
 const CountrySelector = (props) => {
 
@@ -15,26 +15,25 @@ const CountrySelector = (props) => {
 
     return (
         <select
-        style={{
-            padding: "9px 5px",
-            border: "1px solid lightgrey",
-            boxSizing: "borderBox",
-            width: "600px",
-            lineHeight: "1.75",
-            cursor: "pointer"}}
-        type="number"
-        id="input box ticket description"
-        placeholder="12:00 PM"
-        value={currentCountry}
-        name="ticketsSelected"
-        onChange={(e) => {
-            props.getCountry(countryCodes[e.target.value]);
-        }}
-        required
-
+            style={{
+                padding: "9px 5px",
+                border: "1px solid lightgrey",
+                boxSizing: "borderBox",
+                width: "600px",
+                lineHeight: "1.75",
+                cursor: "pointer"}}
+            type="text"
+            id="input box country selection"
+            //placeholder="12:00 PM"
+            value={currentCountry}
+            name="locationCountryCode"
+            onChange={(e) => {
+                props.getCountry(countryCodes[e.target.value]);
+            }}
+            required
         >
-            {transformedCountries.map((item, index) => {
-                return <option key={index} >{item}</option>
+            {transformedCountries.map((country, index) => {
+                return <option key={index} >{country}</option>
             })}
         </select>
     )

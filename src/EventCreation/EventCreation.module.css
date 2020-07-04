@@ -25,6 +25,7 @@
   left: calc((100vw - 945px)/2);
   border-bottom: 1px solid grey;
   background-color: #fff;
+  /*background-color: #C2D9FF;*/
   z-index: 200;
   padding: 15px;
   padding-bottom: 5px;
@@ -34,8 +35,8 @@
 
 .GridTitle {
   display: grid;
-  grid-template-columns: 200px 380px 125px 125px 30px;
-  column-gap: 10px;
+  grid-template-columns: 200px 395px 95px 95px 95px;
+  column-gap: 5px;
   box-sizing: border-box;
   height: 30px;
 }
@@ -43,7 +44,7 @@
 .GridSubTitle {
   margin: auto;
   display: grid;
-  background-color: #fff;
+  /*background-color: #C2D9FF;*/
   grid-template-columns: 200px 380px;
   column-gap: 10px;
   box-sizing: border-box;

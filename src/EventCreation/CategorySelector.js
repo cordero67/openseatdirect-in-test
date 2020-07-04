@@ -1,6 +1,19 @@
 import React from "react";
 
+import { eventCategories } from './CategoryLists';
+
 const CategorySelector = (props) => {
+
+    let transformedCategories = Object.keys(eventCategories);
+    let currentCategory;
+
+    transformedCategories.forEach((category, index) => {
+        if (props.current === eventCategories[category]) {
+            currentCategory = category;
+        }
+    })
+    console.log("Inside Category Selector")
+    console.log("props.current: ", props.current)
 
     return (
         <select
@@ -12,24 +25,35 @@ const CategorySelector = (props) => {
             lineHeight: "1.75",
             cursor: "pointer"}}
         type="text"
-        id="input box ticket description"
+        id="input box category selector"
         placeholder="Please select a category"
+        value={currentCategory}
         name="eventCategory"
-        defaultValue="default"
-        onChange={props.onChange}
+        onChange={(e) => {
+            props.getCategory(eventCategories[e.target.value]);
+        }}
         required
         >
-            <option value="music">Music</option>
-            <option value="sports" >Sports</option>
-            <option value="artTheatrer">Arts & Theatre</option>
-            <option value="foodDrink">Food & Drink</option>
-            <option value="charityCauses">Charity & Causes</option>
-            <option value="family">Family</option>
-            <option value="meeting">Meeting</option>
-            <option value="other">Other</option>
-            <option style={{display: "none"}} value="default" disabled>Choose an event category</option>
+        {transformedCategories.map((item, index) => {
+            return <option key={index} >{item}</option>
+        })}
         </select>
     )
 }
 
 export default CategorySelector;
+
+
+
+    /*
+
+    "Music": "music",
+    "Sports": "sports",
+    "Arts & Theatre": "artTheater",
+    "Food & Drink": "foodDrink",
+    "Charity & Causes": "charityCauses",
+    "Family": "family",
+    "Meeting": "meeting",
+    "Other": "other",
+    "Choose an event category": "default",
+*/
