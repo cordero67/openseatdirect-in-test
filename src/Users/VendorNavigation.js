@@ -24,13 +24,13 @@ const VendorNavigation = (props) => {
             to="/vendorevents"
             style={isActive(props.currentPage, "/vendorevents")}
           >
-            Events
+            My Events
           </NavLink>
         </li>
 
         <li>
           <NavLink to="/eventcreation" style={{ color: "#000" }}>
-            Create New Event
+            Create Event
           </NavLink>
         </li>
 

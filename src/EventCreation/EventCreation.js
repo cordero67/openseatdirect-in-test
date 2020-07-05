@@ -4,22 +4,24 @@ import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
 
-import { Editor } from "@tinymce/tinymce-react";
-import DateSelector from "./DateSelector";
-import TimeSelector from "./TimeSelector";
-import TimeZoneSelector from "./TimeZoneSelector";
-import CountrySelector from "./CountrySelector";
-import CurrencySelector from "./CurrencySelector";
-import CategorySelector from "./CategorySelector";
-import RadioForm from "./RadioForm";
+
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
+
+import { Editor } from "@tinymce/tinymce-react";
+import CountrySelector from "./Selectors/CountrySelector";
+import TimeSelector from "./Selectors/TimeSelector";
+import TimeZoneSelector from "./Selectors/TimeZoneSelector";
+import CategorySelector from "./Selectors/CategorySelector";
+
+
+import DateSelector from "./DateSelector";
+import CurrencySelector from "./Selectors/CurrencySelector";
+import RadioForm from "./RadioForm";
 
 import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
 
 import classes from "./EventCreation.module.css";
-//import ComingSoon from "./ComingSoon.png";
-import cancel from "./cancel.png";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -68,7 +70,7 @@ const EventCreation = () => {
     eventImage: "",
     shortDescription: "",
     longDescription: "",
-    eventCategory: "other",
+    eventCategory: "",
     facebookLink: "",
     twitterLink: "",
     linkedinLink: "",
@@ -523,6 +525,27 @@ const EventCreation = () => {
     }
     setEventDescription(tempDescription);
     console.log("tempDescription: ", tempDescription);
+  };
+
+  const changeStartTime = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.startTime = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  const changeEndTime = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.endTime = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  const changeCategory = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.eventCategory = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
   };
 
   const changeCountryCode = (value) => {
@@ -1707,7 +1730,7 @@ const EventCreation = () => {
 
         <div className={classes.InputBox}>
           <CurrencySelector
-            value={ticket.currency === "" ? "default" : ticket.currency}
+            current={ticket.currency === "" ? "default" : ticket.currency}
             name="currency"
             change={(event) => {
               changeTicketDetail(event, ticket.key);
@@ -2287,22 +2310,23 @@ const EventCreation = () => {
                   fontSize: "30px",
                   fontWeight: "600",
                   }}>
-                  Event Creation
+                  Create Event
               </div>
               <div>
               </div>
               <Button
                 style={{
-                  fontSize: "14px",
-                  width: "125px",
+                  backgroundColor: 'white',
+                  border: "1px solid blue",
+                  color: "blue",
+                  fontSize: "12px",
+                  width: "90px",
                   height: "30px",
                   margin: "auto",
                   textAlign: "center",
                   padding: "0px",
                 }}
                 content="Save as Draft"
-                basic
-                color="blue"
                 onClick={() => {
                   let tempDescription = {...eventDescription };
                   tempDescription.isDraft = true;
@@ -2312,16 +2336,17 @@ const EventCreation = () => {
               />
               <Button
                 style={{
-                  fontSize: "14px",
-                  width: "125px",
+                  backgroundColor: 'white',
+                  border: "1px solid green",
+                  color: "green",
+                  fontSize: "12px",
+                  width: "90px",
                   height: "30px",
                   margin: "auto",
                   textAlign: "center",
                   padding: "0px",
                 }}
                 content="Go Live Now"
-                basic
-                color="green"
                 onClick={() => {
                   let tempDescription = {...eventDescription };
                   tempDescription.isDraft = false;
@@ -2329,13 +2354,22 @@ const EventCreation = () => {
                   saveEvent("live");
                 }}
               />
-              <img
-                style={{boxSizing: "border-box", height: "auto", width: "25px", paddingTop: "2px", cursor: "pointer"}}
-                src={cancel}
-                alt="Ecancel"
-                onClick={() => 
+              <Button
+                style={{
+                  backgroundColor: 'white',
+                  border: "1px solid red",
+                  color: "red",
+                  fontSize: "12px",
+                  width: "90px",
+                  height: "30px",
+                  margin: "auto",
+                  textAlign: "center",
+                  padding: "0px",
+                }}
+                content="Cancel Create"
+                onClick={() => {
                   window.location.href = `/vendorevents`
-                }
+                }}
               />
             </div>
             <div>
@@ -2563,7 +2597,7 @@ const EventCreation = () => {
                       className={classes.InputBoxContent}
                       style={{ width: "600px" }}
                       current={eventDescription.locationCountryCode}
-                      defaultValue="United States of America"
+                      //defaultValue="United States of America"
                       getCountry={changeCountryCode}
                     />
                   </div>
@@ -2743,15 +2777,12 @@ const EventCreation = () => {
                   beforeDate={new Date()}
                 />
                 <TimeSelector
-                  value={eventDescription.startTime}
+                  current={eventDescription.startTime}
                   name="startTime"
-                  change={(event) => {
-                    console.log("event.target.value: ", event.target.value);
-                    changeEventDescription(event);
-                  }}
-                  startDate={eventDescription.startDate}
-                  startTime={eventDescription.startTime}
-                  endDate={eventDescription.endDate}
+                  getTime={changeStartTime}
+                  //startDate={eventDescription.startDate}
+                  //startTime={eventDescription.startTime}
+                  //endDate={eventDescription.endDate}
                 />
                 <DateSelector
                   type={"endDate"}
@@ -2761,17 +2792,17 @@ const EventCreation = () => {
                   beforeDate={eventDescription.startDate}
                 />
                 <TimeSelector
-                  value={eventDescription.startTime}
+                  current={eventDescription.endTime}
                   name="endTime"
-                  change={(event) => changeEventDescription(event)}
-                  startDate={parseInt(eventDescription.startDate)}
-                  startTime={parseInt(eventDescription.startTime)}
-                  endDate={eventDescription.endDate}
+                  getTime={changeEndTime}
+                  //startDate={parseInt(eventDescription.startDate)}
+                  //startTime={parseInt(eventDescription.startTime)}
+                  //endDate={eventDescription.endDate}
                 />
                 <TimeZoneSelector
-                  getTimeZone={changeTimeZone}
                   current={eventDescription.timeZone}
-                  defaultValue="Eastern Time - New York"
+                  //defaultValue="Eastern Time - New York"
+                  getTimeZone={changeTimeZone}
                 />
               </div>
     
@@ -2870,8 +2901,9 @@ const EventCreation = () => {
               <div className={classes.SectionTitleTight}>Event Category</div>
               <div className={classes.InputBox}>
                 <CategorySelector
-                  value={eventDescription.eventCategory}
-                  onChange={changeEventDescription}
+                  current={eventDescription.eventCategory}
+                  //defaultValue="United States of America"
+                  getCategory={changeCategory}
                 />
               </div>
     
@@ -3130,6 +3162,7 @@ const EventCreation = () => {
                 }}
               >
                 <Button
+                  style={{fontSize: "12px"}}
                   content="Add a ticket"
                   icon="add circle"
                   color="green"
@@ -3171,14 +3204,3 @@ const EventCreation = () => {
 };
 
 export default EventCreation;
-
-/*
-<img
-style={{boxSizing: "border-box", height: "auto", width: "25px", cursor: "pointer"}}
-src={cancel}
-alt="Ecancel"
-onClick={() => 
-  window.location.href = `/vendorevents`
-}
-/>
-*/

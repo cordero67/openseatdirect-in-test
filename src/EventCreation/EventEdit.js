@@ -1,22 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
-import queryString from "query-string";
 
 import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
-import cancel from "./cancel.png";
 
+import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
 import { Editor } from "@tinymce/tinymce-react";
+import CountrySelector from "./Selectors/CountrySelector";
+import TimeSelector from "./Selectors/TimeSelector";
+import TimeZoneSelector from "./Selectors/TimeZoneSelector";
+import CategorySelector from "./Selectors/CategorySelector";
+
+
 import DateSelector from "./DateSelector";
-import TimeSelector from "./TimeSelector";
-import TimeZoneSelector from "./TimeZoneSelector";
-import CountrySelector from "./CountrySelector";
-import CurrencySelector from "./CurrencySelector";
-import CategorySelector from "./CategorySelector";
+import CurrencySelector from "./Selectors/CurrencySelector";
 import RadioForm from "./RadioForm";
-import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 
 import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
@@ -73,7 +73,7 @@ const EventEdit = () => {
     eventImage: "",
     shortDescription: "",
     longDescription: "",
-    eventCategory: "other",
+    eventCategory: "",
     facebookLink: "",
     twitterLink: "",
     linkedinLink: "",
@@ -112,7 +112,6 @@ const EventEdit = () => {
     },
   ]);
 
-  // MMs code
   const [photoData, setPhotoData] = useState({imgSrc:null, imgSrcExt: null, isLoaded:false});
 
   const [eventStatus, setEventStatus] = useState({
@@ -123,7 +122,6 @@ const EventEdit = () => {
     failureMessage: "System error please try again.",
   });
 
-  // MMs code
   const initPhotoData =( resPhotoData) =>{
     console.log ("in initPhotoData....");
     // converts data from server fetch call to photodata for image display
@@ -225,13 +223,13 @@ const EventEdit = () => {
 
     eventDescriptionFields.forEach((field) => {
       if (eventTix[field] == null) {
-        console.log("field DOES NOT exists: ", field)
+        //console.log("field DOES NOT exists: ", field)
         //tempDescription[field] = "";
       } else {
-        console.log("field exists: ", field)
-        console.log("eventTix[", field, "]: ", eventTix[field])
+        //console.log("field exists: ", field)
+       // console.log("eventTix[", field, "]: ", eventTix[field])
         tempDescription[field] = eventTix[field];
-        console.log("eventDescription[field]: ", tempDescription[field] )
+        //console.log("eventDescription[field]: ", tempDescription[field] )
       }
     });
 
@@ -242,6 +240,12 @@ const EventEdit = () => {
     tempDescription.refundPolicy = eventTix.refundPolicy
       ? eventTix.refundPolicy
       : "noRefunds";
+
+    tempDescription.startDateTime = eventTix.startDateTime
+    tempDescription.startDate = eventTix.startDateTime
+
+    tempDescription.endDateTime = eventTix.endDateTime
+    tempDescription.endDate = eventTix.endDateTime
 
     initPhotoData( eventTix.photo);
 
@@ -308,6 +312,41 @@ const EventEdit = () => {
             };
           }
         }
+
+        let currencyObject = {
+          USD: "USD $",
+          CAD: "CAD $",
+          MXN: "MXN $",
+          EUR: "EUR €",
+          GBP: "GBP £",
+          CZK: "CZK Kc",
+          DKK: "DKK kr",
+          HUF: "HUF Ft",
+          NOK: "NOK kr",
+          PLN: "PLN zl",
+          SEK: "SEK kr",
+          CHF: "CHF",
+          JPY: "JPY ¥",
+          AUD: "AUD $",
+          NZD: "NZD $",
+          HKD: "HKD $",
+          SGD: "SGD $",
+          ILS: "ILS ₪",
+          PHP: "PHP ₱",
+          TWD: "TWD NT$",
+          THB: "THB ฿",
+          RUB: "RUB ₽"
+        }
+
+        const longCurrency = () => {
+          if (tix.currency) {
+            console.log("tix.currency: ", tix.currency)
+            console.log("currencyObject[tix.currency]: ", currencyObject[tix.currency])
+            return currencyObject[tix.currency];
+          } else {
+            return "USD $"
+          }
+        }
         
         let newItem = {
           key: tix.sort ? tix.sort : index,
@@ -317,7 +356,7 @@ const EventEdit = () => {
           // NEED TO WAIT FOR ORDERS API
           remainingQuantity: tix.remainingQuantity,
           currentTicketPrice: tix.currentTicketPrice,
-          currency: tix.currency ? tix.currency : "USD",
+          currency: longCurrency(),
           settings: false,
           ticketDescription: tix.ticketDescription,
           minTicketsAllowedPerOrder: tix.minTicketsAllowedPerOrder,
@@ -721,6 +760,27 @@ const EventEdit = () => {
     }
     setEventDescription(tempDescription);
     console.log("tempDescription: ", tempDescription);
+  };
+
+  const changeStartTime = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.startTime = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  const changeEndTime = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.endTime = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  const changeCategory = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.eventCategory = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
   };
 
   const changeCountryCode = (value) => {
@@ -1906,7 +1966,7 @@ const EventEdit = () => {
 
         <div className={classes.InputBox}>
           <CurrencySelector
-            value={ticket.currency === "" ? "default" : ticket.currency}
+            current={ticket.currency === "" ? "default" : ticket.currency}
             name="currency"
             change={(event) => {
               changeTicketDetail(event, ticket.key);
@@ -2469,9 +2529,14 @@ const EventEdit = () => {
     if (pageErrors || eventTitleOmission) {
       return (
         <div className={classes.GridSubTitle}>
-          <div style={{ textAlign: "left" }}>
-            Event Number: {eventDescription.eventNum}
-          </div>
+          {eventDescription.isDraft ? (
+            <div style={{ textAlign: "left", color: "blue", fontWeight: "600" }}>
+              #{eventDescription.eventNum}
+            </div>) : (
+            <div style={{ textAlign: "left", color: "green", fontWeight: "600" }}>
+              #{eventDescription.eventNum}
+            </div>)
+          }
           <div style={{ textAlign: "center", color: "red"}}>
             Please correct input errors identified below.
           </div>
@@ -2480,9 +2545,14 @@ const EventEdit = () => {
     } else {
       return (
         <div className={classes.GridSubTitle}>
-          <div style={{ textAlign: "left" }}>
-            Event Number: {eventDescription.eventNum}
-          </div>
+          {eventDescription.isDraft ? (
+            <div style={{ textAlign: "left", color: "blue", fontWeight: "600" }}>
+              #{eventDescription.eventNum}
+            </div>) : (
+            <div style={{ textAlign: "left", color: "green", fontWeight: "600" }}>
+              #{eventDescription.eventNum}
+            </div>)
+          }
         </div>
       )
     }
@@ -2495,12 +2565,13 @@ const EventEdit = () => {
           style={{
             paddingTop: "6px",
             fontSize: "20px",
-            fontWeight: "500",
+            color: "blue",
+            fontWeight: "600",
             textAlign: "center",
             fontStyle: "italic"
             }}>
-            in <span style={{ color: "blue", fontWeight: "600" }}>Draft</span> status
-        </div>
+            STATUS DRAFT
+          </div>
       )
     } else {
       return (
@@ -2508,11 +2579,12 @@ const EventEdit = () => {
           style={{
             paddingTop: "6px",
             fontSize: "20px",
-            fontWeight: "500",
+            color: "green",
+            fontWeight: "600",
             textAlign: "center",
             fontStyle: "italic"
             }}>
-          in <span style={{ color: "green", fontWeight: "600" }}>Live</span> status
+          STATUS LIVE
         </div>
       )
     }
@@ -2524,16 +2596,17 @@ const EventEdit = () => {
         <Aux>
           <Button
             style={{
-              fontSize: "14px",
-              width: "125px",
+              backgroundColor: 'white',
+              border: "1px solid blue",
+              color: "blue",
+              fontSize: "12px",
+              width: "90px",
               height: "30px",
               margin: "auto",
               textAlign: "center",
               padding: "0px",
             }}
             content="Update Draft"
-            basic
-            color="blue"
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = true;
@@ -2543,16 +2616,17 @@ const EventEdit = () => {
           />
           <Button
             style={{
-              fontSize: "14px",
-              width: "125px",
+              backgroundColor: 'white',
+              border: "1px solid green",
+              color: "green",
+              fontSize: "12px",
+              width: "90px",
               height: "30px",
               margin: "auto",
               textAlign: "center",
               padding: "0px",
             }}
             content="Go Live Now"
-            basic
-            color="green"
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = false;
@@ -2567,16 +2641,17 @@ const EventEdit = () => {
         <Aux>
           <Button
             style={{
-              fontSize: "14px",
-              width: "125px",
+              backgroundColor: 'white',
+              border: "1px solid blue",
+              color: "blue",
+              fontSize: "12px",
+              width: "90px",
               height: "30px",
               margin: "auto",
               textAlign: "center",
               padding: "0px",
             }}
             content="Save as Draft"
-            basic
-            color="blue"
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = true;
@@ -2586,16 +2661,17 @@ const EventEdit = () => {
           />
           <Button
             style={{
-              fontSize: "14px",
-              width: "125px",
+              backgroundColor: 'white',
+              border: "1px solid green",
+              color: "green",
+              fontSize: "12px",
+              width: "90px",
               height: "30px",
               margin: "auto",
               textAlign: "center",
               padding: "0px",
             }}
             content="Update Live"
-            basic
-            color="green"
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = false;
@@ -2619,17 +2695,27 @@ const EventEdit = () => {
                   fontSize: "30px",
                   fontWeight: "600",
                   }}>
-                  Event Edit
+                  Edit Event
               </div>
               {currentStatus()}
               {buttonDisplay()}
-              <img
-                style={{boxSizing: "border-box", height: "auto", width: "25px", paddingTop: "2px", cursor: "pointer"}}
-                src={cancel}
-                alt="Ecancel"
-                onClick={() => 
+
+              <Button
+                style={{
+                  backgroundColor: 'white',
+                  border: "1px solid red",
+                  color: "red",
+                  fontSize: "12px",
+                  width: "90px",
+                  height: "30px",
+                  margin: "auto",
+                  textAlign: "center",
+                  padding: "0px",
+                }}
+                content="Cancel Edit"
+                onClick={() => {
                   window.location.href = `/vendorevents`
-                }
+                }}
               />
             </div>
             <div>
@@ -2858,7 +2944,7 @@ const EventEdit = () => {
                       className={classes.InputBoxContent}
                       style={{ width: "600px" }}
                       current={eventDescription.locationCountryCode}
-                      defaultValue="United States of America"
+                      //defaultValue="United States of America"
                       getCountry={changeCountryCode}
                     />
                   </div>
@@ -3038,15 +3124,12 @@ const EventEdit = () => {
                   beforeDate={new Date()}
                 />
                 <TimeSelector
-                  value={eventDescription.startTime}
+                  current={eventDescription.startTime}
                   name="startTime"
-                  change={(event) => {
-                    console.log("event.target.value: ", event.target.value);
-                    changeEventDescription(event);
-                  }}
-                  startDate={eventDescription.startDate}
-                  startTime={eventDescription.startTime}
-                  endDate={eventDescription.endDate}
+                  getTime={changeStartTime}
+                  //startDate={eventDescription.startDate}
+                  //startTime={eventDescription.startTime}
+                  //endDate={eventDescription.endDate}
                 />
                 <DateSelector
                   type={"endDate"}
@@ -3056,17 +3139,17 @@ const EventEdit = () => {
                   beforeDate={eventDescription.startDate}
                 />
                 <TimeSelector
-                  value={eventDescription.startTime}
+                  current={eventDescription.endTime}
                   name="endTime"
-                  change={(event) => changeEventDescription(event)}
-                  startDate={parseInt(eventDescription.startDate)}
-                  startTime={parseInt(eventDescription.startTime)}
-                  endDate={eventDescription.endDate}
+                  getTime={changeEndTime}
+                  //startDate={parseInt(eventDescription.startDate)}
+                  //startTime={parseInt(eventDescription.startTime)}
+                  //endDate={eventDescription.endDate}
                 />
                 <TimeZoneSelector
-                  getTimeZone={changeTimeZone}
                   current={eventDescription.timeZone}
-                  defaultValue="Eastern Time - New York"
+                  //defaultValue="Eastern Time - New York"
+                  getTimeZone={changeTimeZone}
                 />
               </div>
     
@@ -3164,9 +3247,10 @@ const EventEdit = () => {
     
               <div className={classes.SectionTitleTight}>Event Category</div>
               <div className={classes.InputBox}>
-                <CategorySelector
-                  value={eventDescription.eventCategory}
-                  onChange={changeEventDescription}
+              <CategorySelector
+                  current={eventDescription.eventCategory}
+                  //defaultValue="United States of America"
+                  getCategory={changeCategory}
                 />
               </div>
     
@@ -3425,6 +3509,7 @@ const EventEdit = () => {
                 }}
               >
                 <Button
+                  style={{fontSize: "12px"}}
                   content="Add a ticket"
                   icon="add circle"
                   color="green"

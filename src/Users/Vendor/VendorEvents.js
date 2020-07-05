@@ -270,7 +270,7 @@ const handleErrors = response => {
           </div>
           <div className={classes.DashboardPanel}>
             <div className={classes.DashboardPanelHeader}>
-              Events
+              My Events
             </div>
             <div style={{ overflowY: "auto" }}>{mainDisplay()}</div>
           </div>
