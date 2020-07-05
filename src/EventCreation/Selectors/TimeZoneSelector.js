@@ -1,6 +1,6 @@
 import React from "react";
 
-import { timeZones } from './Selectors/CategoryLists';
+import { timeZones } from './SelectorLists';
 
 const TimeZoneSelector = (props) => {
 
@@ -24,7 +24,6 @@ const TimeZoneSelector = (props) => {
                 cursor: "pointer"}}
             type="text"
             id="input box time zone selection"
-            //placeholder="12:00 PM"
             value={currentZone}
             name="timeZone"
             onChange={(e) => {

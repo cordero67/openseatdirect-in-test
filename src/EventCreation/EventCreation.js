@@ -4,22 +4,24 @@ import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
 
-import { Editor } from "@tinymce/tinymce-react";
-import DateSelector from "./DateSelector";
-import TimeSelector from "./TimeSelector";
-import TimeZoneSelector from "./TimeZoneSelector";
-import CountrySelector from "./CountrySelector";
-import CurrencySelector from "./CurrencySelector";
-import CategorySelector from "./CategorySelector";
-import RadioForm from "./RadioForm";
+
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
+
+import { Editor } from "@tinymce/tinymce-react";
+import CountrySelector from "./Selectors/CountrySelector";
+import TimeSelector from "./Selectors/TimeSelector";
+import TimeZoneSelector from "./Selectors/TimeZoneSelector";
+import CategorySelector from "./Selectors/CategorySelector";
+
+
+import DateSelector from "./DateSelector";
+import CurrencySelector from "./Selectors/CurrencySelector";
+import RadioForm from "./RadioForm";
 
 import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
 
 import classes from "./EventCreation.module.css";
-//import ComingSoon from "./ComingSoon.png";
-import cancel from "./cancel.png";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -523,6 +525,20 @@ const EventCreation = () => {
     }
     setEventDescription(tempDescription);
     console.log("tempDescription: ", tempDescription);
+  };
+
+  const changeStartTime = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.startTime = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  const changeEndTime = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.endTime = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
   };
 
   const changeCategory = (value) => {
@@ -1714,7 +1730,7 @@ const EventCreation = () => {
 
         <div className={classes.InputBox}>
           <CurrencySelector
-            value={ticket.currency === "" ? "default" : ticket.currency}
+            current={ticket.currency === "" ? "default" : ticket.currency}
             name="currency"
             change={(event) => {
               changeTicketDetail(event, ticket.key);
@@ -2761,12 +2777,12 @@ const EventCreation = () => {
                   beforeDate={new Date()}
                 />
                 <TimeSelector
-                  value={eventDescription.startTime}
+                  current={eventDescription.startTime}
                   name="startTime"
-                  change={(event) => changeEventDescription(event)}
-                  startDate={eventDescription.startDate}
-                  startTime={eventDescription.startTime}
-                  endDate={eventDescription.endDate}
+                  getTime={changeStartTime}
+                  //startDate={eventDescription.startDate}
+                  //startTime={eventDescription.startTime}
+                  //endDate={eventDescription.endDate}
                 />
                 <DateSelector
                   type={"endDate"}
@@ -2776,12 +2792,12 @@ const EventCreation = () => {
                   beforeDate={eventDescription.startDate}
                 />
                 <TimeSelector
-                  value={eventDescription.startTime}
+                  current={eventDescription.endTime}
                   name="endTime"
-                  change={(event) => changeEventDescription(event)}
-                  startDate={parseInt(eventDescription.startDate)}
-                  startTime={parseInt(eventDescription.startTime)}
-                  endDate={eventDescription.endDate}
+                  getTime={changeEndTime}
+                  //startDate={parseInt(eventDescription.startDate)}
+                  //startTime={parseInt(eventDescription.startTime)}
+                  //endDate={eventDescription.endDate}
                 />
                 <TimeZoneSelector
                   current={eventDescription.timeZone}
@@ -3146,7 +3162,7 @@ const EventCreation = () => {
                 }}
               >
                 <Button
-                style={{fontSize: "12px"}}
+                  style={{fontSize: "12px"}}
                   content="Add a ticket"
                   icon="add circle"
                   color="green"

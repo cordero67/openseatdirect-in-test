@@ -1,12 +1,12 @@
 import React from "react";
 
-import { countryCodes } from './Selectors/CategoryLists';
+import { countryCodes } from './SelectorLists';
 
 const CountrySelector = (props) => {
 
     let transformedCountries = Object.keys(countryCodes);
     let currentCountry;
-
+    
     transformedCountries.forEach((country, index) => {
         if (props.current === countryCodes[country]) {
             currentCountry = country;
@@ -24,7 +24,6 @@ const CountrySelector = (props) => {
                 cursor: "pointer"}}
             type="text"
             id="input box country selection"
-            //placeholder="12:00 PM"
             value={currentCountry}
             name="locationCountryCode"
             onChange={(e) => {
@@ -33,7 +32,7 @@ const CountrySelector = (props) => {
             required
         >
             {transformedCountries.map((country, index) => {
-                return <option key={index} >{country}</option>
+                return <option key={index}>{country}</option>
             })}
         </select>
     )

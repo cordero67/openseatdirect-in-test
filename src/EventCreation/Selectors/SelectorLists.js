@@ -1,3 +1,54 @@
+export const militaryTimes = {
+    "12:00 AM": "00:00.00",
+    "12:30 AM": "00:30.00",
+    "01:00 AM": "01:00.00",
+    "01:30 AM": "01:30.00",
+    "02:00 AM": "02:00.00",
+    "02:30 AM": "02:30.00",
+    "03:00 AM": "03:00.00",
+    "03:30 AM": "03:30.00",
+    "04:00 AM": "04:00.00",
+    "04:30 AM": "04:30.00",
+    "05:00 AM": "05:00.00",
+    "05:30 AM": "05:30.00",
+    "06:00 AM": "06:00.00",
+    "06:30 AM": "06:30.00",
+    "07:00 AM": "07:00.00",
+    "07:30 AM": "07:30.00",
+    "08:00 AM": "08:00.00",
+    "08:30 AM": "08:30.00",
+    "09:00 AM": "09:00.00",
+    "09:30 AM": "09:30.00",
+    "10:00 AM": "10:00.00",
+    "10:30 AM": "10:30.00",
+    "11:00 AM": "11:00.00",
+    "11:30 AM": "11:30.00",
+    "12:00 PM": "12:00.00",
+    "12:30 PM": "12:30.00",
+    "01:00 PM": "13:00.00",
+    "01:30 PM": "13:30.00",
+    "02:00 PM": "14:00.00",
+    "02:30 PM": "14:30.00",
+    "03:00 PM": "15:00.00",
+    "03:30 PM": "15:30.00",
+    "04:00 PM": "16:00.00",
+    "04:30 PM": "16:30.00",
+    "05:00 PM": "17:00.00",
+    "05:30 PM": "17:30.00",
+    "06:00 PM": "18:00.00",
+    "06:30 PM": "18:30.00",
+    "07:00 PM": "19:00.00",
+    "07:30 PM": "19:30.00",
+    "08:00 PM": "20:00.00",
+    "08:30 PM": "20:30.00",
+    "09:00 PM": "21:00.00",
+    "09:30 PM": "21:30.00",
+    "10:00 PM": "22:00.00",
+    "10:30 PM": "22:30.00",
+    "11:00 PM": "23:00.00",
+    "11:30 PM": "23:30.00"
+}
+
 export const timeZones = {
     "Eastern Time - New York": "America/New_York",
     "Hawaii Time": "Pacific/Honolulu",
@@ -361,4 +412,47 @@ export const countryCodes = {
     "Zambia": "ZM",
     "Zimbabwe": "ZW",
     "Åland Islands": "AX"
+}
+
+export const eventCategories = {
+    //"Choose an event category": "",
+    "Music": "music",
+    "Sports": "sports",
+    "Arts & Theatre": "artTheater",
+    "Food & Drink": "foodDrink",
+    "Charity & Causes": "charityCauses",
+    "Family": "family",
+    "Meeting": "meeting",
+    "Other": "other",
+}
+
+export const americasCurrencies = {
+    "United States Dollar (USD) $": "USD $",
+    "Canada Dollar (CAD) $": "CAD $",
+    "Mexico Peso (MXN) $": "MXN $"
+}
+
+export const europeCurrencies = {
+    "Euro Member Countries (EUR) €": "EUR €",
+    "United Kingdom Pound (GBP) £": "GBP £",
+    "Czech Republic Koruna (CZK) Kc": "CZK Kc",
+    "Denmark Krone (DKK) kr": "DKK kr",
+    "Hungary Forint (HUF) Ft": "HUF Ft",
+    "Norway Krone (NOK) kr": "NOK kr",
+    "Poland Zloty (PLN) zl": "PLN zl",
+    "Sweden Krona (SEK) kr": "SEK kr",
+    "Switzerland Franc (CHF) CHF": "CHF"
+}
+
+export const asiaCurrencies = {
+    "Japan Yen (JPY) ¥": "JPY ¥",
+    "Australia Dollar (AUD) $": "AUD $",
+    "New Zealand Dollar (NZD) $": "NZD $",
+    "Hong Kong Dollar (HKD) $": "HKD $",
+    "Singapore Dollar (SGD) $": "SGD $",
+    "Israel Shekel (ILS) ₪": "ILS ₪",
+    "Philippines Peso (PHP) ₱": "PHP ₱",
+    "Taiwan New Dollar (TWD) NT$": "TWD NT$",
+    "Thailand Baht (THB) ฿": "THB ฿",
+    "Russia Ruble (RUB) ₽": "RUB ₽",
 }

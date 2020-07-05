@@ -1,6 +1,6 @@
 import React from "react";
 
-import { eventCategories } from './CategoryLists';
+import { eventCategories } from './SelectorLists';
 
 const CategorySelector = (props) => {
 
@@ -12,8 +12,6 @@ const CategorySelector = (props) => {
             currentCategory = category;
         }
     })
-    console.log("Inside Category Selector")
-    console.log("props.current: ", props.current)
 
     return (
         <select
@@ -26,34 +24,24 @@ const CategorySelector = (props) => {
             cursor: "pointer"}}
         type="text"
         id="input box category selector"
-        placeholder="Please select a category"
         value={currentCategory}
         name="eventCategory"
+        defaultValue="default"
         onChange={(e) => {
             props.getCategory(eventCategories[e.target.value]);
         }}
         required
         >
         {transformedCategories.map((item, index) => {
-            return <option key={index} >{item}</option>
+            return <option key={index}>{item}</option>
         })}
+        <option
+            style={{display: "none"}}
+            value="default"
+            disabled>Choose an event category
+        </option>
         </select>
     )
 }
 
 export default CategorySelector;
-
-
-
-    /*
-
-    "Music": "music",
-    "Sports": "sports",
-    "Arts & Theatre": "artTheater",
-    "Food & Drink": "foodDrink",
-    "Charity & Causes": "charityCauses",
-    "Family": "family",
-    "Meeting": "meeting",
-    "Other": "other",
-    "Choose an event category": "default",
-*/

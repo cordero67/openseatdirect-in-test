@@ -13,10 +13,8 @@ const CurrencySelector = (props) => {
             cursor: "pointer"}}
         type="text"
         id="input box ticket description"
-        placeholder="Please select a category"
-
         name={props.name}
-        value={props.value}
+        value={props.current}
         onChange={props.change}
         required
         >
@@ -46,7 +44,6 @@ const CurrencySelector = (props) => {
             <option value="TWD NT$">Taiwan New Dollar (TWD) NT$</option>
             <option value="THB ฿">Thailand Baht (THB) ฿</option>
             <option value="RUB ₽">Russia Ruble (RUB) ₽</option>
-
             <option style={{display: "none"}} value="default" disabled>Choose a currency</option>
         </select>
     )
