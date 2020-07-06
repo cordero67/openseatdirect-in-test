@@ -8,8 +8,6 @@ import EventCreation from "../../EventCreation/EventCreation";
 import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
 import EventDetails from "../../Events/EventDetails";
-import EventDetailHaHa from "../../Events/EventDetailHaHa";
-import EventDetailLight from "../../Events/EventDetailLight";
 import EventDeletion from "../../EventCreation/DeleteEvent";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
@@ -419,36 +417,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDetails />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-      <Route
-        path="/edh/"
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventDetailHaHa />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-      <Route
-        path="/edl/"
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventDetailLight />
             <Footer></Footer>
           </React.Fragment>
         )}

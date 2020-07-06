@@ -60,14 +60,18 @@ class ImgDropAndCrop extends Component {
     IMAGE_WIDTH = 0;
     IMAGE_HEIGHT = 0;
 
-
     verifyFile = (files) => {
+        console.log (files);
         if (files && files.length > 0){
-            const currentFile = files[0]
-            const currentFileType = currentFile.type
-            const currentFileSize = currentFile.size
+            const currentFile = files[0];
+            if (!currentFile.file){
+                alert(" Only images are allowed.")
+                return false               
+            };
+            const currentFileType = currentFile.file.type;
+            const currentFileSize = currentFile.file.size;
             if(currentFileSize > imageMaxSize) {
-                alert("This file is not allowed. " + currentFileSize + " bytes is too large")
+                alert("This file is not allowed. File size cannot exceed " + imageMaxSize + " bytes ");
                 return false
             }
             if (!acceptedFileTypesArray.includes(currentFileType)){
