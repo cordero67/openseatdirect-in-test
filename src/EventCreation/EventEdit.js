@@ -64,10 +64,10 @@ const EventEdit = () => {
     locationCountryCode: "US",
     locationNote: "",
     startDate: new Date(new Date().toDateString()),
-    startTime: "18:00:00",
+    startTime: "19:00:00",
     startDateTime: "",
     endDate: new Date(new Date().toDateString()),
-    endTime: "19:00:00",
+    endTime: "20:00:00",
     endDateTime: "",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     eventImage: "",
@@ -2651,26 +2651,7 @@ const EventEdit = () => {
     } else {
       return (
         <Aux>
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid blue",
-              color: "blue",
-              fontSize: "12px",
-              width: "90px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Save as Draft"
-            onClick={() => {
-              let tempDescription = {...eventDescription };
-              tempDescription.isDraft = true;
-              setEventDescription(tempDescription);
-              saveEvent("saved");
-            }}
-          />
+          <div></div>
           <Button
             style={{
               backgroundColor: 'white',
