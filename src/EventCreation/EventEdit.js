@@ -64,10 +64,10 @@ const EventEdit = () => {
     locationCountryCode: "US",
     locationNote: "",
     startDate: new Date(new Date().toDateString()),
-    startTime: "18:00.00",
+    startTime: "18:00:00",
     startDateTime: "",
     endDate: new Date(new Date().toDateString()),
-    endTime: "19:00.00",
+    endTime: "19:00:00",
     endDateTime: "",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     eventImage: "",
@@ -123,7 +123,7 @@ const EventEdit = () => {
   });
 
   const initPhotoData =( resPhotoData) =>{
-    console.log ("in initPhotoData....");
+    //console.log ("in initPhotoData....");
     // converts data from server fetch call to photodata for image display
     
     // check for required fields
@@ -139,7 +139,7 @@ const EventEdit = () => {
 
       const ext = resPhotoData.contentType;
 
-      console.log ("buffer=>", resPhotoData.data.data);
+      //console.log ("buffer=>", resPhotoData.data.data);
 
       let header ='data:image/png;base64,'; // hard codes image/png by default
       if (ext ==='image/png'){
@@ -159,7 +159,7 @@ const EventEdit = () => {
           bin += String.fromCharCode(uint8[i]); 
       const photodat =  header+window.btoa(bin);
       const srcExt = extractImageFileExtensionFromBase64 (photodat);
-      console.log ("found photo> setting PhotoData:", photodat);
+      //console.log ("found photo> setting PhotoData:", photodat);
       setPhotoData({imgSrc:photodat, imgSrcExt: srcExt, isLoaded:true});
  }
 
@@ -241,11 +241,23 @@ const EventEdit = () => {
       ? eventTix.refundPolicy
       : "noRefunds";
 
-    tempDescription.startDateTime = eventTix.startDateTime
-    tempDescription.startDate = eventTix.startDateTime
+    tempDescription.startTime = eventTix.startDateTime.slice(11,19);
+    console.log("tempDescription.startTime: ", tempDescription.startTime)
 
-    tempDescription.endDateTime = eventTix.endDateTime
-    tempDescription.endDate = eventTix.endDateTime
+    tempDescription.endTime = eventTix.endDateTime.slice(11,19);
+    console.log("tempDescription.endTime: ", tempDescription.endTime)
+
+    console.log("eventTix.startDateTime: ", eventTix.startDateTime);
+    tempDescription.startDate = new Date(eventTix.startDateTime);
+    console.log("tempDescription.startDate: ", tempDescription.startDate);
+    tempDescription.startDate.setMinutes( tempDescription.startDate.getMinutes() + tempDescription.startDate.getTimezoneOffset() );
+    console.log("tempDescription.startDate: ", tempDescription.startDate);
+
+    console.log("eventTix.endDateTime: ", eventTix.endDateTime);
+    tempDescription.endDate = new Date(eventTix.endDateTime);
+    console.log("tempDescription.endDate: ", tempDescription.endDate);
+    tempDescription.endDate.setMinutes( tempDescription.endDate.getMinutes() + tempDescription.endDate.getTimezoneOffset() );
+    console.log("tempDescription.endDate: ", tempDescription.endDate);
 
     initPhotoData( eventTix.photo);
 
