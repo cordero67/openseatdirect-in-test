@@ -25,7 +25,7 @@ const SavedModal = (props) => {
   }
 
   let buttonSelection;
-  if (props.details.status === "saved" || props.details.status === "live") {
+  if (props.details.status === "saved") {
     buttonSelection = (
       <div className={classes.CropBoxControls}>
         <div
@@ -36,16 +36,24 @@ const SavedModal = (props) => {
           }}
         >
           <Button
-            style={{ width: "200px" }}
+            style={{
+              backgroundColor: 'white',
+              border: "1px solid blue",
+              color: "blue",
+              fontSize: "12px",
+              width: "120px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
             content="Continue"
-            basic
-            color="blue"
             onClick={props.toDashboard}
           />
         </div>
       </div>
     )
-  } else if (props.details.status === "error" || props.details.status === "failure") {
+  } else if (props.details.status === "live") {
     buttonSelection = (
       <div className={classes.CropBoxControls}>
         <div
@@ -56,10 +64,46 @@ const SavedModal = (props) => {
           }}
         >
           <Button
-            style={{ width: "200px" }}
+            style={{
+              backgroundColor: 'white',
+              border: "1px solid green",
+              color: "green",
+              fontSize: "12px",
+              width: "120px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
             content="Continue"
-            basic
-            color="blue"
+            onClick={props.toDashboard}
+          />
+        </div>
+      </div>
+    )
+  } if (props.details.status === "error" || props.details.status === "failure") {
+    buttonSelection = (
+      <div className={classes.CropBoxControls}>
+        <div
+          style={{
+            margin: "auto",
+            textAlign: "center",
+            paddingTop: "5px",
+          }}
+        >
+          <Button
+            style={{
+              backgroundColor: 'white',
+              border: "1px solid red",
+              color: "red",
+              fontSize: "12px",
+              width: "120px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="Continue"
             onClick={props.editEvent}
           />
         </div>
