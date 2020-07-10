@@ -86,10 +86,12 @@ const EventCreation = () => {
       sort: "",
       _id: "",
       ticketName: "",
+      nameWarning: false,
       remainingQuantity: "",
       quantityWarning: false,
       currentTicketPrice: "",
       priceWarning: false,
+      reqWarning: false,
       currency: "",
       settings: false,
       ticketDescription: "",
@@ -104,8 +106,7 @@ const EventCreation = () => {
       promoCodeNames: [],
       promoCodeWarning: "",
       functionArgs: {},
-      viewModal: false,
-      nameWarning: false
+      viewModal: false
     },
   ]);
 
@@ -155,6 +156,11 @@ const EventCreation = () => {
     tempStatus.status = newStatus;
 
     ticketDetails.forEach((ticket, index) => {
+      if(ticket.nameWarning) {
+        console.log("Name Warning, ticket : ", index)
+        setPageErrors(true);
+        tempPageErrors = true;
+      }
       if(ticket.quantityWarning) {
         console.log("Quantity Warning, ticket : ", index)
         setPageErrors(true);
@@ -162,6 +168,11 @@ const EventCreation = () => {
       }
       if(ticket.priceWarning) {
         console.log("Price Warning, ticket : ", index)
+        setPageErrors(true);
+        tempPageErrors = true;
+      }
+      if(ticket.reqWarning) {
+        console.log("Required Warning, ticket : ", index)
         setPageErrors(true);
         tempPageErrors = true;
       }
@@ -337,6 +348,7 @@ const EventCreation = () => {
           // {form: "twofer", args: {buy:2,  for:15}}
           // for "twofer"
           if (ticket.priceFeature === "twofer") {
+            console.log("inside twofer for index: ", index)
             formData.append(
               `tickets[${index}][priceFunction][form]`, "twofer");
             formData.append(
@@ -640,13 +652,19 @@ const EventCreation = () => {
       sort: "",
       _id: "",
       ticketName: "",
+      nameWarning: false,
       remainingQuantity: "",
+      quantityWarning: false,
       currentTicketPrice: "",
+      priceWarning: false,
+      reqWarning: false,
       currency: "",
       settings: false,
       ticketDescription: "",
       minTicketsAllowedPerOrder: "",
+      minWarning: false,
       maxTicketsAllowedPerOrder: "",
+      maxWarning: false,
       priceFeature: "none",
       promoCodes: [{ key: newPromoKey, name: "", amount: "", percent: false }],
       promoCodeNames: [],
@@ -667,18 +685,27 @@ const EventCreation = () => {
           sort: "",
           _id: "",
           ticketName: "",
+          nameWarning: false,
           remainingQuantity: "",
+          quantityWarning: false,
           currentTicketPrice: "",
+          priceWarning: false,
+          reqWarning: false,
           currency: "",
           settings: false,
           ticketDescription: "",
           minTicketsAllowedPerOrder: "",
+          minWarning: false,
           maxTicketsAllowedPerOrder: "",
+          maxWarning: false,
           priceFeature: "none",
-          promoCodes: [{ key: "1", name: "", amount: "", percent: false }],
+          promoCodes: [
+            { key: "1", name: "", amount: "", percent: false },
+          ],
           promoCodeNames: [],
           promoCodeWarning: "",
           functionArgs: {},
+          viewModal: false
         },
       ]);
     } else {
@@ -1954,6 +1981,184 @@ const EventCreation = () => {
   };
 
   const ticketTypeDisplay = (index) => {
+/*
+    } else if (ticket.priceFeature === "bogod") {
+      // defines warnings for Buy-One-Get-One-at-a-Discount price feature
+      let bogodRegexNum = /^(0|[1-9]|[1-9][0-9]+)$/;
+      let bogodRegexPercent = /^(0\.[1-9]|0\.[0-9][1-9]|[1-9]|[1-9]\.|[1-9]\.[0-9]|[1-9]\.[0-9][0-9]|[1-9][0-9]|[1-9][0-9]\.|[1-9][0-9]\.[0-9]|[1-9][0-9]\.[0-9][0-9]|100|100\.|100\.0|100\.00)$/;
+
+      // determines if a required field warning is required
+      if ((ticket.functionArgs.buy === "" && ticket.functionArgs.get === "" && ticket.functionArgs.discount === "") ||
+        (ticket.functionArgs.buy !== "" && ticket.functionArgs.get !== "" && ticket.functionArgs.discount !== "")) {
+        ticket.functionArgs.reqWarning = false;
+        console.log("ticket.functionArgs.reqWarning: ", ticket.functionArgs.reqWarning)
+      } else {
+        ticket.functionArgs.reqWarning = true;
+        console.log("ticket.functionArgs.reqWarning: ", ticket.functionArgs.reqWarning)
+      }
+
+      // determines if a buy or get field warning is required
+      if(!ticket.functionArgs.buy) {
+        ticket.functionArgs.buyWarning = false;
+        console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
+      } else {
+        ticket.functionArgs.buyWarning = !bogodRegexNum.test(ticket.functionArgs.buy);
+        console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
+      }
+
+      if(!ticket.functionArgs.get) {
+        ticket.functionArgs.getWarning = false;
+        console.log("ticket.functionArgs.getWarning: ", ticket.functionArgs.getWarning)
+      } else {
+        ticket.functionArgs.getWarning = !bogodRegexNum.test(ticket.functionArgs.get);
+        console.log("ticket.functionArgs.getWarning: ", ticket.functionArgs.getWarning)
+      }
+
+      if(!ticket.functionArgs.discount) {
+        ticket.functionArgs.discountWarning = false;
+        console.log("ticket.functionArgs.discountWarning: ", ticket.functionArgs.discountWarning)
+      } else {
+        ticket.functionArgs.discountWarning = !bogodRegexPercent.test(ticket.functionArgs.discount);
+        console.log("ticket.functionArgs.discountWarning: ", ticket.functionArgs.discountWarning)
+      }
+
+      // defines styling for the buy and get boxes
+      let tempBuyWarning;
+      let tempGetWarning;
+      let tempDiscountWarning;
+      let buyWarningText;
+      let getWarningText;
+      let discountWarningText;
+
+      if (ticket.functionArgs.buyWarning) {
+        tempBuyWarning = classes.SpecialFeaturesBoxWarning;
+        buyWarningText = "Not a whole number";
+      } else if (ticket.functionArgs.buy) {
+        tempBuyWarning = classes.SpecialFeaturesBox;
+        buyWarningText = "";
+      } else if (ticket.functionArgs.reqWarning) {
+        tempBuyWarning = classes.SpecialFeaturesBoxWarning;
+        buyWarningText = "Required field";
+      } else {
+        tempBuyWarning = classes.SpecialFeaturesBox;
+        buyWarningText = "";
+      }
+
+      if (ticket.functionArgs.getWarning) {
+        tempGetWarning = classes.SpecialFeaturesBoxWarning;
+        getWarningText = "Not a whole number";
+      } else if (ticket.functionArgs.get) {
+        tempGetWarning = classes.SpecialFeaturesBox;
+        getWarningText = "";
+      } else if (ticket.functionArgs.reqWarning) {
+        tempGetWarning = classes.SpecialFeaturesBoxWarning;
+        getWarningText = "Required field";
+      } else {
+        tempGetWarning = classes.SpecialFeaturesBox;
+        getWarningText = "";
+      }
+
+      if (ticket.functionArgs.discountWarning) {
+        tempDiscountWarning = classes.SpecialFeaturesBoxWarning;
+        discountWarningText = "Not a correct percentage";
+      } else if (ticket.functionArgs.discount) {
+        tempDiscountWarning = classes.SpecialFeaturesBox;
+        discountWarningText = "";
+      } else if (ticket.functionArgs.reqWarning) {
+        tempDiscountWarning = classes.SpecialFeaturesBoxWarning;
+        discountWarningText = "Required field";
+      } else {
+        tempDiscountWarning = classes.SpecialFeaturesBox;
+        discountWarningText = "";
+      }
+
+      return (
+        <Aux>
+          <div
+            style={{
+              height: "30px",
+              fontSize: "15px",
+              backgroundColor: "#E7E7E7",
+              borderTop: "1px solid lightgrey",
+              boxSizing: "borderBox",
+            }}
+          >
+            <div
+              style={{
+                padding: "10px 10px 0px 25px",
+                boxSizing: "borderBox",
+                fontWeight: 600,
+              }}
+            >
+              Buy-One-Get-One-for-Discount Price Feature
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: "5px 10px 10px 35px",
+              border: "0px solid green",
+              boxSizing: "borderBox",
+              backgroundColor: "#E7E7E7",
+              height: "55px",
+              fontSize: "16px",
+            }}
+          >
+            <div>
+              Buy{" "}
+              <input
+                className={tempBuyWarning}
+                type="text"
+                id="functionArgBuyBogod"
+                placeholder="# of tickets"
+                name="buy"
+                value={ticket.functionArgs.buy}
+                onChange={(event) => {
+                  changeArgument(event, ticket.key);
+                }}
+              ></input>{" "}
+              ticket(s) and buy an additional{" "}
+              <input
+                className={tempGetWarning}
+                type="text"
+                id="functionArgGetBogod"
+                placeholder="# of tickets"
+                name="get"
+                value={ticket.functionArgs.get}
+                onChange={(event) => {
+                  changeArgument(event, ticket.key);
+                }}
+              ></input>{" "}
+              ticket(s) for a{" "}
+              <input
+                className={tempDiscountWarning}
+                type="text"
+                id="functionArgDiscountBogod"
+                placeholder="percent"
+                name="discount"
+                value={ticket.functionArgs.discount}
+                onChange={(event) => {
+                  changeArgument(event, ticket.key);
+                }}
+              ></input>{" "}
+              % discount.
+            </div>
+          </div>
+
+          {ticket.functionArgs.reqWarning || ticket.functionArgs.buyWarning || ticket.functionArgs.getWarning || ticket.functionArgs.discountWarning
+            ? <div className={classes.BogodLineWarning}
+            >
+              <div style={{ paddingLeft: "5px"}}> {buyWarningText}</div>
+              <div style={{ paddingRight: "5px", textAlign: "left"}}> {getWarningText}</div>
+              <div style={{ paddingRight: "5px", textAlign: "left"}}> {discountWarningText}</div>
+            </div>
+            : null
+          }
+          */
+
+
+
+
     let display = (
       <Aux>
         {ticketDetails.map((item, index) => {
@@ -1961,7 +2166,24 @@ const EventCreation = () => {
           let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
           let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
-          // determines if a price or quantity field warning is required          
+          // determines if a required field warning is required
+          if ((item.ticketName === "" && item.remainingQuantity === "" && item.currentTicketPrice === "") ||
+            (item.ticketName !== "" && item.remainingQuantity !== "" && item.currentTicketPrice !== "")) {
+            item.reqWarning = false;
+            console.log("item.reqWarning: ", item.reqWarning)
+          } else {
+            item.reqWarning = true;
+            console.log("item.reqWarning: ", item.reqWarning)
+          }
+
+          // determines if a name, price or quantity field warning is required          
+          if(!item.ticketName) {
+            item.nameWarning = false;
+          } else {
+            // NEED TO DETERMINE REGEX TEST
+            //item.nameWarning = !quantityRegex.test(item.remainingQuantity);
+          }
+
           if(!item.remainingQuantity) {
             item.quantityWarning = false;
           } else {
@@ -1975,6 +2197,7 @@ const EventCreation = () => {
           }
 
           // defines styling for the price and quantity boxes
+          let tempNameBox;
           let tempPriceBox;
           let tempQuantityBox;
 
@@ -2060,8 +2283,7 @@ const EventCreation = () => {
                   ></input>
                 </div>
 
-                <div className={tempPriceBox}
-                >
+                <div className={tempPriceBox}>
                   <div
                     style={{
                       padding: "9px 0px 9px 0px",
@@ -2835,38 +3057,7 @@ const EventCreation = () => {
               </div>
     
               <div className={classes.SectionTitleTight}>
-                Event Short Description
-              </div>
-              <div className={classes.TextBox}>
-                <textarea
-                  style={{
-                    padding: "9px 10px",
-                    border: "1px solid lightgrey",
-                    boxSizing: "borderBox",
-                    lineHeight: "1.75",
-                    height: "80px",
-                    width: "600px",
-                    resize: "vertical",
-                  }}
-                  onFocus={() => setShortDescriptionWarning(true)}
-                  onBlur={() => setShortDescriptionWarning(false)}
-                  type="text"
-                  id="shortDescription"
-                  maxLength="140"
-                  placeholder="Short description of event for social media posts: limit 140 characters"
-                  name="shortDescription"
-                  value={eventDescription.shortDescription}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></textarea>
-                {shortDescriptionWarning
-                  ? displayMessage(140, eventDescription.shortDescription)
-                  : null}
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Event Long Description
+                Detailed Event Description
               </div>
               <div
                 style={{
@@ -3037,6 +3228,37 @@ const EventCreation = () => {
                     {displayMessage(64, eventDescription.instagramLink)}
                   </div>)
                   : null}
+
+              <div className={classes.SectionTitleTight}>
+                Social Media Event Description
+              </div>
+              <div className={classes.TextBox}>
+                <textarea
+                  style={{
+                    padding: "9px 10px",
+                    border: "1px solid lightgrey",
+                    boxSizing: "borderBox",
+                    lineHeight: "1.75",
+                    height: "80px",
+                    width: "600px",
+                    resize: "vertical",
+                  }}
+                  onFocus={() => setShortDescriptionWarning(true)}
+                  onBlur={() => setShortDescriptionWarning(false)}
+                  type="text"
+                  id="shortDescription"
+                  maxLength="140"
+                  placeholder="Short description of event for social media posts: limit 140 characters"
+                  name="shortDescription"
+                  value={eventDescription.shortDescription}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></textarea>
+                {shortDescriptionWarning
+                  ? displayMessage(140, eventDescription.shortDescription)
+                  : null}
+              </div>
     
               <div className={classes.SectionTitleTight}>
                 Customize OpenSeatDirect Vanity URL
