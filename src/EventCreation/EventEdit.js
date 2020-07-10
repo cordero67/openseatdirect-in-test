@@ -2651,7 +2651,27 @@ const EventEdit = () => {
     } else {
       return (
         <Aux>
-          <div></div>
+          
+              <Button
+                style={{
+                  backgroundColor: 'white',
+                  border: "1px solid blue",
+                  color: "blue",
+                  fontSize: "12px",
+                  width: "90px",
+                  height: "30px",
+                  margin: "auto",
+                  textAlign: "center",
+                  padding: "0px",
+                }}
+                content="Save as Draft"
+                onClick={() => {
+                  let tempDescription = {...eventDescription };
+                  tempDescription.isDraft = true;
+                  setEventDescription(tempDescription);
+                  saveEvent("saved");
+                }}
+              />
           <Button
             style={{
               backgroundColor: 'white',
@@ -3175,38 +3195,7 @@ const EventEdit = () => {
               </div>
     
               <div className={classes.SectionTitleTight}>
-                Event Short Description
-              </div>
-              <div className={classes.TextBox}>
-                <textarea
-                  style={{
-                    padding: "9px 10px",
-                    border: "1px solid lightgrey",
-                    boxSizing: "borderBox",
-                    lineHeight: "1.75",
-                    height: "80px",
-                    width: "600px",
-                    resize: "vertical",
-                  }}
-                  onFocus={() => setShortDescriptionWarning(true)}
-                  onBlur={() => setShortDescriptionWarning(false)}
-                  type="text"
-                  id="shortDescription"
-                  maxLength="140"
-                  placeholder="Short description of event for social media posts: limit 140 characters"
-                  name="shortDescription"
-                  value={eventDescription.shortDescription}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></textarea>
-                {shortDescriptionWarning
-                  ? displayMessage(140, eventDescription.shortDescription)
-                  : null}
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Event Long Description
+                Detailed Event Description
               </div>
               <div
                 style={{
@@ -3377,6 +3366,39 @@ const EventEdit = () => {
                     {displayMessage(64, eventDescription.instagramLink)}
                   </div>)
                   : null}
+
+                  
+    
+              <div className={classes.SectionTitleTight}>
+                Social Media Event Description
+              </div>
+              <div className={classes.TextBox}>
+                <textarea
+                  style={{
+                    padding: "9px 10px",
+                    border: "1px solid lightgrey",
+                    boxSizing: "borderBox",
+                    lineHeight: "1.75",
+                    height: "80px",
+                    width: "600px",
+                    resize: "vertical",
+                  }}
+                  onFocus={() => setShortDescriptionWarning(true)}
+                  onBlur={() => setShortDescriptionWarning(false)}
+                  type="text"
+                  id="shortDescription"
+                  maxLength="140"
+                  placeholder="Short description of event for social media posts: limit 140 characters"
+                  name="shortDescription"
+                  value={eventDescription.shortDescription}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></textarea>
+                {shortDescriptionWarning
+                  ? displayMessage(140, eventDescription.shortDescription)
+                  : null}
+              </div>
     
               <div className={classes.SectionTitleTight}>
                 Customize OpenSeatDirect Vanity URL

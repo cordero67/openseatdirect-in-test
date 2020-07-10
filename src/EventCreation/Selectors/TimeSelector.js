@@ -4,14 +4,10 @@ import { militaryTimes } from './SelectorLists';
 
 const TimeSelector = (props) => {
 
-  console.log("props.current: ", props.current)
-
   let transformedTimes = Object.keys(militaryTimes);
   let currentTime;
 
   transformedTimes.forEach((time, index) => {
-  console.log("props.current: ", props.current)
-  console.log("militaryTimes[time]: ", militaryTimes[time])
     if (props.current === militaryTimes[time]) {
       currentTime = time;
     }
