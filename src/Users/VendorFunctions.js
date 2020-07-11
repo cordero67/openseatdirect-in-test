@@ -58,10 +58,10 @@
     console.log("tempDescription.startDate: ", tempDescription.startDate);
 */
 
-    console.log("item.startDateTime: ", item.startDateTime);
+    //console.log("item.startDateTime: ", item.startDateTime);
     tempDateTime = new Date(item.startDateTime);
     tempDateTime.setMinutes( tempDateTime.getMinutes() + tempDateTime.getTimezoneOffset() );
-    console.log("tempDateTime: ", tempDateTime);
+    //console.log("tempDateTime: ", tempDateTime);
 
     tempMonthAbbr = monthAbbr[tempDateTime.getMonth()];
     tempMonthNames = monthNames[tempDateTime.getMonth()];
