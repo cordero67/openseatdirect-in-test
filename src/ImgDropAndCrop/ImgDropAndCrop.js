@@ -134,7 +134,7 @@ class ImgDropAndCrop extends Component {
     defaultCrop = (image) => {
         // sets the default crop. Centered and maximized space subject aspect ratio of 2
         const ASPECT_RATIO = 2/1;
-        console.log("**defaultCrop");
+        //console.log("**defaultCrop");
         const w  = image.width;
         const h  = image.height;
         let xa,ya,wa,ha;
@@ -152,7 +152,7 @@ class ImgDropAndCrop extends Component {
             wa = w;
             ha = w/ASPECT_RATIO;
         };
-        console.log ("default crop: w h xa ya wa ha ", w, h, xa, ya, wa, ha);
+        //console.log ("default crop: w h xa ya wa ha ", w, h, xa, ya, wa, ha);
         let {crop}= this.state;
         crop.aspect=ASPECT_RATIO;
         crop.ruleOfThirds= true;
@@ -161,14 +161,14 @@ class ImgDropAndCrop extends Component {
         crop.width=wa ;
         crop.height = ha;
         this.setState({crop:crop})
-        console.log ("setting default crop:", crop);
+        //console.log ("setting default crop:", crop);
 
     }
 
     handleImageLoaded = (image) => {
-        console.log("**handleimageLoaded", image);
+        //console.log("**handleimageLoaded", image);
         let{percentCrop} = this.state;
-        console.log("handleimageLoaded percentCrop: ",percentCrop)        
+        //console.log("handleimageLoaded percentCrop: ",percentCrop)        
         if (!(
             percentCrop.x === null ||
             percentCrop.y === null ||
@@ -187,7 +187,7 @@ class ImgDropAndCrop extends Component {
             crop.width = percentCrop.width * w * .01;
             crop.height = percentCrop.height * h * .01;     
             this.setState({crop:crop})
-            console.log ("setting crop:", crop);
+            //console.log ("setting crop:", crop);
         } else {
             this.defaultCrop (image);   
         };
@@ -201,7 +201,7 @@ class ImgDropAndCrop extends Component {
     }
 
     handleOnCropChange = (crop) => {
-        console.log("**handleOnCropChange",crop);
+        //console.log("**handleOnCropChange",crop);
 //        console.log ("this.imagePreviewCanvasRef:", this.imagePreviewCanvasRef);
 //        console.log ("this.state:", this.state);
         //this.props.change(crop);
@@ -220,7 +220,7 @@ class ImgDropAndCrop extends Component {
 
 
     handleCreateCroppedImage = async (event) => {
-        console.log ("in handleCreateCroppedImage..");
+        //console.log ("in handleCreateCroppedImage..");
         event.preventDefault()
         const {imgSrc,percentCrop} = this.state;
         const canvasRef = this.imagePreviewCanvasRef.current;        
@@ -243,7 +243,7 @@ class ImgDropAndCrop extends Component {
     }
 
     handleClearToDefault = event =>{
-        console.log ("handleClearToDefault", event);
+        //console.log ("handleClearToDefault", event);
 
         if (event) event.preventDefault();
         const canvas = this.imagePreviewCanvasRef.current;
@@ -272,7 +272,7 @@ class ImgDropAndCrop extends Component {
     }
 
     newClear = event =>{
-        console.log ("newClear", event);
+        //console.log ("newClear", event);
         if (event) event.preventDefault()
 
         this.setState({
@@ -297,7 +297,7 @@ class ImgDropAndCrop extends Component {
     }
 
     handleFileSelect = event => {
-        console.log ("handleFileSelect", event);
+        //console.log ("handleFileSelect", event);
         const files = event.target.files
         if (files && files.length > 0){
             const isVerified = this.verifyFile(files)
@@ -320,9 +320,9 @@ class ImgDropAndCrop extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState){
         //lifecycle function to update child state with props set by parent
-        console.log ("in getderivedStateFromProps > nextprop: ", nextProps);
-        console.log ("in getderivedStateFromProps > prevProps:  ", prevState);
-        console.log ("nextProps.imagein!==prevState.imgSrc  :", nextProps.imagein!==prevState.imgSrc);
+        //console.log ("in getderivedStateFromProps > nextprop: ", nextProps);
+        //console.log ("in getderivedStateFromProps > prevProps:  ", prevState);
+        //console.log ("nextProps.imagein!==prevState.imgSrc  :", nextProps.imagein!==prevState.imgSrc);
         if (prevState.imgSrcLoaded){ // disable getDerivedStateFromProps after image is loaded once. 
             return null;            // we don't need this function in EventCreation, we need it in EventEdit
         }
@@ -331,7 +331,7 @@ class ImgDropAndCrop extends Component {
             return null;
         };
         if((nextProps.imagein.isLoaded!==prevState.imgSrcLoaded) || nextProps.imagein.imgSrc!==prevState.imgSrc){
-            console.log("state change");
+            //console.log("state change");
                 return {
                     imgSrc: nextProps.imagein.imgSrc,
                     imgSrcLoaded: nextProps.imagein.isLoaded,
@@ -341,13 +341,9 @@ class ImgDropAndCrop extends Component {
         else return null;
     }
 
-
-//                                        src={this.state.newimageData64}
-//                                        src={imgSrc}
-
     render () {
         const {imgSrc,imgSrcLoaded} = this.state;
-        console.log ("in imgDropandCrop render imgSrcLoaded=",imgSrcLoaded);
+        //console.log ("in imgDropandCrop render imgSrcLoaded=",imgSrcLoaded);
  //       console.log ("in imgDropandCrop render imgSrc=",imgSrc);
 //        console.log ("in imgDropandCrop render this.state.newimageData64=",this.state.newimageData64);
 
@@ -357,133 +353,132 @@ class ImgDropAndCrop extends Component {
         }
 
         const display = () => {
-                if (imgSrc) {
-                    if(this.state.isCropping) {
-                        return (
-                            <div>
-                                <Backdrop/>
-                                <div className={classes.CropBox}>
-                                    <h2>Crop image</h2>
-                                    <ReactCrop 
-                                        style={{zIndex: 800, maxHeight: "400px", maxWidth: "600px"}}
-                                        src={imgSrc} 
-                                        crop={this.state.crop} 
-                                        onImageLoaded={this.handleImageLoaded}
-                                        onComplete = {this.handleOnCropComplete}
-                                        onChange={this.handleOnCropChange}
-                                    />
-                                    <div  className={classes.CropBoxControls}>
-                                        <div style={{width: "150px", textAlign: "right", paddingTop: "5px", paddingLeft: "5px"}}>
-                                            <Button
-                                                content="Cancel"
-                                                icon="cancel"
-                                                color="red"
-                                                onClick={this.handleClearToDefault}
-                                            />
-                                        </div>  
-                                        <div style={{width: "150px", textAlign: "left", paddingTop: "5px", paddingLeft: "5px"}}>
-                                            <Button
-                                                content="Create"
-                                                color="green"
-                                                onClick={this.handleCreateCroppedImage}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <canvas
-                                        className={classes.ImageBox}
-                                        ref={this.imagePreviewCanvasRef}>
-                                    </canvas>
-                                </div>
-                            </div>
-                        )
-                    } else {
-                        return (
-                            <div>
-                                <div>
-                                    <img
-                                        className={classes.ImageBox}
-                                        src={this.state.newimageData64}
-                                    />
-                                    <div className={classes.ImageControls}>
-                                        <button
-                                            style={{
-                                                fontSize: "15px",
-                                                color: "red",
-                                                border: "none",
-                                                backgroundColor: "#E7E7E7",
-                                                cursor: "pointer",
-                                                display: "inlineBlock",
-                                                outline: "none"
-                                                }}
-                                            onClick={this.newClear}
-                                        >Delete Image</button>
-                                        <button
-                                            style={{
-                                                fontSize: "15px",
-                                                color: "blue",
-                                                border: "none",
-                                                backgroundColor: "#E7E7E7",
-                                                cursor: "pointer",
-                                                display: "inlineBlock",
-                                                outline: "none"
-                                                }}
-                                            onClick={() => this.setState({isCropping: true})}
-                                        >Re-Adjust Image</button>
+            if (imgSrc) {
+                if(this.state.isCropping) {
+                    return (
+                        <div>
+                            <Backdrop/>
+                            <div className={classes.CropBox}>
+                                <h2>Crop image</h2>
+                                <ReactCrop 
+                                    style={{zIndex: 800, maxHeight: "400px", maxWidth: "600px"}}
+                                    src={imgSrc} 
+                                    crop={this.state.crop} 
+                                    onImageLoaded={this.handleImageLoaded}
+                                    onComplete = {this.handleOnCropComplete}
+                                    onChange={this.handleOnCropChange}
+                                />
+                                <div  className={classes.CropBoxControls}>
+                                    <div style={{width: "150px", textAlign: "right", paddingTop: "5px", paddingLeft: "5px"}}>
+                                        <Button
+                                            content="Cancel"
+                                            icon="cancel"
+                                            color="red"
+                                            onClick={this.handleClearToDefault}
+                                        />
+                                    </div>  
+                                    <div style={{width: "150px", textAlign: "left", paddingTop: "5px", paddingLeft: "5px"}}>
+                                        <Button
+                                            content="Create"
+                                            color="green"
+                                            onClick={this.handleCreateCroppedImage}
+                                        />
                                     </div>
                                 </div>
                             </div>
-                        )
-                    }
+                            <div>
+                                <canvas
+                                    className={classes.ImageBox}
+                                    ref={this.imagePreviewCanvasRef}>
+                                </canvas>
+                            </div>
+                        </div>
+                    )
                 } else {
                     return (
                         <div>
-                            <Dropzone
-                                onDrop={this.handleOnDrop}
-                                accept={acceptedFileTypes}
-                                multiple={false} 
-                                maxSize={imageMaxSize} noKeyboard>
-                                {({getRootProps, getInputProps,acceptedFiles}) => (
-                                    <div 
-                                        style={{margin: "0px",
-                                                padding: "5px 5px",
-                                                border: "1px solid lightgrey",
-                                                backgroundColor: "white",
-                                                width: "412px",
-                                                height: "212px",
-                                                boxSizing: "borderBox"}}
-                                            {...getRootProps({
-                                                className: 'dropzone'
-                                            })}
-                                        >
-                                        <input {...getInputProps()} />
-                                        <div
-                                            style={{textAlign: "center",
+                            <div>
+                                <img
+                                    className={classes.ImageBox}
+                                    src={this.state.newimageData64}
+                                />
+                                <div className={classes.ImageControls}>
+                                    <button
+                                        style={{
+                                            fontSize: "15px",
+                                            color: "red",
+                                            border: "none",
+                                            backgroundColor: "#E7E7E7",
+                                            cursor: "pointer",
+                                            display: "inlineBlock",
+                                            outline: "none"
+                                            }}
+                                        onClick={this.newClear}
+                                    >Delete Image</button>
+                                    <button
+                                        style={{
+                                            fontSize: "15px",
                                             color: "blue",
-                                            border: "1px dashed blue",
-                                            paddingTop: "10px",
-                                            width: "400px",
-                                            height: "200px",
-                                            boxSizing: "borderBox",
-                                            cursor: "pointer"}}>
-                                            <FontAwesomeIcon
-                                                size = '4x'
-                                                cursor = "pointer"
-                                                icon={faImage}/>
-                                            <br></br>
-                                            <br></br>
-                                            Drag 'n' drop your image file here
-                                            <br></br>or<br></br>
-                                            click to select an image file
-                                        </div>
-                                    </div>
-                                )}
-                            </Dropzone>
+                                            border: "none",
+                                            backgroundColor: "#E7E7E7",
+                                            cursor: "pointer",
+                                            display: "inlineBlock",
+                                            outline: "none"
+                                            }}
+                                        onClick={() => this.setState({isCropping: true})}
+                                    >Re-Adjust Image</button>
+                                </div>
+                            </div>
                         </div>
                     )
                 }
-            
+            } else {
+                return (
+                    <div>
+                        <Dropzone
+                            onDrop={this.handleOnDrop}
+                            accept={acceptedFileTypes}
+                            multiple={false} 
+                            maxSize={imageMaxSize} noKeyboard>
+                            {({getRootProps, getInputProps,acceptedFiles}) => (
+                                <div 
+                                    style={{margin: "0px",
+                                            padding: "5px 5px",
+                                            border: "1px solid lightgrey",
+                                            backgroundColor: "white",
+                                            width: "412px",
+                                            height: "212px",
+                                            boxSizing: "borderBox"}}
+                                        {...getRootProps({
+                                            className: 'dropzone'
+                                        })}
+                                    >
+                                    <input {...getInputProps()} />
+                                    <div
+                                        style={{textAlign: "center",
+                                        color: "blue",
+                                        border: "1px dashed blue",
+                                        paddingTop: "10px",
+                                        width: "400px",
+                                        height: "200px",
+                                        boxSizing: "borderBox",
+                                        cursor: "pointer"}}>
+                                        <FontAwesomeIcon
+                                            size = '4x'
+                                            cursor = "pointer"
+                                            icon={faImage}/>
+                                        <br></br>
+                                        <br></br>
+                                        Drag 'n' drop your image file here
+                                        <br></br>or<br></br>
+                                        click to select an image file
+                                    </div>
+                                </div>
+                            )}
+                        </Dropzone>
+                    </div>
+                )
+            }
         }
 
         return (

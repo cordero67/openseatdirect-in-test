@@ -89,10 +89,12 @@ const EventEdit = () => {
       sort: "",
       _id: "",
       ticketName: "",
+      nameWarning: false,
       remainingQuantity: "",
       quantityWarning: false,
       currentTicketPrice: "",
       priceWarning: false,
+      reqWarning: false,
       currency: "",
       settings: false,
       ticketDescription: "",
@@ -107,8 +109,7 @@ const EventEdit = () => {
       promoCodeNames: [],
       promoCodeWarning: "",
       functionArgs: {},
-      viewModal: false,
-      nameWarning: false
+      viewModal: false
     },
   ]);
 
@@ -189,7 +190,7 @@ const EventEdit = () => {
     }
   }, []);
 
-  const loadEventInfo = (eventTix) => {
+const loadEventInfo = (eventTix) => {
     console.log("Inside 'loadEventInfo': ", eventTix);
     let tempDescription = { ...eventDescription };
 
@@ -411,7 +412,12 @@ const EventEdit = () => {
 
     console.log("ticketDetails: ", ticketDetails)
 
-    ticketDetails.map((ticket, index) => {
+    ticketDetails.forEach((ticket, index) => {
+      if(ticket.nameWarning) {
+        console.log("Name Warning, ticket : ", index)
+        setPageErrors(true);
+        tempPageErrors = true;
+      }
       if(ticket.quantityWarning) {
         console.log("Quantity Warning, ticket : ", index)
         setPageErrors(true);
@@ -419,6 +425,11 @@ const EventEdit = () => {
       }
       if(ticket.priceWarning) {
         console.log("Price Warning, ticket : ", index)
+        setPageErrors(true);
+        tempPageErrors = true;
+      }
+      if(ticket.reqWarning) {
+        console.log("Required Warning, ticket : ", index)
         setPageErrors(true);
         tempPageErrors = true;
       }
@@ -497,6 +508,9 @@ const EventEdit = () => {
 
       var formData = new FormData();
 
+      // does not send empty fields to server
+      // NEED TO CHANGE TO ONLY SEND BACK CHANGED FIELDS
+      // THIS INCLUDES A FILLED FIELD THAT IS CLEARED TO BE AN EMPTY STRING
       eventDescriptionFields.forEach((field) => {
         if (eventDescription[field] !== '') {
           console.log("eventDescription[field]: ", eventDescription[field] )
@@ -540,6 +554,54 @@ const EventEdit = () => {
         console.log("there is no image");
       }
 
+      // eliminate empty ticket types
+      let tempTicketDetailsArray = [];
+      let tempTicketDetails = [...ticketDetails];
+      tempTicketDetails.forEach((ticket, index) => {
+        console.log("Inside elimate cade")
+        console.log("ticket.eventName: ", ticket.ticketName)
+        console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
+        console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
+        if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice) {
+          console.log("We have a full ticket, index: ", index)
+          tempTicketDetailsArray.push(ticket);
+        }
+      })
+      console.log("Updated tempTicketDetailsArray: ", tempTicketDetailsArray);
+      if(tempTicketDetailsArray.length === 0) {
+        setTicketDetails([
+            {
+            key: "1",
+            sort: "",
+            _id: "",
+            ticketName: "",
+            nameWarning: false,
+            remainingQuantity: "",
+            quantityWarning: false,
+            currentTicketPrice: "",
+            priceWarning: false,
+            reqWarning: false,
+            currency: "",
+            settings: false,
+            ticketDescription: "",
+            minTicketsAllowedPerOrder: "",
+            minWarning: false,
+            maxTicketsAllowedPerOrder: "",
+            maxWarning: false,
+            priceFeature: "none",
+            promoCodes: [
+              { key: "1", name: "", amount: "", percent: false },
+            ],
+            promoCodeNames: [],
+            promoCodeWarning: "",
+            functionArgs: {},
+            viewModal: false
+          }],
+        )
+      } else {
+        setTicketDetails(tempTicketDetailsArray);
+      }
+
       let ticketDetailsFields = [
         "ticketName",
         "remainingQuantity",
@@ -550,7 +612,7 @@ const EventEdit = () => {
         "_id",
       ];
 
-      ticketDetails.forEach((ticket, index) => {
+      tempTicketDetailsArray.forEach((ticket, index) => {
         if (
           ticket.ticketName &&
           ticket.remainingQuantity &&
@@ -888,13 +950,19 @@ const EventEdit = () => {
       sort: "",
       _id: "",
       ticketName: "",
+      nameWarning: false,
       remainingQuantity: "",
+      quantityWarning: false,
       currentTicketPrice: "",
+      priceWarning: false,
+      reqWarning: false,
       currency: "",
       settings: false,
       ticketDescription: "",
       minTicketsAllowedPerOrder: "",
+      minWarning: false,
       maxTicketsAllowedPerOrder: "",
+      maxWarning: false,
       priceFeature: "none",
       promoCodes: [{ key: newPromoKey, name: "", amount: "", percent: false }],
       promoCodeNames: [],
@@ -915,18 +983,27 @@ const EventEdit = () => {
           sort: "",
           _id: "",
           ticketName: "",
+          nameWarning: false,
           remainingQuantity: "",
+          quantityWarning: false,
           currentTicketPrice: "",
+          priceWarning: false,
+          reqWarning: false,
           currency: "",
           settings: false,
           ticketDescription: "",
           minTicketsAllowedPerOrder: "",
+          minWarning: false,
           maxTicketsAllowedPerOrder: "",
+          maxWarning: false,
           priceFeature: "none",
-          promoCodes: [{ key: "1", name: "", amount: "", percent: false }],
+          promoCodes: [
+            { key: "1", name: "", amount: "", percent: false },
+          ],
           promoCodeNames: [],
           promoCodeWarning: "",
           functionArgs: {},
+          viewModal: false
         },
       ]);
     } else {
@@ -1768,7 +1845,8 @@ const EventEdit = () => {
       );
     } else if (ticket.priceFeature === "twofer") {
       // defines warnings for Two-for-One price feature
-      let twoferRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
+      let twoferRegexNum = /^(0|[1-9]|[1-9][0-9]+)$/;
+      let twoferRegexPrice = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
       // determines if a required field warning is required
       if ((ticket.functionArgs.buy === "" && ticket.functionArgs.for === "") ||
@@ -1785,7 +1863,7 @@ const EventEdit = () => {
         ticket.functionArgs.buyWarning = false;
         console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
       } else {
-        ticket.functionArgs.buyWarning = !twoferRegex.test(ticket.functionArgs.buy);
+        ticket.functionArgs.buyWarning = !twoferRegexNum.test(ticket.functionArgs.buy);
         console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
       }
 
@@ -1793,7 +1871,7 @@ const EventEdit = () => {
         ticket.functionArgs.forWarning = false;
         console.log("ticket.functionArgs.forWarning: ", ticket.functionArgs.forWarning)
       } else {
-        ticket.functionArgs.forWarning = !twoferRegex.test(ticket.functionArgs.for);
+        ticket.functionArgs.forWarning = !twoferRegexPrice.test(ticket.functionArgs.for);
         console.log("ticket.functionArgs.forWarning: ", ticket.functionArgs.forWarning)
       }
 
@@ -1819,7 +1897,7 @@ const EventEdit = () => {
 
       if (ticket.functionArgs.forWarning) {
         tempForWarning = classes.SpecialFeaturesBoxWarning;
-        forWarningText = "Not a whole number";
+        forWarningText = "Not a valid price";
       } else if (ticket.functionArgs.for) {
         tempForWarning = classes.SpecialFeaturesBox;
         forWarningText = "";
@@ -2157,13 +2235,8 @@ const EventEdit = () => {
   const dragNode = useRef();
 
   const handleDragStart = (event, index) => {
-    console.log("Dragging");
-    console.log("Index: ", index);
     dragItem.current = index;
-    console.log("dragItem.current: ", dragItem.current);
-    console.log("event.target ", event.target);
     dragNode.current = event.target;
-    console.log("dragNode.current: ", dragNode.current);
     dragNode.current.addEventListener("dragend", handleDragEnd);
     setTimeout(() => {
       setDragging(true);
@@ -2171,7 +2244,6 @@ const EventEdit = () => {
   };
 
   const handleDragEnd = () => {
-    console.log("Ending Drag...");
     dragNode.current.removeEventListener("dragend", handleDragEnd);
     setDragging(false);
     dragItem.current = null;
@@ -2179,26 +2251,14 @@ const EventEdit = () => {
   };
 
   const handleDragEnter = (event, index) => {
-    console.log("Entering handleDragEnter");
-    console.log("event.target ", event.target);
-    console.log("dragNode.current ", dragNode.current);
-    console.log("index ", index);
-    console.log("dragItem.current ", dragItem.current);
 
     if (index !== dragItem.current) {
-      console.log("DIFFERENT TARGET");
-      console.log("dragItem.current: ", dragItem.current);
-      console.log("ticketDetails: ", ticketDetails);
 
       const currentItem = dragItem.current;
       setTicketDetails((oldDetails) => {
         let newDetails = JSON.parse(JSON.stringify(oldDetails));
-        console.log("newDetails: ", newDetails);
-        console.log("newDetails[index]: ", newDetails[index]);
         newDetails.splice(index, 0, newDetails.splice(currentItem, 1)[0]);
-        console.log("newDetails: ", newDetails);
         dragItem.current = index;
-        console.log("ticketDetails: ", ticketDetails);
         return newDetails;
       });
     } else {
@@ -2210,38 +2270,105 @@ const EventEdit = () => {
     let display = (
       <Aux>
         {ticketDetails.map((item, index) => {
-          // defines warnings for ticket quantity and price
+          // defines warnings for ticket name, quantity and price
           let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
           let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
-          // determines if a price or quantity field warning is required          
+          // determines if a required field warning is required
+          if ((item.ticketName === "" && item.remainingQuantity === "" && item.currentTicketPrice === "") ||
+            (item.ticketName !== "" && item.remainingQuantity !== "" && item.currentTicketPrice !== "")) {
+            item.reqWarning = false;
+            //console.log("item.reqWarning: ", item.reqWarning)
+          } else {
+            item.reqWarning = true;
+            //console.log("item.reqWarning: ", item.reqWarning)
+          }
+
+          // determines if a name, price or quantity field warning is required          
+          if(!item.ticketName) {
+            item.nameWarning = false;
+            //console.log("item.nameWarning: ", item.nameWarning)
+          } else {
+            item.nameWarning = false;
+            // NEED TO DETERMINE REGEX TEST
+            //item.nameWarning = !quantityRegex.test(item.remainingQuantity);
+            //console.log("item.nameWarning: ", item.nameWarning)
+          }
+
           if(!item.remainingQuantity) {
             item.quantityWarning = false;
+            //console.log("item.quantityWarning: ", item.quantityWarning)
           } else {
             item.quantityWarning = !quantityRegex.test(item.remainingQuantity);
+            //console.log("item.quantityWarning: ", item.quantityWarning)
+            //console.log("quantityRegex: ", !quantityRegex.test(item.remainingQuantity));
+            //item.quantityWarning = true;
           }
 
           if(!item.currentTicketPrice) {
             item.priceWarning = false;
+            //console.log("item.priceWarning: ", item.priceWarning)
           } else {
             item.priceWarning = !priceRegex.test(item.currentTicketPrice);
+            //console.log("item.priceWarning: ", item.priceWarning)
+            //item.priceWarning = true;
           }
 
           // defines styling for the price and quantity boxes
+          let tempNameBox;
           let tempPriceBox;
           let tempQuantityBox;
+          let nameWarningText;
+          let priceWarningText;
+          let quantityWarningText;
+      
+          if (item.nameWarning) {
+            // NEED TO DEFINE THIS CLASS
+            tempNameBox = classes.QuantityBoxWarning;
+            nameWarningText = "Not a valid name";
+          } else if (item.ticketName) {
+            // NEED TO DEFINE THIS CLASS
+            tempNameBox = classes.QuantityBoxWarning;
+            nameWarningText = "";
+          } else if (item.reqWarning) {
+            // NEED TO DEFINE THIS CLASS
+            tempNameBox = classes.QuantityBoxWarning;
+            nameWarningText = "Required field";
+          } else {
+            // NEED TO DEFINE THIS CLASS
+            tempNameBox = classes.QuantityBoxWarning;
+            nameWarningText = "";
+          }
 
           if (item.priceWarning) {
             tempPriceBox = classes.PriceBoxWarning;
+            priceWarningText = "Not a valid price";
+          } else if (item.currentTicketPrice) {
+            tempPriceBox = classes.PriceBox;
+            priceWarningText = "";
+          } else if (item.reqWarning) {
+            tempPriceBox = classes.PriceBoxWarning;
+            priceWarningText = "Required field";
           } else {
             tempPriceBox = classes.PriceBox;
+            priceWarningText = "";
           }
-
+      
+          //console.log("item.quantityWarning: ", item.quantityWarning)
           if (item.quantityWarning) {
             tempQuantityBox = classes.QuantityBoxWarning;
+            quantityWarningText = "Not a whole number";
+          } else if (item.remainingQuantity) {
+            tempQuantityBox = classes.QuantityBox;
+            quantityWarningText = "";
+          } else if (item.reqWarning) {
+            tempQuantityBox = classes.QuantityBoxWarning;
+            quantityWarningText = "Required field";
           } else {
             tempQuantityBox = classes.QuantityBox;
+            quantityWarningText = "";
           }
+          //console.log("quantityWarningText: ", quantityWarningText)
 
           // defines styling for the ticket name, quantity and price line
           let tempTicketStyling;
@@ -2313,8 +2440,7 @@ const EventEdit = () => {
                   ></input>
                 </div>
 
-                <div className={tempPriceBox}
-                >
+                <div className={tempPriceBox}>
                   <div
                     style={{
                       padding: "9px 0px 9px 0px",
@@ -2393,13 +2519,13 @@ const EventEdit = () => {
                 </Aux>
               ) : null}
 
-              {item.priceWarning || item.quantityWarning
+              {item.priceWarning || item.quantityWarning || item.reqWarning
                 ? <div
                   className={classes.TicketLineWarning}
                 >
-                  <div>{" "}</div>
-                  <div style={{ paddingLeft: "5px"}}> {item.quantityWarning ? "Not a whole number" : null}</div>
-                  <div style={{ paddingRight: "5px", textAlign: "right"}}> {item.priceWarning ? "Incorrect number type" : null}</div>
+                  <div style={{ paddingLeft: "25px"}}> {nameWarningText}</div>
+                  <div style={{ paddingLeft: "5px"}}> {quantityWarningText}</div>
+                  <div style={{ paddingRight: "5px", textAlign: "right"}}> {priceWarningText}</div>
                 </div>
                 : null
               }

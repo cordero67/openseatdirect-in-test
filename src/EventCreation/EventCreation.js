@@ -155,6 +155,8 @@ const EventCreation = () => {
     let tempStatus = { ...eventStatus };
     tempStatus.status = newStatus;
 
+    console.log("ticketDetails: ", ticketDetails)
+
     ticketDetails.forEach((ticket, index) => {
       if(ticket.nameWarning) {
         console.log("Name Warning, ticket : ", index)
@@ -250,6 +252,7 @@ const EventCreation = () => {
 
       var formData = new FormData();
 
+      // does not send empty fields to server
       eventDescriptionFields.forEach((field) => {
           if (eventDescription[field] !== '') {
             console.log("eventDescription[field]: ", eventDescription[field] )
@@ -285,13 +288,61 @@ const EventCreation = () => {
 
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
-           
+
       if (eventDescription.eventImage) {
         console.log("eventDescription.eventImage: ", eventDescription.eventImage)
         formData.append("photo", eventDescription.eventImage);
       } else {
         console.log("there is no image");
-      }      
+      }
+
+      // eliminate empty ticket types
+      let tempTicketDetailsArray = [];
+      let tempTicketDetails = [...ticketDetails];
+      tempTicketDetails.forEach((ticket, index) => {
+        console.log("Inside elimate cade")
+        console.log("ticket.eventName: ", ticket.ticketName)
+        console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
+        console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
+        if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice) {
+          console.log("We have a full ticket, index: ", index)
+          tempTicketDetailsArray.push(ticket);
+        }
+      })
+      console.log("Updated tempTicketDetailsArray: ", tempTicketDetailsArray);
+      if(tempTicketDetailsArray.leng === 0) {
+        setTicketDetails(
+            {
+            key: "1",
+            sort: "",
+            _id: "",
+            ticketName: "",
+            nameWarning: false,
+            remainingQuantity: "",
+            quantityWarning: false,
+            currentTicketPrice: "",
+            priceWarning: false,
+            reqWarning: false,
+            currency: "",
+            settings: false,
+            ticketDescription: "",
+            minTicketsAllowedPerOrder: "",
+            minWarning: false,
+            maxTicketsAllowedPerOrder: "",
+            maxWarning: false,
+            priceFeature: "none",
+            promoCodes: [
+              { key: "1", name: "", amount: "", percent: false },
+            ],
+            promoCodeNames: [],
+            promoCodeWarning: "",
+            functionArgs: {},
+            viewModal: false
+          },
+        )
+      } else {
+        setTicketDetails(tempTicketDetailsArray);
+      }
 
       let ticketDetailsFields = [
         "ticketName",
@@ -303,7 +354,7 @@ const EventCreation = () => {
         "_id",
       ];
 
-      ticketDetails.forEach((ticket, index) => {
+      tempTicketDetailsArray.forEach((ticket, index) => {
         //console.log("ticket #: index");
         if (
           ticket.ticketName &&
@@ -1548,6 +1599,7 @@ const EventCreation = () => {
     } else if (ticket.priceFeature === "twofer") {
       // defines warnings for Two-for-One price feature
       let twoferRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
+      let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
       // determines if a required field warning is required
       if ((ticket.functionArgs.buy === "" && ticket.functionArgs.for === "") ||
@@ -1945,7 +1997,6 @@ const EventCreation = () => {
   };
 
   const handleDragEnd = () => {
-    console.log("Ending Drag...");
     dragNode.current.removeEventListener("dragend", handleDragEnd);
     setDragging(false);
     dragItem.current = null;
@@ -1953,26 +2004,14 @@ const EventCreation = () => {
   };
 
   const handleDragEnter = (event, index) => {
-    console.log("Entering handleDragEnter");
-    console.log("event.target ", event.target);
-    console.log("dragNode.current ", dragNode.current);
-    console.log("index ", index);
-    console.log("dragItem.current ", dragItem.current);
 
     if (index !== dragItem.current) {
-      console.log("DIFFERENT TARGET");
-      console.log("dragItem.current: ", dragItem.current);
-      console.log("ticketDetails: ", ticketDetails);
 
       const currentItem = dragItem.current;
       setTicketDetails((oldDetails) => {
         let newDetails = JSON.parse(JSON.stringify(oldDetails));
-        console.log("newDetails: ", newDetails);
-        console.log("newDetails[index]: ", newDetails[index]);
         newDetails.splice(index, 0, newDetails.splice(currentItem, 1)[0]);
-        console.log("newDetails: ", newDetails);
         dragItem.current = index;
-        console.log("ticketDetails: ", ticketDetails);
         return newDetails;
       });
     } else {
@@ -1981,188 +2020,10 @@ const EventCreation = () => {
   };
 
   const ticketTypeDisplay = (index) => {
-/*
-    } else if (ticket.priceFeature === "bogod") {
-      // defines warnings for Buy-One-Get-One-at-a-Discount price feature
-      let bogodRegexNum = /^(0|[1-9]|[1-9][0-9]+)$/;
-      let bogodRegexPercent = /^(0\.[1-9]|0\.[0-9][1-9]|[1-9]|[1-9]\.|[1-9]\.[0-9]|[1-9]\.[0-9][0-9]|[1-9][0-9]|[1-9][0-9]\.|[1-9][0-9]\.[0-9]|[1-9][0-9]\.[0-9][0-9]|100|100\.|100\.0|100\.00)$/;
-
-      // determines if a required field warning is required
-      if ((ticket.functionArgs.buy === "" && ticket.functionArgs.get === "" && ticket.functionArgs.discount === "") ||
-        (ticket.functionArgs.buy !== "" && ticket.functionArgs.get !== "" && ticket.functionArgs.discount !== "")) {
-        ticket.functionArgs.reqWarning = false;
-        console.log("ticket.functionArgs.reqWarning: ", ticket.functionArgs.reqWarning)
-      } else {
-        ticket.functionArgs.reqWarning = true;
-        console.log("ticket.functionArgs.reqWarning: ", ticket.functionArgs.reqWarning)
-      }
-
-      // determines if a buy or get field warning is required
-      if(!ticket.functionArgs.buy) {
-        ticket.functionArgs.buyWarning = false;
-        console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
-      } else {
-        ticket.functionArgs.buyWarning = !bogodRegexNum.test(ticket.functionArgs.buy);
-        console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
-      }
-
-      if(!ticket.functionArgs.get) {
-        ticket.functionArgs.getWarning = false;
-        console.log("ticket.functionArgs.getWarning: ", ticket.functionArgs.getWarning)
-      } else {
-        ticket.functionArgs.getWarning = !bogodRegexNum.test(ticket.functionArgs.get);
-        console.log("ticket.functionArgs.getWarning: ", ticket.functionArgs.getWarning)
-      }
-
-      if(!ticket.functionArgs.discount) {
-        ticket.functionArgs.discountWarning = false;
-        console.log("ticket.functionArgs.discountWarning: ", ticket.functionArgs.discountWarning)
-      } else {
-        ticket.functionArgs.discountWarning = !bogodRegexPercent.test(ticket.functionArgs.discount);
-        console.log("ticket.functionArgs.discountWarning: ", ticket.functionArgs.discountWarning)
-      }
-
-      // defines styling for the buy and get boxes
-      let tempBuyWarning;
-      let tempGetWarning;
-      let tempDiscountWarning;
-      let buyWarningText;
-      let getWarningText;
-      let discountWarningText;
-
-      if (ticket.functionArgs.buyWarning) {
-        tempBuyWarning = classes.SpecialFeaturesBoxWarning;
-        buyWarningText = "Not a whole number";
-      } else if (ticket.functionArgs.buy) {
-        tempBuyWarning = classes.SpecialFeaturesBox;
-        buyWarningText = "";
-      } else if (ticket.functionArgs.reqWarning) {
-        tempBuyWarning = classes.SpecialFeaturesBoxWarning;
-        buyWarningText = "Required field";
-      } else {
-        tempBuyWarning = classes.SpecialFeaturesBox;
-        buyWarningText = "";
-      }
-
-      if (ticket.functionArgs.getWarning) {
-        tempGetWarning = classes.SpecialFeaturesBoxWarning;
-        getWarningText = "Not a whole number";
-      } else if (ticket.functionArgs.get) {
-        tempGetWarning = classes.SpecialFeaturesBox;
-        getWarningText = "";
-      } else if (ticket.functionArgs.reqWarning) {
-        tempGetWarning = classes.SpecialFeaturesBoxWarning;
-        getWarningText = "Required field";
-      } else {
-        tempGetWarning = classes.SpecialFeaturesBox;
-        getWarningText = "";
-      }
-
-      if (ticket.functionArgs.discountWarning) {
-        tempDiscountWarning = classes.SpecialFeaturesBoxWarning;
-        discountWarningText = "Not a correct percentage";
-      } else if (ticket.functionArgs.discount) {
-        tempDiscountWarning = classes.SpecialFeaturesBox;
-        discountWarningText = "";
-      } else if (ticket.functionArgs.reqWarning) {
-        tempDiscountWarning = classes.SpecialFeaturesBoxWarning;
-        discountWarningText = "Required field";
-      } else {
-        tempDiscountWarning = classes.SpecialFeaturesBox;
-        discountWarningText = "";
-      }
-
-      return (
-        <Aux>
-          <div
-            style={{
-              height: "30px",
-              fontSize: "15px",
-              backgroundColor: "#E7E7E7",
-              borderTop: "1px solid lightgrey",
-              boxSizing: "borderBox",
-            }}
-          >
-            <div
-              style={{
-                padding: "10px 10px 0px 25px",
-                boxSizing: "borderBox",
-                fontWeight: 600,
-              }}
-            >
-              Buy-One-Get-One-for-Discount Price Feature
-            </div>
-          </div>
-
-          <div
-            style={{
-              padding: "5px 10px 10px 35px",
-              border: "0px solid green",
-              boxSizing: "borderBox",
-              backgroundColor: "#E7E7E7",
-              height: "55px",
-              fontSize: "16px",
-            }}
-          >
-            <div>
-              Buy{" "}
-              <input
-                className={tempBuyWarning}
-                type="text"
-                id="functionArgBuyBogod"
-                placeholder="# of tickets"
-                name="buy"
-                value={ticket.functionArgs.buy}
-                onChange={(event) => {
-                  changeArgument(event, ticket.key);
-                }}
-              ></input>{" "}
-              ticket(s) and buy an additional{" "}
-              <input
-                className={tempGetWarning}
-                type="text"
-                id="functionArgGetBogod"
-                placeholder="# of tickets"
-                name="get"
-                value={ticket.functionArgs.get}
-                onChange={(event) => {
-                  changeArgument(event, ticket.key);
-                }}
-              ></input>{" "}
-              ticket(s) for a{" "}
-              <input
-                className={tempDiscountWarning}
-                type="text"
-                id="functionArgDiscountBogod"
-                placeholder="percent"
-                name="discount"
-                value={ticket.functionArgs.discount}
-                onChange={(event) => {
-                  changeArgument(event, ticket.key);
-                }}
-              ></input>{" "}
-              % discount.
-            </div>
-          </div>
-
-          {ticket.functionArgs.reqWarning || ticket.functionArgs.buyWarning || ticket.functionArgs.getWarning || ticket.functionArgs.discountWarning
-            ? <div className={classes.BogodLineWarning}
-            >
-              <div style={{ paddingLeft: "5px"}}> {buyWarningText}</div>
-              <div style={{ paddingRight: "5px", textAlign: "left"}}> {getWarningText}</div>
-              <div style={{ paddingRight: "5px", textAlign: "left"}}> {discountWarningText}</div>
-            </div>
-            : null
-          }
-          */
-
-
-
-
     let display = (
       <Aux>
         {ticketDetails.map((item, index) => {
-          // defines warnings for ticket quantity and price
+          // defines warnings for ticket name, quantity and price
           let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
           let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
@@ -2170,48 +2031,97 @@ const EventCreation = () => {
           if ((item.ticketName === "" && item.remainingQuantity === "" && item.currentTicketPrice === "") ||
             (item.ticketName !== "" && item.remainingQuantity !== "" && item.currentTicketPrice !== "")) {
             item.reqWarning = false;
-            console.log("item.reqWarning: ", item.reqWarning)
+            //console.log("item.reqWarning: ", item.reqWarning)
           } else {
             item.reqWarning = true;
-            console.log("item.reqWarning: ", item.reqWarning)
+            //console.log("item.reqWarning: ", item.reqWarning)
           }
 
           // determines if a name, price or quantity field warning is required          
           if(!item.ticketName) {
             item.nameWarning = false;
+            //console.log("item.nameWarning: ", item.nameWarning)
           } else {
+            item.nameWarning = false;
             // NEED TO DETERMINE REGEX TEST
             //item.nameWarning = !quantityRegex.test(item.remainingQuantity);
+            //console.log("item.nameWarning: ", item.nameWarning)
           }
 
           if(!item.remainingQuantity) {
             item.quantityWarning = false;
+            //console.log("item.quantityWarning: ", item.quantityWarning)
           } else {
             item.quantityWarning = !quantityRegex.test(item.remainingQuantity);
+            //console.log("item.quantityWarning: ", item.quantityWarning)
+            //console.log("quantityRegex: ", !quantityRegex.test(item.remainingQuantity));
+            //item.quantityWarning = true;
           }
 
           if(!item.currentTicketPrice) {
             item.priceWarning = false;
+            //console.log("item.priceWarning: ", item.priceWarning)
           } else {
             item.priceWarning = !priceRegex.test(item.currentTicketPrice);
+            //console.log("item.priceWarning: ", item.priceWarning)
+            //item.priceWarning = true;
           }
 
           // defines styling for the price and quantity boxes
           let tempNameBox;
           let tempPriceBox;
           let tempQuantityBox;
+          let nameWarningText;
+          let priceWarningText;
+          let quantityWarningText;
+      
+          if (item.nameWarning) {
+            // NEED TO DEFINE THIS CLASS
+            tempNameBox = classes.QuantityBoxWarning;
+            nameWarningText = "Not a valid name";
+          } else if (item.ticketName) {
+            // NEED TO DEFINE THIS CLASS
+            tempNameBox = classes.QuantityBoxWarning;
+            nameWarningText = "";
+          } else if (item.reqWarning) {
+            // NEED TO DEFINE THIS CLASS
+            tempNameBox = classes.QuantityBoxWarning;
+            nameWarningText = "Required field";
+          } else {
+            // NEED TO DEFINE THIS CLASS
+            tempNameBox = classes.QuantityBoxWarning;
+            nameWarningText = "";
+          }
 
           if (item.priceWarning) {
             tempPriceBox = classes.PriceBoxWarning;
+            priceWarningText = "Not a valid price";
+          } else if (item.currentTicketPrice) {
+            tempPriceBox = classes.PriceBox;
+            priceWarningText = "";
+          } else if (item.reqWarning) {
+            tempPriceBox = classes.PriceBoxWarning;
+            priceWarningText = "Required field";
           } else {
             tempPriceBox = classes.PriceBox;
+            priceWarningText = "";
           }
-
+      
+          //console.log("item.quantityWarning: ", item.quantityWarning)
           if (item.quantityWarning) {
             tempQuantityBox = classes.QuantityBoxWarning;
+            quantityWarningText = "Not a whole number";
+          } else if (item.remainingQuantity) {
+            tempQuantityBox = classes.QuantityBox;
+            quantityWarningText = "";
+          } else if (item.reqWarning) {
+            tempQuantityBox = classes.QuantityBoxWarning;
+            quantityWarningText = "Required field";
           } else {
             tempQuantityBox = classes.QuantityBox;
+            quantityWarningText = "";
           }
+          //console.log("quantityWarningText: ", quantityWarningText)
 
           // defines styling for the ticket name, quantity and price line
           let tempTicketStyling;
@@ -2362,13 +2272,13 @@ const EventCreation = () => {
                 </Aux>
               ) : null}
 
-              {item.priceWarning || item.quantityWarning
+              {item.priceWarning || item.quantityWarning || item.reqWarning
                 ? <div
                   className={classes.TicketLineWarning}
                 >
-                  <div>{" "}</div>
-                  <div style={{ paddingLeft: "5px"}}> {item.quantityWarning ? "Not a whole number" : null}</div>
-                  <div style={{ paddingRight: "5px", textAlign: "right"}}> {item.priceWarning ? "Incorrect number type" : null}</div>
+                  <div style={{ paddingLeft: "25px"}}> {nameWarningText}</div>
+                  <div style={{ paddingLeft: "5px"}}> {quantityWarningText}</div>
+                  <div style={{ paddingRight: "5px", textAlign: "right"}}> {priceWarningText}</div>
                 </div>
                 : null
               }
