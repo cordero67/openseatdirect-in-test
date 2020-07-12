@@ -69,7 +69,7 @@ export const OrderConfirmationTT = props => {
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: $
-                  {item.ticketsSelected * item.adjustedTicketPrice} per ticket
+                  {item.ticketsSelected * item.adjustedTicketPrice}
                 </div>
               ) : null;
             })}
@@ -132,7 +132,7 @@ export const OrderConfirmationTF = props => {
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: $
-                  {item.ticketsSelected * item.adjustedTicketPrice} per ticket
+                  {item.ticketsSelected * item.adjustedTicketPrice}
                 </div>
               ) : null;
             })}
@@ -154,7 +154,7 @@ export const OrderConfirmationTF = props => {
           display on your mobile device.
           <br></br>
           <br></br>
-          If you do not receive this email by the end of today, please contact{" "}
+          If you do not receive this email by the end of today, please contact the vendor.
           <span style={{ color: "blue", fontWeight: "600" }}>
             {props.transactionInfo.userEmail}
           </span>
@@ -207,7 +207,7 @@ export const OrderConfirmationFF = props => {
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: $
-                  {item.ticketsSelected * item.adjustedTicketPrice} per ticket
+                  {item.ticketsSelected * item.adjustedTicketPrice}
                 </div>
               ) : null;
             })}
