@@ -27,7 +27,7 @@ const TicketItem = (props) => {
         priceDeal=`(buy ${props.name.ticketPriceFunction.args.buy} and get up to ${props.name.ticketPriceFunction.args.get} addtional at a ${props.name.ticketPriceFunction.args.discount}% discount)`
       }
     } else if (props.name.ticketPriceFunction.form === "twofer") {
-      priceDeal=`(buy ${props.name.ticketPriceFunction.args.buy} for the price of ${props.name.ticketPriceFunction.args.for})`
+      priceDeal=`(buy ${props.name.ticketPriceFunction.args.buy} for $${props.name.ticketPriceFunction.args.for})`
     }
 
     if (props.name.ticketsAvailable < 1) {

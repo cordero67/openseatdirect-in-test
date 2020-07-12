@@ -90,23 +90,14 @@ export const loadTicketInfo = event => {
       } else if (item.priceFunction.form === "twofer" && item.priceFunction.args) {
         let tempArgs = {
           buy: parseInt(item.priceFunction.args.buy),
-          for: parseInt(item.priceFunction.args.for)
+          for: item.priceFunction.args.for
         }
         priceFunction = {
           form: "twofer",
           args: tempArgs
         };
         pricingCode = "twofer";
-      } else if (item.priceFunction.form === "twoferCapped" && item.priceFunction.args) {
-        let tempArgs = {
-          buy: parseInt(item.priceFunction.args.buy),
-          for: parseInt(item.priceFunction.args.for)
-        }
-        priceFunction = {
-          form: "twoferCapped",
-          args: tempArgs
-        };
-        pricingCode = "twoferCapped";
+        console.log("Just loaded a twofer")
       } else if (item.priceFunction.form === "bogo" && item.priceFunction.args) {
         let tempArgs = {
           buy: parseInt(item.priceFunction.args.buy),
@@ -337,22 +328,13 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
           item.adjustedTicketPrice = totalPurchase/event.target.value
           : item.adjustedTicketPrice = item.ticketPrice};
       } else if (item.ticketPriceFunction.form === "twofer") {
-        let totalPurchase = twofer(
-          event.target.value,//
-          item.ticketPrice,//
-          item.ticketPriceFunction.args.buy,//
-          (item.ticketPriceFunction.args.for*item.ticketPrice)
-        );
-        console.log("totalPurchase: ", totalPurchase)
-        {event.target.value > 0 ?
-          item.adjustedTicketPrice = totalPurchase/event.target.value
-          : item.adjustedTicketPrice = item.ticketPrice};
-      } else if (item.ticketPriceFunction.form === "twoferCapped") {
+        // NOTE: this is not using the "twofer" price function
         let totalPurchase = twoferCapped(
           event.target.value,
           item.ticketPrice,
           item.ticketPriceFunction.args.buy,
-          (item.ticketPriceFunction.args.for*item.ticketPrice)
+          //(item.ticketPriceFunction.args.for*item.ticketPrice)
+          (item.ticketPriceFunction.args.for)
         );
         console.log("totalPurchase: ", totalPurchase)
         {event.target.value > 0 ?

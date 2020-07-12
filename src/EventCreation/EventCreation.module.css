@@ -289,6 +289,20 @@
   grid-template-columns: 70px 83px;
 }
 
+.ForPriceBox {
+  background-color: fff;
+  padding: 9px 0px 9px 0px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.ForPriceBoxWarning {
+  background-color: fff;
+  padding: 9px 0px 9px 0px;
+  border: 1px solid red;
+  box-sizing: border-box;
+}
+
 .TicketLineWarning {
   display: grid;
   grid-template-columns: 360px 130px 135px 80px 80px;
@@ -335,7 +349,7 @@
 .TwoferLineWarning {
   padding: 0px 10px 15px 60px;
   display: grid;
-  grid-template-columns: 280px 280px;
+  grid-template-columns: 197px 280px;
   box-sizing: border-box;
   color: red;
   background-color: #E7E7E7;
@@ -371,4 +385,10 @@
   padding-top: 20px;
   width: 130px;
   height: 30px;
+}
+
+::placeholder {
+  color: #E0E0E0;
+  color: #C2C2C2;
+  opacity: 1;
 }

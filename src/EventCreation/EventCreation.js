@@ -140,7 +140,7 @@ const EventCreation = () => {
     let tempEventTitleOmission = false;
     setPageErrors(false);
     setEventTitleOmission(false);
-    
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -225,6 +225,7 @@ const EventCreation = () => {
 
     if (!tempPageErrors && !tempEventTitleOmission) {
       let eventDescriptionFields = [
+        "eventNum",
         "eventTitle",
         "eventType",
         "locationVenueName",
@@ -254,12 +255,12 @@ const EventCreation = () => {
 
       // does not send empty fields to server
       eventDescriptionFields.forEach((field) => {
-          if (eventDescription[field] !== '') {
-            console.log("eventDescription[field]: ", eventDescription[field] )
-            formData.append(`${field}`, eventDescription[field]);
-          }
+        if (eventDescription[field] !== '') {
+          console.log("eventDescription[field]: ", eventDescription[field] )
+          formData.append(`${field}`, eventDescription[field]);
+        }
       });
-    
+
       let tempDescription = { ...eventDescription };
 
       if (newStatus === "saved") {
@@ -310,8 +311,8 @@ const EventCreation = () => {
         }
       })
       console.log("Updated tempTicketDetailsArray: ", tempTicketDetailsArray);
-      if(tempTicketDetailsArray.leng === 0) {
-        setTicketDetails(
+      if(tempTicketDetailsArray.length === 0) {
+        setTicketDetails([
             {
             key: "1",
             sort: "",
@@ -338,7 +339,7 @@ const EventCreation = () => {
             promoCodeWarning: "",
             functionArgs: {},
             viewModal: false
-          },
+          }],
         )
       } else {
         setTicketDetails(tempTicketDetailsArray);
@@ -355,7 +356,6 @@ const EventCreation = () => {
       ];
 
       tempTicketDetailsArray.forEach((ticket, index) => {
-        //console.log("ticket #: index");
         if (
           ticket.ticketName &&
           ticket.remainingQuantity &&
@@ -370,6 +370,9 @@ const EventCreation = () => {
               ticket.currency.slice(0, 3)
             );
           }
+
+          
+          //formData.append(`tickets[${index}][currentPrice]`, ticket.currentTicketPrice);
 
           ticketDetailsFields.forEach((field) => {
             if (ticket[field]) {
@@ -399,7 +402,6 @@ const EventCreation = () => {
           // {form: "twofer", args: {buy:2,  for:15}}
           // for "twofer"
           if (ticket.priceFeature === "twofer") {
-            console.log("inside twofer for index: ", index)
             formData.append(
               `tickets[${index}][priceFunction][form]`, "twofer");
             formData.append(
@@ -1598,8 +1600,8 @@ const EventCreation = () => {
       );
     } else if (ticket.priceFeature === "twofer") {
       // defines warnings for Two-for-One price feature
-      let twoferRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
-      let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
+      let twoferRegexNum = /^(0|[1-9]|[1-9][0-9]+)$/;
+      let twoferRegexPrice = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
       // determines if a required field warning is required
       if ((ticket.functionArgs.buy === "" && ticket.functionArgs.for === "") ||
@@ -1616,7 +1618,7 @@ const EventCreation = () => {
         ticket.functionArgs.buyWarning = false;
         console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
       } else {
-        ticket.functionArgs.buyWarning = !twoferRegex.test(ticket.functionArgs.buy);
+        ticket.functionArgs.buyWarning = !twoferRegexNum.test(ticket.functionArgs.buy);
         console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
       }
 
@@ -1624,7 +1626,7 @@ const EventCreation = () => {
         ticket.functionArgs.forWarning = false;
         console.log("ticket.functionArgs.forWarning: ", ticket.functionArgs.forWarning)
       } else {
-        ticket.functionArgs.forWarning = !twoferRegex.test(ticket.functionArgs.for);
+        ticket.functionArgs.forWarning = !twoferRegexPrice.test(ticket.functionArgs.for);
         console.log("ticket.functionArgs.forWarning: ", ticket.functionArgs.forWarning)
       }
 
@@ -1649,8 +1651,23 @@ const EventCreation = () => {
       }
 
       if (ticket.functionArgs.forWarning) {
+        tempForWarning = classes.ForPriceBoxWarning;
+        forWarningText = "Not a valid price";
+      } else if (ticket.functionArgs.for) {
+        tempForWarning = classes.ForPriceBox;
+        forWarningText = "";
+      } else if (ticket.functionArgs.reqWarning) {
+        tempForWarning = classes.ForPriceBoxWarning;
+        forWarningText = "Required field";
+      } else {
+        tempForWarning = classes.ForPriceBox;
+        forWarningText = "";
+      }
+
+      /*
+      if (ticket.functionArgs.forWarning) {
         tempForWarning = classes.SpecialFeaturesBoxWarning;
-        forWarningText = "Not a whole number";
+        forWarningText = "Not a valid price";
       } else if (ticket.functionArgs.for) {
         tempForWarning = classes.SpecialFeaturesBox;
         forWarningText = "";
@@ -1661,6 +1678,8 @@ const EventCreation = () => {
         tempForWarning = classes.SpecialFeaturesBox;
         forWarningText = "";
       }
+      */
+
       return (
         <Aux>
           <div
@@ -1704,20 +1723,39 @@ const EventCreation = () => {
                 onChange={(event) => {
                   changeArgument(event, ticket.key);
                 }}
-              ></input>{" "}
-              ticket(s) for the price of{" "}
-              <input
-                className={tempForWarning}
-                type="text"
-                id="functionArgFor2fer"
-                placeholder="# of tickets"
-                name="for"
-                value={ticket.functionArgs.for}
-                onChange={(event) => {
-                  changeArgument(event, ticket.key);
-                }}
-              ></input>{" "}
-              ticket(s).
+              ></input>
+              {" "}ticket(s) for {" "}
+              <span className={tempForWarning}>
+                  <span
+                      style={{
+                        backgroundColor: "white",
+                        padding: "9px 10px 9px 10px",
+                        textAlign: "center",
+                        width: "70px",
+                        boxSizing: "borderBox",
+                      }}>
+                    {ticket.currency === "" ? "USD $" : ticket.currency}
+                  </span>
+                    <input
+                      style={{
+                        backgroundColor: "fff",
+                        padding: "9px 5px 9px 0px",
+                        textAlign: "right",
+                        width: "85px",
+                        border: "none",
+                        outline: "none",
+                        boxSizing: "borderBox",
+                      }}
+                      type="text"
+                      id="currentTicketPrice"
+                      placeholder="10.00"
+                      name="for"
+                      value={ticket.functionArgs.for}
+                      onChange={(event) => {
+                        changeArgument(event, ticket.key);
+                          }}
+                    ></input>
+                  </span>
             </div>
           </div>
           
@@ -1787,35 +1825,6 @@ const EventCreation = () => {
 
     return (
       <div>
-        <div
-          style={{
-            height: "30px",
-            fontSize: "15px",
-            backgroundColor: "#E7E7E7",
-            borderTop: "1px solid lightgrey",
-            boxSizing: "borderBox",
-          }}
-        >
-          <div
-            style={{
-              padding: "10px 10px 0px 25px",
-              boxSizing: "borderBox",
-              fontWeight: 600,
-            }}
-          >
-            Currency
-          </div>
-        </div>
-
-        <div className={classes.InputBox}>
-          <CurrencySelector
-            current={ticket.currency === "" ? "default" : ticket.currency}
-            name="currency"
-            change={(event) => {
-              changeTicketDetail(event, ticket.key);
-            }}
-          />
-        </div>
 
         <div
           style={{
@@ -2024,6 +2033,7 @@ const EventCreation = () => {
       <Aux>
         {ticketDetails.map((item, index) => {
           // defines warnings for ticket name, quantity and price
+          let nameRegex = /^[a-zA-Z0-9\-\s]+$/
           let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
           let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
@@ -2031,40 +2041,28 @@ const EventCreation = () => {
           if ((item.ticketName === "" && item.remainingQuantity === "" && item.currentTicketPrice === "") ||
             (item.ticketName !== "" && item.remainingQuantity !== "" && item.currentTicketPrice !== "")) {
             item.reqWarning = false;
-            //console.log("item.reqWarning: ", item.reqWarning)
           } else {
             item.reqWarning = true;
-            //console.log("item.reqWarning: ", item.reqWarning)
           }
 
           // determines if a name, price or quantity field warning is required          
           if(!item.ticketName) {
             item.nameWarning = false;
-            //console.log("item.nameWarning: ", item.nameWarning)
           } else {
-            item.nameWarning = false;
-            // NEED TO DETERMINE REGEX TEST
-            //item.nameWarning = !quantityRegex.test(item.remainingQuantity);
-            //console.log("item.nameWarning: ", item.nameWarning)
+            item.nameWarning = !nameRegex.test(item.ticketName);
+            console.log("nameWarning: ", !nameRegex.test(item.ticketName));
           }
 
           if(!item.remainingQuantity) {
             item.quantityWarning = false;
-            //console.log("item.quantityWarning: ", item.quantityWarning)
           } else {
             item.quantityWarning = !quantityRegex.test(item.remainingQuantity);
-            //console.log("item.quantityWarning: ", item.quantityWarning)
-            //console.log("quantityRegex: ", !quantityRegex.test(item.remainingQuantity));
-            //item.quantityWarning = true;
           }
 
           if(!item.currentTicketPrice) {
             item.priceWarning = false;
-            //console.log("item.priceWarning: ", item.priceWarning)
           } else {
             item.priceWarning = !priceRegex.test(item.currentTicketPrice);
-            //console.log("item.priceWarning: ", item.priceWarning)
-            //item.priceWarning = true;
           }
 
           // defines styling for the price and quantity boxes
@@ -2078,10 +2076,10 @@ const EventCreation = () => {
           if (item.nameWarning) {
             // NEED TO DEFINE THIS CLASS
             tempNameBox = classes.QuantityBoxWarning;
-            nameWarningText = "Not a valid name";
+            nameWarningText = "Only alphanumeric characters and spaces";
           } else if (item.ticketName) {
             // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBoxWarning;
+            tempNameBox = classes.QuantityBox;
             nameWarningText = "";
           } else if (item.reqWarning) {
             // NEED TO DEFINE THIS CLASS
@@ -2089,7 +2087,7 @@ const EventCreation = () => {
             nameWarningText = "Required field";
           } else {
             // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBoxWarning;
+            tempNameBox = classes.QuantityBox;
             nameWarningText = "";
           }
 
@@ -2121,7 +2119,6 @@ const EventCreation = () => {
             tempQuantityBox = classes.QuantityBox;
             quantityWarningText = "";
           }
-          //console.log("quantityWarningText: ", quantityWarningText)
 
           // defines styling for the ticket name, quantity and price line
           let tempTicketStyling;
@@ -2272,7 +2269,7 @@ const EventCreation = () => {
                 </Aux>
               ) : null}
 
-              {item.priceWarning || item.quantityWarning || item.reqWarning
+              {item.nameWarning || item.priceWarning || item.quantityWarning || item.reqWarning
                 ? <div
                   className={classes.TicketLineWarning}
                 >
@@ -2282,9 +2279,7 @@ const EventCreation = () => {
                 </div>
                 : null
               }
-
               {item.settings ? additionalSettings(item) : null}
-
             </Aux>
           );
         })}
@@ -3336,3 +3331,36 @@ const EventCreation = () => {
 };
 
 export default EventCreation;
+
+/*
+        <div
+          style={{
+            height: "30px",
+            fontSize: "15px",
+            backgroundColor: "#E7E7E7",
+            borderTop: "1px solid lightgrey",
+            boxSizing: "borderBox",
+          }}
+        >
+          <div
+            style={{
+              padding: "10px 10px 0px 25px",
+              boxSizing: "borderBox",
+              fontWeight: 600,
+            }}
+          >
+            Currency
+          </div>
+        </div>
+        
+
+        <div className={classes.InputBox}>
+          <CurrencySelector
+            current={ticket.currency === "" ? "default" : ticket.currency}
+            name="currency"
+            change={(event) => {
+              changeTicketDetail(event, ticket.key);
+            }}
+          />
+        </div>
+        */
