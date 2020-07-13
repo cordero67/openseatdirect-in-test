@@ -67,7 +67,7 @@ const EventCreation = () => {
     endDate: new Date(new Date().toDateString()),
     endTime: "20:00:00",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    eventImage: "",
+    photo: "",
     shortDescription: "",
     longDescription: "",
     eventCategory: "",
@@ -290,12 +290,7 @@ const EventCreation = () => {
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      if (eventDescription.eventImage) {
-        console.log("eventDescription.eventImage: ", eventDescription.eventImage)
-        formData.append("photo", eventDescription.eventImage);
-      } else {
-        console.log("there is no image");
-      }
+      formData.append("photo", eventDescription.photo);
 
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
@@ -345,6 +340,7 @@ const EventCreation = () => {
         setTicketDetails(tempTicketDetailsArray);
       }
 
+      // saves every field in the "tickets" array
       let ticketDetailsFields = [
         "ticketName",
         "remainingQuantity",
@@ -370,9 +366,6 @@ const EventCreation = () => {
               ticket.currency.slice(0, 3)
             );
           }
-
-          
-          //formData.append(`tickets[${index}][currentPrice]`, ticket.currentTicketPrice);
 
           ticketDetailsFields.forEach((field) => {
             if (ticket[field]) {
@@ -2074,20 +2067,16 @@ const EventCreation = () => {
           let quantityWarningText;
       
           if (item.nameWarning) {
-            // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBoxWarning;
+            tempNameBox = classes.NameBoxWarning;
             nameWarningText = "Only alphanumeric characters and spaces";
           } else if (item.ticketName) {
-            // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBox;
+            tempNameBox = classes.NameBox;
             nameWarningText = "";
           } else if (item.reqWarning) {
-            // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBoxWarning;
+            tempNameBox = classes.NameBoxWarning;
             nameWarningText = "Required field";
           } else {
-            // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBox;
+            tempNameBox = classes.NameBox;
             nameWarningText = "";
           }
 
@@ -2154,12 +2143,7 @@ const EventCreation = () => {
                   >
                     <FontAwesomeIcon cursor="pointer" icon={faGripVertical} />
                   </div>
-                  <input
-                    style={{
-                      padding: "9px 10px",
-                      border: "1px solid lightgrey",
-                      boxSizing: "borderBox",
-                    }}
+                  <input className={tempNameBox}
                     type="text"
                     maxLength="64"
                     id="ticketName"
@@ -2398,7 +2382,7 @@ const EventCreation = () => {
       imagein={{isLoaded:true}}
       change={(image) => {
         let tempDescription = { ...eventDescription };
-        tempDescription.eventImage = image;
+        tempDescription.photo = image;
         setEventDescription(tempDescription);
   
       }}

@@ -50,7 +50,7 @@ export function image64toCanvasRef (canvasRef, image64, percentCrop) {
 
 // Converts a Base64 Image to Canvas with a Crop MM on 2 by 1 aspect
 export function image64toCanvasRef2 (canvasRefPreview, image64, percentCrop) {
-  console.log ("** image64toCanvasRef2");
+  //console.log ("** image64toCanvasRef2");
 //  let wi  = image64.width;
 //  let hi = image64.height; 
 //  console.log ("image64 w h = ", wi, hi);
@@ -59,21 +59,21 @@ export function image64toCanvasRef2 (canvasRefPreview, image64, percentCrop) {
   const ctx = canvasRefPreview.getContext('2d');
 
   image.onload = function () {
-    console.log (" >percentCrop:", percentCrop);
-    console.log ("***** : image.width:", image.width);
-    console.log ("***** : image.height:", image.height);
-    console.log ("***** : percentCrop.width:", percentCrop.width);
-    console.log ("***** : percentCrop.height:", percentCrop.height);
+    //console.log (" >percentCrop:", percentCrop);
+    //console.log ("***** : image.width:", image.width);
+    //console.log ("***** : image.height:", image.height);
+    //console.log ("***** : percentCrop.width:", percentCrop.width);
+    //console.log ("***** : percentCrop.height:", percentCrop.height);
     const W = image.width;
     const H = image.height;
-    console.log  (" ARGS:", 
+    /*console.log  (" ARGS:", 
       percentCrop.x*W*.01,    //OK
       percentCrop.y*H*.01,
       percentCrop.width*W*.01,
       percentCrop.height*H*.01,
       0,0,
       300,
-      150);
+      150);*/
 
   //from https://stackoverflow.com/questions/31910043/html5-canvas-drawimage-draws-image-blurry
 //    ctx.imageSmoothingEnabled = false;
@@ -99,7 +99,7 @@ export function image64toCanvasRef2 (canvasRefPreview, image64, percentCrop) {
 //  using smoothing algo for betting looking final image
 
 export function image64toCanvasRef3 (canvasRefPreview, image64, percentCrop) {
-  console.log ("** image64toCanvasRef3");
+  //console.log ("** image64toCanvasRef3");
   const image = new Image();
   const ctx = canvasRefPreview.getContext('2d');
 
@@ -123,7 +123,7 @@ export function image64toCanvasRef3 (canvasRefPreview, image64, percentCrop) {
 }
 
 export function image64toCanvasRef4 (canvasRefPreview, image64, percentCrop) {
-  console.log ("** image64toCanvasRef4 44");
+  //console.log ("** image64toCanvasRef4 44");
   const image = new Image();
   const ctx = canvasRefPreview.getContext('2d');
 
@@ -158,15 +158,15 @@ export function image64toCanvasRef4 (canvasRefPreview, image64, percentCrop) {
 
       let cnt = 0;
       while (cur.width * 0.5 > finalWidth) {
-        console.log ("looping:",  cnt++, cur.width, cur.height, finalWidth);
+        //console.log ("looping:",  cnt++, cur.width, cur.height, finalWidth);
         cur = {
           width: Math.floor(cur.width * 0.5),
           height: Math.floor(cur.height * 0.5)
         };
         octx.drawImage(oc, 0, 0, cur.width * 2, cur.height * 2, 0, 0, cur.width, cur.height);
-        console.log (" ending loop with oc.width, oc.height:", oc.width, oc.height);
+        //console.log (" ending loop with oc.width, oc.height:", oc.width, oc.height);
       }
-       console.log ("final step:", cur.width, cur.height, 0, 0, finalWidth, finalWidth/2);
+       //console.log ("final step:", cur.width, cur.height, 0, 0, finalWidth, finalWidth/2);
       ctx.drawImage(oc, 0, 0, cur.width, cur.height, 0, 0,  finalWidth, finalWidth/2);
     }
 
@@ -176,7 +176,7 @@ export function image64toCanvasRef4 (canvasRefPreview, image64, percentCrop) {
 export function imagetoNaturalCanvas(canvasRef, imageSrc, percentCrop) {
 
   const tmpCanvas = canvasRef;
-  console.log ("in imagetoNaturalCanvas: canvasRef=", tmpCanvas);
+  //console.log ("in imagetoNaturalCanvas: canvasRef=", tmpCanvas);
 
   const image = new Image();
   const ctx = tmpCanvas.getContext("2d");

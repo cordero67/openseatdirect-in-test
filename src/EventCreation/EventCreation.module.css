@@ -257,6 +257,18 @@
   height: 40px;
 }
 
+.NameBox {
+  padding: 9px 10px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.NameBoxWarning {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+}
+
 .QuantityBox {
   padding: 9px 10px;
   border: 1px solid lightgrey;

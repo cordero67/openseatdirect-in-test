@@ -31,6 +31,8 @@ const DateSelector = (props) => {
         formatDate={formatDate}
         parseDate={parseDate}
         placeholder="select date"
+        disabled
+        disabledKeyboardNavigation
         onDayChange={props.change}
         dayPickerProps={{
             format: "MM-DD-YYYY",
