@@ -510,19 +510,32 @@ const loadEventInfo = (eventTix) => {
         "refundPolicy",
       ];
 
-      var formData = new FormData();
-
-      // only sends changed fields to the server
-      eventDescriptionFields.forEach((field) => {
-        if (
-          eventDescription[field] || originalEventDescription[field]
-        ) {
-          console.log("eventDescription[field]: ", eventDescription[field] )
-          formData.append(`${field}`, eventDescription[field]);
-        }
-      });
-
       let tempDescription = { ...eventDescription };
+
+      if (tempDescription.eventType === "live") {
+        tempDescription.tbaInformation = "";
+      } else if (tempDescription.eventType === "online") {
+        tempDescription.tbaInformation = "";
+        tempDescription.locationVenueName = "";
+        tempDescription.locationAddress1 = "";
+        tempDescription.locationAddress2 = "";
+        tempDescription.locationCity = "";
+        tempDescription.locationState = "";
+        tempDescription.locationZipPostalCode = "";
+        tempDescription.locationNote = "";
+      } else if (tempDescription.eventType === "tba") {
+        tempDescription.locationVenueName = "";
+        tempDescription.locationAddress1 = "";
+        tempDescription.locationAddress2 = "";
+        tempDescription.locationCity = "";
+        tempDescription.locationState = "";
+        tempDescription.locationZipPostalCode = "";
+        tempDescription.locationNote = "";
+        tempDescription.webinarLink = "";
+        tempDescription.onlineInformation = "";
+      }
+
+      var formData = new FormData();
 
       if (newStatus === "saved") {
         tempDescription.isDraft = true;
@@ -535,6 +548,16 @@ const loadEventInfo = (eventTix) => {
       }
 
       setEventDescription(tempDescription);
+
+      // only sends changed fields to the server
+      eventDescriptionFields.forEach((field) => {
+        if (
+          eventDescription[field] || originalEventDescription[field]
+        ) {
+          console.log("eventDescription[field]: ", eventDescription[field] )
+          formData.append(`${field}`, eventDescription[field]);
+        }
+      });
       
       let tempStartDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
       //console.log("startDate from dateFnsFormat: ", tempStartDate);
