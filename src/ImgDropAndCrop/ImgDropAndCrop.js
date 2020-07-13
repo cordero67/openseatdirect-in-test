@@ -45,11 +45,11 @@ const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => {retur
 class ImgDropAndCrop extends Component {
     constructor(props){
         super(props);
-        console.log("this.props: ", this.props);
+        //console.log("this.props: ", this.props);
         //console.log("props.photoData: ", props.info);
         this.imagePreviewCanvasRef = React.createRef();
         this.fileInputRef = React.createRef();
-        console.log("init:this.imagePreviewCanvasRef.current:", this.imagePreviewCanvasRef.current);
+        //console.log("init:this.imagePreviewCanvasRef.current:", this.imagePreviewCanvasRef.current);
         this.state = {
             imgSrc: null,
             imgSrcExt: null,
@@ -72,17 +72,17 @@ class ImgDropAndCrop extends Component {
                 height: null
             }
         }
-        console.log("state ending in constructor: ", this.state)
+        //console.log("state ending in constructor: ", this.state)
     }
     
     IMAGE_WIDTH = 0;
     IMAGE_HEIGHT = 0;
 
     verifyFile = (files) => {
-        console.log ("files>> ", files);
+        //console.log ("files>> ", files);
         if (files && files.length > 0){
             const currentFile = files[0];
-            console.log ("files[0]>> ", currentFile);
+            //console.log ("files[0]>> ", currentFile);
             if (!currentFile){
                 alert(" Only image files are allowed.")
                 return false               
@@ -104,9 +104,9 @@ class ImgDropAndCrop extends Component {
     }
 
     handleOnDrop = (files, rejectedFiles) => {
-        console.log ("in handleOnDrop");
-        console.log ("files = ", files); // MM
-        console.log ("rejected =", rejectedFiles); // MM
+        //console.log ("in handleOnDrop");
+        //console.log ("files = ", files); // MM
+        //console.log ("rejected =", rejectedFiles); // MM
 
         if (rejectedFiles && rejectedFiles.length > 0){
             this.verifyFile(rejectedFiles)
@@ -140,13 +140,13 @@ class ImgDropAndCrop extends Component {
         let xa,ya,wa,ha;
         // this is for a 2 by 1 crop
         if (w > ASPECT_RATIO * h) { // extra wide image
-            console.log ("exta wide..");
+            //console.log ("exta wide..");
             ya = 0;
             xa = (w - (ASPECT_RATIO*h))/2;
             wa = ASPECT_RATIO*h;
             ha = h;
         } else {             // narrow image
-            console.log ("exta narrow..");
+            //console.log ("exta narrow..");
             xa = 0;
             ya = (h - (w/ASPECT_RATIO))/2;
             wa = w;
@@ -177,7 +177,7 @@ class ImgDropAndCrop extends Component {
         )) {
             const w  = image.width;
             const h  = image.height;
-            console.log("inside handleImageLoaded  image width, height = ", w,h);
+            //console.log("inside handleImageLoaded  image width, height = ", w,h);
 
             let {crop} = this.state;
             crop.aspect = 2;
@@ -209,7 +209,7 @@ class ImgDropAndCrop extends Component {
     }
 
     handleOnCropComplete = (crop, percentCrop) =>{
-        console.log("handleOnCropCompleted crop, percentCrop:", crop, percentCrop);
+        //console.log("handleOnCropCompleted crop, percentCrop:", crop, percentCrop);
         this.setState({percentCrop: percentCrop});
         const canvasRef = this.imagePreviewCanvasRef.current;
         const {imgSrc}  = this.state;

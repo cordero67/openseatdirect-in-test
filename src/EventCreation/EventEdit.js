@@ -46,6 +46,9 @@ const EventEdit = () => {
   const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [pageErrors, setPageErrors] = useState(false);
 
+  // stores all original Event Description variables
+  const [originalEventDescription, setOriginalEventDescription] = useState({});
+
   // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
     eventNum: "",
@@ -70,7 +73,7 @@ const EventEdit = () => {
     endTime: "20:00:00",
     endDateTime: "",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    eventImage: "",
+    photo: "",
     shortDescription: "",
     longDescription: "",
     eventCategory: "",
@@ -264,6 +267,7 @@ const loadEventInfo = (eventTix) => {
 
     console.log("tempDescription: ", tempDescription);
     setEventDescription(tempDescription);
+    setOriginalEventDescription(tempDescription);
 
     console.log("eventTix.tickets: ", eventTix.tickets);
     // now populate the ticketsDetails variable
@@ -508,17 +512,15 @@ const loadEventInfo = (eventTix) => {
 
       var formData = new FormData();
 
-      // does not send empty fields to server
-      // NEED TO CHANGE TO ONLY SEND BACK CHANGED FIELDS
-      // THIS INCLUDES A FILLED FIELD THAT IS CLEARED TO BE AN EMPTY STRING
-      /*
+      // only sends changed fields to the server
       eventDescriptionFields.forEach((field) => {
-        if (eventDescription[field] !== '') {
+        if (
+          eventDescription[field] || originalEventDescription[field]
+        ) {
           console.log("eventDescription[field]: ", eventDescription[field] )
           formData.append(`${field}`, eventDescription[field]);
         }
       });
-      */
 
       let tempDescription = { ...eventDescription };
 
@@ -549,12 +551,7 @@ const loadEventInfo = (eventTix) => {
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      if (eventDescription.eventImage) {
-        console.log("eventDescription.eventImage: ", eventDescription.eventImage)
-        formData.append("photo", eventDescription.eventImage);
-      } else {
-        console.log("there is no image");
-      }
+      formData.append("photo", eventDescription.photo);
 
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
@@ -2321,20 +2318,16 @@ const loadEventInfo = (eventTix) => {
           let quantityWarningText;
       
           if (item.nameWarning) {
-            // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBoxWarning;
-            nameWarningText = "Not a valid name";
+            tempNameBox = classes.NameBoxWarning;
+            nameWarningText = "Only alphanumeric characters and spaces";
           } else if (item.ticketName) {
-            // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBoxWarning;
+            tempNameBox = classes.NameBox;
             nameWarningText = "";
           } else if (item.reqWarning) {
-            // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBoxWarning;
+            tempNameBox = classes.NameBoxWarning;
             nameWarningText = "Required field";
           } else {
-            // NEED TO DEFINE THIS CLASS
-            tempNameBox = classes.QuantityBoxWarning;
+            tempNameBox = classes.NameBox;
             nameWarningText = "";
           }
 
@@ -2401,12 +2394,7 @@ const loadEventInfo = (eventTix) => {
                   >
                     <FontAwesomeIcon cursor="pointer" icon={faGripVertical} />
                   </div>
-                  <input
-                    style={{
-                      padding: "9px 10px",
-                      border: "1px solid lightgrey",
-                      boxSizing: "borderBox",
-                    }}
+                  <input className={tempNameBox}
                     type="text"
                     maxLength="64"
                     id="ticketName"
@@ -2516,7 +2504,7 @@ const loadEventInfo = (eventTix) => {
                 </Aux>
               ) : null}
 
-              {item.priceWarning || item.quantityWarning || item.reqWarning
+              {item.nameWarning || item.priceWarning || item.quantityWarning || item.reqWarning
                 ? <div
                   className={classes.TicketLineWarning}
                 >
@@ -2526,9 +2514,7 @@ const loadEventInfo = (eventTix) => {
                 </div>
                 : null
               }
-
               {item.settings ? additionalSettings(item) : null}
-
             </Aux>
           );
         })}
@@ -2652,7 +2638,7 @@ const loadEventInfo = (eventTix) => {
           imagein={photoData}
           change={(image) => {
             let tempDescription = { ...eventDescription };
-            tempDescription.eventImage = image;
+            tempDescription.photo = image;
             setEventDescription(tempDescription);
           }}
         />
