@@ -4,7 +4,6 @@ import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
 
-
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 
 import { Editor } from "@tinymce/tinymce-react";
@@ -251,17 +250,33 @@ const EventCreation = () => {
         "refundPolicy",
       ];
 
-      var formData = new FormData();
-
-      // does not send empty fields to server
-      eventDescriptionFields.forEach((field) => {
-        if (eventDescription[field] !== '') {
-          console.log("eventDescription[field]: ", eventDescription[field] )
-          formData.append(`${field}`, eventDescription[field]);
-        }
-      });
-
+      
       let tempDescription = { ...eventDescription };
+
+      if (tempDescription.eventType === "live") {
+        tempDescription.tbaInformation = "";
+      } else if (tempDescription.eventType === "online") {
+        tempDescription.tbaInformation = "";
+        tempDescription.locationVenueName = "";
+        tempDescription.locationAddress1 = "";
+        tempDescription.locationAddress2 = "";
+        tempDescription.locationCity = "";
+        tempDescription.locationState = "";
+        tempDescription.locationZipPostalCode = "";
+        tempDescription.locationNote = "";
+      } else if (tempDescription.eventType === "tba") {
+        tempDescription.locationVenueName = "";
+        tempDescription.locationAddress1 = "";
+        tempDescription.locationAddress2 = "";
+        tempDescription.locationCity = "";
+        tempDescription.locationState = "";
+        tempDescription.locationZipPostalCode = "";
+        tempDescription.locationNote = "";
+        tempDescription.webinarLink = "";
+        tempDescription.onlineInformation = "";
+      }
+
+      var formData = new FormData();
 
       if (newStatus === "saved") {
         tempDescription.isDraft = true;
@@ -274,23 +289,31 @@ const EventCreation = () => {
       }
 
       setEventDescription(tempDescription);
+
+      // does not send empty fields to server
+      eventDescriptionFields.forEach((field) => {
+        if (tempDescription[field] !== '') {
+          console.log("eventDescription[field]: ", tempDescription[field] )
+          formData.append(`${field}`, tempDescription[field]);
+        }
+      });
       
-      let tempStartDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
+      let tempStartDate = dateFnsFormat(tempDescription.startDate,'yyyy-MM-dd');
       //console.log("startDate from dateFnsFormat: ", tempStartDate);
 
-      let tempEndDate = dateFnsFormat(eventDescription.endDate,'yyyy-MM-dd');
+      let tempEndDate = dateFnsFormat(tempDescription.endDate,'yyyy-MM-dd');
       //console.log("endDate from dateFnsFormat: ", tempEndDate);
 
-      let tempStartDateTime = `${tempStartDate} ${eventDescription.startTime}Z`;
+      let tempStartDateTime = `${tempStartDate} ${tempDescription.startTime}Z`;
       //console.log("startDateTime: ", tempStartDateTime);
 
-      let tempEndDateTime = `${tempEndDate} ${eventDescription.endTime}Z`;
+      let tempEndDateTime = `${tempEndDate} ${tempDescription.endTime}Z`;
       //console.log("endDateTime: ", tempEndDateTime);
 
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      formData.append("photo", eventDescription.photo);
+      formData.append("photo", tempDescription.photo);
 
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
