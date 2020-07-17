@@ -30,6 +30,7 @@ import {
   faTrashAlt,
   faGripVertical,
   faCog,
+  faTruckMonster,
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Popup } from "semantic-ui-react";
 import {
@@ -73,7 +74,8 @@ const EventEdit = () => {
     endTime: "20:00:00",
     endDateTime: "",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    photo: "",
+    photoChanged: false,
+    //photo: "",
     shortDescription: "",
     longDescription: "",
     eventCategory: "",
@@ -198,30 +200,30 @@ const loadEventInfo = (eventTix) => {
     let tempDescription = { ...eventDescription };
 
     let eventDescriptionFields = [
-      "eventNum",//
+      "eventNum",
       "eventTitle",
-      "isDraft",//
+      "isDraft",
       "eventType",
-      "locationVenueName",//
-      "locationAddress1",//
-      "locationAddress2",//
-      "locationCity",//
-      "locationState",//
-      "locationZipPostalCode",//
-      "locationCountryCode",//
-      "locationNote",//
-      "webinarLink",//
-      "onlineInformation",//
-      "tbaInformation",//
-      "timeZone",//
-      "shortDescription",//
-      "longDescription",//
-      "eventCategory",//
-      "facebookLink",//
-      "twitterLink",//
-      "linkedinLink",//
-      "instagramLink",//
-      "vanityLink",//
+      "locationVenueName",
+      "locationAddress1",
+      "locationAddress2",
+      "locationCity",
+      "locationState",
+      "locationZipPostalCode",
+      "locationCountryCode",
+      "locationNote",
+      "webinarLink",
+      "onlineInformation",
+      "tbaInformation",
+      "timeZone",
+      "shortDescription",
+      "longDescription",
+      "eventCategory",
+      "facebookLink",
+      "twitterLink",
+      "linkedinLink",
+      "instagramLink",
+      "vanityLink",
       "refundPolicy",
     ];
 
@@ -473,6 +475,11 @@ const loadEventInfo = (eventTix) => {
           setPageErrors(true);
           tempPageErrors = true;
         }
+        if (ticket.functionArgs.maxForWarning) {
+          console.log("MaxFor Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
       }
     })
 
@@ -552,10 +559,10 @@ const loadEventInfo = (eventTix) => {
       // only sends changed fields to the server
       eventDescriptionFields.forEach((field) => {
         if (
-          eventDescription[field] || originalEventDescription[field]
+          tempDescription[field] || originalEventDescription[field]
         ) {
-          console.log("eventDescription[field]: ", eventDescription[field] )
-          formData.append(`${field}`, eventDescription[field]);
+          console.log("eventDescription[field]: ", tempDescription[field] )
+          formData.append(`${field}`, tempDescription[field]);
         }
       });
       
@@ -573,8 +580,46 @@ const loadEventInfo = (eventTix) => {
 
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
+/*
+      if (eventDescription.photo) {
+        formData.append("photo", eventDescription.photo);
+        console.log("eventDescription.eventImage: ", eventDescription.photo)
+      } else {
+        console.log("there is no image");		
+      }
+*/
 
-      formData.append("photo", eventDescription.photo);
+      let tempNull = null;
+      let tempEmptyString = "";
+      let tempUndefined = undefined;
+      let tempUndefinedInString = "undefined";
+      let tempNoAssignment;
+      let tempFalse = false;
+      let tempTrue = true;
+
+      formData.append("null", tempNull);
+      console.log("null", tempNull);
+      formData.append("emptyString", tempEmptyString);
+      console.log("emptyString", tempEmptyString);
+      formData.append("undefined", tempUndefined);
+      console.log("undefined", tempUndefined);
+      formData.append("undefinedInString", tempUndefinedInString);
+      console.log("undefinedInString", tempUndefinedInString);
+      formData.append("noAssignment", tempNoAssignment);
+      console.log("noAssignment", tempNoAssignment);
+      formData.append("tempFalse", tempFalse);
+      console.log("tempFalse", tempFalse);
+      formData.append("tempTrue", tempTrue);
+      console.log("tempTrue", tempTrue);
+
+      console.log("eventDescription.photo: ", eventDescription.photo)
+
+      //if (!eventDescription.photo === null) {
+        formData.append("photo", eventDescription.photo);
+        console.log("eventDescription.eventImage: ", eventDescription.photo)
+      //} else {
+      //  console.log("there is no image");		
+      //}
 
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
@@ -832,7 +877,7 @@ const loadEventInfo = (eventTix) => {
         .toLowerCase();
     }
     setEventDescription(tempDescription);
-    //console.log("Event Description: ", tempDescription);
+    console.log("Event Description: ", tempDescription);
   }; 
 
   const changeEventDate = (day, fieldName) => {
@@ -2661,8 +2706,12 @@ const loadEventInfo = (eventTix) => {
           imagein={photoData}
           change={(image) => {
             let tempDescription = { ...eventDescription };
+            console.log("image: ", image)
             tempDescription.photo = image;
+            console.log("image: ", tempDescription.photo)
             setEventDescription(tempDescription);
+            console.log(" on change");
+            console.log("tempDescription: ", tempDescription)
           }}
         />
       )

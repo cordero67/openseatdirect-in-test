@@ -2,18 +2,12 @@ import React from "react";
 import dateFormat from "dateformat";
 
 import classes from "./EventTombstone.module.css";
-import ComingSoon from "./ComingSoon.png";
 
 const event = props => {
-  let image;
-  console.log("props.EventImage: ", props.image)
-  if (!props.image) {
-    image = ComingSoon;
-  } else {
-    image = `https://www.openseatdirect.com/api/event/photo/e/${props.image}`;
-    //image = `https://www.openseatdirect.com/api/event/photo/e/20806407169`;
-    
-  }
+  let image = `https://www.openseatdirect.com/api/event/photo/e/${props.eventNum}`;
+  let defaultImage = `https://www.openseatdirect.com/api/event/photo/e/46070595481`;
+
+  console.log("image: ", image)
 
   let newDate = dateFormat(props.date, "ddd, mmm d, yyyy - h:MM TT", true);
   console.log("props.date: ", props.date)
@@ -23,8 +17,7 @@ const event = props => {
     <img
       className={classes.EventImage}
       src={image}
-      //src="https://www.openseatdirect.com/api/event/photo/e/20806407169"
-      alt="Event Logo Coming Soon!!!"
+      alt={defaultImage}
       onClick={props.clicked}
     />
     <div className={classes.EventDetail}>

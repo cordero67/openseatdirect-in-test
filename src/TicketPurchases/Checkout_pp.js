@@ -151,7 +151,7 @@ const Checkout = props => {
       if (item.ticketsSelected > 0) {
         let newElement;
         newElement = {
-          name: `${eventDetails.eventName}: ${item.ticketName}`,
+          name: `${eventDetails.eventTitle}: ${item.ticketName}`,
           sku: item.ticketID,
           unit_amount: {
             currency_code: orderTotals.currencyAbv,
@@ -324,7 +324,7 @@ const Checkout = props => {
                 purchase_units: [
                   {
                     reference_id: appliedCode(),
-                    description: eventDetails.eventName,
+                    description: eventDetails.eventTitle,
                     payment_descriptor: eventDetails.eventNum,
                     amount: {
                       currency_code: orderTotals.currencyAbv,
