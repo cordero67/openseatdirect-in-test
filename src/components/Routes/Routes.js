@@ -7,6 +7,7 @@ import Video from "../Video/Video";
 import EventCreation from "../../EventCreation/EventCreation";
 import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
+import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
 import EventDeletion from "../../EventCreation/DeleteEvent";
 import ContactUs from "../ContactUs/ContactUs";
@@ -382,6 +383,23 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Events />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/eventspast"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <EventsPast />
             <Footer></Footer>
           </React.Fragment>
         )}

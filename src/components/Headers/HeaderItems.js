@@ -29,6 +29,14 @@ const NavigationItems = (props) => {
                 </NavLink>
             </li>
 
+            <li>
+                <NavLink
+                    to="/eventspast"
+                    style={isActive(props.currentPage, "/eventspast")}
+                >PAST EVENTS
+                </NavLink>
+            </li>
+
             {!isAuthenticated() && 
                 <li>
                     <NavLink
