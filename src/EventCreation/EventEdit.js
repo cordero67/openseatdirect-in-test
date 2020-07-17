@@ -580,46 +580,14 @@ const loadEventInfo = (eventTix) => {
 
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
-/*
-      if (eventDescription.photo) {
-        formData.append("photo", eventDescription.photo);
-        console.log("eventDescription.eventImage: ", eventDescription.photo)
-      } else {
-        console.log("there is no image");		
-      }
-*/
-
-      let tempNull = null;
-      let tempEmptyString = "";
-      let tempUndefined = undefined;
-      let tempUndefinedInString = "undefined";
-      let tempNoAssignment;
-      let tempFalse = false;
-      let tempTrue = true;
-
-      formData.append("null", tempNull);
-      console.log("null", tempNull);
-      formData.append("emptyString", tempEmptyString);
-      console.log("emptyString", tempEmptyString);
-      formData.append("undefined", tempUndefined);
-      console.log("undefined", tempUndefined);
-      formData.append("undefinedInString", tempUndefinedInString);
-      console.log("undefinedInString", tempUndefinedInString);
-      formData.append("noAssignment", tempNoAssignment);
-      console.log("noAssignment", tempNoAssignment);
-      formData.append("tempFalse", tempFalse);
-      console.log("tempFalse", tempFalse);
-      formData.append("tempTrue", tempTrue);
-      console.log("tempTrue", tempTrue);
 
       console.log("eventDescription.photo: ", eventDescription.photo)
 
-      //if (!eventDescription.photo === null) {
+      if (eventDescription.photoChanged) {
         formData.append("photo", eventDescription.photo);
-        console.log("eventDescription.eventImage: ", eventDescription.photo)
-      //} else {
-      //  console.log("there is no image");		
-      //}
+        console.log("eventDescription.photo: ", eventDescription.photo);
+        console.log("eventDescription.photoChanged: ", eventDescription.photoChanged);
+      }
 
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
@@ -2708,6 +2676,7 @@ const loadEventInfo = (eventTix) => {
             let tempDescription = { ...eventDescription };
             console.log("image: ", image)
             tempDescription.photo = image;
+            tempDescription.photoChanged = true;
             console.log("image: ", tempDescription.photo)
             setEventDescription(tempDescription);
             console.log(" on change");
