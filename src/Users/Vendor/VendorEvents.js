@@ -173,7 +173,7 @@ const handleErrors = response => {
                       </span>
                     </div>
                     <div style={{ textAlign: "center", fontWeight: "500" }}>
-                      {item.isDraft ? "Draft": "Live"}
+                      {item.isDraft ? <span style={{color: "green"}}>Draft</span>: <span style={{color: "red"}}>Live</span>}
                     </div>
                     <div
                       style={{
@@ -184,7 +184,7 @@ const handleErrors = response => {
                     >
                       <FontAwesomeIcon
                         style={{ zIndex: "100" }}
-                        color="black"
+                        color="blue"
                         size="lg"
                         cursor="pointer"
                         onClick={() => editEvent(item)}

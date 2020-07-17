@@ -173,7 +173,7 @@ const handleErrors = response => {
                       </span>
                     </div>
                     <div style={{ textAlign: "center", fontWeight: "500" }}>
-                      {item.isDraft ? "Draft": "Live"}
+                      {item.isDraft ? <span style={{color: "green"}}>"Draft"</span> : "Live"}
                     </div>
                     <div
                       style={{
