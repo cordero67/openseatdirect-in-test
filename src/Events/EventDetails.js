@@ -138,12 +138,14 @@ const EventDetail = props => {
             ${Math.min(...priceArray).toFixed(2)} - ${Math.max(...priceArray).toFixed(2)}
           </div>
         )
-      } else {
+      } else if (priceArray.length === 1) {
         return (
           <div>
             ${Math.min(...priceArray).toFixed(2)}
           </div>
         )
+      } else {
+        return <div>No tickets</div>
       }
     } else {
       return null

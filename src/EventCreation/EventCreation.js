@@ -213,6 +213,11 @@ const EventCreation = () => {
           setPageErrors(true);
           tempPageErrors = true;
         }
+        if (ticket.functionArgs.maxForWarning) {
+          console.log("MaxFor Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
       }
     })
 
@@ -241,6 +246,7 @@ const EventCreation = () => {
         "timeZone",
         "shortDescription",
         "longDescription",
+        "photo",
         "eventCategory",
         "facebookLink",
         "twitterLink",
@@ -313,7 +319,7 @@ const EventCreation = () => {
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      formData.append("photo", tempDescription.photo);
+      //formData.append("photo", tempDescription.photo);
 
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
@@ -1629,7 +1635,7 @@ const EventCreation = () => {
         console.log("ticket.functionArgs.reqWarning: ", ticket.functionArgs.reqWarning)
       }
 
-      // determines if a buy or for field warning is required
+      // determines if a "buy" or "for" field warning is required
       if(!ticket.functionArgs.buy) {
         ticket.functionArgs.buyWarning = false;
         console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
@@ -1644,6 +1650,22 @@ const EventCreation = () => {
       } else {
         ticket.functionArgs.forWarning = !twoferRegexPrice.test(ticket.functionArgs.for);
         console.log("ticket.functionArgs.forWarning: ", ticket.functionArgs.forWarning)
+      }
+
+      //NEED TO COPY THIS SECTION TO EVENTEDIT
+      // determines if a "maxFor" warning is required for "for" field
+      if (ticket.functionArgs.for && ticket.functionArgs.buy && ticket.currentTicketPrice) {
+        console.log("all three fields exist");
+        if (ticket.functionArgs.for > (ticket.functionArgs.buy * ticket.currentTicketPrice)) {
+          ticket.functionArgs.maxForWarning = true;
+          console.log("Invalid 'for' price");
+        } else {
+          ticket.functionArgs.maxForWarning = false;
+          console.log("Valid 'for' price");
+        }
+      } else {
+        ticket.functionArgs.maxForWarning = false;
+        console.log("at least one field doesn't exist");
       }
 
       // defines styling for the buy and for boxes
@@ -1669,6 +1691,9 @@ const EventCreation = () => {
       if (ticket.functionArgs.forWarning) {
         tempForWarning = classes.ForPriceBoxWarning;
         forWarningText = "Not a valid price";
+      } else if (ticket.functionArgs.maxForWarning) {
+        tempForWarning = classes.ForPriceBoxWarning;
+        forWarningText = "Price greater than buying individually";
       } else if (ticket.functionArgs.for) {
         tempForWarning = classes.ForPriceBox;
         forWarningText = "";
@@ -1775,7 +1800,7 @@ const EventCreation = () => {
             </div>
           </div>
           
-          {ticket.functionArgs.reqWarning || ticket.functionArgs.buyWarning || ticket.functionArgs.forWarning
+          {ticket.functionArgs.reqWarning || ticket.functionArgs.buyWarning || ticket.functionArgs.forWarning || ticket.functionArgs.maxForWarning
             ? <div className={classes.TwoferLineWarning}
             >
               <div style={{ paddingLeft: "5px"}}> {buyWarningText}</div>

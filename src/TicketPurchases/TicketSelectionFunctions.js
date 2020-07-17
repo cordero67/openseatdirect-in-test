@@ -50,7 +50,7 @@ export const loadEventDetails = event => {
 // STILL NEED TO CORRECT THE CURRENCY DATA (MORE CURRENCIES TO ADD) AND usePriceFunction(true/false) ISSUE
 // initial definition of "ticketInfo"
 export const loadTicketInfo = event => {
-  console.log("Inside 'loadTicketInfo'");
+  console.log("Inside 'loadTicketInfo': ", event);
   let tempTicketArray = [];
   
   //console.log("event.tickets: ",event.tickets)
@@ -73,9 +73,14 @@ export const loadTicketInfo = event => {
         console.log("item.priceFunction.args: ", item.priceFunction.args)
         item.priceFunction.args.promocodes.forEach(argArray => {
           let tempElement;
+          let tempAmount = argArray.amount;
+          console.log("tempAmount: ", tempAmount);
+          //let adjAmount = tempAmount.toFixed(2);
+          //console.log("adjAmount: ", adjAmount);
           tempElement = {
             name: argArray.name.toUpperCase(),
-            amount: parseInt(argArray.amount),
+            amount: parseFloat(argArray.amount).toFixed(2),
+            //amount: tempAmount.toFixed(2),
             percent: argArray.percent
           }
           newPromoCodes.push(tempElement)
@@ -102,7 +107,7 @@ export const loadTicketInfo = event => {
         let tempArgs = {
           buy: parseInt(item.priceFunction.args.buy),
           get: parseInt(item.priceFunction.args.get),
-          discount: parseInt(item.priceFunction.args.discount*100)
+          discount: parseFloat((item.priceFunction.args.discount*100).toFixed(2))
         }
         priceFunction = {
           form: "bogo",
@@ -209,8 +214,8 @@ export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
   let tempOrderTotals;
   tempOrderTotals = {...orderTotals};
   tempOrderTotals.ticketsPurchased = tempTicketsPurchased;
-  tempOrderTotals.fullPurchaseAmount = tempFullAmount;
-  tempOrderTotals.finalPurchaseAmount = tempFinalAmount;
+  tempOrderTotals.fullPurchaseAmount = parseFloat(tempFullAmount.toFixed(2));
+  tempOrderTotals.finalPurchaseAmount = parseFloat(tempFinalAmount.toFixed(2));
   tempOrderTotals.discountAmount = parseFloat((tempFullAmount - tempFinalAmount).toFixed(2));
   if (promoCode) {
     tempOrderTotals.promoCodeApplied = promoCode;
@@ -328,12 +333,10 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
           item.adjustedTicketPrice = totalPurchase/event.target.value
           : item.adjustedTicketPrice = item.ticketPrice};
       } else if (item.ticketPriceFunction.form === "twofer") {
-        // NOTE: this is not using the "twofer" price function
-        let totalPurchase = twoferCapped(
+        let totalPurchase = twofer(
           event.target.value,
           item.ticketPrice,
           item.ticketPriceFunction.args.buy,
-          //(item.ticketPriceFunction.args.for*item.ticketPrice)
           (item.ticketPriceFunction.args.for)
         );
         console.log("totalPurchase: ", totalPurchase)

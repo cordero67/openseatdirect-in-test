@@ -81,7 +81,7 @@ const Events = () => {
               return (
                 <Event
                   key={index}
-                  image={eventItem.eventNum}
+                  eventNum={eventItem.eventNum}
                   title={eventItem.eventTitle}
                   date={eventItem.startDateTime}
                   location={eventItem.locationVenueName}

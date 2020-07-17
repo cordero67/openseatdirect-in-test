@@ -272,6 +272,36 @@ class ImgDropAndCrop extends Component {
     }
 
     newClear = event =>{
+        console.log ("newClear", event);
+        if (event) event.preventDefault()
+
+        this.setState({
+            imgSrc: null,
+            imgSrcExt: null,
+            crop: {
+                aspect: 2/1,
+                ruleOfThirds: true
+            },
+            percentCrop: {
+                x: null,
+                y: null,
+                width: null,
+                height: null
+            }
+        })
+        this.fileInputRef.current.value = null;
+        this.setState({
+            newimageData64: null,
+            isCropping: false
+        });
+
+        ///  THIS LINE IS NEW CODE
+        this.props.change("");  // sends empty imageBlob to parent using change prop
+    }
+
+
+    /*
+    newClear = event =>{
         //console.log ("newClear", event);
         if (event) event.preventDefault()
 
@@ -295,6 +325,7 @@ class ImgDropAndCrop extends Component {
             isCropping: false
         });
     }
+*/
 
     handleFileSelect = event => {
         //console.log ("handleFileSelect", event);
