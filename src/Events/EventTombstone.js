@@ -1,23 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import dateFormat from "dateformat";
 
 import classes from "./EventTombstone.module.css";
+import defaultImage from "../assets/Get_Your_Tickets.png";
 
 const event = props => {
-  let image = `https://www.openseatdirect.com/api/event/photo/e/${props.eventNum}`;
-  let defaultImage = `https://www.openseatdirect.com/api/event/photo/e/46070595481`;
+  let eventImage = `https://www.openseatdirect.com/api/event/photo/e/${props.eventNum}`;
+  //const [image, setImage] = useState(eventImage);
 
-  console.log("image: ", image)
+  //console.log("image: ", image)
 
   let newDate = dateFormat(props.date, "ddd, mmm d, yyyy - h:MM TT", true);
   console.log("props.date: ", props.date)
+
+  //const onError = () => {
+  //  setImage(defaultImage)
+  //}
 
   return (
   <article className={classes.Event} onClick={props.clicked}>
     <img
       className={classes.EventImage}
-      src={image}
-      alt={defaultImage}
+      src={eventImage}
+      alt="No logo available"
+      //onError={(e) => {
+      //  e.target.src = '../../assets/Get_Your_Tickets.png'
+      //onError={() => {
+      //  onError()
+     //}}
       onClick={props.clicked}
     />
     <div className={classes.EventDetail}>
