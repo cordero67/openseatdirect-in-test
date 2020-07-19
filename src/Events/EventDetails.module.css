@@ -48,11 +48,12 @@
   border-bottom: 1px solid lightgrey;
   position: -webkit-sticky;
   position: sticky;
+  z-index: 100;
   font-size: 16px;
   margin: auto;
   height: 100px;
   width: 100%;
-  top: 0px;
+  top: 60px;
   box-sizing: border-box;
 }
 .MiddleGrid {

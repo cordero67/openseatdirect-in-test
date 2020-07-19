@@ -47,7 +47,8 @@ const VendorEvents = () => {
       redirect: "follow",
     };
 
-    let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
+    let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
+    //let fetchstr =  `${API}/eventix/all/${vendorInfo.id}`;
 
     fetch(fetchstr, requestOptions)
       .then(handleErrors)
