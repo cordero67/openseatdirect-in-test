@@ -90,3 +90,32 @@ export const getAllEventData = () => {
         throw Error(error);
     });
 };
+
+// REFACTORED
+// retrieves all public event data (less image), non-transactional
+export const getAllPastEventData = () => {
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    let requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow", // what is this and when is it required
+    }
+        
+    let fetchstr = `${API}/event/allpast`;
+
+    return fetch(fetchstr, requestOptions)
+    .then(handleErrors)
+    .then((response) => response.text())
+    .then((result) => {
+        let js = JSON.parse(result);
+        js.sort(compareValues("startDateTime", "asc"));
+        console.log("eventDescriptions ordered: ", js);
+        return js;
+    })
+    .catch((error) => {
+        console.log("Inside getAllEventData .catch", error);
+        throw Error(error);
+    });
+};
