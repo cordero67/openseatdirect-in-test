@@ -352,6 +352,9 @@ const Checkout = props => {
             onSuccess={(details, data) => {
               payPalExpressBuy(details);
             }}
+            onError = {(err) => 
+              console.log("error occurs")
+            }
             options={{
               clientId: eventDetails.gatewayClientID,
               currency: orderTotals.currencyAbv
