@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
-import { getAllEventData, getEventImage } from "./apiEvents";
+import { getAllPastEventData, getEventImage } from "./apiEvents";
 
 import classes from "./Events.module.css";
 import Event from "./EventTombstone";
@@ -18,7 +18,7 @@ const EventsPasts = () => {
   }, []);
 
   const eventData = () => {
-    getAllEventData()
+    getAllPastEventData()
     .then(res => {
       console.log("EVENT DATA from 'getAllEventData()': ", res);
       return res;

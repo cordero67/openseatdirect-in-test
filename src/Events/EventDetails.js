@@ -239,18 +239,37 @@ const EventDetail = props => {
   }
 
   const locationInfo = () => {
-    return (
-      <Aux>
-        <br></br>
-        <div className={styles.TitleRight}>Location</div>
-        <div className={styles.TextLeft}>{eventDetails.locationVenueName}</div>
-        <div className={styles.TextLeft}>{eventDetails.locationAddress1}</div>
-        <div className={styles.TextLeft}>{eventDetails.locationAddress2}</div>
-        <div className={styles.TextRight}>{eventDetails.locationCity}, {eventDetails.locationState} {eventDetails.locationCountryCode}</div>
-        <div className={styles.TextLeft}>{eventDetails.locationNote}</div>
-        <br></br>
-      </Aux>
-    )
+    if (eventDetails.eventType === "live") {
+      return (
+        <Aux>
+          <br></br>
+          <div className={styles.TitleRight}>Location</div>
+          <div className={styles.TextLeft}>{eventDetails.locationVenueName}</div>
+          <div className={styles.TextLeft}>{eventDetails.locationAddress1}</div>
+          <div className={styles.TextLeft}>{eventDetails.locationAddress2}</div>
+          <div className={styles.TextRight}>{eventDetails.locationCity}, {eventDetails.locationState} {eventDetails.locationCountryCode}</div>
+          <div className={styles.TextLeft}>{eventDetails.locationNote}</div>
+          <br></br>
+        </Aux>
+      )
+    } else if (eventDetails.eventType === "online") {
+      return (
+        <Aux>
+          <br></br>
+          <div className={styles.TitleRight}>Online Event</div>
+        </Aux>
+      )
+    } else if (eventDetails.eventType === "tba") {
+      return (
+        <Aux>
+          <br></br>
+          <div className={styles.TitleRight}>Location</div>
+          <div className={styles.TextLeft}>To be announced</div>
+        </Aux>
+      )
+    } else {
+      return null;
+    }
   }
 
   const bottomDisplay = () => {

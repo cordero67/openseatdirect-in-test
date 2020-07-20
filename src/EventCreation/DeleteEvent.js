@@ -60,8 +60,8 @@ const EventDeletion = () => {
           headers: myHeaders,
           redirect: "follow",
         };
-    
-        let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
+
+        let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
         console.log("about to fetch: ", fetchstr, requestOptions);
 
         fetch(fetchstr, requestOptions)

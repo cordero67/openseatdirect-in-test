@@ -145,8 +145,6 @@ const EventEdit = () => {
 
       const ext = resPhotoData.contentType;
 
-      //console.log ("buffer=>", resPhotoData.data.data);
-
       let header ='data:image/png;base64,'; // hard codes image/png by default
       if (ext ==='image/png'){
         header ='data:image/png;base64,'
@@ -233,7 +231,7 @@ const loadEventInfo = (eventTix) => {
         //tempDescription[field] = "";
       } else {
         //console.log("field exists: ", field)
-       // console.log("eventTix[", field, "]: ", eventTix[field])
+        //console.log("eventTix[", field, "]: ", eventTix[field])
         tempDescription[field] = eventTix[field];
         //console.log("eventDescription[field]: ", tempDescription[field] )
       }
