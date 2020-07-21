@@ -3,6 +3,7 @@ import { API } from "../config";
 const handleErrors = response => {
   console.log("Inside 'apiUsers' 'handleErrors()'", response);
   if (!response.ok) {
+    console.log("response: ", response)
     throw Error(response.status);
   }
   return response;
@@ -97,6 +98,37 @@ export const signup = (user) => {
   }
 }
 */
+
+export const recover = (user) => {
+  var myHeaders = new Headers();
+  //myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+
+  let apiurl;
+  apiurl = `${API}/forgot`;
+
+  return fetch(apiurl, {
+    method: "POST",
+    headers: myHeaders,
+    //headers: {
+    //  Accept: "application/json",
+    //  "Content-Type": "application/json",
+    //},
+    body: JSON.stringify(user),
+    redirect: "follow"
+  })
+    .then(handleErrors)
+    .then((response) => {
+      console.log("success");
+      console.log("response: ", response)
+      return response.json();
+    })
+    .catch((err) => {
+      console.log("failure");
+      console.log(err);
+      throw err;
+    });
+};
 
 export const signout = (callback) => {
   // checks if the "window" object exists

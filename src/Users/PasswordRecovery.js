@@ -2,21 +2,21 @@ import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Form } from "react-bootstrap";
 
-import { signin, authenticate, isAuthenticated } from "./apiUsers";
+import { recover, authenticate, isAuthenticated } from "./apiUsers";
 
 import classes from "./User.module.css";
 
-const PasswordReset = () => {
+const PasswordRecovery = () => {
   const [values, setValues] = useState({
     email: "",
-    password: "",
+    name: "",
     error: "",
     loading: false,
     redirectToReferrer: false,
   });
 
   // destructors the "values" object
-  const { email, password, error, loading, redirectToReferrer } = values;
+  const { email, error, loading, redirectToReferrer } = values;
 
   // destructoring of "user" object in "localStorage" "data" variable
   const { user: user } = isAuthenticated();
@@ -27,12 +27,15 @@ const PasswordReset = () => {
       error: false,
       [event.target.name]: event.target.value,
     });
+    console.log("values: ", values)
   };
 
   const submitValues = (event) => {
     event.preventDefault();
     setValues({ ...values, error: false, loading: true });
-    signin({ email: email, password: password }).then((data) => {
+    recover({ email: email })
+    .then((data) => {
+      console.log("Inside recover function response")
       if (data.error) {
         setValues({ ...values, error: data.error, loading: false });
       } else {
@@ -127,4 +130,4 @@ const PasswordReset = () => {
   );
 };
 
-export default PasswordReset;
+export default PasswordRecovery;
