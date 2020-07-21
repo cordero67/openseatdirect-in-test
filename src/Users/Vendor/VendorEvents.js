@@ -48,7 +48,6 @@ const VendorEvents = () => {
     };
 
     let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
-    //let fetchstr =  `${API}/eventix/all/${vendorInfo.id}`;
 
     fetch(fetchstr, requestOptions)
       .then(handleErrors)

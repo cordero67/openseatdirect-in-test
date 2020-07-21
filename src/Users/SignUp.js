@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 //import { signin, authenticate } from "../../auth";
 import { signup } from "./apiUsers";
+import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import classes from "./User.module.css";
 
@@ -15,11 +16,12 @@ const SignUp = () => {
     email: "",
     password: "",
     error: "",
+    message: "",
     success: false
   });
 
   // destructors the "values" object
-  const { name, email, password, error, success } = values;
+  const { name, email, password, error, message, success } = values;
 
   const submitValues = event => {
     event.preventDefault();
@@ -31,7 +33,7 @@ const SignUp = () => {
         if (data.error) {
           // sets error if error returned
           console.log("data.error: ", data.error)
-          setValues({ ...values, error: data.error, success: false });
+          setValues({ ...values, error: data.error, message: "invalid input, please fix errors", success: false });
         } else {
           // clears values if no error is returned
           console.log("No error")
@@ -42,11 +44,16 @@ const SignUp = () => {
             email: "",
             password: "",
             error: "",
+            message: "",
             success: true
           });
         }
       }
-    );
+    )
+    .catch(err => {
+      console.log("error occurred: ", err);
+      setValues({ ...values, error: err, message: "system error please try again", success: false });
+    });
   };
 
 
@@ -56,7 +63,7 @@ const SignUp = () => {
       className="alert alert-danger"
       style={{ display: error ? "" : "none" }}
     >
-      {error}
+      {message}
     </div>
   );
 
@@ -70,56 +77,76 @@ const SignUp = () => {
     </div>
   );
 
-
-
-
   const handleChange = (event) => {
     setValues({...values, error: false, [event.target.name]: event.target.value})
   }
 
   const signUpForm = () => (
-    <form>
-      <div className="form-group">
-        <label className="text-muted">Full Name</label>
-        <input
-          type="text"
-          name="name"
-          className="form-control"
-          onChange={handleChange}
-          value={name}
-        />
-      </div>
+    <Aux>
+      <form>
+        <div className="form-group">
+          <label className="text-muted">Full Name</label>
+          <input
+            type="text"
+            name="name"
+            className="form-control"
+            onChange={handleChange}
+            value={name}
+          />
+        </div>
 
-      <div className="form-group">
-        <label className="text-muted">E-mail Address</label>
-        <input
-          type="email"
-          name="email"
-          className="form-control"
-          onChange={handleChange}
-          value={email}
-        />
-      </div>
+        <div className="form-group">
+          <label className="text-muted">E-mail Address</label>
+          <input
+            type="email"
+            name="email"
+            className="form-control"
+            onChange={handleChange}
+            value={email}
+          />
+        </div>
 
-      <div className="form-group">
-        <label className="text-muted">Password</label>
-        <input
-          type="password"
-          name="password"
-          className="form-control"
-          onChange={handleChange}
-          value={password}
-          placeholder="Must contain a number and special character"
-        />
-      </div>
+        <div className="form-group">
+          <label className="text-muted">Password</label>
+          <input
+            type="password"
+            name="password"
+            className="form-control"
+            onChange={handleChange}
+            value={password}
+            placeholder="Must contain a number and special character"
+          />
+        </div>
 
-      <button onClick={submitValues} className="btn btn-primary">
-        Submit
-      </button>
-      <br></br>
-      <br></br>
-    </form>
+        <button onClick={submitValues} className="btn btn-primary">
+          Submit
+        </button>
+        <br></br>
+        <br></br>
+      </form>
+      <div className={classes.Section}>
+        Already have an account, go to{" "}
+        <Link to="/signin" style={{color: "blue"}}>
+          Sign In.
+        </Link>
+      </div>
+    </Aux>
   );
+
+  const mainDisplay = () => {
+    if (values.success) {
+      return (
+        showSuccess()
+      )
+    } else {
+      return (
+        <Aux>
+          {showError()}
+          {signUpForm()}
+        </Aux>
+      )
+    }
+  }
 
   return (
     <div className={classes.MainContainer}>
@@ -132,15 +159,7 @@ const SignUp = () => {
         <div className={classes.Section}>
           <div>Please provide the following information:</div>
           <br></br>
-          {showSuccess()}
-          {showError()}
-          {signUpForm()}
-        </div>
-        <div className={classes.Section}>
-          Already have an account, go to{" "}
-          <Link to="/signin" style={{color: "blue"}}>
-            Sign In.
-          </Link>
+          {mainDisplay()}
         </div>
       </div>
     </div>

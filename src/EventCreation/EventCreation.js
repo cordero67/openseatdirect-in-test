@@ -491,7 +491,7 @@ const EventCreation = () => {
       apiurl = `${API}/eventix/${userid}`;
 
       fetch(apiurl, {
-        method: "post",
+        method: "POST",
         headers: myHeaders,
         body: formData,
         redirect: "follow",
