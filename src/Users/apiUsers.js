@@ -53,6 +53,7 @@ export const signup = (user) => {
     .then(handleErrors)
     .then((response) => {
       console.log("success");
+      console.log("response: ", response)
       return response.json();
     })
     .catch((err) => {
