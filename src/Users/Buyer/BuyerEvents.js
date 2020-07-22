@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import VendorNavigation from "../VendorNavigation";
-import classes from "./Vendor.module.css";
+import classes from "./Buyer.module.css";
 import { compareValues, getDates } from "../VendorFunctions";
 
 let vendorInfo = {};
@@ -24,6 +24,7 @@ const VendorEvents = () => {
   const [isSuccessfull, setIsSuccessfull] = useState(true);//
 
   useEffect(() => {
+    /*
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -36,7 +37,8 @@ const VendorEvents = () => {
     } else {
       window.location.href = "/signin";
     }
-
+    */
+    /*
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
@@ -67,6 +69,7 @@ const VendorEvents = () => {
         setIsSuccessfull(false)
         setIsLoading(false);
       });
+      */
   }, []);
 
   
@@ -97,6 +100,7 @@ const handleErrors = response => {
     // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
   }
 
+  /*
   const mainDisplay = () => {
     if (!isLoading && isSuccessfull) {
       return (
@@ -257,12 +261,13 @@ const handleErrors = response => {
       );
     }
   };
+  */
 
   return (
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
         <div className={classes.DashboardTitle}>
-          {vendorInfo.name} Dashboard
+          {vendorInfo.name} Rafael Cordero: Dashboard
         </div>
         <div className={classes.DashboardMain}>
           <div className={classes.DashboardNavigation}>
@@ -272,7 +277,7 @@ const handleErrors = response => {
             <div className={classes.DashboardPanelHeader}>
               My Events
             </div>
-            <div style={{ overflowY: "auto" }}>{mainDisplay()}</div>
+            <div style={{ overflowY: "auto" }}>Main Display</div>
           </div>
         </div>
       </div>
@@ -281,3 +286,7 @@ const handleErrors = response => {
 };
 
 export default VendorEvents;
+
+/*
+<div style={{ overflowY: "auto" }}>{mainDisplay()}</div>
+*/

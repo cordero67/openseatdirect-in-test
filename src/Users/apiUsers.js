@@ -3,7 +3,8 @@ import { API } from "../config";
 const handleErrors = response => {
   console.log("Inside 'apiUsers' 'handleErrors()'", response);
   if (!response.ok) {
-      throw Error(response.status);
+    console.log("response: ", response)
+    throw Error(response.status);
   }
   return response;
 };
@@ -31,24 +32,101 @@ export const signin = (user) => {
 
 //{"error":"Email and password do not match"}
 
+
 export const signup = (user) => {
-  return fetch(`${API}/signup`, {
+  var myHeaders = new Headers();
+  //myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+
+  let apiurl;
+  apiurl = `${API}/signup`;
+
+  return fetch(apiurl, {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
+    headers: myHeaders,
+    //headers: {
+    //  Accept: "application/json",
+    //  "Content-Type": "application/json",
+    //},
     body: JSON.stringify(user),
+    redirect: "follow"
   })
     .then(handleErrors)
     .then((response) => {
       console.log("success");
+      console.log("response: ", response)
       return response.json();
     })
     .catch((err) => {
       console.log("failure");
       console.log(err);
-      return err;
+      throw err;
+    });
+};
+
+/*
+    .then(handleErrors)
+    .then((response) => {
+      console.log("response in create", response);
+      return response.json();
+    })
+    .then((res) => {
+      console.log("Event was saved/went live");
+      console.log("res: ", res);
+      
+      if (!res.done && res.friendlyMessage) {
+        console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+        tempStatus.status = "error";
+        tempStatus.errorMessage = res.friendlyMessage;
+      } else if(!res.done && res.error) {
+        console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+        tempStatus.status = "error";
+        tempStatus.errorMessage = res.error;
+      } else if(!res.done && !res.friendlyMessage) {
+        console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+        tempStatus.status = "failure";
+      }
+      setEventStatus(tempStatus);
+      return res;
+    })
+    .catch((err) => {
+      console.log("Inside the .catch")
+      console.log("**ERROR THROWN", err);
+      tempStatus.status = "failure";
+      setEventStatus(tempStatus);
+    });
+  }
+}
+*/
+
+export const recover = (user) => {
+  var myHeaders = new Headers();
+  //myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+
+  let apiurl;
+  apiurl = `${API}/forgot`;
+
+  return fetch(apiurl, {
+    method: "POST",
+    headers: myHeaders,
+    //headers: {
+    //  Accept: "application/json",
+    //  "Content-Type": "application/json",
+    //},
+    body: JSON.stringify(user),
+    redirect: "follow"
+  })
+    .then(handleErrors)
+    .then((response) => {
+      console.log("success");
+      console.log("response: ", response)
+      return response.json();
+    })
+    .catch((err) => {
+      console.log("failure");
+      console.log(err);
+      throw err;
     });
 };
 

@@ -19,13 +19,14 @@ import SignUp from "../../Users/SignUp";
 import PasswordRecovery from "../../Users/PasswordRecovery";
 import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../../Users/UserDashboard";
+import BuyerEvents from "../../Users/Buyer/BuyerEvents";
 import VendorEventsOld from "../../Users/zzzVendorEvents";
 import VendorEvents from "../../Users/Vendor/VendorEvents";
 import VendorEventDetails from "../../Users/VendorEventDetails";
 import VendorOrders from "../../Users/VendorOrders";
 import VendorProflle from "../../Users/VendorProflle";
 import VendorAccount from "../../Users/VendorAccount";
-import AdminEvents from "../../Users/AdminEvents";
+import AdminEvents from "../../Users/AdminEvents";  
 import AdminOrders from "../../Users/AdminOrders";
 import AdminAccount from "../../Users/AdminAccount";
 
@@ -183,6 +184,23 @@ const Routes = () => {
           </React.Fragment>
         )}
       />
+
+    <Route
+      path="/buyerevents"
+      exact
+      render={(routeProps) => (
+        <React.Fragment>
+          <Header
+            positioning="fixed"
+            logo={LogoC}
+            clicked={toggleSideDrawer}
+          />
+          <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+          <BuyerEvents />
+          <Footer></Footer>
+        </React.Fragment>
+      )}
+    />
 
       <Route
         path="/vendorevents"

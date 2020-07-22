@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 
 import { signin, authenticate, isAuthenticated } from "./apiUsers";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
@@ -119,7 +119,6 @@ const SignIn = () => {
           value={password}
         />
       </div>
-      <br></br>
       <button onClick={submitValues} className="btn btn-primary">
         Submit
       </button>
@@ -139,32 +138,27 @@ const SignIn = () => {
           {/*Email and password do not match. Please try again.*/}</div> :
             <div>Please sign in:</div>
           }
-          
-          <br></br>
           {signInForm()}
           {redirectUser()}
         </div>
         <br></br>
+        <div className={classes.Section}>
+          Forgot your{" "}
+          <Link to="/passwordrecovery" style={{ color: "blue" }}>
+            password.
+          </Link>
+        </div>
+        <div className={classes.Section}>
+            Don't have an account, go to{" "}
+            <Link to="/signup" style={{ color: "blue" }}>
+              Sign Up.
+            </Link>
+        </div>
       </div>
+
+      
     </div>
   );
 };
 
 export default SignIn;
-
-/*
-      <div>
-        Forgot your{" "}
-        <Link to="/passwordrecovery" style={{ color: "blue" }}>
-          password.
-        </Link>
-      </div>
-
-      
-        <div className={classes.Section}>
-          Don't have an account, go to{" "}
-          <Link to="/signup" style={{ color: "blue" }}>
-            Sign Up.
-          </Link>
-        </div>
-    */
