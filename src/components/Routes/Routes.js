@@ -19,6 +19,7 @@ import SignUp from "../../Users/SignUp";
 import PasswordRecovery from "../../Users/PasswordRecovery";
 import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../../Users/UserDashboard";
+import BuyerEvents from "../../Users/Buyer/BuyerEvents";
 import VendorEventsOld from "../../Users/zzzVendorEvents";
 import VendorEvents from "../../Users/Vendor/VendorEvents";
 import VendorEventDetails from "../../Users/VendorEventDetails";
