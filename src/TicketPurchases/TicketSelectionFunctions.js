@@ -1,4 +1,4 @@
-import { bogox, twoferCapped, twofer } from "./pricingFunctions";
+import { bogox, twofer } from "./pricingFunctions";
 
 // THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE
 // initial definition of "eventDetails"

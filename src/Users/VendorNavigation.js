@@ -1,6 +1,6 @@
-import React, { Fragment, useState, useEffect } from "react";
-import { Link, Redirect } from "react-router-dom";
-import { Form } from "react-bootstrap";
+import React, { Fragment } from "react";
+//import { Link, Redirect } from "react-router-dom";
+//import { Form } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 import classes from "./User.module.css";

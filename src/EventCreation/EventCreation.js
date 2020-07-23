@@ -14,7 +14,6 @@ import CategorySelector from "./Selectors/CategorySelector";
 
 
 import DateSelector from "./DateSelector";
-import CurrencySelector from "./Selectors/CurrencySelector";
 import RadioForm from "./RadioForm";
 
 import TicketModal from "./Modals/TicketModal";

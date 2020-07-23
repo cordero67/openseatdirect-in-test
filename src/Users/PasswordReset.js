@@ -1,25 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import queryString from "query-string";
+import ReactHtmlParser from "react-html-parser";
 import { Link, Redirect } from "react-router-dom";
 import { Form } from "react-bootstrap";
 
-import { recoverPassword, authenticate, isAuthenticated } from "./apiUsers";
+import { resetPassword, changePassword, authenticate, isAuthenticated } from "./apiUsers";
 
 import classes from "./User.module.css";
 
-const PasswordRecovery = () => {
+const PasswordReset = () => {
   const [values, setValues] = useState({
+    token: "",
     email: "",
-    name: "",
+    password: "",
     error: "",
     loading: false,
     redirectToReferrer: false,
   });
 
   // destructors the "values" object
-  const { email, error, loading, redirectToReferrer } = values;
+  const { token, email, password, error, loading, redirectToReferrer } = values;
 
   // destructoring of "user" object in "localStorage" "data" variable
   const { user: user } = isAuthenticated();
+
+  useEffect(() => {
+    let tokenNum = (queryString.parse(window.location.search).token);
+    let emailAddress = (queryString.parse(window.location.search).email);
+    console.log("TokenNum: ", tokenNum);
+    console.log("Email address: ", emailAddress);
+    setValues({
+      ...values,
+      token: tokenNum,
+      email: emailAddress,
+    });
+    resetPassword({ token: tokenNum, email: emailAddress })
+
+  }, []);
 
   const handleChange = (event) => {
     setValues({
@@ -33,7 +50,8 @@ const PasswordRecovery = () => {
   const submitValues = (event) => {
     event.preventDefault();
     setValues({ ...values, error: false, loading: true });
-    recoverPassword({ email: email })
+    changePassword({ email: email, newPassword: password, token: token })
+    /*
     .then((data) => {
       console.log("Inside recover function response")
       if (data.error) {
@@ -45,6 +63,7 @@ const PasswordRecovery = () => {
         });
       }
     });
+    */
   };
 
   const showError = () => (
@@ -81,22 +100,20 @@ const PasswordRecovery = () => {
     }
   };
 
-  const signInForm = () => (
+  const passwordForm = () => (
     <form>
       <div className="form-group">
-        <label className="text-muted" styles={{ fontSize: "16px" }}>
-          E-mail Address
-        </label>
         <input
           type="email"
-          name="email"
+          name="password"
+          placeholder="Minimum 8 characters: alphanumeric"
           className="form-control"
           onChange={handleChange}
-          value={email}
+          value={password}
         />
       </div>
 
-      <div>A temporary password will be sent to your mailbox.</div>
+      <div>Confirmation email will be sent once password is updated.</div>
       <br></br>
       <button onClick={submitValues} className="btn btn-primary">
         Submit
@@ -108,17 +125,20 @@ const PasswordRecovery = () => {
     <div className={classes.MainContainer}>
       <div className={classes.BlankCanvas} style={{ height: "375px" }}>
         <br></br>
-        <div className={classes.Header}>Password Recovery</div>
+        <div className={classes.Header}>Password Reset</div>
         <br></br>
         <div className={classes.Section}>
-          <div>Please enter your email on file:</div>
+          <div>Please enter your new password:</div>
           <br></br>
+          {showLoading()}
           {showError()}
-          {signInForm()}
+          {passwordForm()}
+          {redirectUser()}
         </div>
         <br></br>
         <div className={classes.Section}>
-          Back to{" "}
+          Still remember your original password.
+          <br></br>Go back to{" "}
           <Link to="/signin" style={{ color: "blue" }}>
             Sign In.
           </Link>
@@ -128,8 +148,4 @@ const PasswordRecovery = () => {
   );
 };
 
-export default PasswordRecovery;
-
-
-//{showLoading()}
-//{redirectUser()}
+export default PasswordReset;

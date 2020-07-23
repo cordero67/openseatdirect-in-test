@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import dateFormat from "dateformat";
 
 import classes from "./EventTombstone.module.css";
-import defaultImage from "../assets/Get_Your_Tickets.png";
+//import defaultImage from "../assets/Get_Your_Tickets.png";
 
 const event = props => {
   let eventImage = `https://www.openseatdirect.com/api/event/photo/e/${props.eventNum}`;

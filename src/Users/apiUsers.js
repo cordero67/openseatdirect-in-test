@@ -9,30 +9,6 @@ const handleErrors = response => {
   return response;
 };
 
-export const signin = (user) => {
-  return fetch(`${API}/signin`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  })
-    .then(handleErrors)
-    .then((response) => {
-      console.log("success");
-      return response.json();
-    })
-    .catch((err) => {
-      console.log("failure");
-      console.log(err);
-      throw Error(err);
-    });
-};
-
-//{"error":"Email and password do not match"}
-
-
 export const signup = (user) => {
   var myHeaders = new Headers();
   //myHeaders.append("Accept", "application/json");
@@ -64,69 +40,24 @@ export const signup = (user) => {
     });
 };
 
-/*
-    .then(handleErrors)
-    .then((response) => {
-      console.log("response in create", response);
-      return response.json();
-    })
-    .then((res) => {
-      console.log("Event was saved/went live");
-      console.log("res: ", res);
-      
-      if (!res.done && res.friendlyMessage) {
-        console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-        tempStatus.status = "error";
-        tempStatus.errorMessage = res.friendlyMessage;
-      } else if(!res.done && res.error) {
-        console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-        tempStatus.status = "error";
-        tempStatus.errorMessage = res.error;
-      } else if(!res.done && !res.friendlyMessage) {
-        console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-        tempStatus.status = "failure";
-      }
-      setEventStatus(tempStatus);
-      return res;
-    })
-    .catch((err) => {
-      console.log("Inside the .catch")
-      console.log("**ERROR THROWN", err);
-      tempStatus.status = "failure";
-      setEventStatus(tempStatus);
-    });
-  }
-}
-*/
-
-export const recover = (user) => {
-  var myHeaders = new Headers();
-  //myHeaders.append("Accept", "application/json");
-  myHeaders.append("Content-Type", "application/json");
-
-  let apiurl;
-  apiurl = `${API}/forgot`;
-
-  return fetch(apiurl, {
+export const signin = (user) => {
+  return fetch(`${API}/signin`, {
     method: "POST",
-    headers: myHeaders,
-    //headers: {
-    //  Accept: "application/json",
-    //  "Content-Type": "application/json",
-    //},
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(user),
-    redirect: "follow"
   })
     .then(handleErrors)
     .then((response) => {
       console.log("success");
-      console.log("response: ", response)
       return response.json();
     })
     .catch((err) => {
       console.log("failure");
       console.log(err);
-      throw err;
+      throw Error(err);
     });
 };
 
@@ -143,6 +74,95 @@ export const signout = (callback) => {
       })
       .catch((err) => console.log(err));
   }
+};
+
+export const recoverPassword = (user) => {
+  console.log("inside recoverPassword")
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  let apiurl;
+  apiurl = `${API}/forgot`;
+
+  return fetch(apiurl, {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(user),
+    redirect: "follow"
+  })
+    .then(handleErrors)
+    .then((response) => {
+      console.log("success");
+      console.log("response: ", response)
+      return response.json();
+    })
+    .catch((err) => {
+      console.log("failure");
+      console.log(err);
+      throw err;
+    });
+};
+
+/*
+www.openseatdirect.com/api/auth/reset?
+token=7cc9fb0823099c779a64e26e93883c76fbb3b750&
+email=gual325@gmail.com
+*/
+
+export const resetPassword = (user) => {
+  console.log("inside resetPassword")
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  let apiurl;
+  apiurl = `${API}/auth/reset?token=${user.token}&email=${user.email}`;
+  console.log("apiurl: ", apiurl)
+
+  return fetch(apiurl, {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow"
+  })
+    .then(handleErrors)
+    .then((response) => {
+      console.log("success");
+      console.log("response: ", response)
+      return response.json();
+    })
+    .catch((err) => {
+      console.log("failure");
+      console.log(err);
+      throw err;
+    });
+};
+
+export const changePassword = (user) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  console.log("user: ", user)
+
+  let apiurl;
+  apiurl = `${API}/updatePasswordViaEmail`;
+  console.log("apiurl: ", apiurl)
+
+  return fetch(apiurl, {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(user),
+    redirect: "follow"
+  })
+    .then(handleErrors)
+    .then((response) => {
+      console.log("success");
+      console.log("response: ", response)
+      return response.json();
+    })
+    .catch((err) => {
+      console.log("failure");
+      console.log(err);
+      throw err;
+    });
+
 };
 
 export const authenticate = (data, callback) => {
@@ -178,27 +198,6 @@ export const isAuthenticated = () => {
     window.location.href = "/signin";
   }
 };
-*/
-
-
-/*
-export const getAllUserEvents = (token) => {
-    return fetch(`${API}/getAllUserEvents`, {
-        method: "GET",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-        }
-    })
-        .then(response => {
-            return response.json();
-        })
-        .catch(err => console.log(err));
-};
-
-api/event/list/5d940dd0bd171e791f566565
-
 */
 
 // extracts all event data, non-transactional

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { API } from "../config";
 
@@ -36,7 +36,7 @@ const AdminAccount = () => {
     fetch(fetchstr, requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        let js = JSON.parse(result);
+        //let js = JSON.parse(result);
         //console.log("eventDetails: ", js);
         //setEventDetails(js);
         //SIGNOK = true;

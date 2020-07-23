@@ -35,10 +35,10 @@
 .DashboardTitle {
   border-bottom: 1px solid grey;
   box-sizing: border-box;
-  height: 60px;
+  height: 50px;
   font-weight: 700;
   padding-left: 15px;
-  padding-top: 30px;
+  padding-top: 15px;
   font-size: 30px;
 }
 
@@ -46,7 +46,7 @@
   /*border: 1px solid green;*/
   display: grid;
   background-color: #f8f8f8;
-  grid-template-columns: 185px auto;
+  grid-template-columns: 170px auto;
   height: calc(100% - 77px);
   font-size: 30px;
   font-weight: 600;
@@ -68,7 +68,7 @@
   font-weight: 600;
   padding-top: 60px;
   padding-bottom: 0px;
-  padding-left: 20px;
+  padding-left: 0px;
   margin-bottom: 55px;
   overflow-y: auto;
 }
@@ -118,15 +118,15 @@
 
 .DashboardPanelHeader {
   position: fixed;
-  top: 135px;
+  top: 110px;
   background-color: #fff;
   z-index: 200;
   width: 1015px;
   font-size: 26px;
-  padding-top: 20px;
+  padding-top: 15px;
   padding-left: 20px;
   padding-right: 30px;
-  padding-bottom: 20px;
+  padding-bottom: 15px;
   border-bottom: 1px solid lightgrey;
 }
 
@@ -150,4 +150,46 @@
     padding-top: 5px;
     padding-bottom: 5px;
     padding-right: 30px;
+}
+
+
+
+
+
+
+.NavigationItems {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding-left: 0px;
+  list-style: none;
+  width: 100%;
+  height: auto;
+  text-align: left;
+}
+.NavigationItems li {
+  /*border-bottom: 1px solid lightgrey;*/
+  padding-top: 5px;
+  padding-bottom: 5px;
+  display: block;
+}
+.NavigationItems a {
+  color: "#000";
+  text-decoration: none;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: 600;
+  text-align: left;
+}
+.NavigationItems a:hover {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.NavigationItems a:active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.NavigationItems a.active {
+  font-weight: 700;
+  text-decoration: underline;
 }

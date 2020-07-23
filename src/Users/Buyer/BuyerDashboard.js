@@ -10,8 +10,8 @@ import {
   faCog
 } from "@fortawesome/free-solid-svg-icons";
 
-import VendorNavigation from "../VendorNavigation";
-import classes from "./Buyer.module.css";
+import BuyerNavigation from "./BuyerNavigation";
+import classes from "./BuyerDashboard.module.css";
 import { compareValues, getDates } from "../VendorFunctions";
 
 let vendorInfo = {};
@@ -263,21 +263,93 @@ const handleErrors = response => {
   };
   */
 
+// profile, create, temp
+const [paneView, setPaneView] = useState("create")
+
+const mainDisplay = () => {
+  if (paneView === "profile") {
+    return (
+      <div className={classes.DashboardPanel}>
+      <div className={classes.DashboardPanelHeader}>
+        My Profile
+      </div>
+      <div style={{ overflowY: "auto" }}>
+        <div className={classes.MainDisplayHeader}>
+          Profile Display
+        </div>
+      </div>
+    </div>
+    )
+  } else if (paneView === "create") {
+    return (
+      <div className={classes.DashboardPanel}>
+      <div className={classes.DashboardPanelHeader}>
+        Create Event
+      </div>
+      <div style={{ overflowY: "auto" }}>
+        <div className={classes.MainDisplayHeader}>
+          Create Event Display
+        </div>
+      </div>
+    </div>
+    )
+  } else if (paneView === "wallet") {
+    return (
+      <div className={classes.DashboardPanel}>
+      <div className={classes.DashboardPanelHeader}>
+        Ticket Wallet
+      </div>
+      <div style={{ overflowY: "auto" }}>
+        <div className={classes.MainDisplayHeader}>
+          Ticket Wallet Display
+        </div>
+      </div>
+    </div>
+    )
+  } else if (paneView === "preferences") {
+    return (
+      <div className={classes.DashboardPanel}>
+      <div className={classes.DashboardPanelHeader}>
+        My Preferences
+      </div>
+      <div style={{ overflowY: "auto" }}>
+        <div className={classes.MainDisplayHeader}>
+          Preferences Display
+        </div>
+      </div>
+    </div>
+    )
+  } else {
+    return null;
+  }
+}
+
+const onboardingMessage = () => {
+  if (true) {
+    return (
+      <div style={{zIndex: "400"}}>Onboarding</div>
+    )
+  }
+}
+
   return (
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
         <div className={classes.DashboardTitle}>
-          {vendorInfo.name} Dashboard
+          {vendorInfo.name} Rafael Cordero Dashboard
         </div>
         <div className={classes.DashboardMain}>
           <div className={classes.DashboardNavigation}>
-            <VendorNavigation></VendorNavigation>
+            <BuyerNavigation
+              pane={paneView}
+              clicked={(event) => {
+                console.log("Clicked button")
+                console.log("event: ", event.target)
+                setPaneView(event.target.name)
+              }}></BuyerNavigation>
           </div>
-          <div className={classes.DashboardPanel}>
-            <div className={classes.DashboardPanelHeader}>
-              My Events
-            </div>
-            <div style={{ overflowY: "auto" }}>Main Display</div>
+          <div>
+            {mainDisplay()}
           </div>
         </div>
       </div>
@@ -286,7 +358,3 @@ const handleErrors = response => {
 };
 
 export default VendorEvents;
-
-/*
-<div style={{ overflowY: "auto" }}>{mainDisplay()}</div>
-*/

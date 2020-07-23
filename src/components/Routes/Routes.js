@@ -17,16 +17,17 @@ import TicketSelection from "../../TicketPurchases/TicketSelection";
 import SignIn from "../../Users/SignIn";
 import SignUp from "../../Users/SignUp";
 import PasswordRecovery from "../../Users/PasswordRecovery";
+import PasswordReset from "../../Users/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../../Users/UserDashboard";
-import BuyerEvents from "../../Users/Buyer/BuyerEvents";
+import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
 import VendorEventsOld from "../../Users/zzzVendorEvents";
 import VendorEvents from "../../Users/Vendor/VendorEvents";
 import VendorEventDetails from "../../Users/VendorEventDetails";
 import VendorOrders from "../../Users/VendorOrders";
 import VendorProflle from "../../Users/VendorProflle";
 import VendorAccount from "../../Users/VendorAccount";
-import AdminEvents from "../../Users/AdminEvents";
+import AdminEvents from "../../Users/AdminEvents";  
 import AdminOrders from "../../Users/AdminOrders";
 import AdminAccount from "../../Users/AdminAccount";
 
@@ -118,6 +119,23 @@ const Routes = () => {
       />
 
       <Route
+        path="/passwordreset"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PasswordReset />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
         path="/adminevents"
         exact
         render={(routeProps) => (
@@ -184,6 +202,23 @@ const Routes = () => {
           </React.Fragment>
         )}
       />
+
+    <Route
+      path="/buyerdashboard"
+      exact
+      render={(routeProps) => (
+        <React.Fragment>
+          <Header
+            positioning="fixed"
+            logo={LogoC}
+            clicked={toggleSideDrawer}
+          />
+          <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+          <BuyerDashboard />
+          <Footer></Footer>
+        </React.Fragment>
+      )}
+    />
 
       <Route
         path="/vendorevents"
