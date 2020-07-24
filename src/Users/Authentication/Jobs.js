@@ -5,19 +5,27 @@ import { useSignin } from "./apiUsers";
 //import { JobFeed } from "./JobFeed";
 
 const Jobs = () => {
-  const url = `/_api/jobs`;
-  const { data, isLoading, hasError } = useSignin(url, {});
+  //const url = `/_api/jobs`;
+  let myEmail = "rafaelc@openseatdirect.com";
+  let myPassword = "Blackhawks2013";
+  let user = ({ email: myEmail, password: myPassword });
+  console.log("user: ", user);
+  const { message, isLoading, hasError } = useSignin(user);
 
   if (isLoading) {
       return <div>isLoading</div>;
   }
 
   if (hasError)
-    return <div>System Error</div>;
+    return (
+      <div>
+        <div>{message}</div>
+      </div>
+    )
 
   return (
     <div>
-      <div>Success!!!</div>
+      <div>{message}</div>
     </div>
   );
 }
