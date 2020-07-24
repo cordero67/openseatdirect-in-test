@@ -14,7 +14,9 @@ import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
+import Jobs from "../../Users/Authentication/Jobs";
 import SignIn from "../../Users/SignIn";
+import SignInNew from "../../Users/Authentication/SignIn";
 import SignUp from "../../Users/SignUp";
 import PasswordRecovery from "../../Users/PasswordRecovery";
 import PasswordReset from "../../Users/PasswordReset";
@@ -80,6 +82,33 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <SignUp />
             <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/signinnew"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <SignInNew />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/tempcomponent"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Jobs />
           </React.Fragment>
         )}
       />

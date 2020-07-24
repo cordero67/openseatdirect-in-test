@@ -108,7 +108,7 @@ const PasswordRecovery = () => {
     <div className={classes.MainContainer}>
       <div className={classes.BlankCanvas} style={{ height: "375px" }}>
         <br></br>
-        <div className={classes.Header}>Password Recovery</div>
+        <div className={classes.Header}>Password Reset Request</div>
         <br></br>
         <div className={classes.Section}>
           <div>Please enter your email on file:</div>

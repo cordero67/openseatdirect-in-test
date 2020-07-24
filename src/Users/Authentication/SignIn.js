@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Redirect, Link } from "react-router-dom";
 
-import { signin, authenticate, isAuthenticated } from "./apiUsers";
-import Spinner from "../components/UI/Spinner/SpinnerNew";
+import { signin, authenticate, isAuthenticated } from "../apiUsers";
+import { useSignin } from "./apiUsers";
+import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
-import classes from "./User.module.css";
+import classes from "../User.module.css";
 
 const SignIn = () => {
   const [values, setValues] = useState({
@@ -50,9 +51,34 @@ const SignIn = () => {
       })
   };
 
+  const submitValues2 = (event) => {
+    event.preventDefault();
+    console.log("Inside submitValues2")
+    //useSignin();
+    /*
+    setValues({ ...values, error: false, loading: true });
+    signin({ email: email, password: password })
+      .then((data) => {
+        if (data.error) {
+          console.log("data.error: ", data.error)
+          setValues({ ...values, error: data.error, loading: false });
+        } else {
+          console.log("signIn return object: ", data);
+          authenticate(data, () => {
+            setValues({ ...values, redirectToReferrer: true });
+          });
+        }
+      })
+      .catch((err) => {
+        //console.log("err: ", err)
+        setValues({ ...values, error: true, loading: false });
+      })
+      */
+  };
+
   const showError = () => {
-    console.log("entered singin1111 'showError()'");
-    console.log("values.error: ", error);
+    //console.log("entered 'showError()'");
+    //console.log("values.error: ", error);
     if (error) {
       console.log("Error in values state object");
       return (
@@ -75,8 +101,8 @@ const SignIn = () => {
     );
 
   const redirectUser = () => {
-    console.log("entering redirect user");
-    console.log("redirectToReferrer: ",redirectToReferrer)
+    //console.log("entering redirect user");
+    //console.log("redirectToReferrer: ",redirectToReferrer)
     if (redirectToReferrer) {
       console.log("entering if statement within redirect user");
       if (user && user.role === 2) {
@@ -119,7 +145,11 @@ const SignIn = () => {
           value={password}
         />
       </div>
-      <button onClick={submitValues} className="btn btn-primary">
+      <button onClick={(event) => {
+        submitValues(event);
+        submitValues2(event);
+      }}
+      className="btn btn-primary">
         Submit
       </button>
     </form>

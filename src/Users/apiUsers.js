@@ -84,6 +84,8 @@ export const recoverPassword = (user) => {
   let apiurl;
   apiurl = `${API}/forgot`;
 
+  //forgotpassword?token=f349ad4b9248f991e777b0ff64d1abc7aedab365&email=gual325@gmail.com
+
   return fetch(apiurl, {
     method: "POST",
     headers: myHeaders,
@@ -126,7 +128,7 @@ export const resetPassword = (user) => {
     .then(handleErrors)
     .then((response) => {
       console.log("success");
-      console.log("response: ", response)
+      //console.log("response: ", response)
       return response.json();
     })
     .catch((err) => {
