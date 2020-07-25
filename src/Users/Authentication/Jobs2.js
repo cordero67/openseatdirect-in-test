@@ -4,7 +4,7 @@ import { useSignin } from "./apiUsers";
 //import { ErrorMessage } from "../Common/Components/ErrorMessage";
 //import { JobFeed } from "./JobFeed";
 
-const Jobs = () => {
+const Jobs2 = () => {
   //const url = `/_api/jobs`;
   let myEmail = "rafaelc@openseatdirect.com";
   let myPassword = "Blackhawks2013";
@@ -30,4 +30,4 @@ const Jobs = () => {
   );
 }
 
-export default Jobs
+export default Jobs2

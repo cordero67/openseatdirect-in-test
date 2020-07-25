@@ -14,7 +14,8 @@ import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import Jobs from "../../Users/Authentication/Jobs";
+import Jobs1 from "../../Users/Authentication/Jobs1";
+import Jobs2 from "../../Users/Authentication/Jobs2";
 import SignIn from "../../Users/SignIn";
 import SignInNew from "../../Users/Authentication/SignIn";
 import SignUp from "../../Users/SignUp";
@@ -104,11 +105,21 @@ const Routes = () => {
       />
 
       <Route
-        path="/tempcomponent"
+        path="/jobs1"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Jobs />
+            <Jobs1 />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/jobs2"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Jobs2 />
           </React.Fragment>
         )}
       />
