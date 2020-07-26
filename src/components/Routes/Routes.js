@@ -14,10 +14,9 @@ import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import Jobs1 from "../../Users/Authentication/Jobs1";
-import Jobs2 from "../../Users/Authentication/Jobs2";
-import SignIn from "../../Users/SignIn";
-import SignInNew from "../../Users/Authentication/SignIn";
+import Jobs from "../../Users/Authentication/Jobs";
+import SignIn from "../../Users/Authentication/SignIn";
+import SignInOld from "../../Users/SignIn";
 import SignUp from "../../Users/SignUp";
 import PasswordRecovery from "../../Users/PasswordRecovery";
 import PasswordReset from "../../Users/PasswordReset";
@@ -88,7 +87,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/signinnew"
+        path="/signinold"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -98,28 +97,18 @@ const Routes = () => {
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <SignInNew />
+            <SignInOld />
             <Footer></Footer>
           </React.Fragment>
         )}
       />
 
       <Route
-        path="/jobs1"
+        path="/jobs"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Jobs1 />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/jobs2"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Jobs2 />
+            <Jobs />
           </React.Fragment>
         )}
       />

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useSignin } from "./apiUsers";
+import { useSignin } from "./apiUsersNew";
 //import { Spinner } from "../Common/Components/Spinner";
 //import { ErrorMessage } from "../Common/Components/ErrorMessage";
 //import { JobFeed } from "./JobFeed";
 
-const Jobs1 = () => {
+const Jobs = () => {
   console.log("rendering")
   //const url = `/_api/jobs`;
 
@@ -14,14 +14,17 @@ const Jobs1 = () => {
   const [initialRender, setInitialRender] = useState(true)
   console.log("initialRender: ", initialRender)
 
-  const [counter, setCounter] = useState(0)
-  console.log("counter: ", counter)
+  //const [counter, setCounter] = useState(0)
+  //console.log("counter: ", counter)
+  //let counter = Math.random();
 
   let user = ({ email: myEmail, password: myPassword });
   console.log("user: ", user);
 
+  //useSignin(user, initialRender, counter);
+
   console.log("before useSignin");
-  const { message, isLoading, hasError } = useSignin(user, initialRender, counter);
+  const { message, isLoading, hasError, setRefreshCounter } = useSignin(user, initialRender);
   console.log("after useSignin");
 
   const submitData = () => {
@@ -34,7 +37,7 @@ const Jobs1 = () => {
         <button onClick={() => {
           console.log("clicked button");
           setInitialRender(false);
-          setCounter(counter + 1)
+          setRefreshCounter(Math.random())
         }}>
           Submit
         </button>
@@ -49,20 +52,27 @@ const Jobs1 = () => {
         <button onClick={() => {
           console.log("clicked button");
           setInitialRender(false);
-          setCounter(counter + 1)
+          setRefreshCounter(Math.random())
         }}>
-        Resubmit
+        Submit
         </button>
+        <input>Email</input>
+        <input>Password</input>
         <div>{message}</div>
       </div>
     )
 
   return (
     <div>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
       <button onClick={() => {
         console.log("clicked button");
         setInitialRender(false);
-        setCounter(counter + 1)
+        setRefreshCounter(Math.random());
       }}>
         Submit another
       </button>
@@ -71,4 +81,4 @@ const Jobs1 = () => {
   );
 }
 
-export default Jobs1
+export default Jobs

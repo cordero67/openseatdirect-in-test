@@ -51,6 +51,8 @@ export const signin = (user) => {
   })
     .then(handleErrors)
     .then((response) => {
+      console.log("response: ", response)
+
       console.log("success");
       return response.json();
     })
