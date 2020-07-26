@@ -23,6 +23,12 @@
   font-weight: 600;
   padding-bottom: 5px;
 }
+.SignInHeader {
+  font-size: 24px;
+  font-weight: 600;
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
 .Section {
   font-size: 14px;
   padding-bottom: 10px;
