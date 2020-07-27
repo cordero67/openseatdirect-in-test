@@ -188,20 +188,21 @@ const Checkout = props => {
     console.log("paypalStatus inside 'payPalExpressBuy': ", paypalStatus);
 
     transactionInfo = {
-      eventTitle: eventDetails.eventTitle,
-      venue: eventDetails.locationVenueName,
-      address1: eventDetails.locationAddress1,
-      address2: eventDetails.locationAddress2,
-      city: eventDetails.locationCity,
-      state: eventDetails.locationState,
-      zipPostalCode: eventDetails.locationZipPostalCode,
-      countryCode: eventDetails.locationCountryCode,
-      locationNote: eventDetails.locationNote,
-      webinarLink: eventDetails.webinarLink,
-      onlineInformation: eventDetails.onlineInformation,
-      tbaInformation: eventDetails.tbaInformation,
-      startDateTime: eventDetails.startDateTime,
-      endDateTime: eventDetails.endDateTime,
+      eventTitle: eventDetails.eventTitle,//
+      eventType: eventDetails.eventType,//
+      venue: eventDetails.locationVenueName,//
+      address1: eventDetails.locationAddress1,//
+      address2: eventDetails.locationAddress2,//
+      city: eventDetails.locationCity,//
+      state: eventDetails.locationState,//
+      zipPostalCode: eventDetails.locationZipPostalCode,//
+      countryCode: eventDetails.locationCountryCode,//
+      locationNote: eventDetails.locationNote,//
+      webinarLink: eventDetails.webinarLink,//
+      onlineInformation: eventDetails.onlineInformation,//
+      tbaInformation: eventDetails.tbaInformation,//
+      startDateTime: eventDetails.startDateTime,//
+      endDateTime: eventDetails.endDateTime,//
       timeZone: eventDetails.timeZone,
       paypalEmail: details.payer.email_address,
       firstName: details.payer.name.given_name,

@@ -1,29 +1,50 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { Redirect, Link } from "react-router-dom";
 
-import { useSignin } from "./apiUsers";
+import { useSignin , useOurApi} from "./apiUsers";
 import { isAuthenticated } from "../apiUsers";
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import classes from "../User.module.css";
 
+import { API } from "../../config";
+
 const SignIn = () => {
   const [values, setValues] = useState({
     email: "",
     password: "",
-    //redirectToDashboard: false,
+    redirectToDashboard: false,
   });
-  const { email, password } = values;
-  //const { email, password, redirectToDashboard } = values;
-
-  const [userData, setUserData] = useState()
-  //const [initialRender, setInitialRender] = useState(true)
+  const { email, password, redirectToDashboard } = values;
 
   // destructoring of "user" object in "localStorage" "data" variable
   const { user: user } = isAuthenticated();
+  console.log("user: ", user)
 
-  const { message, isLoading, hasError, setRefreshCounter} = useSignin(userData);
-  //const { message, isLoading, hasError, redirect, setRefreshCounter} = useSigninOld(userData);
+//useOurApi = (initialUrl, initialMethod, initialHeaders,initialBody, initialData)
+
+  let  myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const url1 = `${API}/signin`;
+  const method1 = "POST";
+  const body1  = null;
+  const initialData1 ={status: true, message:" hi first time"};
+  const initRender = true;
+//  export const useOurApi = (method,initialUrl, headers,initialBody, initialData) => {
+
+
+
+  const { isLoading, hasError, setUrl, setBody, fetchData} = useOurApi("POST", url1,myHeaders,body1, initialData1);
+  console.log("fetchData: ", fetchData)
+
+//  const { message, isLoading, hasError, redirect, setRefreshCounter} = useSignin(userData, initialRender);
+//  console.log("message: ", message)
+//  console.log("message.token: ", message.token)
+//  console.log("message.user: ", message.user)
+//  console.log("isLoading: ", isLoading)
+//  console.log("hasError: ", hasError)
+//  console.log("redirect: ", redirect)
 
   const handleChange = (event) => {
     setValues({
@@ -32,66 +53,49 @@ const SignIn = () => {
     });
   };
 
-  const Header = (
-    <div className={classes.SignInHeader}>Welcome back!</div>
-  ) 
 
-  const signInForm = () => {
-    console.log("i'm here")
-    if (isLoading) {
-      return (
-        <div style={{ height: "240px", paddingTop: "75px"}}>
-          <Spinner/>
-        </div>
-      )
-    } else {
-      return (
-        <div style={{ height: "240px"}}>
-          {hasError ?
-            <div style={{color: "red"}}>{message}</div> :
-            <div>Please sign in:</div>
-          }
-          <div className="form-group">
-            <br></br>
-            <label styles={{ fontSize: "16px" }}>
-              Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              onChange={handleChange}
-              value={email}
-            />
-          </div>
-    
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              onChange={handleChange}
-              value={password}
-            />
-          </div>
-    
-          <button onClick={() => {
-            console.log("clicked button");
-            setUserData({
-              email: values.email,
-              password: values.password,
-            })
-            //setInitialRender(false);
-            setRefreshCounter(Math.random());
-          }}
-          className="btn btn-primary">
-            Submit
-          </button>
-        </div>
-      )
-    }
-  }
+  const signInForm = (
+    <div>
+      <div className="form-group">
+        <br></br>
+        <label styles={{ fontSize: "16px" }}>
+          Email Address
+        </label>
+        <input
+          type="email"
+          name="email"
+          className="form-control"
+          onChange={handleChange}
+          value={email}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          className="form-control"
+          onChange={handleChange}
+          value={password}
+        />
+      </div>
+
+      <button onClick={() => {
+        console.log("clicked button",{
+          email: values.email,
+          password: values.password,
+        });
+        setBody({
+          email: values.email,
+          password: values.password,
+        })
+      }}
+      className="btn btn-primary">
+        Submit
+      </button>
+    </div>
+  );
   
   const alteranteInputs = (
     <div>
@@ -113,8 +117,16 @@ const SignIn = () => {
   return (
     <div className={classes.MainContainer}>
       <div className={classes.BlankCanvas} style={{height: "450px"}}>
-        {Header}
-        {signInForm()}
+        <br></br>
+        <div className={classes.Header}>Welcome back!</div>
+        <br></br>
+        <div>
+          {hasError ?
+            <div style={{color: "red"}}>{"SYSTEM ERROR - please try again"}</div> :
+            fetchData.status ? <div>Please sign in:</div> : <div style={{color: "red"}}> {fetchData.error}</div>
+          }
+          {signInForm}
+        </div>
         {alteranteInputs}
       </div>
     </div>
@@ -122,31 +134,3 @@ const SignIn = () => {
 }
 
 export default SignIn
-
-/*
-  const redirectUser = () => {
-    console.log("user: ", user)
-    console.log("message: ", message)
-    console.log("data: ", data)
-
-    if (redirect) {
-      console.log("entering if statement within redirect data");
-      console.log("data: ", data)
-      console.log("data.user: ", data.user)
-      //console.log("data.user.role: ", data.user.role)
-          /*
-      if (user && user.role === 1) {
-        return <Redirect to="/vendorevents" />;
-      } else if (user && user.role === 0) {
-        return <Redirect to="/userdashboard" />;
-      }
-    
-    }
-    
-    // need to address this situation
-    if (isAuthenticated()) {
-      return <Redirect to="/" />;
-    }
-  };
-  
-    */

@@ -28,6 +28,52 @@ export const OrderConfirmationTT = props => {
       )}</Aux>
     }
 
+    const eventLocation = (
+      <div>
+        <span style={{ textDecoration: "underline", fontWeight: "600" }}>
+          Event Location
+        </span>
+        <br></br>
+        {props.transactionInfo.eventTitle}
+        <br></br>
+        {dateRange}
+        <br></br>
+        {props.transactionInfo.venue}
+        <br></br>
+        {props.transactionInfo.address1}
+        <br></br>
+        {props.transactionInfo.city}, {props.transactionInfo.state}{" "}
+        {props.transactionInfo.zipPostalCode}
+        <br></br>
+      </div>
+    )
+
+    const webinarLink = (
+      <div>
+        <div style={{ textDecoration: "underline", fontWeight: "600" }}>Webinar Link</div>
+        <div>{props.transactionInfo.webinarLink}</div>
+      </div>
+    )
+
+    const eventDetails = () => {
+      if (props.transactionInfo.eventType === "live") {
+        return (
+          <div className={styles.OrderConfirmItems}>
+            {eventLocation}
+            <br></br>
+            {props.transactionInfo.webinarLink ? 
+              webinarLink :
+              null}
+            <br></br>
+          </div>
+        )
+      } else {
+        return (
+          <div>another display</div>
+        )
+      }
+    }
+
   return (
     <Aux>
       <span className={styles.SubSectionHeader}>Order Confirmation</span>
@@ -40,24 +86,7 @@ export const OrderConfirmationTT = props => {
           processed.
           <br></br>
           <br></br>
-          <div className={styles.OrderConfirmItems}>
-            <span style={{ textDecoration: "underline", fontWeight: "600" }}>
-              Event Details
-            </span>
-            <br></br>
-            {props.transactionInfo.eventTitle}
-            <br></br>
-            {dateRange}
-            <br></br>
-            {props.transactionInfo.venue}
-            <br></br>
-            {props.transactionInfo.address1}
-            <br></br>
-            {props.transactionInfo.city}, {props.transactionInfo.state}{" "}
-            {props.transactionInfo.zipPostalCode}
-            <br></br>
-          </div>
-          <br></br>
+          {eventDetails()}
           <div className={styles.OrderConfirmItems}>
             <span style={{ textDecoration: "underline", fontWeight: "600" }}>
               Order Details
