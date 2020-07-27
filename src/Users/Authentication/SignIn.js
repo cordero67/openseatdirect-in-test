@@ -36,15 +36,9 @@ const SignIn = () => {
   const { isLoading, hasError, setUrl, setBody, data} = useOurApi("POST", url1,myHeaders,body1, initialData1);
   console.log("data: ", data)
 
-  if (typeof window !== "undefined" && data.status) {
+  if (typeof window !== "undefined" && data.status && !hasError) {
     localStorage.setItem("user", JSON.stringify(data));
   }
-
-  
-
-    // destructoring of "user" object in "localStorage" "data" variable
-    //const { user: user } = isAuthenticated();
-    //console.log("user: ", user)
 
   if (data.status) {
     const { user: user } = isAuthenticated();
