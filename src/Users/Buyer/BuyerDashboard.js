@@ -286,9 +286,9 @@ const mainDisplay = () => {
       </div>
       <div style={{ overflowY: "auto" }}>
         <div className={classes.GenericDisplayHeader}>
-          <div>Name:{" "}{isLoading ? null : buyerInfo.name} Dashboard</div>
+          <div>Name:{" "}{isLoading ? null : buyerInfo.name}</div>
           <br></br>
-          <div>E-mail:{" "}{isLoading ? null : buyerInfo.email} Dashboard</div>
+          <div>E-mail:{" "}{isLoading ? null : buyerInfo.email}</div>
           <br></br>
         </div>
       </div>
