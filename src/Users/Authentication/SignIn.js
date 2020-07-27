@@ -31,20 +31,28 @@ const SignIn = () => {
   const body1  = null;
   const initialData1 ={status: true, message:" hi first time"};
   const initRender = true;
-//  export const useOurApi = (method,initialUrl, headers,initialBody, initialData) => {
+  //export const useOurApi = (method,initialUrl, headers,initialBody, initialData) => {
 
+  const { isLoading, hasError, setUrl, setBody, data} = useOurApi("POST", url1,myHeaders,body1, initialData1);
+  console.log("data: ", data)
 
+  if (typeof window !== "undefined" && data.status) {
+    localStorage.setItem("user", JSON.stringify(data));
+  }
 
-  const { isLoading, hasError, setUrl, setBody, fetchData} = useOurApi("POST", url1,myHeaders,body1, initialData1);
-  console.log("fetchData: ", fetchData)
+  
 
-//  const { message, isLoading, hasError, redirect, setRefreshCounter} = useSignin(userData, initialRender);
-//  console.log("message: ", message)
-//  console.log("message.token: ", message.token)
-//  console.log("message.user: ", message.user)
-//  console.log("isLoading: ", isLoading)
-//  console.log("hasError: ", hasError)
-//  console.log("redirect: ", redirect)
+    // destructoring of "user" object in "localStorage" "data" variable
+    //const { user: user } = isAuthenticated();
+    //console.log("user: ", user)
+
+  if (data.status) {
+    const { user: user } = isAuthenticated();
+    console.log("user: ", user);
+    console.log("status: ", data.status);
+    console.log("token: ", data.token);
+    console.log("user: ", data.user);
+  }
 
   const handleChange = (event) => {
     setValues({
@@ -123,7 +131,7 @@ const SignIn = () => {
         <div>
           {hasError ?
             <div style={{color: "red"}}>{"SYSTEM ERROR - please try again"}</div> :
-            fetchData.status ? <div>Please sign in:</div> : <div style={{color: "red"}}> {fetchData.error}</div>
+            data.status ? <div>Please sign in:</div> : <div style={{color: "red"}}> {data.error}</div>
           }
           {signInForm}
         </div>
