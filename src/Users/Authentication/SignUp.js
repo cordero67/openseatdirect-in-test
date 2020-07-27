@@ -3,11 +3,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 //import { signin, authenticate } from "../../auth";
-import { useOurApi } from "./apiUsers";
-import { signup } from "../../apiUsers";
-import Aux from "../../hoc/Auxiliary/Auxiliary";
+import { signup } from "./apiUsers";
+import Aux from "../hoc/Auxiliary/Auxiliary";
 
-import classes from "./Authenticate.module.css";
+import classes from "./authenticate.css";
 
 var confirmEmail = "";
 
@@ -16,13 +15,23 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
-    error: "", // probably delete
-    message: "", // probably delete
-    success: false // probably delete
+    error: "", // potentially do not need
+    message: "", // potentially do not need
+    success: false // potentially do not need
   });
 
   // destructors the "values" object
   const { name, email, password, error, message, success } = values;
+
+  let  myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const url1 = `${API}/signin`;
+  const method1 = "POST";
+  const body1  = null;
+  const initialData1 ={status: true, message:"hi first time"};
+
+  const { isLoading, hasError, setUrl, setBody, data} = useOurApi("POST", url1, myHeaders, body1, initialData1);
 
   const submitValues = event => {
     event.preventDefault();

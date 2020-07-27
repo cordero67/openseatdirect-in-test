@@ -1,11 +1,11 @@
 import React, { useState} from "react";
 import { Redirect, Link } from "react-router-dom";
 
-import { useSignin , useOurApi} from "./apiUsers";
+import { useOurApi} from "./apiUsers";
 import { API } from "../../config";
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
-import classes from "../User.module.css";
+import classes from "./Authenticate.module.css";
 
 const SignIn = () => {
   const [values, setValues] = useState({
@@ -22,7 +22,7 @@ const SignIn = () => {
   const body1  = null;
   const initialData1 ={status: true, message:"hi first time"};
 
-  const { isLoading, hasError, setUrl, setBody, data} = useOurApi("POST", url1, myHeaders, body1, initialData1);
+  const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi("POST", url1,myHeaders,body1, initialData1);
 
   if (typeof window !== "undefined" && data.status && !hasError && !data.message) {
     // places "data" return object into local storage
@@ -113,8 +113,8 @@ const SignIn = () => {
         <br></br>
         <div>
           {hasError ?
-            <div style={{color: "red"}}>{"SYSTEM ERROR - please try again"}</div> :
-            data.status ? <div>Please sign in:</div> : <div style={{color: "red"}}> {data.error}</div>
+            <div style={{color: "red"}}>"NETWORK ERROR - please check your connection"</div> :
+            data.status ? <div>SYSTEM ERROR - please try again</div> : <div style={{color: "red"}}> {data.error}</div>
           }
           {signInForm}
         </div>

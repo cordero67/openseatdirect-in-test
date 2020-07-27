@@ -12,10 +12,12 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
   const [headers, setHeaders] = useState(initialHeaders);
   const [body, setBody] = useState(initialBody);
 
+  const [networkError, setNetworkError] = useState(false);
+
   const isFirstRun = useRef(true);
-
+ 
   useEffect(() => {
-
+ 
     if (isFirstRun.current) {
       console.log ("first run in useOurApi's useEffect!")
       isFirstRun.current = false;
@@ -25,12 +27,22 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
     let unmounted = false;
 
     const handleFetchResponse = response => {
+      console.log (" in handleFetchResponse...");
+
       if (unmounted) return initialData;
 
       setHasError(!response.ok);
+      if (typeof response.ok === 'undefined'){
+        setNetworkError(true);
+        console.log ("undefined response = newtwork error!");
+      } else {
+        setNetworkError(false)
+      };
+
       setIsLoading(false);
       return response.ok && response.json ? response.json() : initialData;
     };
+
 
     const fetchData = () => {
       setIsLoading(true);
@@ -53,9 +65,9 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
     return () => {
       unmounted = true;
     };
-  }, [url, method,body]);
+  }, [url,body]);
 
-return { isLoading, hasError, setUrl, setBody, data: fetchedData };
+  return { isLoading, hasError, setUrl, setBody, data: fetchedData, networkError };
 };
 
 
