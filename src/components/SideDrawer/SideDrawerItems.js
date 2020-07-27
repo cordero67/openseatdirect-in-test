@@ -66,8 +66,8 @@ const SideDrawerItems = (props) => {
       {isAuthenticated() && isAuthenticated().user.role === 0 ? (
         <li>
           <NavLink
-            to="/userdashboard"
-            style={isActive(props.currentPage, "/userdashboard")}
+            to="/buyerdashboard"
+            style={isActive(props.currentPage, "/buyerdashboard")}
             onClick={props.clicked}
           >
             DASHBOARD

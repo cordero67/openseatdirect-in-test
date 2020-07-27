@@ -2,26 +2,17 @@ import React, { useState} from "react";
 import { Redirect, Link } from "react-router-dom";
 
 import { useSignin , useOurApi} from "./apiUsers";
-import { isAuthenticated } from "../apiUsers";
+import { API } from "../../config";
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import classes from "../User.module.css";
 
-import { API } from "../../config";
-
 const SignIn = () => {
   const [values, setValues] = useState({
     email: "",
-    password: "",
-    redirectToDashboard: false,
+    password: ""
   });
-  const { email, password, redirectToDashboard } = values;
-
-  // destructoring of "user" object in "localStorage" "data" variable
-  const { user: user } = isAuthenticated();
-  console.log("user: ", user)
-
-//useOurApi = (initialUrl, initialMethod, initialHeaders,initialBody, initialData)
+  const { email, password } = values;
 
   let  myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -29,23 +20,22 @@ const SignIn = () => {
   const url1 = `${API}/signin`;
   const method1 = "POST";
   const body1  = null;
-  const initialData1 ={status: true, message:" hi first time"};
-  const initRender = true;
-  //export const useOurApi = (method,initialUrl, headers,initialBody, initialData) => {
+  const initialData1 ={status: true, message:"hi first time"};
 
-  const { isLoading, hasError, setUrl, setBody, data} = useOurApi("POST", url1,myHeaders,body1, initialData1);
-  console.log("data: ", data)
+  const { isLoading, hasError, setUrl, setBody, data} = useOurApi("POST", url1, myHeaders, body1, initialData1);
 
-  if (typeof window !== "undefined" && data.status && !hasError) {
+  if (typeof window !== "undefined" && data.status && !hasError && !data.message) {
+    // places "data" return object into local storage
     localStorage.setItem("user", JSON.stringify(data));
-  }
-
-  if (data.status) {
-    const { user: user } = isAuthenticated();
-    console.log("user: ", user);
-    console.log("status: ", data.status);
-    console.log("token: ", data.token);
-    console.log("user: ", data.user);
+    let tempData = JSON.parse(localStorage.getItem("user"));
+    // determines dashboard based on user's role
+    if (tempData.user.role === 1) {
+      return <Redirect to="/vendorevents" />;
+    } else if (tempData.user.role === 0) {
+      return <Redirect to="/buyerdashboard" />;
+    } else {
+      return <Redirect to="/" />;
+    }
   }
 
   const handleChange = (event) => {
@@ -54,7 +44,6 @@ const SignIn = () => {
       [event.target.name]: event.target.value,
     });
   };
-
 
   const signInForm = (
     <div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 //import { Link, Redirect } from "react-router-dom";
 //import { Form } from "react-bootstrap";
 
@@ -12,6 +12,16 @@ const UserDashboard = () => {
     let TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDlkNzIzN2VjODAwYjZlOTM1NTg4ODgiLCJpYXQiOjE1ODkyMDkwNjR9.C1Wu4geQWblwCOJMvEbjLwpZ8m6z4I2UDL5AtDhb1W4";
     let USER_ID ="5d9d7237ec800b6e93558888";
     //let SIGNOK  = false;
+
+    useEffect(() => {
+      if (
+        typeof window !== "undefined" &&
+        localStorage.getItem(`user`) !== null
+      ) {
+      } else {
+        window.location.href = "/signin";
+      }
+    }, []);
   
 
     function handleGetEvents() {   // txt == content of form input

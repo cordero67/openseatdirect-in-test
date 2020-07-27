@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Redirect, Link } from "react-router-dom";
 
 import { API } from "../../config";
 
@@ -24,20 +25,28 @@ const VendorEvents = () => {
   const [isSuccessfull, setIsSuccessfull] = useState(true);//
 
   useEffect(() => {
-    /*
+
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
-      vendorInfo.id = tempUser.user._id;
+      vendorInfo.email = tempUser.user.email
       vendorInfo.name = tempUser.user.name
+      vendorInfo.role = tempUser.user.role
+      vendorInfo.id = tempUser.user._id;
       console.log("vendorInfo.name: ", tempUser.user.name)
+      if (vendorInfo.role === 1) {
+        return <Redirect to="/vendorevents" />;
+      } else if (vendorInfo.role !== 0) {
+        window.location.href = "/";
+      }
     } else {
       window.location.href = "/signin";
     }
-    */
+
     /*
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -264,7 +273,7 @@ const handleErrors = response => {
   */
 
 // profile, create, temp
-const [paneView, setPaneView] = useState("create")
+const [paneView, setPaneView] = useState("profile")
 
 const mainDisplay = () => {
   if (paneView === "profile") {
@@ -274,8 +283,11 @@ const mainDisplay = () => {
         My Profile
       </div>
       <div style={{ overflowY: "auto" }}>
-        <div className={classes.MainDisplayHeader}>
-          Profile Display
+        <div className={classes.GenericDisplayHeader}>
+          <div>Name:{" "}{vendorInfo.name}</div>
+          <br></br>
+          <div>E-mail:{" "}{vendorInfo.email}</div>
+          <br></br>
         </div>
       </div>
     </div>
@@ -287,8 +299,8 @@ const mainDisplay = () => {
         Create Event
       </div>
       <div style={{ overflowY: "auto" }}>
-        <div className={classes.MainDisplayHeader}>
-          Create Event Display
+        <div className={classes.GenericDisplayHeader}>
+          will ask user to first complete the onboarding process
         </div>
       </div>
     </div>
@@ -300,8 +312,8 @@ const mainDisplay = () => {
         Ticket Wallet
       </div>
       <div style={{ overflowY: "auto" }}>
-        <div className={classes.MainDisplayHeader}>
-          Ticket Wallet Display
+        <div className={classes.GenericDisplayHeader}>
+          Ticket Wallet coming soon!!!
         </div>
       </div>
     </div>
@@ -313,8 +325,8 @@ const mainDisplay = () => {
         My Preferences
       </div>
       <div style={{ overflowY: "auto" }}>
-        <div className={classes.MainDisplayHeader}>
-          Preferences Display
+        <div className={classes.GenericDisplayHeader}>
+          Preferences coming soon!!!
         </div>
       </div>
     </div>
@@ -336,7 +348,7 @@ const onboardingMessage = () => {
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
         <div className={classes.DashboardTitle}>
-          {vendorInfo.name} Rafael Cordero Dashboard
+          {vendorInfo.name} Dashboard
         </div>
         <div className={classes.DashboardMain}>
           <div className={classes.DashboardNavigation}>

@@ -14,7 +14,6 @@ import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import Jobs from "../../Users/Authentication/Jobs";
 import SignIn from "../../Users/Authentication/SignIn";
 import SignInOld from "../../Users/SignIn";
 import SignUp from "../../Users/SignUp";
@@ -99,16 +98,6 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <SignInOld />
             <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/jobs"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Jobs />
           </React.Fragment>
         )}
       />
