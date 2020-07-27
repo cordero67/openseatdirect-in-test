@@ -118,6 +118,7 @@ const SignIn = () => {
           }
           {signInForm}
         </div>
+        <br></br>
         {alteranteInputs}
       </div>
     </div>

@@ -14,38 +14,40 @@ import {
 import BuyerNavigation from "./BuyerNavigation";
 import classes from "./BuyerDashboard.module.css";
 import { compareValues, getDates } from "../VendorFunctions";
+import { set } from "date-fns";
 
-let vendorInfo = {};
 
 const VendorEvents = () => {
 
+  const [buyerInfo, setBuyerInfo] = useState();//
   const [eventDescriptions, setEventDescriptions] = useState();//
   const [ticketDisplay, setTicketDisplay] = useState();
   const [isLoading, setIsLoading] = useState(true);//
   const [isSuccessfull, setIsSuccessfull] = useState(true);//
 
   useEffect(() => {
-
-
+    setIsLoading(true);
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      vendorInfo.token = tempUser.token;
-      vendorInfo.email = tempUser.user.email
-      vendorInfo.name = tempUser.user.name
-      vendorInfo.role = tempUser.user.role
-      vendorInfo.id = tempUser.user._id;
-      console.log("vendorInfo.name: ", tempUser.user.name)
-      if (vendorInfo.role === 1) {
+      let tempBuyerInfo = {};
+      tempBuyerInfo.token = tempUser.token;
+      tempBuyerInfo.email = tempUser.user.email
+      tempBuyerInfo.name = tempUser.user.name
+      tempBuyerInfo.role = tempUser.user.role
+      tempBuyerInfo.id = tempUser.user._id;
+      setBuyerInfo(tempBuyerInfo);
+      if (tempBuyerInfo.role === 1) {
         return <Redirect to="/vendorevents" />;
-      } else if (vendorInfo.role !== 0) {
+      } else if (tempBuyerInfo.role !== 0) {
         window.location.href = "/";
       }
     } else {
       window.location.href = "/signin";
     }
+    setIsLoading(false);
 
     /*
     let myHeaders = new Headers();
@@ -284,9 +286,9 @@ const mainDisplay = () => {
       </div>
       <div style={{ overflowY: "auto" }}>
         <div className={classes.GenericDisplayHeader}>
-          <div>Name:{" "}{vendorInfo.name}</div>
+          <div>Name:{" "}{isLoading ? null : buyerInfo.name} Dashboard</div>
           <br></br>
-          <div>E-mail:{" "}{vendorInfo.email}</div>
+          <div>E-mail:{" "}{isLoading ? null : buyerInfo.email} Dashboard</div>
           <br></br>
         </div>
       </div>
@@ -348,7 +350,7 @@ const onboardingMessage = () => {
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
         <div className={classes.DashboardTitle}>
-          {vendorInfo.name} Dashboard
+          {isLoading ? null : buyerInfo.name} Dashboard
         </div>
         <div className={classes.DashboardMain}>
           <div className={classes.DashboardNavigation}>
