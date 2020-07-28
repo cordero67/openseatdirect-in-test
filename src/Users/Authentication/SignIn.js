@@ -9,7 +9,6 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import classes from "../User.module.css";
 
-
 const SignIn = () => {
   const [values, setValues] = useState({
     email: "",
@@ -115,7 +114,7 @@ const SignIn = () => {
       <div className={classes.BlankCanvas} style={{height: "450px"}}>
         <br></br>
         <div className={classes.Header}>
-          Welcome back!
+          Welcome back!!!
         </div>
         <br></br>
         <div>

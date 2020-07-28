@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 //import { signin, authenticate } from "../../auth";
 import { useOurApi } from "./apiUsers";
-import { signup } from "../apiUsers";
 import { API } from "../../config";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
@@ -14,19 +13,17 @@ const SignUp = () => {
   const [values, setValues] = useState({
     name: "",
     email: "",
-    password: "",
-    error: "", // probably delete
-    message: "", // probably delete
-    success: false // probably delete
+    password: ""
   });
 
   // destructors the "values" object
-  const { name, email, password, error, message, success } = values;
+  const { name, email, password } = values;
 
   let  myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   const url1 = `${API}/signup`;
+  //CAN'T THIS BE USED IN LINE 31
   const method1 = "POST";
   const body1  = null;
   const initialData1 ={status: true, message:"hi first time"};
@@ -38,7 +35,6 @@ const SignUp = () => {
   const handleChange = (event) => {
     setValues({
       ...values,
-      error: false,
       [event.target.name]: event.target.value
     });
   }
@@ -122,6 +118,7 @@ const SignUp = () => {
   );
 
   const mainDisplay = () => {
+    //NEED A BETTER TEST
     if (data.status && data.message !== "hi first time") {
       return (
         <Aux>
