@@ -37,6 +37,7 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
         console.log ("undefined response = newtwork error!");
       } else {
         setNetworkError(false)
+        console.log ("defined response");
       };
 
       setIsLoading(false);
@@ -66,66 +67,9 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
       unmounted = true;
     };
   }, [url,body]);
-
+  console.log("isLoading: ", isLoading)
+  console.log("hasError: ", hasError)
+  console.log("fetchedData: ", fetchedData)
+  console.log("networkError: ", networkError )
   return { isLoading, hasError, setUrl, setBody, data: fetchedData, networkError };
 };
-
-
-
-
-
-export const useSignin = (userData) => { //HENRIK SOMMERFELD example
-  const [refreshCounter, setRefreshCounter] = useState();
-  const [isLoading, setIsLoading] = useState(true); //HENRIK SOMMERFELD example
-  const [hasError, setHasError] = useState(false); //HENRIK SOMMERFELD example
-  const [fetchedData, setFetchedData] = useState(""); //HENRIK SOMMERFELD example
-  let data;
-  console.log("entered useSignin")
-  console.log("userData: ", userData)
-
-  useEffect(() => { //HENRIK SOMMERFELD example
-    let unmounted = false;
-    console.log("entered useEffect of useSignin")
-
-    const handleFetchResponse = response => { //HENRIK SOMMERFELD example
-      console.log("entered handleFetchResponse of useSignin")
-      console.log("response: ", response)
-      setHasError(!response.ok); //HENRIK SOMMERFELD example
-      setIsLoading(false); //HENRIK SOMMERFELD example
-      return response.ok && response.json ? response.json() : "Email and password mismatch"; //HENRIK SOMMERFELD example
-    }; //HENRIK SOMMERFELD example
-
-    const fetchData = () => { //HENRIK SOMMERFELD example
-      console.log("entered fetchData of useSignin")
-      setIsLoading(true); //HENRIK SOMMERFELD example
-
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      return fetch(`${API}/signin`, {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(userData),
-      })
-      .then(handleFetchResponse) //HENRIK SOMMERFELD example
-      .catch(handleFetchResponse); //HENRIK SOMMERFELD example
-
-    }; //HENRIK SOMMERFELD example
-
-    if (userData && !unmounted) {//HENRIK SOMMERFELD example
-      console.log("NOT Initial render")
-      fetchData().then(message => setFetchedData(message)); //HENRIK SOMMERFELD example
-    } else {
-      console.log("Initial render")
-      setIsLoading(false);
-    }
-
-    return () => { //HENRIK SOMMERFELD example
-      unmounted = true; //HENRIK SOMMERFELD example
-    }; //HENRIK SOMMERFELD example
-  }, [refreshCounter]); //HENRIK SOMMERFELD example
-  
-  console.log("fetchedData: ", fetchedData)
-
-  return { message: fetchedData, isLoading, hasError, setRefreshCounter}; //HENRIK SOMMERFELD example
-}; //HENRIK SOMMERFELD example

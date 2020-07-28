@@ -3,11 +3,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 //import { signin, authenticate } from "../../auth";
-import { useOurApi } from "./apiUsers";
-import { signup } from "../../apiUsers";
-import Aux from "../../hoc/Auxiliary/Auxiliary";
+import { signup } from "./apiUsers";
+import Aux from "../hoc/Auxiliary/Auxiliary";
 
-import classes from "./Authenticate.module.css";
+import classes from "./User.module.css";
 
 var confirmEmail = "";
 
@@ -16,9 +15,9 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
-    error: "", // probably delete
-    message: "", // probably delete
-    success: false // probably delete
+    error: "",
+    message: "",
+    success: false
   });
 
   // destructors the "values" object

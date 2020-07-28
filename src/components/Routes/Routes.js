@@ -15,8 +15,9 @@ import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import SignIn from "../../Users/Authentication/SignIn";
+import SignUp from "../../Users/Authentication/SignUp";
 import SignInOld from "../../Users/SignIn";
-import SignUp from "../../Users/SignUp";
+import SignUpOld from "../../Users/SignUp";
 import PasswordRecovery from "../../Users/PasswordRecovery";
 import PasswordReset from "../../Users/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
@@ -69,6 +70,23 @@ const Routes = () => {
       />
 
       <Route
+        path="/signin"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <SignIn />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
         path="/signup"
         exact
         render={(routeProps) => (
@@ -103,7 +121,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/signin"
+        path="/signupold"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -113,7 +131,7 @@ const Routes = () => {
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <SignIn />
+            <SignUpOld />
             <Footer></Footer>
           </React.Fragment>
         )}

@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { Form } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 import classes from "./BuyerDashboard.module.css";
@@ -39,48 +38,6 @@ const BuyerNavigation = (props) => {
               fontSize: "14px",
               paddingLeft: "20px",
               border: "none",
-              backgroundColor: props.pane === "wallet" ? "#fff" : "#e7e7e7",
-              cursor: "pointer",
-              fontWeight: "600",
-              display: "inline-block",
-              width: "170px",
-              height: "30px",
-              textAlign: "left",
-              outline: "none"
-            }}
-            name="wallet"
-            onClick={props.clicked}>
-            TICKET WALLET
-          </button>
-        </li>
-
-        <li>
-          <button 
-            style={{
-              fontSize: "14px",
-              paddingLeft: "20px",
-              border: "none",
-              backgroundColor: props.pane === "preferences" ? "#fff" : "#e7e7e7",
-              cursor: "pointer",
-              fontWeight: "600",
-              display: "inline-block",
-              width: "170px",
-              height: "30px",
-              textAlign: "left",
-              outline: "none"
-            }}
-            name="preferences"
-            onClick={props.clicked}>
-            PREFERENCES
-          </button>
-        </li>
-
-        <li>
-          <button 
-            style={{
-              fontSize: "14px",
-              paddingLeft: "20px",
-              border: "none",
               backgroundColor: props.pane === "create" ? "#fff" : "#e7e7e7",
               cursor: "pointer",
               fontWeight: "600",
@@ -97,22 +54,17 @@ const BuyerNavigation = (props) => {
         </li>
 
         <li
-        
-        style={{
-          fontSize: "14px",
-          paddingLeft: "20px",
-          backgroundColor: "#e7e7e7",
-          cursor: "pointer",
-          fontWeight: "bold",
-          display: "inline-block",
-          width: "170px",
-          height: "30px",
-          textAlign: "left"
-        }}
-        
-        
-        
-        
+          style={{
+            fontSize: "14px",
+            paddingLeft: "20px",
+            backgroundColor: "#e7e7e7",
+            cursor: "pointer",
+            fontWeight: "bold",
+            display: "inline-block",
+            width: "170px",
+            height: "30px",
+            textAlign: "left"
+          }}
         >
           <NavLink
             to="/signin"

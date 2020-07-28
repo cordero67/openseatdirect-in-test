@@ -1,11 +1,14 @@
 import React, { useState} from "react";
 import { Redirect, Link } from "react-router-dom";
 
-import { useOurApi} from "./apiUsers";
+import { useOurApi } from "./apiUsers";
 import { API } from "../../config";
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
-import classes from "./Authenticate.module.css";
+import Aux from "../../hoc/Auxiliary/Auxiliary";
+
+import classes from "../User.module.css";
+
 
 const SignIn = () => {
   const [values, setValues] = useState({
@@ -24,6 +27,8 @@ const SignIn = () => {
 
   const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi("POST", url1,myHeaders,body1, initialData1);
 
+  const sysmessage = networkError ? "NetworkError..please check your connectivity": "SYSTEM ERROR - please try again";
+
   if (typeof window !== "undefined" && data.status && !hasError && !data.message) {
     // places "data" return object into local storage
     localStorage.setItem("user", JSON.stringify(data));
@@ -41,7 +46,7 @@ const SignIn = () => {
   const handleChange = (event) => {
     setValues({
       ...values,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     });
   };
 
@@ -109,12 +114,14 @@ const SignIn = () => {
     <div className={classes.MainContainer}>
       <div className={classes.BlankCanvas} style={{height: "450px"}}>
         <br></br>
-        <div className={classes.Header}>Welcome back!</div>
+        <div className={classes.Header}>
+          Welcome back!
+        </div>
         <br></br>
         <div>
           {hasError ?
-            <div style={{color: "red"}}>"NETWORK ERROR - please check your connection"</div> :
-            data.status ? <div>SYSTEM ERROR - please try again</div> : <div style={{color: "red"}}> {data.error}</div>
+            <div style={{color: "red"}}> {sysmessage}</div> :
+            data.status ? <div>Please sign in:</div> : <div style={{color: "red"}}> {data.error}</div>
           }
           {signInForm}
         </div>
