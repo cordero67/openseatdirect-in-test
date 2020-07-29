@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-//import { signin, authenticate } from "../../auth";
 import { useOurApi } from "./apiUsers";
 import { API } from "../../config";
 
@@ -9,19 +8,18 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import classes from "../User.module.css";
 
-const SignUp = () => {
+const PasswordRecovery = () => {
   const [values, setValues] = useState({
-    name: "",
-    email: "",
-    password: ""
+    email: ""
   });
 
-  const { name, email, password } = values;
+  const { email } = values;
 
   let  myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  const url1 = `${API}/signup`;
+  const url1 = `${API}/forgot`;
+  //CAN'T THIS BE USED IN LINE 31
   const method1 = "POST";
   const body1  = null;
   const initialData1 ={status: true, message:"hi first time"};
@@ -35,7 +33,7 @@ const SignUp = () => {
       ...values,
       [event.target.name]: event.target.value
     });
-  }
+  };
 
   const showError = () => {
     if (hasError) {
@@ -44,7 +42,7 @@ const SignUp = () => {
       )
     } else if (data.status) {
       return (
-        <div>Please provide the following information:</div>
+        <div>Please enter your email on file:</div>
       )
     } else {
       return (
@@ -62,24 +60,12 @@ const SignUp = () => {
     </div>
   );
 
-  const signUpForm = (
+  const recoverForm = (
     <Aux>
       <div className="form-group">
-        <br></br>
-        <label styles={{ fontSize: "16px" }}>
-          Full Name
+        <label className="text-muted" styles={{ fontSize: "16px" }}>
+          E-mail Address
         </label>
-        <input
-          type="text"
-          name="name"
-          className="form-control"
-          onChange={handleChange}
-          value={name}
-        />
-      </div>
-
-      <div className="form-group">
-        <label className="text-muted">E-mail Address</label>
         <input
           type="email"
           name="email"
@@ -89,45 +75,30 @@ const SignUp = () => {
         />
       </div>
 
-      <div className="form-group">
-        <label className="text-muted">Password</label>
-        <input
-          type="password"
-          name="password"
-          className="form-control"
-          onChange={handleChange}
-          value={password}
-          placeholder="Must contain a number and special character"
-        />
-      </div>
-
+      <div>A temporary password will be sent to your mailbox.</div>
+      <br></br>
       <button onClick={() => {
         console.log("clicked button",{
-          name: values.name,
-          email: values.email,
-          password: values.password,
+          email: values.email
         });
         setBody({
-          name: values.name,
-          email: values.email,
-          password: values.password,
+          email: values.email
         })
       }}
       className="btn btn-primary">
-        Submit
+        Submit New
       </button>
-      <br></br>
     </Aux>
   );
   
   const alteranteInputs = (
     <div>
-      <div className={classes.Section}>
-        Already have an account, go to{" "}
-        <Link to="/signin" style={{color: "blue"}}>
-          Sign In.
-        </Link>
-      </div>
+        <div className={classes.Section}>
+            Back to{" "}
+            <Link to="/signin" style={{ color: "blue" }}>
+            Sign In.
+            </Link>
+        </div>
     </div>
   );
 
@@ -144,9 +115,9 @@ const SignUp = () => {
     } else {
       return (
         <Aux>
-          {showError()}
-          {signUpForm}
-          {alteranteInputs}
+            {showError()}
+            {recoverForm}
+            {alteranteInputs}
         </Aux>
       )
     }
@@ -154,11 +125,9 @@ const SignUp = () => {
 
   return (
     <div className={classes.MainContainer}>
-      <div className={classes.BlankCanvas} style={{height: "490px"}}>
+      <div className={classes.BlankCanvas} style={{ height: "375px" }}>
         <br></br>
-        <div className={classes.Header}>
-          Come Aboard!!!
-        </div>
+        <div className={classes.Header}>Password Reset Request</div>
         <br></br>
         <div className={classes.Section}>
           <br></br>
@@ -169,4 +138,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default PasswordRecovery;

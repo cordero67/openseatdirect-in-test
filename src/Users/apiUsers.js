@@ -144,6 +144,7 @@ export const changePassword = (user) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   console.log("user: ", user)
+  
 
   let apiurl;
   apiurl = `${API}/updatePasswordViaEmail`;

@@ -24,10 +24,13 @@ const SignIn = () => {
   const body1  = null;
   const initialData1 ={status: true, message:"hi first time"};
 
-  const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi("POST", url1,myHeaders,body1, initialData1);
+  const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method1, url1,myHeaders,body1, initialData1);
 
-  const sysmessage = networkError ? "NetworkError..please check your connectivity": "SYSTEM ERROR - please try again";
+  const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
+  //NEED A BETTER TEST
+  //without "!data.message" it places the data object into local storage with every keystroke
+  //this then generates an error in navigation component when it is looking for "role"
   if (typeof window !== "undefined" && data.status && !hasError && !data.message) {
     // places "data" return object into local storage
     localStorage.setItem("user", JSON.stringify(data));
@@ -38,7 +41,7 @@ const SignIn = () => {
     } else if (tempData.user.role === 0) {
       return <Redirect to="/buyerdashboard" />;
     } else {
-      return <Redirect to="/" />;
+      return <Redirect to="/buyerdashboard" />;
     }
   }
 

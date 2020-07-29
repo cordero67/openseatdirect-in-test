@@ -24,6 +24,10 @@ const PasswordReset = () => {
   // destructoring of "user" object in "localStorage" "data" variable
   const { user: user } = isAuthenticated();
 
+
+  // omit this intial call to the server to verify token
+  // have it go straight to the panel that asks for the new password
+  // send new password, email and token in final and only fetch
   useEffect(() => {
     let tokenNum = (queryString.parse(window.location.search).token);
     let emailAddress = (queryString.parse(window.location.search).email);

@@ -16,10 +16,11 @@ import CheckoutPP from "../../TicketPurchases/Checkout_pp";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import SignIn from "../../Users/Authentication/SignIn";
 import SignUp from "../../Users/Authentication/SignUp";
+import PasswordRecovery from "../../Users/Authentication/PasswordRecovery";
 import SignInOld from "../../Users/SignIn";
 import SignUpOld from "../../Users/SignUp";
-import PasswordRecovery from "../../Users/PasswordRecovery";
-import PasswordReset from "../../Users/PasswordReset";
+import PasswordRecoveryOld from "../../Users/PasswordRecovery";
+import PasswordReset from "../../Users/Authentication/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../../Users/UserDashboard";
 import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
@@ -104,40 +105,6 @@ const Routes = () => {
       />
 
       <Route
-        path="/signinold"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <SignInOld />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/signupold"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <SignUpOld />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
         path="/passwordrecovery"
         exact
         render={(routeProps) => (
@@ -149,6 +116,23 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <PasswordRecovery />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/passwordrecoveryOld"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PasswordRecoveryOld />
             <Footer></Footer>
           </React.Fragment>
         )}
