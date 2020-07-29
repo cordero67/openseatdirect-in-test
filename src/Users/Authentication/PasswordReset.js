@@ -28,6 +28,7 @@ const PasswordReset = () => {
       ...values,
       token: tokenNum,
       email: emailAddress,
+      newpassword: newpassword
     });
     //resetPassword({ token: tokenNum, email: emailAddress })
 
@@ -36,7 +37,7 @@ const PasswordReset = () => {
   let  myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  const url1 = `${API}/reset`;
+  const url1 = `${API}/signin`;
   const method1 = "POST";
   const body1  = null;
   const initialData1 ={status: true, message:"hi first time"};
@@ -72,7 +73,7 @@ const PasswordReset = () => {
           newpassword: values.newpassword,
         });
         setBody({
-          name: values.name,
+          token: values.token,
           email: values.email,
           newpassword: values.newpassword,
         })
