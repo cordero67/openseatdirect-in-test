@@ -91,7 +91,7 @@ const PasswordRecovery = () => {
     </Aux>
   );
   
-  const alteranteInputs = (
+  const alternateInputs = (
     <div>
         <div className={classes.Section}>
             Back to{" "}
@@ -117,7 +117,7 @@ const PasswordRecovery = () => {
         <Aux>
             {showError()}
             {recoverForm}
-            {alteranteInputs}
+            {alternateInputs}
         </Aux>
       )
     }

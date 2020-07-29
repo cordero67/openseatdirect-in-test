@@ -120,7 +120,7 @@ const SignUp = () => {
     </Aux>
   );
   
-  const alteranteInputs = (
+  const alternateInputs = (
     <div>
       <div className={classes.Section}>
         Already have an account, go to{" "}
@@ -146,7 +146,7 @@ const SignUp = () => {
         <Aux>
           {showError()}
           {signUpForm}
-          {alteranteInputs}
+          {alternateInputs}
         </Aux>
       )
     }

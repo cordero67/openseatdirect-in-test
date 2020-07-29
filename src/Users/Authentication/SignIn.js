@@ -19,7 +19,7 @@ const SignIn = () => {
   let  myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  const url1 = `${API}/reset`;
+  const url1 = `${API}/signin`;
   const method1 = "POST";
   const body1  = null;
   const initialData1 ={status: true, message:"hi first time"};
@@ -95,7 +95,7 @@ const SignIn = () => {
     </div>
   );
   
-  const alteranteInputs = (
+  const alternateInputs = (
     <div>
       <div className={classes.Section}>
         Forgot your{" "}
@@ -128,7 +128,7 @@ const SignIn = () => {
           {signInForm}
         </div>
         <br></br>
-        {alteranteInputs}
+        {alternateInputs}
       </div>
     </div>
   );
