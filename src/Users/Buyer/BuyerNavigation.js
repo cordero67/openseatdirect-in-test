@@ -8,74 +8,104 @@ import { signout } from '../apiUsers';
 
 const BuyerNavigation = (props) => {
 
+  console.log("props: ", props);
+  
   return (
     <Fragment>
-      <ul className={classes.NavigationItems}>
-        <li>
-          <button 
-            style={{
-              fontSize: "14px",
-              paddingLeft: "20px",
-              border: "none",
-              backgroundColor: props.pane === "profile" ? "#fff" : "#e7e7e7",
-              cursor: "pointer",
-              fontWeight: "600",
-              display: "inline-block",
-              width: "170px",
-              height: "30px",
-              textAlign: "left",
-              outline: "none"
-            }}
-            name="profile"
-            onClick={props.clicked}>
-            MY PROFILE
-          </button>
-        </li>
 
-        <li>
-          <button 
-            style={{
-              fontSize: "14px",
-              paddingLeft: "20px",
-              border: "none",
-              backgroundColor: props.pane === "create" ? "#fff" : "#e7e7e7",
-              cursor: "pointer",
-              fontWeight: "600",
-              display: "inline-block",
-              width: "170px",
-              height: "30px",
-              textAlign: "left",
-              outline: "none"
-            }}
-            name="create"
-            onClick={props.clicked}>
-            CREATE EVENT
-          </button>
-        </li>
+      <div className={classes.NavigationTitle}>
+          {props.buyerInfo.name ?
+            <span
+              style={{
+                display: "inline-block",
+                verticalAlign: "middle",
+                lineHeight: "normal",
+              }}>
+              {props.buyerInfo.name}
+            </span> :
+            "Dashboard"}
+      </div>
 
-        <li
+      <div className={classes.DashboardTitle}>
+        <span
           style={{
-            fontSize: "14px",
-            paddingLeft: "20px",
-            backgroundColor: "#e7e7e7",
-            cursor: "pointer",
-            fontWeight: "bold",
             display: "inline-block",
-            width: "170px",
-            height: "30px",
-            textAlign: "left"
-          }}
-        >
-          <NavLink
-            to="/signin"
-            style={{color: "#000"}}
-            onClick={() => {
-              signout(() => {
-              })
-            }}
-          >SIGN OUT
-          </NavLink>
-        </li>
+            verticalAlign: "middle",
+            lineHeight: "normal",
+          }}>
+          MY DASHBOARD
+        </span>
+      </div>
+
+      <ul className={classes.NavigationBar}>
+        <div className={classes.NavigationItems}>
+          <li>
+            <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "profile" ? "#fff" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="profile"
+              onClick={props.clicked}>
+              PROFILE
+            </button>
+          </li>
+
+          <li>
+            <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "wallet" ? "#fff" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="wallet"
+              onClick={props.clicked}>
+              TICKET WALLET
+            </button>
+          </li>
+
+          <li>
+            <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "preferences" ? "#fff" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="preferences"
+              onClick={props.clicked}>
+              PREFERENCES
+            </button>
+          </li>
+
+          <li>
+          <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "vendor" ? "#fff" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="vendor"
+              onClick={props.clicked}>
+              BECOME A VENDOR
+            </button>
+          </li>
+
+          <li 
+          >
+            <NavLink
+            className={classes.NavigationButton}
+              to="/signin"
+              style={{color: "#000",
+              fontWeight: "500"}}
+              onClick={() => {
+                signout(() => {
+                })
+              }}
+            >SIGN OUT
+            </NavLink>
+          </li>
+        </div>
       </ul>
     </Fragment>
   );

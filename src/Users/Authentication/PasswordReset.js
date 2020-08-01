@@ -134,11 +134,14 @@ const PasswordReset = () => {
       )
     } else {
       return (
-        <Aux>
-          {showError()}
-          {passwordForm}
+        <div>
+          <div>
+            {showError()}
+            {passwordForm}
+          </div>
+          <br></br>
           {alternateInputs}
-        </Aux>
+        </div>
       )
     }
   }

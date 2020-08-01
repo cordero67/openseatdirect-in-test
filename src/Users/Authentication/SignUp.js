@@ -79,7 +79,7 @@ const SignUp = () => {
       </div>
 
       <div className="form-group">
-        <label className="text-muted">E-mail Address</label>
+        <label>E-mail Address</label>
         <input
           type="email"
           name="email"
@@ -90,7 +90,7 @@ const SignUp = () => {
       </div>
 
       <div className="form-group">
-        <label className="text-muted">Password</label>
+        <label>Password</label>
         <input
           type="password"
           name="password"
@@ -116,7 +116,6 @@ const SignUp = () => {
       className="btn btn-primary">
         Submit
       </button>
-      <br></br>
     </Aux>
   );
   
@@ -143,11 +142,14 @@ const SignUp = () => {
       )
     } else {
       return (
-        <Aux>
-          {showError()}
-          {signUpForm}
+        <div>
+          <div>
+            {showError()}
+            {signUpForm}
+          </div>
+          <br></br>
           {alternateInputs}
-        </Aux>
+        </div>
       )
     }
   }
@@ -161,7 +163,6 @@ const SignUp = () => {
         </div>
         <br></br>
         <div className={classes.Section}>
-          <br></br>
           {mainDisplay()}
         </div>
       </div>

@@ -17,9 +17,6 @@ import TicketSelection from "../../TicketPurchases/TicketSelection";
 import SignIn from "../../Users/Authentication/SignIn";
 import SignUp from "../../Users/Authentication/SignUp";
 import PasswordRecovery from "../../Users/Authentication/PasswordRecovery";
-import SignInOld from "../../Users/SignIn";
-import SignUpOld from "../../Users/SignUp";
-import PasswordRecoveryOld from "../../Users/PasswordRecovery";
 import PasswordReset from "../../Users/Authentication/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../../Users/UserDashboard";
@@ -30,9 +27,6 @@ import VendorEventDetails from "../../Users/VendorEventDetails";
 import VendorOrders from "../../Users/VendorOrders";
 import VendorProflle from "../../Users/VendorProflle";
 import VendorAccount from "../../Users/VendorAccount";
-import AdminEvents from "../../Users/AdminEvents";  
-import AdminOrders from "../../Users/AdminOrders";
-import AdminAccount from "../../Users/AdminAccount";
 
 import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";
@@ -122,23 +116,6 @@ const Routes = () => {
       />
 
       <Route
-        path="/passwordrecoveryOld"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PasswordRecoveryOld />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
         path="/passwordreset"
         exact
         render={(routeProps) => (
@@ -150,57 +127,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <PasswordReset />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/adminevents"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={AdminEvents} role="2" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/adminorders"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={AdminOrders} role="2" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/adminaccount"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={AdminAccount} role="2" />
             <Footer></Footer>
           </React.Fragment>
         )}

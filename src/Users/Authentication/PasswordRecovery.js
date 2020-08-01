@@ -63,7 +63,8 @@ const PasswordRecovery = () => {
   const recoverForm = (
     <Aux>
       <div className="form-group">
-        <label className="text-muted" styles={{ fontSize: "16px" }}>
+        <br></br>
+        <label styles={{ fontSize: "16px" }}>
           E-mail Address
         </label>
         <input
@@ -114,23 +115,27 @@ const PasswordRecovery = () => {
       )
     } else {
       return (
-        <Aux>
+        <div>
+          <div>
             {showError()}
             {recoverForm}
-            {alternateInputs}
-        </Aux>
+          </div>
+          <br></br>
+          {alternateInputs}
+        </div>
       )
     }
   }
 
   return (
     <div className={classes.MainContainer}>
-      <div className={classes.BlankCanvas} style={{ height: "375px" }}>
+      <div className={classes.BlankCanvas} style={{height: "490px"}}>
         <br></br>
-        <div className={classes.Header}>Password Reset Request</div>
+        <div className={classes.Header}>
+          Password Reset Request
+        </div>
         <br></br>
         <div className={classes.Section}>
-          <br></br>
           {mainDisplay()}
         </div>
       </div>
