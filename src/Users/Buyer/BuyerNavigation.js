@@ -53,32 +53,6 @@ const BuyerNavigation = (props) => {
           </li>
 
           <li>
-            <button
-              className={classes.NavigationButton}
-              style={{
-                backgroundColor: props.pane === "wallet" ? "#fff" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="wallet"
-              onClick={props.clicked}>
-              TICKET WALLET
-            </button>
-          </li>
-
-          <li>
-            <button
-              className={classes.NavigationButton}
-              style={{
-                backgroundColor: props.pane === "preferences" ? "#fff" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="preferences"
-              onClick={props.clicked}>
-              PREFERENCES
-            </button>
-          </li>
-
-          <li>
           <button
               className={classes.NavigationButton}
               style={{
