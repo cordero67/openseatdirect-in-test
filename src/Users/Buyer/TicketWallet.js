@@ -11,7 +11,7 @@ const TicketWallet = (props) => {
             TICKET WALLET
             </div>
             <div className={classes.DisplayPanel}>
-                <div style={{fontSize: "24px"}}>Comming soon!!!</div>
+                <div style={{fontSize: "24px"}}>Coming soon!!!</div>
             </div>
         </div>
     )

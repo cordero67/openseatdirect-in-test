@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-//import { signin, authenticate } from "../../auth";
 import { useOurApi } from "./apiUsers";
 import { API } from "../../config";
 

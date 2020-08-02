@@ -158,6 +158,22 @@
 }
 
 
+
+
+
+
+.BlankCanvas {
+  background-color: white;
+  margin: auto;
+  width: 500px;
+  padding-top: 30px;
+  padding-left: 80px;
+  padding-right: 80px;
+  text-align: left;
+  overflow-y: auto;
+}
+
+
 /*
 .SystemDownMessage {
   z-index: 200;

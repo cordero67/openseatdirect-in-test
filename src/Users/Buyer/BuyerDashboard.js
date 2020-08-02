@@ -15,8 +15,7 @@ const VendorEvents = () => {
   const [buyerInfo, setBuyerInfo] = useState();//
   const [isLoading, setIsLoading] = useState(true);//
 
-  // profile, create, temp
-  const [paneView, setPaneView] = useState("profile")
+  const [paneView, setPaneView] = useState("vendor")
 
   useEffect(() => {
     setIsLoading(true);
