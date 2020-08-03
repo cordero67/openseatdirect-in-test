@@ -313,7 +313,7 @@ const Checkout = props => {
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // POTENTIALLY NEED TO ADD BACK THE "onBLur" IN <div>
   // displays the "PayPalButton" or an "empty cart" error message
-  const showPayPal = () => (
+  const showPayPal = (
     // loads PayPal Smart buttons if order exists
     <div>
       {orderTotals.finalPurchaseAmount > 0 ? (
@@ -531,7 +531,7 @@ const Checkout = props => {
             </span>
             <br></br>
             <br></br>
-            {showPayPal()}
+            {showPayPal}
           </div>
 
           <div className={styles.EventFooterMod}>

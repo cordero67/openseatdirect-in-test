@@ -8,6 +8,7 @@ import Profile from "./Profile";
 import TicketWallet from "./TicketWallet";
 import Preferences from "./Preferences";
 import VendorOnboarding from "./VendorOnboarding";
+import VendorOnboardingOld from "./VendorOnboardingOld";
 import classes from "./BuyerDashboard.module.css";
 
 const VendorEvents = () => {
@@ -56,6 +57,10 @@ const MainDisplay = () => {
     } else if (paneView === "vendor") {
       return (
         <VendorOnboarding/>
+      )
+    } else if (paneView === "vendorold") {
+      return (
+        <VendorOnboardingOld/>
       )
     } else if (paneView === "wallet") {
         return (

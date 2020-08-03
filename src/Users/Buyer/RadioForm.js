@@ -12,7 +12,7 @@ const RadioForm = (props) => {
                 {props.details.map((item, index) => {
                     return (
                         <Form.Field key={index} style={{height: "30px", padding: "5px", margin: "0px"}}>
-                            <Radio style={{fontSize: "16px"}}
+                            <Radio style={{fontSize: "16px", border: "grey"}}
                                 label={item.label}
                                 name={props.group}
                                 value={item.value}
@@ -27,7 +27,11 @@ const RadioForm = (props) => {
     }
 
     return (
-        <Form style={{padding: "0px 0px 0px 35px", fontSize: "16px", backgroundColor: "#E7E7E7"}}>
+        <Form style={{
+            padding: "0px 0px 0px 35px",
+            fontSize: "16px",
+            backgroundColor: "white"
+        }}>
             {formField()}
         </Form>
     )
