@@ -52,11 +52,14 @@ const PasswordRecovery = () => {
   };
 
   const showSuccess = (
-    <div
-      className="alert alert-info"
-    >
-      To complete the sign-up process, please click the link in the e-mail sent to {values.confirmEmail}.
-        <Link to="/signin">Signin</Link>
+    <div>
+      <div>
+        If there is an account associated with {values.email} you will receive an email with a link to reset your password.
+      </div>
+      <br></br>
+      <button>
+        <Link to="/events">Continue</Link>
+      </button>
     </div>
   );
 
@@ -75,9 +78,6 @@ const PasswordRecovery = () => {
           value={email}
         />
       </div>
-
-      <div>A temporary password will be sent to your mailbox.</div>
-      <br></br>
       <button onClick={() => {
         console.log("clicked button",{
           email: values.email
@@ -87,7 +87,7 @@ const PasswordRecovery = () => {
         })
       }}
       className="btn btn-primary">
-        Submit New
+        Submit
       </button>
     </Aux>
   );
@@ -129,7 +129,7 @@ const PasswordRecovery = () => {
 
   return (
     <div className={classes.MainContainer}>
-      <div className={classes.BlankCanvas} style={{height: "490px"}}>
+      <div className={classes.BlankCanvas} style={{height: "340px"}}>
         <br></br>
         <div className={classes.Header}>
           Password Reset Request
