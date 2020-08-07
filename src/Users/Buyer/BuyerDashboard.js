@@ -11,7 +11,7 @@ import VendorOnboarding from "./VendorOnboarding";
 import VendorOnboardingOld from "./VendorOnboardingOld";
 import classes from "./BuyerDashboard.module.css";
 
-const VendorEvents = () => {
+const BuyerDashboard = () => {
 
   const [buyerInfo, setBuyerInfo] = useState();//
   const [isLoading, setIsLoading] = useState(true);//
@@ -115,4 +115,4 @@ const onboardingMessage = () => {
   );
 };
 
-export default VendorEvents;
+export default BuyerDashboard;

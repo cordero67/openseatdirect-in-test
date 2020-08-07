@@ -102,9 +102,9 @@ const handleErrors = response => {
       return (
         <div>
           <div className={classes.MainDisplayHeader}>
-            <div style={{ textAlign: "center" }}>Date</div>
+            <div style={{ textAlign: "center" }}>Dateee</div>
             <div></div>
-            <div className={classes.Expand}>Event</div>
+            <div className={classes.Expand}>Eventtt</div>
             <div style={{ textAlign: "center" }}>Status</div>
             <div style={{ textAlign: "center" }}>Edit</div>
           </div>

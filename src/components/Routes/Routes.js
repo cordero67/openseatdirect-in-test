@@ -21,7 +21,8 @@ import PasswordReset from "../../Users/Authentication/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../../Users/UserDashboard";
 import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
-import VendorEventsOld from "../../Users/zzzVendorEvents";
+import VendorDashboard from "../../Users/Vendor/VendorDashboard";
+import VendorDashboardOld from "../../Users/Vendor/VendorDashboardOld";
 import VendorEvents from "../../Users/Vendor/VendorEvents";
 import VendorEventDetails from "../../Users/VendorEventDetails";
 import VendorOrders from "../../Users/VendorOrders";
@@ -166,6 +167,40 @@ const Routes = () => {
       )}
     />
 
+    <Route
+      path="/vendordashboard"
+      exact
+      render={(routeProps) => (
+        <React.Fragment>
+          <Header
+            positioning="fixed"
+            logo={LogoC}
+            clicked={toggleSideDrawer}
+          />
+          <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+          <VendorDashboard />
+          <Footer></Footer>
+        </React.Fragment>
+      )}
+    />
+
+    <Route
+      path="/vendordashboardold"
+      exact
+      render={(routeProps) => (
+        <React.Fragment>
+          <Header
+            positioning="fixed"
+            logo={LogoC}
+            clicked={toggleSideDrawer}
+          />
+          <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+          <VendorDashboardOld />
+          <Footer></Footer>
+        </React.Fragment>
+      )}
+    />
+
       <Route
         path="/vendorevents"
         exact
@@ -178,23 +213,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <PrivateRoute component={VendorEvents} role="1" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/vendoreventsold"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={VendorEventsOld} role="1" />
             <Footer></Footer>
           </React.Fragment>
         )}

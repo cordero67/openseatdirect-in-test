@@ -12,7 +12,6 @@ import TimeSelector from "./Selectors/TimeSelector";
 import TimeZoneSelector from "./Selectors/TimeZoneSelector";
 import CategorySelector from "./Selectors/CategorySelector";
 
-
 import DateSelector from "./DateSelector";
 import RadioForm from "./RadioForm";
 
@@ -2780,6 +2779,7 @@ const EventCreation = () => {
                     {eventAdditionalWarning
                       ? displayMessage(256, eventDescription.locationNote)
                       : null}
+
                   </div>
                   <div className={classes.SectionTitleTight}>
                     Online Information

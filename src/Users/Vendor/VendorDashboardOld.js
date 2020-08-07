@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Form } from "react-bootstrap";
 
-import { API } from "../config";
+import { API } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,9 +11,9 @@ import {
   faEllipsisV,
 } from "@fortawesome/free-solid-svg-icons";
 
-import VendorNavigation from "./VendorNavigation";
+import VendorNavigation from "../VendorNavigation";
 
-import classes from "./User.module.css";
+import classes from "../User.module.css";
 
 const VendorEvents = () => {
   const monthNames = [
@@ -202,6 +202,184 @@ const VendorEvents = () => {
     }
   };
 
+  const eventItems = () => {
+    if (true) {
+      return (
+        <div style={{ marginTop: "110px", overflowY: "auto" }}>
+        {eventDetails.map((item, index) => {
+          let tempDateTime;
+          let tempMonthAbbr;
+          let tempMonthNames;
+          let tempDate;
+          let tempDay;
+          let tempYear;
+          let tempAmPm;
+          let tempHours;
+          let tempMinutes;
+          let tempLongDateTime;
+          tempDateTime = new Date(item.startDateTime);
+          tempMonthAbbr = monthAbbr[tempDateTime.getMonth()];
+          tempMonthNames = monthNames[tempDateTime.getMonth()];
+          tempDate = tempDateTime.getDate();
+          tempDay = weekDays[tempDateTime.getDay()];
+          tempYear = tempDateTime.getFullYear();
+          if (tempDateTime.getHours() > 12) {
+            tempHours = tempDateTime.getHours() - 12;
+            tempAmPm = "PM";
+          } else {
+            tempHours = tempDateTime.getHours();
+            tempAmPm = "AM";
+          }
+          if (tempDateTime.getMinutes() > 9) {
+            tempMinutes = tempDateTime.getMinutes();
+          } else {
+            tempMinutes = "0" + tempDateTime.getMinutes();
+          }
+
+          tempLongDateTime =
+            tempDay +
+            ", " +
+            tempMonthNames +
+            " " +
+            tempDate +
+            ", " +
+            tempYear +
+            " - " +
+            tempHours +
+            ":" +
+            tempMinutes +
+            tempAmPm;
+
+          return (
+            <div key={index}>
+              <div
+                style={{
+                  display: "grid",
+                  columnGap: "10px",
+                  backgroundColor: "#fff",
+                  gridTemplateColumns:
+                    "60px 20px 480px 100px 110px 90px 60px",
+                  fontSize: "16px",
+                  paddingTop: "15px",
+                  paddingLeft: "20px",
+                  paddingBottom: "10px",
+                  paddingRight: "30px",
+                }}
+              >
+                <div style={{ textAlign: "center" }}>
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "400",
+                      color: "red",
+                    }}
+                  >
+                    {tempMonthAbbr}
+                  </span>
+                  <br></br>
+                  <span style={{ fontSize: "18px", color: "black" }}>
+                    {tempDate}
+                  </span>
+                </div>
+                <div style={{ fontSize: "12px", textAlign: "center" }}>
+                  {expandDetails[item.eventNum] === true ? (
+                    <FontAwesomeIcon
+                      className={classes.faChevronUp}
+                      color="black"
+                      size="sm"
+                      cursor="pointer"
+                      onClick={() => {
+                        setActiveTickets("");
+                        setActiveEvent("");
+                        //handleGetAttendees(item.eventNum);
+                        let tempDetails = [...expandDetails];
+                        tempDetails[item.eventNum] = false;
+                        setExpandDetails(tempDetails);
+                      }}
+                      icon={faChevronUp}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      className={classes.faChevronUp}
+                      color="black"
+                      size="sm"
+                      cursor="pointer"
+                      onClick={() => {
+                        handleGetAttendees(item.eventNum);
+                        let tempDetails = [...expandDetails];
+                        tempDetails[item.eventNum] = true;
+                        setExpandDetails(tempDetails);
+                      }}
+                      icon={faChevronDown}
+                    />
+                  )}
+                </div>
+                <div
+                  className={classes.Expand}
+                  style={{ fontSize: "16px" }}
+                >
+                  {item.eventTitle}
+                  <br></br>
+                  <span style={{ fontSize: "13px", fontWeight: "500" }}>
+                    {tempLongDateTime}
+                  </span>
+                </div>
+                <div style={{ textAlign: "center", fontWeight: "500" }}>
+                  25/100
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    textAlign: "right",
+                    paddingRight: "10px",
+                  }}
+                >
+                  $10000
+                </div>
+                <div style={{ textAlign: "center", fontWeight: "500" }}>
+                  Draft
+                </div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    textAlign: "center",
+                    position: "relative",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    className={classes.faChevronUp}
+                    style={{ zIndex: "100" }}
+                    color="black"
+                    size="lg"
+                    cursor="pointer"
+                    onClick={() => {
+                      console.log("Clicked ellises");
+                      console.log("item.eventNum: ", item.eventNum);
+
+                      window.location.href = `/eventedit/?eventID=${item.eventNum}`;
+                    }}
+                    icon={faEllipsisV}
+                  />
+                </div>
+              </div>
+
+              <div>
+                {activeEvent === item.eventNum ? (
+                  <div style={{ fontSize: "14px" }}>
+                    {listTicketTypes()}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      )
+    } else {
+      return null
+    }
+  }
+
   const mainDisplay = () => {
     if (!isLoading) {
       return (
@@ -235,173 +413,7 @@ const VendorEvents = () => {
 
           <div></div>
           <div style={{ marginTop: "110px", overflowY: "auto" }}>
-            {eventDetails.map((item, index) => {
-              let tempDateTime;
-              let tempMonthAbbr;
-              let tempMonthNames;
-              let tempDate;
-              let tempDay;
-              let tempYear;
-              let tempAmPm;
-              let tempHours;
-              let tempMinutes;
-              let tempLongDateTime;
-              tempDateTime = new Date(item.startDateTime);
-              tempMonthAbbr = monthAbbr[tempDateTime.getMonth()];
-              tempMonthNames = monthNames[tempDateTime.getMonth()];
-              tempDate = tempDateTime.getDate();
-              tempDay = weekDays[tempDateTime.getDay()];
-              tempYear = tempDateTime.getFullYear();
-              if (tempDateTime.getHours() > 12) {
-                tempHours = tempDateTime.getHours() - 12;
-                tempAmPm = "PM";
-              } else {
-                tempHours = tempDateTime.getHours();
-                tempAmPm = "AM";
-              }
-              if (tempDateTime.getMinutes() > 9) {
-                tempMinutes = tempDateTime.getMinutes();
-              } else {
-                tempMinutes = "0" + tempDateTime.getMinutes();
-              }
-
-              tempLongDateTime =
-                tempDay +
-                ", " +
-                tempMonthNames +
-                " " +
-                tempDate +
-                ", " +
-                tempYear +
-                " - " +
-                tempHours +
-                ":" +
-                tempMinutes +
-                tempAmPm;
-
-              return (
-                <div key={index}>
-                  <div
-                    style={{
-                      display: "grid",
-                      columnGap: "10px",
-                      backgroundColor: "#fff",
-                      gridTemplateColumns:
-                        "60px 20px 480px 100px 110px 90px 60px",
-                      fontSize: "16px",
-                      paddingTop: "15px",
-                      paddingLeft: "20px",
-                      paddingBottom: "10px",
-                      paddingRight: "30px",
-                    }}
-                  >
-                    <div style={{ textAlign: "center" }}>
-                      <span
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "400",
-                          color: "red",
-                        }}
-                      >
-                        {tempMonthAbbr}
-                      </span>
-                      <br></br>
-                      <span style={{ fontSize: "18px", color: "black" }}>
-                        {tempDate}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: "12px", textAlign: "center" }}>
-                      {expandDetails[item.eventNum] === true ? (
-                        <FontAwesomeIcon
-                          className={classes.faChevronUp}
-                          color="black"
-                          size="sm"
-                          cursor="pointer"
-                          onClick={() => {
-                            setActiveTickets("");
-                            setActiveEvent("");
-                            //handleGetAttendees(item.eventNum);
-                            let tempDetails = [...expandDetails];
-                            tempDetails[item.eventNum] = false;
-                            setExpandDetails(tempDetails);
-                          }}
-                          icon={faChevronUp}
-                        />
-                      ) : (
-                        <FontAwesomeIcon
-                          className={classes.faChevronUp}
-                          color="black"
-                          size="sm"
-                          cursor="pointer"
-                          onClick={() => {
-                            handleGetAttendees(item.eventNum);
-                            let tempDetails = [...expandDetails];
-                            tempDetails[item.eventNum] = true;
-                            setExpandDetails(tempDetails);
-                          }}
-                          icon={faChevronDown}
-                        />
-                      )}
-                    </div>
-                    <div
-                      className={classes.Expand}
-                      style={{ fontSize: "16px" }}
-                    >
-                      {item.eventTitle}
-                      <br></br>
-                      <span style={{ fontSize: "13px", fontWeight: "500" }}>
-                        {tempLongDateTime}
-                      </span>
-                    </div>
-                    <div style={{ textAlign: "center", fontWeight: "500" }}>
-                      25/100
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: "500",
-                        textAlign: "right",
-                        paddingRight: "10px",
-                      }}
-                    >
-                      $10000
-                    </div>
-                    <div style={{ textAlign: "center", fontWeight: "500" }}>
-                      Draft
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "12px",
-                        textAlign: "center",
-                        position: "relative",
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        className={classes.faChevronUp}
-                        style={{ zIndex: "100" }}
-                        color="black"
-                        size="lg"
-                        cursor="pointer"
-                        onClick={() => {
-                          console.log("Clicked ellises");
-                          console.log("item.eventNum: ", item.eventNum);
-
-                          window.location.href = `/eventedit/?eventID=${item.eventNum}`;
-                        }}
-                        icon={faEllipsisV}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    {activeEvent === item.eventNum ? (
-                      <div style={{ fontSize: "14px" }}>
-                        {listTicketTypes()}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              );
-            })}
+            {eventItems}
           </div>
         </div>
       );
