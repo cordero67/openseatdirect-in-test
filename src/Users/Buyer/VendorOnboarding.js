@@ -536,7 +536,7 @@ const VendorOnboarding = (props) => {
                                 fontSize: "22px",
                                 fontWeight: "600"
                             }}
-                            >Choose a Payment Plan
+                            >STEP 2: Choose a Payment Plan
                         </div>
                         <br></br>
                         <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
@@ -737,16 +737,25 @@ const VendorOnboarding = (props) => {
             )
         } else if (pageView === "complete") {
             return (
-                <div className={classes.DisplayPanel}
-                    style={{textAlign: "center"}}>
+                <div className={classes.DisplayPanel}>
+                    <br></br>
+                    <br></br>
+                    <div
+                        style={{
+                            paddingLeft: "80px",
+                            fontSize: "22px",
+                            fontWeight: "600"
+                        }}
+                        >STEP 3: Create an Event
+                    </div>
                     <br></br>
                     <br></br>
                     <br></br>
-                    <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600"}}>
+                    <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600", textAlign: "center"}}>
                         Congratulations, you are now ready to create your first event!!!
                     </div>
                     <br></br>
-                    <div >Summary of OSD benefits: cash now, control information, single dashboard.</div>
+                    <div style={{textAlign: "center"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
                     <br></br>
                     <br></br>
                     <br></br>
@@ -781,7 +790,8 @@ const VendorOnboarding = (props) => {
                     <div style={{
                         color: "#2F5596",
                         fontSize: "26px",
-                        fontWeight: "600"
+                        fontWeight: "600",
+                        textAlign: "center"
                     }}>
                         So are you ready to create your first event?
                     </div>
