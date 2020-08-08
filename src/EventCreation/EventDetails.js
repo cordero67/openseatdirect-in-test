@@ -321,7 +321,7 @@ const EventDetails = (props) => {
                             className={classes.InputBoxContent}
                             style={{ width: "600px" }}
                             current={props.event.locationCountryCode}
-                            getCountry={props.changeCountry}
+                            getCountry={(value) => props.changeEventField(value, "locationCountryCode")}
                         />
                     </div>
 
@@ -443,32 +443,29 @@ const EventDetails = (props) => {
 
             <div className={classes.DateTimeInputs}>
                 <DateSelector
-                    type={"startDate"}
                     startDate={props.event.startDate}
+                    type={"startDate"}
                     current={props.event.startDate}
                     change={(date) => props.changeDate(date, "start")}
                     beforeDate={new Date()}
                 />
                 <TimeSelector
                     current={props.event.startTime}
-                    name="startTime"
-                    getTime={props.changeStart}
+                    getTime={(value) => props.changeEventField(value, "startTime")}
                 />
                 <DateSelector
-                    type={"endDate"}
                     startDate={props.event.startDate}
-                    current={props.event.endDate}
+                    type={"endDate"}
                     change={(date) => props.changeDate(date, "end")}
                     beforeDate={props.event.startDate}
                 />
                 <TimeSelector
                     current={props.event.endTime}
-                    name="endTime"
-                    getTime={props.changeEnd}
+                    getTime={(value) => props.changeEventField(value, "endTime")}
                 />
                 <TimeZoneSelector
                     current={props.event.timeZone}
-                    getTimeZone={props.changeZone}
+                    getTimeZone={(value) => props.changeEventField(value, "timeZone")}
                 />
             </div>
 

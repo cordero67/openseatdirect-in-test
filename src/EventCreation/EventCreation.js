@@ -335,7 +335,7 @@ const EventCreation = () => {
       console.log("Updated tempTicketDetailsArray: ", tempTicketDetailsArray);
       if(tempTicketDetailsArray.length === 0) {
         setTicketDetails([
-            {
+          {
             key: "1",
             sort: "",
             _id: "",
@@ -1827,7 +1827,7 @@ const EventCreation = () => {
     }
   };
 
-  const additionalSettings = (ticket) => {
+  const priceSettings = (ticket) => {
     // defines warnings for order min and max
     let orderRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
 
@@ -2104,6 +2104,7 @@ const EventCreation = () => {
             item.priceWarning = !priceRegex.test(item.currentTicketPrice);
           }
 
+
           // defines styling for the price and quantity boxes
           let tempNameBox;
           let tempPriceBox;
@@ -2189,6 +2190,7 @@ const EventCreation = () => {
                   >
                     <FontAwesomeIcon cursor="pointer" icon={faGripVertical} />
                   </div>
+
                   <input className={tempNameBox}
                     type="text"
                     maxLength="64"
@@ -2201,6 +2203,8 @@ const EventCreation = () => {
                     }}
                   ></input>
                 </div>
+
+
 
                 <div
                   style={{
@@ -2282,6 +2286,8 @@ const EventCreation = () => {
                   />
                 </div>
               </div>
+
+
               {item.viewModal ? (
                 <Aux>
                   <TicketModal
@@ -2309,7 +2315,7 @@ const EventCreation = () => {
                 </div>
                 : null
               }
-              {item.settings ? additionalSettings(item) : null}
+              {item.settings ? priceSettings(item) : null}
             </Aux>
           );
         })}
@@ -3307,6 +3313,10 @@ const EventCreation = () => {
                   Features
                 </div>
               </div>
+
+
+
+
               {ticketTypeDisplay()}
     
               <div

@@ -56,7 +56,9 @@ const MainDisplay = () => {
       )
     } else if (paneView === "vendor") {
       return (
-        <VendorOnboarding/>
+        <VendorOnboarding
+          userid={buyerInfo.id}
+        />
       )
     } else if (paneView === "vendorold") {
       return (

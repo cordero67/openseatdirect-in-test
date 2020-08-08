@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import { useOurApi } from "../Authentication/apiUsers";
+import { API } from "../../config";
+
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,20 +18,50 @@ import classes from "./BuyerDashboard.module.css";
 
 const VendorOnboarding = (props) => {
     const [values, setValues] = useState({
-      name: "",
-      email: "",
-      phone: "",
-      url: "",
+      accountName: "",
+      accountEmail: "",
+      accountPhone: "",
+      accountUrl: "",
       ticketPlan: "",
       paymentPlan: "",
       paypalClient: "",
       paypalSecret: ""
     });
 
-    const { name, email, phone, url, ticketPlan, paymentPlan, paypalClient, paypalSecret } = values;
+    const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paymentPlan, paypalClient, paypalSecret } = values;
 
     const [pageView, setPageView] = useState("summary")
-    
+
+    console.log("props.userid: ", props.userid)
+
+    let  myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+  
+//www.bondirectly.com/api/account/{userId} {
+
+    const url1 = `${API}/account/${props.userid}`;
+    console.log("url1: ", url1)
+    const method1 = "POST";
+    const body1  = null;
+    const initialData1 ={status: true, message:"hi first time"};
+  
+    const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method1, url1,myHeaders,body1, initialData1);
+  
+    const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
+
+    if (data.accountNum) {
+        if (ticketPlan === "paid") {
+            setPageView("paypal");
+        } else if (ticketPlan === "free") {
+            setPageView("complete");
+        } else {
+            setPageView("vendor");
+        }
+        console.log("pageView: ", pageView)
+    } else if (!hasError) {
+        console.log("API error")
+    }
+
     const handleChange = (event) => {
         setValues({
         ...values,
@@ -47,7 +80,7 @@ const VendorOnboarding = (props) => {
 
     const ticketPlans = [
         { label: "Free tickets only", value: "free" },
-        { label: "Free and paid tickets", value: "paid" }
+        { label: "Paid (and free) tickets", value: "paid" }
     ];
 
     const paymentPlans = [
@@ -199,18 +232,18 @@ const VendorOnboarding = (props) => {
                         <br></br>
                         <div  className={classes.VendorCanvas}>
                             <div className="form-group">
-                                <label>Name{" "}<span style={{color: "red"}}>*</span></label>
+                                <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
                                 <input
                                     type="text"
-                                    name="name"
+                                    name="accountName"
                                     className="form-control"
                                     onChange={handleChange}
-                                    value={name}
+                                    value={accountName}
                                 />
                             </div>
                             <br></br>
                             <div className="form-group">
-                                <label>Company Email{" "}<span style={{color: "red"}}>*{" "}</span>
+                                <label>Company Email{" "}
                                 <Popup
                                     position="right center"
                                     content="This email will only be used..."
@@ -226,10 +259,10 @@ const VendorOnboarding = (props) => {
                                 </label>
                                 <input
                                     type="text"
-                                    name="email"
+                                    name="accountEmail"
                                     className="form-control"
                                     onChange={handleChange}
-                                    value={email}
+                                    value={accountEmail}
                                 />
                             </div>
                             <br></br>
@@ -250,10 +283,10 @@ const VendorOnboarding = (props) => {
                                 </label>
                                 <input
                                     type="text"
-                                    name="phone"
+                                    name="accountPhone"
                                     className="form-control"
                                     onChange={handleChange}
-                                    value={phone}
+                                    value={accountPhone}
                                 />
                             </div>
                             <br></br>
@@ -261,10 +294,10 @@ const VendorOnboarding = (props) => {
                                 <label>Company Website</label>
                                 <input
                                     type="text"
-                                    name="url"
+                                    name="accountUrl"
                                     className="form-control"
                                     onChange={handleChange}
-                                    value={url}
+                                    value={accountUrl}
                                 />
                             </div>
                         </div>
@@ -307,13 +340,10 @@ const VendorOnboarding = (props) => {
                                 }}
                                 content="Next"
 
-                                disabled={!name || !email || !phone || !url}
+                                disabled={!accountName}
                                 onClick={() => {
-                                    if (ticketPlan) {
-                                        setPageView("review")
-                                    } else if (!ticketPlan) {
-                                        setPageView("ticket")
-                                    }
+                                    setPageView("ticket");
+                                    console.log("pageView: ", pageView)
                                 }}
                             />
                         </div>
@@ -393,15 +423,156 @@ const VendorOnboarding = (props) => {
                                 
                                 disabled={!ticketPlan}
                                 onClick={() => {
-                                    if (ticketPlan === "free") {
-                                        setPageView("review");
-                                    } else if (ticketPlan === "paid") {
+                                    setPageView("review");
+                                    console.log("pageView: ", pageView)
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )
+        } else if (pageView === "review") {
+            return (
+                <div className={classes.DisplayPanel}>
+                    <div>
+                        <br></br>
+                        <br></br>
+                        <div
+                            style={{
+                                paddingLeft: "80px",
+                                fontSize: "22px",
+                                fontWeight: "600"
+                            }}
+                            >Review
+                        </div>
+                        <div style={{paddingLeft: "80px"}}>Please review your input before continuing.</div>
+                        <br></br>
+                        <br></br>
+                        <div  className={classes.CompleteCanvas}>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "200px 350px",
+                                paddingBottom: "10px",
+                                columnGap: "20px"}}>
+                                <div>Company Name:</div>
+                                <div>{accountName}</div>
+                            </div>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "200px 350px",
+                                paddingBottom: "10px",
+                                columnGap: "20px"}}>
+                                <div>Company Email:</div>
+                                <div>{accountEmail}</div>
+                            </div>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "200px 350px",
+                                paddingBottom: "10px",
+                                columnGap: "20px"}}>
+                                <div>Company Phone Number:</div>
+                                <div>{accountPhone}</div>
+                            </div>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "200px 350px",
+                                paddingBottom: "10px",
+                                columnGap: "20px"}}>
+                                <div>Company Website:</div>
+                                <div>{accountUrl}</div>
+                            </div>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "200px 350px",
+                                paddingBottom: "10px",
+                                columnGap: "20px"}}>
+                                <div>Ticket Plan:</div>
+                                <div>{ticketPlan}</div>
+                            </div>
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "170px 170px",
+                            paddingLeft: "325px",
+                            textAlign: "center"}}>
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid blue",
+                                    color: "blue",
+                                    fontSize: "16px",
+                                    height: "30px",
+                                    width: "120px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px",
+                                }}
+                                content="Back"
+                                onClick={() => {
+                                    setPageView("ticket");
+                                    console.log("pageView: ", pageView)
+                                }}
+                            />
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid green",
+                                    color: "green",
+                                    fontSize: "16px",
+                                    width: "120px",
+                                    height: "30px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px",
+                                }}
+                                content="Submit"
+                                onClick={() => {
+                                    if (ticketPlan === "paid") {
                                         setPageView("paypal");
+                                    } else if (ticketPlan === "free") {
+                                        setPageView("complete");
+                                    } else {
+                                        setPageView("vendor");
                                     }
                                     console.log("pageView: ", pageView)
                                 }}
                             />
                         </div>
+
+                        
+                        <Button
+                            style={{
+                                backgroundColor: 'white',
+                                border: "1px solid green",
+                                color: "green",
+                                fontSize: "16px",
+                                width: "120px",
+                                height: "30px",
+                                margin: "auto",
+                                textAlign: "center",
+                                padding: "0px"
+                            }}
+                            content="Server Call"
+                            onClick={() => {
+                                console.log("clicked button",{
+                                    accountName: accountName,
+                                    accountEmail: accountEmail,
+                                    accountPhone: accountPhone,
+                                    accountUrl: accountUrl,
+                                    ticketPlan: ticketPlan
+                                });
+                                setBody({
+                                    accountName: accountName,
+                                    accountEmail: accountEmail,
+                                    accountPhone: accountPhone,
+                                    accountUrl: accountUrl,
+                                    ticketPlan: ticketPlan
+                                })
+                            }}
+                        />
+
                     </div>
                 </div>
             )
@@ -479,28 +650,7 @@ const VendorOnboarding = (props) => {
                         <br></br>
                         <br></br>
                         <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "255px 255px",
-                            paddingLeft: "245px",
                             textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    fontSize: "16px",
-                                    height: "30px",
-                                    width: "120px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Back"
-                                onClick={() => {
-                                    setPageView("ticket");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
                             <Button
                                 style={{
                                     backgroundColor: 'white',
@@ -557,28 +707,7 @@ const VendorOnboarding = (props) => {
                         <br></br>
                         <br></br>
                         <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "255px 255px",
-                            paddingLeft: "245px",
                             textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    fontSize: "16px",
-                                    height: "30px",
-                                    width: "120px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Previous Page"
-                                onClick={() => {
-                                    setPageView("paypal");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
                             <Button
                                 style={{
                                     backgroundColor: 'white',
@@ -592,140 +721,6 @@ const VendorOnboarding = (props) => {
                                     padding: "0px",
                                 }}
                                 content="Next"
-                                onClick={() => {
-                                    setPageView("review");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
-                        </div>
-                    </div>
-                </div>
-            )
-        } else if (pageView === "review") {
-            return (
-                <div className={classes.DisplayPanel}>
-                    <div>
-                        <br></br>
-                        <br></br>
-                        <div
-                            style={{
-                                paddingLeft: "80px",
-                                fontSize: "22px",
-                                fontWeight: "600"
-                            }}
-                            >Final Review
-                        </div>
-                        <div style={{paddingLeft: "80px"}}>Please review your input before submitting.</div>
-                        <br></br>
-                        <br></br>
-                        <div  className={classes.CompleteCanvas}>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "200px 350px",
-                                paddingBottom: "10px",
-                                columnGap: "20px"}}>
-                                <div>Company Name:</div>
-                                <div>{name}</div>
-                            </div>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "200px 350px",
-                                paddingBottom: "10px",
-                                columnGap: "20px"}}>
-                                <div>Company Email:</div>
-                                <div>{email}</div>
-                            </div>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "200px 350px",
-                                paddingBottom: "10px",
-                                columnGap: "20px"}}>
-                                <div>Company Phone Number:</div>
-                                <div>{phone}</div>
-                            </div>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "200px 350px",
-                                paddingBottom: "10px",
-                                columnGap: "20px"}}>
-                                <div>Company Website:</div>
-                                <div>{url}</div>
-                            </div>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "200px 350px",
-                                paddingBottom: "10px",
-                                columnGap: "20px"}}>
-                                <div>Ticket Plan:</div>
-                                <div>{ticketPlan}</div>
-                            </div>
-                            {ticketPlan === "paid" ? (
-                                <Aux>
-                                    <div style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "200px 350px",
-                                        paddingBottom: "10px",
-                                        columnGap: "20px"}}>
-                                        <div>Payment Plan:</div>
-                                        <div>{paymentPlan}</div>
-                                    </div>
-                                    <div style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "200px 350px",
-                                        paddingBottom: "10px",
-                                        columnGap: "20px"}}>
-                                        <div>Paypal Client ID:</div>
-                                        <div>{paypalClient}</div>
-                                    </div>
-                                    <div style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "200px 350px",
-                                        paddingBottom: "10px",
-                                        columnGap: "20px"}}>
-                                        <div>Paypal Secret:</div>
-                                        <div>{paypalSecret}</div>
-                                    </div>
-                                </Aux>
-                            ) : null}
-                        </div>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "170px 170px",
-                            paddingLeft: "325px",
-                            textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid red",
-                                    color: "red",
-                                    fontSize: "16px",
-                                    height: "30px",
-                                    width: "120px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Edit"
-                                onClick={() => {
-                                    setPageView("vendor");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Submit"
                                 onClick={() => {
                                     setPageView("complete");
                                     console.log("pageView: ", pageView)
@@ -755,7 +750,7 @@ const VendorOnboarding = (props) => {
                         Congratulations, you are now ready to create your first event!!!
                     </div>
                     <br></br>
-                    <div style={{textAlign: "center"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
+                    <div style={{textAlign: "center", color: "red"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
                     <br></br>
                     <br></br>
                     <br></br>
