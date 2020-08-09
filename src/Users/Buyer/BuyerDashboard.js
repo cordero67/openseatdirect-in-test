@@ -58,6 +58,7 @@ const MainDisplay = () => {
       return (
         <VendorOnboarding
           userid={buyerInfo.id}
+          token={buyerInfo.token}
         />
       )
     } else if (paneView === "vendorold") {

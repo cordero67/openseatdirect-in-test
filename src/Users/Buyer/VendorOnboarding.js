@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { useOurApi } from "../Authentication/apiUsers";
+import { useOurApi, paypalSubscriptionDetails } from "../Authentication/apiUsers";
 import { API } from "../../config";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
@@ -23,12 +23,11 @@ const VendorOnboarding = (props) => {
       accountPhone: "",
       accountUrl: "",
       ticketPlan: "",
-      paymentPlan: "",
       paypalClient: "",
       paypalSecret: ""
     });
 
-    const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paymentPlan, paypalClient, paypalSecret } = values;
+    const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypalClient, paypalSecret } = values;
 
     const [pageView, setPageView] = useState("summary")
 
@@ -36,12 +35,14 @@ const VendorOnboarding = (props) => {
 
     let  myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    const authstring = `Bearer ${props.token}`;
+    myHeaders.append("Authorization", authstring);
   
 //www.bondirectly.com/api/account/{userId} {
 
     const url1 = `${API}/account/${props.userid}`;
     console.log("url1: ", url1)
-    const method1 = "POST";
+    const method1 = "PATCH";
     const body1  = null;
     const initialData1 ={status: true, message:"hi first time"};
   
@@ -49,17 +50,20 @@ const VendorOnboarding = (props) => {
   
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
-    if (data.accountNum) {
-        if (ticketPlan === "paid") {
+    if (data.status  && data.message !== "hi first time") {
+        console.log("data.result.accountNum: ", data.result.accountNum);
+        const initialData1 ={status: true, message:"hi first time"};
+        const newBody = null;
+        //setBody(newBody)
+        /*
+        if (ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual") {
             setPageView("paypal");
         } else if (ticketPlan === "free") {
             setPageView("complete");
-        } else {
-            setPageView("vendor");
         }
-        console.log("pageView: ", pageView)
-    } else if (!hasError) {
-        console.log("API error")
+        */
+    } else if (!data.status) {
+        console.log("server determined error")
     }
 
     const handleChange = (event) => {
@@ -74,45 +78,77 @@ const VendorOnboarding = (props) => {
         console.log("value", value.value)
         let tempValues = { ...values };
         tempValues[name] = value.value;
-        console.log("tempValues.payment: ", tempValues.payment)
         setValues(tempValues);
     };
 
     const ticketPlans = [
         { label: "Free tickets only", value: "free" },
-        { label: "Paid (and free) tickets", value: "paid" }
+        { label: "Paid (and free) tickets", value: "basicPaidQuarter" }
     ];
 
     const paymentPlans = [
-        { label: "$10 every 3 months", value: "quarter" },
-        { label: "$35 for one full year", value: "annual" }
+        { label: "$10 every 3 months", value: "basicPaidQuarter" },
+        { label: "$35 for one full year", value: "basicPaidAnnual" }
     ];
+
+
+const payPalExpressBuy = details => {
+      //details.purchase_units[0].items = paypalArray;
+      console.log("Inside payPalExpressBuy")
+    const paymentData = {
+      paypalOrderDetails: details
+    };
+
+    //setPaypalStatus(true);
+    //console.log("paypalStatus inside 'payPalExpressBuy': ", paypalStatus);
+    //console.log("On Success 'details' object: ", details);
+    // sends PayPal order object to the server
+    paypalSubscriptionDetails(paymentData, props.userid, props.token)
+      .then(response => {
+        console.log("order received");
+        console.log("response: ", response);
+        //setOrderStatus(true);
+        //console.log("Order status: ", orderStatus);
+        //onlyShowPurchaseConfirmation();
+        //purchaseConfirmHandler();
+      })
+      .catch(error => {
+        console.log("processExpressPayment() error.message: ", error.message);
+        //onlyShowPurchaseConfirmation();
+        //purchaseConfirmHandler();
+      });
+  };
+
+
 
   const showPayPal = (
     // loads PayPal Smart buttons if order exists
     <div>
+        <br></br>
         <PayPalButton
-        onButtonReady = {() => {}}
-        createSubscription={(data, actions) => {
-            return actions.subscription.create({
-            plan_id: 'P-9HN388280G366532JL4RGF5A'
-            });
-        }}
-        onCancel = {data => {
-            console.log("onCancel 'data': ", data);
-        }}
-        onSuccess = {(details, data) => {
-            console.log("successful transaction");
-            //payPalExpressBuy(details);
-        }}
-        onError = {(err) => 
-            console.log("error occurs: ", err)
-        }
-        options = {{
-            clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
-            currency: "USD",
-            vault: true
-            //currency: orderTotals.currencyAbv
+            onButtonReady = {() => {}}
+            createSubscription={(data, actions) => {
+                return actions.subscription.create({
+                plan_id: 'P-9HN388280G366532JL4RGF5A'
+                });
+            }}
+            onCancel = {data => {
+                console.log("onCancel 'data': ", data);
+            }}
+            onApprove = {(details, data) => {
+                console.log("successful transaction");
+                console.log("details: ", details)
+                console.log("data: ", data)
+                payPalExpressBuy(details);
+            }}
+            onError = {(err) => 
+                console.log("error occurs: ", err)
+            }
+            options = {{
+                clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
+                currency: "USD",
+                vault: true
+                //currency: orderTotals.currencyAbv
         }}
         catchError = {err => {
             console.log("catchError 'err': ", err);
@@ -487,7 +523,7 @@ const VendorOnboarding = (props) => {
                                 paddingBottom: "10px",
                                 columnGap: "20px"}}>
                                 <div>Ticket Plan:</div>
-                                <div>{ticketPlan}</div>
+                                {ticketPlan === "free" ? <div>free</div> : <div>paid</div>}
                             </div>
                         </div>
                         <br></br>
@@ -529,7 +565,7 @@ const VendorOnboarding = (props) => {
                                 }}
                                 content="Submit"
                                 onClick={() => {
-                                    if (ticketPlan === "paid") {
+                                    if (ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual") {
                                         setPageView("paypal");
                                     } else if (ticketPlan === "free") {
                                         setPageView("complete");
@@ -663,7 +699,7 @@ const VendorOnboarding = (props) => {
                                     textAlign: "center",
                                     padding: "0px",
                                 }}
-                                content="Next"
+                                content="Submit"
                                 disabled={!paypalClient || !paypalSecret}
                                 onClick={() => {
                                     setPageView("payment");
@@ -696,13 +732,13 @@ const VendorOnboarding = (props) => {
                             <RadioForm
                                 details={paymentPlans}
                                 group="eventTypeGroup"
-                                current={paymentPlan}
+                                current={ticketPlan}
                                 change={(event, value) =>
-                                    radioChange(event, value, "paymentPlan")
+                                    radioChange(event, value, "ticketPlan")
                                 }
                             />
                         <br></br>
-                        {paymentPlan === "quarter" || paymentPlan === "annual" ? showPayPal : null}
+                        {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
                         </div>
                         <br></br>
                         <br></br>

@@ -73,3 +73,41 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
   console.log("networkError: ", networkError )
   return { isLoading, hasError, setUrl, setBody, data: fetchedData, networkError };
 };
+
+const handleErrors = response => {
+  //console.log("Inside 'apiCore' 'handleErrors()'", response);
+  //console.log("json response: ", expandedLog(response, 1));
+  if (!response.ok) {
+    //console.log("response was false!");
+    //console.log("response.status: ", response.status);
+    throw Error(response.status);
+  }
+  return response;
+};
+
+export const paypalSubscriptionDetails = (paymentTicketData, userid, token) => {
+ console.log("inside paypalSubscriptionDetails");
+    const authstring = `Bearer ${token}`;
+
+  return (
+    fetch(`${API}/paypal/subscription/${userid}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Authorization": authstring
+      },
+      body: JSON.stringify(paymentTicketData)
+    })
+      .then(handleErrors)
+      .then(response => {
+        console.log("success in sending paypal object to server")
+        return response.json();
+      })
+      // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
+      .catch(err => {
+        console.log("fetch API/paypal/expressPayment): ERROR THROWN", err);
+        throw Error(err);
+      })
+  );
+};
