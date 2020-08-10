@@ -92,15 +92,16 @@ const VendorOnboarding = (props) => {
     ];
 
 
-const payPalExpressBuy = details => {
+const paypalSubscriptionPurchase = data => {
       //details.purchase_units[0].items = paypalArray;
-      console.log("Inside payPalExpressBuy")
+      console.log("Inside paypalSubscriptionPurchase")
     const paymentData = {
-      paypalOrderDetails: details
+      subscriptionOrderData: data
+      //data
     };
 
     //setPaypalStatus(true);
-    //console.log("paypalStatus inside 'payPalExpressBuy': ", paypalStatus);
+    //console.log("paypalStatus inside 'paypalSubscriptionPurchase': ", paypalStatus);
     //console.log("On Success 'details' object: ", details);
     // sends PayPal order object to the server
     paypalSubscriptionDetails(paymentData, props.userid, props.token)
@@ -135,11 +136,40 @@ const payPalExpressBuy = details => {
             onCancel = {data => {
                 console.log("onCancel 'data': ", data);
             }}
-            onApprove = {(details, data) => {
+            onApprove = {(data, actions) => {
                 console.log("successful transaction");
-                console.log("details: ", details)
                 console.log("data: ", data)
-                payPalExpressBuy(details);
+                console.log("actions: ", actions)
+                //paypalSubscriptionPurchase(data);
+
+                return actions.subscription.get()
+                    .then(function(details) {
+                        // Show a success message to your buyer
+                        console.log("details: ", details)
+                        //alert("Subscription completed");
+                        const authstring = `Bearer ${props.token}`;
+                        // OPTIONAL: Call your server to save the subscription
+                        console.log("about to send paypal object to server")
+                        return fetch(`${API}/paypal/subscription/${props.userid}`, {
+                            method: "POST",
+                            headers: {
+                                Accept: "application/json",
+                                "Content-Type": "application/json",
+                                "Authorization": authstring
+                            },
+                            body: JSON.stringify({
+                                data: data
+                                //orderID: data.orderID,
+                                //subscriptionID: data.subscriptionID
+                            })
+                        })
+                            .then(response => {
+                                console.log("success in sending paypal object to server")
+                                //return response.json();
+                                setPageView("complete")
+                            })
+                })
+
             }}
             onError = {(err) => 
                 console.log("error occurs: ", err)
@@ -152,16 +182,18 @@ const payPalExpressBuy = details => {
         }}
         catchError = {err => {
             console.log("catchError 'err': ", err);
+        }}
+        />
+    </div>
+  );
+
+  
             //setTransactionStatus({
             //  ...transactionStatus,
             //  paypalSuccess: false,
             //  error: err
             //});
             //onlyShowPurchaseConfirmation();
-        }}
-        />
-    </div>
-  );
 
     const mainDisplay = () => {
         if (pageView === "summary") {
@@ -459,7 +491,266 @@ const payPalExpressBuy = details => {
                                 
                                 disabled={!ticketPlan}
                                 onClick={() => {
-                                    setPageView("review");
+                                    if (ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual") {
+                                        setPageView("paypal");
+                                    } else if (ticketPlan === "free") {
+                                        setPageView("complete");
+                                    } else {
+                                        setPageView("vendor");
+                                    }
+                                    console.log("pageView: ", pageView)
+                                }}
+                            />
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <div>
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid green",
+                                    color: "green",
+                                    fontSize: "16px",
+                                    width: "120px",
+                                    height: "30px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px"
+                                }}
+                                content="Server Call"
+                                onClick={() => {
+                                    console.log("clicked button",{
+                                        accountName: accountName,
+                                        accountEmail: accountEmail,
+                                        accountPhone: accountPhone,
+                                        accountUrl: accountUrl,
+                                        ticketPlan: ticketPlan
+                                    });
+                                    setBody({
+                                        accountName: accountName,
+                                        accountEmail: accountEmail,
+                                        accountPhone: accountPhone,
+                                        accountUrl: accountUrl,
+                                        ticketPlan: ticketPlan
+                                    })
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )
+        } else if (pageView === "paypal") {
+            return (
+                <div className={classes.DisplayPanel}>
+                    <div>
+                        <br></br>
+                        <br></br>
+                        <div
+                            style={{
+                                paddingLeft: "80px",
+                                fontSize: "22px",
+                                fontWeight: "600"
+                            }}
+                            >STEP 2: Link Your Paypal Account 
+                        </div>
+                        <br></br>
+                        <div style={{paddingLeft: "80px", color: "red" }}>Explanation text. This is how you can get paid immediately upon each ticket sale, etc...</div>
+                        <br></br>
+                        <div style={{paddingLeft: "80px", color: "red" }}>Link to video.</div>
+                        <br></br>
+                        <div style={{paddingLeft: "80px", color: "red" }}>Link to word document.</div>
+                        <br></br>
+                        <br></br>
+                        <div  className={classes.VendorCanvas}>
+                            <div className="form-group">
+                                <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
+                                <Popup
+                                    position="right center"
+                                    content="Your ID will only be used..."
+                                    header="Paypal Client ID"
+                                    trigger={
+                                        <FontAwesomeIcon
+                                            color="blue"
+                                            cursor="pointer"
+                                            icon={faInfoCircle}
+                                        />
+                                    }
+                                />
+                                </label>
+                                <input
+                                    type="text"
+                                    name="paypalClient"
+                                    className="form-control"
+                                    onChange={handleChange}
+                                    value={paypalClient}
+                                />
+                            </div>
+                            <br></br>
+                            <div className="form-group">
+                                <label>Paypal Secret{" "}<span style={{color: "red"}}>*{" "}</span>
+                                <Popup
+                                    position="right center"
+                                    content="Your Paypal Secret will only be used..."
+                                    header="Paypal Secret"
+                                    trigger={
+                                        <FontAwesomeIcon
+                                            color="blue"
+                                            cursor="pointer"
+                                            icon={faInfoCircle}
+                                        />
+                                    }
+                                />
+                                </label>
+                                <input
+                                    type="text"
+                                    name="paypalSecret"
+                                    className="form-control"
+                                    onChange={handleChange}
+                                    value={paypalSecret}
+                                />
+                            </div>
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "170px 170px",
+                            paddingLeft: "325px",
+                            textAlign: "center"}}>
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid blue",
+                                    color: "blue",
+                                    fontSize: "16px",
+                                    height: "30px",
+                                    width: "120px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px",
+                                }}
+                                content="Back"
+                                onClick={() => {
+                                    setPageView("ticket");
+                                    console.log("pageView: ", pageView)
+                                }}
+                            />
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid green",
+                                    color: "green",
+                                    fontSize: "16px",
+                                    width: "120px",
+                                    height: "30px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px",
+                                }}
+                                content="Next"
+                                disabled={!paypalClient || !paypalSecret}
+                                onClick={() => {
+                                    setPageView("payment");
+                                    console.log("pageView: ", pageView)
+                                }}
+                            />
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <div>
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid green",
+                                    color: "green",
+                                    fontSize: "16px",
+                                    width: "120px",
+                                    height: "30px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px"
+                                }}
+                                content="Server Call"
+                                onClick={() => {
+                                    console.log("clicked button",{
+                                        useSandbox : false,
+                                        paymentGatewayType: "PayPalExpress",
+                                        paypalExpress_client_id: paypalClient,
+                                        paypalExpress_client_secret: paypalSecret
+                                    });
+                                    setBody({
+                                        useSandbox : false,
+                                        paymentGatewayType: "PayPalExpress",
+                                        paypalExpress_client_id: paypalClient,
+                                        paypalExpress_client_secret: paypalSecret
+                                    })
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )
+        } else if (pageView === "payment") {
+            return (
+                <div className={classes.DisplayPanel}>
+                    <div>
+                        <br></br>
+                        <br></br>
+                        <div
+                            style={{
+                                paddingLeft: "80px",
+                                fontSize: "22px",
+                                fontWeight: "600"
+                            }}
+                            >STEP 2: Choose a Payment Plan
+                        </div>
+                        <br></br>
+                        <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
+                        <br></br>
+                        <br></br>
+                        <div  className={classes.PaymentCanvas}>
+                            <RadioForm
+                                details={paymentPlans}
+                                group="eventTypeGroup"
+                                current={ticketPlan}
+                                change={(event, value) =>
+                                    radioChange(event, value, "ticketPlan")
+                                }
+                            />
+                        <br></br>
+                        {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <div style={{
+                            textAlign: "center"}}>
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid blue",
+                                    color: "blue",
+                                    fontSize: "16px",
+                                    width: "120px",
+                                    height: "30px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px",
+                                }}
+                                content="Back"
+                                onClick={() => {
+                                    setPageView("paypal");
                                     console.log("pageView: ", pageView)
                                 }}
                             />
@@ -467,6 +758,133 @@ const payPalExpressBuy = details => {
                     </div>
                 </div>
             )
+        } else if (pageView === "complete") {
+            return (
+                <div className={classes.DisplayPanel}>
+                    <br></br>
+                    <br></br>
+                    <div
+                        style={{
+                            paddingLeft: "80px",
+                            fontSize: "22px",
+                            fontWeight: "600"
+                        }}
+                        >STEP 3: Create an Event
+                    </div>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600", textAlign: "center"}}>
+                        Congratulations, you are now ready to create your first event!!!
+                    </div>
+                    <br></br>
+                    <div style={{textAlign: "center", color: "red"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <div style={{
+                        display: "grid",
+                        gridTemplateColumns: "200px 200px 200px",
+                        columnGap: "100px",
+                        paddingLeft: "95px",
+                        fontSize: "22px",
+                        fontWeight: "600",
+                        textAlign: "center"}}>
+                        <div>Cash Now!!!</div>
+                        <div>Own Your Data</div>
+                        <div>Single Dashboard</div>
+                    </div>
+                    <br></br>
+                    <div style={{
+                        display: "grid",
+                        gridTemplateColumns: "200px 200px 200px",
+                        columnGap: "100px",
+                        paddingLeft: "95px",
+                        fontSize: "16px",
+                        textAlign: "center"}}
+                    >
+                        <div style={{ color: "red" }}>Cash Now summary.</div>
+                        <div style={{ color: "red" }}>Own Your Data summary.</div>
+                        <div style={{ color: "red" }}>Single Dashboard summary.</div>
+                    </div>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <div style={{
+                        color: "#2F5596",
+                        fontSize: "26px",
+                        fontWeight: "600",
+                        textAlign: "center"
+                    }}>
+                        So are you ready to create your first event?
+                    </div>
+                    <br></br>
+                    <br></br>
+                        <br></br>
+                        <br></br>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "170px 170px",
+                            paddingLeft: "325px",
+                            textAlign: "center"}}>
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid red",
+                                    color: "red",
+                                    fontSize: "16px",
+                                    height: "30px",
+                                    width: "120px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px",
+                                }}
+                                content="Yes"
+                                onClick={() => {
+                                    //setPageView("vendor");
+                                    //console.log("pageView: ", pageView)
+                                }}
+                            />
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid green",
+                                    color: "green",
+                                    fontSize: "16px",
+                                    width: "120px",
+                                    height: "30px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px",
+                                }}
+                                content="Later"
+                                onClick={() => {
+                                    //setPageView("complete");
+                                    //console.log("pageView: ", pageView)
+                                }}
+                            />
+                        </div>
+                </div>
+            )
+        }
+    }
+
+    return (
+        <div>
+            <div className={classes.DisplayPanelTitle}>
+            VENDOR SIGNUP
+            </div>
+            {mainDisplay()}
+        </div>
+    )
+}
+
+export default VendorOnboarding;
+
+/*
+
+
+
         } else if (pageView === "review") {
             return (
                 <div className={classes.DisplayPanel}>
@@ -612,284 +1030,6 @@ const payPalExpressBuy = details => {
                     </div>
                 </div>
             )
-        } else if (pageView === "paypal") {
-            return (
-                <div className={classes.DisplayPanel}>
-                    <div>
-                        <br></br>
-                        <br></br>
-                        <div
-                            style={{
-                                paddingLeft: "80px",
-                                fontSize: "22px",
-                                fontWeight: "600"
-                            }}
-                            >STEP 2: Link Your Paypal Account 
-                        </div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Explanation text. This is how you can get paid immediately upon each ticket sale, etc...</div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Link to video.</div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Link to word document.</div>
-                        <br></br>
-                        <br></br>
-                        <div  className={classes.VendorCanvas}>
-                            <div className="form-group">
-                                <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
-                                <Popup
-                                    position="right center"
-                                    content="Your ID will only be used..."
-                                    header="Paypal Client ID"
-                                    trigger={
-                                        <FontAwesomeIcon
-                                            color="blue"
-                                            cursor="pointer"
-                                            icon={faInfoCircle}
-                                        />
-                                    }
-                                />
-                                </label>
-                                <input
-                                    type="text"
-                                    name="paypalClient"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={paypalClient}
-                                />
-                            </div>
-                            <br></br>
-                            <div className="form-group">
-                                <label>Paypal Secret{" "}<span style={{color: "red"}}>*{" "}</span>
-                                <Popup
-                                    position="right center"
-                                    content="Your Paypal Secret will only be used..."
-                                    header="Paypal Secret"
-                                    trigger={
-                                        <FontAwesomeIcon
-                                            color="blue"
-                                            cursor="pointer"
-                                            icon={faInfoCircle}
-                                        />
-                                    }
-                                />
-                                </label>
-                                <input
-                                    type="text"
-                                    name="paypalSecret"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={paypalSecret}
-                                />
-                            </div>
-                        </div>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Submit"
-                                disabled={!paypalClient || !paypalSecret}
-                                onClick={() => {
-                                    setPageView("payment");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
-                        </div>
-                    </div>
-                </div>
-            )
-        } else if (pageView === "payment") {
-            return (
-                <div className={classes.DisplayPanel}>
-                    <div>
-                        <br></br>
-                        <br></br>
-                        <div
-                            style={{
-                                paddingLeft: "80px",
-                                fontSize: "22px",
-                                fontWeight: "600"
-                            }}
-                            >STEP 2: Choose a Payment Plan
-                        </div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
-                        <br></br>
-                        <br></br>
-                        <div  className={classes.PaymentCanvas}>
-                            <RadioForm
-                                details={paymentPlans}
-                                group="eventTypeGroup"
-                                current={ticketPlan}
-                                change={(event, value) =>
-                                    radioChange(event, value, "ticketPlan")
-                                }
-                            />
-                        <br></br>
-                        {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
-                        </div>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Next"
-                                onClick={() => {
-                                    setPageView("complete");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
-                        </div>
-                    </div>
-                </div>
-            )
-        } else if (pageView === "complete") {
-            return (
-                <div className={classes.DisplayPanel}>
-                    <br></br>
-                    <br></br>
-                    <div
-                        style={{
-                            paddingLeft: "80px",
-                            fontSize: "22px",
-                            fontWeight: "600"
-                        }}
-                        >STEP 3: Create an Event
-                    </div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600", textAlign: "center"}}>
-                        Congratulations, you are now ready to create your first event!!!
-                    </div>
-                    <br></br>
-                    <div style={{textAlign: "center", color: "red"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "200px 200px 200px",
-                        columnGap: "100px",
-                        paddingLeft: "95px",
-                        fontSize: "22px",
-                        fontWeight: "600",
-                        textAlign: "center"}}>
-                        <div>Cash Now!!!</div>
-                        <div>Own Your Data</div>
-                        <div>Single Dashboard</div>
-                    </div>
-                    <br></br>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "200px 200px 200px",
-                        columnGap: "100px",
-                        paddingLeft: "95px",
-                        fontSize: "16px",
-                        textAlign: "center"}}
-                    >
-                        <div style={{ color: "red" }}>Cash Now summary.</div>
-                        <div style={{ color: "red" }}>Own Your Data summary.</div>
-                        <div style={{ color: "red" }}>Single Dashboard summary.</div>
-                    </div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div style={{
-                        color: "#2F5596",
-                        fontSize: "26px",
-                        fontWeight: "600",
-                        textAlign: "center"
-                    }}>
-                        So are you ready to create your first event?
-                    </div>
-                    <br></br>
-                    <br></br>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "170px 170px",
-                            paddingLeft: "325px",
-                            textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid red",
-                                    color: "red",
-                                    fontSize: "16px",
-                                    height: "30px",
-                                    width: "120px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Yes"
-                                onClick={() => {
-                                    //setPageView("vendor");
-                                    //console.log("pageView: ", pageView)
-                                }}
-                            />
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Later"
-                                onClick={() => {
-                                    //setPageView("complete");
-                                    //console.log("pageView: ", pageView)
-                                }}
-                            />
-                        </div>
-                </div>
-            )
-        }
-    }
-
-    return (
-        <div>
-            <div className={classes.DisplayPanelTitle}>
-            VENDOR SIGNUP
-            </div>
-            {mainDisplay()}
-        </div>
-    )
-}
-
-export default VendorOnboarding;
-
-/*
 
                     <br></br>
                     <br></br>

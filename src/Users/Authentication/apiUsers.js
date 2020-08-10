@@ -85,7 +85,7 @@ const handleErrors = response => {
   return response;
 };
 
-export const paypalSubscriptionDetails = (paymentTicketData, userid, token) => {
+export const paypalSubscriptionDetails = (subscriptionData, userid, token) => {
  console.log("inside paypalSubscriptionDetails");
     const authstring = `Bearer ${token}`;
 
@@ -97,7 +97,7 @@ export const paypalSubscriptionDetails = (paymentTicketData, userid, token) => {
         "Content-Type": "application/json",
         "Authorization": authstring
       },
-      body: JSON.stringify(paymentTicketData)
+      body: JSON.stringify(subscriptionData)
     })
       .then(handleErrors)
       .then(response => {
