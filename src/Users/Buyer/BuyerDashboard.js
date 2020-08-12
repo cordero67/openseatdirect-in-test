@@ -33,11 +33,13 @@ const BuyerDashboard = () => {
       tempBuyerInfo.id = tempUser.user._id;
       console.log("tempBuyerInfo: ", tempBuyerInfo)
       setBuyerInfo(tempBuyerInfo);
+/*
       if (tempBuyerInfo.role === 1) {
         return <Redirect to="/vendorevents" />;
       } else if (tempBuyerInfo.role !== 0) {
         window.location.href = "/";
       }
+*/
     } else {
       window.location.href = "/signin";
     }
