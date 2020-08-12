@@ -14,7 +14,7 @@ import {
   faCog
 } from "@fortawesome/free-solid-svg-icons";
 
-const AdditionalSettings = (props) => {
+const TicketCreation = (props) => {
 
   // stores all Ticket Details values
   const [ticketDetails, setTicketDetails] = useState([
@@ -335,6 +335,10 @@ const AdditionalSettings = (props) => {
                   ticket={item}
                   changeTicket={props.ticketChange}
                   switchSettings={props.switchSettings}
+                  changeFeature={props.changeFeature}
+                  switchPriceFeature={props.switchPriceFeature}
+                  addPromoCode={props.addPromoCode}
+                  changeArgument={props.changeArgument}
                 /> :
               null}
               
@@ -434,4 +438,4 @@ const AdditionalSettings = (props) => {
     )
 };
 
-export default AdditionalSettings;
+export default TicketCreation;

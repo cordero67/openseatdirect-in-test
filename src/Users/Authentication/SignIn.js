@@ -28,6 +28,14 @@ const SignIn = () => {
 
   const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
+  const getStatus= (user) =>{ 
+    if ('accountId' in user && 'status' in user.accountId ) {
+        return user.accountId.status}
+    else {
+        return 0;
+    } 
+  }
+
   //NEED A BETTER TEST
   //without "!data.message" it places the data object into local storage with every keystroke
   //this then generates an error in navigation component when it is looking for "role"
@@ -37,7 +45,13 @@ const SignIn = () => {
     let tempData = JSON.parse(localStorage.getItem("user"));
     console.log("tempData: ", tempData)
     // determines dashboard based on user's role
-    if (tempData.user.accountId && tempData.user.accountId.status === 7) {
+    if (getStatus(tempData.user) === 7) {
+      return <Redirect to="/vendordashboard" />;
+    } else {
+      return <Redirect to="/buyerdashboard" />;
+    }
+    
+    if (tempData.user.accountId && tempData.user.accountId.status && tempData.user.accountId.status === 7) {
       return <Redirect to="/vendordashboard" />;
     } else {
       return <Redirect to="/buyerdashboard" />;

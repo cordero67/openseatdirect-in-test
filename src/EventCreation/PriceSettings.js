@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
 
 import TicketModal from "./Modals/TicketModal";
+import PriceFeatureSettings from "./PriceFeatureSettings";
 
 import classes from "./EventCreation.module.css";
-import Aux from "../hoc/Auxiliary/Auxiliary";
 
 const PriceSettings = (props) => {
     // defines warnings for order min and max
@@ -155,6 +155,15 @@ const PriceSettings = (props) => {
             </div>
                 : null
             }
+
+
+            <PriceFeatureSettings
+                ticket={props.ticket}
+                changeFeature={props.changeFeature}
+                switchPriceFeature={props.switchPriceFeature}
+                addPromoCode={props.addPromoCode}
+                changeArgument={props.changeArgument}
+            />
 
             <div
                 style={{

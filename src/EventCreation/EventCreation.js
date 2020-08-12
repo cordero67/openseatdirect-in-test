@@ -1864,7 +1864,6 @@ const EventCreation = () => {
 
     return (
       <div>
-
         <div
           style={{
             height: "30px",
@@ -2203,8 +2202,6 @@ const EventCreation = () => {
                     }}
                   ></input>
                 </div>
-
-
 
                 <div
                   style={{

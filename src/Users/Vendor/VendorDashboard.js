@@ -20,7 +20,7 @@ const VendorDashboard = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    /*
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -34,15 +34,16 @@ const VendorDashboard = () => {
       tempBuyerInfo.id = tempUser.user._id;
       console.log("tempBuyerInfo: ", tempBuyerInfo)
       setBuyerInfo(tempBuyerInfo);
+      /*
       if (tempBuyerInfo.role === 0) {
         return <Redirect to="/buyerdashboard" />;
       } else if (tempBuyerInfo.role !== 1) {
         window.location.href = "/";
       }
+      */
     } else {
       window.location.href = "/signin";
     }
-    */
     setIsLoading(false);
   }, []);
 

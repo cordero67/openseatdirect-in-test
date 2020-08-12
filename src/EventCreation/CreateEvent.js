@@ -165,6 +165,74 @@ const CreateEvent = (props) => {
       console.log("Ticket Details: ", tempDetails);
     };
 
+    const changePriceFeature = (event, value, key) => {
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === key) {
+          item.priceFeature = value;
+          item.promoCodes = [{ key: "1", name: "", amount: "", percent: false }];
+          item.promoCodeNames = [];
+          item.promoCodeWarning = "";
+          item.functionArgs = {};
+          if (value === "bogof") {
+            item.functionArgs = { buy: "", get: "", discount: 100 };
+          }
+          if (value === "bogod") {
+            item.functionArgs = { buy: "", get: "", discount: "" };
+          }
+          if (value === "twofer") {
+            item.functionArgs = { buy: "", for: "" };
+          }
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", ticketDetails);
+    };
+
+    const switchPriceFeature = (event, key) => {
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === key) {
+          item.priceFeature = "none";
+          item.promoCodes = [{ key: "", name: "", amount: "", percent: false }];
+          item.promoCodeNames = [];
+          item.promoCodeWarning = "";
+          item.functionArgs = {};
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+
+    const addPromoCode = (event, key) => {
+      let newPromoKey = Math.floor(Math.random() * 1000000000000000);
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === key) {
+          let newPromo = {
+            key: newPromoKey,
+            name: "",
+            amount: "",
+            percent: false,
+          };
+          item.promoCodes.push(newPromo);
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+
+    const changeArgument = (event, key) => {
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === key) {
+          item.functionArgs[event.target.name] = event.target.value;
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+
     // garuantees that only one ticket has a "true" "viewModal" value
     const activateShowModal = (ticket) => {
       let tempDetails = [...ticketDetails];
@@ -347,6 +415,10 @@ const CreateEvent = (props) => {
                     delete={deleteTicket}
                     ticketChange={changeTicketDetail}// ??? Dupe
                     switchSettings={switchTicketSettings}
+                    changeFeature={changePriceFeature}
+                    switchPriceFeature={switchPriceFeature}
+                    addPromoCode={addPromoCode}
+                    changeArgument={changeArgument}
                 />
                 <br></br>
                 <AdditionalSettings
