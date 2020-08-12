@@ -35,11 +35,10 @@ const SignIn = () => {
     // places "data" return object into local storage
     localStorage.setItem("user", JSON.stringify(data));
     let tempData = JSON.parse(localStorage.getItem("user"));
+    console.log("tempData: ", tempData)
     // determines dashboard based on user's role
-    if (tempData.user.role === 1) {
-      return <Redirect to="/vendorevents" />;
-    } else if (tempData.user.role === 0) {
-      return <Redirect to="/buyerdashboard" />;
+    if (tempData.user.accountId && tempData.user.accountId.status === 7) {
+      return <Redirect to="/vendordashboard" />;
     } else {
       return <Redirect to="/buyerdashboard" />;
     }

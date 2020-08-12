@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Redirect } from "react-router-dom";
 
 import { useOurApi, paypalSubscriptionDetails } from "../Authentication/apiUsers";
 import { API } from "../../config";
@@ -22,6 +23,8 @@ const VendorOnboarding = (props) => {
       accountEmail: "",
       accountPhone: "",
       accountUrl: "",
+      status: "",
+      id: "",
       ticketPlan: "",
       paypalClient: "",
       paypalSecret: ""
@@ -30,6 +33,8 @@ const VendorOnboarding = (props) => {
     const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypalClient, paypalSecret } = values;
 
     const [pageView, setPageView] = useState("summary")
+    const [buyerInfo, setBuyerInfo] = useState("summary")
+    const [loading, setLoading ] = useState("false")
 
     console.log("props.userid: ", props.userid)
 
@@ -37,22 +42,127 @@ const VendorOnboarding = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const authstring = `Bearer ${props.token}`;
     myHeaders.append("Authorization", authstring);
-  
-//www.bondirectly.com/api/account/{userId} {
 
-    const url1 = `${API}/account/${props.userid}`;
-    console.log("url1: ", url1)
-    const method1 = "PATCH";
+    const url = `${API}/account/${props.userid}`;
+    console.log("url: ", url)
+    const method = "PATCH";
     const body1  = null;
-    const initialData1 ={status: true, message:"hi first time"};
+    let initialData ={status: true, message:"hi first time"};
+    //const [initialData, setInitialData] = useState({status: true, message:"hi first time"})
   
-    const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method1, url1,myHeaders,body1, initialData1);
+    const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method, url, myHeaders,body1, initialData);
   
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
-    if (data.status  && data.message !== "hi first time") {
+    useEffect(() => {
+
+        setLoading(true);
+
+        if (
+          typeof window !== "undefined" &&
+          localStorage.getItem(`user`) !== null
+        ) {
+          let tempUser = JSON.parse(localStorage.getItem("user"));
+          let tempBuyerInfo = {};
+          tempBuyerInfo.accountName = tempUser.user.name;
+          tempBuyerInfo.accountEmail = tempUser.user.email;
+          tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
+          tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
+          tempBuyerInfo.status = tempUser.user.accountId.status;
+          tempBuyerInfo.id = tempUser.user.accountId._id;
+          tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
+          tempBuyerInfo.paypalClient = tempUser.user.accountId.paypalExpress_client_id;
+          tempBuyerInfo.paypalSecret = tempUser.user.accountId.paypalExpress_client_secret;
+          setValues(tempBuyerInfo);
+          console.log("tempUser: ", tempUser)
+          console.log("tempBuyerInfo: ", tempBuyerInfo)
+
+            //  0:  no accountId at all. Go to introductory upgrade page
+            //  4:  not paid, no clientId
+            //  5:  not paid  with clientId
+            //  6:  paid, but not clientId
+            //  7:  paid && clientId;  Onboarding is DONE!
+
+          if (tempUser.user.accountId.status === 4) {
+            setPageView("ticket")
+          } else if (tempUser.user.accountId.status === 5) {
+            setPageView("payment")
+          } else if (tempUser.user.accountId.status === 6) {
+            setPageView("paypal")
+          } else if (tempUser.user.accountId.status === 7) {
+            return <Redirect to="/vendordashboard" />;
+          } 
+          console.log("tempBuyerInfo: ", tempBuyerInfo)
+          //setBuyerInfo(tempBuyerInfo);
+          //if (tempBuyerInfo.role === 1) {
+          //  return <Redirect to="/vendorevents" />;
+          //} else if (tempBuyerInfo.role !== 0) {
+          //  window.location.href = "/";
+         // }
+        } else {
+          //window.location.href = "/signin";
+        }
+
+        setLoading(false);
+
+
+
+ /*
+        if (isFirstRun.current) {
+          console.log ("first run in useOurApi's useEffect!")
+          isFirstRun.current = false;
+          return;
+        }
+    
+        let unmounted = false;
+    
+        const handleFetchResponse = response => {
+          console.log (" in handleFetchResponse...");
+    
+          if (unmounted) return initialData;
+    
+          setHasError(!response.ok);
+          
+          if (typeof response.ok === 'undefined'){
+            setNetworkError(true);
+            console.log ("undefined response = newtwork error!");
+          } else {
+            setNetworkError(false)
+            console.log ("defined response");
+          };
+    
+          setIsLoading(false);
+          return response.ok && response.json ? response.json() : initialData;
+        };
+    
+        const fetchData = () => {
+          setIsLoading(true);
+          let fetcharg = {
+                method: method,
+                redirect: "follow"
+          };
+          if (headers) fetcharg.headers= headers;
+          if (body) fetcharg.body = JSON.stringify (body);
+          console.log("...fetching ", url, fetcharg);
+    
+          return fetch(url, fetcharg )
+            .then(handleFetchResponse)
+            .catch(handleFetchResponse);
+        };
+    
+        if (initialUrl && !unmounted)
+          fetchData().then(data => !unmounted && setFetchedData(data));
+    
+        return () => {
+          unmounted = true;
+        };
+        */
+      }, []);
+
+    if (data.status  && data.message === "vendor Account updated!") {
         console.log("data.result.accountNum: ", data.result.accountNum);
-        const initialData1 ={status: true, message:"hi first time"};
+        console.log("data: ", data);
+        console.log("initialData: ", initialData);
         const newBody = null;
         //setBody(newBody)
         /*
@@ -62,6 +172,7 @@ const VendorOnboarding = (props) => {
             setPageView("complete");
         }
         */
+        
     } else if (!data.status) {
         console.log("server determined error")
     }
@@ -158,7 +269,8 @@ const paypalSubscriptionPurchase = data => {
                                 "Authorization": authstring
                             },
                             body: JSON.stringify({
-                                data: data
+                                data: data,
+                                details: details
                                 //orderID: data.orderID,
                                 //subscriptionID: data.subscriptionID
                             })
@@ -187,103 +299,97 @@ const paypalSubscriptionPurchase = data => {
     </div>
   );
 
-  
-            //setTransactionStatus({
-            //  ...transactionStatus,
-            //  paypalSuccess: false,
-            //  error: err
-            //});
-            //onlyShowPurchaseConfirmation();
-
     const mainDisplay = () => {
-        if (pageView === "summary") {
-            return (
-                <div className={classes.DisplayPanel}
-                    style={{textAlign: "center"}}>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600"}}>
-                        3 easy steps to start selling tickets and receiving your cash now!!!
+        if (!loading) {
+            console.log("event is NOT loading")
+            if (pageView === "summary") {
+                return (
+                    <div className={classes.DisplayPanel}
+                        style={{textAlign: "center"}}>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600"}}>
+                            3 easy steps to start selling tickets and receiving your cash now!!!
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "240px 240px 240px",
+                            columnGap: "60px",
+                            paddingLeft: "75px",
+                            paddingBottom: "30px",
+                            fontSize: "24px",
+                            fontWeight: "600",
+                            textAlign: "center"
+                        }}>
+                            <div>STEP 1</div>
+                            <div>STEP 2</div>
+                            <div>STEP 3</div>
+                        </div>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "240px 240px 240px",
+                            columnGap: "60px",
+                            paddingLeft: "75px",
+                            paddingBottom: "10px",
+                            fontSize: "22px",
+                            fontWeight: "400",
+                            textAlign: "center"}}>
+                            <div>Provide Minimal</div>
+                            <div>Select a</div>
+                            <div>Create Your</div>
+                        </div>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "240px 240px 240px",
+                            columnGap: "60px",
+                            paddingLeft: "75px",
+                            fontSize: "22px",
+                            fontWeight: "400",
+                            textAlign: "center"}}>
+                            <div>Organization Info</div>
+                            <div>Ticket Plan</div>
+                            <div>First Event</div>
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <div style={{
+                            color: "#2F5596",
+                            fontSize: "26px",
+                            fontWeight: "600"
+                        }}>
+                            If you have 10 minutes to spare, you have time to sign up now.
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <Button
+                            style={{
+                                backgroundColor: 'white',
+                                border: "1px solid green",
+                                color: "green",
+                                fontSize: "16px",
+                                width: "90px",
+                                height: "30px",
+                                margin: "auto",
+                                textAlign: "center",
+                                padding: "0px"
+                            }}
+                            content="Start"
+                            onClick={() => {
+                                setPageView("vendor");
+                                console.log("pageView: ", pageView)
+                            }}
+                        />
                     </div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "240px 240px 240px",
-                        columnGap: "60px",
-                        paddingLeft: "75px",
-                        paddingBottom: "30px",
-                        fontSize: "24px",
-                        fontWeight: "600",
-                        textAlign: "center"
-                    }}>
-                        <div>STEP 1</div>
-                        <div>STEP 2</div>
-                        <div>STEP 3</div>
-                    </div>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "240px 240px 240px",
-                        columnGap: "60px",
-                        paddingLeft: "75px",
-                        paddingBottom: "10px",
-                        fontSize: "22px",
-                        fontWeight: "400",
-                        textAlign: "center"}}>
-                        <div>Provide Minimal</div>
-                        <div>Select a</div>
-                        <div>Create Your</div>
-                    </div>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "240px 240px 240px",
-                        columnGap: "60px",
-                        paddingLeft: "75px",
-                        fontSize: "22px",
-                        fontWeight: "400",
-                        textAlign: "center"}}>
-                        <div>Organization Info</div>
-                        <div>Ticket Plan</div>
-                        <div>First Event</div>
-                    </div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div style={{
-                        color: "#2F5596",
-                        fontSize: "26px",
-                        fontWeight: "600"
-                    }}>
-                        If you have 10 minutes to spare, you have time to sign up now.
-                    </div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <Button
-                        style={{
-                            backgroundColor: 'white',
-                            border: "1px solid green",
-                            color: "green",
-                            fontSize: "16px",
-                            width: "90px",
-                            height: "30px",
-                            margin: "auto",
-                            textAlign: "center",
-                            padding: "0px"
-                        }}
-                        content="Start"
-                        onClick={() => {
-                            setPageView("vendor");
-                            console.log("pageView: ", pageView)
-                        }}
-                    />
-                </div>
-            )
-        } else if (pageView === "vendor") {
-            return (
-                <div className={classes.DisplayPanel}>
+                )
+            } else if (pageView === "vendor") {
+                return (
+                    <div className={classes.DisplayPanel}>
                         <br></br>
                         <br></br>
                         <div
@@ -298,104 +404,104 @@ const paypalSubscriptionPurchase = data => {
                         <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
                         <br></br>
                         <br></br>
-                        <div  className={classes.VendorCanvas}>
-                            <div className="form-group">
-                                <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
-                                <input
-                                    type="text"
-                                    name="accountName"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={accountName}
-                                />
-                            </div>
-                            <br></br>
-                            <div className="form-group">
-                                <label>Company Email{" "}
-                                <Popup
-                                    position="right center"
-                                    content="This email will only be used..."
-                                    header="Company Email"
-                                    trigger={
-                                        <FontAwesomeIcon
-                                            color="blue"
-                                            cursor="pointer"
-                                            icon={faInfoCircle}
-                                        />
-                                    }
-                                />
-                                </label>
-                                <input
-                                    type="text"
-                                    name="accountEmail"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={accountEmail}
-                                />
-                            </div>
-                            <br></br>
-                            <div className="form-group">
-                                <label>Company Phone or Cell Number{" "}
-                                <Popup
-                                    position="right center"
-                                    content="This number will only be used..."
-                                    header="Phone/Cell Number"
-                                    trigger={
-                                        <FontAwesomeIcon
-                                            color="blue"
-                                            cursor="pointer"
-                                            icon={faInfoCircle}
-                                        />
-                                    }
-                                />
-                                </label>
-                                <input
-                                    type="text"
-                                    name="accountPhone"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={accountPhone}
-                                />
-                            </div>
-                            <br></br>
-                            <div className="form-group">
-                                <label>Company Website</label>
-                                <input
-                                    type="text"
-                                    name="accountUrl"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={accountUrl}
-                                />
-                            </div>
+                        <div className={classes.VendorCanvas}>
+                        <div className="form-group">
+                            <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
+                            <input
+                                type="text"
+                                name="accountName"
+                                className="form-control"
+                                onChange={handleChange}
+                                value={accountName}
+                            />
                         </div>
                         <br></br>
-                        <br></br>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "255px 255px",
-                            paddingLeft: "245px",
-                            textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    fontSize: "16px",
-                                    height: "30px",
-                                    width: "120px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Back"
-                                onClick={() => {
-                                    setPageView("summary");
-                                    console.log("pageView: ", pageView)
-                                }}
+                        <div className="form-group">
+                            <label>Company Email{" "}
+                            <Popup
+                                position="right center"
+                                content="This email will only be used..."
+                                header="Company Email"
+                                trigger={
+                                    <FontAwesomeIcon
+                                        color="blue"
+                                        cursor="pointer"
+                                        icon={faInfoCircle}
+                                    />
+                                }
                             />
-                            <Button
-                                style={{
+                            </label>
+                            <input
+                                type="text"
+                                name="accountEmail"
+                                className="form-control"
+                                onChange={handleChange}
+                                value={accountEmail}
+                            />
+                        </div>
+                        <br></br>
+                        <div className="form-group">
+                            <label>Company Phone or Cell Number{" "}
+                            <Popup
+                                position="right center"
+                                content="This number will only be used..."
+                                header="Phone/Cell Number"
+                                trigger={
+                                    <FontAwesomeIcon
+                                        color="blue"
+                                        cursor="pointer"
+                                        icon={faInfoCircle}
+                                    />
+                                }
+                            />
+                            </label>
+                            <input
+                                type="text"
+                                name="accountPhone"
+                                className="form-control"
+                                onChange={handleChange}
+                                value={accountPhone}
+                            />
+                        </div>
+                        <br></br>
+                        <div className="form-group">
+                            <label>Company Website</label>
+                            <input
+                                type="text"
+                                name="accountUrl"
+                                className="form-control"
+                                onChange={handleChange}
+                                value={accountUrl}
+                            />
+                        </div>
+                    </div>
+                    <br></br>
+                    <br></br>
+                    <div style={{
+                        display: "grid",
+                        gridTemplateColumns: "255px 255px",
+                        paddingLeft: "245px",
+                        textAlign: "center"}}>
+                        <Button
+                            style={{
+                                backgroundColor: 'white',
+                                border: "1px solid blue",
+                                color: "blue",
+                                fontSize: "16px",
+                                height: "30px",
+                                width: "120px",
+                                margin: "auto",
+                                textAlign: "center",
+                                padding: "0px",
+                            }}
+                            content="Back"
+                            onClick={() => {
+                                setPageView("summary");
+                                console.log("pageView: ", pageView)
+                            }}
+                        />
+                        <Button
+                            style={{
                                     backgroundColor: 'white',
                                     border: "1px solid green",
                                     color: "green",
@@ -414,298 +520,358 @@ const paypalSubscriptionPurchase = data => {
                                     console.log("pageView: ", pageView)
                                 }}
                             />
-                        </div>
-                </div>
-            )
-        } else if (pageView === "ticket") {
-            return (
-                <div className={classes.DisplayPanel}>
-                    <div>
-                        <br></br>
-                        <br></br>
-                        <div
-                            style={{
-                                paddingLeft: "80px",
-                                fontSize: "22px",
-                                fontWeight: "600"
-                            }}
-                            >STEP 2: Select a Ticket Plan
-                        </div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>What you can do with free tickets only plan. Up to X number of free tickets per month/year.</div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>What you can do with free and paid tickets plan.</div>
-                        <br></br>
-                        <br></br>
-                        <div  className={classes.PaymentCanvas}>
-                            <RadioForm
-                                details={ticketPlans}
-                                group="eventTypeGroup"
-                                current={ticketPlan}
-                                change={(event, value) =>
-                                    radioChange(event, value, "ticketPlan")
-                                }
-                            />
+                         </div>
+                    </div>
+                )
+            } else if (pageView === "ticket") {
+                return (
+                    <div className={classes.DisplayPanel}>
+                        <div>
                             <br></br>
-                        </div>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "255px 255px",
-                            paddingLeft: "245px",
-                            textAlign: "center"}}>
-                            <Button
+                            <br></br>
+                            <div
                                 style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    fontSize: "16px",
-                                    height: "30px",
-                                    width: "120px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
+                                    paddingLeft: "80px",
+                                    fontSize: "22px",
+                                    fontWeight: "600"
                                 }}
-                                content="Back"
-                                onClick={() => {
-                                    setPageView("vendor");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Next"
-                                
-                                disabled={!ticketPlan}
-                                onClick={() => {
-                                    if (ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual") {
-                                        setPageView("paypal");
-                                    } else if (ticketPlan === "free") {
-                                        setPageView("complete");
-                                    } else {
+                                >STEP 2: Select a Ticket Plan
+                            </div>
+                            <br></br>
+                            <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
+                            <br></br>
+                            <div style={{paddingLeft: "80px", color: "red" }}>What you can do with free tickets only plan. Up to X number of free tickets per month/year.</div>
+                            <br></br>
+                            <div style={{paddingLeft: "80px", color: "red" }}>What you can do with free and paid tickets plan.</div>
+                            <br></br>
+                            <br></br>
+                            <div  className={classes.PaymentCanvas}>
+                                <RadioForm
+                                    details={ticketPlans}
+                                    group="eventTypeGroup"
+                                    current={ticketPlan}
+                                    change={(event, value) =>
+                                        radioChange(event, value, "ticketPlan")
+                                    }
+                                />
+                                <br></br>
+                            </div>
+                            <br></br>
+                            <br></br>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "255px 255px",
+                                paddingLeft: "245px",
+                                textAlign: "center"}}>
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid blue",
+                                        color: "blue",
+                                        fontSize: "16px",
+                                        height: "30px",
+                                        width: "120px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px",
+                                    }}
+                                    content="Back"
+                                    onClick={() => {
                                         setPageView("vendor");
-                                    }
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
-                        </div>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <div>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px"
-                                }}
-                                content="Server Call"
-                                onClick={() => {
-                                    console.log("clicked button",{
-                                        accountName: accountName,
-                                        accountEmail: accountEmail,
-                                        accountPhone: accountPhone,
-                                        accountUrl: accountUrl,
-                                        ticketPlan: ticketPlan
-                                    });
-                                    setBody({
-                                        accountName: accountName,
-                                        accountEmail: accountEmail,
-                                        accountPhone: accountPhone,
-                                        accountUrl: accountUrl,
-                                        ticketPlan: ticketPlan
-                                    })
-                                }}
-                            />
-                        </div>
-                    </div>
-                </div>
-            )
-        } else if (pageView === "paypal") {
-            return (
-                <div className={classes.DisplayPanel}>
-                    <div>
-                        <br></br>
-                        <br></br>
-                        <div
-                            style={{
-                                paddingLeft: "80px",
-                                fontSize: "22px",
-                                fontWeight: "600"
-                            }}
-                            >STEP 2: Link Your Paypal Account 
-                        </div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Explanation text. This is how you can get paid immediately upon each ticket sale, etc...</div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Link to video.</div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Link to word document.</div>
-                        <br></br>
-                        <br></br>
-                        <div  className={classes.VendorCanvas}>
-                            <div className="form-group">
-                                <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
-                                <Popup
-                                    position="right center"
-                                    content="Your ID will only be used..."
-                                    header="Paypal Client ID"
-                                    trigger={
-                                        <FontAwesomeIcon
-                                            color="blue"
-                                            cursor="pointer"
-                                            icon={faInfoCircle}
-                                        />
-                                    }
+                                        console.log("pageView: ", pageView)
+                                    }}
                                 />
-                                </label>
-                                <input
-                                    type="text"
-                                    name="paypalClient"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={paypalClient}
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid green",
+                                        color: "green",
+                                        fontSize: "16px",
+                                        width: "120px",
+                                        height: "30px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px",
+                                    }}
+                                    content="Next"
+                                    
+                                    disabled={!ticketPlan}
+                                    onClick={() => {
+                                        if (ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual") {
+                                            setPageView("paypal");
+                                        } else if (ticketPlan === "free") {
+                                            setPageView("complete");
+                                        } else {
+                                            setPageView("vendor");
+                                        }
+                                        console.log("pageView: ", pageView)
+                                    }}
                                 />
                             </div>
                             <br></br>
-                            <div className="form-group">
-                                <label>Paypal Secret{" "}<span style={{color: "red"}}>*{" "}</span>
-                                <Popup
-                                    position="right center"
-                                    content="Your Paypal Secret will only be used..."
-                                    header="Paypal Secret"
-                                    trigger={
-                                        <FontAwesomeIcon
-                                            color="blue"
-                                            cursor="pointer"
-                                            icon={faInfoCircle}
-                                        />
-                                    }
-                                />
-                                </label>
-                                <input
-                                    type="text"
-                                    name="paypalSecret"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={paypalSecret}
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <div>
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid green",
+                                        color: "green",
+                                        fontSize: "16px",
+                                        width: "120px",
+                                        height: "30px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px"
+                                    }}
+                                    content="Server Call"
+                                    onClick={() => {
+                                        console.log("clicked button",{
+                                            accountName: accountName,
+                                            accountEmail: accountEmail,
+                                            accountPhone: accountPhone,
+                                            accountUrl: accountUrl,
+                                            ticketPlan: ticketPlan
+                                        });
+                                        setBody({
+                                            accountName: accountName,
+                                            accountEmail: accountEmail,
+                                            accountPhone: accountPhone,
+                                            accountUrl: accountUrl,
+                                            ticketPlan: ticketPlan
+                                        })
+                                    }}
                                 />
                             </div>
                         </div>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "170px 170px",
-                            paddingLeft: "325px",
-                            textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    fontSize: "16px",
-                                    height: "30px",
-                                    width: "120px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Back"
-                                onClick={() => {
-                                    setPageView("ticket");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Next"
-                                disabled={!paypalClient || !paypalSecret}
-                                onClick={() => {
-                                    setPageView("payment");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
-                        </div>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br>
+                    </div>
+                )
+            } else if (pageView === "paypal") {
+                return (
+                    <div className={classes.DisplayPanel}>
                         <div>
-                            <Button
+                            <br></br>
+                            <br></br>
+                            <div
                                 style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px"
+                                    paddingLeft: "80px",
+                                    fontSize: "22px",
+                                    fontWeight: "600"
                                 }}
-                                content="Server Call"
-                                onClick={() => {
-                                    console.log("clicked button",{
-                                        useSandbox : false,
-                                        paymentGatewayType: "PayPalExpress",
-                                        paypalExpress_client_id: paypalClient,
-                                        paypalExpress_client_secret: paypalSecret
-                                    });
-                                    setBody({
-                                        useSandbox : false,
-                                        paymentGatewayType: "PayPalExpress",
-                                        paypalExpress_client_id: paypalClient,
-                                        paypalExpress_client_secret: paypalSecret
-                                    })
-                                }}
-                            />
+                                >STEP 2: Link Your Paypal Account 
+                            </div>
+                            <br></br>
+                            <div style={{paddingLeft: "80px", color: "red" }}>Explanation text. This is how you can get paid immediately upon each ticket sale, etc...</div>
+                            <br></br>
+                            <div style={{paddingLeft: "80px", color: "red" }}>Link to video.</div>
+                            <br></br>
+                            <div style={{paddingLeft: "80px", color: "red" }}>Link to word document.</div>
+                            <br></br>
+                            <br></br>
+                            <div  className={classes.VendorCanvas}>
+                                <div className="form-group">
+                                    <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
+                                    <Popup
+                                        position="right center"
+                                        content="Your ID will only be used..."
+                                        header="Paypal Client ID"
+                                        trigger={
+                                            <FontAwesomeIcon
+                                                color="blue"
+                                                cursor="pointer"
+                                                icon={faInfoCircle}
+                                            />
+                                        }
+                                    />
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="paypalClient"
+                                        className="form-control"
+                                        onChange={handleChange}
+                                        value={paypalClient}
+                                    />
+                                </div>
+                                <br></br>
+                                <div className="form-group">
+                                    <label>Paypal Secret{" "}<span style={{color: "red"}}>*{" "}</span>
+                                    <Popup
+                                        position="right center"
+                                        content="Your Paypal Secret will only be used..."
+                                        header="Paypal Secret"
+                                        trigger={
+                                            <FontAwesomeIcon
+                                                color="blue"
+                                                cursor="pointer"
+                                                icon={faInfoCircle}
+                                            />
+                                        }
+                                    />
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="paypalSecret"
+                                        className="form-control"
+                                        onChange={handleChange}
+                                        value={paypalSecret}
+                                    />
+                                </div>
+                            </div>
+                            <br></br>
+                            <br></br>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "170px 170px",
+                                paddingLeft: "325px",
+                                textAlign: "center"}}>
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid blue",
+                                        color: "blue",
+                                        fontSize: "16px",
+                                        height: "30px",
+                                        width: "120px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px",
+                                    }}
+                                    content="Back"
+                                    onClick={() => {
+                                        setPageView("ticket");
+                                        console.log("pageView: ", pageView)
+                                    }}
+                                />
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid green",
+                                        color: "green",
+                                        fontSize: "16px",
+                                        width: "120px",
+                                        height: "30px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px",
+                                    }}
+                                    content="Next"
+                                    disabled={!paypalClient || !paypalSecret}
+                                    onClick={() => {
+                                        setPageView("payment");
+                                        console.log("pageView: ", pageView)
+                                    }}
+                                />
+                            </div>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <div>
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid green",
+                                        color: "green",
+                                        fontSize: "16px",
+                                        width: "120px",
+                                        height: "30px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px"
+                                    }}
+                                    content="Server Call"
+                                    onClick={() => {
+                                        console.log("clicked button",{
+                                            useSandbox : false,
+                                            paymentGatewayType: "PayPalExpress",
+                                            paypalExpress_client_id: paypalClient,
+                                            paypalExpress_client_secret: paypalSecret
+                                        });
+                                        setBody({
+                                            accountName: accountName,
+                                            accountEmail: accountEmail,
+                                            accountPhone: accountPhone,
+                                            accountUrl: accountUrl,
+                                            ticketPlan: ticketPlan,
+                                            useSandbox: false,
+                                            paymentGatewayType: "PayPalExpress",
+                                            paypalExpress_client_id: paypalClient,
+                                            paypalExpress_client_secret: paypalSecret
+                                        })
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-            )
-        } else if (pageView === "payment") {
-            return (
-                <div className={classes.DisplayPanel}>
-                    <div>
+                )
+            } else if (pageView === "payment") {
+                return (
+                    <div className={classes.DisplayPanel}>
+                        <div>
+                            <br></br>
+                            <br></br>
+                            <div
+                                style={{
+                                    paddingLeft: "80px",
+                                    fontSize: "22px",
+                                    fontWeight: "600"
+                                }}
+                                >STEP 2: Choose a Payment Plan
+                            </div>
+                            <br></br>
+                            <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
+                            <br></br>
+                            <br></br>
+                            <div  className={classes.PaymentCanvas}>
+                                <RadioForm
+                                    details={paymentPlans}
+                                    group="eventTypeGroup"
+                                    current={ticketPlan}
+                                    change={(event, value) =>
+                                        radioChange(event, value, "ticketPlan")
+                                    }
+                                />
+                            <br></br>
+                            {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
+                            </div>
+                            <br></br>
+                            <br></br>
+                            <div style={{
+                                textAlign: "center"}}>
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid blue",
+                                        color: "blue",
+                                        fontSize: "16px",
+                                        width: "120px",
+                                        height: "30px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px",
+                                    }}
+                                    content="Back"
+                                    onClick={() => {
+                                        setPageView("paypal");
+                                        console.log("pageView: ", pageView)
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )
+            } else if (pageView === "complete") {
+                return (
+                    <div className={classes.DisplayPanel}>
                         <br></br>
                         <br></br>
                         <div
@@ -714,158 +880,107 @@ const paypalSubscriptionPurchase = data => {
                                 fontSize: "22px",
                                 fontWeight: "600"
                             }}
-                            >STEP 2: Choose a Payment Plan
-                        </div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
-                        <br></br>
-                        <br></br>
-                        <div  className={classes.PaymentCanvas}>
-                            <RadioForm
-                                details={paymentPlans}
-                                group="eventTypeGroup"
-                                current={ticketPlan}
-                                change={(event, value) =>
-                                    radioChange(event, value, "ticketPlan")
-                                }
-                            />
-                        <br></br>
-                        {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
+                            >STEP 3: Create an Event
                         </div>
                         <br></br>
                         <br></br>
-                        <div style={{
-                            textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Back"
-                                onClick={() => {
-                                    setPageView("paypal");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
+                        <br></br>
+                        <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600", textAlign: "center"}}>
+                            Congratulations, you are now ready to create your first event!!!
                         </div>
-                    </div>
-                </div>
-            )
-        } else if (pageView === "complete") {
-            return (
-                <div className={classes.DisplayPanel}>
-                    <br></br>
-                    <br></br>
-                    <div
-                        style={{
-                            paddingLeft: "80px",
-                            fontSize: "22px",
-                            fontWeight: "600"
-                        }}
-                        >STEP 3: Create an Event
-                    </div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600", textAlign: "center"}}>
-                        Congratulations, you are now ready to create your first event!!!
-                    </div>
-                    <br></br>
-                    <div style={{textAlign: "center", color: "red"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "200px 200px 200px",
-                        columnGap: "100px",
-                        paddingLeft: "95px",
-                        fontSize: "22px",
-                        fontWeight: "600",
-                        textAlign: "center"}}>
-                        <div>Cash Now!!!</div>
-                        <div>Own Your Data</div>
-                        <div>Single Dashboard</div>
-                    </div>
-                    <br></br>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "200px 200px 200px",
-                        columnGap: "100px",
-                        paddingLeft: "95px",
-                        fontSize: "16px",
-                        textAlign: "center"}}
-                    >
-                        <div style={{ color: "red" }}>Cash Now summary.</div>
-                        <div style={{ color: "red" }}>Own Your Data summary.</div>
-                        <div style={{ color: "red" }}>Single Dashboard summary.</div>
-                    </div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div style={{
-                        color: "#2F5596",
-                        fontSize: "26px",
-                        fontWeight: "600",
-                        textAlign: "center"
-                    }}>
-                        So are you ready to create your first event?
-                    </div>
-                    <br></br>
-                    <br></br>
+                        <br></br>
+                        <div style={{textAlign: "center", color: "red"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
+                        <br></br>
                         <br></br>
                         <br></br>
                         <div style={{
                             display: "grid",
-                            gridTemplateColumns: "170px 170px",
-                            paddingLeft: "325px",
+                            gridTemplateColumns: "200px 200px 200px",
+                            columnGap: "100px",
+                            paddingLeft: "95px",
+                            fontSize: "22px",
+                            fontWeight: "600",
                             textAlign: "center"}}>
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid red",
-                                    color: "red",
-                                    fontSize: "16px",
-                                    height: "30px",
-                                    width: "120px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Yes"
-                                onClick={() => {
-                                    //setPageView("vendor");
-                                    //console.log("pageView: ", pageView)
-                                }}
-                            />
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Later"
-                                onClick={() => {
-                                    //setPageView("complete");
-                                    //console.log("pageView: ", pageView)
-                                }}
-                            />
+                            <div>Cash Now!!!</div>
+                            <div>Own Your Data</div>
+                            <div>Single Dashboard</div>
                         </div>
-                </div>
-            )
+                        <br></br>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "200px 200px 200px",
+                            columnGap: "100px",
+                            paddingLeft: "95px",
+                            fontSize: "16px",
+                            textAlign: "center"}}
+                        >
+                            <div style={{ color: "red" }}>Cash Now summary.</div>
+                            <div style={{ color: "red" }}>Own Your Data summary.</div>
+                            <div style={{ color: "red" }}>Single Dashboard summary.</div>
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <div style={{
+                            color: "#2F5596",
+                            fontSize: "26px",
+                            fontWeight: "600",
+                            textAlign: "center"
+                        }}>
+                            So are you ready to create your first event?
+                        </div>
+                        <br></br>
+                        <br></br>
+                            <br></br>
+                            <br></br>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "170px 170px",
+                                paddingLeft: "325px",
+                                textAlign: "center"}}>
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid red",
+                                        color: "red",
+                                        fontSize: "16px",
+                                        height: "30px",
+                                        width: "120px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px",
+                                    }}
+                                    content="Yes"
+                                    onClick={() => {
+                                        //setPageView("vendor");
+                                        //console.log("pageView: ", pageView)
+                                    }}
+                                />
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid green",
+                                        color: "green",
+                                        fontSize: "16px",
+                                        width: "120px",
+                                        height: "30px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px",
+                                    }}
+                                    content="Later"
+                                    onClick={() => {
+                                        //setPageView("complete");
+                                        //console.log("pageView: ", pageView)
+                                    }}
+                                />
+                            </div>
+                    </div>
+                )
+            }
+        } else {
+            console.log("event IS loading");
+            return <div>Nothing to</div>
         }
     }
 
@@ -874,7 +989,8 @@ const paypalSubscriptionPurchase = data => {
             <div className={classes.DisplayPanelTitle}>
             VENDOR SIGNUP
             </div>
-            {mainDisplay()}
+
+            {loading ? null : mainDisplay()}
         </div>
     )
 }

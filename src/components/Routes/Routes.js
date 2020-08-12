@@ -133,23 +133,6 @@ const Routes = () => {
         )}
       />
 
-      <Route
-        path="/userdashboard"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={UserDashboard} role="0" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
     <Route
       path="/buyerdashboard"
       exact
@@ -200,23 +183,6 @@ const Routes = () => {
         </React.Fragment>
       )}
     />
-
-      <Route
-        path="/vendorevents"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={VendorEvents} role="1" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
 
       <Route
         path="/vendoreventdetails"
@@ -453,3 +419,44 @@ const Routes = () => {
 };
 
 export default Routes;
+
+/*
+      <Route
+        path="/vendordashboard"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={VendorDashboard} status="7" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      
+
+      <Route
+        path="/vendorevents"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivateRoute component={VendorEvents} role="1" />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      
+
+      */

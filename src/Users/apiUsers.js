@@ -192,19 +192,6 @@ export const isAuthenticated = () => {
   }
 };
 
-/*
-export const isAuthenticated = () => {
-  if (
-    typeof window !== "undefined" &&
-    localStorage.getItem(`user`) !== null
-  ) {
-    return JSON.parse(localStorage.getItem("user"));
-  } else {
-    window.location.href = "/signin";
-  }
-};
-*/
-
 // extracts all event data, non-transactional
 export const getAllEventData = (userId) => {
   return fetch(`${API}/event/list/${userId}`, {

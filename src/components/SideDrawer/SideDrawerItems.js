@@ -39,35 +39,23 @@ const SideDrawerItems = (props) => {
         </NavLink>
       </li>
 
-      {isAuthenticated() && isAuthenticated().user.role === 2 ? (
-        <li>
-          <NavLink
-            to="/adminevents"
-            style={isActive(props.currentPage, "/adminevents")}
-            onClick={props.clicked}
-          >
-            DASHBOARD
-          </NavLink>
-        </li>
-      ) : null}
-
-      {isAuthenticated() && isAuthenticated().user.role === 1 ? (
-        <li>
-          <NavLink
-            to="/vendorevents"
-            style={isActive(props.currentPage, "/vendorevents")}
-            onClick={props.clicked}
-          >
-            DASHBOARD
-          </NavLink>
-        </li>
-      ) : null}
-
-      {isAuthenticated() && isAuthenticated().user.role === 0 ? (
+      {isAuthenticated() && isAuthenticated().user.accountId.status !== 7 ? (
         <li>
           <NavLink
             to="/buyerdashboard"
             style={isActive(props.currentPage, "/buyerdashboard")}
+            onClick={props.clicked}
+          >
+            DASHBOARD
+          </NavLink>
+        </li>
+      ) : null}
+
+      {isAuthenticated() && isAuthenticated().user.accountId.status === 7 ? (
+        <li>
+          <NavLink
+            to="/vendordashboard"
+            style={isActive(props.currentPage, "/vendordashboard")}
             onClick={props.clicked}
           >
             DASHBOARD

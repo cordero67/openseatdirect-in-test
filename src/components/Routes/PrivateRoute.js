@@ -19,8 +19,8 @@ const PrivateRoute = ({ component: Component, role: role }) => {
         <Component />
       </React.Fragment>
     );
-  } else if (isAuthenticated().user.role === 2) {
-    return <Redirect to="/admindashboard" />;
+  //} else if (isAuthenticated().user.role === 2) {
+  //  return <Redirect to="/admindashboard" />;
   } else if (isAuthenticated().user.role === 1) {
     return <Redirect to="/vendorevents" />;
   } else if (isAuthenticated().user.role === 0) {

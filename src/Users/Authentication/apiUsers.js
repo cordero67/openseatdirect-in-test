@@ -32,6 +32,7 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
       if (unmounted) return initialData;
 
       setHasError(!response.ok);
+      
       if (typeof response.ok === 'undefined'){
         setNetworkError(true);
         console.log ("undefined response = newtwork error!");
@@ -43,7 +44,6 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
       setIsLoading(false);
       return response.ok && response.json ? response.json() : initialData;
     };
-
 
     const fetchData = () => {
       setIsLoading(true);
