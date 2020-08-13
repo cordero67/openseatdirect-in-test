@@ -1,3 +1,4 @@
+//XX START CODE REPLICATION CHECK
 import React, { useState, useRef } from "react";
 
 import TicketModal from "./Modals/TicketModal";
@@ -8,82 +9,13 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faInfoCircle,
   faTrashAlt,
   faGripVertical,
   faCog
 } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "semantic-ui-react";
 
 const TicketCreation = (props) => {
-
-  // stores all Ticket Details values
-  const [ticketDetails, setTicketDetails] = useState([
-    {
-      key: "1",
-      sort: "",
-      _id: "",
-      ticketName: "",
-      nameWarning: false,
-      remainingQuantity: "",
-      quantityWarning: false,
-      currentTicketPrice: "",
-      priceWarning: false,
-      reqWarning: false,
-      currency: "",
-      settings: false,
-      ticketDescription: "",
-      minTicketsAllowedPerOrder: "",
-      minWarning: false,
-      maxTicketsAllowedPerOrder: "",
-      maxWarning: false,
-      priceFeature: "none",
-      promoCodes: [
-        { key: "1", name: "", amount: "", percent: false },
-      ],
-      promoCodeNames: [],
-      promoCodeWarning: "",
-      functionArgs: {},
-      viewModal: false
-    },
-  ]);
-
-  const [dragging, setDragging] = useState(false);
-
-  const dragItem = useRef();
-  const dragNode = useRef();
-
-  const handleDragStart = (event, index) => {
-    dragItem.current = index;
-    dragNode.current = event.target;
-    dragNode.current.addEventListener("dragend", handleDragEnd);
-    setTimeout(() => {
-      setDragging(true);
-    }, 0);
-  };
-
-  const handleDragEnd = () => {
-    dragNode.current.removeEventListener("dragend", handleDragEnd);
-    setDragging(false);
-    dragItem.current = null;
-    dragNode.current = null;
-  };
-
-  const handleDragEnter = (event, index) => {
-
-    if (index !== dragItem.current) {
-
-      const currentItem = dragItem.current;
-      setTicketDetails((oldDetails) => {
-        let newDetails = JSON.parse(JSON.stringify(oldDetails));
-        newDetails.splice(index, 0, newDetails.splice(currentItem, 1)[0]);
-        dragItem.current = index;
-        return newDetails;
-      });
-    } else {
-      console.log("SAME TARGET");
-    }
-  };
-
 
   const ticketTypeDisplay = (index) => {
     let display = (
@@ -172,6 +104,8 @@ const TicketCreation = (props) => {
             quantityWarningText = "";
           }
 
+/*
+    //XX START CODE REPLICATION REQUIRED
           // defines styling for the ticket name, quantity and price line
           let tempTicketStyling;
           if (dragging && dragItem.current === index) {
@@ -179,11 +113,13 @@ const TicketCreation = (props) => {
           } else {
             tempTicketStyling = classes.TicketLine;
           }
-
+          
+    //XX END CODE REPLICATION REQUIRED
+*/
           return (
             <Aux key={index}>
               <div
-                className={tempTicketStyling}
+                className={classes.TicketLine}
               >
                 <div
                   style={{
@@ -195,9 +131,11 @@ const TicketCreation = (props) => {
                 >
                   <div
                     draggable
-                    onDragStart={(event) => handleDragStart(event, index)}
+                    onDragStart={(event) => {
+                      props.handleDragStart(event, index)
+                    }}
                     onDragEnter={
-                      dragging ? (event) => handleDragEnter(event, index) : null
+                      props.dragging ? (event) => props.handleDragEnter(event, index) : null
                     }
                     style={{
                       padding: "9px 0px 9px 3px",
@@ -339,10 +277,12 @@ const TicketCreation = (props) => {
                   switchPriceFeature={props.switchPriceFeature}
                   addPromoCode={props.addPromoCode}
                   changeArgument={props.changeArgument}
+                  changePromoCodesName={props.changePromoCodesName}
+                  changePromoCodesAmount={props.changePromoCodesAmount}
+                  changePromoCodesPercent={props.changePromoCodesPercent}
+                  deletePromoCode={props.deletePromoCode}
                 /> :
               null}
-              
-
             </Aux>
           )
         })}
@@ -350,30 +290,6 @@ const TicketCreation = (props) => {
     );
     return display;
   };
-
-    const refundPolicyList = [
-      {
-        label:
-          "1 day: Attendees can receive refunds up to 1 day before your event start date.",
-        value: "1day",
-      },
-      {
-        label:
-          "7 days: Attendees can receive refunds up to 7 days before your event start date.",
-        value: "7days",
-      },
-      {
-        label:
-          "30 days: Attendees can receive refunds up to 30 days before your event start date.",
-        value: "30days",
-      },
-      {
-        label:
-          "Undefined: I will respond to attendee refund requests on a case by case basis.",
-        value: "unknown",
-      },
-      { label: "No refunds: No refunds at any time.", value: "noRefunds" },
-    ];
 
     return (
         <Aux>
@@ -433,6 +349,24 @@ const TicketCreation = (props) => {
               </div>
             </div>
             {ticketTypeDisplay()}
+              <div
+                style={{
+                  padding: "10px 5px 10px 5px",
+                  borderTop: "1px solid lightgrey",
+                  boxSizing: "borderBox",
+                  height: "56px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                }}
+              >
+              <Button
+                style={{fontSize: "12px"}}
+                content="Add a ticket"
+                icon="add circle"
+                color="green"
+                onClick={props.createNewTicketHandler}
+              />
+              </div>
           </div>
         </Aux>
     )

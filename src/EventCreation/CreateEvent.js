@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import dateFnsFormat from 'date-fns/format';
 
@@ -12,6 +12,7 @@ import { Button, Popup } from "semantic-ui-react";
 
 const CreateEvent = (props) => {
     const [eventTitleOmission, setEventTitleOmission] = useState(false);
+    const [pageErrors, setPageErrors] = useState(false);
 
     // stores all Event Description values
     const [eventDescription, setEventDescription] = useState({
@@ -77,6 +78,15 @@ const CreateEvent = (props) => {
         },
     ]);
 
+    const [eventStatus, setEventStatus] = useState({
+      status: "", // "saved", "live", "error", "failure"
+      savedMessage: "Congratulations, your event was saved!",
+      liveMessage: "Congratulations, your event is live!",
+      errorMessage: "", //["Please fix input errors and resubmit."],
+      failureMessage: "System error please try again.",
+    });
+
+    // EVENT DESCRIPTION HANDLERS
     const changeEventDescription = (event) => {
         let tempDescription = { ...eventDescription };
         tempDescription[event.target.name] = event.target.value;
@@ -89,20 +99,6 @@ const CreateEvent = (props) => {
         }
         setEventDescription(tempDescription);
         console.log("Event Description: ", tempDescription);
-    };
-
-    const changeEventDescriptionRadio = (event, value, name) => {
-        let tempDescription = { ...eventDescription };
-        tempDescription[name] = value.value;
-        setEventDescription(tempDescription);
-        console.log("Event Description: ", tempDescription);
-    };
-
-    const changeEventField = (value, field) => {
-        let tempDescription = { ...eventDescription };
-        tempDescription[field] = value;
-        console.log("eventEndTime: ", value);
-        setEventDescription(tempDescription);
     };
 
     const changeEventDate = (day, fieldName) => {
@@ -128,21 +124,20 @@ const CreateEvent = (props) => {
         console.log("tempDescription: ", tempDescription);
     };
 
-    const changeEventCategory = (value) => {
-        let tempDescription = { ...eventDescription };
-        tempDescription.eventCategory = value;
-        console.log("eventCategory: ", value);
-        setEventDescription(tempDescription);
+    const changeEventDescriptionRadio = (event, value, name) => {
+      let tempDescription = { ...eventDescription };
+      tempDescription[name] = value.value;
+      setEventDescription(tempDescription);
+      console.log("Event Description: ", tempDescription);
     };
-
 
     const changeLongDescription = (editorContent) => {
-        let tempDescription = { ...eventDescription };
-        tempDescription.longDescription = editorContent;
-        setEventDescription(tempDescription);
+      let tempDescription = { ...eventDescription };
+      tempDescription.longDescription = editorContent;
+      setEventDescription(tempDescription);
     };
 
-    // TICKET DETAILS HANDLERS
+  // TICKET DETAILS HANDLERS
     const changeTicketDetail = (event, id) => {
       let tempDetails = [...ticketDetails];
       tempDetails.forEach((item) => {
@@ -159,6 +154,17 @@ const CreateEvent = (props) => {
       tempDetails.forEach((item) => {
         if (item.key === key) {
           item.settings = !item.settings;
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+
+    const changeArgument = (event, key) => {
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === key) {
+          item.functionArgs[event.target.name] = event.target.value;
         }
       });
       setTicketDetails(tempDetails);
@@ -189,83 +195,38 @@ const CreateEvent = (props) => {
       console.log("Ticket Details: ", ticketDetails);
     };
 
-    const switchPriceFeature = (event, key) => {
-      let tempDetails = [...ticketDetails];
-      tempDetails.forEach((item) => {
-        if (item.key === key) {
-          item.priceFeature = "none";
-          item.promoCodes = [{ key: "", name: "", amount: "", percent: false }];
-          item.promoCodeNames = [];
-          item.promoCodeWarning = "";
-          item.functionArgs = {};
-        }
-      });
-      setTicketDetails(tempDetails);
-      console.log("Ticket Details: ", tempDetails);
-    };
-
-    const addPromoCode = (event, key) => {
+    const createNewTicketHandler = () => {
+      let newTicketKey = Math.floor(Math.random() * 1000000000000000);
       let newPromoKey = Math.floor(Math.random() * 1000000000000000);
+      let newItem = {
+        key: newTicketKey,
+        sort: "",
+        _id: "",
+        ticketName: "",
+        nameWarning: false,
+        remainingQuantity: "",
+        quantityWarning: false,
+        currentTicketPrice: "",
+        priceWarning: false,
+        reqWarning: false,
+        currency: "",
+        settings: false,
+        ticketDescription: "",
+        minTicketsAllowedPerOrder: "",
+        minWarning: false,
+        maxTicketsAllowedPerOrder: "",
+        maxWarning: false,
+        priceFeature: "none",
+        promoCodes: [{ key: newPromoKey, name: "", amount: "", percent: false }],
+        promoCodeNames: [],
+        promoCodeWarning: "",
+        functionArgs: {},
+        viewModal: false,
+      };
       let tempDetails = [...ticketDetails];
-      tempDetails.forEach((item) => {
-        if (item.key === key) {
-          let newPromo = {
-            key: newPromoKey,
-            name: "",
-            amount: "",
-            percent: false,
-          };
-          item.promoCodes.push(newPromo);
-        }
-      });
+      tempDetails.push(newItem);
       setTicketDetails(tempDetails);
-      console.log("Ticket Details: ", tempDetails);
     };
-
-    const changeArgument = (event, key) => {
-      let tempDetails = [...ticketDetails];
-      tempDetails.forEach((item) => {
-        if (item.key === key) {
-          item.functionArgs[event.target.name] = event.target.value;
-        }
-      });
-      setTicketDetails(tempDetails);
-      console.log("Ticket Details: ", tempDetails);
-    };
-
-    // garuantees that only one ticket has a "true" "viewModal" value
-    const activateShowModal = (ticket) => {
-      let tempDetails = [...ticketDetails];
-      console.log("inside activateShowModal")
-      tempDetails.forEach((item) => {
-        if (item.key === ticket.key) {
-            console.log("inside true")
-          item.viewModal = true;
-        } else {
-            console.log("inside false")
-          item.viewModal = false;
-        }
-      });
-      setTicketDetails(tempDetails);
-      console.log("Ticket Details: ", tempDetails);
-    };
-  
-    // clears "viewModal" value for all tickets
-    const deactivateShowModal = (ticket) => {
-      let tempDetails = [...ticketDetails];
-      tempDetails.forEach((item) => {
-        item.viewModal = false;
-      });
-      setTicketDetails(tempDetails);
-      console.log("Ticket Details: ", tempDetails);
-    };
-  
-
-    const changeEventImage = (image) => {
-        let tempDescription = { ...eventDescription };
-        tempDescription.photo = image;
-        setEventDescription(tempDescription);
-    }
 
     const deleteTicket = (id) => {
         if (ticketDetails.length === 1) {
@@ -310,6 +271,247 @@ const CreateEvent = (props) => {
         }
     };
 
+    const deletePromoCode = (event, ticket, promoKey) => {
+      if (ticket.promoCodes.length === 1) {
+        // delete all promoCode info and set back to default in this specific ticket
+        let tempDetails = [...ticketDetails];
+        tempDetails.forEach((item, index) => {
+          if (item.key === ticket.key) {
+            item.promoCodes = [
+              { key: "1", name: "", amount: "", percent: false },
+            ];
+          }
+          setTicketDetails(tempDetails);
+        });
+      } else {
+        // delete specifc promoCode in this specific ticket
+        let tempDetails = [...ticketDetails];
+        tempDetails.forEach((item, index1) => {
+          if (item.key === ticket.key) {
+            let tempCodes = [...item.promoCodes];
+            tempCodes.forEach((code, index2) => {
+              if (code.key === promoKey) {
+                tempCodes.splice(index2, 1);
+              }
+              item.promoCodes = tempCodes;
+            });
+          }
+        });
+        setTicketDetails(tempDetails);
+      }
+    };
+
+    const switchPriceFeature = (event, key) => {
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === key) {
+          item.priceFeature = "none";
+          item.promoCodes = [{ key: "", name: "", amount: "", percent: false }];
+          item.promoCodeNames = [];
+          item.promoCodeWarning = "";
+          item.functionArgs = {};
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+
+    const addPromoCode = (event, key) => {
+      let newPromoKey = Math.floor(Math.random() * 1000000000000000);
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === key) {
+          let newPromo = {
+            key: newPromoKey,
+            name: "",
+            amount: "",
+            percent: false,
+          };
+          item.promoCodes.push(newPromo);
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+
+    const changePromoCodesName = (event, ticketKey, promoKey) => {
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === ticketKey) {
+          let tempCodes = [...item.promoCodes];
+          tempCodes.forEach((code) => {
+            if (code.key === promoKey) {
+              code.name = event.target.value;
+            }
+          });
+          item.promoCodes = tempCodes;
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+
+    const changePromoCodesPercent = (event, ticketKey, promoKey) => {
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === ticketKey) {
+          let tempCodes = [...item.promoCodes];
+          tempCodes.forEach((code) => {
+            if (code.key === promoKey) {
+              code.amount = event.target.value;
+              code.percent = true;
+            }
+          });
+          item.promoCodes = tempCodes;
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+
+    const changePromoCodesAmount = (event, ticketKey, promoKey) => {
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        if (item.key === ticketKey) {
+          let tempCodes = [...item.promoCodes];
+          tempCodes.forEach((code) => {
+            if (code.key === promoKey) {
+              code.amount = event.target.value;
+              code.percent = false;
+            }
+          });
+          item.promoCodes = tempCodes;
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+
+    const subTitleDisplay = () => {
+      if (pageErrors || eventTitleOmission) {
+        return (
+          <div className={classes.GridSubTitle}>
+            <div style={{ textAlign: "left" }}>
+            </div>
+            <div style={{ textAlign: "center", color: "red"}}>
+              Please correct input errors identified below.
+            </div>
+          </div>
+        )
+      } else {
+        return (
+          <div className={classes.GridSubTitle}>
+            <div style={{ textAlign: "left" }}>
+            </div>
+          </div>
+        )
+      }
+    }
+
+    const [dragging, setDragging] = useState(false);
+
+    const dragItem = useRef();
+    const dragNode = useRef();
+    
+    const handleDragStart = (event, index) => {
+      dragItem.current = index;
+      dragNode.current = event.target;
+      dragNode.current.addEventListener("dragend", handleDragEnd);
+      setTimeout(() => {
+        setDragging(true);
+      }, 0);
+    };
+    
+    const handleDragEnd = () => {
+      dragNode.current.removeEventListener("dragend", handleDragEnd);
+      setDragging(false);
+      dragItem.current = null;
+      dragNode.current = null;
+    };
+    
+    const handleDragEnter = (event, index) => {
+    
+      if (index !== dragItem.current) {
+    
+        const currentItem = dragItem.current;
+        setTicketDetails((oldDetails) => {
+          let newDetails = JSON.parse(JSON.stringify(oldDetails));
+          newDetails.splice(index, 0, newDetails.splice(currentItem, 1)[0]);
+          dragItem.current = index;
+          return newDetails;
+        });
+      } else {
+        console.log("SAME TARGET");
+      }
+    };
+
+//END CODE REPLICATION CHECK
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const changeEventField = (value, field) => {
+        let tempDescription = { ...eventDescription };
+        tempDescription[field] = value;
+        console.log("eventEndTime: ", value);
+        setEventDescription(tempDescription);
+    };
+
+    const changeEventCategory = (value) => {
+        let tempDescription = { ...eventDescription };
+        tempDescription.eventCategory = value;
+        console.log("eventCategory: ", value);
+        setEventDescription(tempDescription);
+    };
+
+    // garuantees that only one ticket has a "true" "viewModal" value
+    const activateShowModal = (ticket) => {
+      let tempDetails = [...ticketDetails];
+      console.log("inside activateShowModal")
+      tempDetails.forEach((item) => {
+        if (item.key === ticket.key) {
+            console.log("inside true")
+          item.viewModal = true;
+        } else {
+            console.log("inside false")
+          item.viewModal = false;
+        }
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+  
+    // clears "viewModal" value for all tickets
+    const deactivateShowModal = (ticket) => {
+      let tempDetails = [...ticketDetails];
+      tempDetails.forEach((item) => {
+        item.viewModal = false;
+      });
+      setTicketDetails(tempDetails);
+      console.log("Ticket Details: ", tempDetails);
+    };
+  
+
+    const changeEventImage = (image) => {
+        let tempDescription = { ...eventDescription };
+        tempDescription.photo = image;
+        setEventDescription(tempDescription);
+    }
+
+
+
+
+//START CODE REPLICATION CHECK
+
     return (
         <div>
             <div className={classes.EventPanelTitle}>
@@ -331,6 +533,7 @@ const CreateEvent = (props) => {
                         }}
                         content="Save as Draft"
                         onClick={() => {
+                          // ***** NEED TO INCLUDE
                         //let tempDescription = {...eventDescription };
                         //tempDescription.isDraft = true;
                         //setEventDescription(tempDescription);
@@ -353,7 +556,7 @@ const CreateEvent = (props) => {
                         }}
                         content="Go Live Now"
                         onClick={() => {
-                        // ***** NEED TO FIX
+                        // ***** NEED TO INCLUDE
                         //let tempDescription = {...eventDescription };
                         //tempDescription.isDraft = false;
                         //setEventDescription(tempDescription);
@@ -376,16 +579,16 @@ const CreateEvent = (props) => {
                         }}
                         content="Cancel Create"
                         onClick={() => {
-                        // ***** NEED TO FIX
+                        // ***** NEED TO INCLUDE
                         //window.location.href = `/vendorevents`
                         }}
                     />
                 </div>
+                <div>
+                  {subTitleDisplay()}
+                </div>
             </div>
             <div className={classes.DisplayPanel}>
-                <div className={classes2.CategoryTitle} style={{ width: "140px" }}>
-                    Event Details
-                </div>
                 <EventDetails
                     event={eventDescription}
                     titleOmission={eventTitleOmission}
@@ -404,6 +607,14 @@ const CreateEvent = (props) => {
                     //changeEnd={changeEventField}
                     //changeZone={changeTimeZone}
                 />
+
+
+
+
+
+
+
+
                 <br></br>
                 <TicketCreation
                     tickets={ticketDetails}
@@ -419,6 +630,14 @@ const CreateEvent = (props) => {
                     switchPriceFeature={switchPriceFeature}
                     addPromoCode={addPromoCode}
                     changeArgument={changeArgument}
+                    changePromoCodesName={changePromoCodesName}
+                    changePromoCodesAmount={changePromoCodesAmount}
+                    changePromoCodesPercent={changePromoCodesPercent}
+                    deletePromoCode={deletePromoCode}
+                    createNewTicketHandler={createNewTicketHandler}
+                    handleDragStart={handleDragStart}
+                    handleDragEnter={handleDragEnter}
+                    dragging={dragging}
                 />
                 <br></br>
                 <AdditionalSettings

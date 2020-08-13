@@ -50,12 +50,13 @@ const SignIn = () => {
     } else {
       return <Redirect to="/buyerdashboard" />;
     }
-    
+    /*
     if (tempData.user.accountId && tempData.user.accountId.status && tempData.user.accountId.status === 7) {
       return <Redirect to="/vendordashboard" />;
     } else {
       return <Redirect to="/buyerdashboard" />;
     }
+    */
   }
 
   const handleChange = (event) => {

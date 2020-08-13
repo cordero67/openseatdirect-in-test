@@ -156,13 +156,16 @@ const PriceSettings = (props) => {
                 : null
             }
 
-
             <PriceFeatureSettings
                 ticket={props.ticket}
                 changeFeature={props.changeFeature}
                 switchPriceFeature={props.switchPriceFeature}
                 addPromoCode={props.addPromoCode}
                 changeArgument={props.changeArgument}
+                changePromoCodesName={props.changePromoCodesName}
+                changePromoCodesAmount={props.changePromoCodesAmount}
+                changePromoCodesPercent={props.changePromoCodesPercent}
+                deletePromoCode={props.deletePromoCode}
             />
 
             <div

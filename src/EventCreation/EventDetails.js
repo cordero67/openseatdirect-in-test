@@ -1,3 +1,5 @@
+//ENTIRE CODE HAS BEEN CHECKED VERSUS ORIGINAL
+
 import React, { useState } from "react";
 
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
@@ -112,8 +114,12 @@ const EventDetails = (props) => {
             }}
         />
     );
-
+    
     return (
+        <Aux>
+        <div className={classes.CategoryTitle} style={{ width: "140px" }}>
+            Event Details
+        </div>
         <div style={{ border: "1px solid grey" }}>
             <div className={classes.SectionTitleTight}>
                 Event Title<span style={{ color: "red" }}>*</span>
@@ -321,6 +327,7 @@ const EventDetails = (props) => {
                             className={classes.InputBoxContent}
                             style={{ width: "600px" }}
                             current={props.event.locationCountryCode}
+                            //defaultValue="United States of America"
                             getCountry={(value) => props.changeEventField(value, "locationCountryCode")}
                         />
                     </div>
@@ -452,6 +459,9 @@ const EventDetails = (props) => {
                 <TimeSelector
                     current={props.event.startTime}
                     getTime={(value) => props.changeEventField(value, "startTime")}
+                    //startDate={eventDescription.startDate}
+                    //startTime={eventDescription.startTime}
+                    //endDate={eventDescription.endDate}
                 />
                 <DateSelector
                     startDate={props.event.startDate}
@@ -462,6 +472,9 @@ const EventDetails = (props) => {
                 <TimeSelector
                     current={props.event.endTime}
                     getTime={(value) => props.changeEventField(value, "endTime")}
+                    //startDate={parseInt(eventDescription.startDate)}
+                    //startTime={parseInt(eventDescription.startTime)}
+                    //endDate={eventDescription.endDate}
                 />
                 <TimeZoneSelector
                     current={props.event.timeZone}
@@ -753,6 +766,7 @@ const EventDetails = (props) => {
             </div>
 
         </div>
+        </Aux>
     )
 };
 
