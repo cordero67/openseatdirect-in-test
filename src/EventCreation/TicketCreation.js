@@ -1,4 +1,6 @@
-//XX START CODE REPLICATION CHECK
+//ENTIRE CODE HAS BEEN CHECKED VERSUS ORIGINAL
+//EXCEPT FOR SMALL STYLING SECTION LABELED BELOW
+
 import React, { useState, useRef } from "react";
 
 import TicketModal from "./Modals/TicketModal";

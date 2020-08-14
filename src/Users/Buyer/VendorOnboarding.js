@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 
-import { useOurApi, paypalSubscriptionDetails } from "../Authentication/apiUsers";
+import { useOurApi } from "./apiUsers";
 import { API } from "../../config";
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfoCircle
@@ -43,85 +42,78 @@ const VendorOnboarding = (props) => {
     myHeaders.append("Authorization", authstring);
 
     const url = `${API}/account/${props.userid}`;
-    console.log("url: ", url)
-    const method = "PATCH";
+    const method = "POST";
     const body1  = null;
     let initialData ={status: true, message:"hi first time"};
-    //const [initialData, setInitialData] = useState({status: true, message:"hi first time"})
-  
-    const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method, url, myHeaders,body1, initialData);
+
+    const { isLoading, hasError, setUrl, setBody, setMethod, data, networkError} = useOurApi(method, url, myHeaders,body1, initialData);
   
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
+    const getStatus= () =>{ 
+        let tempData = JSON.parse(localStorage.getItem("user"));
+        if ('accountId' in tempData && 'status' in tempData.accountId ) {
+            return tempData.accountId.status}
+        else {
+            return 0;
+        } 
+    }
+
     useEffect(() => {
-
         setLoading(true);
-
         if (
           typeof window !== "undefined" &&
           localStorage.getItem(`user`) !== null
         ) {
           let tempUser = JSON.parse(localStorage.getItem("user"));
           let tempBuyerInfo = {};
-          tempBuyerInfo.accountName = tempUser.user.name;
-          tempBuyerInfo.accountEmail = tempUser.user.email;
-          tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
-          tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
-          tempBuyerInfo.status = tempUser.user.accountId.status;
-          tempBuyerInfo.id = tempUser.user.accountId._id;
-          tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
-          tempBuyerInfo.paypalClient = tempUser.user.accountId.paypalExpress_client_id;
-          tempBuyerInfo.paypalSecret = tempUser.user.accountId.paypalExpress_client_secret;
-          setValues(tempBuyerInfo);
-          console.log("tempUser: ", tempUser)
-          console.log("tempBuyerInfo: ", tempBuyerInfo)
+            if (getStatus() >= 4) {
+            tempBuyerInfo.accountName = tempUser.user.name;
+            tempBuyerInfo.accountEmail = tempUser.user.email;
+            tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
+            tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
+            tempBuyerInfo.status = tempUser.user.accountId.status;
+            tempBuyerInfo.id = tempUser.user.accountId._id;
+            tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
+            tempBuyerInfo.paypalClient = tempUser.user.accountId.paypalExpress_client_id;
+            tempBuyerInfo.paypalSecret = tempUser.user.accountId.paypalExpress_client_secret;
+            setValues(tempBuyerInfo);
+        }
 
-            //  0:  no accountId at all. Go to introductory upgrade page
-            //  4:  not paid, no clientId
-            //  5:  not paid  with clientId
-            //  6:  paid, but not clientId
-            //  7:  paid && clientId;  Onboarding is DONE!
-
-          if (tempUser.user.accountId.status === 4) {
+          if (getStatus() === 4) {
             setPageView("ticket")
-          } else if (tempUser.user.accountId.status === 5) {
+          } else if (getStatus() === 6) {
             setPageView("payment")
-          } else if (tempUser.user.accountId.status === 6) {
+          } else if (getStatus() === 5) {
             setPageView("paypal")
-          } else if (tempUser.user.accountId.status === 7) {
+          } else if (getStatus() === 7) {
             return <Redirect to="/vendordashboard" />;
-          } 
-          console.log("tempBuyerInfo: ", tempBuyerInfo)
-          //setBuyerInfo(tempBuyerInfo);
-          //if (tempBuyerInfo.role === 1) {
-          //  return <Redirect to="/vendorevents" />;
-          //} else if (tempBuyerInfo.role !== 0) {
-          //  window.location.href = "/";
-         // }
+          }
         } else {
-          //window.location.href = "/signin";
+          window.location.href = "/signin";
         }
 
         setLoading(false);
       }, []);
 
+    /* need to work on this code to handle fetch responses
     if (data.status  && data.message === "vendor Account updated!") {
         console.log("data.result.accountNum: ", data.result.accountNum);
         console.log("data: ", data);
         console.log("initialData: ", initialData);
         const newBody = null;
         //setBody(newBody)
-        /*
+        
         if (ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual") {
             setPageView("paypal");
         } else if (ticketPlan === "free") {
             setPageView("complete");
         }
-        */
         
     } else if (!data.status) {
         console.log("server determined error")
     }
+    */
 
     const handleChange = (event) => {
         setValues({
@@ -131,8 +123,6 @@ const VendorOnboarding = (props) => {
     }
 
     const radioChange = (event, value, name) => {
-        console.log("name", name)
-        console.log("value", value.value)
         let tempValues = { ...values };
         tempValues[name] = value.value;
         setValues(tempValues);
@@ -148,39 +138,7 @@ const VendorOnboarding = (props) => {
         { label: "$35 for one full year", value: "basicPaidAnnual" }
     ];
 
-
-const paypalSubscriptionPurchase = data => {
-      //details.purchase_units[0].items = paypalArray;
-      console.log("Inside paypalSubscriptionPurchase")
-    const paymentData = {
-      subscriptionOrderData: data
-      //data
-    };
-
-    //setPaypalStatus(true);
-    //console.log("paypalStatus inside 'paypalSubscriptionPurchase': ", paypalStatus);
-    //console.log("On Success 'details' object: ", details);
-    // sends PayPal order object to the server
-    paypalSubscriptionDetails(paymentData, props.userid, props.token)
-      .then(response => {
-        console.log("order received");
-        console.log("response: ", response);
-        //setOrderStatus(true);
-        //console.log("Order status: ", orderStatus);
-        //onlyShowPurchaseConfirmation();
-        //purchaseConfirmHandler();
-      })
-      .catch(error => {
-        console.log("processExpressPayment() error.message: ", error.message);
-        //onlyShowPurchaseConfirmation();
-        //purchaseConfirmHandler();
-      });
-  };
-
-
-
   const showPayPal = (
-    // loads PayPal Smart buttons if order exists
     <div>
         <br></br>
         <PayPalButton
@@ -194,18 +152,10 @@ const paypalSubscriptionPurchase = data => {
                 console.log("onCancel 'data': ", data);
             }}
             onApprove = {(data, actions) => {
-                console.log("successful transaction");
-                console.log("data: ", data)
-                console.log("actions: ", actions)
-                //paypalSubscriptionPurchase(data);
-
                 return actions.subscription.get()
                     .then(function(details) {
-                        // Show a success message to your buyer
                         console.log("details: ", details)
-                        //alert("Subscription completed");
                         const authstring = `Bearer ${props.token}`;
-                        // OPTIONAL: Call your server to save the subscription
                         console.log("about to send paypal object to server")
                         return fetch(`${API}/paypal/subscription/${props.userid}`, {
                             method: "POST",
@@ -217,15 +167,12 @@ const paypalSubscriptionPurchase = data => {
                             body: JSON.stringify({
                                 data: data,
                                 details: details
-                                //orderID: data.orderID,
-                                //subscriptionID: data.subscriptionID
                             })
                         })
                             .then(response => {
-                                console.log("success in sending paypal object to server")
+                                setPageView("paypal")
                                 //return response.json();
-                                setPageView("complete")
-                            })
+                        })
                 })
 
             }}
@@ -236,11 +183,10 @@ const paypalSubscriptionPurchase = data => {
                 clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
                 currency: "USD",
                 vault: true
-                //currency: orderTotals.currencyAbv
-        }}
-        catchError = {err => {
-            console.log("catchError 'err': ", err);
-        }}
+            }}
+            catchError = {err => {
+                console.log("catchError 'err': ", err);
+            }}
         />
     </div>
   );
@@ -252,83 +198,38 @@ const paypalSubscriptionPurchase = data => {
                 return (
                     <div className={classes.DisplayPanel}
                         style={{textAlign: "center"}}>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600"}}>
+                        <div className={classes.SummaryHeader}>
                             3 easy steps to start selling tickets and receiving your cash now!!!
                         </div>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "240px 240px 240px",
-                            columnGap: "60px",
-                            paddingLeft: "75px",
-                            paddingBottom: "30px",
-                            fontSize: "24px",
-                            fontWeight: "600",
-                            textAlign: "center"
-                        }}>
+                        <div className={classes.SummaryGrid}
+                            style={{ fontWeight: "600"}}>
                             <div>STEP 1</div>
                             <div>STEP 2</div>
                             <div>STEP 3</div>
                         </div>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "240px 240px 240px",
-                            columnGap: "60px",
-                            paddingLeft: "75px",
-                            paddingBottom: "10px",
-                            fontSize: "22px",
-                            fontWeight: "400",
-                            textAlign: "center"}}>
+                        <div className={classes.SummaryGrid}>
                             <div>Provide Minimal</div>
                             <div>Select a</div>
                             <div>Create Your</div>
                         </div>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "240px 240px 240px",
-                            columnGap: "60px",
-                            paddingLeft: "75px",
-                            fontSize: "22px",
-                            fontWeight: "400",
-                            textAlign: "center"}}>
+                        <div className={classes.SummaryGrid}>
                             <div>Organization Info</div>
                             <div>Ticket Plan</div>
                             <div>First Event</div>
                         </div>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            color: "#2F5596",
-                            fontSize: "26px",
-                            fontWeight: "600"
-                        }}>
+                        <div className={classes.SummaryHeader}>
                             If you have 10 minutes to spare, you have time to sign up now.
                         </div>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <Button
+                        <Button className={classes.SummaryButton}
                             style={{
-                                backgroundColor: 'white',
+                                backgroundColor: "white",
                                 border: "1px solid green",
                                 color: "green",
-                                fontSize: "16px",
-                                width: "90px",
-                                height: "30px",
-                                margin: "auto",
-                                textAlign: "center",
                                 padding: "0px"
                             }}
                             content="Start"
                             onClick={() => {
                                 setPageView("vendor");
-                                console.log("pageView: ", pageView)
                             }}
                         />
                     </div>
@@ -351,122 +252,110 @@ const paypalSubscriptionPurchase = data => {
                         <br></br>
                         <br></br>
                         <div className={classes.VendorCanvas}>
-                        <div className="form-group">
-                            <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
-                            <input
-                                type="text"
-                                name="accountName"
-                                className="form-control"
-                                onChange={handleChange}
-                                value={accountName}
-                            />
+                            <div className="form-group">
+                                <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
+                                <input
+                                    type="text"
+                                    name="accountName"
+                                    className="form-control"
+                                    onChange={handleChange}
+                                    value={accountName}
+                                />
+                            </div>
+                            <br></br>
+                            <div className="form-group">
+                                <label>Company Email{" "}
+                                <Popup
+                                    position="right center"
+                                    content="This email will only be used..."
+                                    header="Company Email"
+                                    trigger={
+                                        <FontAwesomeIcon
+                                            color="blue"
+                                            cursor="pointer"
+                                            icon={faInfoCircle}
+                                        />
+                                    }
+                                />
+                                </label>
+                                <input
+                                    type="text"
+                                    name="accountEmail"
+                                    className="form-control"
+                                    onChange={handleChange}
+                                    value={accountEmail}
+                                />
+                            </div>
+                            <br></br>
+                            <div className="form-group">
+                                <label>Company Phone or Cell Number{" "}
+                                <Popup
+                                    position="right center"
+                                    content="This number will only be used..."
+                                    header="Phone/Cell Number"
+                                    trigger={
+                                        <FontAwesomeIcon
+                                            color="blue"
+                                            cursor="pointer"
+                                            icon={faInfoCircle}
+                                        />
+                                    }
+                                />
+                                </label>
+                                <input
+                                    type="text"
+                                    name="accountPhone"
+                                    className="form-control"
+                                    onChange={handleChange}
+                                    value={accountPhone}
+                                />
+                            </div>
+                            <br></br>
+                            <div className="form-group">
+                                <label>Company Website</label>
+                                <input
+                                    type="text"
+                                    name="accountUrl"
+                                    className="form-control"
+                                    onChange={handleChange}
+                                    value={accountUrl}
+                                />
+                            </div>
                         </div>
                         <br></br>
-                        <div className="form-group">
-                            <label>Company Email{" "}
-                            <Popup
-                                position="right center"
-                                content="This email will only be used..."
-                                header="Company Email"
-                                trigger={
-                                    <FontAwesomeIcon
-                                        color="blue"
-                                        cursor="pointer"
-                                        icon={faInfoCircle}
-                                    />
-                                }
-                            />
-                            </label>
-                            <input
-                                type="text"
-                                name="accountEmail"
-                                className="form-control"
-                                onChange={handleChange}
-                                value={accountEmail}
-                            />
-                        </div>
                         <br></br>
-                        <div className="form-group">
-                            <label>Company Phone or Cell Number{" "}
-                            <Popup
-                                position="right center"
-                                content="This number will only be used..."
-                                header="Phone/Cell Number"
-                                trigger={
-                                    <FontAwesomeIcon
-                                        color="blue"
-                                        cursor="pointer"
-                                        icon={faInfoCircle}
-                                    />
-                                }
-                            />
-                            </label>
-                            <input
-                                type="text"
-                                name="accountPhone"
-                                className="form-control"
-                                onChange={handleChange}
-                                value={accountPhone}
-                            />
-                        </div>
-                        <br></br>
-                        <div className="form-group">
-                            <label>Company Website</label>
-                            <input
-                                type="text"
-                                name="accountUrl"
-                                className="form-control"
-                                onChange={handleChange}
-                                value={accountUrl}
-                            />
-                        </div>
-                    </div>
-                    <br></br>
-                    <br></br>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "255px 255px",
-                        paddingLeft: "245px",
-                        textAlign: "center"}}>
-                        <Button
-                            style={{
-                                backgroundColor: 'white',
-                                border: "1px solid blue",
-                                color: "blue",
-                                fontSize: "16px",
-                                height: "30px",
-                                width: "120px",
-                                margin: "auto",
-                                textAlign: "center",
-                                padding: "0px",
-                            }}
-                            content="Back"
-                            onClick={() => {
-                                setPageView("summary");
-                                console.log("pageView: ", pageView)
-                            }}
-                        />
-                        <Button
-                            style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
-                                    padding: "0px",
-                                }}
-                                content="Next"
+                        <div className={classes.OrganizationButtonGrid}>
+                            <div style={{paddingLeft: "65px"}}>
+                                <Button className={classes.OrganizationButton}
+                                    style={{
+                                        backgroundColor: "white",
+                                        border: "1px solid blue",
+                                        color: "blue",
+                                        padding: "0px"
+                                    }}
+                                    content="Back"
+                                    onClick={() => {
+                                        setPageView("summary");
+                                    }}
+                                />
+                            </div>
+                            <div style={{paddingLeft: "65px"}}>
+                                <Button className={classes.OrganizationButton}
+                                    style={{
+                                        backgroundColor: "white",
+                                        border: "1px solid green",
+                                        color: "green",
+                                        padding: "0px",
+                                    }}
+                                    content="Next"
 
-                                disabled={!accountName}
-                                onClick={() => {
-                                    setPageView("ticket");
-                                    console.log("pageView: ", pageView)
-                                }}
-                            />
-                         </div>
+                                    disabled={!accountName}
+                                    onClick={() => {
+                                        setPageView("ticket");
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
                 )
             } else if (pageView === "ticket") {
@@ -544,7 +433,7 @@ const paypalSubscriptionPurchase = data => {
                                     disabled={!ticketPlan}
                                     onClick={() => {
                                         if (ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual") {
-                                            setPageView("paypal");
+                                            setPageView("payment");
                                         } else if (ticketPlan === "free") {
                                             setPageView("complete");
                                         } else {
@@ -577,13 +466,6 @@ const paypalSubscriptionPurchase = data => {
                                     }}
                                     content="Server Call"
                                     onClick={() => {
-                                        console.log("clicked button",{
-                                            accountName: accountName,
-                                            accountEmail: accountEmail,
-                                            accountPhone: accountPhone,
-                                            accountUrl: accountUrl,
-                                            ticketPlan: ticketPlan
-                                        });
                                         setBody({
                                             accountName: accountName,
                                             accountEmail: accountEmail,
@@ -591,6 +473,62 @@ const paypalSubscriptionPurchase = data => {
                                             accountUrl: accountUrl,
                                             ticketPlan: ticketPlan
                                         })
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )
+            } else if (pageView === "payment") {
+                return (
+                    <div className={classes.DisplayPanel}>
+                        <div>
+                            <br></br>
+                            <br></br>
+                            <div
+                                style={{
+                                    paddingLeft: "80px",
+                                    fontSize: "22px",
+                                    fontWeight: "600"
+                                }}
+                                >STEP 2: Choose a Payment Plan
+                            </div>
+                            <br></br>
+                            <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
+                            <br></br>
+                            <br></br>
+                            <div  className={classes.PaymentCanvas}>
+                                <RadioForm
+                                    details={paymentPlans}
+                                    group="eventTypeGroup"
+                                    current={ticketPlan}
+                                    change={(event, value) =>
+                                        radioChange(event, value, "ticketPlan")
+                                    }
+                                />
+                            <br></br>
+                            {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
+                            </div>
+                            <br></br>
+                            <br></br>
+                            <div style={{
+                                textAlign: "center"}}>
+                                <Button
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid blue",
+                                        color: "blue",
+                                        fontSize: "16px",
+                                        width: "120px",
+                                        height: "30px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        padding: "0px",
+                                    }}
+                                    content="Back"
+                                    onClick={() => {
+                                        setPageView("ticket");
+                                        console.log("pageView: ", pageView)
                                     }}
                                 />
                             </div>
@@ -689,7 +627,7 @@ const paypalSubscriptionPurchase = data => {
                                     }}
                                     content="Back"
                                     onClick={() => {
-                                        setPageView("ticket");
+                                        setPageView("payment");
                                         console.log("pageView: ", pageView)
                                     }}
                                 />
@@ -708,7 +646,7 @@ const paypalSubscriptionPurchase = data => {
                                     content="Next"
                                     disabled={!paypalClient || !paypalSecret}
                                     onClick={() => {
-                                        setPageView("payment");
+                                        setPageView("complete");
                                         console.log("pageView: ", pageView)
                                     }}
                                 />
@@ -736,12 +674,6 @@ const paypalSubscriptionPurchase = data => {
                                     }}
                                     content="Server Call"
                                     onClick={() => {
-                                        console.log("clicked button",{
-                                            useSandbox : false,
-                                            paymentGatewayType: "PayPalExpress",
-                                            paypalExpress_client_id: paypalClient,
-                                            paypalExpress_client_secret: paypalSecret
-                                        });
                                         setBody({
                                             accountName: accountName,
                                             accountEmail: accountEmail,
@@ -753,62 +685,6 @@ const paypalSubscriptionPurchase = data => {
                                             paypalExpress_client_id: paypalClient,
                                             paypalExpress_client_secret: paypalSecret
                                         })
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )
-            } else if (pageView === "payment") {
-                return (
-                    <div className={classes.DisplayPanel}>
-                        <div>
-                            <br></br>
-                            <br></br>
-                            <div
-                                style={{
-                                    paddingLeft: "80px",
-                                    fontSize: "22px",
-                                    fontWeight: "600"
-                                }}
-                                >STEP 2: Choose a Payment Plan
-                            </div>
-                            <br></br>
-                            <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
-                            <br></br>
-                            <br></br>
-                            <div  className={classes.PaymentCanvas}>
-                                <RadioForm
-                                    details={paymentPlans}
-                                    group="eventTypeGroup"
-                                    current={ticketPlan}
-                                    change={(event, value) =>
-                                        radioChange(event, value, "ticketPlan")
-                                    }
-                                />
-                            <br></br>
-                            {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
-                            </div>
-                            <br></br>
-                            <br></br>
-                            <div style={{
-                                textAlign: "center"}}>
-                                <Button
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid blue",
-                                        color: "blue",
-                                        fontSize: "16px",
-                                        width: "120px",
-                                        height: "30px",
-                                        margin: "auto",
-                                        textAlign: "center",
-                                        padding: "0px",
-                                    }}
-                                    content="Back"
-                                    onClick={() => {
-                                        setPageView("paypal");
-                                        console.log("pageView: ", pageView)
                                     }}
                                 />
                             </div>
@@ -828,99 +704,64 @@ const paypalSubscriptionPurchase = data => {
                             }}
                             >STEP 3: Create an Event
                         </div>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <div style={{color: "#2F5596", fontSize: "26px", fontWeight: "600", textAlign: "center"}}>
+                        <div className={classes.SummaryHeader}>
                             Congratulations, you are now ready to create your first event!!!
                         </div>
-                        <br></br>
                         <div style={{textAlign: "center", color: "red"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "200px 200px 200px",
-                            columnGap: "100px",
-                            paddingLeft: "95px",
-                            fontSize: "22px",
-                            fontWeight: "600",
-                            textAlign: "center"}}>
+                        <div className={classes.CompleteGrid}>
                             <div>Cash Now!!!</div>
                             <div>Own Your Data</div>
                             <div>Single Dashboard</div>
                         </div>
-                        <br></br>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateColumns: "200px 200px 200px",
-                            columnGap: "100px",
-                            paddingLeft: "95px",
-                            fontSize: "16px",
-                            textAlign: "center"}}
-                        >
+                        <div className={classes.CompleteLowerGrid}>
                             <div style={{ color: "red" }}>Cash Now summary.</div>
                             <div style={{ color: "red" }}>Own Your Data summary.</div>
                             <div style={{ color: "red" }}>Single Dashboard summary.</div>
                         </div>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <div style={{
-                            color: "#2F5596",
-                            fontSize: "26px",
-                            fontWeight: "600",
-                            textAlign: "center"
-                        }}>
-                            So are you ready to create your first event?
+
+                        <div className={classes.SummaryHeader}>
+                        So are you ready to create your first event?
                         </div>
-                        <br></br>
-                        <br></br>
-                            <br></br>
-                            <br></br>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "170px 170px",
-                                paddingLeft: "325px",
-                                textAlign: "center"}}>
-                                <Button
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid red",
-                                        color: "red",
-                                        fontSize: "16px",
-                                        height: "30px",
-                                        width: "120px",
-                                        margin: "auto",
-                                        textAlign: "center",
-                                        padding: "0px",
-                                    }}
-                                    content="Yes"
-                                    onClick={() => {
-                                        //setPageView("vendor");
-                                        //console.log("pageView: ", pageView)
-                                    }}
-                                />
-                                <Button
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid green",
-                                        color: "green",
-                                        fontSize: "16px",
-                                        width: "120px",
-                                        height: "30px",
-                                        margin: "auto",
-                                        textAlign: "center",
-                                        padding: "0px",
-                                    }}
-                                    content="Later"
-                                    onClick={() => {
-                                        //setPageView("complete");
-                                        //console.log("pageView: ", pageView)
-                                    }}
-                                />
-                            </div>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "170px 170px",
+                            paddingLeft: "325px",
+                            textAlign: "center"}}>
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid red",
+                                    color: "red",
+                                    fontSize: "16px",
+                                    height: "30px",
+                                    width: "120px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px",
+                                }}
+                                content="Yes"
+                                onClick={() => {
+                                    //setPageView("vendor");
+                                }}
+                            />
+                            <Button
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid green",
+                                    color: "green",
+                                    fontSize: "16px",
+                                    width: "120px",
+                                    height: "30px",
+                                    margin: "auto",
+                                    textAlign: "center",
+                                    padding: "0px",
+                                }}
+                                content="Later"
+                                onClick={() => {
+                                    //setPageView("complete");
+                                }}
+                            />
+                        </div>
                     </div>
                 )
             }
@@ -942,3 +783,36 @@ const paypalSubscriptionPurchase = data => {
 }
 
 export default VendorOnboarding;
+
+
+
+
+/*
+    const paypalSubscriptionPurchase = data => {
+        //details.purchase_units[0].items = paypalArray;
+        console.log("Inside paypalSubscriptionPurchase")
+        const paymentData = {
+        subscriptionOrderData: data
+        //data
+        };
+
+        //setPaypalStatus(true);
+        //console.log("paypalStatus inside 'paypalSubscriptionPurchase': ", paypalStatus);
+        //console.log("On Success 'details' object: ", details);
+        // sends PayPal order object to the server
+        paypalSubscriptionDetails(paymentData, props.userid, props.token)
+        .then(response => {
+            console.log("order received");
+            console.log("response: ", response);
+            //setOrderStatus(true);
+            //console.log("Order status: ", orderStatus);
+            //onlyShowPurchaseConfirmation();
+            //purchaseConfirmHandler();
+        })
+        .catch(error => {
+            console.log("processExpressPayment() error.message: ", error.message);
+            //onlyShowPurchaseConfirmation();
+            //purchaseConfirmHandler();
+        });
+    };
+*/

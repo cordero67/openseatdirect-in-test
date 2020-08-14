@@ -20,6 +20,21 @@ const isActive = (page, path) => {
   }
 };
 
+const getStatus= () =>{ 
+  //if (typeof window !== "undefined" && data.status && !hasError && !data.message) {
+    // places "data" return object into local storage
+    //localStorage.setItem("user", JSON.stringify(data));
+    let tempData = JSON.parse(localStorage.getItem("user"));
+    console.log("tempData: ", tempData)
+    if ('accountId' in tempData && 'status' in tempData.accountId ) {
+      return tempData.accountId.status}
+    else {
+      return 0;
+    } 
+  
+}
+
+
 const SideDrawerItems = (props) => {
   const [showSubItems, setShowSubItems] = useState(false);
 
@@ -29,17 +44,8 @@ const SideDrawerItems = (props) => {
 
   return (
     <ul className={classes.SideItems}>
-      <li>
-        <NavLink
-          to="/events"
-          style={isActive(props.currentPage, "/events")}
-          onClick={props.clicked}
-        >
-          EVENTS
-        </NavLink>
-      </li>
 
-      {isAuthenticated() && isAuthenticated().user.accountId.status !== 7 ? (
+      {isAuthenticated() && getStatus() !== 7 ? (
         <li>
           <NavLink
             to="/buyerdashboard"
@@ -51,7 +57,7 @@ const SideDrawerItems = (props) => {
         </li>
       ) : null}
 
-      {isAuthenticated() && isAuthenticated().user.accountId.status === 7 ? (
+      {isAuthenticated() && getStatus() === 7 ? (
         <li>
           <NavLink
             to="/vendordashboard"
@@ -164,4 +170,15 @@ export default SideDrawerItems;
           EVENT CREATION
         </NavLink>
       </li>
+
+      
+     <li>
+     <NavLink
+       to="/events"
+       style={isActive(props.currentPage, "/events")}
+       onClick={props.clicked}
+     >
+       EVENTS
+     </NavLink>
+   </li>
       */
