@@ -628,7 +628,7 @@ const Onboarding = (props) => {
                                 }}
                                 content="Yes"
                                 onClick={() => {
-                                    //setPageView("organization");
+                                    window.location.href = "/vendordashboard";
                                 }}
                             />
                             <Button className={classes.OrganizationButton}
@@ -640,6 +640,7 @@ const Onboarding = (props) => {
                                 }}
                                 content="Later"
                                 onClick={() => {
+                                    window.location.href = "/vendordashboard";
                                 }}
                             />
                         </div>
