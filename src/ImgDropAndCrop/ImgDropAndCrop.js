@@ -16,7 +16,7 @@ import classes from "./Backdrop.module.css";
 //    image64toCanvasRef,image64toCanvasRef2} from './ResuableUtils'
 
 
-import {extractImageFileExtensionFromBase64,image64toCanvasRef4,image64toCanvasRef2,image64toCanvasRef3, imagetoNaturalCanvas} from './ResuableUtils';
+import {extractImageFileExtensionFromBase64,image64toCanvasRef2} from './ResuableUtils';
 
 import { Button } from 'semantic-ui-react';
 
@@ -226,7 +226,7 @@ class ImgDropAndCrop extends Component {
         const canvasRef = this.imagePreviewCanvasRef.current;        
 //        console.log(">>>canvasRef, imgSrc",canvasRef,imgSrc);
         if (canvasRef && imgSrc) { 
-            const {imgSrcExt} =  this.state;
+//            const {imgSrcExt} =  this.state;
             await image64toCanvasRef2(canvasRef, imgSrc, percentCrop);
 //            const tempImage = canvasRef.toDataURL('image/' +imgSrcExt);
             const tempImage = canvasRef.toDataURL('image/png');
@@ -432,6 +432,7 @@ class ImgDropAndCrop extends Component {
                                 <img
                                     className={classes.ImageBox}
                                     src={this.state.newimageData64}
+                                    alt ="your image"
                                 />
                                 <div className={classes.ImageControls}>
                                     <button
