@@ -178,9 +178,10 @@ const Onboarding = (props) => {
                                 details: details
                             })
                         })
-                            .then(response => {// first show a success model with a continue button to go to paypal clientId model 
-                                setPageView("paypal")
-                                //return response.json();
+                        .then(response => {// first show a success model with a continue button to go to paypal clientId model 
+                            console.log("response: ", response);
+                            setPageView("completed");
+                            //return response.json();
                         }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
                 })
 
