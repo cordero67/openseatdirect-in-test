@@ -56,10 +56,10 @@ const BuyerNavigation = (props) => {
           <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "vendor" ? "#fff" : "#b8b8b8",
+                backgroundColor: props.pane === "onboarding" ? "#fff" : "#b8b8b8",
                 outline: "none"
               }}
-              name="vendor"
+              name="onboarding"
               onClick={props.clicked}>
               BECOME A VENDOR
             </button>

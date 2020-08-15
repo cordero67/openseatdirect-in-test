@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 
-import TicketModal from "./Modals/TicketModal";
 import PriceFeatureSettings from "./PriceFeatureSettings";
 
 import classes from "./EventCreation.module.css";

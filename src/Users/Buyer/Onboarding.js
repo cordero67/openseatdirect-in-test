@@ -16,14 +16,14 @@ import RadioForm from "./RadioForm";
 
 import classes from "./BuyerDashboard.module.css";
 
-const VendorOnboarding = (props) => {
+let passThrough = true;
+
+const Onboarding = (props) => {
     const [values, setValues] = useState({
       accountName: "",
       accountEmail: "",
       accountPhone: "",
       accountUrl: "",
-      status: "",
-      id: "",
       ticketPlan: "",
       paypalClient: "",
       paypalSecret: ""
@@ -31,29 +31,31 @@ const VendorOnboarding = (props) => {
 
     const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypalClient, paypalSecret } = values;
 
+    // summary, organization, ticket, payment, receipt, paypal, completed
     const [pageView, setPageView] = useState("summary")
     const [loading, setLoading ] = useState("false")
 
-    console.log("props.userid: ", props.userid)
-
+    // api static variables
     let  myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const authstring = `Bearer ${props.token}`;
     myHeaders.append("Authorization", authstring);
-
     const url = `${API}/account/${props.userid}`;
+
     const method = "POST";
-    const body1  = null;
+    const body  = null;
     let initialData ={status: true, message:"hi first time"};
 
-    const { isLoading, hasError, setUrl, setBody, setMethod, data, networkError} = useOurApi(method, url, myHeaders,body1, initialData);
+    const { isLoading, hasError, setUrl, setBody, setMethod, data, networkError} = useOurApi(method, url, myHeaders, body, initialData);
   
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
     const getStatus= () =>{ 
         let tempData = JSON.parse(localStorage.getItem("user"));
-        if ('accountId' in tempData && 'status' in tempData.accountId ) {
-            return tempData.accountId.status}
+        console.log("tempData: ", tempData)
+        if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
+            console.log("tempData.data.accountId.status: ", tempData.user.accountId.status)
+            return tempData.user.accountId.status}
         else {
             return 0;
         } 
@@ -61,59 +63,73 @@ const VendorOnboarding = (props) => {
 
     useEffect(() => {
         setLoading(true);
-        if (
-          typeof window !== "undefined" &&
-          localStorage.getItem(`user`) !== null
-        ) {
-          let tempUser = JSON.parse(localStorage.getItem("user"));
-          let tempBuyerInfo = {};
+        if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
             if (getStatus() >= 4) {
-            tempBuyerInfo.accountName = tempUser.user.name;
-            tempBuyerInfo.accountEmail = tempUser.user.email;
-            tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
-            tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
-            tempBuyerInfo.status = tempUser.user.accountId.status;
-            tempBuyerInfo.id = tempUser.user.accountId._id;
-            tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
-            tempBuyerInfo.paypalClient = tempUser.user.accountId.paypalExpress_client_id;
-            tempBuyerInfo.paypalSecret = tempUser.user.accountId.paypalExpress_client_secret;
-            setValues(tempBuyerInfo);
-        }
-
-          if (getStatus() === 4) {
-            setPageView("ticket")
-          } else if (getStatus() === 6) {
-            setPageView("payment")
-          } else if (getStatus() === 5) {
-            setPageView("paypal")
-          } else if (getStatus() === 7) {
-            return <Redirect to="/vendordashboard" />;
-          }
+                updateValues();
+            }
+            updatePageView();
         } else {
           window.location.href = "/signin";
         }
-
         setLoading(false);
       }, []);
 
-    /* need to work on this code to handle fetch responses
-    if (data.status  && data.message === "vendor Account updated!") {
-        console.log("data.result.accountNum: ", data.result.accountNum);
-        console.log("data: ", data);
-        console.log("initialData: ", initialData);
-        const newBody = null;
-        //setBody(newBody)
-        
-        if (ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual") {
-            setPageView("paypal");
-        } else if (ticketPlan === "free") {
-            setPageView("complete");
+    // need to work on this code to handle fetch responses
+    if (data.status && data.message === "vendor Account updated!") {
+        console.log("in side response code, responce data: ", data);
+        console.log("in side response code, initialData: ", initialData);
+
+        if(passThrough) {
+            console.log("passsed")
+            if (pageView === "organization") {
+                setPageView("ticket");
+            } else if (pageView === "ticket") {
+                setPageView("completed");
+            } else if (pageView === "paypal") {
+                setPageView("completed");
+            }
+        } else {
+            console.log("stopped")
         }
+        passThrough=false;
         
     } else if (!data.status) {
         console.log("server determined error")
+        passThrough=false;
     }
-    */
+    //
+
+    const updateValues = () => {
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        if ('user' in tempUser ) {
+            let tempBuyerInfo = {};
+            if (tempUser.user.name) tempBuyerInfo.accountName = tempUser.user.name;
+            if (tempUser.user.email) tempBuyerInfo.accountEmail = tempUser.user.email;
+            if ('accountId' in tempUser.user) {
+                if (tempUser.user.accountId.accountPhone) tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
+                if (tempUser.user.accountId.accountUrl) tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
+                if (tempUser.user.accountId.status) tempBuyerInfo.status = tempUser.user.accountId.status;
+                if (tempUser.user.accountId.ticketPlan) tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
+                if (tempUser.user.accountId.paypalExpress_client_id) tempBuyerInfo.paypalClient = tempUser.user.accountId.paypalExpress_client_id;
+                if (tempUser.user.accountId.paypalExpress_client_secret) tempBuyerInfo.paypalSecret = tempUser.user.accountId.paypalExpress_client_secret;
+            }
+            setValues(tempBuyerInfo);
+        }
+    }
+
+    const updatePageView = () =>{
+        if (getStatus() === 0) {
+            setPageView("summary")
+        } else if (getStatus() === 4) {
+            setPageView("ticket")
+        } else if (getStatus() === 5) {
+            setPageView("paypal")
+        } else if (getStatus() === 6) {
+            setPageView("paypal")
+        } else if (getStatus() === 7) {
+            return <Redirect to="/vendordashboard" />;
+        };
+    }
 
     const handleChange = (event) => {
         setValues({
@@ -138,6 +154,7 @@ const VendorOnboarding = (props) => {
         { label: "$35 for one full year", value: "basicPaidAnnual" }
     ];
 
+// change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
   const showPayPal = (
     <div>
         <br></br>
@@ -169,10 +186,10 @@ const VendorOnboarding = (props) => {
                                 details: details
                             })
                         })
-                            .then(response => {
+                            .then(response => {// first show a success model with a continue button to go to paypal clientId model 
                                 setPageView("paypal")
                                 //return response.json();
-                        })
+                        }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
                 })
 
             }}
@@ -229,12 +246,12 @@ const VendorOnboarding = (props) => {
                             }}
                             content="Start"
                             onClick={() => {
-                                setPageView("vendor");
+                                setPageView("organization");
                             }}
                         />
                     </div>
                 )
-            } else if (pageView === "vendor") {
+            } else if (pageView === "organization") {
                 return (
                     <div className={classes.DisplayPanel}>
                         <br></br>
@@ -247,10 +264,7 @@ const VendorOnboarding = (props) => {
                             }}
                             >STEP 1: Basic Information about your Organization
                         </div>
-                        <br></br>
-                        <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
-                        <br></br>
-                        <br></br>
+                        <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Explanation text.</div>
                         <div className={classes.VendorCanvas}>
                             <div className="form-group">
                                 <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
@@ -264,20 +278,7 @@ const VendorOnboarding = (props) => {
                             </div>
                             <br></br>
                             <div className="form-group">
-                                <label>Company Email{" "}
-                                <Popup
-                                    position="right center"
-                                    content="This email will only be used..."
-                                    header="Company Email"
-                                    trigger={
-                                        <FontAwesomeIcon
-                                            color="blue"
-                                            cursor="pointer"
-                                            icon={faInfoCircle}
-                                        />
-                                    }
-                                />
-                                </label>
+                                <label>Company Email</label>
                                 <input
                                     type="text"
                                     name="accountEmail"
@@ -288,20 +289,7 @@ const VendorOnboarding = (props) => {
                             </div>
                             <br></br>
                             <div className="form-group">
-                                <label>Company Phone or Cell Number{" "}
-                                <Popup
-                                    position="right center"
-                                    content="This number will only be used..."
-                                    header="Phone/Cell Number"
-                                    trigger={
-                                        <FontAwesomeIcon
-                                            color="blue"
-                                            cursor="pointer"
-                                            icon={faInfoCircle}
-                                        />
-                                    }
-                                />
-                                </label>
+                                <label>Company Phone or Cell Number</label>
                                 <input
                                     type="text"
                                     name="accountPhone"
@@ -342,16 +330,25 @@ const VendorOnboarding = (props) => {
                             <div style={{paddingLeft: "65px"}}>
                                 <Button className={classes.OrganizationButton}
                                     style={{
-                                        backgroundColor: "white",
+                                        backgroundColor: 'white',
                                         border: "1px solid green",
                                         color: "green",
-                                        padding: "0px",
+                                        padding: "0px"
                                     }}
-                                    content="Next"
-
-                                    disabled={!accountName}
+                                    content="Submit"
                                     onClick={() => {
-                                        setPageView("ticket");
+                                        passThrough=true;
+                                        setBody({
+                                            accountName: accountName,
+                                            accountEmail: accountEmail,
+                                            accountPhone: accountPhone,
+                                            accountUrl: accountUrl
+                                        })
+                                        if (getStatus() === 0) {
+                                            setMethod("POST")
+                                        } else {
+                                            setMethod("PATCH")
+                                        }
                                     }}
                                 />
                             </div>
@@ -362,24 +359,18 @@ const VendorOnboarding = (props) => {
                 return (
                     <div className={classes.DisplayPanel}>
                         <div>
-                            <br></br>
-                            <br></br>
                             <div
                                 style={{
                                     paddingLeft: "80px",
+                                    paddingTop: "40px",
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
                                 >STEP 2: Select a Ticket Plan
                             </div>
-                            <br></br>
-                            <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
-                            <br></br>
-                            <div style={{paddingLeft: "80px", color: "red" }}>What you can do with free tickets only plan. Up to X number of free tickets per month/year.</div>
-                            <br></br>
-                            <div style={{paddingLeft: "80px", color: "red" }}>What you can do with free and paid tickets plan.</div>
-                            <br></br>
-                            <br></br>
+                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Explanation text.</div>
+                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>What you can do with free tickets only plan. Up to X number of free tickets per month/year.</div>
+                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>What you can do with free and paid tickets plan.</div>
                             <div  className={classes.PaymentCanvas}>
                                 <RadioForm
                                     details={ticketPlans}
@@ -398,84 +389,43 @@ const VendorOnboarding = (props) => {
                                 gridTemplateColumns: "255px 255px",
                                 paddingLeft: "245px",
                                 textAlign: "center"}}>
-                                <Button
+                                <Button className={classes.OrganizationButton}
                                     style={{
                                         backgroundColor: 'white',
                                         border: "1px solid blue",
                                         color: "blue",
-                                        fontSize: "16px",
-                                        height: "30px",
-                                        width: "120px",
-                                        margin: "auto",
-                                        textAlign: "center",
                                         padding: "0px",
                                     }}
                                     content="Back"
                                     onClick={() => {
-                                        setPageView("vendor");
+                                        setPageView("organization");
                                         console.log("pageView: ", pageView)
                                     }}
                                 />
-                                <Button
+                                <Button className={classes.OrganizationButton}
                                     style={{
                                         backgroundColor: 'white',
                                         border: "1px solid green",
                                         color: "green",
-                                        fontSize: "16px",
-                                        width: "120px",
-                                        height: "30px",
-                                        margin: "auto",
-                                        textAlign: "center",
-                                        padding: "0px",
-                                    }}
-                                    content="Next"
-                                    
-                                    disabled={!ticketPlan}
-                                    onClick={() => {
-                                        if (ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual") {
-                                            setPageView("payment");
-                                        } else if (ticketPlan === "free") {
-                                            setPageView("complete");
-                                        } else {
-                                            setPageView("vendor");
-                                        }
-                                        console.log("pageView: ", pageView)
-                                    }}
-                                />
-                            </div>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <div>
-                                <Button
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid green",
-                                        color: "green",
-                                        fontSize: "16px",
-                                        width: "120px",
-                                        height: "30px",
-                                        margin: "auto",
-                                        textAlign: "center",
                                         padding: "0px"
                                     }}
-                                    content="Server Call"
+                                    content="Submit"
+                                    disabled={!ticketPlan}
                                     onClick={() => {
-                                        setBody({
-                                            accountName: accountName,
-                                            accountEmail: accountEmail,
-                                            accountPhone: accountPhone,
-                                            accountUrl: accountUrl,
-                                            ticketPlan: ticketPlan
-                                        })
+                                        if (ticketPlan === "free") {
+                                            passThrough=true;
+                                            setBody({
+                                                ticketPlan: ticketPlan
+                                            })
+                                            setMethod("PATCH")
+                                        } else {
+                                            setPageView("payment");
+                                        }
                                     }}
                                 />
                             </div>
+                            <br></br>
+                            <br></br>
                         </div>
                     </div>
                 )
@@ -493,10 +443,7 @@ const VendorOnboarding = (props) => {
                                 }}
                                 >STEP 2: Choose a Payment Plan
                             </div>
-                            <br></br>
-                            <div style={{paddingLeft: "80px", color: "red" }}>Explanation text.</div>
-                            <br></br>
-                            <br></br>
+                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Explanation text.</div>
                             <div  className={classes.PaymentCanvas}>
                                 <RadioForm
                                     details={paymentPlans}
@@ -509,20 +456,12 @@ const VendorOnboarding = (props) => {
                             <br></br>
                             {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
                             </div>
-                            <br></br>
-                            <br></br>
-                            <div style={{
-                                textAlign: "center"}}>
-                                <Button
+                            <div style={{textAlign: "center", paddingTop: "40px"}}>
+                                <Button className={classes.OrganizationButton}
                                     style={{
                                         backgroundColor: 'white',
                                         border: "1px solid blue",
                                         color: "blue",
-                                        fontSize: "16px",
-                                        width: "120px",
-                                        height: "30px",
-                                        margin: "auto",
-                                        textAlign: "center",
                                         padding: "0px",
                                     }}
                                     content="Back"
@@ -539,24 +478,18 @@ const VendorOnboarding = (props) => {
                 return (
                     <div className={classes.DisplayPanel}>
                         <div>
-                            <br></br>
-                            <br></br>
                             <div
                                 style={{
                                     paddingLeft: "80px",
+                                    paddingTop: "40px",
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
                                 >STEP 2: Link Your Paypal Account 
                             </div>
-                            <br></br>
-                            <div style={{paddingLeft: "80px", color: "red" }}>Explanation text. This is how you can get paid immediately upon each ticket sale, etc...</div>
-                            <br></br>
-                            <div style={{paddingLeft: "80px", color: "red" }}>Link to video.</div>
-                            <br></br>
-                            <div style={{paddingLeft: "80px", color: "red" }}>Link to word document.</div>
-                            <br></br>
-                            <br></br>
+                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Explanation text. This is how you can get paid immediately upon each ticket sale, etc...</div>
+                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Link to video.</div>
+                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Link to word document.</div>
                             <div  className={classes.VendorCanvas}>
                                 <div className="form-group">
                                     <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
@@ -613,16 +546,11 @@ const VendorOnboarding = (props) => {
                                 gridTemplateColumns: "170px 170px",
                                 paddingLeft: "325px",
                                 textAlign: "center"}}>
-                                <Button
+                                <Button className={classes.OrganizationButton}
                                     style={{
                                         backgroundColor: 'white',
                                         border: "1px solid blue",
                                         color: "blue",
-                                        fontSize: "16px",
-                                        height: "30px",
-                                        width: "120px",
-                                        margin: "auto",
-                                        textAlign: "center",
                                         padding: "0px",
                                     }}
                                     content="Back"
@@ -631,74 +559,38 @@ const VendorOnboarding = (props) => {
                                         console.log("pageView: ", pageView)
                                     }}
                                 />
-                                <Button
+                                <Button className={classes.OrganizationButton}
                                     style={{
                                         backgroundColor: 'white',
                                         border: "1px solid green",
                                         color: "green",
-                                        fontSize: "16px",
-                                        width: "120px",
-                                        height: "30px",
-                                        margin: "auto",
-                                        textAlign: "center",
-                                        padding: "0px",
-                                    }}
-                                    content="Next"
-                                    disabled={!paypalClient || !paypalSecret}
-                                    onClick={() => {
-                                        setPageView("complete");
-                                        console.log("pageView: ", pageView)
-                                    }}
-                                />
-                            </div>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <div>
-                                <Button
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid green",
-                                        color: "green",
-                                        fontSize: "16px",
-                                        width: "120px",
-                                        height: "30px",
-                                        margin: "auto",
-                                        textAlign: "center",
                                         padding: "0px"
                                     }}
-                                    content="Server Call"
+                                    content="Submit"
                                     onClick={() => {
+                                        passThrough=true;
                                         setBody({
-                                            accountName: accountName,
-                                            accountEmail: accountEmail,
-                                            accountPhone: accountPhone,
-                                            accountUrl: accountUrl,
-                                            ticketPlan: ticketPlan,
-                                            useSandbox: false,
+                                            useSandbox: true,
                                             paymentGatewayType: "PayPalExpress",
                                             paypalExpress_client_id: paypalClient,
                                             paypalExpress_client_secret: paypalSecret
                                         })
+                                        setMethod("PATCH")
                                     }}
                                 />
                             </div>
+                            <br></br>
+                            <br></br>
                         </div>
                     </div>
                 )
-            } else if (pageView === "complete") {
+            } else if (pageView === "completed") {
                 return (
                     <div className={classes.DisplayPanel}>
-                        <br></br>
-                        <br></br>
                         <div
                             style={{
                                 paddingLeft: "80px",
+                                paddingTop: "40px",
                                 fontSize: "22px",
                                 fontWeight: "600"
                             }}
@@ -727,38 +619,27 @@ const VendorOnboarding = (props) => {
                             gridTemplateColumns: "170px 170px",
                             paddingLeft: "325px",
                             textAlign: "center"}}>
-                            <Button
+                            <Button className={classes.OrganizationButton}
                                 style={{
                                     backgroundColor: 'white',
                                     border: "1px solid red",
                                     color: "red",
-                                    fontSize: "16px",
-                                    height: "30px",
-                                    width: "120px",
-                                    margin: "auto",
-                                    textAlign: "center",
                                     padding: "0px",
                                 }}
                                 content="Yes"
                                 onClick={() => {
-                                    //setPageView("vendor");
+                                    //setPageView("organization");
                                 }}
                             />
-                            <Button
+                            <Button className={classes.OrganizationButton}
                                 style={{
                                     backgroundColor: 'white',
                                     border: "1px solid green",
                                     color: "green",
-                                    fontSize: "16px",
-                                    width: "120px",
-                                    height: "30px",
-                                    margin: "auto",
-                                    textAlign: "center",
                                     padding: "0px",
                                 }}
                                 content="Later"
                                 onClick={() => {
-                                    //setPageView("complete");
                                 }}
                             />
                         </div>
@@ -782,7 +663,7 @@ const VendorOnboarding = (props) => {
     )
 }
 
-export default VendorOnboarding;
+export default Onboarding;
 
 
 

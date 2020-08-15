@@ -21,17 +21,18 @@ const isActive = (page, path) => {
 };
 
 const getStatus= () =>{ 
-  //if (typeof window !== "undefined" && data.status && !hasError && !data.message) {
-    // places "data" return object into local storage
-    //localStorage.setItem("user", JSON.stringify(data));
-    let tempData = JSON.parse(localStorage.getItem("user"));
-    console.log("tempData: ", tempData)
-    if ('accountId' in tempData && 'status' in tempData.accountId ) {
-      return tempData.accountId.status}
-    else {
-      return 0;
-    } 
-  
+  let tempData = JSON.parse(localStorage.getItem("user"));
+  //console.log("tempData: ", tempData)
+  //console.log("tempData.user: ", tempData.user)
+  //console.log("tempData.user.accountId: ", tempData.user.accountId)
+  //console.log("tempData.user.accountId.status: ", tempData.user.accountId.status)
+  if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
+    console.log("tempData.accountId.status: ", tempData.user.accountId.status)
+    return tempData.user.accountId.status}
+  else {
+    console.log("returns 0")
+    return 0;
+  } 
 }
 
 

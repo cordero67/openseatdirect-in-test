@@ -7,8 +7,7 @@ import BuyerNavigation from "./BuyerNavigation";
 import Profile from "./Profile";
 import TicketWallet from "./TicketWallet";
 import Preferences from "./Preferences";
-import VendorOnboarding from "./VendorOnboarding";
-import VendorOnboardingOld from "./VendorOnboardingOld";
+import Onboarding from "./Onboarding";
 import classes from "./BuyerDashboard.module.css";
 
 const BuyerDashboard = () => {
@@ -16,7 +15,7 @@ const BuyerDashboard = () => {
   const [buyerInfo, setBuyerInfo] = useState();//
   const [isLoading, setIsLoading] = useState(true);//
 
-  const [paneView, setPaneView] = useState("vendor")
+  const [paneView, setPaneView] = useState("onboarding")
 
   useEffect(() => {
     setIsLoading(true);
@@ -56,16 +55,12 @@ const MainDisplay = () => {
           email={buyerInfo.email}
         />
       )
-    } else if (paneView === "vendor") {
+    } else if (paneView === "onboarding") {
       return (
-        <VendorOnboarding
+        <Onboarding
           userid={buyerInfo.id}
           token={buyerInfo.token}
         />
-      )
-    } else if (paneView === "vendorold") {
-      return (
-        <VendorOnboardingOld/>
       )
     } else if (paneView === "wallet") {
         return (
