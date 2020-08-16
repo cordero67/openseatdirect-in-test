@@ -60,19 +60,17 @@ const Onboarding = (props) => {
 
     const updateValues = () => {
         let tempUser = JSON.parse(localStorage.getItem("user"));
-        if ('user' in tempUser ) {
+        if ('user' in tempUser && 'accountId' in tempUser.user) {
             let tempBuyerInfo = {};
-            if (tempUser.user.name) tempBuyerInfo.accountName = tempUser.user.name;
-            if (tempUser.user.email) tempBuyerInfo.accountEmail = tempUser.user.email;
-            if ('accountId' in tempUser.user) {
-                if (tempUser.user.accountId.accountPhone) tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
-                if (tempUser.user.accountId.accountUrl) tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
-                if (tempUser.user.accountId.status) tempBuyerInfo.status = tempUser.user.accountId.status;
-                if (tempUser.user.accountId.ticketPlan) tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
-                if (tempUser.user.accountId.paypal_plan_id) tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
-                if (tempUser.user.accountId.paypalExpress_client_id) tempBuyerInfo.paypalExpress_client_id = tempUser.user.accountId.paypalExpress_client_id;
-                if (tempUser.user.accountId.paypalExpress_client_secret) tempBuyerInfo.paypalExpress_client_secret = tempUser.user.accountId.paypalExpress_client_secret;
-            }
+            if (tempUser.user.accountId.name) tempBuyerInfo.accountName = tempUser.user.accountId.name;
+            if (tempUser.user.accountId.email) tempBuyerInfo.accountEmail = tempUser.user.accountId.email;
+            if (tempUser.user.accountId.accountPhone) tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
+            if (tempUser.user.accountId.accountUrl) tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
+            if (tempUser.user.accountId.status) tempBuyerInfo.status = tempUser.user.accountId.status;
+            if (tempUser.user.accountId.ticketPlan) tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
+            if (tempUser.user.accountId.paypal_plan_id) tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
+            if (tempUser.user.accountId.paypalExpress_client_id) tempBuyerInfo.paypalExpress_client_id = tempUser.user.accountId.paypalExpress_client_id;
+            if (tempUser.user.accountId.paypalExpress_client_secret) tempBuyerInfo.paypalExpress_client_secret = tempUser.user.accountId.paypalExpress_client_secret;
             setValues(tempBuyerInfo);
         }
     }
