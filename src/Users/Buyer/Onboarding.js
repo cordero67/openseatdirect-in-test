@@ -62,8 +62,8 @@ const Onboarding = (props) => {
         let tempUser = JSON.parse(localStorage.getItem("user"));
         if ('user' in tempUser && 'accountId' in tempUser.user) {
             let tempBuyerInfo = {};
-            if (tempUser.user.accountId.name) tempBuyerInfo.accountName = tempUser.user.accountId.name;
-            if (tempUser.user.accountId.email) tempBuyerInfo.accountEmail = tempUser.user.accountId.email;
+            if (tempUser.user.accountId.name) tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
+            if (tempUser.user.accountId.email) tempBuyerInfo.accountEmail = tempUser.user.accountId.accountEmail;
             if (tempUser.user.accountId.accountPhone) tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
             if (tempUser.user.accountId.accountUrl) tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
             if (tempUser.user.accountId.status) tempBuyerInfo.status = tempUser.user.accountId.status;
