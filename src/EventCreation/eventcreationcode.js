@@ -1083,6 +1083,7 @@ const EventCreation = () => {
     return display;
   };
 
+  /*XX
   const priceFeatureSettings = (ticket) => {
     if (ticket.priceFeature === "none") {
       return (
@@ -1250,8 +1251,10 @@ const EventCreation = () => {
             </div>
           </div>
 
+  XX*/
           {promoCodesDisplay(ticket)}
 
+          /*XX
           <div
             style={{
               display: `grid`,
@@ -1715,7 +1718,7 @@ const EventCreation = () => {
         forWarningText = "";
       }
 
-      /*
+      
       if (ticket.functionArgs.forWarning) {
         tempForWarning = classes.SpecialFeaturesBoxWarning;
         forWarningText = "Not a valid price";
@@ -1729,7 +1732,6 @@ const EventCreation = () => {
         tempForWarning = classes.SpecialFeaturesBox;
         forWarningText = "";
       }
-      */
 
       return (
         <Aux>
@@ -1862,6 +1864,7 @@ const EventCreation = () => {
     let tempMinWarning;
     let tempMaxWarning;
     
+    
     if (ticket.minWarning) {
       tempMinWarning = classes.OrderBoxWarning;
     } else {
@@ -1989,8 +1992,9 @@ const EventCreation = () => {
             : null
           }
 
+  XX*/
         {priceFeatureSettings(ticket)}
-        <div
+ /*XX        <div
           style={{
             padding: "5px",
             borderTop: "1px solid lightgrey",
@@ -2016,6 +2020,7 @@ const EventCreation = () => {
       </div>
     );
   };
+  XX*/
 
   // garuantees that only one ticket has a "true" "viewModal" value
   const activateShowModal = (ticket) => {

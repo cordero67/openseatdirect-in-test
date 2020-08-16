@@ -1,5 +1,6 @@
 //ENTIRE CODE HAS BEEN CHECKED VERSUS ORIGINAL
 //EXCEPT FOR SMALL STYLING SECTION LABELED BELOW
+//EXCEPT FOR <PriceSettings/> SECTION LABELED BELOW
 
 import React, { useState, useRef } from "react";
 
@@ -114,8 +115,7 @@ const TicketCreation = (props) => {
             tempTicketStyling = classes.DraggedTicketLine;
           } else {
             tempTicketStyling = classes.TicketLine;
-          }
-          
+          }       
     //XX END CODE REPLICATION REQUIRED
 */
           return (
@@ -270,6 +270,8 @@ const TicketCreation = (props) => {
                 </div>
                 : null
               }
+              
+    //XX START CODE REPLICATION REQUIRED
               {item.settings ?
                 <PriceSettings
                   ticket={item}
@@ -285,6 +287,7 @@ const TicketCreation = (props) => {
                   deletePromoCode={props.deletePromoCode}
                 /> :
               null}
+              //XX END CODE REPLICATION REQUIRED
             </Aux>
           )
         })}

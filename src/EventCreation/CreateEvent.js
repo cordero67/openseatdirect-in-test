@@ -1,3 +1,7 @@
+//CODE MARKED HAS BEEN CHECKED VERSUS ORIGINAL
+//EXCEPT FOR SMALL STYLING SECTION LABELED BELOW
+//EXCEPT FOR <EventDetails/>, <TicketCreation/>, <AdditionalSettings/>,  SECTIONS NOT LABELED BELOW
+
 import React, { useState, useRef } from "react";
 
 import dateFnsFormat from 'date-fns/format';

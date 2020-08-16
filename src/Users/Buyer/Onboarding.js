@@ -27,7 +27,7 @@ const Onboarding = (props) => {
       paypalExpress_client_secret: ""
     });
 
-    // summary, organization, ticket, payment, receipt, paypal, completed
+    // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
     const [pageView, setPageView] = useState("summary")
     const [loading, setLoading ] = useState("false")
 
@@ -104,7 +104,7 @@ const Onboarding = (props) => {
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
     // need to work on this code to handle fetch responses
-    if (data.status && data.message === "vendor Account updated!") {
+    if (data.status && (data.message === "vendor Account updated!" || data.message === "vendor Account updated!")) {
         let tempData = JSON.parse(localStorage.getItem("user"));
         tempData.user.accountId = data.result;
         localStorage.setItem("user", JSON.stringify(tempData));
@@ -180,7 +180,7 @@ const Onboarding = (props) => {
                         })
                         .then(response => {// first show a success model with a continue button to go to paypal clientId model 
                             console.log("response: ", response);
-                            setPageView("completed");
+                            setPageView("receipt");
                             //return response.json();
                         }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
                 })
@@ -458,6 +458,39 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
+            } else if (pageView === "receipt") {
+                return (
+                    <div className={classes.DisplayPanel}>
+                        <div>
+                            <div
+                                style={{
+                                    paddingLeft: "80px",
+                                    paddingTop: "40px",
+                                    fontSize: "22px",
+                                    fontWeight: "600"
+                                }}
+                                >STEP 2: Paypal Receipt
+                            </div>
+                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Your payment was successfull.</div>
+                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Order details.</div>
+                            <div style={{textAlign: "center", paddingTop: "40px"}}>
+                                <Button className={classes.OrganizationButton}
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid blue",
+                                        color: "blue",
+                                        padding: "0px",
+                                    }}
+                                    content="Continue"
+                                    onClick={() => {
+                                        updatePageView();
+                                        console.log("pageView: ", pageView)
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )
             } else if (pageView === "paypal") {
                 return (
                     <div className={classes.DisplayPanel}>
@@ -523,25 +556,7 @@ const Onboarding = (props) => {
                                     />
                                 </div>
                             </div>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "170px 170px",
-                                paddingTop: "40px",
-                                paddingLeft: "325px",
-                                textAlign: "center"}}>
-                                <Button className={classes.OrganizationButton}
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid blue",
-                                        color: "blue",
-                                        padding: "0px",
-                                    }}
-                                    content="Back"
-                                    onClick={() => {
-                                        setPageView("payment");
-                                        console.log("pageView: ", pageView)
-                                    }}
-                                />
+                            <div style={{textAlign: "center", paddingTop: "40px"}}>
                                 <Button className={classes.OrganizationButton}
                                     style={{
                                         backgroundColor: 'white',

@@ -1,3 +1,6 @@
+//ENTIRE CODE HAS BEEN CHECKED VERSUS ORIGINAL
+//EXCEPT FOR <PromoCodeDisplay/> SECTION LABELED BELOW
+
 import React, { useState, useRef } from "react";
 
 import classes from "./EventCreation.module.css";
@@ -178,6 +181,8 @@ const priceFeatureSettings = (props) => {
               </div>
             </div>
 
+
+                //XX START CODE REPLICATION REQUIRED
             <PromoCodeDisplay
                 ticket={props.ticket}
                 changePromoCodesName={props.changePromoCodesName}
@@ -185,6 +190,8 @@ const priceFeatureSettings = (props) => {
                 changePromoCodesPercent={props.changePromoCodesPercent}
                 deletePromoCode={props.deletePromoCode}
             />
+            //XX END CODE REPLICATION REQUIRED
+            
   
             <div
               style={{
@@ -287,7 +294,7 @@ const priceFeatureSettings = (props) => {
           tempGetWarning = classes.SpecialFeaturesBox;
           getWarningText = "";
         }
-  
+
         return (
           <Aux>
             <div
@@ -347,7 +354,7 @@ const priceFeatureSettings = (props) => {
                 ticket(s) for free.
               </div>
             </div>
-            
+
             {props.ticket.functionArgs.reqWarning || props.ticket.functionArgs.buyWarning || props.ticket.functionArgs.getWarning
               ? <div className={classes.BogofLineWarning}
               >
@@ -648,7 +655,6 @@ const priceFeatureSettings = (props) => {
           tempForWarning = classes.ForPriceBox;
           forWarningText = "";
         }
-  
         return (
           <Aux>
             <div
