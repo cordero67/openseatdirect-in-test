@@ -24,21 +24,17 @@ const BuyerDashboard = () => {
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
+      console.log("tempUser: ", tempUser)
       let tempBuyerInfo = {};
       tempBuyerInfo.token = tempUser.token;
       tempBuyerInfo.email = tempUser.user.email
       tempBuyerInfo.name = tempUser.user.name
       tempBuyerInfo.role = tempUser.user.role
       tempBuyerInfo.id = tempUser.user._id;
-      console.log("tempBuyerInfo: ", tempBuyerInfo)
+      //console.log("tempBuyerInfo: ", tempBuyerInfo)
       setBuyerInfo(tempBuyerInfo);
-/*
-      if (tempBuyerInfo.role === 1) {
-        return <Redirect to="/vendorevents" />;
-      } else if (tempBuyerInfo.role !== 0) {
-        window.location.href = "/";
-      }
-*/
+      let tempUser2 = JSON.parse(localStorage.getItem("user"));
+      console.log("tempUser2: ", tempUser2)
     } else {
       window.location.href = "/signin";
     }
@@ -47,32 +43,12 @@ const BuyerDashboard = () => {
 
 const MainDisplay = () => {
   if(!isLoading) {
-    if (paneView === "profile") {
-      return (
-        <Profile
-          loading={isLoading}
-          name={buyerInfo.name}
-          email={buyerInfo.email}
-        />
-      )
-    } else if (paneView === "onboarding") {
       return (
         <Onboarding
           userid={buyerInfo.id}
           token={buyerInfo.token}
         />
       )
-    } else if (paneView === "wallet") {
-        return (
-          <TicketWallet/>
-        )
-    } else if (paneView === "preferences") {
-        return (
-          <Preferences/>
-        )
-    } else {
-      return null;
-    }
   } else {
     return null
   }
@@ -116,3 +92,37 @@ const onboardingMessage = () => {
 };
 
 export default BuyerDashboard;
+
+/*
+const MainDisplay = () => {
+  if(!isLoading) {
+    if (paneView === "profile") {
+      return (
+        <Profile
+          loading={isLoading}
+          name={buyerInfo.name}
+          email={buyerInfo.email}
+        />
+      )
+    } else if (paneView === "onboarding") {
+      return (
+        <Onboarding
+          userid={buyerInfo.id}
+          token={buyerInfo.token}
+        />
+      )
+    } else if (paneView === "wallet") {
+        return (
+          <TicketWallet/>
+        )
+    } else if (paneView === "preferences") {
+        return (
+          <Preferences/>
+        )
+    } else {
+      return null;
+    }
+  } else {
+    return null
+  }
+}*/

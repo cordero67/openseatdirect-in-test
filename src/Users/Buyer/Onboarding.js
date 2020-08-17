@@ -85,6 +85,9 @@ const Onboarding = (props) => {
     useEffect(() => {
         setLoading(true);
         if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+
+            let tempUser2 = JSON.parse(localStorage.getItem("user"));
+            console.log("tempUser2: ", tempUser2)
             updateValues();
             updatePageView();
         } else {
@@ -109,9 +112,10 @@ const Onboarding = (props) => {
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
     // need to work on this code to handle fetch responses
-    if (!hasError && data.message && !data.error) {
+    if (!hasError && !data.error && data.message !== "hi first time") {
         console.log("success is true")
         let tempData = JSON.parse(localStorage.getItem("user"));
+        console.log("tempData: ", tempData)
         tempData.user.accountId = data.result;
         localStorage.setItem("user", JSON.stringify(tempData));
 
@@ -123,16 +127,18 @@ const Onboarding = (props) => {
             console.log("stopped")
         }
         passThrough=false;
-    } else if (!hasError && data.message && data.error) {// successful fetch but error in data sent
-            console.log("success is true, but data has errors")
-            if(passThrough) {
-                console.log("passsed")
-                console.log("pageView: ", pageView)
-                setValues({...values, inputError: data.message});
-            } else {
-                console.log("stopped")
-            }
-            passThrough=false;
+
+    } else if (!hasError && data.error) {// successful fetch but error in data sent
+        console.log("success is true, but data has errors")
+        if(passThrough) {
+            console.log("passsed")
+            console.log("pageView: ", pageView)
+            setValues({...values, inputError: data.message});
+        } else {
+            console.log("stopped")
+        }
+        passThrough=false;
+
     } else if (hasError) {// hasError condition, non-successful fetch
         console.log("success is false")
 
@@ -145,6 +151,7 @@ const Onboarding = (props) => {
             console.log("stopped")
         }
         passThrough=false;
+
     }
 
     const handleChange = (event) => {
@@ -545,7 +552,10 @@ const Onboarding = (props) => {
                                     }}
                                     content="Continue"
                                     onClick={() => {
-                                        updatePageView();
+                                        // UNDELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
+                                        //updatePageView();
+                                        // DELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
+                                        setPageView("paypal")
                                         console.log("pageView: ", pageView)
                                     }}
                                 />

@@ -41,6 +41,7 @@ const SignIn = () => {
   //this then generates an error in navigation component when it is looking for "role"
   if (typeof window !== "undefined" && data.status && !hasError && !data.message) {
     // places "data" return object into local storage
+    console.log("data: ", data)
     localStorage.setItem("user", JSON.stringify(data));
     let tempData = JSON.parse(localStorage.getItem("user"));
     console.log("tempData: ", tempData)
