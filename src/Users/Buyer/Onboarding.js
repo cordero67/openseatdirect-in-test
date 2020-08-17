@@ -100,6 +100,7 @@ const Onboarding = (props) => {
     let  myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const authstring = `Bearer ${props.token}`;
+    console.log("authstring: ", authstring)
     myHeaders.append("Authorization", authstring);
     const url = `${API}/account/${props.userid}`;
 
@@ -112,7 +113,7 @@ const Onboarding = (props) => {
     let orgModeArg ={
         method: "POST",
         url:  `${API}/account/${props.userid}`,
-        header: myHeaders,
+        headers: myHeaders,
         flag: 'org'
     };
 
@@ -407,10 +408,10 @@ const Onboarding = (props) => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
-                                        let arg ={
-                                            method: "POST",
+                                        console.log("myHeaders: ", myHeaders);
+                                        let arg ={method: "POST",
                                             url:  `${API}/account/${props.userid}`,
-                                            header: myHeaders,
+                                            headers: myHeaders,
                                             body:{
                                                 accountName: accountName,
                                                 accountEmail: accountEmail,
@@ -420,6 +421,7 @@ const Onboarding = (props) => {
                                             flag: 'org'
                                         };
                                         console.log ("press submit in org page w arg:", arg);
+                                        console.log("myHeaders: ", myHeaders);
                                         setApiArg(arg);
                                     }}
                                     /*onClick={() => {
@@ -499,7 +501,7 @@ const Onboarding = (props) => {
                                                 let orgModeArg ={
                                                     method: "PATCH",
                                                     url:  `${API}/account/${props.userid}`,
-                                                    header: myHeaders,
+                                                    headers: myHeaders,
                                                     body:{
                                                         ticketPlan: ticketPlan
                                                     },
@@ -692,7 +694,7 @@ const Onboarding = (props) => {
                                         let clientModeArg ={
                                             method: "PATCH",
                                             url:  `${API}/account/${props.userid}`,
-                                            header: myHeaders,
+                                            headers: myHeaders,
                                             body:{
                                                 useSandbox: true,
                                                 paymentGatewayType: "PayPalExpress",
