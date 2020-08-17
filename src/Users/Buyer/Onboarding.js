@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useOurApi } from "./apiUsers";
+import { useOurApi, useOurApi2 } from "./apiUsers";
 import { API } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -103,13 +103,24 @@ const Onboarding = (props) => {
     myHeaders.append("Authorization", authstring);
     const url = `${API}/account/${props.userid}`;
 
-    const method = "POST";
-    const body  = null;
-    let initialData ={status: true, message:"hi first time"};
+    //const method = "POST";
+    //const body  = null;
+    //let initialData ={status: true, message:"hi first time"};
 
-    const { hasError, setBody, setMethod, data, networkError} = useOurApi(method, url, myHeaders, body, initialData);
+    let initialData ={status: false, message:"hi first time", flag:"org"};
 
-    const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
+    let orgModeArg ={
+        method: "POST",
+        url:  `${API}/account/${props.userid}`,
+        header: myHeaders,
+        flag: 'org'
+    };
+
+    //const { hasError, setBody, setMethod, data } = useOurApi(method, url, myHeaders, body, initialData);
+    const { isLoading, hasError, setApiArg, data} = useOurApi2(orgModeArg, initialData);
+
+    //const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
+
 
     // need to work on this code to handle fetch responses
     if (!hasError && !data.error && data.message !== "hi first time") {
@@ -396,6 +407,22 @@ const Onboarding = (props) => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
+                                        let arg ={
+                                            method: "POST",
+                                            url:  `${API}/account/${props.userid}`,
+                                            header: myHeaders,
+                                            body:{
+                                                accountName: accountName,
+                                                accountEmail: accountEmail,
+                                                accountPhone: accountPhone,
+                                                accountUrl: accountUrl
+                                            },
+                                            flag: 'org'
+                                        };
+                                        console.log ("press submit in org page w arg:", arg);
+                                        setApiArg(arg);
+                                    }}
+                                    /*onClick={() => {
                                         passThrough=true;
                                         setBody({
                                             accountName: accountName,
@@ -408,7 +435,7 @@ const Onboarding = (props) => {
                                         } else {
                                             setMethod("PATCH")
                                         }
-                                    }}
+                                    }}*/
                                 />
                             </div>
                         </div>
@@ -468,6 +495,23 @@ const Onboarding = (props) => {
                                         disabled={!ticketPlan}
                                         onClick={() => {
                                             if (ticketPlan === "free") {
+
+                                                let orgModeArg ={
+                                                    method: "PATCH",
+                                                    url:  `${API}/account/${props.userid}`,
+                                                    header: myHeaders,
+                                                    body:{
+                                                        ticketPlan: ticketPlan
+                                                    },
+                                                    flag: 'org'
+                                                };
+                                                setApiArg(orgModeArg);
+                                            } else {
+                                                setPageView("payment");
+                                            }
+                                        }}
+                                        /*onClick={() => {
+                                            if (ticketPlan === "free") {
                                                 passThrough=true;
                                                 setBody({
                                                     ticketPlan: ticketPlan
@@ -476,7 +520,7 @@ const Onboarding = (props) => {
                                             } else {
                                                 setPageView("payment");
                                             }
-                                        }}
+                                        }}*/
                                     />
                                 </div>
                             </div>
@@ -644,6 +688,22 @@ const Onboarding = (props) => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
+
+                                        let clientModeArg ={
+                                            method: "PATCH",
+                                            url:  `${API}/account/${props.userid}`,
+                                            header: myHeaders,
+                                            body:{
+                                                useSandbox: true,
+                                                paymentGatewayType: "PayPalExpress",
+                                                paypalExpress_client_id: paypalExpress_client_id,
+                                                paypalExpress_client_secret: paypalExpress_client_secret
+                                            },
+                                            flag: 'client'
+                                        };
+                                        setApiArg(clientModeArg);
+                                    }}
+                                    /*onClick={() => {
                                         passThrough=true;
                                         setBody({
                                             useSandbox: true,
@@ -652,7 +712,7 @@ const Onboarding = (props) => {
                                             paypalExpress_client_secret: paypalExpress_client_secret
                                         })
                                         setMethod("PATCH")
-                                    }}
+                                    }}*/
                                 />
                             </div>
                         </div>
