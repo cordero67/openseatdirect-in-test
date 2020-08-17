@@ -1,14 +1,27 @@
-import React, { useState, useRef } from "react";
+//CODE MARKED HAS BEEN CHECKED VERSUS ORIGINAL
+//EXCEPT FOR SMALL STYLING SECTION LABELED BELOW
+//EXCEPT FOR <EventDetails/>, <TicketCreation/>, <AdditionalSettings/>,  SECTIONS NOT LABELED BELOW
+
+import React, { useEffect, useState, useRef } from "react";
 
 import dateFnsFormat from 'date-fns/format';
 
+import { API } from "../config";
+
+import SavedModal from "./Modals/SavedModal";
 import EventDetails from "./EventDetails";
 import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./AdditionalSettings";
 
 import classes2 from "./EventCreation.module.css";
 import classes from "./VendorDashboard.module.css";
-import { Button, Popup } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
+import Aux from "../hoc/Auxiliary/Auxiliary";
+
+// START STRAIGHT COPY FROM ORIGINAL
+// holds sign-in information
+let vendorInfo = {};
+// END STRAIGHT COPY FROM ORIGINAL
 
 const CreateEvent = (props) => {
     const [eventTitleOmission, setEventTitleOmission] = useState(false);
@@ -85,6 +98,503 @@ const CreateEvent = (props) => {
       errorMessage: "", //["Please fix input errors and resubmit."],
       failureMessage: "System error please try again.",
     });
+
+
+    // START STRAIGHT COPY FROM ORIGINAL
+    useEffect(() => {
+        // checks if 'user' exists in local storage
+        if (
+        typeof window !== "undefined" &&  
+        localStorage.getItem(`user`) !== null
+        ) {
+        // loads sign-in data
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        vendorInfo.token = tempUser.token;
+        vendorInfo.id = tempUser.user._id;
+        } else {
+        window.location.href = "/signin";
+        }
+    }, []);
+    // END STRAIGHT COPY FROM ORIGINAL
+
+    // START STRAIGHT COPY FROM ORIGINAL
+    const saveEvent = async (newStatus) => {
+      console.log("eventDescription: ", eventDescription)
+      console.log("eventStatus: ", eventStatus)
+      let tempPageErrors = false;
+      let tempEventTitleOmission = false;
+      setPageErrors(false);
+      setEventTitleOmission(false);
+
+      if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+      ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      vendorInfo.token = tempUser.token;
+      vendorInfo.id = tempUser.user._id;
+      } else {
+      window.location.href = "/signin";
+      }
+
+      let tempStatus = { ...eventStatus };
+      tempStatus.status = newStatus;
+
+      console.log("ticketDetails: ", ticketDetails)
+
+      ticketDetails.forEach((ticket, index) => {
+          if(ticket.nameWarning) {
+              console.log("Name Warning, ticket : ", index)
+              setPageErrors(true);
+              tempPageErrors = true;
+          }
+          if(ticket.quantityWarning) {
+              console.log("Quantity Warning, ticket : ", index)
+              setPageErrors(true);
+              tempPageErrors = true;
+          }
+          if(ticket.priceWarning) {
+              console.log("Price Warning, ticket : ", index)
+              setPageErrors(true);
+              tempPageErrors = true;
+          }
+          if(ticket.reqWarning) {
+              console.log("Required Warning, ticket : ", index)
+              setPageErrors(true);
+              tempPageErrors = true;
+          }
+          if(ticket.minWarning) {
+              console.log("Min Warning, ticket : ", index)
+              setPageErrors(true);
+              tempPageErrors = true;
+          }
+          if(ticket.maxWarning) {
+              console.log("Min Warning, ticket : ", index)
+              setPageErrors(true);
+              tempPageErrors = true;
+          }
+          if (ticket.functionArgs) {
+              if(ticket.functionArgs.reqWarning) {
+                  console.log("Req Warning, ticket : ", index)
+                  setPageErrors(true);
+                  tempPageErrors = true;
+              }
+              if(ticket.functionArgs.buyWarning) {
+                  console.log("Buy Warning, ticket : ", index)
+                  setPageErrors(true);
+                  tempPageErrors = true;
+              }
+              if(ticket.functionArgs.getWarning) {
+                  console.log("Get Warning, ticket : ", index)
+                  setPageErrors(true);
+                  tempPageErrors = true;
+              }
+              if(ticket.functionArgs.discountWarning) {
+                  console.log("Discount Warning, ticket : ", index)
+                  setPageErrors(true);
+                  tempPageErrors = true;
+              }
+              if(ticket.functionArgs.forWarning) {
+                  console.log("For Warning, ticket : ", index)
+                  setPageErrors(true);
+                  tempPageErrors = true;
+              }
+              if (ticket.functionArgs.maxForWarning) {
+                  console.log("MaxFor Warning, ticket : ", index)
+                  setPageErrors(true);
+                  tempPageErrors = true;
+              }
+          }
+      })
+
+      if (!eventDescription.eventTitle) {
+          console.log("You need to complete these fields");
+          setEventTitleOmission(true);
+          tempEventTitleOmission = true;
+      }
+
+      if (!tempPageErrors && !tempEventTitleOmission) {
+          let eventDescriptionFields = [
+              "eventNum",
+              "eventTitle",
+              "eventType",
+              "locationVenueName",
+              "locationAddress1",
+              "locationAddress2",
+              "locationCity",
+              "locationState",
+              "locationZipPostalCode",
+              "locationCountryCode",
+              "locationNote",
+              "webinarLink",
+              "onlineInformation",
+              "tbaInformation",
+              "timeZone",
+              "shortDescription",
+              "longDescription",
+              "photo",
+              "eventCategory",
+              "facebookLink",
+              "twitterLink",
+              "linkedinLink",
+              "instagramLink",
+              "vanityLink",
+              "refundPolicy",
+          ];
+
+    
+          let tempDescription = { ...eventDescription };
+
+          if (tempDescription.eventType === "live") {
+                  tempDescription.tbaInformation = "";
+          } else if (tempDescription.eventType === "online") {
+              tempDescription.tbaInformation = "";
+              tempDescription.locationVenueName = "";
+              tempDescription.locationAddress1 = "";
+              tempDescription.locationAddress2 = "";
+              tempDescription.locationCity = "";
+              tempDescription.locationState = "";
+              tempDescription.locationZipPostalCode = "";
+              tempDescription.locationNote = "";
+          } else if (tempDescription.eventType === "tba") {
+              tempDescription.locationVenueName = "";
+              tempDescription.locationAddress1 = "";
+              tempDescription.locationAddress2 = "";
+              tempDescription.locationCity = "";
+              tempDescription.locationState = "";
+              tempDescription.locationZipPostalCode = "";
+              tempDescription.locationNote = "";
+              tempDescription.webinarLink = "";
+              tempDescription.onlineInformation = "";
+          }
+
+      var formData = new FormData();
+
+      if (newStatus === "saved") {
+          tempDescription.isDraft = true;
+          formData.append("isDraft", "true");
+          console.log("event will be saved")
+      } else if (newStatus === "live") {
+          tempDescription.isDraft = false;
+          formData.append("isDraft", "false");
+          console.log("event will be live")
+      }
+
+      setEventDescription(tempDescription);
+
+      // does not send empty fields to server
+      eventDescriptionFields.forEach((field) => {
+          if (tempDescription[field] !== '') {
+          console.log("eventDescription[field]: ", tempDescription[field] )
+          formData.append(`${field}`, tempDescription[field]);
+          }
+      });
+      
+      let tempStartDate = dateFnsFormat(tempDescription.startDate,'yyyy-MM-dd');
+      //console.log("startDate from dateFnsFormat: ", tempStartDate);
+
+      let tempEndDate = dateFnsFormat(tempDescription.endDate,'yyyy-MM-dd');
+      //console.log("endDate from dateFnsFormat: ", tempEndDate);
+
+      let tempStartDateTime = `${tempStartDate} ${tempDescription.startTime}Z`;
+      //console.log("startDateTime: ", tempStartDateTime);
+
+      let tempEndDateTime = `${tempEndDate} ${tempDescription.endTime}Z`;
+      //console.log("endDateTime: ", tempEndDateTime);
+
+      formData.append("startDateTime", tempStartDateTime);
+      formData.append("endDateTime", tempEndDateTime);
+
+      //formData.append("photo", tempDescription.photo);
+
+      // eliminate empty ticket types
+      let tempTicketDetailsArray = [];
+      let tempTicketDetails = [...ticketDetails];
+      tempTicketDetails.forEach((ticket, index) => {
+          console.log("Inside elimate cade")
+          console.log("ticket.eventName: ", ticket.ticketName)
+          console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
+          console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
+          if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice) {
+          console.log("We have a full ticket, index: ", index)
+          tempTicketDetailsArray.push(ticket);
+          }
+      })
+      console.log("Updated tempTicketDetailsArray: ", tempTicketDetailsArray);
+      if(tempTicketDetailsArray.length === 0) {
+          setTicketDetails([
+          {
+              key: "1",
+              sort: "",
+              _id: "",
+              ticketName: "",
+              nameWarning: false,
+              remainingQuantity: "",
+              quantityWarning: false,
+              currentTicketPrice: "",
+              priceWarning: false,
+              reqWarning: false,
+              currency: "",
+              settings: false,
+              ticketDescription: "",
+              minTicketsAllowedPerOrder: "",
+              minWarning: false,
+              maxTicketsAllowedPerOrder: "",
+              maxWarning: false,
+              priceFeature: "none",
+              promoCodes: [
+              { key: "1", name: "", amount: "", percent: false },
+              ],
+              promoCodeNames: [],
+              promoCodeWarning: "",
+              functionArgs: {},
+              viewModal: false
+          }],
+          )
+      } else {
+          setTicketDetails(tempTicketDetailsArray);
+      }
+
+      // saves every field in the "tickets" array
+      let ticketDetailsFields = [
+          "ticketName",
+          "remainingQuantity",
+          "currentTicketPrice",
+          "ticketDescription",
+          "maxTicketsAllowedPerOrder",
+          "minTicketsAllowedPerOrder",
+          "_id",
+      ];
+
+      tempTicketDetailsArray.forEach((ticket, index) => {
+          if (
+          ticket.ticketName &&
+          ticket.remainingQuantity &&
+          ticket.currentTicketPrice
+          ) {
+          //console.log("adding ticket ", index);
+          formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
+
+          if (ticket.currency) {
+              formData.append(
+              `tickets[${index}][currency]`,
+              ticket.currency.slice(0, 3)
+              );
+          }
+
+          ticketDetailsFields.forEach((field) => {
+              if (ticket[field]) {
+              formData.append(`tickets[${index}][${field}]`, ticket[field]);
+              }
+          });
+
+          // {form: "bogo",   args: {buy:5, get:4, discount:.90}}
+          // for "bogod" and "bogof"
+          if (
+              ticket.priceFeature === "bogod" ||
+              ticket.priceFeature === "bogof"
+          ) {
+              formData.append(
+              `tickets[${index}][priceFunction][form]`, "bogo");
+              formData.append(
+              `tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy
+              );
+              formData.append(
+              `tickets[${index}][priceFunction][args][get]`, ticket.functionArgs.get
+              );
+              formData.append(
+              `tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount/100
+              );
+          }
+
+          // {form: "twofer", args: {buy:2,  for:15}}
+          // for "twofer"
+          if (ticket.priceFeature === "twofer") {
+              formData.append(
+              `tickets[${index}][priceFunction][form]`, "twofer");
+              formData.append(
+              `tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy
+              );
+              formData.append(
+              `tickets[${index}][priceFunction][args][for]`, ticket.functionArgs.for
+              );
+          }
+
+          // {form: "promo",  args: {
+          //    promocodes:  [
+          //      {name:"flyers", discount: .20, pct: true} ,  // 20% off
+          //      {name:"eagles", discount:10,  pct: false }    // $10 off
+          //    ]}
+          // }
+          // for "promo"
+          if (ticket.priceFeature === "promo") {
+              formData.append(`tickets[${index}][priceFunction][form]`, "promo");
+              ticket.promoCodes.forEach((item, number) => {
+              formData.append(
+                  `tickets[${index}][priceFunction][args][promocodes][${number}][key]`, item.key
+              );
+              formData.append(
+                  `tickets[${index}][priceFunction][args][promocodes][${number}][name]`, item.name
+              );
+              formData.append(
+                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`, item.amount
+              );
+              formData.append(
+                  `tickets[${index}][priceFunction][args][promocodes][${number}][percent]`, item.percent
+              );
+              console.log(
+                  "New promo details: key-",
+                  item.key,
+                  ", name-",
+                  item.name,
+                  ", amount-",
+                  item.amount,
+                  ", percent-",
+                  item.percent
+              );
+              });
+          }
+          }
+          else {
+          //console.log("skipped ticket ", index);
+          }
+
+      });
+
+      // Display the key/value pairs
+      for (var pair of formData.entries()) {
+          console.log(pair[0] + ", " + pair[1]);
+      }
+
+      let userid = vendorInfo.id;
+
+      let token = vendorInfo.token;
+      const authstring = `Bearer ${token}`;
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", authstring);
+
+      let apiurl;
+      apiurl = `${API}/eventix/${userid}`;
+
+      fetch(apiurl, {
+          method: "POST",
+          headers: myHeaders,
+          body: formData,
+          redirect: "follow",
+      })
+      .then(handleErrors)
+      .then((response) => {
+          console.log("response in create", response);
+          return response.json();
+      })
+      .then((res) => {
+          console.log("Event was saved/went live");
+          console.log("res: ", res);
+          
+          if (!res.done && res.friendlyMessage) {
+          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+          tempStatus.status = "error";
+          tempStatus.errorMessage = res.friendlyMessage;
+          } else if(!res.done && res.error) {
+          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+          tempStatus.status = "error";
+          tempStatus.errorMessage = res.error;
+          } else if(!res.done && !res.friendlyMessage) {
+          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+          tempStatus.status = "failure";
+          }
+          setEventStatus(tempStatus);
+          return res;
+      })
+      .catch((err) => {
+          console.log("Inside the .catch")
+          console.log("**ERROR THROWN", err);
+          tempStatus.status = "failure";
+          setEventStatus(tempStatus);
+      });
+      }
+  }
+  // END STRAIGHT COPY FROM ORIGINAL
+
+  // START STRAIGHT COPY FROM ORIGINAL
+  const handleErrors = (response) => {
+    console.log("inside handleErrors")
+    console.log("response: ", response)
+    if (!response.ok) {
+      console.log("bad response");
+      console.log("response: ", response.ok);
+      throw Error(response.status);
+    } else {
+      console.log("good response");
+      console.log("response: ", response.ok);
+    }
+    return response;
+  };
+  // END STRAIGHT COPY FROM ORIGINAL
+
+  // START STRAIGHT COPY FROM ORIGINAL
+  const savedModal = () => {
+    if (eventStatus.status === "failure" || eventStatus.status === "error") {
+      return (
+        <Aux>
+          <SavedModal
+            show={true}
+            details={eventStatus}
+            editEvent={() => {
+              let tempStatus = { ...eventStatus };
+              tempStatus.status = "";
+              setEventStatus(tempStatus);
+            }}
+          ></SavedModal>
+        </Aux>
+      );
+    } else if (
+      eventStatus.status === "saved" ||
+      eventStatus.status === "live"
+    ) {
+      return (
+        <Aux>
+          <SavedModal
+            show={true}
+            details={eventStatus}
+            toDashboard={() => {
+              window.location.href = `/vendorevents`;
+            }}
+          ></SavedModal>
+        </Aux>
+      );
+    } else return null;
+  };
+  // END STRAIGHT COPY FROM ORIGINAL
+
+
+  // START STRAIGHT COPY FROM ORIGINAL
+  // garuantees that only one ticket has a "true" "viewModal" value
+  const activateShowModal = (ticket) => {
+    let tempDetails = [...ticketDetails];
+    tempDetails.forEach((item) => {
+      if (item.key === ticket.key) {
+        item.viewModal = true;
+      } else {
+        item.viewModal = false;
+      }
+    });
+    setTicketDetails(tempDetails);
+    console.log("Ticket Details: ", tempDetails);
+  };
+  // END STRAIGHT COPY FROM ORIGINAL
+
+  // START STRAIGHT COPY FROM ORIGINAL
+  // clears "viewModal" value for all tickets
+  const deactivateShowModal = (ticket) => {
+    let tempDetails = [...ticketDetails];
+    tempDetails.forEach((item) => {
+      item.viewModal = false;
+    });
+    setTicketDetails(tempDetails);
+    console.log("Ticket Details: ", tempDetails);
+  };
+  // END STRAIGHT COPY FROM ORIGINAL
 
     // EVENT DESCRIPTION HANDLERS
     const changeEventDescription = (event) => {
@@ -472,33 +982,6 @@ const CreateEvent = (props) => {
         console.log("eventCategory: ", value);
         setEventDescription(tempDescription);
     };
-
-    // garuantees that only one ticket has a "true" "viewModal" value
-    const activateShowModal = (ticket) => {
-      let tempDetails = [...ticketDetails];
-      console.log("inside activateShowModal")
-      tempDetails.forEach((item) => {
-        if (item.key === ticket.key) {
-            console.log("inside true")
-          item.viewModal = true;
-        } else {
-            console.log("inside false")
-          item.viewModal = false;
-        }
-      });
-      setTicketDetails(tempDetails);
-      console.log("Ticket Details: ", tempDetails);
-    };
-  
-    // clears "viewModal" value for all tickets
-    const deactivateShowModal = (ticket) => {
-      let tempDetails = [...ticketDetails];
-      tempDetails.forEach((item) => {
-        item.viewModal = false;
-      });
-      setTicketDetails(tempDetails);
-      console.log("Ticket Details: ", tempDetails);
-    };
   
 
     const changeEventImage = (image) => {
@@ -534,10 +1017,10 @@ const CreateEvent = (props) => {
                         content="Save as Draft"
                         onClick={() => {
                           // ***** NEED TO INCLUDE
-                        //let tempDescription = {...eventDescription };
-                        //tempDescription.isDraft = true;
-                        //setEventDescription(tempDescription);
-                        //saveEvent("saved");
+                          let tempDescription = {...eventDescription };
+                          tempDescription.isDraft = true;
+                          setEventDescription(tempDescription);
+                          saveEvent("saved");
                         }}
                     />
                 </div>
@@ -579,8 +1062,7 @@ const CreateEvent = (props) => {
                         }}
                         content="Cancel Create"
                         onClick={() => {
-                        // ***** NEED TO INCLUDE
-                        //window.location.href = `/vendorevents`
+                          window.location.href = `/events`
                         }}
                     />
                 </div>

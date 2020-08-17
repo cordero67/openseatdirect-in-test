@@ -1,3 +1,6 @@
+//ENTIRE CODE HAS BEEN CHECKED VERSUS ORIGINAL
+//EXCEPT FOR <PriceFeatureSettings/> SECTION LABELED BELOW
+
 import React, { useState, useRef } from "react";
 
 import PriceFeatureSettings from "./PriceFeatureSettings";
@@ -155,6 +158,8 @@ const PriceSettings = (props) => {
                 : null
             }
 
+
+    //XX START CODE REPLICATION REQUIRED
             <PriceFeatureSettings
                 ticket={props.ticket}
                 changeFeature={props.changeFeature}
@@ -166,6 +171,8 @@ const PriceSettings = (props) => {
                 changePromoCodesPercent={props.changePromoCodesPercent}
                 deletePromoCode={props.deletePromoCode}
             />
+    //XX END CODE REPLICATION REQUIRED
+
 
             <div
                 style={{
