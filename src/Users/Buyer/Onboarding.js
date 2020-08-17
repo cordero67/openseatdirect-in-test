@@ -22,6 +22,7 @@ const Onboarding = (props) => {
       accountPhone: "",
       accountUrl: "",
       ticketPlan: "",
+      inputError: "",
       paypal_plan_id: "",
       paypalExpress_client_id: "",
       paypalExpress_client_secret: ""
@@ -29,6 +30,7 @@ const Onboarding = (props) => {
 
     // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
     const [pageView, setPageView] = useState("summary")
+    const [preFetchView, setPreFetchView] = useState("")
     const [loading, setLoading ] = useState("false")
 
     const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypal_plan_id, paypalExpress_client_id, paypalExpress_client_secret } = values;
@@ -60,10 +62,13 @@ const Onboarding = (props) => {
 
     const updateValues = () => {
         let tempUser = JSON.parse(localStorage.getItem("user"));
+        console.log("tempUser: ", tempUser)
+        console.log("tempUser.user: ", tempUser.user)
+        console.log("tempUser.user.accountId: ", tempUser.user.accountId)
         if ('user' in tempUser && 'accountId' in tempUser.user) {
             let tempBuyerInfo = {};
-            if (tempUser.user.accountId.name) tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
-            if (tempUser.user.accountId.email) tempBuyerInfo.accountEmail = tempUser.user.accountId.accountEmail;
+            if (tempUser.user.accountId.accountName) tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
+            if (tempUser.user.accountId.accountEmail) tempBuyerInfo.accountEmail = tempUser.user.accountId.accountEmail;
             if (tempUser.user.accountId.accountPhone) tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
             if (tempUser.user.accountId.accountUrl) tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
             if (tempUser.user.accountId.status) tempBuyerInfo.status = tempUser.user.accountId.status;
@@ -72,19 +77,21 @@ const Onboarding = (props) => {
             if (tempUser.user.accountId.paypalExpress_client_id) tempBuyerInfo.paypalExpress_client_id = tempUser.user.accountId.paypalExpress_client_id;
             if (tempUser.user.accountId.paypalExpress_client_secret) tempBuyerInfo.paypalExpress_client_secret = tempUser.user.accountId.paypalExpress_client_secret;
             setValues(tempBuyerInfo);
+            
+            console.log("tempBuyerInfo: ", tempBuyerInfo)
         }
     }
 
     useEffect(() => {
         setLoading(true);
         if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
-            updatePageView();
             updateValues();
+            updatePageView();
         } else {
-          window.location.href = "/signin";
+            window.location.href = "/signin";
         }
         setLoading(false);
-      }, []);
+    }, []);
 
     // api static variables
     let  myHeaders = new Headers();
@@ -102,21 +109,44 @@ const Onboarding = (props) => {
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
     // need to work on this code to handle fetch responses
-    if (data.status && (data.message === "vendor Account updated!" || data.message === "vendor Account updated!")) {
+    //if (!hasError && (data.message === "vendor Account updated!" || data.message === "vendor Account updated!")) {
+    if (false) {
+        console.log("success is true")
         let tempData = JSON.parse(localStorage.getItem("user"));
         tempData.user.accountId = data.result;
         localStorage.setItem("user", JSON.stringify(tempData));
 
         if(passThrough) {
             console.log("passsed")
+            updateValues();
             updatePageView();
         } else {
             console.log("stopped")
         }
         passThrough=false;
-        
-    } else if (!data.status) {
-        console.log("server determined error")
+    //} else if (hasError) {// hasError condition, non-successful fetch
+    } else if (false) {// hasError condition, non-successful fetch
+        console.log("success is false")
+
+        if(passThrough) {
+            console.log("passsed")
+            console.log("pageView: ", pageView)
+            setPreFetchView(pageView);
+            setPageView("error")
+        } else {
+            console.log("stopped")
+        }
+        passThrough=false;
+    //} else if (!hasError && data.message && data.error) {// successful fetch but error in data sent
+    } else if (true) {// successful fetch but error in data sent
+        console.log("success is true, but data has errors")
+        if(passThrough) {
+            console.log("passsed")
+            console.log("pageView: ", pageView)
+            setValues({...values, inputError: data.message});
+        } else {
+            console.log("stopped")
+        }
         passThrough=false;
     }
     //
@@ -144,60 +174,84 @@ const Onboarding = (props) => {
         { label: "$35 for one full year", value: "basicPaidAnnual" }
     ];
 
-// change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
-  const showPayPal = (
-    <div>
-        <br></br>
-        <PayPalButton
-            onButtonReady = {() => {}}
-            createSubscription={(data, actions) => {
-                return actions.subscription.create({
-                plan_id: paypal_plan_id
-                });
-            }}
-            onCancel = {data => {
-                console.log("onCancel 'data': ", data);
-            }}
-            onApprove = {(data, actions) => {
-                return actions.subscription.get()
-                    .then(function(details) {
-                        console.log("details: ", details)
-                        const authstring = `Bearer ${props.token}`;
-                        console.log("about to send paypal object to server")
-                        return fetch(`${API}/paypal/subscription/${props.userid}`, {
-                            method: "POST",
-                            headers: {
-                                Accept: "application/json",
-                                "Content-Type": "application/json",
-                                "Authorization": authstring
-                            },
-                            body: JSON.stringify({
-                                data: data,
-                                details: details
-                            })
-                        })
-                        .then(response => {// first show a success model with a continue button to go to paypal clientId model 
-                            console.log("response: ", response);
-                            setPageView("receipt");
-                            //return response.json();
-                        }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
-                })
 
-            }}
-            onError = {(err) => 
-                console.log("error occurs: ", err)
-            }
-            options = {{
-                clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
-                currency: "USD",
-                vault: true
-            }}
-            catchError = {err => {
-                console.log("catchError 'err': ", err);
-            }}
-        />
-    </div>
-  );
+    const subTitleDisplay = () => {
+        //if (pageErrors || eventTitleOmission) {
+        if (false) {
+          return (
+            <div className={classes.GridSubTitle}>
+              <div style={{ textAlign: "left" }}>
+              </div>
+              <div style={{ textAlign: "center", color: "red"}}>
+                Please correct input errors identified below.
+              </div>
+            </div>
+          )
+        } else {
+          return (
+            <div className={classes.GridSubTitle}>
+              <div style={{ textAlign: "left" }}>
+                  {values.inputError}
+              </div>
+            </div>
+          )
+        }
+      }
+
+// change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
+    const showPayPal = (
+        <div>
+            <br></br>
+            <PayPalButton
+                onButtonReady = {() => {}}
+                createSubscription={(data, actions) => {
+                    return actions.subscription.create({
+                    plan_id: "P-9HN388280G366532JL4RGF5A"
+                    });
+                }}
+                onCancel = {data => {
+                    console.log("onCancel 'data': ", data);
+                }}
+                onApprove = {(data, actions) => {
+                    return actions.subscription.get()
+                        .then(function(details) {
+                            console.log("details: ", details)
+                            const authstring = `Bearer ${props.token}`;
+                            console.log("about to send paypal object to server")
+                            return fetch(`${API}/paypal/subscription/${props.userid}`, {
+                                method: "POST",
+                                headers: {
+                                    Accept: "application/json",
+                                    "Content-Type": "application/json",
+                                    "Authorization": authstring
+                                },
+                                body: JSON.stringify({
+                                    data: data,
+                                    details: details
+                                })
+                            })
+                            .then(response => {// first show a success model with a continue button to go to paypal clientId model 
+                                console.log("response: ", response);
+                                setPageView("receipt");
+                                //return response.json();
+                            }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
+                    })
+
+                }}
+                onError = {(err) => 
+                    console.log("error occurs: ", err)
+                }
+                options = {{
+                    clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
+                    currency: "USD",
+                    vault: true
+                }}
+                catchError = {err => {
+                    console.log("catchError 'err': ", err);
+                }}
+            />
+        </div>
+    );
 
     const mainDisplay = () => {
         if (!loading) {
@@ -256,9 +310,14 @@ const Onboarding = (props) => {
                         </div>
                         <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Explanation text.</div>
                         <div className={classes.VendorCanvas}>
+                        {subTitleDisplay()}
+                        <br></br>
                             <div className="form-group">
                                 <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
                                 <input
+                                    onFocus={() => {
+                                        setValues({...values, inputError: ""});
+                                    }}
                                     type="text"
                                     name="accountName"
                                     className="form-control"
@@ -270,6 +329,9 @@ const Onboarding = (props) => {
                             <div className="form-group">
                                 <label>Company Email</label>
                                 <input
+                                    onFocus={() => {
+                                        setValues({...values, inputError: ""});
+                                    }}
                                     type="text"
                                     name="accountEmail"
                                     className="form-control"
@@ -281,6 +343,9 @@ const Onboarding = (props) => {
                             <div className="form-group">
                                 <label>Company Phone or Cell Number</label>
                                 <input
+                                    onFocus={() => {
+                                        setValues({...values, inputError: ""});
+                                    }}
                                     type="text"
                                     name="accountPhone"
                                     className="form-control"
@@ -292,6 +357,9 @@ const Onboarding = (props) => {
                             <div className="form-group">
                                 <label>Company Website</label>
                                 <input
+                                    onFocus={() => {
+                                        setValues({...values, inputError: ""});
+                                    }}
                                     type="text"
                                     name="accountUrl"
                                     className="form-control"
@@ -522,6 +590,9 @@ const Onboarding = (props) => {
                                     />
                                     </label>
                                     <input
+                                        onFocus={() => {
+                                            setValues({...values, inputError: ""});
+                                        }}
                                         type="text"
                                         name="paypalExpress_client_id"
                                         className="form-control"
@@ -546,6 +617,9 @@ const Onboarding = (props) => {
                                     />
                                     </label>
                                     <input
+                                        onFocus={() => {
+                                            setValues({...values, inputError: ""});
+                                        }}
                                         type="text"
                                         name="paypalExpress_client_secret"
                                         className="form-control"
@@ -619,6 +693,39 @@ const Onboarding = (props) => {
                                 content="Continue"
                                 onClick={() => {
                                     window.location.href = "/vendordashboard";
+                                }}
+                            />
+                        </div>
+                    </div>
+                )
+            } else if (pageView === "error") {
+                return (
+                    <div className={classes.DisplayPanel}>
+                        <div
+                            style={{
+                                paddingLeft: "80px",
+                                paddingTop: "40px",
+                                fontSize: "22px",
+                                fontWeight: "600"
+                            }}
+                            >SYSTEM ERROR
+                        </div>
+                        <div className={classes.SummaryHeader}>
+                            System error please go back and resubmit.
+                        </div>
+                        <div style={{textAlign: "center"}}>
+                            <Button className={classes.SummaryButton}
+                                style={{
+                                    backgroundColor: 'white',
+                                    border: "1px solid blue",
+                                    color: "blue",
+                                    padding: "0px",
+                                }}
+                                content="Go Back"
+                                onClick={() => {
+                                    console.log("preFetchView: ", preFetchView)
+                                    setPageView(preFetchView);
+                                    setPreFetchView("");
                                 }}
                             />
                         </div>
