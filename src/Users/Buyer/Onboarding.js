@@ -104,13 +104,12 @@ const Onboarding = (props) => {
     const body  = null;
     let initialData ={status: true, message:"hi first time"};
 
-    const { isLoading, hasError, setUrl, setBody, setMethod, data, networkError} = useOurApi(method, url, myHeaders, body, initialData);
+    const { hasError, setBody, setMethod, data, networkError} = useOurApi(method, url, myHeaders, body, initialData);
 
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
     // need to work on this code to handle fetch responses
-    if (!hasError && (data.message === "vendor Account updated!" || data.message === "vendor Account updated!")) {
-    //if (false) {
+    if (!hasError && data.message && !data.error) {
         console.log("success is true")
         let tempData = JSON.parse(localStorage.getItem("user"));
         tempData.user.accountId = data.result;
@@ -124,8 +123,17 @@ const Onboarding = (props) => {
             console.log("stopped")
         }
         passThrough=false;
+    } else if (!hasError && data.message && data.error) {// successful fetch but error in data sent
+            console.log("success is true, but data has errors")
+            if(passThrough) {
+                console.log("passsed")
+                console.log("pageView: ", pageView)
+                setValues({...values, inputError: data.message});
+            } else {
+                console.log("stopped")
+            }
+            passThrough=false;
     } else if (hasError) {// hasError condition, non-successful fetch
-    //} else if (false) {// hasError condition, non-successful fetch
         console.log("success is false")
 
         if(passThrough) {
@@ -137,19 +145,7 @@ const Onboarding = (props) => {
             console.log("stopped")
         }
         passThrough=false;
-    } else if (!hasError && data.message && data.error) {// successful fetch but error in data sent
-    //} else if (true) {// successful fetch but error in data sent
-        console.log("success is true, but data has errors")
-        if(passThrough) {
-            console.log("passsed")
-            console.log("pageView: ", pageView)
-            setValues({...values, inputError: data.message});
-        } else {
-            console.log("stopped")
-        }
-        passThrough=false;
     }
-    //
 
     const handleChange = (event) => {
         setValues({
