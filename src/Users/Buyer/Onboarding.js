@@ -46,13 +46,23 @@ const Onboarding = (props) => {
         } 
     }
 
-    const getAccountStatus = (account) =>{ 
-        if ('accountId' in account && 'status' in account.accountId ) {
+    const getStatusFromAccount = (account) =>{ 
+        if ('status' in account) {
             return account.status}
         else {
             return 0;
         } 
     }
+
+ const getStatusFromUser= (user) =>{ 
+        if ('object' == typeof user && 'accountId' in user ) {
+               return getStatusFromAccount(user.accountId)}
+        else {
+            return 0;
+        } 
+    }
+
+
 
     const updatePageView = () =>{
         if (getStatus() === 0) {
@@ -108,7 +118,7 @@ const Onboarding = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const authstring = `Bearer ${props.token}`;
     myHeaders.append("Authorization", authstring);
-    const url = `${API}/account/${props.userid}`;
+//    const url = `${API}/account/${props.userid}`;
 
 
     let orgModeArg ={
@@ -163,27 +173,26 @@ const Onboarding = (props) => {
     // need to work on this code to handle fetch responses
     if (hasError && !isLoading) {
         console.log ("hasError && !isLoading...")
-//            setPageView("error")
+            setPageView("error")
+    } else {
+        if (data.status && 'result' in data){
+            let new_status = data.result.status;
+            switch (new_status){
+                case(4): 
+                case(5):setPageView("ticket");  break;
+                case(6):setPageView("paypal");       break;
+                case(7):setPageView("completed");break;
+                case (0):
+                default:  setPageView("summary")
+            };
+        } else {
+            let msg = "Error Try again";
+            if ('result' in data && 'message' in data.result) {
+                msg = data.result.message;
+            };
+            setPageView ("error");//    this is a user error with message
+        }
     };
- //    else {
- //       if (data.status){
- //           let new_status = data.result.status;
- //           switch (new_status){
- //               case(4): 
- //               case(5):setPageView("ticket");  break;
- //               case(6):setPageView("paypal");       break;
- //               case(7):setPageView("completed");break;
- //               case (0):
- //               default:  setPageView("summary")
- //           };
- //       } else {
- //           let msg = "Error Try again";
- //           if (data.message) {
- //               msg = data.message;
- //           };
- //           setPageView ("error");//    this is a user error with message
- //       }
- //   };
 
 //            updateValues();
 //            updatePageView();
@@ -293,10 +302,7 @@ const Onboarding = (props) => {
         </div>
     );
 
-    const mainDisplay = () => {
-        if (!loading) {
-            console.log("event is NOT loading")
-            if (pageView === "summary") {
+    const summaryPage = ()=>{
                 return (
                     <div className={classes.DisplayPanel}
                         style={{textAlign: "center"}}>
@@ -336,7 +342,9 @@ const Onboarding = (props) => {
                         />
                     </div>
                 )
-            } else if (pageView === "organization") {
+    }
+
+    const orgPage =() =>{
                 return (
                     <div className={classes.DisplayPanel}>
                         <div
@@ -453,7 +461,11 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
-            } else if (pageView === "ticket") {
+
+    }
+
+    const ticketPage =()=>{
+
                 return (
                     <div className={classes.DisplayPanel}>
                         <div>
@@ -528,8 +540,10 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
-            } else if (pageView === "payment") {
-                return (
+
+    }
+    const paymentPage =() =>{
+                       return (
                     <div className={classes.DisplayPanel}>
                         <div>
                             <div
@@ -572,8 +586,11 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
-            } else if (pageView === "receipt") {
-                return (
+ 
+    }
+
+    const receiptPage =() =>{
+                        return (
                     <div className={classes.DisplayPanel}>
                         <div>
                             <div
@@ -605,8 +622,10 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
-            } else if (pageView === "paypal") {
-                return (
+    }
+
+    const paypalPage =() =>{
+                        return (
                     <div className={classes.DisplayPanel}>
                         <div>
                             <div
@@ -706,8 +725,10 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
-            } else if (pageView === "completed") {
-                return (
+
+    }
+    const completedPage =() =>{
+                       return (
                     <div className={classes.DisplayPanel}>
                         <div
                             style={{
@@ -752,8 +773,10 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 ) 
-            } else if (pageView === "error") {
-                return (
+ 
+    }
+    const errorPage =() =>{
+                        return (
                     <div className={classes.DisplayPanel}>
                         <div
                             style={{
@@ -785,6 +808,28 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
+
+    }
+
+    const mainDisplay = () => {
+        if (!loading) {
+            console.log("event is NOT loading")
+            if (pageView === "summary") {
+                {summaryPage()}
+            } else if (pageView === "organization") {
+                {orgPage()}
+            } else if (pageView === "ticket") {
+                {ticketPage()}
+            } else if (pageView === "payment") {
+                {paymentPage()}
+            } else if (pageView === "receipt") {
+                {receiptPage()}
+            } else if (pageView === "paypal") {
+                {paypalPage()}
+            } else if (pageView === "completed") {
+                {completedPage()}
+            } else if (pageView === "error") {
+                {errorPage()}
             }
         } else {
             console.log("event IS loading");
