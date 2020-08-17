@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useOurApi } from "./apiUsers";
+import { useOurApi2 } from "./apiUsers";
 import { API } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,6 +41,14 @@ const Onboarding = (props) => {
         if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
             console.log("tempData.data.accountId.status: ", tempData.user.accountId.status)
             return tempData.user.accountId.status}
+        else {
+            return 0;
+        } 
+    }
+
+    const getAccountStatus = (account) =>{ 
+        if ('accountId' in account && 'status' in account.accountId ) {
+            return account.status}
         else {
             return 0;
         } 
@@ -93,6 +101,8 @@ const Onboarding = (props) => {
         setLoading(false);
     }, []);
 
+
+
     // api static variables
     let  myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -100,56 +110,86 @@ const Onboarding = (props) => {
     myHeaders.append("Authorization", authstring);
     const url = `${API}/account/${props.userid}`;
 
-    const method = "POST";
-    const body  = null;
-    let initialData ={status: true, message:"hi first time"};
 
-    const { isLoading, hasError, setUrl, setBody, setMethod, data, networkError} = useOurApi(method, url, myHeaders, body, initialData);
+    let orgModeArg ={
+        method: "POST",
+        url:  `${API}/account/${props.userid}`,
+        header: myHeaders,
+        flag: 'org'
+    };
+
+    let paypalModeArg ={
+        method: "PATCH",
+        url:  `${API}/account/${props.userid}`,
+        header: myHeaders,
+        flag:'paypal'
+    };
+
+    let clientIdModeArg ={
+        method: "PATCH",
+        url:  `${API}/account/${props.userid}`,
+        header: myHeaders,
+        flag:'client'
+    };
+
+    let initialData ={status: false, message:"hi first time", flag:"org"};
+
+
+    const { isLoading, hasError, setApiArg, data, networkError} = useOurApi2(orgModeArg, initialData);
+
+
+    const gotoNextPageview = (data)=>{
+        if (data.status){
+            let new_status = data.result.status;
+            switch (new_status){
+                case(4): 
+                case(5):setPageView("ticket");  break;
+                case(6):setPageView("paypal");       break;
+                case(7):setPageView("completed");break;
+                case (0):
+                default:  setPageView("summary")
+            }
+        } else {
+            setPageView ("OrgPageError")
+        }
+    }
+
 
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
+
+// MM 
+
     // need to work on this code to handle fetch responses
-    if (!hasError && (data.message === "vendor Account updated!" || data.message === "vendor Account updated!")) {
-    //if (false) {
-        console.log("success is true")
-        let tempData = JSON.parse(localStorage.getItem("user"));
-        tempData.user.accountId = data.result;
-        localStorage.setItem("user", JSON.stringify(tempData));
+    if (hasError && !isLoading) {
+        console.log ("hasError && !isLoading...")
+//            setPageView("error")
+    };
+ //    else {
+ //       if (data.status){
+ //           let new_status = data.result.status;
+ //           switch (new_status){
+ //               case(4): 
+ //               case(5):setPageView("ticket");  break;
+ //               case(6):setPageView("paypal");       break;
+ //               case(7):setPageView("completed");break;
+ //               case (0):
+ //               default:  setPageView("summary")
+ //           };
+ //       } else {
+ //           let msg = "Error Try again";
+ //           if (data.message) {
+ //               msg = data.message;
+ //           };
+ //           setPageView ("error");//    this is a user error with message
+ //       }
+ //   };
 
-        if(passThrough) {
-            console.log("passsed")
-            updateValues();
-            updatePageView();
-        } else {
-            console.log("stopped")
-        }
-        passThrough=false;
-    } else if (hasError) {// hasError condition, non-successful fetch
-    //} else if (false) {// hasError condition, non-successful fetch
-        console.log("success is false")
+//            updateValues();
+//            updatePageView();
+//            setPreFetchView(pageView);
+//            setPageView("error")
 
-        if(passThrough) {
-            console.log("passsed")
-            console.log("pageView: ", pageView)
-            setPreFetchView(pageView);
-            setPageView("error")
-        } else {
-            console.log("stopped")
-        }
-        passThrough=false;
-    } else if (!hasError && data.message && data.error) {// successful fetch but error in data sent
-    //} else if (true) {// successful fetch but error in data sent
-        console.log("success is true, but data has errors")
-        if(passThrough) {
-            console.log("passsed")
-            console.log("pageView: ", pageView)
-            setValues({...values, inputError: data.message});
-        } else {
-            console.log("stopped")
-        }
-        passThrough=false;
-    }
-    //
 
     const handleChange = (event) => {
         setValues({
@@ -393,18 +433,20 @@ const Onboarding = (props) => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
-                                        passThrough=true;
-                                        setBody({
-                                            accountName: accountName,
-                                            accountEmail: accountEmail,
-                                            accountPhone: accountPhone,
-                                            accountUrl: accountUrl
-                                        })
-                                        if (getStatus() === 0) {
-                                            setMethod("POST")
-                                        } else {
-                                            setMethod("PATCH")
-                                        }
+                                        let arg ={
+                                            method: "POST",
+                                            url:  `${API}/account/${props.userid}`,
+                                            header: myHeaders,
+                                            body:{
+                                                accountName: accountName,
+                                                accountEmail: accountEmail,
+                                                accountPhone: accountPhone,
+                                                accountUrl: accountUrl
+                                            },
+                                            flag: 'org'
+                                        };
+                                        console.log ("press submit in org page w arg:", arg);
+                                        setApiArg(arg);
                                     }}
                                 />
                             </div>
@@ -465,11 +507,17 @@ const Onboarding = (props) => {
                                         disabled={!ticketPlan}
                                         onClick={() => {
                                             if (ticketPlan === "free") {
-                                                passThrough=true;
-                                                setBody({
-                                                    ticketPlan: ticketPlan
-                                                })
-                                                setMethod("PATCH")
+
+                                                let orgModeArg ={
+                                                    method: "PATCH",
+                                                    url:  `${API}/account/${props.userid}`,
+                                                    header: myHeaders,
+                                                    body:{
+                                                        ticketPlan: ticketPlan
+                                                    },
+                                                    flag: 'org'
+                                                };
+                                                setApiArg(orgModeArg);
                                             } else {
                                                 setPageView("payment");
                                             }
@@ -638,14 +686,20 @@ const Onboarding = (props) => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
-                                        passThrough=true;
-                                        setBody({
-                                            useSandbox: true,
-                                            paymentGatewayType: "PayPalExpress",
-                                            paypalExpress_client_id: paypalExpress_client_id,
-                                            paypalExpress_client_secret: paypalExpress_client_secret
-                                        })
-                                        setMethod("PATCH")
+
+                                        let clientModeArg ={
+                                            method: "PATCH",
+                                            url:  `${API}/account/${props.userid}`,
+                                            header: myHeaders,
+                                            body:{
+                                                useSandbox: true,
+                                                paymentGatewayType: "PayPalExpress",
+                                                paypalExpress_client_id: paypalExpress_client_id,
+                                                paypalExpress_client_secret: paypalExpress_client_secret
+                                            },
+                                            flag: 'client'
+                                        };
+                                        setApiArg(clientModeArg);
                                     }}
                                 />
                             </div>
@@ -697,7 +751,7 @@ const Onboarding = (props) => {
                             />
                         </div>
                     </div>
-                )
+                ) 
             } else if (pageView === "error") {
                 return (
                     <div className={classes.DisplayPanel}>
