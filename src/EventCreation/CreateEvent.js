@@ -900,20 +900,14 @@ const CreateEvent = (props) => {
     const subTitleDisplay = () => {
       if (pageErrors || eventTitleOmission) {
         return (
-          <div className={classes.GridSubTitle}>
-            <div style={{ textAlign: "left" }}>
-            </div>
-            <div style={{ textAlign: "center", color: "red"}}>
+            <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "12px", color: "red"}}>
               Please correct input errors identified below.
             </div>
-          </div>
         )
       } else {
         return (
-          <div className={classes.GridSubTitle}>
             <div style={{ textAlign: "left" }}>
             </div>
-          </div>
         )
       }
     }
@@ -999,7 +993,7 @@ const CreateEvent = (props) => {
         <div>
             <div className={classes.EventPanelTitle}>
                 <div style={{paddingTop: "5px"}}>CREATE EVENT</div>
-                <div></div>
+                {subTitleDisplay()}
                 <div></div>
                 <div>
                     <Button
@@ -1039,11 +1033,10 @@ const CreateEvent = (props) => {
                         }}
                         content="Go Live Now"
                         onClick={() => {
-                        // ***** NEED TO INCLUDE
-                        //let tempDescription = {...eventDescription };
-                        //tempDescription.isDraft = false;
-                        //setEventDescription(tempDescription);
-                        //saveEvent("live");
+                        let tempDescription = {...eventDescription };
+                        tempDescription.isDraft = false;
+                        setEventDescription(tempDescription);
+                        saveEvent("live");
                         }}
                     />
                 </div>
@@ -1065,9 +1058,6 @@ const CreateEvent = (props) => {
                           window.location.href = `/events`
                         }}
                     />
-                </div>
-                <div>
-                  {subTitleDisplay()}
                 </div>
             </div>
             <div className={classes.DisplayPanel}>

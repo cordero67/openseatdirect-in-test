@@ -67,14 +67,72 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
       unmounted = true;
     };
   }, [url,body]);
-  console.log("isLoading: ", isLoading)
-  console.log("hasError: ", hasError)
-  console.log("fetchedData: ", fetchedData)
-  console.log("networkError: ", networkError )
+  //console.log("isLoading: ", isLoading)
+  //console.log("hasError: ", hasError)
+  //console.log("fetchedData: ", fetchedData)
+  //console.log("networkError: ", networkError )
   return { isLoading, hasError, setUrl, setBody, setMethod, data: fetchedData, networkError };
 };
 
 
+export const useOurApi2 = (initialApiArg, initialData) => {
+  
+  const [apiArg, setApiArg] = useState(initialApiArg);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [fetchedData, setFetchedData] = useState(initialData);
+
+  const isFirstRun = useRef(true);
+  
+  useEffect(() => {
+  
+    if (isFirstRun.current) {
+      console.log ("first run in useOurApi's useEffect!")
+      isFirstRun.current = false;
+      return;
+    }
+
+    let unmounted = false;
+
+    const handleFetchResponse = response => {
+      console.log (" in handleFetchResponse...");
+
+      if (unmounted) return initialData;
+      setHasError(!response.ok);
+      setIsLoading(false);
+      return response.ok && response.json ? response.json() : initialData;
+    };
+
+    const fetchData = () => {
+      setIsLoading(true);
+      let fetcharg = {
+            method: apiArg.method,
+            redirect: "follow"
+      };
+      if (apiArg.headers) fetcharg.headers= apiArg.headers;
+      if (apiArg.body) fetcharg.body = JSON.stringify (apiArg.body);
+      console.log("...fetching ", apiArg.url, fetcharg);
+
+      return fetch(apiArg.url, fetcharg )
+        .then(handleFetchResponse)
+        .catch(handleFetchResponse);
+    };
+
+    if (initialApiArg && !unmounted)
+      fetchData().then(data => !unmounted && setFetchedData(data));
+
+    return () => {
+      unmounted = true;
+    };
+  }, [apiArg]);
+  console.log("isLoading: ", isLoading)
+  console.log("hasError: ", hasError)
+  console.log("fetchedData: ", fetchedData)
+  return { isLoading, hasError,  setApiArg, data: fetchedData};
+};
+
+
+<<<<<<< HEAD
 export const useOurApi2 = (initialApiArg, initialData) => {
 
 // initialJsonArg  has 4 props:    {method , url, header,body, flag}
@@ -141,6 +199,8 @@ export const useOurApi2 = (initialApiArg, initialData) => {
 
 
 
+=======
+>>>>>>> dev
 const handleErrors = response => {
   console.log("Inside 'apiCore' 'handleErrors()'", response);
   //console.log("json response: ", expandedLog(response, 1));
