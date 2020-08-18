@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import { useOurApi, useOurApi2 } from "./apiUsers";
 import { API } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,8 +12,6 @@ import { PayPalButton } from "react-paypal-button-v2";
 import RadioForm from "./RadioForm";
 
 import classes from "./BuyerDashboard.module.css";
-
-import Spinner from "../../components/UI/Spinner/SpinnerNew";  // experimental..
 
 let passThrough = true;
 
@@ -103,6 +102,95 @@ const Onboarding = (props) => {
     const authstring = `Bearer ${props.token}`;
     console.log("authstring: ", authstring)
     myHeaders.append("Authorization", authstring);
+    const url = `${API}/account/${props.userid}`;
+
+    //const method = "POST";
+    //const body  = null;
+    //let initialData ={status: true, message:"hi first time"};
+
+    let initialData ={status: false, message:"hi first time", flag:"org"};
+
+    let orgModeArg ={
+        method: "POST",
+        url:  `${API}/account/${props.userid}`,
+        headers: myHeaders,
+        flag: 'org'
+    };
+
+    //const { hasError, setBody, setMethod, data } = useOurApi(method, url, myHeaders, body, initialData);
+    const { isLoading, hasError, setApiArg, data} = useOurApi2(orgModeArg, initialData);
+
+    //const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
+
+    //
+    if (data.status && 'result' in data){
+        if (passThrough) {
+            let new_status = data.result.status;
+            switch (new_status){
+                case(4): 
+                case(5):setPageView("ticket"); break;
+                case(6):setPageView("paypal"); break;
+                case(7):setPageView("completed"); break;
+                case (0):
+                default:  setPageView("summary")
+            };
+        };
+        passThrough=false;
+    } else {
+        if (passThrough) {
+            let msg = "Error Try again";
+            if ('result' in data && 'message' in data.result) {
+                msg = data.result.message;
+            };
+            setPageView ("error");//    this is a user error with message
+        }
+        passThrough=false;
+    }
+
+/*
+    // need to work on this code to handle fetch responses
+    if (!hasError && !data.error && data.message !== "hi first time") {
+        console.log("success is true")
+        let tempData = JSON.parse(localStorage.getItem("user"));
+        console.log("tempData: ", tempData)
+        tempData.user.accountId = data.result;
+        localStorage.setItem("user", JSON.stringify(tempData));
+
+        if(passThrough) {
+            console.log("passsed")
+            updateValues();
+            updatePageView();
+        } else {
+            console.log("stopped")
+        }
+        passThrough=false;
+
+    } else if (!hasError && data.error) {// successful fetch but error in data sent
+        console.log("success is true, but data has errors")
+        if(passThrough) {
+            console.log("passsed")
+            console.log("pageView: ", pageView)
+            setValues({...values, inputError: data.message});
+        } else {
+            console.log("stopped")
+        }
+        passThrough=false;
+
+    } else if (hasError) {// hasError condition, non-successful fetch
+        console.log("success is false")
+
+        if(passThrough) {
+            console.log("passsed")
+            console.log("pageView: ", pageView)
+            setPreFetchView(pageView);
+            setPageView("error")
+        } else {
+            console.log("stopped")
+        }
+        passThrough=false;
+
+    }
+    */
 
     const handleChange = (event) => {
         setValues({
@@ -151,14 +239,6 @@ const Onboarding = (props) => {
         }
       }
 
-    const handleErrors = response => {
-        console.log ("inside handleErrors ", response);
-        if (!response.ok) {
-            throw Error(response.status);
-        }
-        return response;
-    };
-
 // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
     const showPayPal = (
         <div>
@@ -191,18 +271,11 @@ const Onboarding = (props) => {
                                     details: details
                                 })
                             })
-                            .then (handleErrors)
-                            .then ((response)=>{
-                                return response.json();
-                            })
-                            .then((response) => {// first show a success model with a continue button to go to paypal clientId model 
+                            .then(response => {// first show a success model with a continue button to go to paypal clientId model 
                                 console.log("response: ", response);
                                 setPageView("receipt");
                                 //return response.json();
                             }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
-                            .catch((err)=>{
-                                window.alert ("Paypal Problem at OSD. Pleaase contact support if you cannot create events")
-                            })
                     })
 
                 }}
@@ -221,15 +294,15 @@ const Onboarding = (props) => {
         </div>
     );
 
-
-
-    const summaryPage =()=>{
-        console.log ("in summaryPage");
+    const mainDisplay = () => {
+        if (!loading) {
+            console.log("event is NOT loading")
+            if (pageView === "summary") {
                 return (
                     <div className={classes.DisplayPanel}
                         style={{textAlign: "center"}}>
                         <div className={classes.SummaryHeader}>
-                            3 easy steps to start selling tickets and receiving your cash nowwwww!!!
+                            3 easy steps to start selling tickets and receiving your cash now!!!
                         </div>
                         <div className={classes.SummaryGrid}
                             style={{ fontWeight: "600"}}>
@@ -264,10 +337,7 @@ const Onboarding = (props) => {
                         />
                     </div>
                 )
-
-    }
-
-    const orgPage =()=>{
+            } else if (pageView === "organization") {
                 return (
                     <div className={classes.DisplayPanel}>
                         <div
@@ -364,72 +434,56 @@ const Onboarding = (props) => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
-                                        let methodType;
+                                        passThrough=true;
+                                        let arg;
                                         if (getStatus() === 0) {
-                                            methodType="POST";
-                                        } else {
-                                            methodType="PATCH";
-                                        }
-                                        console.log("methodType: ", methodType)
-                                        let url=  `${API}/account/${props.userid}`;
-                                        let fetcharg ={
-                                            method: methodType,
-                                            headers: myHeaders,
-                                            body:JSON.stringify ({
-                                                accountName: accountName,
-                                                accountEmail: accountEmail,
-                                                accountPhone: accountPhone,
-                                                accountUrl: accountUrl
-                                            }),
-                                        };
-                                        console.log("fetching with: ", url, fetcharg);
-                                        fetch(url, fetcharg )
-                                        .then(handleErrors)
-                                        .then ((response)=>{
-                                            console.log ("then response: ", response);
-                                            return response.json()})
-                                        .then ((data)=>{
-                                            console.log ("fetch return got back data:", data);
-                                            
-                                            let tempData = JSON.parse(localStorage.getItem("user"));
-                                            console.log("tempData: ", tempData)
-                                            tempData.user.accountId = data.result;
-                                            localStorage.setItem("user", JSON.stringify(tempData));
-
-                                            if (data.status){
-                                                switch (data.result.status){
-                                                    case(4): 
-                                                    case(5):    setPageView("ticket"); break;
-                                                    case(6):    setPageView("payment");break;
-                                                    case(7):    setPageView("completed");break;
-                                                    case(0):
-                                                    default:    setPageView("summary");
-                                                }
-                                            } else {
-                                                    // this is a frieldly error
-                                                    let errmsg = "DEFAULT MESSAGE - Please try again";
-                                                    if (data.message){
-                                                        errmsg = data.message;
-                                                    };
-                                                    window.alert (errmsg);
-//                                                setPageView("error");
+                                            arg ={method: "POST",
+                                                url:  `${API}/account/${props.userid}`,
+                                                headers: myHeaders,
+                                                body:{
+                                                    accountName: accountName,
+                                                    accountEmail: accountEmail,
+                                                    accountPhone: accountPhone,
+                                                    accountUrl: accountUrl
+                                                },
+                                                flag: 'org'
                                             };
-                                        })
-                                        .catch ((err)=>{
-                                            setPreFetchView(pageView);
-                                            console.log (err);
-                                            setPageView("error");
-                                        });
+                                        } else {
+                                            arg ={method: "PATCH",
+                                                url:  `${API}/account/${props.userid}`,
+                                                headers: myHeaders,
+                                                body:{
+                                                    accountName: accountName,
+                                                    accountEmail: accountEmail,
+                                                    accountPhone: accountPhone,
+                                                    accountUrl: accountUrl
+                                                },
+                                                flag: 'org'
+                                            };
+                                        }
+                                        console.log ("press submit in org page w arg:", arg);
+                                        setApiArg(arg);
                                     }}
+                                    /*onClick={() => {
+                                        passThrough=true;
+                                        setBody({
+                                            accountName: accountName,
+                                            accountEmail: accountEmail,
+                                            accountPhone: accountPhone,
+                                            accountUrl: accountUrl
+                                        })
+                                        if (getStatus() === 0) {
+                                            setMethod("POST")
+                                        } else {
+                                            setMethod("PATCH")
+                                        }
+                                    }}*/
                                 />
                             </div>
                         </div>
                     </div>
                 )
-
-    }
-
-    const ticketPage =()=>{
+            } else if (pageView === "ticket") {
                 return (
                     <div className={classes.DisplayPanel}>
                         <div>
@@ -482,65 +536,43 @@ const Onboarding = (props) => {
                                         content="Submit"
                                         disabled={!ticketPlan}
                                         onClick={() => {
+                                            passThrough=true;
+                                            console.log("ticketPlan: ", ticketPlan)
                                             if (ticketPlan === "free") {
-                                                let url=  `${API}/account/${props.userid}`;
-                                                let fetcharg ={
+                                                console.log("selected free route")
+                                                let orgModeArg ={
                                                     method: "PATCH",
+                                                    url:  `${API}/account/${props.userid}`,
                                                     headers: myHeaders,
-                                                    body:JSON.stringify({
+                                                    body:{
                                                         ticketPlan: ticketPlan
-                                                    }),
+                                                    },
+                                                    flag: 'org'
                                                 };
-                                                console.log("fetching with: ", url, fetcharg);
-                                                fetch(url, fetcharg )
-                                                .then(handleErrors)
-                                                .then ((response)=>{
-                                                    console.log ("then response: ", response);
-                                                    return response.json()})
-                                                .then ((data)=>{
-                                                    console.log ("fetch return got back data:", data);
-                                            
-                                                    let tempData = JSON.parse(localStorage.getItem("user"));
-                                                    console.log("tempData: ", tempData)
-                                                    tempData.user.accountId = data.result;
-                                                    localStorage.setItem("user", JSON.stringify(tempData));
-
-                                                    if (data.status){
-                                                        switch (data.result.status){
-                                                            case(4): 
-                                                            case(5):    setPageView("ticket"); break;
-                                                            case(6):    setPageView("payment");break;
-                                                            case(7):    setPageView("completed");break;
-                                                            case(0):
-                                                            default:    setPageView("summary");
-                                                        }
-                                                    } else {
-                                                            // this is a frieldly error
-                                                            let errmsg = "There was a error. please retry";
-                                                            if (data.message){
-                                                                 errmsg = data.message;
-                                                            };
-                                                            window.alert (errmsg);
-                                                    };
-                                                })
-                                                .catch ((err)=>{
-                                                    setPreFetchView(pageView);
-                                                    console.log (err);
-                                                    setPageView("error");
-                                                });
+                                                setApiArg(orgModeArg);
                                             } else {
+                                                console.log("about to go to payment modal")
                                                 setPageView("payment");
                                             }
                                         }}
+                                        /*onClick={() => {
+                                            if (ticketPlan === "free") {
+                                                passThrough=true;
+                                                setBody({
+                                                    ticketPlan: ticketPlan
+                                                })
+                                                setMethod("PATCH")
+                                            } else {
+                                                setPageView("payment");
+                                            }
+                                        }}*/
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
                 )
-
-    }
-    const paymentPage =()=>{
+            } else if (pageView === "payment") {
                 return (
                     <div className={classes.DisplayPanel}>
                         <div>
@@ -584,9 +616,7 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
-
-    }
-    const receiptPage =()=>{
+            } else if (pageView === "receipt") {
                 return (
                     <div className={classes.DisplayPanel}>
                         <div>
@@ -622,9 +652,7 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
-
-    }
-    const paypalPage =()=>{
+            } else if (pageView === "paypal") {
                 return (
                     <div className={classes.DisplayPanel}>
                         <div>
@@ -705,64 +733,37 @@ const Onboarding = (props) => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
-
-                                        let url = `${API}/account/${props.userid}`;
-                                        let fetcharg ={
+                                        passThrough=true;
+                                        let clientModeArg ={
                                             method: "PATCH",
+                                            url:  `${API}/account/${props.userid}`,
                                             headers: myHeaders,
-                                            body:JSON.stringify({
+                                            body:{
                                                 useSandbox: true,
                                                 paymentGatewayType: "PayPalExpress",
                                                 paypalExpress_client_id: paypalExpress_client_id,
                                                 paypalExpress_client_secret: paypalExpress_client_secret
-                                            }),
+                                            },
+                                            flag: 'client'
                                         };
-                                        console.log("fetching with: ", url, fetcharg);
-                                        fetch(url, fetcharg )
-                                        .then(handleErrors)
-                                        .then ((response)=>{
-                                            console.log ("then response: ", response);
-                                            return response.json()})
-                                        .then ((data)=>{
-                                            console.log ("fetch return got back data:", data);
-                                            
-                                            let tempData = JSON.parse(localStorage.getItem("user"));
-                                            console.log("tempData: ", tempData)
-                                            tempData.user.accountId = data.result;
-                                            localStorage.setItem("user", JSON.stringify(tempData));
-                                            
-                                            if (data.status){
-                                                switch (data.result.status){
-                                                    case(4): 
-                                                    case(5):    setPageView("ticket"); break;
-                                                    case(6):    setPageView("payment");break;
-                                                    case(7):    setPageView("completed");break;
-                                                    case(0):
-                                                    default:    setPageView("summary");
-                                                }
-                                            } else {
-                                                    // this is a frieldly error
-                                                    let errmsg = "unable to validate ClientId and secret at this time";
-                                                    if (data.message){
-                                                        errmsg = data.message;
-                                                    };
-                                                    window.alert (errmsg);
-                                            };
-                                        })
-                                        .catch ((err)=>{
-                                            setPreFetchView(pageView);
-                                            console.log (err);
-                                            setPageView("error");
-                                        });
+                                        setApiArg(clientModeArg);
                                     }}
+                                    /*onClick={() => {
+                                        passThrough=true;
+                                        setBody({
+                                            useSandbox: true,
+                                            paymentGatewayType: "PayPalExpress",
+                                            paypalExpress_client_id: paypalExpress_client_id,
+                                            paypalExpress_client_secret: paypalExpress_client_secret
+                                        })
+                                        setMethod("PATCH")
+                                    }}*/
                                 />
                             </div>
                         </div>
                     </div>
                 )
-
-    }
-    const completedPage =()=>{
+            } else if (pageView === "completed") {
                 return (
                     <div className={classes.DisplayPanel}>
                         <div
@@ -808,9 +809,7 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
-
-    }
-    const errorPage =()=>{
+            } else if (pageView === "error") {
                 return (
                     <div className={classes.DisplayPanel}>
                         <div
@@ -843,66 +842,12 @@ const Onboarding = (props) => {
                         </div>
                     </div>
                 )
-
-    }
-
-
-    const mainDisplay2 = () => {
-        if (!loading) {
-            console.log("event is NOT loading. pageView =", pageView);
-
-            switch (pageView){
-                case ("summary"):   return summaryPage();
-                case("organization"):return orgPage();
-                case ("ticket"):    return ticketPage();
-                case ("payment"):   return paymentPage();
-                case ("receipt"):   return receiptPage();
-                case("paypal"):     return paypalPage();
-                case("completed"):  return completedPage();
-                case("error"):      return errorPage();
-                default:            return summaryPage();
             }
         } else {
             console.log("event IS loading");
-            return <Spinner />;                 // to see what is going on experimentally..
-//            return <div>Nothing to</div>
+            return <div>Nothing to</div>
         }
     }
-
-/*
-    const mainDisplay3 = () => {
-        if (!loading) {
-            console.log("event is NOT loading. pageView =", pageView);
-//            if (isLoading) return <Spinner />;
-  //          if (hasError) return errorPage();   // probably should know source page
-            if (pageView ==="summary"){         // initial state
-                    return summaryPage();
-            };
-            if (data.status){
-                let newstatus = data.result.status;
-                switch (newstatus){
-                    case(4): 
-                    case(5):    return ticketPage();
-                    case(6):    return paymentPage();
-                    case(7):    return completedPage();
-                    case (0):
-                    default:    return summaryPage();
-                }
-            } else {
-                let flag = ""
-                if (data.result) {
-                    flag = data.result.flag;
-                };
-                console.log ("sending flag = ", flag);
-                return errorPage();     
-            }
-        } else {
-                console.log("event IS loading");
-                return <div>Nothing to</div>
-        }
-    }
-*/
-
 
     return (
         <div>
@@ -910,9 +855,42 @@ const Onboarding = (props) => {
             VENDOR SIGNUP
             </div>
 
-            {loading ? null : mainDisplay2()}
+            {loading ? null : mainDisplay()}
         </div>
     )
 }
 
 export default Onboarding;
+
+
+
+
+/*
+    const paypalSubscriptionPurchase = data => {
+        //details.purchase_units[0].items = paypalArray;
+        console.log("Inside paypalSubscriptionPurchase")
+        const paymentData = {
+        subscriptionOrderData: data
+        //data
+        };
+
+        //setPaypalStatus(true);
+        //console.log("paypalStatus inside 'paypalSubscriptionPurchase': ", paypalStatus);
+        //console.log("On Success 'details' object: ", details);
+        // sends PayPal order object to the server
+        paypalSubscriptionDetails(paymentData, props.userid, props.token)
+        .then(response => {
+            console.log("order received");
+            console.log("response: ", response);
+            //setOrderStatus(true);
+            //console.log("Order status: ", orderStatus);
+            //onlyShowPurchaseConfirmation();
+            //purchaseConfirmHandler();
+        })
+        .catch(error => {
+            console.log("processExpressPayment() error.message: ", error.message);
+            //onlyShowPurchaseConfirmation();
+            //purchaseConfirmHandler();
+        });
+    };
+*/
