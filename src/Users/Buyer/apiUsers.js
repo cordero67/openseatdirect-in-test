@@ -78,7 +78,7 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
 export const useOurApi2 = (initialApiArg, initialData) => {
   
   const [apiArg, setApiArg] = useState(initialApiArg);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);  // or else starts with spinner
   const [hasError, setHasError] = useState(false);
   const [fetchedData, setFetchedData] = useState(initialData);
 
