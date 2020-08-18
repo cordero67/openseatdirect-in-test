@@ -148,22 +148,6 @@ const Onboarding = (props) => {
     const { isLoading, hasError, setApiArg, data, networkError} = useOurApi2(orgModeArg, initialData);
 
 
-    const gotoNextPageview = (data)=>{
-        if (data.status){
-            let new_status = data.result.status;
-            switch (new_status){
-                case(4): 
-                case(5):setPageView("ticket");  break;
-                case(6):setPageView("paypal");       break;
-                case(7):setPageView("completed");break;
-                case (0):
-                default:  setPageView("summary")
-            }
-        } else {
-            setPageView ("OrgPageError")
-        }
-    }
-
 
     const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
@@ -811,6 +795,34 @@ const Onboarding = (props) => {
 
     }
 
+    const mainDisplay2 = () => {
+        if (!loading) {
+            if (hasError){
+                {errorPage()}               
+            } else {
+                if (data.status){
+                    // special case receipt from paypal
+                    if (data.result.flag == 'paypal'){
+                        {receiptPage()}         
+                    } else {
+                        switch (data.result.status){
+                            case(4): 
+                            case(5): {ticketPage()};    break;
+                            case(6): {paypalPage()};    break;
+                            case(7): {completedPage()}  ;break;
+                            case(0):
+                            default:{summaryPage()}
+                        }
+                    }
+                } else {
+                    {errorPage()}               
+                }
+            }
+        }
+    }                
+
+
+
     const mainDisplay = () => {
         if (!loading) {
             console.log("event is NOT loading")
@@ -837,18 +849,20 @@ const Onboarding = (props) => {
         }
     }
 
+
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
             VENDOR SIGNUP
             </div>
 
-            {loading ? null : mainDisplay()}
+            {loading ? null : mainDisplay2()}
         </div>
     )
 }
 
 export default Onboarding;
+
 
 
 
