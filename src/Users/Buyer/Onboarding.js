@@ -13,6 +13,7 @@ import RadioForm from "./RadioForm";
 import classes from "./BuyerDashboard.module.css";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";  // experimental..
+import { threeDSecure } from "braintree-web";
 
 let passThrough = true;
 
@@ -33,6 +34,8 @@ const Onboarding = (props) => {
     const [pageView, setPageView] = useState("summary")
     const [preFetchView, setPreFetchView] = useState("")
     const [loading, setLoading ] = useState("false")
+
+    const [isDisabled, setIsDisabled] = useState(false)
 
     const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypal_plan_id, paypalExpress_client_id, paypalExpress_client_secret } = values;
 
@@ -362,8 +365,11 @@ const Onboarding = (props) => {
                                         color: "green",
                                         padding: "0px"
                                     }}
+                                    disabled={isDisabled}
                                     content="Submit"
                                     onClick={() => {
+                                        console.log("hit the button")
+                                        setIsDisabled(true);
                                         let methodType;
                                         if (getStatus() === 0) {
                                             methodType="POST";
@@ -419,7 +425,8 @@ const Onboarding = (props) => {
                                             setPreFetchView(pageView);
                                             console.log (err);
                                             setPageView("error");
-                                        });
+                                        })
+                                        .finally (() => setIsDisabled(false));
                                     }}
                                 />
                             </div>
@@ -730,7 +737,7 @@ const Onboarding = (props) => {
                                             console.log("tempData: ", tempData)
                                             tempData.user.accountId = data.result;
                                             localStorage.setItem("user", JSON.stringify(tempData));
-                                            
+
                                             if (data.status){
                                                 switch (data.result.status){
                                                     case(4): 
