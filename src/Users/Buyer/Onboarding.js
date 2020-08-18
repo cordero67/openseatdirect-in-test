@@ -981,7 +981,7 @@ const mainDisplay = () => {
                                                     case(5):    setPageView("ticket"); break;
                                                     case(6):    setPageView("payment");break;
                                                     case(7):    setPageView("completed");break;
-                                                    case (0):
+                                                    case(0):
                                                     default:    setPageView("summary");
                                                 }
                                             } else {
