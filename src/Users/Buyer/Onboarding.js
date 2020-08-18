@@ -122,7 +122,32 @@ const Onboarding = (props) => {
 
     //const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
+    //
+    if (data.status && 'result' in data){
+        if (passThrough) {
+            let new_status = data.result.status;
+            switch (new_status){
+                case(4): 
+                case(5):setPageView("ticket");  break;
+                case(6):setPageView("paypal");       break;
+                case(7):setPageView("completed");break;
+                case (0):
+                default:  setPageView("summary")
+            };
+        };
+        passThrough=false;
+    } else {
+        if (passThrough) {
+            let msg = "Error Try again";
+            if ('result' in data && 'message' in data.result) {
+                msg = data.result.message;
+            };
+            setPageView ("error");//    this is a user error with message
+        }
+        passThrough=false;
+    }
 
+/*
     // need to work on this code to handle fetch responses
     if (!hasError && !data.error && data.message !== "hi first time") {
         console.log("success is true")
@@ -165,6 +190,7 @@ const Onboarding = (props) => {
         passThrough=false;
 
     }
+    */
 
     const handleChange = (event) => {
         setValues({
@@ -408,20 +434,34 @@ const Onboarding = (props) => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
-                                        console.log("myHeaders: ", myHeaders);
-                                        let arg ={method: "POST",
-                                            url:  `${API}/account/${props.userid}`,
-                                            headers: myHeaders,
-                                            body:{
-                                                accountName: accountName,
-                                                accountEmail: accountEmail,
-                                                accountPhone: accountPhone,
-                                                accountUrl: accountUrl
-                                            },
-                                            flag: 'org'
-                                        };
+                                        passThrough=true;
+                                        let arg;
+                                        if (getStatus() === 0) {
+                                            arg ={method: "POST",
+                                                url:  `${API}/account/${props.userid}`,
+                                                headers: myHeaders,
+                                                body:{
+                                                    accountName: accountName,
+                                                    accountEmail: accountEmail,
+                                                    accountPhone: accountPhone,
+                                                    accountUrl: accountUrl
+                                                },
+                                                flag: 'org'
+                                            };
+                                        } else {
+                                            arg ={method: "PATCH",
+                                                url:  `${API}/account/${props.userid}`,
+                                                headers: myHeaders,
+                                                body:{
+                                                    accountName: accountName,
+                                                    accountEmail: accountEmail,
+                                                    accountPhone: accountPhone,
+                                                    accountUrl: accountUrl
+                                                },
+                                                flag: 'org'
+                                            };
+                                        }
                                         console.log ("press submit in org page w arg:", arg);
-                                        console.log("myHeaders: ", myHeaders);
                                         setApiArg(arg);
                                     }}
                                     /*onClick={() => {
@@ -496,8 +536,10 @@ const Onboarding = (props) => {
                                         content="Submit"
                                         disabled={!ticketPlan}
                                         onClick={() => {
+                                            passThrough=true;
+                                            console.log("ticketPlan: ", ticketPlan)
                                             if (ticketPlan === "free") {
-
+                                                console.log("selected free route")
                                                 let orgModeArg ={
                                                     method: "PATCH",
                                                     url:  `${API}/account/${props.userid}`,
@@ -509,6 +551,7 @@ const Onboarding = (props) => {
                                                 };
                                                 setApiArg(orgModeArg);
                                             } else {
+                                                console.log("about to go to payment modal")
                                                 setPageView("payment");
                                             }
                                         }}
@@ -690,7 +733,7 @@ const Onboarding = (props) => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
-
+                                        passThrough=true;
                                         let clientModeArg ={
                                             method: "PATCH",
                                             url:  `${API}/account/${props.userid}`,

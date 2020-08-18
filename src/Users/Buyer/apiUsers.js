@@ -74,7 +74,6 @@ export const useOurApi = (initialMethod,initialUrl,initialHeaders,initialBody, i
   return { isLoading, hasError, setUrl, setBody, setMethod, data: fetchedData, networkError };
 };
 
-
 export const useOurApi2 = (initialApiArg, initialData) => {
   
   const [apiArg, setApiArg] = useState(initialApiArg);
@@ -125,9 +124,9 @@ export const useOurApi2 = (initialApiArg, initialData) => {
       unmounted = true;
     };
   }, [apiArg]);
-  console.log("isLoading: ", isLoading)
-  console.log("hasError: ", hasError)
-  console.log("fetchedData: ", fetchedData)
+  //console.log("isLoading: ", isLoading)
+  //console.log("hasError: ", hasError)
+  //console.log("fetchedData: ", fetchedData)
   return { isLoading, hasError,  setApiArg, data: fetchedData};
 };
 
