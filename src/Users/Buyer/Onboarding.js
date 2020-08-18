@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { useOurApi2 } from "./apiUsers";
 import { API } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -104,23 +103,17 @@ const Onboarding = (props) => {
     const authstring = `Bearer ${props.token}`;
     console.log("authstring: ", authstring)
     myHeaders.append("Authorization", authstring);
-    const url = `${API}/account/${props.userid}`;
+//    const url = `${API}/account/${props.userid}`;
 
     //const method = "POST";
     //const body  = null;
     //let initialData ={status: true, message:"hi first time"};
 
-    let initialData ={status: false, message:"hi first time", flag:"org"};
+ //   let initialData ={status: false, message:"hi first time", flag:"org"};
 
-    let orgModeArg ={
-        method: "POST",
-        url:  `${API}/account/${props.userid}`,
-        headers: myHeaders,
-        flag: 'org'
-    };
 
     //const { hasError, setBody, setMethod, data } = useOurApi(method, url, myHeaders, body, initialData);
-    const { isLoading, hasError, setApiArg, data} = useOurApi2(orgModeArg, initialData);
+//    const { isLoading, hasError, setApiArg, data} = useOurApi2(orgModeArg, initialData);
 
     //const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
@@ -219,6 +212,7 @@ const Onboarding = (props) => {
       }
 
     const handleErrors = response => {
+        console.log ("inside handleErrors ", response);
         if (!response.ok) {
             throw Error(response.status);
         }
@@ -257,11 +251,18 @@ const Onboarding = (props) => {
                                     details: details
                                 })
                             })
-                            .then(response => {// first show a success model with a continue button to go to paypal clientId model 
+                            .then (handleErrors)
+                            .then ((response)=>{
+                                return response.json();
+                            })
+                            .then((response) => {// first show a success model with a continue button to go to paypal clientId model 
                                 console.log("response: ", response);
                                 setPageView("receipt");
                                 //return response.json();
                             }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
+                            .catch((err)=>{
+                                window.alert ("Paypal Problem at OSD. Pleaase contact support if you cannot create events")
+                            })
                     })
 
                 }}
@@ -280,543 +281,7 @@ const Onboarding = (props) => {
         </div>
     );
 
-const mainDisplay = () => {
-        if (!loading) {
-            console.log("event is NOT loading. pageView =", pageView)
-            if (pageView === "summary") {
-                return (
-                    <div className={classes.DisplayPanel}
-                        style={{textAlign: "center"}}>
-                        <div className={classes.SummaryHeader}>
-                            3 easy steps to start selling tickets and receiving your cash now!!!
-                        </div>
-                        <div className={classes.SummaryGrid}
-                            style={{ fontWeight: "600"}}>
-                            <div>STEP 1</div>
-                            <div>STEP 2</div>
-                            <div>STEP 3</div>
-                        </div>
-                        <div className={classes.SummaryGrid}>
-                            <div>Provide Minimal</div>
-                            <div>Select a</div>
-                            <div>Create Your</div>
-                        </div>
-                        <div className={classes.SummaryGrid}>
-                            <div>Organization Info</div>
-                            <div>Ticket Plan</div>
-                            <div>First Event</div>
-                        </div>
-                        <div className={classes.SummaryHeader}>
-                            If you have 10 minutes to spare, you have time to sign up now.
-                        </div>
-                        <Button className={classes.SummaryButton}
-                            style={{
-                                backgroundColor: "white",
-                                border: "1px solid green",
-                                color: "green",
-                                padding: "0px"
-                            }}
-                            content="Start"
-                            onClick={() => {
-                                setPageView("organization");
-                            }}
-                        />
-                    </div>
-                )
-            } else if (pageView === "organization") {
-                return (
-                    <div className={classes.DisplayPanel}>
-                        <div
-                            style={{
-                                paddingTop: "60px",
-                                paddingLeft: "80px",
-                                fontSize: "22px",
-                                fontWeight: "600"
-                            }}
-                            >STEP 1: Basic Information about your Organization
-                        </div>
-                        <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Explanation text.</div>
-                        <div className={classes.VendorCanvas}>
-                        {subTitleDisplay()}
-                        <br></br>
-                            <div className="form-group">
-                                <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
-                                <input
-                                    onFocus={() => {
-                                        setValues({...values, inputError: ""});
-                                    }}
-                                    type="text"
-                                    name="accountName"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={accountName}
-                                />
-                            </div>
-                            <br></br>
-                            <div className="form-group">
-                                <label>Company Email</label>
-                                <input
-                                    onFocus={() => {
-                                        setValues({...values, inputError: ""});
-                                    }}
-                                    type="text"
-                                    name="accountEmail"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={accountEmail}
-                                />
-                            </div>
-                            <br></br>
-                            <div className="form-group">
-                                <label>Company Phone or Cell Number</label>
-                                <input
-                                    onFocus={() => {
-                                        setValues({...values, inputError: ""});
-                                    }}
-                                    type="text"
-                                    name="accountPhone"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={accountPhone}
-                                />
-                            </div>
-                            <br></br>
-                            <div className="form-group">
-                                <label>Company Website</label>
-                                <input
-                                    onFocus={() => {
-                                        setValues({...values, inputError: ""});
-                                    }}
-                                    type="text"
-                                    name="accountUrl"
-                                    className="form-control"
-                                    onChange={handleChange}
-                                    value={accountUrl}
-                                />
-                            </div>
-                        </div>
-                        <div className={classes.OrganizationButtonGrid}>
-                            <div style={{paddingLeft: "65px"}}>
-                                <Button className={classes.OrganizationButton}
-                                    style={{
-                                        backgroundColor: "white",
-                                        border: "1px solid blue",
-                                        color: "blue",
-                                        padding: "0px"
-                                    }}
-                                    content="Back"
-                                    onClick={() => {
-                                        setPageView("summary");
-                                    }}
-                                />
-                            </div>
-                            <div style={{paddingLeft: "65px"}}>
-                                <Button className={classes.OrganizationButton}
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid green",
-                                        color: "green",
-                                        padding: "0px"
-                                    }}
-                                    content="Submit"
-                                    onClick={() => {
-                                        console.log("myHeaders: ", myHeaders);
-                                        let arg ={method: "POST",
-                                            url:  `${API}/account/${props.userid}`,
-                                            headers: myHeaders,
-                                            body:{
-                                                accountName: accountName,
-                                                accountEmail: accountEmail,
-                                                accountPhone: accountPhone,
-                                                accountUrl: accountUrl
-                                            },
-                                            flag: 'org'
-                                        };
-                                        console.log ("press submit in org page w arg:", arg);
-                                        console.log("myHeaders: ", myHeaders);
-                                        setApiArg(arg);
-                                    }}
-                                    /*onClick={() => {
-                                        passThrough=true;
-                                        setBody({
-                                            accountName: accountName,
-                                            accountEmail: accountEmail,
-                                            accountPhone: accountPhone,
-                                            accountUrl: accountUrl
-                                        })
-                                        if (getStatus() === 0) {
-                                            setMethod("POST")
-                                        } else {
-                                            setMethod("PATCH")
-                                        }
-                                    }}*/
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )
-            } else if (pageView === "ticket") {
-                return (
-                    <div className={classes.DisplayPanel}>
-                        <div>
-                            <div
-                                style={{
-                                    paddingLeft: "80px",
-                                    paddingTop: "40px",
-                                    fontSize: "22px",
-                                    fontWeight: "600"
-                                }}
-                                >STEP 2: Select a Ticket Plan
-                            </div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Explanation text.</div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>What you can do with free tickets only plan. Up to X number of free tickets per month/year.</div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>What you can do with free and paid tickets plan.</div>
-                            <div  className={classes.PaymentCanvas}>
-                                <RadioForm
-                                    details={ticketPlans}
-                                    group="eventTypeGroup"
-                                    current={ticketPlan}
-                                    change={(event, value) =>
-                                        radioChange(event, value, "ticketPlan")
-                                    }
-                                />
-                                <br></br>
-                            </div>
-                            <div className={classes.OrganizationButtonGrid}>
-                                <div style={{paddingLeft: "65px"}}>
-                                    <Button className={classes.OrganizationButton}
-                                        style={{
-                                            backgroundColor: "white",
-                                            border: "1px solid blue",
-                                            color: "blue",
-                                            padding: "0px"
-                                        }}
-                                        content="Back"
-                                        onClick={() => {
-                                            setPageView("organization");
-                                        }}
-                                    />
-                                </div>
-                                <div style={{paddingLeft: "65px"}}>
-                                    <Button className={classes.OrganizationButton}
-                                        style={{
-                                            backgroundColor: 'white',
-                                            border: "1px solid green",
-                                            color: "green",
-                                            padding: "0px"
-                                        }}
-                                        content="Submit"
-                                        disabled={!ticketPlan}
-                                        onClick={() => {
-                                            if (ticketPlan === "free") {
 
-                                                let orgModeArg ={
-                                                    method: "PATCH",
-                                                    url:  `${API}/account/${props.userid}`,
-                                                    headers: myHeaders,
-                                                    body:{
-                                                        ticketPlan: ticketPlan
-                                                    },
-                                                    flag: 'org'
-                                                };
-                                                setApiArg(orgModeArg);
-                                            } else {
-                                                setPageView("payment");
-                                            }
-                                        }}
-                                        /*onClick={() => {
-                                            if (ticketPlan === "free") {
-                                                passThrough=true;
-                                                setBody({
-                                                    ticketPlan: ticketPlan
-                                                })
-                                                setMethod("PATCH")
-                                            } else {
-                                                setPageView("payment");
-                                            }
-                                        }}*/
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )
-            } else if (pageView === "payment") {
-                return (
-                    <div className={classes.DisplayPanel}>
-                        <div>
-                            <div
-                                style={{
-                                    paddingLeft: "80px",
-                                    paddingTop: "40px",
-                                    fontSize: "22px",
-                                    fontWeight: "600"
-                                }}
-                                >STEP 2: Choose a Payment Plan
-                            </div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Explanation text.</div>
-                            <div  className={classes.PaymentCanvas}>
-                                <RadioForm
-                                    details={paymentPlans}
-                                    group="eventTypeGroup"
-                                    current={ticketPlan}
-                                    change={(event, value) =>
-                                        radioChange(event, value, "ticketPlan")
-                                    }
-                                />
-                                <br></br>
-                                {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
-                            </div>
-                            <div style={{textAlign: "center", paddingTop: "40px"}}>
-                                <Button className={classes.OrganizationButton}
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid blue",
-                                        color: "blue",
-                                        padding: "0px",
-                                    }}
-                                    content="Back"
-                                    onClick={() => {
-                                        setPageView("ticket");
-                                        console.log("pageView: ", pageView)
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )
-            } else if (pageView === "receipt") {
-                return (
-                    <div className={classes.DisplayPanel}>
-                        <div>
-                            <div
-                                style={{
-                                    paddingLeft: "80px",
-                                    paddingTop: "40px",
-                                    fontSize: "22px",
-                                    fontWeight: "600"
-                                }}
-                                >STEP 2: Paypal Receipt
-                            </div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Your payment was successfull.</div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Order details.</div>
-                            <div style={{textAlign: "center", paddingTop: "40px"}}>
-                                <Button className={classes.OrganizationButton}
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid blue",
-                                        color: "blue",
-                                        padding: "0px",
-                                    }}
-                                    content="Continue"
-                                    onClick={() => {
-                                        // UNDELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
-                                        //updatePageView();
-                                        // DELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
-                                        setPageView("paypal")
-                                        console.log("pageView: ", pageView)
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )
-            } else if (pageView === "paypal") {
-                return (
-                    <div className={classes.DisplayPanel}>
-                        <div>
-                            <div
-                                style={{
-                                    paddingLeft: "80px",
-                                    paddingTop: "40px",
-                                    fontSize: "22px",
-                                    fontWeight: "600"
-                                }}
-                                >STEP 2: Link Your Paypal Account 
-                            </div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Explanation text. This is how you can get paid immediately upon each ticket sale, etc...</div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Link to video.</div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Link to word document.</div>
-                            <div  className={classes.VendorCanvas}>
-                                <div className="form-group">
-                                    <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
-                                    <Popup
-                                        position="right center"
-                                        content="Your ID will only be used..."
-                                        header="Paypal Client ID"
-                                        trigger={
-                                            <FontAwesomeIcon
-                                                color="blue"
-                                                cursor="pointer"
-                                                icon={faInfoCircle}
-                                            />
-                                        }
-                                    />
-                                    </label>
-                                    <input
-                                        onFocus={() => {
-                                            setValues({...values, inputError: ""});
-                                        }}
-                                        type="text"
-                                        name="paypalExpress_client_id"
-                                        className="form-control"
-                                        onChange={handleChange}
-                                        value={paypalExpress_client_id}
-                                    />
-                                </div>
-                                <br></br>
-                                <div className="form-group">
-                                    <label>Paypal Secret{" "}<span style={{color: "red"}}>*{" "}</span>
-                                    <Popup
-                                        position="right center"
-                                        content="Your Paypal Secret will only be used..."
-                                        header="Paypal Secret"
-                                        trigger={
-                                            <FontAwesomeIcon
-                                                color="blue"
-                                                cursor="pointer"
-                                                icon={faInfoCircle}
-                                            />
-                                        }
-                                    />
-                                    </label>
-                                    <input
-                                        onFocus={() => {
-                                            setValues({...values, inputError: ""});
-                                        }}
-                                        type="text"
-                                        name="paypalExpress_client_secret"
-                                        className="form-control"
-                                        onChange={handleChange}
-                                        value={paypalExpress_client_secret}
-                                    />
-                                </div>
-                            </div>
-                            <div style={{textAlign: "center", paddingTop: "40px"}}>
-                                <Button className={classes.OrganizationButton}
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid green",
-                                        color: "green",
-                                        padding: "0px"
-                                    }}
-                                    content="Submit"
-                                    onClick={() => {
-
-                                        let clientModeArg ={
-                                            method: "PATCH",
-                                            url:  `${API}/account/${props.userid}`,
-                                            headers: myHeaders,
-                                            body:{
-                                                useSandbox: true,
-                                                paymentGatewayType: "PayPalExpress",
-                                                paypalExpress_client_id: paypalExpress_client_id,
-                                                paypalExpress_client_secret: paypalExpress_client_secret
-                                            },
-                                            flag: 'client'
-                                        };
-                                        setApiArg(clientModeArg);
-                                    }}
-                                    /*onClick={() => {
-                                        passThrough=true;
-                                        setBody({
-                                            useSandbox: true,
-                                            paymentGatewayType: "PayPalExpress",
-                                            paypalExpress_client_id: paypalExpress_client_id,
-                                            paypalExpress_client_secret: paypalExpress_client_secret
-                                        })
-                                        setMethod("PATCH")
-                                    }}*/
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )
-            } else if (pageView === "completed") {
-                return (
-                    <div className={classes.DisplayPanel}>
-                        <div
-                            style={{
-                                paddingLeft: "80px",
-                                paddingTop: "40px",
-                                fontSize: "22px",
-                                fontWeight: "600"
-                            }}
-                            >STEP 3: Create an Event
-                        </div>
-                        <div className={classes.SummaryHeader}>
-                            Congratulations, you are now ready to create your first event!!!
-                        </div>
-                        <div style={{textAlign: "center", color: "red"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
-                        <div className={classes.CompleteGrid}>
-                            <div>Cash Now!!!</div>
-                            <div>Own Your Data</div>
-                            <div>Single Dashboard</div>
-                        </div>
-                        <div className={classes.CompleteLowerGrid}>
-                            <div style={{ color: "red" }}>Cash Now summary.</div>
-                            <div style={{ color: "red" }}>Own Your Data summary.</div>
-                            <div style={{ color: "red" }}>Single Dashboard summary.</div>
-                        </div>
-
-                        <div className={classes.SummaryHeader}>
-                        So are you ready to create your first event?
-                        </div>
-                        <div style={{textAlign: "center"}}>
-                            <Button className={classes.SummaryButton}
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    padding: "0px",
-                                }}
-                                content="Continue"
-                                onClick={() => {
-                                    window.location.href = "/vendordashboard";
-                                }}
-                            />
-                        </div>
-                    </div>
-                )
-            } else if (pageView === "error") {
-                return (
-                    <div className={classes.DisplayPanel}>
-                        <div
-                            style={{
-                                paddingLeft: "80px",
-                                paddingTop: "40px",
-                                fontSize: "22px",
-                                fontWeight: "600"
-                            }}
-                            >SYSTEM ERROR
-                        </div>
-                        <div className={classes.SummaryHeader}>
-                            System error please go back and resubmit.
-                        </div>
-                        <div style={{textAlign: "center"}}>
-                            <Button className={classes.SummaryButton}
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    padding: "0px",
-                                }}
-                                content="Go Back"
-                                onClick={() => {
-                                    console.log("preFetchView: ", preFetchView)
-                                    setPageView(preFetchView);
-                                    setPreFetchView("");
-                                }}
-                            />
-                        </div>
-                    </div>
-                )
-            }
-        } else {
-            console.log("event IS loading");
-            return <div>Nothing to</div>
-        }
-    }
 
     const summaryPage =()=>{
         console.log ("in summaryPage")
@@ -959,22 +424,25 @@ const mainDisplay = () => {
                                     }}
                                     content="Submit"
                                     onClick={() => {
-                                        console.log("myHeaders: ", myHeaders);
                                         let url=  `${API}/account/${props.userid}`;
                                         let fetcharg ={
                                             method: "POST",
                                             headers: myHeaders,
-                                            body:{
+                                            body:JSON.stringify ({
                                                 accountName: accountName,
                                                 accountEmail: accountEmail,
                                                 accountPhone: accountPhone,
                                                 accountUrl: accountUrl
-                                            },
+                                            }),
                                         };
+                                        console.log("fetching with: ", url, fetcharg);
                                         fetch(url, fetcharg )
                                         .then(handleErrors)
-                                        .then (response=>{response.json()})
-                                        .then (data=>{
+                                        .then ((response)=>{
+                                            console.log ("then response: ", response);
+                                            return response.json()})
+                                        .then ((data)=>{
+                                            console.log ("fetch return got back data:", data);
                                             if (data.status){
                                                 switch (data.result.status){
                                                     case(4): 
@@ -986,8 +454,12 @@ const mainDisplay = () => {
                                                 }
                                             } else {
                                                     // this is a frieldly error
-                                                let errmsg = data.message;
-                                                setPageView("error");
+                                                    let errmsg = "DEFAULT MESSAGE - Please try again";
+                                                    if (data.message){
+                                                        errmsg = data.message;
+                                                    };
+                                                    window.alert (errmsg);
+//                                                setPageView("error");
                                             };
                                         })
                                         .catch ((err)=>{
@@ -995,20 +467,6 @@ const mainDisplay = () => {
                                              setPageView("error");
                                         });
                                     }}
-                                    /*onClick={() => {
-                                        passThrough=true;
-                                        setBody({
-                                            accountName: accountName,
-                                            accountEmail: accountEmail,
-                                            accountPhone: accountPhone,
-                                            accountUrl: accountUrl
-                                        })
-                                        if (getStatus() === 0) {
-                                            setMethod("POST")
-                                        } else {
-                                            setMethod("PATCH")
-                                        }
-                                    }}*/
                                 />
                             </div>
                         </div>
@@ -1071,32 +529,48 @@ const mainDisplay = () => {
                                         disabled={!ticketPlan}
                                         onClick={() => {
                                             if (ticketPlan === "free") {
-
-                                                let orgModeArg ={
+                                                let url=  `${API}/account/${props.userid}`;
+                                                let fetcharg ={
                                                     method: "PATCH",
-                                                    url:  `${API}/account/${props.userid}`,
                                                     headers: myHeaders,
-                                                    body:{
+                                                    body:JSON.stringify({
                                                         ticketPlan: ticketPlan
-                                                    },
-                                                    flag: 'org'
+                                                    }),
                                                 };
-                                                setApiArg(orgModeArg);
+                                                console.log("fetching with: ", url, fetcharg);
+                                                fetch(url, fetcharg )
+                                                .then(handleErrors)
+                                                .then ((response)=>{
+                                                    console.log ("then response: ", response);
+                                                    return response.json()})
+                                                .then ((data)=>{
+                                                    console.log ("fetch return got back data:", data);
+                                                    if (data.status){
+                                                        switch (data.result.status){
+                                                            case(4): 
+                                                            case(5):    setPageView("ticket"); break;
+                                                            case(6):    setPageView("payment");break;
+                                                            case(7):    setPageView("completed");break;
+                                                            case(0):
+                                                            default:    setPageView("summary");
+                                                        }
+                                                    } else {
+                                                            // this is a frieldly error
+                                                            let errmsg = "There was a error. please retry";
+                                                            if (data.message){
+                                                                 errmsg = data.message;
+                                                            };
+                                                            window.alert (errmsg);
+                                                    };
+                                                })
+                                                .catch ((err)=>{
+                                                    console.log (err);
+                                                    setPageView("error");
+                                                });
                                             } else {
                                                 setPageView("payment");
                                             }
                                         }}
-                                        /*onClick={() => {
-                                            if (ticketPlan === "free") {
-                                                passThrough=true;
-                                                setBody({
-                                                    ticketPlan: ticketPlan
-                                                })
-                                                setMethod("PATCH")
-                                            } else {
-                                                setPageView("payment");
-                                            }
-                                        }}*/
                                     />
                                 </div>
                             </div>
@@ -1271,30 +745,48 @@ const mainDisplay = () => {
                                     content="Submit"
                                     onClick={() => {
 
-                                        let clientModeArg ={
+                                        let url = `${API}/account/${props.userid}`;
+                                        let fetcharg ={
                                             method: "PATCH",
-                                            url:  `${API}/account/${props.userid}`,
                                             headers: myHeaders,
-                                            body:{
+                                            body:JSON.stringify({
                                                 useSandbox: true,
                                                 paymentGatewayType: "PayPalExpress",
                                                 paypalExpress_client_id: paypalExpress_client_id,
                                                 paypalExpress_client_secret: paypalExpress_client_secret
-                                            },
-                                            flag: 'client'
+                                            }),
                                         };
-                                        setApiArg(clientModeArg);
-                                    }}
-                                    /*onClick={() => {
-                                        passThrough=true;
-                                        setBody({
-                                            useSandbox: true,
-                                            paymentGatewayType: "PayPalExpress",
-                                            paypalExpress_client_id: paypalExpress_client_id,
-                                            paypalExpress_client_secret: paypalExpress_client_secret
+                                        console.log("fetching with: ", url, fetcharg);
+                                        fetch(url, fetcharg )
+                                        .then(handleErrors)
+                                        .then ((response)=>{
+                                            console.log ("then response: ", response);
+                                            return response.json()})
+                                        .then ((data)=>{
+                                            console.log ("fetch return got back data:", data);
+                                            if (data.status){
+                                                switch (data.result.status){
+                                                    case(4): 
+                                                    case(5):    setPageView("ticket"); break;
+                                                    case(6):    setPageView("payment");break;
+                                                    case(7):    setPageView("completed");break;
+                                                    case(0):
+                                                    default:    setPageView("summary");
+                                                }
+                                            } else {
+                                                    // this is a frieldly error
+                                                    let errmsg = "unable to validate ClientId and secret at this time";
+                                                    if (data.message){
+                                                        errmsg = data.message;
+                                                    };
+                                                    window.alert (errmsg);
+                                            };
                                         })
-                                        setMethod("PATCH")
-                                    }}*/
+                                        .catch ((err)=>{
+                                            console.log (err);
+                                            setPageView("error");
+                                        });
+                                    }}
                                 />
                             </div>
                         </div>
@@ -1390,7 +882,6 @@ const mainDisplay = () => {
     const mainDisplay2 = () => {
         if (!loading) {
             console.log("event is NOT loading. pageView =", pageView);
-            console.log ("hasError, isLoading, data:", hasError, isLoading, data);
 
             switch (pageView){
                 case ("summary"):   return summaryPage();
@@ -1405,18 +896,18 @@ const mainDisplay = () => {
             }
         } else {
             console.log("event IS loading");
-            return <div>Nothing to</div>
+            return <Spinner />;                 // to see what is going on experimentally..
+//            return <div>Nothing to</div>
         }
     }
 
+/*
     const mainDisplay3 = () => {
         if (!loading) {
             console.log("event is NOT loading. pageView =", pageView);
-            console.log ("hasError, isLoading, data:", hasError, isLoading, data);
 
-            if (isLoading) return <Spinner />;
-
-            if (hasError) return errorPage();   // probably should know source page
+//            if (isLoading) return <Spinner />;
+  //          if (hasError) return errorPage();   // probably should know source page
 
             if (pageView ==="summary"){         // initial state
                     return summaryPage();
@@ -1445,7 +936,7 @@ const mainDisplay = () => {
                 return <div>Nothing to</div>
         }
     }
-
+*/
 
 
     return (
@@ -1454,7 +945,7 @@ const mainDisplay = () => {
             VENDOR SIGNUP
             </div>
 
-            {loading ? null : mainDisplay3()}
+            {loading ? null : mainDisplay2()}
         </div>
     )
 }
