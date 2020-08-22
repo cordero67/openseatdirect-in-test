@@ -1,15 +1,199 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
+import { API } from "../../config";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronUp,
+  faChevronDown,
+  faCog
+} from "@fortawesome/free-solid-svg-icons";
+
 import classes from "./VendorDashboard.module.css";
+import { compareValues, getDates } from "../VendorFunctions";
+
+
+let vendorInfo = {};
 
 const Events = (props) => {
+
+    const [eventDescriptions, setEventDescriptions] = useState();//
+    const [isLoading, setIsLoading] = useState(true);//
+    const [isSuccessfull, setIsSuccessfull] = useState(true);//
+
+    const handleErrors = response => {
+        console.log("Inside 'apiCore' 'handleErrors()'", response);
+        if (!response.ok) {
+            throw Error(response.status);
+        }
+        return response;
+      };
+
+
+    useEffect(() => {
+        if (
+          typeof window !== "undefined" &&
+          localStorage.getItem(`user`) !== null
+        ) {
+          let tempUser = JSON.parse(localStorage.getItem("user"));
+          vendorInfo.token = tempUser.token;
+          vendorInfo.id = tempUser.user._id;
+          //vendorInfo.name = tempUser.user.name
+          //console.log("vendorInfo.name: ", tempUser.user.name)
+        } else {
+          //window.location.href = "/signin";
+        }
+    
+        if (
+            typeof window !== "undefined" &&
+            localStorage.getItem(`events`) !== null
+          ) {
+            let tempEvents = JSON.parse(localStorage.getItem("events"));
+            setEventDescriptions(tempEvents)
+            console.log("events existed")
+          } else {
+            console.log("events do not exist")
+          }
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
+    
+        let requestOptions = {
+          method: "GET",
+          headers: myHeaders,
+          redirect: "follow",
+        };
+
+        let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
+
+        fetch(fetchstr, requestOptions)
+          .then(handleErrors)
+          .then((response) => response.text())
+          .then((result) => {
+            localStorage.setItem("events", result);
+            let js = JSON.parse(result);
+            console.log("eventDescriptions unordered: ", js);
+            js.sort(compareValues("startDateTime", "asc"));
+            console.log("eventDescriptions ordered: ", js);
+            setEventDescriptions(js);
+            //initializeDisplays(js);
+            setIsSuccessfull(true)
+            setIsLoading(false);
+            return js;
+          })
+          .catch((error) => {
+            console.log("error", error);
+            setIsSuccessfull(false)
+            setIsLoading(false);
+          });
+
+        }, []);
+
+    const mainDisplay = () => {
+        if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
+            return (
+                <div>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    {eventDescriptions.map((item, index) => {
+                        let shortMonth, dayDate, longDateTime;
+                        [shortMonth, dayDate, longDateTime] = getDates(item);
+
+                        return (
+                            <div key={index} 
+                                style={{
+                                    textAlign: "center",
+                                    display: "grid",
+                                    columnGap: "10px",
+                                    gridTemplateColumns: "60px 20px 640px 100px 80px",
+                                    paddingLeft: "20px",
+                                    paddingRight: "30px"
+                                    }}>
+                                <div style={{ textAlign: "center"}}>
+                                    <span
+                                        style={{
+                                        fontSize: "12px",
+                                        fontWeight: "400",
+                                        color: "red",
+                                        }}
+                                    >
+                                        {shortMonth}
+                                    </span>
+                                    <br></br>
+                                    <span style={{ fontSize: "18px", color: "black", fontWeight: "600" }}>
+                                        {dayDate}
+                                    </span>
+                                </div>
+                                <div></div>
+                                <div>
+                                    <div
+                                        style={{
+                                            fontSize: "18px", paddingTop: "3px",
+                                            textAlign: "left", fontWeight: "500" 
+                                        }}
+                                    >
+                                        {item.eventTitle}
+                                    </div>
+                                    <div
+                                        style={{
+                                            fontSize: "12px",
+                                            textAlign: "left", fontWeight: "400" 
+                                        }}
+                                    >
+                                    {longDateTime}
+                                    </div>
+                                </div>
+                                <div style={{paddingTop: "10px"}}>{item.isDraft ? "draft" : "live"}</div>
+                                <div
+                                style={{
+                                    fontSize: "12px",
+                                    textAlign: "center",
+                                    position: "relative",
+                                    paddingTop: "10px"
+                                }}
+                                >
+                                    <FontAwesomeIcon
+                                        style={{ zIndex: "100" }}
+                                        color="blue"
+                                        size="lg"
+                                        cursor="pointer"
+                                        //onClick={() => editEvent(item)}
+                                        icon={faCog}
+                                    />
+                                </div>
+                                <br></br>
+                            </div>
+                        );
+                    })}
+                </div>
+            )
+        } else if (!isLoading && isSuccessfull) {
+            return (
+                <div style={{ textAlign: "center", fontSize: "20px" }}>
+                    
+                    <br></br>You currently have no events.
+                </div>
+            )
+        } else if (!isLoading && !isSuccessfull) {
+            return (
+                <div className={classes.SystemDownMessage}>
+                    <div>System error please refresh this page.</div>
+                </div>
+            )
+        } else {
+            return null;
+        }
+    }
+
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
                 EVENTS
             </div>
+            
             <div className={classes.DisplayPanel2}>
                 <div className={classes.MainDisplayHeader}>
                     <div style={{ textAlign: "center" }}>Date</div>
@@ -18,12 +202,7 @@ const Events = (props) => {
                     <div style={{ textAlign: "center" }}>Status</div>
                     <div style={{ textAlign: "center" }}>Edit</div>
                 </div>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <div style={{ textAlign: "center", fontSize: "20px" }}>You currently have no events.</div>
+                {mainDisplay()}
             </div>
         </div>
     )

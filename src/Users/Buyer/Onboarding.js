@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { API } from "../../config";
+import { API, PAYPAL_USE_SANDBOX } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -207,7 +207,9 @@ const Onboarding = (props) => {
                                 window.alert ("Paypal Problem at OSD. Pleaase contact support if you cannot create events")
                             })
                     })
-
+                    .catch((err)=>{
+                        window.alert ("Paypal Problem at OSD. Pleaase contact support if you cannot create events")
+                    })
                 }}
                 onError = {(err) => 
                     console.log("error occurs: ", err)
@@ -527,7 +529,7 @@ const Onboarding = (props) => {
                                                             if (data.message){
                                                                  errmsg = data.message;
                                                             };
-                                                            window.alert (errmsg);
+                                                            //window.alert (errmsg);
                                                     };
                                                 })
                                                 .catch ((err)=>{

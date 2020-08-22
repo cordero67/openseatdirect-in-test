@@ -15,13 +15,12 @@ import classes from "./EventCreation.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";import {
+import {
     faFacebook,
     faInstagram,
     faLinkedin,
     faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { Popup } from "semantic-ui-react";
 
 const EventDetails = (props) => {
 
@@ -483,19 +482,7 @@ const EventDetails = (props) => {
             </div>
 
             <div className={classes.SectionTitleTight}>
-                Event Image{" "}
-                <Popup
-                  position="right center"
-                  content="Additional information"
-                  header="Event Image"
-                  trigger={
-                    <FontAwesomeIcon
-                      color="blue"
-                      cursor="pointer"
-                      icon={faInfoCircle}
-                    />
-                  }
-                />
+                Event Image
             </div>
 
             <div

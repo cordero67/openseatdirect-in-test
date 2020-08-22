@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronUp,
   faChevronDown,
-  faEllipsisV,
   faCog
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -102,9 +101,9 @@ const handleErrors = response => {
       return (
         <div>
           <div className={classes.MainDisplayHeader}>
-            <div style={{ textAlign: "center" }}>Dateee</div>
+            <div style={{ textAlign: "center" }}>Date</div>
             <div></div>
-            <div className={classes.Expand}>Eventtt</div>
+            <div className={classes.Expand}>Event</div>
             <div style={{ textAlign: "center" }}>Status</div>
             <div style={{ textAlign: "center" }}>Edit</div>
           </div>

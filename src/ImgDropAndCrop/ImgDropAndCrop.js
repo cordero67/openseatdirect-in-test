@@ -23,7 +23,7 @@ import { Button } from 'semantic-ui-react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 
-const imageMaxSize = 1000000 // bytes
+const imageMaxSize = 3000000 // bytes
 //const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 
 // see https://github.com/jshttp/mime-db

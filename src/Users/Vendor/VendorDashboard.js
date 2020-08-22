@@ -16,7 +16,7 @@ const VendorDashboard = () => {
   const [buyerInfo, setBuyerInfo] = useState();//
   const [isLoading, setIsLoading] = useState(true);//
 
-  const [paneView, setPaneView] = useState("create")
+  const [paneView, setPaneView] = useState("events")
 
   useEffect(() => {
     setIsLoading(true);

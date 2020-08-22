@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
+//import React, { useState, useEffect } from "react";
 
-import { API } from "../../config";
+//import { API } from "../../config";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronUp,
-  faChevronDown,
-  faCog
-} from "@fortawesome/free-solid-svg-icons";
+//import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+//import {
+//  faChevronUp,
+//  faChevronDown,
+//  faCog
+//} from "@fortawesome/free-solid-svg-icons";
 
-import VendorNavigation from "./VendorNavigation";
-import classes from "./Vendor.module.css";
-import { compareValues, getDates } from "./VendorFunctions";
+import VendorNavigation from "../VendorNavigation";
+//import classes from "./Vendor.module.css";
+//import { compareValues, getDates } from "../VendorFunctions";
 
-let vendorInfo = {};
+//let vendorInfo = {};
 
-const VendorEvents = () => {
+//const VendorEvents = () => {
 
-  const [eventDescriptions, setEventDescriptions] = useState();//
+//  const [eventDescriptions, setEventDescriptions] = useState();//
   const [ticketDisplay, setTicketDisplay] = useState();
-  const [isLoading, setIsLoading] = useState(true);//
-  const [isSuccessfull, setIsSuccessfull] = useState(true);//
-
+//  const [isLoading, setIsLoading] = useState(true);//
+//  const [isSuccessfull, setIsSuccessfull] = useState(true);//
+/*
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
@@ -46,7 +46,7 @@ const VendorEvents = () => {
       redirect: "follow",
     };
 
-    let fetchstr =  `${API}/event/all/${vendorInfo.id}`;
+    let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
 
     fetch(fetchstr, requestOptions)
       .then(handleErrors)
@@ -67,7 +67,6 @@ const VendorEvents = () => {
         setIsLoading(false);
       });
   }, []);
-
   
 
 const handleErrors = response => {
@@ -77,6 +76,7 @@ const handleErrors = response => {
   }
   return response;
 };
+*/
 
   // intilializes the show property of each ticket type to "false"
   const initializeDisplays = (events) => {
@@ -100,6 +100,7 @@ const handleErrors = response => {
     if (!isLoading && isSuccessfull) {
       return (
         <div>
+        /*
           <div className={classes.MainDisplayHeader}>
             <div style={{ textAlign: "center" }}>Date</div>
             <div></div>
@@ -107,7 +108,7 @@ const handleErrors = response => {
             <div style={{ textAlign: "center" }}>Status</div>
             <div style={{ textAlign: "center" }}>Edit</div>
           </div>
-
+        */
           <div></div>
           <div style={{ marginTop: "110px", overflowY: "auto" }}>
             {eventDescriptions.map((item, index) => {
@@ -172,7 +173,7 @@ const handleErrors = response => {
                       </span>
                     </div>
                     <div style={{ textAlign: "center", fontWeight: "500" }}>
-                      {item.isDraft ? <span style={{color: "blue"}}>"Draft"</span> : "Live"}
+                      {item.isDraft ? <span style={{color: "blue"}}>Draft</span>: <span style={{color: "green"}}>Live</span>}
                     </div>
                     <div
                       style={{
@@ -183,7 +184,7 @@ const handleErrors = response => {
                     >
                       <FontAwesomeIcon
                         style={{ zIndex: "100" }}
-                        color="black"
+                        color="blue"
                         size="lg"
                         cursor="pointer"
                         onClick={() => editEvent(item)}

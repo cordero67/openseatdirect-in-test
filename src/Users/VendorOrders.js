@@ -52,7 +52,6 @@ const VendorOrders = () => {
         console.log("vendorOrders: ", js);
 
         //js.sort(compare);
-
         
         js.sort(compareValues(sortParameters.label, sortParameters.dir));
 

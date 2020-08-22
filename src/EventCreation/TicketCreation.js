@@ -11,12 +11,13 @@ import classes from "./EventCreation.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import {
   faTrashAlt,
   faGripVertical,
   faCog
 } from "@fortawesome/free-solid-svg-icons";
-import { Button } from "semantic-ui-react";
+import { Button, Popup } from "semantic-ui-react";
 
 const TicketCreation = (props) => {
 
@@ -306,7 +307,7 @@ const TicketCreation = (props) => {
             <div
               style={{
                 display: `grid`,
-                gridTemplateColumns: "360px 100px 165px 80px",
+                gridTemplateColumns: "360px 165px 165px 80px",
                 height: "40px",
                 fontSize: "15px",
                 backgroundColor: "#E7E7E7",
@@ -330,7 +331,19 @@ const TicketCreation = (props) => {
                   fontWeight: 600,
                 }}
               >
-                Quantity<span style={{ color: "red" }}>*</span>
+                # Available<span style={{ color: "red" }}>*</span>{" "}
+                <Popup
+                  position="right center"
+                  content="The total number of tickets available for sale"
+                  header="Total Ticket Quantity"
+                  trigger={
+                    <FontAwesomeIcon
+                      color="blue"
+                      cursor="pointer"
+                      icon={faInfoCircle}
+                    />
+                  }
+                />
               </div>
   
               <div
