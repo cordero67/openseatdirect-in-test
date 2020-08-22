@@ -76,7 +76,6 @@ const handleErrors = response => {
   }
   return response;
 };
-*/
 
   // intilializes the show property of each ticket type to "false"
   const initializeDisplays = (events) => {
@@ -86,6 +85,7 @@ const handleErrors = response => {
     })
     setTicketDisplay(tempObject);
   }
+*/
   
   const editEvent = (item) => {
     if (typeof window !== "undefined") {
@@ -120,6 +120,7 @@ const handleErrors = response => {
                 <div key={index}>
                   <div className={classes.MainDisplay}
                   >
+                      /*
                     <div style={{ textAlign: "center" }}>
                       <span
                         style={{
@@ -134,7 +135,7 @@ const handleErrors = response => {
                       <span style={{ fontSize: "18px", color: "black" }}>
                         {dayDate}
                       </span>
-                    </div>
+                    </div>*/
                     <div style={{ fontSize: "12px", textAlign: "center" }}>
                       {ticketDisplay[item.eventNum] === true ? (
                         <FontAwesomeIcon

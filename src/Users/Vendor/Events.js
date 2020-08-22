@@ -19,6 +19,7 @@ let vendorInfo = {};
 const Events = (props) => {
 
     const [eventDescriptions, setEventDescriptions] = useState();//
+  const [ticketDisplay, setTicketDisplay] = useState();
     const [isLoading, setIsLoading] = useState(true);//
     const [isSuccessfull, setIsSuccessfull] = useState(true);//
 
@@ -89,6 +90,15 @@ const Events = (props) => {
           });
 
         }, []);
+  
+        const editEvent = (item) => {
+          if (typeof window !== "undefined") {
+            console.log("JSON.stringify(item): ", JSON.stringify(item));
+            localStorage.setItem("editEvent", JSON.stringify(item));
+            window.location.href = `/eventedit/?eventID=${item.eventNum}`;
+          }
+          // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
+        }
 
     const mainDisplay = () => {
         if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
@@ -127,7 +137,21 @@ const Events = (props) => {
                                         {dayDate}
                                     </span>
                                 </div>
-                                <div></div>
+                    <div style={{ fontSize: "12px", textAlign: "center" }}>
+                      
+                        <FontAwesomeIcon
+                          color="black"
+                          size="sm"
+                          cursor="pointer"
+                          onClick={() => {
+                            //let tempDisplay = {...ticketDisplay};
+                            //tempDisplay[item.eventNum] = false;
+                            //setTicketDisplay(tempDisplay);
+                          }}
+                          icon={faChevronUp}
+                        />
+                      
+                    </div>
                                 <div>
                                     <div
                                         style={{
@@ -160,7 +184,7 @@ const Events = (props) => {
                                         color="blue"
                                         size="lg"
                                         cursor="pointer"
-                                        //onClick={() => editEvent(item)}
+                                        onClick={() => editEvent(item)}
                                         icon={faCog}
                                     />
                                 </div>
