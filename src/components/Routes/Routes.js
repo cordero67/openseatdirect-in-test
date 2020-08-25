@@ -12,7 +12,7 @@ import EventDetails from "../../Events/EventDetails";
 import EventDeletion from "../../EventCreation/DeleteEvent";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
-import CheckoutPP from "../../TicketPurchases/Checkout_pp";
+import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import SignIn from "../../Users/Authentication/SignIn";
 import SignUp from "../../Users/Authentication/SignUp";
@@ -381,11 +381,11 @@ const Routes = () => {
         )}
       />
       <Route
-        path="/checkout_pp"
+        path="/checkout"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <CheckoutPP />
+            <Checkout />
           </React.Fragment>
         )}
       />

@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+//import React, { useState, useRef, useEffect } from "react";
 
-import dateFnsFormat from 'date-fns/format';
+//import dateFnsFormat from 'date-fns/format';
 
-import { API } from "../config";
+//import { API } from "../config";
 
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 
@@ -16,10 +16,10 @@ import DateSelector from "./DateSelector";
 import RadioForm from "./RadioForm";
 
 import TicketModal from "./Modals/TicketModal";
-import SavedModal from "./Modals/SavedModal";
+//import SavedModal from "./Modals/SavedModal";
 
-import classes from "./EventCreation.module.css";
-import Aux from "../hoc/Auxiliary/Auxiliary";
+//import classes from "./EventCreation.module.css";
+//import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -28,7 +28,7 @@ import {
   faGripVertical,
   faCog
 } from "@fortawesome/free-solid-svg-icons";
-import { Button, Popup } from "semantic-ui-react";
+//import { Button, Popup } from "semantic-ui-react";
 import {
   faFacebook,
   faInstagram,
@@ -37,7 +37,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 // holds sign-in information
-let vendorInfo = {};
+//let vendorInfo = {};
 
 const EventCreation = () => {
   // const [eventTitleOmission, setEventTitleOmission] = useState(false);
@@ -115,9 +115,6 @@ const EventCreation = () => {
     errorMessage: "", //["Please fix input errors and resubmit."],
     failureMessage: "System error please try again.",
   });
-  XX*/
-
-
 
     useEffect(() => {
         // checks if 'user' exists in local storage
@@ -133,6 +130,8 @@ const EventCreation = () => {
         window.location.href = "/signin";
         }
     }, []);
+    
+  XX*/
 
     const saveEvent = async (newStatus) => {
         console.log("eventDescription: ", eventDescription)
@@ -545,6 +544,7 @@ const EventCreation = () => {
     return response;
   };
 
+  /*XX
   const savedModal = () => {
     if (eventStatus.status === "failure" || eventStatus.status === "error") {
       return (
@@ -583,7 +583,6 @@ const EventCreation = () => {
 
 
   // EVENT DESCRIPTION HANDLERS
-  /*XX
   const changeEventDescription = (event) => {
     let tempDescription = { ...eventDescription };
     tempDescription[event.target.name] = event.target.value;
@@ -622,34 +621,31 @@ const EventCreation = () => {
   };
   XX*/
 
+  // THESE HAVE BEEN REPLACED BY changeEventField() EVENT HANDLER
   const changeStartTime = (value) => {
     let tempDescription = { ...eventDescription };
     tempDescription.startTime = value;
     console.log("eventCategory: ", value);
     setEventDescription(tempDescription);
   };
-
   const changeEndTime = (value) => {
     let tempDescription = { ...eventDescription };
     tempDescription.endTime = value;
     console.log("eventCategory: ", value);
     setEventDescription(tempDescription);
   };
-
   const changeCategory = (value) => {
     let tempDescription = { ...eventDescription };
     tempDescription.eventCategory = value;
     console.log("eventCategory: ", value);
     setEventDescription(tempDescription);
   };
-
   const changeCountryCode = (value) => {
     let tempDescription = { ...eventDescription };
     tempDescription.locationCountryCode = value;
     console.log("locationCountryCode: ", value);
     setEventDescription(tempDescription);
   };
-
   const changeTimeZone = (value) => {
     let tempDescription = { ...eventDescription };
     tempDescription.timeZone = value;
@@ -919,8 +915,7 @@ const EventCreation = () => {
     setTicketDetails(tempDetails);
     console.log("Ticket Details: ", tempDetails);
   };
-  XX*/
-
+  
   const promoCodesDisplay = (ticket) => {
     let display = (
       <div>
@@ -1083,7 +1078,6 @@ const EventCreation = () => {
     return display;
   };
 
-  /*XX
   const priceFeatureSettings = (ticket) => {
     if (ticket.priceFeature === "none") {
       return (
@@ -2022,6 +2016,8 @@ const EventCreation = () => {
   };
   XX*/
 
+
+  /*XX
   // garuantees that only one ticket has a "true" "viewModal" value
   const activateShowModal = (ticket) => {
     let tempDetails = [...ticketDetails];
@@ -2046,7 +2042,6 @@ const EventCreation = () => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  /*XX
   const [dragging, setDragging] = useState(false);
 
   const dragItem = useRef();
@@ -3356,8 +3351,7 @@ XX*/
                 />
               </div>
             </div>
-    
-  XX*/
+
     
             <br></br>
             <div className={classes.CategoryTitle} style={{ width: "195px" }}>
@@ -3392,3 +3386,5 @@ XX*/
 };
 
 export default EventCreation;
+    
+XX*/

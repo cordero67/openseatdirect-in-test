@@ -272,7 +272,6 @@ const TicketCreation = (props) => {
                 : null
               }
               
-    //XX START CODE REPLICATION REQUIRED
               {item.settings ?
                 <PriceSettings
                   ticket={item}
@@ -288,7 +287,6 @@ const TicketCreation = (props) => {
                   deletePromoCode={props.deletePromoCode}
                 /> :
               null}
-              //XX END CODE REPLICATION REQUIRED
             </Aux>
           )
         })}

@@ -158,8 +158,6 @@ const PriceSettings = (props) => {
                 : null
             }
 
-
-    //XX START CODE REPLICATION REQUIRED
             <PriceFeatureSettings
                 ticket={props.ticket}
                 changeFeature={props.changeFeature}
@@ -171,8 +169,6 @@ const PriceSettings = (props) => {
                 changePromoCodesPercent={props.changePromoCodesPercent}
                 deletePromoCode={props.deletePromoCode}
             />
-    //XX END CODE REPLICATION REQUIRED
-
 
             <div
                 style={{
@@ -196,7 +192,7 @@ const PriceSettings = (props) => {
                         props.switchSettings(event, props.ticket.key)
                     }
                 >
-                    ^ Minimize features
+                    ^ Minimize additional ticket features
                 </button>
             </div>
         </div>

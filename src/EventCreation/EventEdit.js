@@ -770,13 +770,13 @@ const loadEventInfo = (eventTix) => {
         console.log("Event was saved/went live");
         console.log("res: ", res);
       
-        if (!res.done && res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+        if (!res.status && res.message) {
+          console.log("Inside: res.done ",res.done," res.message ", res.message)
           tempStatus.status = "error";
-          tempStatus.errorMessage = res.friendlyMessage;
+          tempStatus.errorMessage = res.message;
         //} else if(false && false) {
-        } else if(!res.done && !res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+        } else if(!res.status && !res.message) {
+          console.log("Inside: res.done ",res.done," res.message ", res.message)
           tempStatus.status = "failure";
         }
         setEventStatus(tempStatus);
@@ -823,7 +823,7 @@ const loadEventInfo = (eventTix) => {
             show={true}
             details={eventStatus}
             toDashboard={() => {
-              window.location.href = `/vendorevents`;
+              window.location.href = `/vendordashboard`;
             }}
           ></SavedModal>
         </Aux>
@@ -2875,7 +2875,7 @@ const loadEventInfo = (eventTix) => {
                 }}
                 content="Cancel Edit"
                 onClick={() => {
-                  window.location.href = `/vendorevents`
+                  window.location.href = `/vendordashboard`
                 }}
               />
             </div>

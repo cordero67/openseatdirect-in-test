@@ -59,7 +59,7 @@ const Onboarding = (props) => {
             setPageView("ticket")
         } else if (getStatus() === 6) {
             setPageView("paypal")
-        } else if (getStatus() === 7) {
+        } else if (getStatus() === 7 || getStatus() === 8) {
             setPageView("completed")
         };
     }
@@ -234,7 +234,7 @@ const Onboarding = (props) => {
                     <div className={classes.DisplayPanel}
                         style={{textAlign: "center"}}>
                         <div className={classes.SummaryHeader}>
-                            3 easy steps to start selling tickets and receiving your cash nowwwww!!!
+                            3 easy steps to start selling tickets and receiving your cash now!!!
                         </div>
                         <div className={classes.SummaryGrid}
                             style={{ fontWeight: "600"}}>
@@ -410,6 +410,7 @@ const Onboarding = (props) => {
                                                     case(5):    setPageView("ticket"); break;
                                                     case(6):    setPageView("payment");break;
                                                     case(7):    setPageView("completed");break;
+                                                    case(8):    setPageView("completed");break;
                                                     case(0):
                                                     default:    setPageView("summary");
                                                 }
@@ -520,6 +521,7 @@ const Onboarding = (props) => {
                                                             case(5):    setPageView("ticket"); break;
                                                             case(6):    setPageView("payment");break;
                                                             case(7):    setPageView("completed");break;
+                                                            case(8):    setPageView("completed");break;
                                                             case(0):
                                                             default:    setPageView("summary");
                                                         }
@@ -746,6 +748,7 @@ const Onboarding = (props) => {
                                                     case(5):    setPageView("ticket"); break;
                                                     case(6):    setPageView("payment");break;
                                                     case(7):    setPageView("completed");break;
+                                                    case(8):    setPageView("completed");break;
                                                     case(0):
                                                     default:    setPageView("summary");
                                                 }

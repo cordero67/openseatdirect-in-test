@@ -238,7 +238,7 @@ const Checkout = props => {
 
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
-    if (!showLoadingSpinner && !show && orderTotals.finalPurchaseAmount > 0) {
+    if (!showLoadingSpinner && !show && orderTotals.ticketsPurchased > 0) {
       return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
     } else {
       return null;
@@ -276,7 +276,7 @@ const Checkout = props => {
 
   // defines and sets "orderSummary" which is displayed in right panel
   let orderSummary;
-  if (!showLoadingSpinner && orderTotals.finalPurchaseAmount > 0) {
+  if (!showLoadingSpinner && orderTotals.ticketsPurchased > 0) {
     orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
   } else if (!showLoadingSpinner && orderTotals.finalPurchaseAmount <= 0) {
     orderSummary = (
@@ -374,7 +374,7 @@ const Checkout = props => {
       ) : (
         <div>
           <span className={styles.AlertText}>
-            Your order is empty, please return to ticket selection page.
+            Only non-zero orders can be processed using PayPal.
           </span>
         </div>
       )}

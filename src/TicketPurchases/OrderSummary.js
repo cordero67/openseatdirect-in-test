@@ -4,6 +4,7 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Order.module.css";
 
 const OrderSummary = props => {
+  console.log("inside ordersummary")
   let purchaseTotal = 0;
   let adjPurchaseTotal;
   let fixedPurchaseTotal;
