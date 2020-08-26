@@ -769,18 +769,15 @@ const loadEventInfo = (eventTix) => {
       .then((res) => {
         console.log("Event was saved/went live");
         console.log("res: ", res);
-      
-        if (!res.done && res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-          tempStatus.status = "error";
-          tempStatus.errorMessage = res.friendlyMessage;
-        //} else if(false && false) {
-        } else if(!res.done && !res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-          tempStatus.status = "failure";
-        }
-        setEventStatus(tempStatus);
-        return res;
+        if (!res.status){
+            if (res.message ){
+              tempStatus.status = "error";
+              } else {
+              tempStatus.status = "failure";
+            }
+          };
+          setEventStatus(tempStatus);
+          return res;
       })
       .catch((err) => {
         console.log("Inside the .catch")

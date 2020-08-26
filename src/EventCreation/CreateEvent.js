@@ -491,18 +491,13 @@ const CreateEvent = (props) => {
           console.log("Event was saved/went live");
           console.log("res: ", res);
           
-          if (!res.done && res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-          tempStatus.status = "error";
-          tempStatus.errorMessage = res.friendlyMessage;
-          } else if(!res.done && res.error) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-          tempStatus.status = "error";
-          tempStatus.errorMessage = res.error;
-          } else if(!res.done && !res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-          tempStatus.status = "failure";
-          }
+          if (!res.status){
+            if (res.message ){
+              tempStatus.status = "error";
+              } else {
+              tempStatus.status = "failure";
+            }
+          };
           setEventStatus(tempStatus);
           return res;
       })

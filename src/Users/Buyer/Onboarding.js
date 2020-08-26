@@ -50,7 +50,7 @@ const Onboarding = (props) => {
         } 
     }
 
-    const updatePageView = () =>{
+    const updatePageViewXXXXX = () =>{
         if (getStatus() === 0) {
             setPageView("summary")
         } else if (getStatus() === 4) {
@@ -93,7 +93,7 @@ const Onboarding = (props) => {
             let tempUser2 = JSON.parse(localStorage.getItem("user"));
             console.log("tempUser2: ", tempUser2)
             updateValues();
-            updatePageView();
+//            updatePageView();
         } else {
             window.location.href = "/signin";
         }
@@ -409,7 +409,8 @@ const Onboarding = (props) => {
                                                     case(4): 
                                                     case(5):    setPageView("ticket"); break;
                                                     case(6):    setPageView("payment");break;
-                                                    case(7):    setPageView("completed");break;
+                                                    case(7):   
+                                                    case(8):    setPageView("completed");break;
                                                     case(0):
                                                     default:    setPageView("summary");
                                                 }
@@ -519,7 +520,8 @@ const Onboarding = (props) => {
                                                             case(4): 
                                                             case(5):    setPageView("ticket"); break;
                                                             case(6):    setPageView("payment");break;
-                                                            case(7):    setPageView("completed");break;
+                                                            case(7): 
+                                                            case(8):    setPageView("completed");break;
                                                             case(0):
                                                             default:    setPageView("summary");
                                                         }
@@ -745,7 +747,8 @@ const Onboarding = (props) => {
                                                     case(4): 
                                                     case(5):    setPageView("ticket"); break;
                                                     case(6):    setPageView("payment");break;
-                                                    case(7):    setPageView("completed");break;
+                                                    case(7):
+                                                    case(8):    setPageView("completed");break;
                                                     case(0):
                                                     default:    setPageView("summary");
                                                 }
