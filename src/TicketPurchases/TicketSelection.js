@@ -430,7 +430,9 @@ const TicketSelection = () => {
 
   // stores "orderTotals" and "eventLogo" in "localStorage"
   const purchaseTicketHandler = (event) => {
+    console.log("inside purchaseTicketHandler")
     if (typeof window !== "undefined") {
+      console.log("inside defined sectionpurchaseTicketHandler")
       localStorage.setItem(
         `image_${eventDetails.eventNum}`,
         JSON.stringify(eventLogo)
@@ -446,7 +448,9 @@ const TicketSelection = () => {
         })
       );
     }
-    window.location.href = eventDetails.gatewayURL;
+    console.log("eventDetails.gatewayURL: ", eventDetails.gatewayURL);
+    console.log("orderTotals: ", orderTotals.finalPurchaseAmount);
+    window.location.href = "/checkout";
   };
 
   // creates checkout button to proceed to checkout page
@@ -456,7 +460,7 @@ const TicketSelection = () => {
         <button
           onClick={purchaseTicketHandler}
           disabled={false}
-          className={styles.ButtonRed}
+          className={styles.ButtonGreen}
         >
           <span style={{ color: "white" }}>Checkout</span>
         </button>

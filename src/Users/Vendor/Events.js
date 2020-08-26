@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronUp,
   faChevronDown,
-  faCog
+  faEdit
 } from "@fortawesome/free-solid-svg-icons";
-
+ 
 import classes from "./VendorDashboard.module.css";
 import { compareValues, getDates } from "../VendorFunctions";
 
@@ -19,7 +19,7 @@ let vendorInfo = {};
 const Events = (props) => {
 
     const [eventDescriptions, setEventDescriptions] = useState();//
-  const [ticketDisplay, setTicketDisplay] = useState();
+    const [ticketDisplay, setTicketDisplay] = useState();
     const [isLoading, setIsLoading] = useState(true);//
     const [isSuccessfull, setIsSuccessfull] = useState(true);//
 
@@ -31,7 +31,15 @@ const Events = (props) => {
         return response;
       };
 
-
+    // intilializes the show property of each ticket type to "false"
+    const initializeDisplays = (events) => {
+        let tempObject = {};
+        events.forEach((item, index) => {
+        tempObject[item.eventNum] = false;
+        })
+        setTicketDisplay(tempObject);
+    }
+    
     useEffect(() => {
         if (
           typeof window !== "undefined" &&
@@ -137,56 +145,63 @@ const Events = (props) => {
                                         {dayDate}
                                     </span>
                                 </div>
-                    <div style={{ fontSize: "12px", textAlign: "center" }}>
-                      
-                        <FontAwesomeIcon
-                          color="black"
-                          size="sm"
-                          cursor="pointer"
-                          onClick={() => {
-                            //let tempDisplay = {...ticketDisplay};
-                            //tempDisplay[item.eventNum] = false;
-                            //setTicketDisplay(tempDisplay);
-                          }}
-                          icon={faChevronUp}
-                        />
-                      
-                    </div>
+                                <div style={{ fontSize: "12px", textAlign: "center" }}>
+                                
+                                    <FontAwesomeIcon
+                                    color="black"
+                                    size="sm"
+                                    cursor="pointer"
+                                    onClick={() => {
+                                        //let tempDisplay = {...ticketDisplay};
+                                        //tempDisplay[item.eventNum] = false;
+                                        //setTicketDisplay(tempDisplay);
+                                    }}
+                                    icon={faChevronUp}
+                                    />
+                                
+                                </div>
                                 <div>
                                     <div
                                         style={{
-                                            fontSize: "18px", paddingTop: "3px",
-                                            textAlign: "left", fontWeight: "500" 
+                                            fontSize: "16px",
+                                            textAlign: "left", fontWeight: "600" 
                                         }}
                                     >
                                         {item.eventTitle}
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "12px",
-                                            textAlign: "left", fontWeight: "400" 
+                                            fontSize: "13px",
+                                            textAlign: "left", fontWeight: "500" 
                                         }}
                                     >
                                     {longDateTime}
                                     </div>
                                 </div>
-                                <div style={{paddingTop: "10px"}}>{item.isDraft ? "draft" : "live"}</div>
+                                <div style={{fontSize: "16px", fontWeight: "600"}}>{item.isDraft ? <span style={{color: "blue"}}>Draft</span> : <span style={{color: "green"}}>Live</span>}</div>
                                 <div
                                 style={{
                                     fontSize: "12px",
                                     textAlign: "center",
-                                    position: "relative",
-                                    paddingTop: "10px"
+                                    position: "relative"
                                 }}
-                                >
+                                > {item.isDraft ? 
                                     <FontAwesomeIcon
                                         style={{ zIndex: "100" }}
                                         color="blue"
                                         size="lg"
                                         cursor="pointer"
                                         onClick={() => editEvent(item)}
-                                        icon={faCog}
-                                    />
+                                        icon={faEdit}
+                                    /> : 
+                                    <FontAwesomeIcon
+                                        style={{ zIndex: "100" }}
+                                        color="green"
+                                        size="lg"
+                                        cursor="pointer"
+                                        onClick={() => editEvent(item)}
+                                        icon={faEdit}
+                                    />}
                                 </div>
                                 <br></br>
                             </div>

@@ -99,8 +99,6 @@ const CreateEvent = (props) => {
       failureMessage: "System error please try again.",
     });
 
-
-    // START STRAIGHT COPY FROM ORIGINAL
     useEffect(() => {
         // checks if 'user' exists in local storage
         if (
@@ -115,7 +113,6 @@ const CreateEvent = (props) => {
         window.location.href = "/signin";
         }
     }, []);
-    // END STRAIGHT COPY FROM ORIGINAL
 
     // START STRAIGHT COPY FROM ORIGINAL
     const saveEvent = async (newStatus) => {
@@ -242,30 +239,29 @@ const CreateEvent = (props) => {
               "refundPolicy",
           ];
 
-    
           let tempDescription = { ...eventDescription };
 
           if (tempDescription.eventType === "live") {
-                  tempDescription.tbaInformation = "";
+            tempDescription.tbaInformation = "";
           } else if (tempDescription.eventType === "online") {
-              tempDescription.tbaInformation = "";
-              tempDescription.locationVenueName = "";
-              tempDescription.locationAddress1 = "";
-              tempDescription.locationAddress2 = "";
-              tempDescription.locationCity = "";
-              tempDescription.locationState = "";
-              tempDescription.locationZipPostalCode = "";
-              tempDescription.locationNote = "";
+            tempDescription.tbaInformation = "";
+            tempDescription.locationVenueName = "";
+            tempDescription.locationAddress1 = "";
+            tempDescription.locationAddress2 = "";
+            tempDescription.locationCity = "";
+            tempDescription.locationState = "";
+            tempDescription.locationZipPostalCode = "";
+            tempDescription.locationNote = "";
           } else if (tempDescription.eventType === "tba") {
-              tempDescription.locationVenueName = "";
-              tempDescription.locationAddress1 = "";
-              tempDescription.locationAddress2 = "";
-              tempDescription.locationCity = "";
-              tempDescription.locationState = "";
-              tempDescription.locationZipPostalCode = "";
-              tempDescription.locationNote = "";
-              tempDescription.webinarLink = "";
-              tempDescription.onlineInformation = "";
+            tempDescription.locationVenueName = "";
+            tempDescription.locationAddress1 = "";
+            tempDescription.locationAddress2 = "";
+            tempDescription.locationCity = "";
+            tempDescription.locationState = "";
+            tempDescription.locationZipPostalCode = "";
+            tempDescription.locationNote = "";
+            tempDescription.webinarLink = "";
+            tempDescription.onlineInformation = "";
           }
 
       var formData = new FormData();
@@ -490,7 +486,6 @@ const CreateEvent = (props) => {
       .then((res) => {
           console.log("Event was saved/went live");
           console.log("res: ", res);
-          
           if (!res.status){
             if (res.message ){
               tempStatus.status = "error";
@@ -527,7 +522,6 @@ const CreateEvent = (props) => {
   };
   // END STRAIGHT COPY FROM ORIGINAL
 
-  // START STRAIGHT COPY FROM ORIGINAL
   const savedModal = () => {
     if (eventStatus.status === "failure" || eventStatus.status === "error") {
       return (
@@ -553,17 +547,14 @@ const CreateEvent = (props) => {
             show={true}
             details={eventStatus}
             toDashboard={() => {
-              window.location.href = `/vendorevents`;
+              window.location.href = `/vendordashboard`;
             }}
           ></SavedModal>
         </Aux>
       );
     } else return null;
   };
-  // END STRAIGHT COPY FROM ORIGINAL
 
-
-  // START STRAIGHT COPY FROM ORIGINAL
   // garuantees that only one ticket has a "true" "viewModal" value
   const activateShowModal = (ticket) => {
     let tempDetails = [...ticketDetails];
@@ -577,9 +568,7 @@ const CreateEvent = (props) => {
     setTicketDetails(tempDetails);
     console.log("Ticket Details: ", tempDetails);
   };
-  // END STRAIGHT COPY FROM ORIGINAL
-
-  // START STRAIGHT COPY FROM ORIGINAL
+  
   // clears "viewModal" value for all tickets
   const deactivateShowModal = (ticket) => {
     let tempDetails = [...ticketDetails];
@@ -589,7 +578,6 @@ const CreateEvent = (props) => {
     setTicketDetails(tempDetails);
     console.log("Ticket Details: ", tempDetails);
   };
-  // END STRAIGHT COPY FROM ORIGINAL
 
     // EVENT DESCRIPTION HANDLERS
     const changeEventDescription = (event) => {
@@ -950,14 +938,6 @@ const CreateEvent = (props) => {
 
 
 
-
-
-
-
-
-
-
-
     const changeEventField = (value, field) => {
         let tempDescription = { ...eventDescription };
         tempDescription[field] = value;
@@ -1056,6 +1036,8 @@ const CreateEvent = (props) => {
                 </div>
             </div>
             <div className={classes.DisplayPanel}>
+            {savedModal()}
+
                 <EventDetails
                     event={eventDescription}
                     titleOmission={eventTitleOmission}
@@ -1069,18 +1051,7 @@ const CreateEvent = (props) => {
                     changeOmission={() => {
                         setEventTitleOmission(false);
                     }}
-                    //changeCountry={changeCountryCode}
-                    //changeStart={changeEventField}
-                    //changeEnd={changeEventField}
-                    //changeZone={changeTimeZone}
                 />
-
-
-
-
-
-
-
 
                 <br></br>
                 <TicketCreation
@@ -1117,34 +1088,3 @@ const CreateEvent = (props) => {
 }
 
 export default CreateEvent;
-
-
-/*
-    const changeStartTime = (value) => {
-      let tempDescription = { ...eventDescription };
-      tempDescription.startTime = value;
-      console.log("eventCategory: ", value);
-      setEventDescription(tempDescription);
-    };
-  
-    const changeEndTime = (value) => {
-      let tempDescription = { ...eventDescription };
-      tempDescription.endTime = value;
-      console.log("eventCategory: ", value);
-      setEventDescription(tempDescription);
-    };
-
-    const changeCountryCode = (value) => {
-      let tempDescription = { ...eventDescription };
-      tempDescription.locationCountryCode = value;
-      console.log("locationCountryCode: ", value);
-      setEventDescription(tempDescription);
-    };
-
-    const changeTimeZone = (value) => {
-      let tempDescription = { ...eventDescription };
-      tempDescription.timeZone = value;
-      console.log("Timezone: ", value);
-      setEventDescription(tempDescription);
-    };
-    */

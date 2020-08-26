@@ -46,7 +46,7 @@ const SignIn = () => {
     let tempData = JSON.parse(localStorage.getItem("user"));
     console.log("tempData: ", tempData)
     // determines dashboard based on user's role
-    if (getStatus(tempData.user) === 7) {
+    if (getStatus(tempData.user) === 7 || getStatus(tempData.user) === 8) {
       return <Redirect to="/vendordashboard" />;
     } else {
       return <Redirect to="/buyerdashboard" />;

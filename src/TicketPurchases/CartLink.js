@@ -25,7 +25,10 @@ const CartLink = props => {
           </span>
         </Aux>
       );
-    } else return null;
+    } else {
+        console.log("going to null")
+        return null;
+      }
   };
 
   return (

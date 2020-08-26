@@ -3,6 +3,8 @@ import dateFormat from "dateformat";
 
 import { PayPalButton } from "react-paypal-button-v2";
 
+import { API } from "../config.js";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
@@ -18,11 +20,8 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
-import { OrderConfirmationTT, OrderConfirmationTF } from "./OrderConfirmation";
+import { OrderConfirmTT, OrderConfirmTF } from "./OrderConfirms";
 import styles from "./Order.module.css";
-
-// defines the ticket order populated from "localStorage"
-//let ticketOrder = {};
 
 // defines the variables that accept the "cart_" data from "localStorage"
 let eventDetails = {};
@@ -48,6 +47,13 @@ let transactionInfo = {};
 const Checkout = props => {
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
+
+  // defines contact information to be sent to server
+  const [contactInformation, setContactInformation] = useState({
+    firstName: "",
+    lastName: "",
+    email: ""
+  });
 
   // defines all view control variables
   const [showConnectionStatus, setShowConnectionStatus] = useState(false);
@@ -144,7 +150,7 @@ const Checkout = props => {
     setIsRestyling(false);
   };
 
-  // sets the PayPal "purchase_units.items" value populated from "ticketOrder"
+  // sets the PayPal "purchase_units.items" value populated from "ticketInfo"
   const setPaypalArray = () => {
     paypalArray = [];
     ticketInfo.forEach(item => {
@@ -164,7 +170,7 @@ const Checkout = props => {
     });
   };
 
-  // clears entire "ticketOrder" object and "eventLogo", removes "cart" and "image" from "localStorage"
+  // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
     eventDetails = {};
     ticketInfo = {};
@@ -238,7 +244,7 @@ const Checkout = props => {
 
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
-    if (!showLoadingSpinner && !show && orderTotals.finalPurchaseAmount > 0) {
+    if (!showLoadingSpinner && !show && orderTotals.ticketsPurchased > 0) {
       return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
     } else {
       return null;
@@ -276,7 +282,7 @@ const Checkout = props => {
 
   // defines and sets "orderSummary" which is displayed in right panel
   let orderSummary;
-  if (!showLoadingSpinner && orderTotals.finalPurchaseAmount > 0) {
+  if (!showLoadingSpinner && orderTotals.ticketsPurchased > 0) {
     orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
   } else if (!showLoadingSpinner && orderTotals.finalPurchaseAmount <= 0) {
     orderSummary = (
@@ -309,92 +315,211 @@ const Checkout = props => {
     }
   }
 
+
   // **********
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // POTENTIALLY NEED TO ADD BACK THE "onBLur" IN <div>
   // displays the "PayPalButton" or an "empty cart" error message
   const showPayPal = (
     // loads PayPal Smart buttons if order exists
-    <div>
-      {orderTotals.finalPurchaseAmount > 0 ? (
-        <div>
-          <PayPalButton
-            onButtonReady={() => {}}
-            createOrder={(data, actions) => {
-              return actions.order.create({
-                purchase_units: [
-                  {
-                    reference_id: appliedCode(),
-                    description: eventDetails.eventTitle,
-                    payment_descriptor: eventDetails.eventNum,
-                    amount: {
-                      currency_code: orderTotals.currencyAbv,
-                      value: orderTotals.finalPurchaseAmount.toString(),
+      <div>
+        <PayPalButton
+          onButtonReady={() => {}}
+          createOrder={(data, actions) => {
+            return actions.order.create({
+              purchase_units: [
+                {
+                  reference_id: appliedCode(),
+                  description: eventDetails.eventTitle,
+                  payment_descriptor: eventDetails.eventNum,
+                  amount: {
+                    currency_code: orderTotals.currencyAbv,
+                    value: orderTotals.finalPurchaseAmount.toString(),
 
-                      breakdown: {
-                        item_total: {
-                          currency_code: orderTotals.currencyAbv,
-                          value: orderTotals.fullPurchaseAmount.toString()
-                        },
-                        discount: {
-                          currency_code: orderTotals.currencyAbv,
-                          value: orderTotals.discountAmount.toString()
-                        }
+                    breakdown: {
+                      item_total: {
+                        currency_code: orderTotals.currencyAbv,
+                        value: orderTotals.fullPurchaseAmount.toString()
+                      },
+                      discount: {
+                        currency_code: orderTotals.currencyAbv,
+                        value: orderTotals.discountAmount.toString()
                       }
-                    },
-                    items: paypalArray
-                  }
-                ]
-              });
-            }}
-            onCancel={data => {
-              console.log("onCancel 'data': ", data);
-            }}
-            onSuccess={(details, data) => {
-              payPalExpressBuy(details);
-            }}
-            onError = {(err) => 
-              console.log("error occurs: ", err)
-            }
-            options={{
-              clientId: eventDetails.gatewayClientID,
-              currency: orderTotals.currencyAbv
-            }}
-            catchError={err => {
-              console.log("catchError 'err': ", err);
-              setTransactionStatus({
-                ...transactionStatus,
-                paypalSuccess: false,
-                error: err
-              });
-              onlyShowPurchaseConfirmation();
-            }}
+                    }
+                  },
+                  items: paypalArray
+                }
+              ]
+            });
+          }}
+          onCancel={data => {
+            console.log("onCancel 'data': ", data);
+          }}
+          onSuccess={(details, data) => {
+            payPalExpressBuy(details);
+          }}
+          onError = {(err) => 
+            console.log("error occurs: ", err)
+          }
+          options={{
+            clientId: eventDetails.gatewayClientID,
+            currency: orderTotals.currencyAbv
+          }}
+          catchError={err => {
+            console.log("catchError 'err': ", err);
+            setTransactionStatus({
+              ...transactionStatus,
+              paypalSuccess: false,
+              error: err
+            });
+            onlyShowPurchaseConfirmation();
+          }}
+        />
+      </div>
+  );
+
+  // determines what "contact information" has been filled out by the ticket buyer
+  const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  let detailsMinimal = () => {
+    if(contactInformation.firstName
+      && contactInformation.lastName
+      && contactInformation.email
+      && regsuper.test(contactInformation.email)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  const changeField = (event) => {
+    let tempInformation = {...contactInformation};
+    tempInformation[event.target.name] = event.target.value;
+    setContactInformation(tempInformation);
+    console.log(contactInformation);
+    console.log("regsuper.test(contactInformation.email): ", regsuper.test(contactInformation.email))
+  }
+
+  
+  const handleErrors = response => {
+    console.log ("inside handleErrors ", response);
+    if (!response.ok) {
+        throw Error(response.status);
+    }
+    return response;
+};
+
+  const freeTicketHandler = () => {
+    console.log("Inside freeTicketHandler");
+    let order = {};
+    let ticketArray = [];
+    order.firstName = contactInformation.firstName;
+    order.lastName = contactInformation.lastName;
+    order.eventNum = eventDetails.eventNum;
+    order.email = contactInformation.email;
+    console.log("order: ", order)
+    console.log("ticketInfo: ", ticketInfo)
+    ticketInfo.map((item, index) => {
+      console.log("item #", index)
+      if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        console.log("zero ticket #", index);
+        ticketArray.push(tempObject);
+      }
+    });
+    console.log("zero tickets:", ticketArray);
+    order.tickets = ticketArray;
+    console.log("orderobject: ", order)
+    let  myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    let url = `${API}/free/freeTickets`;
+    let fetcharg ={
+        method: "POST",
+        headers: myHeaders,
+        body:JSON.stringify (order),
+    };
+    console.log("fetching with: ", url, fetcharg);
+    fetch(url, fetcharg )
+    .then(handleErrors)
+    .then ((response)=>{
+        console.log ("then response: ", response);
+        return response.json()})
+    .then ((data)=>{
+        console.log ("fetch return got back data:", data);
+    })
+    .catch ((err)=>{
+        console.log (err);
+    })
+    .finally ();
+
+
+
+    
+  }
+
+  const freePayment = (
+    <div>
+      <div style={{display: "grid", gridGap: "4%", gridTemplateColumns: "48% 48%"}}>
+        <div className="form-group">
+          <br></br>
+          <label styles={{ fontSize: "16px" }}>
+            First Name<span style={{ color: "red" }}>*</span>
+          </label>
+          <input
+            type="text"
+            name="firstName"
+            className="form-control"
+              onChange={changeField}
           />
         </div>
-      ) : (
-        <div>
-          <span className={styles.AlertText}>
-            Your order is empty, please return to ticket selection page.
-          </span>
+
+        <div className="form-group">
+          <br></br>
+          <label styles={{ fontSize: "16px" }}>
+            Last Name<span style={{ color: "red" }}>*</span>
+          </label>
+          <input
+            type="text"
+            name="lastName"
+            className="form-control"
+              onChange={changeField}
+          />
         </div>
-      )}
+      </div>
+      <div className="form-group">
+        <label>Email Address<span style={{ color: "red" }}>*</span></label>
+        <input
+          type="email"
+          name="email"
+          className="form-control"
+          onChange={changeField}
+        />
+      </div>
+
+      <div>{(contactInformation.email && !regsuper.test(contactInformation.email))
+        ? <span style={{ color: "red", padding: "5px"}}>A valid email address is required</span>
+        : null
+      }</div>
     </div>
-  );
+  )
 
   // **********
   // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
   const showSuccess = () => {
     if (paypalStatus && orderStatus) {
       return (
-        <OrderConfirmationTT
+        <OrderConfirmTT
           transactionInfo={transactionInfo}
-        ></OrderConfirmationTT>
+        ></OrderConfirmTT>
       );
     } else if (paypalStatus && !orderStatus) {
       return (
-        <OrderConfirmationTF
+        <OrderConfirmTF
           transactionInfo={transactionInfo}
-        ></OrderConfirmationTF>
+        ></OrderConfirmTF>
       );
     } else {
       return (
@@ -408,6 +533,27 @@ const Checkout = props => {
             </span>
           </div>
         </Aux>
+      );
+    }
+  };
+
+  // creates submit button to send free ticket information to server
+  const checkoutButton = () => {
+    if (orderTotals.ticketsPurchased > 0 && detailsMinimal()) {
+      return (
+        <button
+          onClick={freeTicketHandler}
+          disabled={false}
+          className={styles.ButtonGreen}
+        >
+          <span style={{ color: "white" }}>Submit</span>
+        </button>
+      );
+    } else {
+      return (
+        <button disabled={true} className={styles.ButtonGrey}>
+          Submit
+        </button>
       );
     }
   };
@@ -433,15 +579,17 @@ const Checkout = props => {
         <div>
           <div style={OrderSummarySectionAlt}>{orderSummary}</div>
         </div>
-        <div className={styles.EventFooterMod}>
+        <div className={styles.EventFooter}>
           <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
           <div className={styles.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
+          <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
         </div>
       </Aux>
     );
   }
+
 
   // variables that define rendered items
   let connectionStatus = null;
@@ -522,24 +670,49 @@ const Checkout = props => {
               {dateRange}
             </div>
           </div>
-
-          <div style={EventTicketSection}>
-            <span className={styles.TicketType}>Payment Information</span>
-            <br></br>
-            <span className={styles.TicketTypeSmall}>
-              Select a Payment Method
-            </span>
-            <br></br>
-            <br></br>
-            {showPayPal}
-          </div>
-
-          <div className={styles.EventFooterMod}>
-            <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
-            <div className={styles.TotalAmount}>
-              {totalAmount(showDoublePane)}
-            </div>
-          </div>
+          { orderTotals.finalPurchaseAmount > 0 ? 
+            (<div style={EventTicketSection}>
+              <span className={styles.TicketType}>Payment Information</span>
+              <br></br>
+              <span className={styles.TicketTypeSmall}>
+                Select a Payment Method
+              </span>
+              <br></br>
+              <br></br>
+              {showPayPal}
+            </div>)
+            : 
+            (<div style={EventTicketSection}>
+              <span className={styles.TicketType}>Information</span>
+              <br></br>
+              <span className={styles.TicketTypeSmall}>
+                Provide the following to receive your free tickets
+              </span>
+              <br></br>
+              <br></br>
+              {freePayment}
+            </div>)       
+          }
+          { orderTotals.finalPurchaseAmount > 0 ?
+            (
+              <div className={styles.EventFooterMod}>
+                <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
+                <div className={styles.TotalAmount}>
+                  {totalAmount(showDoublePane)}
+                </div>
+              </div>
+            )
+          :
+            (
+              <div className={styles.EventFooter}>
+                <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
+                <div className={styles.TotalAmount}>
+                  {totalAmount(showDoublePane)}
+                </div>
+                <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
+              </div>
+            )
+          }
         </div>
       </Aux>
     );

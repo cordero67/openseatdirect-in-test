@@ -9,6 +9,74 @@
   padding-bottom: 0px;
   box-sizing: border-box;
 }
+.PromoCodeInputBoxRed {
+    padding-left: 10px;
+    color: red;
+    background-color: white;
+    border: none;
+    outline: none;
+}
+
+.PromoCodeButtonRed {
+  font-size: 14px;
+  text-align: center;
+  color: red;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonBlue {
+  font-size: 14px;
+  text-align: center;
+  color: blue;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeInputBoxBlack {
+  padding-left: 10px;
+  color: black;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoGrid {
+  height: 48px;
+  display: grid;
+  grid-template-columns: auto 80px;
+}
+.Blue {
+    border: 1px solid blue
+}
+.Red {
+    border: 1px solid red
+}
+
+.AppliedPromoCode {
+  background-color: white;
+  padding-top: 5px;
+  padding-left: 5px;
+  height: 30px;
+}
+.RemovePromoCode {
+    color: blue;
+    font-size: 14px;
+    width: 80px;
+}
+.RemovePromoCode:hover {
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.EnterPromoCode {
+    color: blue;
+    width: 140px;
+}
+.EnterPromoCode:hover {
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+}
 
 .DashboardCanvas {
   background-color: white;

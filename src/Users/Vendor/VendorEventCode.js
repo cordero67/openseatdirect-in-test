@@ -18,7 +18,7 @@ import VendorNavigation from "../VendorNavigation";
 //const VendorEvents = () => {
 
 //  const [eventDescriptions, setEventDescriptions] = useState();//
-  const [ticketDisplay, setTicketDisplay] = useState();
+//  const [ticketDisplay, setTicketDisplay] = useState();
 //  const [isLoading, setIsLoading] = useState(true);//
 //  const [isSuccessfull, setIsSuccessfull] = useState(true);//
 /*

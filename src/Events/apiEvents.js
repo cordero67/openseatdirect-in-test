@@ -78,13 +78,8 @@ export const getAllEventData = () => {
 
     return fetch(fetchstr, requestOptions)
     .then(handleErrors)
-//    .then((response) => response.text())
     .then((response) => response.json())
     .then((result) => {
-//        let js = JSON.parse(result);
-//        js.sort(compareValues("startDateTime", "asc"));
- //       console.log("eventDescriptions ordered: ", js);
- //       return js;
         return result;
     })
     .catch((error) => {
@@ -111,10 +106,6 @@ export const getAllPastEventData = () => {
     .then(handleErrors)
     .then((response) => response.json())
     .then((result) => {
-        let js = JSON.parse(result);
-//        js.sort(compareValues("startDateTime", "asc"));
-//        console.log("eventDescriptions ordered: ", js);
-//        return js;
         return result;
     })
     .catch((error) => {
