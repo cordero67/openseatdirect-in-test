@@ -50,7 +50,8 @@ const Checkout = props => {
 
   // defines contact information to be sent to server
   const [contactInformation, setContactInformation] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: ""
   });
 
@@ -381,7 +382,10 @@ const Checkout = props => {
   const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   let detailsMinimal = () => {
-    if(contactInformation.name && contactInformation.email && regsuper.test(contactInformation.email)) {
+    if(contactInformation.firstName
+      && contactInformation.lastName
+      && contactInformation.email
+      && regsuper.test(contactInformation.email)) {
       return true
     } else {
       return false
@@ -406,28 +410,32 @@ const Checkout = props => {
 };
 
   const freeTicketHandler = () => {
-    console.log("Inside freeTicketHandler")
+    console.log("Inside freeTicketHandler");
     let order = {};
     let ticketArray = [];
-    order.name = contactInformation.name;
+    order.firstName = contactInformation.firstName;
+    order.lastName = contactInformation.lastName;
+    order.eventNum = eventDetails.eventNum;
     order.email = contactInformation.email;
     console.log("order: ", order)
     console.log("ticketInfo: ", ticketInfo)
     ticketInfo.map((item, index) => {
       console.log("item #", index)
       if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
         console.log("zero ticket #", index);
-        ticketArray.push(item);
-        console.log("zero tickets:", ticketArray);
+        ticketArray.push(tempObject);
       }
     });
+    console.log("zero tickets:", ticketArray);
     order.tickets = ticketArray;
     console.log("orderobject: ", order)
-
     let  myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let url = `${API}/account/${props.userid}`;
+    let url = `${API}/free/freeTickets`;
     let fetcharg ={
         method: "POST",
         headers: myHeaders,
@@ -446,23 +454,41 @@ const Checkout = props => {
         console.log (err);
     })
     .finally ();
+
+
+
+    
   }
 
   const freePayment = (
     <div>
-      <div className="form-group">
-        <br></br>
-        <label styles={{ fontSize: "16px" }}>
-          Name<span style={{ color: "red" }}>*</span>
-        </label>
-        <input
-          type="text"
-          name="name"
-          className="form-control"
-            onChange={changeField}
-        />
-      </div>
+      <div style={{display: "grid", gridGap: "4%", gridTemplateColumns: "48% 48%"}}>
+        <div className="form-group">
+          <br></br>
+          <label styles={{ fontSize: "16px" }}>
+            First Name<span style={{ color: "red" }}>*</span>
+          </label>
+          <input
+            type="text"
+            name="firstName"
+            className="form-control"
+              onChange={changeField}
+          />
+        </div>
 
+        <div className="form-group">
+          <br></br>
+          <label styles={{ fontSize: "16px" }}>
+            Last Name<span style={{ color: "red" }}>*</span>
+          </label>
+          <input
+            type="text"
+            name="lastName"
+            className="form-control"
+              onChange={changeField}
+          />
+        </div>
+      </div>
       <div className="form-group">
         <label>Email Address<span style={{ color: "red" }}>*</span></label>
         <input
