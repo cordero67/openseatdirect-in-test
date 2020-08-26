@@ -81,8 +81,8 @@ export const getAllEventData = () => {
     .then((response) => response.text())
     .then((result) => {
         let js = JSON.parse(result);
-        js.sort(compareValues("startDateTime", "asc"));
-        console.log("eventDescriptions ordered: ", js);
+        //js.sort(compareValues("startDateTime", "asc"));
+        //console.log("eventDescriptions ordered: ", js);
         return js;
     })
     .catch((error) => {
