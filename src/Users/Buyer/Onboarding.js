@@ -785,7 +785,7 @@ const inputPromoCode = () => {
                                     }
                                 />
                                 <br></br>
-                                {ticketPlan === "basicPaidQuarter" || ticketPlan === "basicPaidAnnual" ? showPayPal : null}
+                                {ticketPlan !== "free" ? showPayPal : null}
                             </div>
                             <div style={{textAlign: "center", paddingTop: "40px"}}>
                                 <Button className={classes.OrganizationButton}
