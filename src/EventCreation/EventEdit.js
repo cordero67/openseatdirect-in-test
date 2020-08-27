@@ -595,7 +595,8 @@ const loadEventInfo = (eventTix) => {
         console.log("ticket.eventName: ", ticket.ticketName)
         console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
         console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
-        if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice) {
+        if(ticket.ticketName && ticket.remainingQuantity && 
+          (typeof ticket.currentTicketPrice == 'numeric') && ticket.currentTicketPrice >= 0) {
           console.log("We have a full ticket, index: ", index)
           tempTicketDetailsArray.push(ticket);
         }
