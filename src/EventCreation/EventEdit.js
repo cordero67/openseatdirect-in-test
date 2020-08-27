@@ -589,19 +589,20 @@ const loadEventInfo = (eventTix) => {
 
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
+      console.log("ticketDetails: ", ticketDetails)
       let tempTicketDetails = [...ticketDetails];
       tempTicketDetails.forEach((ticket, index) => {
         console.log("Inside elimate cade")
         console.log("ticket.eventName: ", ticket.ticketName)
         console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
         console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
-        if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice) {
+        if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice >= 0) {
           console.log("We have a full ticket, index: ", index)
           tempTicketDetailsArray.push(ticket);
         }
       })
       console.log("Updated tempTicketDetailsArray: ", tempTicketDetailsArray);
-      if(tempTicketDetailsArray.length === 0) {
+      /*if(tempTicketDetailsArray.length === 0) {
         setTicketDetails([
             {
             key: "1",
@@ -632,8 +633,9 @@ const loadEventInfo = (eventTix) => {
           }],
         )
       } else {
+        */
         setTicketDetails(tempTicketDetailsArray);
-      }
+      //}
 
       let ticketDetailsFields = [
         "ticketName",
@@ -645,13 +647,17 @@ const loadEventInfo = (eventTix) => {
         "_id",
       ];
 
+      console.log("tempTicketDetailsArray: ", tempTicketDetailsArray)
+
       tempTicketDetailsArray.forEach((ticket, index) => {
+        console.log("ticket: ", ticket)
+
         if (
           ticket.ticketName &&
           ticket.remainingQuantity &&
-          ticket.currentTicketPrice
+          ticket.currentTicketPrice >= 0
         ) {
-          //console.log("adding ticket ", index);
+          console.log("adding ticket ", index);
           formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
 
           if (ticket.currency) {
@@ -660,7 +666,6 @@ const loadEventInfo = (eventTix) => {
               ticket.currency.slice(0, 3)
             );
           }
-
           ticketDetailsFields.forEach((field) => {
             if (ticket[field]) {
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
@@ -2306,7 +2311,7 @@ const loadEventInfo = (eventTix) => {
     }
   };
 
-  const ticketTypeDisplay = (index) => {
+  const ticketTypeDisplay = () => {
     let display = (
       <Aux>
         {ticketDetails.map((item, index) => {

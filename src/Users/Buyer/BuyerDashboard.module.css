@@ -123,6 +123,21 @@
   overflow-y: auto;
 }
 
+.DisplayPanelWide {
+  background-color: white;
+  font-size: 15px;
+  width: 430px;
+  height: calc(100vh - 167px);
+  margin-top: 50px;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  overflow-y: auto;
+}
+
 .NavigationTitle {
   position: fixed;
   top: 60px;

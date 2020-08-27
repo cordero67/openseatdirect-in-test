@@ -514,15 +514,8 @@ const CreateEvent = (props) => {
 
   // START STRAIGHT COPY FROM ORIGINAL
   const handleErrors = (response) => {
-    console.log("inside handleErrors")
-    console.log("response: ", response)
     if (!response.ok) {
-      console.log("bad response");
-      console.log("response: ", response.ok);
       throw Error(response.status);
-    } else {
-      console.log("good response");
-      console.log("response: ", response.ok);
     }
     return response;
   };

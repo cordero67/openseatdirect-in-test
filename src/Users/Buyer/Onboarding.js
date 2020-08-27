@@ -50,7 +50,7 @@ const Onboarding = (props) => {
             return 0;
         } 
     }
-
+/*
     const updatePageView = () =>{
         if (getStatus() === 0) {
             setPageView("summary")
@@ -64,6 +64,7 @@ const Onboarding = (props) => {
             setPageView("completed")
         };
     }
+    */
 
     const updateValues = () => {
         let tempUser = JSON.parse(localStorage.getItem("user"));
@@ -94,7 +95,7 @@ const Onboarding = (props) => {
             let tempUser2 = JSON.parse(localStorage.getItem("user"));
             console.log("tempUser2: ", tempUser2)
             updateValues();
-            updatePageView();
+            //updatePageView();
         } else {
             window.location.href = "/signin";
         }
@@ -282,7 +283,6 @@ const Onboarding = (props) => {
                 />
             </div>
         )
-
     }
 
     const orgPage =()=>{
