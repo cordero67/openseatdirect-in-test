@@ -306,17 +306,28 @@ const CreateEvent = (props) => {
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
       let tempTicketDetails = [...ticketDetails];
+
+      let ticketDetailsFields = [
+          "ticketName",
+          "remainingQuantity",
+          "currentTicketPrice",
+          "ticketDescription",
+          "maxTicketsAllowedPerOrder",
+          "minTicketsAllowedPerOrder",
+          "_id",
+      ];
+
       tempTicketDetails.forEach((ticket, index) => {
           console.log("Inside elimate cade")
           console.log("ticket.eventName: ", ticket.ticketName)
           console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
-          console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
-          if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice) {
-          console.log("We have a full ticket, index: ", index)
-          tempTicketDetailsArray.push(ticket);
-          }
-      })
-      console.log("Updated tempTicketDetailsArray: ", tempTicketDetailsArray);
+          console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice) 
+          if(('ticketName' in  ticket)  &&  ticket.ticketName.length && ticket.ticketName.length > 0 &&
+              ('remainingQuantity' in ticket) && ticket.remainingQuantity >0 &&
+              ('currentTicketPrice' in ticket) && ticket.currentTicketPrice >= 0) {
+      
+              console.log("We have a full ticket, index: ", index)          
+/*
       if(tempTicketDetailsArray.length === 0) {
           setTicketDetails([
           {
@@ -350,26 +361,13 @@ const CreateEvent = (props) => {
       } else {
           setTicketDetails(tempTicketDetailsArray);
       }
+*/
 
+              
       // saves every field in the "tickets" array
-      let ticketDetailsFields = [
-          "ticketName",
-          "remainingQuantity",
-          "currentTicketPrice",
-          "ticketDescription",
-          "maxTicketsAllowedPerOrder",
-          "minTicketsAllowedPerOrder",
-          "_id",
-      ];
 
-      tempTicketDetailsArray.forEach((ticket, index) => {
-          if (
-          ticket.ticketName &&
-          ticket.remainingQuantity &&
-          ticket.currentTicketPrice
-          ) {
           //console.log("adding ticket ", index);
-          formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
+        formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
 
           if (ticket.currency) {
               formData.append(
@@ -379,9 +377,11 @@ const CreateEvent = (props) => {
           }
 
           ticketDetailsFields.forEach((field) => {
-              if (ticket[field]) {
+            console.log ("1) FORM APPENDING>> if ",ticket[field], `tickets[${index}][${field}]`, ticket[field]);
+            if (field in ticket && ticket[field] !== "" && ('undefined' !== typeof ticket[field]) ) {
+              console.log ("2) FORM APPENDING>> if ",ticket[field], `tickets[${index}][${field}]`, ticket[field]);
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
-              }
+            }
           });
 
           // {form: "bogo",   args: {buy:5, get:4, discount:.90}}
@@ -424,8 +424,8 @@ const CreateEvent = (props) => {
           // }
           // for "promo"
           if (ticket.priceFeature === "promo") {
-              formData.append(`tickets[${index}][priceFunction][form]`, "promo");
-              ticket.promoCodes.forEach((item, number) => {
+            formData.append(`tickets[${index}][priceFunction][form]`, "promo");
+            ticket.promoCodes.forEach((item, number) => {
               formData.append(
                   `tickets[${index}][priceFunction][args][promocodes][${number}][key]`, item.key
               );
@@ -448,11 +448,11 @@ const CreateEvent = (props) => {
                   ", percent-",
                   item.percent
               );
-              });
+            });
           }
-          }
+        }
           else {
-          //console.log("skipped ticket ", index);
+          console.log("skipped ticket ", index);
           }
 
       });
