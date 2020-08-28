@@ -283,7 +283,7 @@ const eventLocation = () => {
           ticket(s).
           <br></br>
           <br></br>
-          Later today, OpenSeatDirect will be sending you a message to your
+          Within 48 hours, OpenSeatDirect will be sending you a message to your
           email:{" "}
           <span style={{ color: "blue", fontWeight: "600" }}>
             {props.transactionInfo.paypalEmail}

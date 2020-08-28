@@ -589,53 +589,7 @@ const loadEventInfo = (eventTix) => {
 
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
-      console.log("ticketDetails: ", ticketDetails)
       let tempTicketDetails = [...ticketDetails];
-      tempTicketDetails.forEach((ticket, index) => {
-        console.log("Inside elimate cade")
-        console.log("ticket.eventName: ", ticket.ticketName)
-        console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
-        console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
-        if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice >= 0) {
-          console.log("We have a full ticket, index: ", index)
-          tempTicketDetailsArray.push(ticket);
-        }
-      })
-      console.log("Updated tempTicketDetailsArray: ", tempTicketDetailsArray);
-      /*if(tempTicketDetailsArray.length === 0) {
-        setTicketDetails([
-            {
-            key: "1",
-            sort: "",
-            _id: "",
-            ticketName: "",
-            nameWarning: false,
-            remainingQuantity: "",
-            quantityWarning: false,
-            currentTicketPrice: "",
-            priceWarning: false,
-            reqWarning: false,
-            currency: "",
-            settings: false,
-            ticketDescription: "",
-            minTicketsAllowedPerOrder: "",
-            minWarning: false,
-            maxTicketsAllowedPerOrder: "",
-            maxWarning: false,
-            priceFeature: "none",
-            promoCodes: [
-              { key: "1", name: "", amount: "", percent: false },
-            ],
-            promoCodeNames: [],
-            promoCodeWarning: "",
-            functionArgs: {},
-            viewModal: false
-          }],
-        )
-      } else {
-        */
-        setTicketDetails(tempTicketDetailsArray);
-      //}
 
       let ticketDetailsFields = [
         "ticketName",
@@ -647,17 +601,19 @@ const loadEventInfo = (eventTix) => {
         "_id",
       ];
 
-      console.log("tempTicketDetailsArray: ", tempTicketDetailsArray)
-
-      tempTicketDetailsArray.forEach((ticket, index) => {
-        console.log("ticket: ", ticket)
-        // look to delete this check because the check is already done above
-        if (
-          ticket.ticketName &&
-          ticket.remainingQuantity &&
-          ticket.currentTicketPrice >= 0
-        ) {
-          console.log("adding ticket ", index);
+      tempTicketDetails.forEach((ticket, index) => {
+        console.log("Inside elimate cade")
+        console.log("ticket.eventName: ", ticket.ticketName)
+        console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
+        console.log("typeof ticket.remainingQuantity: ", typeof ticket.remainingQuantity)
+        console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
+        console.log("typeof ticket.currentTicketPrice: ", typeof ticket.currentTicketPrice)
+        if(('ticketName' in  ticket)  &&  ticket.ticketName.length && ticket.ticketName.length > 0 &&
+           ('remainingQuantity' in ticket) && ticket.remainingQuantity >0 &&
+           ('currentTicketPrice' in ticket) && ticket.currentTicketPrice >= 0) {
+   
+          console.log("We have a full ticket, index: ", index)
+             console.log("adding ticket , index ",ticket,  index);
           formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
 
           if (ticket.currency) {
@@ -666,8 +622,14 @@ const loadEventInfo = (eventTix) => {
               ticket.currency.slice(0, 3)
             );
           }
+
           ticketDetailsFields.forEach((field) => {
-            if (ticket[field]) {
+            console.log ("1) FORM APPENDING>> if ",ticket[field], `tickets[${index}][${field}]`, ticket[field]);
+
+            if (field in ticket && ticket[field] !== "" && ('undefined' !== typeof ticket[field]) ) {
+
+              console.log ("2) FORM APPENDING>> if ",ticket[field], `tickets[${index}][${field}]`, ticket[field]);
+
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
           });
@@ -740,7 +702,7 @@ const loadEventInfo = (eventTix) => {
           }
         }
         else {
-          //console.log("skipped ticket ", index);
+          console.log(">>>>>>>skipped ticket ", index);
         }
 
       });
@@ -774,13 +736,15 @@ const loadEventInfo = (eventTix) => {
       .then((res) => {
         console.log("Event was saved/went live");
         console.log("res: ", res);
-      
-        if (!res.status) {
-          console.log("Inside: res.done ",res.done," res.message ", res.message)
-          tempStatus.status = "error";
-          tempStatus.errorMessage = res.error;
-        }
-        return res;
+        if (!res.status){
+            if (res.message ){
+              tempStatus.status = "error";
+              } else {
+              tempStatus.status = "failure";
+            }
+          };
+          setEventStatus(tempStatus);
+          return res;
       })
       .catch((err) => {
         console.log("Inside the .catch")
@@ -2306,7 +2270,7 @@ const loadEventInfo = (eventTix) => {
     }
   };
 
-  const ticketTypeDisplay = () => {
+  const ticketTypeDisplay = (index) => {
     let display = (
       <Aux>
         {ticketDetails.map((item, index) => {
@@ -3716,7 +3680,6 @@ const loadEventInfo = (eventTix) => {
 export default EventEdit;
 
 /*
-
         <div
           style={{
             height: "30px",
@@ -3736,7 +3699,6 @@ export default EventEdit;
             Currency
           </div>
         </div>
-
         <div className={classes.InputBox}>
           <CurrencySelector
             current={ticket.currency === "" ? "default" : ticket.currency}

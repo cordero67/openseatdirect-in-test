@@ -306,6 +306,20 @@ column-gap: 5px;*/
     padding-right: 30px;
 }
 
+.DashboardMain {
+  /*border: 1px solid green;*/
+  display: grid;
+  background-color: #f8f8f8;
+  grid-template-columns: 185px auto;
+  height: calc(100% - 77px);
+  font-size: 30px;
+  font-weight: 600;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-bottom: 55px;
+  padding-left: 0px;
+}
+
 /*
 .SystemDownMessage {
   z-index: 200;

@@ -168,9 +168,6 @@
   outline: none;
 }
 
-
-
-
 .TicketSummary {
   display: grid;
   grid-template-columns: 280px 80px 100px;

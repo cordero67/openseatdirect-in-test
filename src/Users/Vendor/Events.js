@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
  
 import classes from "./VendorDashboard.module.css";
-import { compareValues, getDates } from "../VendorFunctions";
+import { compareValues, getDates } from "./VendorFunctions";
 
 
 let vendorInfo = {};

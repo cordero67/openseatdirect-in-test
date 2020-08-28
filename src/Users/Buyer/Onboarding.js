@@ -9,9 +9,10 @@ import { Button, Popup } from "semantic-ui-react";
 import { PayPalButton } from "react-paypal-button-v2";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
-//import LogoC from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 
+import CashNow from "../../assets/CashNow.jpg";
 import NoFees from "../../assets/NoFees.png";
+import SingleLocation from "../../assets/SingleLocation.png";
 
 import RadioForm from "./RadioForm";
 
@@ -250,6 +251,37 @@ const Onboarding = (props) => {
         return (
             <div className={classes.DisplayPanel}
                 style={{textAlign: "center"}}>
+                <div className={classes.SummaryHeader}>OpenSeatDirect reintroduces the lost tradition of selling tickets direct to your fans.</div>
+                    <div className={classes.CompleteUpperGrid}>
+                        <div>Get Cash Now!!!</div>
+                        <div>Absolutely NO Fees</div>
+                        <div>Own All Your Data</div>
+                    </div>
+                    <div className={classes.CompleteMiddleGrid}>
+                        <img
+                            src={CashNow}
+                            alt="OpenSeatDirect Logo"
+                            style={{width: "100%"}}
+                            //className={styleName}
+                        />
+                        <img
+                            src={NoFees}
+                            alt="OpenSeatDirect Logo"
+                            style={{width: "100%"}}
+                            //className={styleName}
+                        />
+                        <img
+                            src={SingleLocation}
+                            alt="OpenSeatDirect Logo"
+                            style={{width: "100%"}}
+                            //className={styleName}
+                        />
+                    </div>
+                    <div className={classes.CompleteLowerGrid}>
+                        <div>Don't wait until after the event passes. Get paid on tickets you sell right away.</div>
+                        <div>We're not kidding. Your customers NEVER pay any type extra fee.</div>
+                        <div>Control all transaction and ticket buyer data from a single location. </div>
+                    </div>
                 <div className={classes.SummaryHeader}>
                     3 easy steps to start selling tickets and receiving your cash now!!!
                 </div>
@@ -1003,26 +1035,36 @@ const inputPromoCode = () => {
                             Congratulations, you are now ready to create your first event!!!
                         </div>
 
-                        <div style={{textAlign: "center"}}>OpenSeatDirect is reintroducing the somewhat lost tradition of selling tickets direct to your fans.</div>
-                        <div className={classes.CompleteGrid}>
+                        <div className={classes.SummaryHeader}>OpenSeatDirect reintroduces the lost tradition of selling tickets direct to your fans.</div>
+                        <div className={classes.CompleteUpperGrid}>
                             <div>Get Cash Now!!!</div>
                             <div>Absolutely NO Fees</div>
                             <div>Own All Your Data</div>
                         </div>
-                        <div className={classes.CompleteGrid}>
-                            <div></div>
+                        <div className={classes.CompleteMiddleGrid}>
+                            <img
+                                src={CashNow}
+                                alt="OpenSeatDirect Logo"
+                                style={{width: "100%"}}
+                                //className={styleName}
+                            />
                             <img
                                 src={NoFees}
                                 alt="OpenSeatDirect Logo"
                                 style={{width: "100%"}}
                                 //className={styleName}
                             />
-                            <div></div>
+                            <img
+                                src={SingleLocation}
+                                alt="OpenSeatDirect Logo"
+                                style={{width: "100%"}}
+                                //className={styleName}
+                            />
                         </div>
                         <div className={classes.CompleteLowerGrid}>
                             <div>Don't wait until after the event passes. Get paid on tickets you sell right away.</div>
-                            <div>We're not kidding. Customers NEVER pay any type extra fee.</div>
-                            <div>You get info on all transactions - buyer emails, transaction info and data all in one place. </div>
+                            <div>We're not kidding. Your customers NEVER pay any type extra fee.</div>
+                            <div>Control all transaction and ticket buyer data from a single location. </div>
                         </div>
 
                         <div className={classes.SummaryHeader}>

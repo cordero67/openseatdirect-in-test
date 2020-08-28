@@ -4,7 +4,6 @@ import { Route, Redirect } from "react-router-dom";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
-import EventCreation from "../../EventCreation/EventCreation";
 import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
 import EventsPast from "../../Events/EventsPast";
@@ -19,15 +18,8 @@ import SignUp from "../../Users/Authentication/SignUp";
 import PasswordRecovery from "../../Users/Authentication/PasswordRecovery";
 import PasswordReset from "../../Users/Authentication/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
-import UserDashboard from "../../Users/UserDashboard";
 import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
 import VendorDashboard from "../../Users/Vendor/VendorDashboard";
-import VendorDashboardOld from "../../Users/Vendor/VendorDashboardOld";
-import VendorEvents from "../../Users/Vendor/VendorEvents";
-import VendorEventDetails from "../../Users/VendorEventDetails";
-import VendorOrders from "../../Users/VendorOrders";
-import VendorProflle from "../../Users/VendorProflle";
-import VendorAccount from "../../Users/VendorAccount";
 
 import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";
@@ -167,91 +159,6 @@ const Routes = () => {
       )}
     />
 
-    <Route
-      path="/vendordashboardold"
-      exact
-      render={(routeProps) => (
-        <React.Fragment>
-          <Header
-            positioning="fixed"
-            logo={LogoC}
-            clicked={toggleSideDrawer}
-          />
-          <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-          <VendorDashboardOld />
-          <Footer></Footer>
-        </React.Fragment>
-      )}
-    />
-
-      <Route
-        path="/vendoreventdetails"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={VendorEventDetails} role="1" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/vendororders"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={VendorOrders} role="1" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/vendorproflle"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <VendorProflle />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/vendoraccount"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <VendorAccount />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
       <Route
         path="/video"
         exact
@@ -281,23 +188,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <ContactUs />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/eventcreation"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventCreation />
             <Footer></Footer>
           </React.Fragment>
         )}
@@ -414,49 +304,9 @@ const Routes = () => {
           </React.Fragment>
         )}
       />
+
     </Aux>
   );
 };
 
 export default Routes;
-
-/*
-      <Route
-        path="/vendordashboard"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={VendorDashboard} status="7" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      
-
-      <Route
-        path="/vendorevents"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PrivateRoute component={VendorEvents} role="1" />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      
-
-      */

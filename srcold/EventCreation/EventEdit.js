@@ -3,16 +3,19 @@ import React, { useState, useRef, useEffect } from "react";
 import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
+import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
-
+import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
 import { Editor } from "@tinymce/tinymce-react";
 import CountrySelector from "./Selectors/CountrySelector";
 import TimeSelector from "./Selectors/TimeSelector";
 import TimeZoneSelector from "./Selectors/TimeZoneSelector";
 import CategorySelector from "./Selectors/CategorySelector";
 
+
 import DateSelector from "./DateSelector";
+import CurrencySelector from "./Selectors/CurrencySelector";
 import RadioForm from "./RadioForm";
 
 import TicketModal from "./Modals/TicketModal";
@@ -26,7 +29,8 @@ import {
   faInfoCircle,
   faTrashAlt,
   faGripVertical,
-  faCog
+  faCog,
+  faTruckMonster,
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Popup } from "semantic-ui-react";
 import {
@@ -39,12 +43,16 @@ import {
 // holds sign-in information
 let vendorInfo = {};
 
-const EventCreation = () => {
+const EventEdit = () => {
   const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [pageErrors, setPageErrors] = useState(false);
 
-  // stores all Event Description values
+  // stores all original Event Description variables
+  const [originalEventDescription, setOriginalEventDescription] = useState({});
+
+  // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
+    eventNum: "",
     eventTitle: "",
     isDraft: true,
     eventType: "live",
@@ -61,10 +69,13 @@ const EventCreation = () => {
     locationNote: "",
     startDate: new Date(new Date().toDateString()),
     startTime: "19:00:00",
+    startDateTime: "",
     endDate: new Date(new Date().toDateString()),
     endTime: "20:00:00",
+    endDateTime: "",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    photo: "",
+    photoChanged: false,
+    //photo: "",
     shortDescription: "",
     longDescription: "",
     eventCategory: "",
@@ -76,7 +87,7 @@ const EventCreation = () => {
     refundPolicy: "noRefunds",
   });
 
-  // stores all Ticket Details values
+  // stores all Ticket Details variables
   const [ticketDetails, setTicketDetails] = useState([
     {
       key: "1",
@@ -107,6 +118,8 @@ const EventCreation = () => {
     },
   ]);
 
+  const [photoData, setPhotoData] = useState({imgSrc:null, imgSrcExt: null, isLoaded:false});
+
   const [eventStatus, setEventStatus] = useState({
     status: "", // "saved", "live", "error", "failure"
     savedMessage: "Congratulations, your event was saved!",
@@ -115,20 +128,269 @@ const EventCreation = () => {
     failureMessage: "System error please try again.",
   });
 
+  const initPhotoData =( resPhotoData) =>{
+    //console.log ("in initPhotoData....");
+    // converts data from server fetch call to photodata for image display
+    
+    // check for required fields
+      if (!(resPhotoData && resPhotoData.data && resPhotoData.data.data)){
+        setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+        return;
+      };
+
+      if (!(resPhotoData.contentType)){
+        setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+        return;
+      };
+
+      const ext = resPhotoData.contentType;
+
+      let header ='data:image/png;base64,'; // hard codes image/png by default
+      if (ext ==='image/png'){
+        header ='data:image/png;base64,'
+      } else if (ext ==='image/jpeg'){
+        header ='data:image/jpeg;base64,'
+      };
+
+      const uint8 = new Uint8Array(resPhotoData.data.data);
+      const len =  uint8.byteLength;
+      if (len ==0){ // no photo data
+              setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
+              return;
+      };
+      let bin ='';
+      for (let i = 0; i < len; i++)
+          bin += String.fromCharCode(uint8[i]); 
+      const photodat =  header+window.btoa(bin);
+      const srcExt = extractImageFileExtensionFromBase64 (photodat);
+      //console.log ("found photo> setting PhotoData:", photodat);
+      setPhotoData({imgSrc:photodat, imgSrcExt: srcExt, isLoaded:true});
+ }
+
   useEffect(() => {
+    console.log("inside useEffet")
     // checks if 'user' exists in local storage
     if (
-      typeof window !== "undefined" &&  
+      typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
+      console.log("found a valid user")
       // loads sign-in data
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
-    } else {
+      if (localStorage.getItem(`editEvent`) !== null) {
+        let tempEvent = JSON.parse(localStorage.getItem("editEvent"));
+        loadEventInfo(tempEvent);
+        console.log("found a valid event to edit")
+      }
+      else {
+        console.log("Did not find a valid event to edit")
+      }
+  
+    } else {      
       window.location.href = "/signin";
     }
   }, []);
+
+const loadEventInfo = (eventTix) => {
+    console.log("Inside 'loadEventInfo': ", eventTix);
+    let tempDescription = { ...eventDescription };
+
+    let eventDescriptionFields = [
+      "eventNum",
+      "eventTitle",
+      "isDraft",
+      "eventType",
+      "locationVenueName",
+      "locationAddress1",
+      "locationAddress2",
+      "locationCity",
+      "locationState",
+      "locationZipPostalCode",
+      "locationCountryCode",
+      "locationNote",
+      "webinarLink",
+      "onlineInformation",
+      "tbaInformation",
+      "timeZone",
+      "shortDescription",
+      "longDescription",
+      "eventCategory",
+      "facebookLink",
+      "twitterLink",
+      "linkedinLink",
+      "instagramLink",
+      "vanityLink",
+      "refundPolicy",
+    ];
+
+    eventDescriptionFields.forEach((field) => {
+      if (eventTix[field] == null) {
+        //console.log("field DOES NOT exists: ", field)
+        //tempDescription[field] = "";
+      } else {
+        //console.log("field exists: ", field)
+        //console.log("eventTix[", field, "]: ", eventTix[field])
+        tempDescription[field] = eventTix[field];
+        //console.log("eventDescription[field]: ", tempDescription[field] )
+      }
+    });
+
+    tempDescription.eventType = eventTix.eventType
+      ? eventTix.eventType
+      : "live";
+
+    tempDescription.refundPolicy = eventTix.refundPolicy
+      ? eventTix.refundPolicy
+      : "noRefunds";
+
+    tempDescription.startTime = eventTix.startDateTime.slice(11,19);
+    console.log("tempDescription.startTime: ", tempDescription.startTime)
+
+    tempDescription.endTime = eventTix.endDateTime.slice(11,19);
+    console.log("tempDescription.endTime: ", tempDescription.endTime)
+
+    console.log("eventTix.startDateTime: ", eventTix.startDateTime);
+    tempDescription.startDate = new Date(eventTix.startDateTime);
+    console.log("tempDescription.startDate: ", tempDescription.startDate);
+    tempDescription.startDate.setMinutes( tempDescription.startDate.getMinutes() + tempDescription.startDate.getTimezoneOffset() );
+    console.log("tempDescription.startDate: ", tempDescription.startDate);
+
+    console.log("eventTix.endDateTime: ", eventTix.endDateTime);
+    tempDescription.endDate = new Date(eventTix.endDateTime);
+    console.log("tempDescription.endDate: ", tempDescription.endDate);
+    tempDescription.endDate.setMinutes( tempDescription.endDate.getMinutes() + tempDescription.endDate.getTimezoneOffset() );
+    console.log("tempDescription.endDate: ", tempDescription.endDate);
+
+    initPhotoData( eventTix.photo);
+
+    console.log("tempDescription: ", tempDescription);
+    setEventDescription(tempDescription);
+    setOriginalEventDescription(tempDescription);
+
+    console.log("eventTix.tickets: ", eventTix.tickets);
+    // now populate the ticketsDetails variable
+    if (eventTix.tickets && eventTix.tickets.length !== 0) {
+      let tempArray = [];
+      eventTix.tickets.forEach((tix, index) => {
+        //console.log("in ticket #: ", index);
+        let tempPriceFeature = "none";
+        let tempPromoCodes = [];
+        let tempPromoCodesArray = [];
+        let tempFunctionArgs;
+        if (tix.priceFunction && tix.priceFunction.form && tix.priceFunction.args) {
+          tempPriceFeature = tix.priceFunction.form;
+          if (tempPriceFeature === "promo") {
+            console.log("priceFunction: ", tix.priceFunction);
+            console.log("tix.priceFunction.args: ", tix.priceFunction.args);
+            tempPromoCodes = tix.priceFunction.args.promocodes;  
+            tempPromoCodes.map((promo, index) => {
+              let tempPercent;
+              if (promo.percent === "true") {
+                tempPercent = true;
+                console.log("percent is true");
+              } else if (promo.percent === "false") {
+                tempPercent = false;
+                console.log("percent is false");
+              }
+              let element = {
+                key: index,
+                name: promo.name,
+                amount: promo.amount,
+                percent: tempPercent,
+              };
+              tempPromoCodesArray.push(element);
+            });
+          } else if (tempPriceFeature === "bogo") {
+            tempFunctionArgs = {
+              buy: tix.priceFunction.args.buy,
+              buyWarning: false,
+              get: tix.priceFunction.args.get,
+              getWarning: false,
+              discount: tix.priceFunction.args.discount*100,
+              discountWarning: false,
+              reqWarning: false,
+            };
+            console.log("bogo tempFunctionArgs: ", tempFunctionArgs)
+            if (tempFunctionArgs.discount === 100) {
+              tempPriceFeature = "bogof";
+            }
+            if (tempFunctionArgs.discount !== 100) {
+              tempPriceFeature = "bogod";
+            }
+          } else if (tempPriceFeature === "twofer") {
+            tempFunctionArgs = {
+              buy: tix.priceFunction.args.buy,
+              buyWarning: false,
+              for: tix.priceFunction.args.for,
+              forWarning: false,
+              reqWarning: false,
+            };
+          }
+        }
+
+        let currencyObject = {
+          USD: "USD $",
+          CAD: "CAD $",
+          MXN: "MXN $",
+          EUR: "EUR €",
+          GBP: "GBP £",
+          CZK: "CZK Kc",
+          DKK: "DKK kr",
+          HUF: "HUF Ft",
+          NOK: "NOK kr",
+          PLN: "PLN zl",
+          SEK: "SEK kr",
+          CHF: "CHF",
+          JPY: "JPY ¥",
+          AUD: "AUD $",
+          NZD: "NZD $",
+          HKD: "HKD $",
+          SGD: "SGD $",
+          ILS: "ILS ₪",
+          PHP: "PHP ₱",
+          TWD: "TWD NT$",
+          THB: "THB ฿",
+          RUB: "RUB ₽"
+        }
+
+        const longCurrency = () => {
+          if (tix.currency) {
+            console.log("tix.currency: ", tix.currency)
+            console.log("currencyObject[tix.currency]: ", currencyObject[tix.currency])
+            return currencyObject[tix.currency];
+          } else {
+            return "USD $"
+          }
+        }
+        
+        let newItem = {
+          key: tix.sort ? tix.sort : index,
+          sort: tix.sort ? tix.sort : index,
+          _id: tix._id,
+          ticketName: tix.ticketName,
+          // NEED TO WAIT FOR ORDERS API
+          remainingQuantity: tix.remainingQuantity,
+          currentTicketPrice: tix.currentTicketPrice,
+          currency: longCurrency(),
+          settings: false,
+          ticketDescription: tix.ticketDescription,
+          minTicketsAllowedPerOrder: tix.minTicketsAllowedPerOrder,
+          maxTicketsAllowedPerOrder: tix.maxTicketsAllowedPerOrder,
+          priceFeature: tempPriceFeature,
+          promoCodes: tempPromoCodesArray,
+          promoCodeNames: [],
+          promoCodeWarning: null, //NEED TO POPULATE!!!
+          functionArgs: tempFunctionArgs,
+          viewModal: false,
+        };
+        tempArray.push(newItem);
+      });
+      console.log("tempArray: ", tempArray);
+      setTicketDetails(tempArray);
+    }
+  };
 
   const saveEvent = async (newStatus) => {
     console.log("eventDescription: ", eventDescription)
@@ -244,7 +506,6 @@ const EventCreation = () => {
         "timeZone",
         "shortDescription",
         "longDescription",
-        "photo",
         "eventCategory",
         "facebookLink",
         "twitterLink",
@@ -254,7 +515,6 @@ const EventCreation = () => {
         "refundPolicy",
       ];
 
-      
       let tempDescription = { ...eventDescription };
 
       if (tempDescription.eventType === "live") {
@@ -294,80 +554,56 @@ const EventCreation = () => {
 
       setEventDescription(tempDescription);
 
-      // does not send empty fields to server
+      // only sends changed fields to the server
       eventDescriptionFields.forEach((field) => {
-        if (tempDescription[field] !== '') {
+        if (
+          tempDescription[field] || originalEventDescription[field]
+        ) {
           console.log("eventDescription[field]: ", tempDescription[field] )
           formData.append(`${field}`, tempDescription[field]);
         }
       });
       
-      let tempStartDate = dateFnsFormat(tempDescription.startDate,'yyyy-MM-dd');
+      let tempStartDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
       //console.log("startDate from dateFnsFormat: ", tempStartDate);
 
-      let tempEndDate = dateFnsFormat(tempDescription.endDate,'yyyy-MM-dd');
+      let tempEndDate = dateFnsFormat(eventDescription.endDate,'yyyy-MM-dd');
       //console.log("endDate from dateFnsFormat: ", tempEndDate);
 
-      let tempStartDateTime = `${tempStartDate} ${tempDescription.startTime}Z`;
+      let tempStartDateTime = `${tempStartDate} ${eventDescription.startTime}Z`;
       //console.log("startDateTime: ", tempStartDateTime);
 
-      let tempEndDateTime = `${tempEndDate} ${tempDescription.endTime}Z`;
+      let tempEndDateTime = `${tempEndDate} ${eventDescription.endTime}Z`;
       //console.log("endDateTime: ", tempEndDateTime);
 
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      //formData.append("photo", tempDescription.photo);
+      console.log("eventDescription.photo: ", eventDescription.photo)
+
+      if (eventDescription.photoChanged) {
+        formData.append("photo", eventDescription.photo);
+        console.log("eventDescription.photo: ", eventDescription.photo);
+        console.log("eventDescription.photoChanged: ", eventDescription.photoChanged);
+      }
 
       // eliminate empty ticket types
       let tempTicketDetailsArray = [];
+      console.log("ticketDetails: ", ticketDetails)
       let tempTicketDetails = [...ticketDetails];
       tempTicketDetails.forEach((ticket, index) => {
         console.log("Inside elimate cade")
         console.log("ticket.eventName: ", ticket.ticketName)
         console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
         console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
-        if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice) {
+        if(ticket.ticketName && ticket.remainingQuantity && ticket.currentTicketPrice >= 0) {
           console.log("We have a full ticket, index: ", index)
           tempTicketDetailsArray.push(ticket);
         }
       })
       console.log("Updated tempTicketDetailsArray: ", tempTicketDetailsArray);
-      if(tempTicketDetailsArray.length === 0) {
-        setTicketDetails([
-          {
-            key: "1",
-            sort: "",
-            _id: "",
-            ticketName: "",
-            nameWarning: false,
-            remainingQuantity: "",
-            quantityWarning: false,
-            currentTicketPrice: "",
-            priceWarning: false,
-            reqWarning: false,
-            currency: "",
-            settings: false,
-            ticketDescription: "",
-            minTicketsAllowedPerOrder: "",
-            minWarning: false,
-            maxTicketsAllowedPerOrder: "",
-            maxWarning: false,
-            priceFeature: "none",
-            promoCodes: [
-              { key: "1", name: "", amount: "", percent: false },
-            ],
-            promoCodeNames: [],
-            promoCodeWarning: "",
-            functionArgs: {},
-            viewModal: false
-          }],
-        )
-      } else {
         setTicketDetails(tempTicketDetailsArray);
-      }
 
-      // saves every field in the "tickets" array
       let ticketDetailsFields = [
         "ticketName",
         "remainingQuantity",
@@ -378,13 +614,17 @@ const EventCreation = () => {
         "_id",
       ];
 
+      console.log("tempTicketDetailsArray: ", tempTicketDetailsArray)
+
       tempTicketDetailsArray.forEach((ticket, index) => {
+        console.log("ticket: ", ticket)
+        // look to delete this check because the check is already done above
         if (
           ticket.ticketName &&
           ticket.remainingQuantity &&
-          ticket.currentTicketPrice
+          ticket.currentTicketPrice >= 0
         ) {
-          //console.log("adding ticket ", index);
+          console.log("adding ticket ", index);
           formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
 
           if (ticket.currency) {
@@ -393,7 +633,6 @@ const EventCreation = () => {
               ticket.currency.slice(0, 3)
             );
           }
-
           ticketDetailsFields.forEach((field) => {
             if (ticket[field]) {
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
@@ -486,37 +725,30 @@ const EventCreation = () => {
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
-      apiurl = `${API}/eventix/${userid}`;
+      apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
 
       fetch(apiurl, {
-        method: "POST",
+        method: "post",
         headers: myHeaders,
         body: formData,
         redirect: "follow",
       })
       .then(handleErrors)
       .then((response) => {
-        console.log("response in create", response);
+        console.log("response in event/create", response);
         return response.json();
       })
       .then((res) => {
         console.log("Event was saved/went live");
         console.log("res: ", res);
-        
-        if (!res.done && res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-          tempStatus.status = "error";
-          tempStatus.errorMessage = res.friendlyMessage;
-        } else if(!res.done && res.error) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
+      
+        if (!res.status) {
+          console.log("Inside: res.status ", res.status)
           tempStatus.status = "error";
           tempStatus.errorMessage = res.error;
-        } else if(!res.done && !res.friendlyMessage) {
-          console.log("Inside: res.done ",res.done," res.friendlyMessage ", res.friendlyMessage)
-          tempStatus.status = "failure";
         }
-        setEventStatus(tempStatus);
         return res;
+
       })
       .catch((err) => {
         console.log("Inside the .catch")
@@ -528,15 +760,8 @@ const EventCreation = () => {
   }
 
   const handleErrors = (response) => {
-    console.log("inside handleErrors")
-    console.log("response: ", response)
     if (!response.ok) {
-      console.log("bad response");
-      console.log("response: ", response.ok);
       throw Error(response.status);
-    } else {
-      console.log("good response");
-      console.log("response: ", response.ok);
     }
     return response;
   };
@@ -566,7 +791,7 @@ const EventCreation = () => {
             show={true}
             details={eventStatus}
             toDashboard={() => {
-              window.location.href = `/vendorevents`;
+              window.location.href = `/vendordashboard`;
             }}
           ></SavedModal>
         </Aux>
@@ -586,8 +811,8 @@ const EventCreation = () => {
         .toLowerCase();
     }
     setEventDescription(tempDescription);
-    //console.log("Event Description: ", tempDescription);
-  };  
+    console.log("Event Description: ", tempDescription);
+  }; 
 
   const changeEventDate = (day, fieldName) => {
     console.log("day from Date selector: ", day);
@@ -693,6 +918,7 @@ const EventCreation = () => {
     console.log("Ticket Details: ", tempDetails);
   };
 
+  // STOPPED
   const priceFeatureChangeHandler = (event, value, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1633,7 +1859,7 @@ const EventCreation = () => {
         console.log("ticket.functionArgs.reqWarning: ", ticket.functionArgs.reqWarning)
       }
 
-      // determines if a "buy" or "for" field warning is required
+      // determines if a buy or for field warning is required
       if(!ticket.functionArgs.buy) {
         ticket.functionArgs.buyWarning = false;
         console.log("ticket.functionArgs.buyWarning: ", ticket.functionArgs.buyWarning)
@@ -1648,22 +1874,6 @@ const EventCreation = () => {
       } else {
         ticket.functionArgs.forWarning = !twoferRegexPrice.test(ticket.functionArgs.for);
         console.log("ticket.functionArgs.forWarning: ", ticket.functionArgs.forWarning)
-      }
-
-      //NEED TO COPY THIS SECTION TO EVENTEDIT
-      // determines if a "maxFor" warning is required for "for" field
-      if (ticket.functionArgs.for && ticket.functionArgs.buy && ticket.currentTicketPrice) {
-        console.log("all three fields exist");
-        if (ticket.functionArgs.for > (ticket.functionArgs.buy * ticket.currentTicketPrice)) {
-          ticket.functionArgs.maxForWarning = true;
-          console.log("Invalid 'for' price");
-        } else {
-          ticket.functionArgs.maxForWarning = false;
-          console.log("Valid 'for' price");
-        }
-      } else {
-        ticket.functionArgs.maxForWarning = false;
-        console.log("at least one field doesn't exist");
       }
 
       // defines styling for the buy and for boxes
@@ -1689,9 +1899,6 @@ const EventCreation = () => {
       if (ticket.functionArgs.forWarning) {
         tempForWarning = classes.ForPriceBoxWarning;
         forWarningText = "Not a valid price";
-      } else if (ticket.functionArgs.maxForWarning) {
-        tempForWarning = classes.ForPriceBoxWarning;
-        forWarningText = "Price greater than buying individually";
       } else if (ticket.functionArgs.for) {
         tempForWarning = classes.ForPriceBox;
         forWarningText = "";
@@ -1798,7 +2005,7 @@ const EventCreation = () => {
             </div>
           </div>
           
-          {ticket.functionArgs.reqWarning || ticket.functionArgs.buyWarning || ticket.functionArgs.forWarning || ticket.functionArgs.maxForWarning
+          {ticket.functionArgs.reqWarning || ticket.functionArgs.buyWarning || ticket.functionArgs.forWarning
             ? <div className={classes.TwoferLineWarning}
             >
               <div style={{ paddingLeft: "5px"}}> {buyWarningText}</div>
@@ -1827,7 +2034,7 @@ const EventCreation = () => {
     }
   };
 
-  const priceSettings = (ticket) => {
+  const additionalSettings = (ticket) => {
     // defines warnings for order min and max
     let orderRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
 
@@ -1864,6 +2071,7 @@ const EventCreation = () => {
 
     return (
       <div>
+
         <div
           style={{
             height: "30px",
@@ -2066,7 +2274,7 @@ const EventCreation = () => {
     }
   };
 
-  const ticketTypeDisplay = (index) => {
+  const ticketTypeDisplay = () => {
     let display = (
       <Aux>
         {ticketDetails.map((item, index) => {
@@ -2102,7 +2310,6 @@ const EventCreation = () => {
           } else {
             item.priceWarning = !priceRegex.test(item.currentTicketPrice);
           }
-
 
           // defines styling for the price and quantity boxes
           let tempNameBox;
@@ -2189,7 +2396,6 @@ const EventCreation = () => {
                   >
                     <FontAwesomeIcon cursor="pointer" icon={faGripVertical} />
                   </div>
-
                   <input className={tempNameBox}
                     type="text"
                     maxLength="64"
@@ -2283,8 +2489,6 @@ const EventCreation = () => {
                   />
                 </div>
               </div>
-
-
               {item.viewModal ? (
                 <Aux>
                   <TicketModal
@@ -2312,7 +2516,7 @@ const EventCreation = () => {
                 </div>
                 : null
               }
-              {item.settings ? priceSettings(item) : null}
+              {item.settings ? additionalSettings(item) : null}
             </Aux>
           );
         })}
@@ -2426,24 +2630,41 @@ const EventCreation = () => {
     { label: "No refunds: No refunds at any time.", value: "noRefunds" },
   ];
 
-  const imageCanvas = () => (
-    <ImgDropAndCrop
-      imagein={{isLoaded:true}}
-      change={(image) => {
-        let tempDescription = { ...eventDescription };
-        tempDescription.photo = image;
-        setEventDescription(tempDescription);
-  
-      }}
-    />
-  );
+  // MMs code
+  const imageCanvas = () => {
+    if (!photoData.isLoaded) {
+      return <p>  Loading .... </p>
+    } else { 
+      return (
+        <ImgDropAndCrop
+          imagein={photoData}
+          change={(image) => {
+            let tempDescription = { ...eventDescription };
+            console.log("image: ", image)
+            tempDescription.photo = image;
+            tempDescription.photoChanged = true;
+            console.log("image: ", tempDescription.photo)
+            setEventDescription(tempDescription);
+            console.log(" on change");
+            console.log("tempDescription: ", tempDescription)
+          }}
+        />
+      )
+    }
+  };
 
   const subTitleDisplay = () => {
     if (pageErrors || eventTitleOmission) {
       return (
         <div className={classes.GridSubTitle}>
-          <div style={{ textAlign: "left" }}>
-          </div>
+          {eventDescription.isDraft ? (
+            <div style={{ textAlign: "left", color: "blue", fontWeight: "600" }}>
+              #{eventDescription.eventNum}
+            </div>) : (
+            <div style={{ textAlign: "left", color: "green", fontWeight: "600" }}>
+              #{eventDescription.eventNum}
+            </div>)
+          }
           <div style={{ textAlign: "center", color: "red"}}>
             Please correct input errors identified below.
           </div>
@@ -2452,28 +2673,101 @@ const EventCreation = () => {
     } else {
       return (
         <div className={classes.GridSubTitle}>
-          <div style={{ textAlign: "left" }}>
-          </div>
+          {eventDescription.isDraft ? (
+            <div style={{ textAlign: "left", color: "blue", fontWeight: "600" }}>
+              #{eventDescription.eventNum}
+            </div>) : (
+            <div style={{ textAlign: "left", color: "green", fontWeight: "600" }}>
+              #{eventDescription.eventNum}
+            </div>)
+          }
         </div>
       )
     }
   }
 
-  const mainDisplay = () => {
+  const currentStatus = () => {
+    if (eventDescription.isDraft) {
       return (
-        <div className={classes.MainContainer}>
-          <div className={classes.GridTitlePanel}>
-            <div className={classes.GridTitle}>
-              <div
-                style={{
-                  paddingTop: "5px",
-                  fontSize: "30px",
-                  fontWeight: "600",
-                  }}>
-                  Create Event
-              </div>
-              <div>
-              </div>
+        <div
+          style={{
+            paddingTop: "6px",
+            fontSize: "20px",
+            color: "blue",
+            fontWeight: "600",
+            textAlign: "center",
+            fontStyle: "italic"
+            }}>
+            STATUS DRAFT
+          </div>
+      )
+    } else {
+      return (
+        <div
+          style={{
+            paddingTop: "6px",
+            fontSize: "20px",
+            color: "green",
+            fontWeight: "600",
+            textAlign: "center",
+            fontStyle: "italic"
+            }}>
+          STATUS LIVE
+        </div>
+      )
+    }
+  }
+
+  const buttonDisplay = () => {
+    if (eventDescription.isDraft) {
+      return (
+        <Aux>
+          <Button
+            style={{
+              backgroundColor: 'white',
+              border: "1px solid blue",
+              color: "blue",
+              fontSize: "12px",
+              width: "90px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="Update Draft"
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = true;
+              setEventDescription(tempDescription);
+              saveEvent("saved");
+            }}
+          />
+          <Button
+            style={{
+              backgroundColor: 'white',
+              border: "1px solid green",
+              color: "green",
+              fontSize: "12px",
+              width: "90px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="Go Live Now"
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = false;
+              setEventDescription(tempDescription);
+              saveEvent("live");
+            }}
+          />
+        </Aux>
+      )
+    } else {
+      return (
+        <Aux>
+          
               <Button
                 style={{
                   backgroundColor: 'white',
@@ -2494,26 +2788,47 @@ const EventCreation = () => {
                   saveEvent("saved");
                 }}
               />
-              <Button
+          <Button
+            style={{
+              backgroundColor: 'white',
+              border: "1px solid green",
+              color: "green",
+              fontSize: "12px",
+              width: "90px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="Update Live"
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = false;
+              setEventDescription(tempDescription);
+              saveEvent("live");
+            }}
+          />
+        </Aux>
+      )
+    }
+  }
+
+  const mainDisplay = () => {
+      return (
+        <div className={classes.MainContainer}>
+          <div className={classes.GridTitlePanel}>
+            <div className={classes.GridTitle}>
+              <div
                 style={{
-                  backgroundColor: 'white',
-                  border: "1px solid green",
-                  color: "green",
-                  fontSize: "12px",
-                  width: "90px",
-                  height: "30px",
-                  margin: "auto",
-                  textAlign: "center",
-                  padding: "0px",
-                }}
-                content="Go Live Now"
-                onClick={() => {
-                  let tempDescription = {...eventDescription };
-                  tempDescription.isDraft = false;
-                  setEventDescription(tempDescription);
-                  saveEvent("live");
-                }}
-              />
+                  paddingTop: "5px",
+                  fontSize: "30px",
+                  fontWeight: "600",
+                  }}>
+                  Edit Event
+              </div>
+              {currentStatus()}
+              {buttonDisplay()}
+
               <Button
                 style={{
                   backgroundColor: 'white',
@@ -2526,9 +2841,9 @@ const EventCreation = () => {
                   textAlign: "center",
                   padding: "0px",
                 }}
-                content="Cancel Create"
+                content="Cancel Edit"
                 onClick={() => {
-                  window.location.href = `/vendorevents`
+                  window.location.href = `/vendordashboard`
                 }}
               />
             </div>
@@ -2536,6 +2851,7 @@ const EventCreation = () => {
               {subTitleDisplay()}
             </div>
           </div>
+
 
           <div className={classes.MainGrid}>
             {savedModal()}
@@ -2782,7 +3098,6 @@ const EventCreation = () => {
                     {eventAdditionalWarning
                       ? displayMessage(256, eventDescription.locationNote)
                       : null}
-
                   </div>
                   <div className={classes.SectionTitleTight}>
                     Online Information
@@ -3030,7 +3345,7 @@ const EventCreation = () => {
     
               <div className={classes.SectionTitleTight}>Event Category</div>
               <div className={classes.InputBox}>
-                <CategorySelector
+              <CategorySelector
                   current={eventDescription.eventCategory}
                   //defaultValue="United States of America"
                   getCategory={changeCategory}
@@ -3168,6 +3483,8 @@ const EventCreation = () => {
                   </div>)
                   : null}
 
+                  
+    
               <div className={classes.SectionTitleTight}>
                 Social Media Event Description
               </div>
@@ -3310,10 +3627,6 @@ const EventCreation = () => {
                   Features
                 </div>
               </div>
-
-
-
-
               {ticketTypeDisplay()}
     
               <div
@@ -3368,9 +3681,10 @@ const EventCreation = () => {
   )
 };
 
-export default EventCreation;
+export default EventEdit;
 
 /*
+
         <div
           style={{
             height: "30px",
@@ -3390,7 +3704,6 @@ export default EventCreation;
             Currency
           </div>
         </div>
-        
 
         <div className={classes.InputBox}>
           <CurrencySelector
