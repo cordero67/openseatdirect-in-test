@@ -651,7 +651,7 @@ const loadEventInfo = (eventTix) => {
 
       tempTicketDetailsArray.forEach((ticket, index) => {
         console.log("ticket: ", ticket)
-
+        // look to delete this check because the check is already done above
         if (
           ticket.ticketName &&
           ticket.remainingQuantity &&
@@ -775,16 +775,11 @@ const loadEventInfo = (eventTix) => {
         console.log("Event was saved/went live");
         console.log("res: ", res);
       
-        if (!res.status && res.message) {
+        if (!res.status) {
           console.log("Inside: res.done ",res.done," res.message ", res.message)
           tempStatus.status = "error";
-          tempStatus.errorMessage = res.message;
-        //} else if(false && false) {
-        } else if(!res.status && !res.message) {
-          console.log("Inside: res.done ",res.done," res.message ", res.message)
-          tempStatus.status = "failure";
+          tempStatus.errorMessage = res.error;
         }
-        setEventStatus(tempStatus);
         return res;
       })
       .catch((err) => {

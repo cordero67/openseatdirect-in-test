@@ -9,6 +9,9 @@ import { Button, Popup } from "semantic-ui-react";
 import { PayPalButton } from "react-paypal-button-v2";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
+//import LogoC from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
+
+import NoFees from "../../assets/NoFees.png";
 
 import RadioForm from "./RadioForm";
 
@@ -999,16 +1002,27 @@ const inputPromoCode = () => {
                         <div className={classes.SummaryHeader}>
                             Congratulations, you are now ready to create your first event!!!
                         </div>
-                        <div style={{textAlign: "center", color: "red"}}>Summary of OSD benefits: cash now, control information, single dashboard.</div>
+
+                        <div style={{textAlign: "center"}}>OpenSeatDirect is reintroducing the somewhat lost tradition of selling tickets direct to your fans.</div>
                         <div className={classes.CompleteGrid}>
-                            <div>Cash Now!!!</div>
-                            <div>Own Your Data</div>
-                            <div>Single Dashboard</div>
+                            <div>Get Cash Now!!!</div>
+                            <div>Absolutely NO Fees</div>
+                            <div>Own All Your Data</div>
+                        </div>
+                        <div className={classes.CompleteGrid}>
+                            <div></div>
+                            <img
+                                src={NoFees}
+                                alt="OpenSeatDirect Logo"
+                                style={{width: "100%"}}
+                                //className={styleName}
+                            />
+                            <div></div>
                         </div>
                         <div className={classes.CompleteLowerGrid}>
-                            <div style={{ color: "red" }}>Cash Now summary.</div>
-                            <div style={{ color: "red" }}>Own Your Data summary.</div>
-                            <div style={{ color: "red" }}>Single Dashboard summary.</div>
+                            <div>Don't wait until after the event passes. Get paid on tickets you sell right away.</div>
+                            <div>We're not kidding. Customers NEVER pay any type extra fee.</div>
+                            <div>You get info on all transactions - buyer emails, transaction info and data all in one place. </div>
                         </div>
 
                         <div className={classes.SummaryHeader}>
