@@ -20,7 +20,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
-import { OrderConfirmTT, OrderConfirmTF } from "./OrderConfirms";
+import { OrderConfirmTT, OrderConfirmTF, FreeConfirmTT } from "./OrderConfirms";
 import styles from "./Order.module.css";
 
 // defines the variables that accept the "cart_" data from "localStorage"
@@ -106,6 +106,7 @@ const Checkout = props => {
 
   // transaction status variables
   const [paypalStatus, setPaypalStatus] = useState(false);
+  const [freeTicketStatus, setFreeTicketStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState(false);
 
   useEffect(() => {
@@ -410,6 +411,9 @@ const Checkout = props => {
 };
 
   const freeTicketHandler = () => {
+
+    console.log("transactionInfo: ",transactionInfo)
+
     console.log("Inside freeTicketHandler");
     let order = {};
     let ticketArray = [];
@@ -449,13 +453,15 @@ const Checkout = props => {
         return response.json()})
     .then ((data)=>{
         console.log ("fetch return got back data:", data);
+        onlyShowPurchaseConfirmation();
+        purchaseConfirmHandler();
     })
     .catch ((err)=>{
         console.log (err);
     })
-    .finally ();
-
-
+    .finally (() => {
+      setFreeTicketStatus(true)
+    });
 
     
   }
@@ -521,6 +527,10 @@ const Checkout = props => {
           transactionInfo={transactionInfo}
         ></OrderConfirmTF>
       );
+    //} else if (freeTicketStatus) {
+    } else if (freeTicketStatus) {
+      return (
+        <div>Congratulations your tickets are being sent to.</div> )
     } else {
       return (
         <Aux>
@@ -671,47 +681,48 @@ const Checkout = props => {
             </div>
           </div>
           { orderTotals.finalPurchaseAmount > 0 ? 
-            (<div style={EventTicketSection}>
-              <span className={styles.TicketType}>Payment Information</span>
-              <br></br>
-              <span className={styles.TicketTypeSmall}>
-                Select a Payment Method
-              </span>
-              <br></br>
-              <br></br>
-              {showPayPal}
-            </div>)
-            : 
-            (<div style={EventTicketSection}>
-              <span className={styles.TicketType}>Information</span>
-              <br></br>
-              <span className={styles.TicketTypeSmall}>
-                Provide the following to receive your free tickets
-              </span>
-              <br></br>
-              <br></br>
-              {freePayment}
-            </div>)       
-          }
-          { orderTotals.finalPurchaseAmount > 0 ?
             (
+            <Aux>
+              <div style={EventTicketSection}>
+                <span className={styles.TicketType}>Payment Information</span>
+                <br></br>
+                <span className={styles.TicketTypeSmall}>
+                  Select a Payment Method
+                </span>
+                <br></br>
+                <br></br>
+                {showPayPal}
+              </div>
               <div className={styles.EventFooterMod}>
                 <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
                 <div className={styles.TotalAmount}>
                   {totalAmount(showDoublePane)}
                 </div>
               </div>
+            </Aux>
             )
-          :
+            : 
             (
-              <div className={styles.EventFooter}>
-                <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
-                <div className={styles.TotalAmount}>
-                  {totalAmount(showDoublePane)}
+              <Aux>
+                <div style={EventTicketSection}>
+                  <span className={styles.TicketType}>Information</span>
+                  <br></br>
+                  <span className={styles.TicketTypeSmall}>
+                    Provide the following to receive your free tickets
+                  </span>
+                  <br></br>
+                  <br></br>
+                  {freePayment}
                 </div>
-                <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
-              </div>
-            )
+                <div className={styles.EventFooter}>
+                  <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
+                  <div className={styles.TotalAmount}>
+                    {totalAmount(showDoublePane)}
+                  </div>
+                  <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
+                </div>
+              </Aux>
+            )       
           }
         </div>
       </Aux>
