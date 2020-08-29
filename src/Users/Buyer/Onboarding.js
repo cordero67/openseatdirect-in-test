@@ -122,7 +122,9 @@ const Onboarding = (props) => {
     const radioChange = (event, value, name) => {
         let tempValues = { ...values };
         tempValues[name] = value.value;
+        console.log("tempValues: ", tempValues)
         setValues(tempValues);
+        console.log("values: ", values)
     };
 
     const ticketPlans = [
@@ -217,6 +219,14 @@ const Onboarding = (props) => {
                             })
                             .then((response) => {// first show a success model with a continue button to go to paypal clientId model 
                                 console.log("response: ", response);
+
+                                console.log ("fetch return got back data on organization:", response);
+                                    
+                                let tempData = JSON.parse(localStorage.getItem("user"));
+                                console.log("tempData: ", tempData)
+                                tempData.user.accountId = response.result;
+                                localStorage.setItem("user", JSON.stringify(tempData));
+
                                 setPageView("receipt");
                                 //return response.json();
                             }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
@@ -414,7 +424,7 @@ const Onboarding = (props) => {
                                 color: "green",
                                 padding: "0px"
                             }}
-                            disabled={accountName === ""}
+                            disabled={!accountName}
                             content="Submit"
                             onClick={() => {
                                 console.log("hit the button")
@@ -444,7 +454,7 @@ const Onboarding = (props) => {
                                     console.log ("then response: ", response);
                                     return response.json()})
                                 .then ((data)=>{
-                                    console.log ("fetch return got back data:", data);
+                                    console.log ("fetch return got back data on organization:", data);
                                     
                                     let tempData = JSON.parse(localStorage.getItem("user"));
                                     console.log("tempData: ", tempData)
@@ -535,7 +545,7 @@ const Onboarding = (props) => {
                                     padding: "0px"
                                 }}
                                 content="Submit"
-                                disabled={ticketPlan === ""}
+                                disabled={ticketPlan === "tbd"}
                                 onClick={() => {
                                     if (ticketPlan === "free") {
                                         let url=  `${API}/account/${props.userid}`;
@@ -553,7 +563,7 @@ const Onboarding = (props) => {
                                             console.log ("then response: ", response);
                                             return response.json()})
                                         .then ((data)=>{
-                                            console.log ("fetch return got back data:", data);
+                                            console.log ("fetch return got back data on Free ticket:", data);
                                     
                                             let tempData = JSON.parse(localStorage.getItem("user"));
                                             console.log("tempData: ", tempData)
@@ -958,10 +968,7 @@ const inputPromoCode = () => {
                                         color: "green",
                                         padding: "0px"
                                     }}
-                                    disabled={
-                                        paypalExpress_client_id === ""
-                                        || paypalExpress_client_secret === ""
-                                    }
+                                    disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
                                     content="Submit"
                                     onClick={() => {
                                         let url = `${API}/account/${props.userid}`;
@@ -982,13 +989,14 @@ const inputPromoCode = () => {
                                             console.log ("then response: ", response);
                                             return response.json()})
                                         .then ((data)=>{
-                                            console.log ("fetch return got back data:", data);
+                                            console.log ("fetch return got back data on PayPal:", data);
                                             
                                             let tempData = JSON.parse(localStorage.getItem("user"));
                                             console.log("tempData: ", tempData)
                                             tempData.user.accountId = data.result;
                                             localStorage.setItem("user", JSON.stringify(tempData));
 
+                                            
                                             if (data.status){
                                                 switch (data.result.status){
                                                     case(4): 

@@ -68,6 +68,18 @@ const SideDrawerItems = (props) => {
         </li>
       ) : null}
 
+      {isAuthenticated() && (getStatus() !== 7 && getStatus() !== 8) ? (
+        <li>
+          <NavLink
+            to="/buyerdashboard"
+            style={isActive(props.currentPage, "/buyerdashboard")}
+            onClick={props.clicked}
+          >
+            DASHBOARD
+          </NavLink>
+        </li>
+      ) : null}
+
       <li>
         <div className={classes.Title}>
           <div>OPENSEATDIRECT</div>
