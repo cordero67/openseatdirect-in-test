@@ -212,7 +212,6 @@ const Events = (props) => {
         } else if (!isLoading && isSuccessfull) {
             return (
                 <div style={{ textAlign: "center", fontSize: "20px" }}>
-                    
                     <br></br>You currently have no events.
                 </div>
             )

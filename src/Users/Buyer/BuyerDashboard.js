@@ -43,12 +43,22 @@ const BuyerDashboard = () => {
 
 const MainDisplay = () => {
   if(!isLoading) {
+    if (paneView === "profile") {
+      return (
+        <Profile
+          loading={isLoading}
+          name={buyerInfo.name}
+          email={buyerInfo.email}
+        />
+      )
+    } else if (paneView === "onboarding") {
       return (
         <Onboarding
           userid={buyerInfo.id}
           token={buyerInfo.token}
         />
       )
+    }
   } else {
     return null
   }

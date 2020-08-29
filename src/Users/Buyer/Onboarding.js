@@ -41,7 +41,7 @@ const Onboarding = (props) => {
     const [preFetchView, setPreFetchView] = useState("")
     const [loading, setLoading ] = useState("false")
 
-    const [isDisabled, setIsDisabled] = useState(false)
+    //const [isDisabled, setIsDisabled] = useState(true)
     const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypal_plan_id, paypalExpress_client_id, paypalExpress_client_secret } = values;
 
     const getStatus= () =>{ 
@@ -54,7 +54,7 @@ const Onboarding = (props) => {
             return 0;
         } 
     }
-/*
+
     const updatePageView = () =>{
         if (getStatus() === 0) {
             setPageView("summary")
@@ -68,7 +68,6 @@ const Onboarding = (props) => {
             setPageView("completed")
         };
     }
-    */
 
     const updateValues = () => {
         let tempUser = JSON.parse(localStorage.getItem("user"));
@@ -99,7 +98,7 @@ const Onboarding = (props) => {
             let tempUser2 = JSON.parse(localStorage.getItem("user"));
             console.log("tempUser2: ", tempUser2)
             updateValues();
-            //updatePageView();
+            updatePageView();
         } else {
             window.location.href = "/signin";
         }
@@ -415,11 +414,11 @@ const Onboarding = (props) => {
                                 color: "green",
                                 padding: "0px"
                             }}
-                            disabled={isDisabled}
+                            disabled={accountName === ""}
                             content="Submit"
                             onClick={() => {
                                 console.log("hit the button")
-                                setIsDisabled(true);
+                                //setIsDisabled(false);
                                 let methodType;
                                 if (getStatus() === 0) {
                                     methodType="POST";
@@ -476,7 +475,7 @@ const Onboarding = (props) => {
                                     console.log (err);
                                     setPageView("error");
                                 })
-                                .finally (() => setIsDisabled(false));
+                                //.finally (() => setIsDisabled(false));
                             }}
                         />
                     </div>
@@ -536,7 +535,7 @@ const Onboarding = (props) => {
                                     padding: "0px"
                                 }}
                                 content="Submit"
-                                disabled={!ticketPlan}
+                                disabled={ticketPlan === ""}
                                 onClick={() => {
                                     if (ticketPlan === "free") {
                                         let url=  `${API}/account/${props.userid}`;
@@ -868,7 +867,7 @@ const inputPromoCode = () => {
                                     content="Continue"
                                     onClick={() => {
                                         // UNDELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
-                                        //updatePageView();
+                                        updatePageView();
                                         // DELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
                                         setPageView("paypal")
                                         console.log("pageView: ", pageView)
@@ -896,7 +895,7 @@ const inputPromoCode = () => {
                             <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Explanation text. This is how you can get paid immediately upon each ticket sale, etc...</div>
                             <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Link to video.</div>
                             <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Link to word document.</div>
-                            <div  className={classes.VendorCanvas}>
+                            <div  className={classes.PaypalCanvas}>
                                 <div className="form-group">
                                     <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
                                     <Popup
@@ -959,9 +958,12 @@ const inputPromoCode = () => {
                                         color: "green",
                                         padding: "0px"
                                     }}
+                                    disabled={
+                                        paypalExpress_client_id === ""
+                                        || paypalExpress_client_secret === ""
+                                    }
                                     content="Submit"
                                     onClick={() => {
-
                                         let url = `${API}/account/${props.userid}`;
                                         let fetcharg ={
                                             method: "PATCH",

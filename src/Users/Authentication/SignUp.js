@@ -53,11 +53,12 @@ const SignUp = () => {
   };
 
   const showSuccess = (
-    <div
-      className="alert alert-info"
-    >
-      To complete the sign-up process, please click the link in the e-mail sent to {values.confirmEmail}.
-        <Link to="/signin">Signin</Link>
+    <div>
+      <div>To complete the sign-up process, please click the link in the e-mail sent to your inbox:</div>
+      <br></br>
+      <div>{values.email}.</div>
+      <br></br>
+      <div>Back to <Link to="/signin" style={{color: "blue"}}>Signin</Link></div>
     </div>
   );
 

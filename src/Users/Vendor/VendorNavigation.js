@@ -6,7 +6,7 @@ import classes from "./VendorDashboard.module.css";
 
 import { signout } from '../apiUsers';
 
-const BuyerNavigation = (props) => {
+const VendorNavigation = (props) => {
 
   console.log("props: ", props);
   
@@ -21,7 +21,7 @@ const BuyerNavigation = (props) => {
                 verticalAlign: "middle",
                 lineHeight: "normal",
               }}>
-              Rafael Cordero
+              {props.buyerInfo.name}
             </span> :
             "Dashboard"}
       </div>
@@ -124,4 +124,4 @@ const BuyerNavigation = (props) => {
   );
 };
 
-export default BuyerNavigation;
+export default VendorNavigation;

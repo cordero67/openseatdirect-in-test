@@ -5,8 +5,8 @@ import dateFnsFormat from 'date-fns/format';
 import { API } from "../config";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
-import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
-import { extractImageFileExtensionFromBase64 } from "../ImgDropAndCrop/ResuableUtils";
+import ImgDropAndCrop from "./ImgDropAndCrop/ImgDropAndCrop";
+import { extractImageFileExtensionFromBase64 } from "./ImgDropAndCrop/ResuableUtils";
 import { Editor } from "@tinymce/tinymce-react";
 import CountrySelector from "./Selectors/CountrySelector";
 import TimeSelector from "./Selectors/TimeSelector";

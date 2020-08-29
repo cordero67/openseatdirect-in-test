@@ -3,10 +3,7 @@ import { NavLink } from "react-router-dom";
 import dateFormat from "dateformat";
 import queryString from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faShoppingCart,
-  faCheckCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import { getEventData, getEventImage } from "./apiCore";
@@ -81,6 +78,8 @@ const TicketSelection = () => {
   const [orderTotals, setOrderTotals] = useState([]);
 
   useEffect(() => {
+
+
     eventData(queryString.parse(window.location.search).eventID);
     // determines a one or two pane display based on initial window width
     stylingUpdate(window.innerWidth, window.innerHeight);
@@ -133,8 +132,10 @@ const TicketSelection = () => {
           console.log("res: ", res);
 
           setTicketInfo(loadTicketInfo(res));
+
           setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
           setOrderTotals(loadOrderTotals(res));
+
         }
 
         // CURRENTLY ASKS FOR IMAGE SEPARATELY< IS THIS WHAT WE WANT TO DO?
@@ -142,7 +143,6 @@ const TicketSelection = () => {
         getEventImage(eventID)
           .then((res) => {
             eventLogo = res;
-            console.log("eventLogo: ", eventLogo)
           })
           .catch((err) => {
             eventLogo = DefaultLogo;
@@ -168,6 +168,7 @@ const TicketSelection = () => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
+
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
   const updateOrderTotals = (promoCode) => {
     setOrderTotals(changeOrderTotals(ticketInfo, orderTotals, promoCode));
@@ -177,9 +178,7 @@ const TicketSelection = () => {
   const applyPromoCodeHandler = (event, inputtedPromoCode) => {
     event.preventDefault();
     if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
-      setPromoCodeDetails(
-        amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails)
-      );
+      setPromoCodeDetails(amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails));
       setTicketInfo(amendTicketInfo(inputtedPromoCode, ticketInfo));
       updateOrderTotals(inputtedPromoCode);
     } else {
@@ -196,6 +195,9 @@ const TicketSelection = () => {
     setTicketInfo(clearTicketInfo(ticketInfo)); // I THINK THIS IS CORRECT!!!
     setOrderTotals(clearOrderTotals(ticketInfo, orderTotals)); // I THINK THIS IS CORRECT!!!
   };
+
+
+
 
   const inputPromoCode = () => {
     if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
@@ -430,7 +432,6 @@ const TicketSelection = () => {
 
   // stores "orderTotals" and "eventLogo" in "localStorage"
   const purchaseTicketHandler = (event) => {
-    console.log("inside purchaseTicketHandler")
     if (typeof window !== "undefined") {
       console.log("inside defined sectionpurchaseTicketHandler")
       localStorage.setItem(
@@ -528,6 +529,7 @@ const TicketSelection = () => {
     }
   };
 
+
   // creates ticket pane with promo form and ticket sections
   const ticketPane = () => {
     return (
@@ -589,7 +591,7 @@ const TicketSelection = () => {
         );
       }
     }
-  };
+  };  
 
   return (
     <Aux>

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
+import ImgDropAndCrop from "./ImgDropAndCrop/ImgDropAndCrop";
 import { Editor } from "@tinymce/tinymce-react";
 import DateSelector from "./DateSelector";
 import CountrySelector from "./Selectors/CountrySelector";

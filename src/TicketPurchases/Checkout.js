@@ -14,7 +14,7 @@ import {
   EventTicketSectionStyling,
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling
-} from "./StylingOLD";
+} from "./Styling";
 import { expressPaymentOnSuccess } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";

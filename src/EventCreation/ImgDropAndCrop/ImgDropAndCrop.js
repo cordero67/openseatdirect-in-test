@@ -6,7 +6,7 @@ import './custom-image-crop.css';
 
 
 import Backdrop from './Backdrop';
-import Aux from "../hoc/Auxiliary/Auxiliary";
+import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import classes from "./Backdrop.module.css";
 

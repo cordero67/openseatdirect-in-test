@@ -277,6 +277,18 @@
   box-sizing: border-box;
 }
 
+.PaypalCanvas {
+  background-color: white;
+  border: 1px solid grey;
+  margin: auto;
+  width: 750px;
+  padding: 30px 40px;
+  text-align: left;
+  scrollbar-width: thin;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
 .CompleteCanvas {
   background-color: white;
   border: 1px solid grey;
