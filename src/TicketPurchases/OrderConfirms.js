@@ -351,134 +351,134 @@ export const FreeConfirmTT = props => {
     )}</Aux>
   }
 
-const eventLocation = () => {
-let cityState;
-if (props.transactionInfo.city && props.transactionInfo.state) {
-  cityState = `${props.transactionInfo.city}, ${props.transactionInfo.state}`
-} else if (props.transactionInfo.city) {
-  cityState = `${props.transactionInfo.city}`
-} else if (props.transactionInfo.state) {
-  cityState = `${props.transactionInfo.state}`
-}
+  const eventLocation = () => {
+    let cityState;
+    if (props.transactionInfo.city && props.transactionInfo.state) {
+      cityState = `${props.transactionInfo.city}, ${props.transactionInfo.state}`
+    } else if (props.transactionInfo.city) {
+      cityState = `${props.transactionInfo.city}`
+    } else if (props.transactionInfo.state) {
+      cityState = `${props.transactionInfo.state}`
+    }
 
-return (
-  <div>
-    <div>
-      {props.transactionInfo.eventTitle}
-    </div>
-    <div>
-      {dateRange}
-    </div>
-    <div>
-      {props.transactionInfo.dateTime}
-    </div>
-    <div>
-      {props.transactionInfo.venue}
-    </div>
-    <div>
-      {props.transactionInfo.address1}
-    </div>
-    <div>
-      {cityState}
-    </div>
-    <div>
-      {props.transactionInfo.zipPostalCode}
-    </div>
-  </div>
-)
-}
-
-const webinarLink = (
-  <div>
-    <div style={{ textDecoration: "underline", fontWeight: "600" }}>Webinar Link</div>
-    <div>{props.transactionInfo.webinarLink}</div>
-  </div>
-)
-
-const eventDetails = () => {
     return (
       <div>
-        {eventLocation()}
-        <br></br>
-        {props.transactionInfo.webinarLink ? 
-          webinarLink :
-          null}
-        <br></br>
+        <div>
+          {props.transactionInfo.eventTitle}
+        </div>
+        <div>
+          {dateRange}
+        </div>
+        <div>
+          {props.transactionInfo.dateTime}
+        </div>
+        <div>
+          {props.transactionInfo.venue}
+        </div>
+        <div>
+          {props.transactionInfo.address1}
+        </div>
+        <div>
+          {cityState}
+        </div>
+        <div>
+          {props.transactionInfo.zipPostalCode}
+        </div>
       </div>
     )
-}
+  }
 
-return (
-  <Aux>
-    <span className={styles.SubSectionHeader}>Order Confirmation</span>
-    <br></br>
-    <br></br>
-    <div className={styles.SubBody}>
-      <div>
-        Thank you {props.transactionInfo.firstName}{" "}
-        {props.transactionInfo.lastName}, your order was received and is in
-        process.
-        <br></br>
-        <br></br>
-        <div style={{ paddingLeft: "30px" }}>
-          <span style={{ textDecoration: "underline", fontWeight: "600" }}>
-            Event Details
+  const webinarLink = (
+    <div>
+      <div style={{ textDecoration: "underline", fontWeight: "600" }}>Webinar Link</div>
+      <div>{props.transactionInfo.webinarLink}</div>
+    </div>
+  )
+
+  const eventDetails = () => {
+      return (
+        <div>
+          {eventLocation()}
+          <br></br>
+          {props.transactionInfo.webinarLink ? 
+            webinarLink :
+            null}
+          <br></br>
+        </div>
+      )
+  }
+
+  return (
+    <Aux>
+      <span className={styles.SubSectionHeader}>Order Confirmation</span>
+      <br></br>
+      <br></br>
+      <div className={styles.SubBody}>
+        <div>
+          Thank you {props.transactionInfo.firstName}{" "}
+          {props.transactionInfo.lastName}, your order was received and is in
+          process.
+          <br></br>
+          <br></br>
+          <div style={{ paddingLeft: "30px" }}>
+            <span style={{ textDecoration: "underline", fontWeight: "600" }}>
+              Event Details
+            </span>
+            <br></br>
+            {eventDetails()}
+          </div>
+          <div style={{ paddingLeft: "30px" }}>
+            <span style={{ textDecoration: "underline", fontWeight: "600" }}>
+              Order Details
+            </span>
+            <br></br>
+            Total Number of Tickets: {props.transactionInfo.numTickets}
+            <br></br>
+            {props.transactionInfo.tickets.map(item => {
+              return item.ticketsSelected > 0 ? (
+                <div key={item.ticketID}>
+                  {item.ticketsSelected} X {item.ticketName}: $
+                  {item.ticketsSelected * item.adjustedTicketPrice}
+                </div>
+              ) : null;
+            })}
+            Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
+          </div>
+          <br></br>
+          OpenSeatDirect will be sending you a message to your email:{" "}
+          <span style={{ color: "blue", fontWeight: "600" }}>
+            {props.transactionInfo.email}
           </span>
           <br></br>
-          {eventDetails()}
-        </div>
-        <div style={{ paddingLeft: "30px" }}>
-          <span style={{ textDecoration: "underline", fontWeight: "600" }}>
-            Order Details
-          </span>
           <br></br>
-          Total Number of Tickets: {props.transactionInfo.numTickets}
-          <br></br>
-          {props.transactionInfo.tickets.map(item => {
-            return item.ticketsSelected > 0 ? (
-              <div key={item.ticketID}>
-                {item.ticketsSelected} X {item.ticketName}: $
-                {item.ticketsSelected * item.adjustedTicketPrice}
-              </div>
-            ) : null;
-          })}
-          Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
+          This email will contain a pdf of your ticket(s) to print-at-home or to
+          display on your mobile device.
         </div>
-        <br></br>
-        OpenSeatDirect will be sending you a message to your email:{" "}
-        <span style={{ color: "blue", fontWeight: "600" }}>
-          {props.transactionInfo.paypalEmail}
-        </span>
-        <br></br>
-        <br></br>
-        This email will contain a pdf of your ticket(s) to print-at-home or to
-        display on your mobile device.
       </div>
-    </div>
-    <br></br>
-    <br></br>
-    <div style={{textAlign: "center"}}>
-      <Button
-        style={{
-          backgroundColor: 'white',
-          border: "1px solid blue",
-          color: "blue",
-          fontSize: "14px",
-          fontWeigth: "600",
-          width: "127px",
-          height: "44px",
-          margin: "auto",
-          textAlign: "center",
-          padding: "0px"
-        }}
-        content="Continue"
-        onClick={() => {
-          window.location.href = "/events";
-        }}
-      />
-    </div>
-  </Aux>
-);
+      <br></br>
+      <br></br>
+      <div style={{textAlign: "center"}}>
+        <Button
+          style={{
+            backgroundColor: 'white',
+            border: "1px solid blue",
+            color: "blue",
+            fontSize: "14px",
+            fontWeigth: "600",
+            width: "127px",
+            height: "44px",
+            margin: "auto",
+            textAlign: "center",
+            padding: "0px"
+          }}
+          content="Continue"
+          onClick={() => {
+            window.location.href = "/events";
+          }}
+        />
+      </div>
+    </Aux>
+  );
 };
 
 export const OrderConfirmationFF = props => {

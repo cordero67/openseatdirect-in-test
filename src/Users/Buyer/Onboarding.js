@@ -288,13 +288,13 @@ const Onboarding = (props) => {
                     </div>
                     <div className={classes.CompleteLowerGrid}>
                         <div>Don't wait until after the event passes. Get paid on tickets you sell right away.</div>
-                        <div>We're not kidding. Your customers NEVER pay any type extra fee.</div>
+                        <div>We're not kidding. Your customers NEVER pay any type of extra fee.</div>
                         <div>Control all transaction and ticket buyer data from a single location. </div>
                     </div>
                 <div className={classes.SummaryHeader}>
                     3 easy steps to start selling tickets and receiving your cash now!!!
                 </div>
-                <div className={classes.SummaryGrid}
+                <div className={classes.SummaryGridTitle}
                     style={{ fontWeight: "600"}}>
                     <div>STEP 1</div>
                     <div>STEP 2</div>
@@ -313,6 +313,7 @@ const Onboarding = (props) => {
                 <div className={classes.SummaryHeader}>
                     If you have 10 minutes to spare, you have time to sign up now.
                 </div>
+                <br></br>
                 <Button className={classes.SummaryButton}
                     style={{
                         backgroundColor: "white",
@@ -1041,45 +1042,52 @@ const inputPromoCode = () => {
                             }}
                             >STEP 3: Create an Event
                         </div>
-                        <div className={classes.SummaryHeader}>
-                            Congratulations, you are now ready to create your first event!!!
+                        <div className={classes.CompleteHeaderLine1}>
+                            Congratulations, you are now ready to create your first event and
                         </div>
 
-                        <div className={classes.SummaryHeader}>OpenSeatDirect reintroduces the lost tradition of selling tickets direct to your fans.</div>
-                        <div className={classes.CompleteUpperGrid}>
-                            <div>Get Cash Now!!!</div>
-                            <div>Absolutely NO Fees</div>
-                            <div>Own All Your Data</div>
-                        </div>
-                        <div className={classes.CompleteMiddleGrid}>
-                            <img
-                                src={CashNow}
-                                alt="OpenSeatDirect Logo"
-                                style={{width: "100%"}}
-                                //className={styleName}
-                            />
-                            <img
-                                src={NoFees}
-                                alt="OpenSeatDirect Logo"
-                                style={{width: "100%"}}
-                                //className={styleName}
-                            />
-                            <img
-                                src={SingleLocation}
-                                alt="OpenSeatDirect Logo"
-                                style={{width: "100%"}}
-                                //className={styleName}
-                            />
-                        </div>
-                        <div className={classes.CompleteLowerGrid}>
-                            <div>Don't wait until after the event passes. Get paid on tickets you sell right away.</div>
-                            <div>We're not kidding. Your customers NEVER pay any type extra fee.</div>
-                            <div>Control all transaction and ticket buyer data from a single location. </div>
+                        <div className={classes.CompleteHeaderLine2}>
+                            enjoy the benefits that OpenSeatDirect provides.
                         </div>
 
+                        <div className={classes.CompleteCanvas}>
+
+                            <div className={classes.RightSkewedGrid}>
+                                <div style={{paddingTop: "10px"}}>Receive the proceeds from all sales immediately!!!</div>
+                                <img
+                                    src={CashNow}
+                                    alt="OpenSeatDirect Logo"
+                                    style={{height: "100%"}}
+                                    //className={styleName}
+                                />
+                            </div>
+
+                            <div className={classes.LeftSkewedGrid}>
+                                <img
+                                    src={NoFees}
+                                    alt="OpenSeatDirect Logo"
+                                    style={{height: "100%"}}
+                                    //className={styleName}
+                                />
+                                <div style={{paddingTop: "10px"}}>You customers never face any type of ticket fee.</div>
+                            </div>
+
+                            <div className={classes.RightSkewedGrid}>
+                                <div style={{paddingTop: "10px"}}>You own all transaction and customer data.</div>
+                                <img
+                                    src={SingleLocation}
+                                    alt="OpenSeatDirect Logo"
+                                    style={{height: "100%"}}
+                                    //className={styleName}
+                                />
+                            </div>
+
+                        </div>
+                        
                         <div className={classes.SummaryHeader}>
                         So are you ready to create your first event?
                         </div>
+                <br></br>
                         <div style={{textAlign: "center"}}>
                             <Button className={classes.SummaryButton}
                                 style={{

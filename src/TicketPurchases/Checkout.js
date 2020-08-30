@@ -408,12 +408,40 @@ const Checkout = props => {
         throw Error(response.status);
     }
     return response;
-};
+  };
 
   const freeTicketHandler = () => {
+    setFreeTicketStatus(true);
+    console.log("freeTicketStatus inside 'freeTicketHandler': ", freeTicketStatus);
 
     console.log("transactionInfo: ",transactionInfo)
-
+    transactionInfo = {
+      eventTitle: eventDetails.eventTitle,//
+      eventType: eventDetails.eventType,//
+      venue: eventDetails.locationVenueName,//
+      address1: eventDetails.locationAddress1,//
+      address2: eventDetails.locationAddress2,//
+      city: eventDetails.locationCity,//
+      state: eventDetails.locationState,//
+      zipPostalCode: eventDetails.locationZipPostalCode,//
+      countryCode: eventDetails.locationCountryCode,//
+      locationNote: eventDetails.locationNote,//
+      webinarLink: eventDetails.webinarLink,//
+      onlineInformation: eventDetails.onlineInformation,//
+      tbaInformation: eventDetails.tbaInformation,//
+      startDateTime: eventDetails.startDateTime,//
+      endDateTime: eventDetails.endDateTime,//
+      timeZone: eventDetails.timeZone,
+      email: contactInformation.email,
+      firstName: contactInformation.firstName,
+      lastName: contactInformation.lastName,
+      numTickets: orderTotals.ticketsPurchased,
+      fullAmount: orderTotals.fullPurchaseAmount,
+      discount: orderTotals.discountAmount,
+      totalAmount: orderTotals.finalPurchaseAmount,
+      tickets: ticketInfo,
+      organizerEmail: eventDetails.organizerEmail,
+    };
     console.log("Inside freeTicketHandler");
     let order = {};
     let ticketArray = [];
@@ -453,17 +481,16 @@ const Checkout = props => {
         return response.json()})
     .then ((data)=>{
         console.log ("fetch return got back data:", data);
+        setOrderStatus(true);
+        console.log("Order status: ", orderStatus);
         onlyShowPurchaseConfirmation();
         purchaseConfirmHandler();
     })
-    .catch ((err)=>{
-        console.log (err);
+    .catch ((error)=>{
+        console.log("freeTicketHandler() error.message: ", error.message);
+        onlyShowPurchaseConfirmation();
+        purchaseConfirmHandler();
     })
-    .finally (() => {
-      setFreeTicketStatus(true)
-    });
-
-    
   }
 
   const freePayment = (
@@ -528,10 +555,17 @@ const Checkout = props => {
         ></OrderConfirmTF>
       );
     //} else if (freeTicketStatus) {
-    } else if (freeTicketStatus) {
+    } else if (freeTicketStatus && orderStatus) {
       return (
-        <div>Congratulations your tickets are being sent to.</div> )
-    } else {
+        <FreeConfirmTT
+          transactionInfo={transactionInfo}
+        ></FreeConfirmTT>
+      )
+    } else if (freeTicketStatus && !orderStatus) {
+      return (
+        <div>Problem with OSD Server in processing your tickets</div>
+      )
+    }  else {
       return (
         <Aux>
           <span className={styles.SubSectionHeader}>Order Rejection</span>
