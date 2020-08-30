@@ -1069,7 +1069,7 @@ const inputPromoCode = () => {
                                     style={{height: "100%"}}
                                     //className={styleName}
                                 />
-                                <div style={{paddingTop: "10px"}}>You customers never face any type of ticket fee.</div>
+                                <div style={{paddingTop: "10px"}}>Your customers never face any type of ticket fee.</div>
                             </div>
 
                             <div className={classes.RightSkewedGrid}>

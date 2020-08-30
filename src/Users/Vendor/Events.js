@@ -110,6 +110,7 @@ const Events = (props) => {
 
     const mainDisplay = () => {
         if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
+            console.log("eventDescriptions.length: ", eventDescriptions.length)
             return (
                 <div>
                     <br></br>
@@ -210,6 +211,8 @@ const Events = (props) => {
                 </div>
             )
         } else if (!isLoading && isSuccessfull) {
+            console.log("eventDescriptions.length: zero: ", eventDescriptions.length);
+            console.log("zero events");
             return (
                 <div style={{ textAlign: "center", fontSize: "20px" }}>
                     <br></br>You currently have no events.
