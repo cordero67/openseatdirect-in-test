@@ -69,12 +69,26 @@
     border-right: 1px solid lightgrey;
 }
 
+.ButtonGreen {
+    height: 44px;
+    width: 127px;
+    background-color: green;
+    color: white;
+    font-weight: 600;
+    border: 1px solid grey;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+
 .ButtonRed {
     height: 44px;
     width: 127px;
     background-color: red;
     color: white;
-    fontweight: 600;
+    font-weight: 600;
     border: 1px solid grey;
     border-radius: 8px;
     -webkit-border-radius: 8px;
@@ -87,7 +101,7 @@
     width: 127px;
     background-color: #e7e7e7;
     color: black;
-    fontweight: 600;
+    font-variant-east-asian: 600;
     border: 1px solid grey;
     border-radius: 8px;
     -webkit-border-radius: 8px;

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Route, Redirect } from "react-router-dom";
+import React from "react";
+import { Redirect } from "react-router-dom";
 
 import { isAuthenticated } from "../../Users/apiUsers";
 
@@ -19,8 +19,8 @@ const PrivateRoute = ({ component: Component, role: role }) => {
         <Component />
       </React.Fragment>
     );
-  } else if (isAuthenticated().user.role === 2) {
-    return <Redirect to="/admindashboard" />;
+  //} else if (isAuthenticated().user.role === 2) {
+  //  return <Redirect to="/admindashboard" />;
   } else if (isAuthenticated().user.role === 1) {
     return <Redirect to="/vendorevents" />;
   } else if (isAuthenticated().user.role === 0) {

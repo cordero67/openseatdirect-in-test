@@ -2,7 +2,8 @@ import { API } from "../config";
 import { each, isObject } from "underscore";
 
 const handleErrors = response => {
-  //console.log("Inside 'apiCore' 'handleErrors()'", response);
+  console.log("Inside 'apiCore' 'handleErrors()'", response);
+  console.log("Inside 'apiCore' 'handleErrors()'");
   //console.log("json response: ", expandedLog(response, 1));
   if (!response.ok) {
     //console.log("response was false!");
@@ -98,6 +99,7 @@ export const expressPaymentOnSuccess = paymentTicketData => {
     })
       .then(handleErrors)
       .then(response => {
+        //console.log("response: ", response)
         return response.json();
       })
       // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN

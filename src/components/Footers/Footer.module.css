@@ -5,9 +5,10 @@
   height: 50px;
   width: 100%;
   box-sizing: border-box;
-  z-index: 9999;
+  z-index: 500;
   top: 0;
   left: 0;
+  bottom: 0;
   display: grid;
   grid-template-columns: 80px auto;
 }

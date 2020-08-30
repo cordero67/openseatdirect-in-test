@@ -74,6 +74,8 @@
 .EventFooter {
   display: grid;
   grid-template-columns: auto 80px 130px;
+  padding-left: 15px;
+  padding-right: 15px;
   padding-top: 18px;
   padding-bottom: 18px;
   border-top: 1px solid lightgrey;
@@ -202,7 +204,7 @@
   width: 127px;
   background-color: red;
   color: white;
-  fontweight: 600;
+  font-weight: 600;
   border: 1px solid grey;
   border-radius: 8px;
   -webkit-border-radius: 8px;
@@ -213,9 +215,9 @@
 .ButtonGreen {
   height: 44px;
   width: 127px;
-  background-color: #4caf50;
+  background-color: green;
   color: white;
-  fontweight: 600;
+  font-weight: 600;
   border: 1px solid grey;
   border-radius: 8px;
   -webkit-border-radius: 8px;
@@ -228,7 +230,7 @@
   width: 127px;
   background-color: #e7e7e7;
   color: black;
-  fontweight: 600;
+  font-weight: 600;
   border: 1px solid grey;
   border-radius: 8px;
   -webkit-border-radius: 8px;
@@ -398,10 +400,6 @@
     padding-left: 15px;
     padding-right: 10px;
   }
-  .EventFooter {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
   .EventFooterMod {
     padding-left: 15px;
     padding-right: 15px;
@@ -471,10 +469,6 @@
     padding-left: 25px;
     padding-right: 25px;
   }
-  .EventFooter {
-    padding-left: 25px;
-    padding-right: 25px;
-  }
   .EventFooterMod {
     padding-left: 25px;
     padding-right: 25px;
@@ -541,8 +535,8 @@
     padding-right: 80px;
   }
   .EventFooter {
-    padding-left: 80px;
-    padding-right: 80px;
+    padding-left: 50px;
+    padding-right: 50px;
   }
   .EventFooterMod {
     padding-left: 80px;
@@ -689,10 +683,6 @@
     padding-left: 25px;
     padding-right: 25px;
   }
-  .EventFooter {
-    padding-left: 25px;
-    padding-right: 25px;
-  }
   .EventFooterMod {
     padding-left: 25px;
     padding-right: 25px;
@@ -774,8 +764,8 @@
     padding-right: 80px;
   }
   .EventFooter {
-    padding-left: 80px;
-    padding-right: 80px;
+    padding-left: 50px;
+    padding-right: 50px;
   }
   .EventFooterMod {
     padding-left: 80px;

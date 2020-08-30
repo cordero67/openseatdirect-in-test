@@ -20,6 +20,22 @@ const isActive = (page, path) => {
   }
 };
 
+const getStatus= () =>{ 
+  let tempData = JSON.parse(localStorage.getItem("user"));
+  //console.log("tempData: ", tempData)
+  //console.log("tempData.user: ", tempData.user)
+  //console.log("tempData.user.accountId: ", tempData.user.accountId)
+  //console.log("tempData.user.accountId.status: ", tempData.user.accountId.status)
+  if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
+    console.log("tempData.accountId.status: ", tempData.user.accountId.status)
+    return tempData.user.accountId.status}
+  else {
+    console.log("returns 0")
+    return 0;
+  } 
+}
+
+
 const SideDrawerItems = (props) => {
   const [showSubItems, setShowSubItems] = useState(false);
 
@@ -29,6 +45,7 @@ const SideDrawerItems = (props) => {
 
   return (
     <ul className={classes.SideItems}>
+
       <li>
         <NavLink
           to="/events"
@@ -39,11 +56,11 @@ const SideDrawerItems = (props) => {
         </NavLink>
       </li>
 
-      {isAuthenticated() && isAuthenticated().user.role === 2 ? (
+      {isAuthenticated() && (getStatus() === 7 || getStatus() === 8) ? (
         <li>
           <NavLink
-            to="/adminevents"
-            style={isActive(props.currentPage, "/adminevents")}
+            to="/vendordashboard"
+            style={isActive(props.currentPage, "/vendordashboard")}
             onClick={props.clicked}
           >
             DASHBOARD
@@ -51,23 +68,11 @@ const SideDrawerItems = (props) => {
         </li>
       ) : null}
 
-      {isAuthenticated() && isAuthenticated().user.role === 1 ? (
+      {isAuthenticated() && (getStatus() !== 7 && getStatus() !== 8) ? (
         <li>
           <NavLink
-            to="/vendorevents"
-            style={isActive(props.currentPage, "/vendorevents")}
-            onClick={props.clicked}
-          >
-            DASHBOARD
-          </NavLink>
-        </li>
-      ) : null}
-
-      {isAuthenticated() && isAuthenticated().user.role === 0 ? (
-        <li>
-          <NavLink
-            to="/userdashboard"
-            style={isActive(props.currentPage, "/userdashboard")}
+            to="/buyerdashboard"
+            style={isActive(props.currentPage, "/buyerdashboard")}
             onClick={props.clicked}
           >
             DASHBOARD
@@ -176,4 +181,15 @@ export default SideDrawerItems;
           EVENT CREATION
         </NavLink>
       </li>
+
+      
+     <li>
+     <NavLink
+       to="/events"
+       style={isActive(props.currentPage, "/events")}
+       onClick={props.clicked}
+     >
+       EVENTS
+     </NavLink>
+   </li>
       */

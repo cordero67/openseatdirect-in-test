@@ -224,7 +224,7 @@
 
 .TicketLine {
   display: grid;
-  grid-template-columns: 360px 100px 165px 80px 80px;
+  grid-template-columns: 360px 165px 165px 80px 80px;
   height: 60px;
   font-size: 16px;
   border-top: 1px solid lightgrey;
@@ -273,7 +273,7 @@
   padding: 9px 10px;
   border: 1px solid lightgrey;
   box-sizing: border-box;
-  width: 90px;
+  width: 155px;
   height: 40px;
 }
 
@@ -281,7 +281,7 @@
   padding: 9px 10px;
   border: 1px solid red;
   box-sizing: border-box;
-  width: 90px;
+  width: 155px;
   height: 40px;
 }
 

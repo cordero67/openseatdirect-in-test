@@ -26,6 +26,7 @@ const EventDetail = props => {
 
   useEffect(() => {
     eventData(queryString.parse(window.location.search).eventID);
+    console.log("window.location.search: ", window.location.search);
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
 
@@ -61,6 +62,22 @@ const EventDetail = props => {
   };
 
   const loadEventDetails = event => {
+    let ticketStatus;
+    ticketStatus = false;
+
+    console.log("now: ", Date.now())
+    let d = Date.parse(event.startDateTime) + 86400;
+    console.log("d: ", d)
+    console.log("d+: ", d + 86400)
+
+    if ('tickets' in event && event.tickets &&
+      Date.now() < d
+    ) {
+      ticketStatus = true;
+    }
+
+    // 86400 seconds in a day
+
     // defines the eniter "eventDetails" variable
     eventDetails = {
       eventNum: event.eventNum,//
@@ -93,6 +110,7 @@ const EventDetail = props => {
       shortDescription: event.shortDescription,//
       longDescription: event.longDescription,//
       tickets: event.tickets,
+      forSale: ticketStatus, 
     };
     console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
   };
@@ -128,10 +146,17 @@ const EventDetail = props => {
 
   const ticketPriceRange = () => {
     if (!isLoadingEvent) {
+      
+      console.log("Inside ticketPriceRange")
+      console.log("eventDetails: ", eventDetails)
       let priceArray = [];
-      eventDetails.tickets.map(item => {
-        priceArray.push(item.currentTicketPrice);
-      })
+      if('tickets' in eventDetails && eventDetails.tickets) {
+        console.log("We have tickets")
+        eventDetails.tickets.map(item => {
+          priceArray.push(item.currentTicketPrice);
+        })
+      }
+
       if (priceArray.length > 1) {
         return (
           <div>
@@ -147,6 +172,7 @@ const EventDetail = props => {
       } else {
         return <div>No tickets</div>
       }
+     
     } else {
       return null
     };
@@ -222,7 +248,11 @@ const EventDetail = props => {
         <div className={styles.TicketGrid}>
           <div className={styles.PriceRange}>{ticketPriceRange()}</div>
           <div className={styles.ButtonContainer}>
-            <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
+            <button 
+              onClick={ticketsHandler}
+              disabled={!eventDetails.forSale}
+              className={styles.ButtonGreen}
+            >Tickets</button>
           </div>
         </div>
       )
@@ -231,7 +261,11 @@ const EventDetail = props => {
         <div className={styles.TicketGrid}>
           <div className={styles.PriceRange}>{ticketPriceRange()}</div>
           <div className={styles.ButtonContainer}>
-            <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
+            <button
+              onClick={ticketsHandler}
+              disabled={!eventDetails.forSale}
+              className={styles.ButtonGreen}
+            >Tickets</button>
           </div>
         </div>
       )
