@@ -211,8 +211,8 @@ const Orders = (props) => {
                     <div style={{ textAlign: "left" }}>Event</div>
                     <div></div>
                     <div className={classes.Expand}>Customer email</div>
-                    <div style={{ textAlign: "center" }}># of Tickets</div>
-                    <div style={{ textAlign: "center" }}>Total Amount</div>
+                    <div style={{ textAlign: "center" }}># Tickets</div>
+                    <div style={{ textAlign: "center" }}>Amount</div>
                 </div>
                 {mainDisplay()}
             </div>

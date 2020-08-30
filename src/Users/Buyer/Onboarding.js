@@ -123,6 +123,7 @@ const Onboarding = (props) => {
         let tempValues = { ...values };
         tempValues[name] = value.value;
         console.log("tempValues: ", tempValues)
+        console.log("tempValues.paypal_plan_id: ", tempValues.paypal_plan_id)
         setValues(tempValues);
         console.log("values: ", values)
     };
@@ -133,14 +134,21 @@ const Onboarding = (props) => {
     ];
 
     const paymentPlans = [
-        { label: "$20 every 3 months", value: "basicPaidQuarter" },
-        { label: "$70 for one full year", value: "basicPaidAnnual" }
+        { label: "$20 every 3 months", value: "P-5DT364104U926810EL5FRXSY" },
+        { label: "$70 for one full year", value: "P-5YA13382D9271245EL5FRXTA" }
     ];
 
     const discountPlans = [
-        { label: "$10 every 3 months: discount applied", value: "discountBasicPaidQuarter" },
-        { label: "$35 for one full year: discount applied", value: "discountBasicPaidAnnual" }
+        { label: "$10 every 3 months: discount applied", value: "P-3U3085871T847894PL5FRXTI" },
+        { label: "$35 for one full year: discount applied", value: "P-6UY26644UT426184FL5FRXTI" }
     ];
+
+/*
+['P-5DT364104U926810EL5FRXSY',
+'P-5YA13382D9271245EL5FRXTA',
+'P-3U3085871T847894PL5FRXTI',
+'P-6UY26644UT426184FL5FRXTI']
+*/
 
     const shownPlans = () => {
         if(promoCodeDetails.appliedPromoCode === "CASHNOW") {
@@ -181,6 +189,10 @@ const Onboarding = (props) => {
         return response;
     };
 
+
+
+
+
 // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
     const showPayPal = (
         <div>
@@ -189,7 +201,7 @@ const Onboarding = (props) => {
                 onButtonReady = {() => {}}
                 createSubscription={(data, actions) => {
                     return actions.subscription.create({
-                    plan_id: "P-9HN388280G366532JL4RGF5A"
+                    plan_id: paypal_plan_id
                     });
                 }}
                 onCancel = {data => {
@@ -824,9 +836,9 @@ const inputPromoCode = () => {
                                 <RadioForm
                                     details={shownPlans()}
                                     group="eventTypeGroup"
-                                    current={ticketPlan}
+                                    current={paypal_plan_id}
                                     change={(event, value) =>
-                                        radioChange(event, value, "ticketPlan")
+                                        radioChange(event, value, "paypal_plan_id")
                                     }
                                 />
                                 <br></br>
