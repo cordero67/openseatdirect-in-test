@@ -62,6 +62,13 @@ const EventDetail = props => {
   };
 
   const loadEventDetails = event => {
+    let ticketStatus;
+    ticketStatus = false;
+
+    if ('tickets' in event && event.tickets) {
+      ticketStatus = true;
+    }
+
     // defines the eniter "eventDetails" variable
     eventDetails = {
       eventNum: event.eventNum,//
@@ -94,6 +101,7 @@ const EventDetail = props => {
       shortDescription: event.shortDescription,//
       longDescription: event.longDescription,//
       tickets: event.tickets,
+      forSale: ticketStatus, 
     };
     console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
   };
@@ -129,10 +137,17 @@ const EventDetail = props => {
 
   const ticketPriceRange = () => {
     if (!isLoadingEvent) {
+      
+      console.log("Inside ticketPriceRange")
+      console.log("eventDetails: ", eventDetails)
       let priceArray = [];
-      eventDetails.tickets.map(item => {
-        priceArray.push(item.currentTicketPrice);
-      })
+      if('tickets' in eventDetails && eventDetails.tickets) {
+        console.log("We have tickets")
+        eventDetails.tickets.map(item => {
+          priceArray.push(item.currentTicketPrice);
+        })
+      }
+
       if (priceArray.length > 1) {
         return (
           <div>
@@ -148,6 +163,7 @@ const EventDetail = props => {
       } else {
         return <div>No tickets</div>
       }
+     
     } else {
       return null
     };
@@ -223,7 +239,11 @@ const EventDetail = props => {
         <div className={styles.TicketGrid}>
           <div className={styles.PriceRange}>{ticketPriceRange()}</div>
           <div className={styles.ButtonContainer}>
-            <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
+            <button 
+              onClick={ticketsHandler}
+              disabled={!eventDetails.forSale}
+              className={styles.ButtonGreen}
+            >Tickets</button>
           </div>
         </div>
       )
@@ -232,7 +252,11 @@ const EventDetail = props => {
         <div className={styles.TicketGrid}>
           <div className={styles.PriceRange}>{ticketPriceRange()}</div>
           <div className={styles.ButtonContainer}>
-            <button onClick={ticketsHandler} className={styles.ButtonGreen}>Tickets</button>
+            <button
+              onClick={ticketsHandler}
+              disabled={!eventDetails.forSale}
+              className={styles.ButtonGreen}
+            >Tickets</button>
           </div>
         </div>
       )
