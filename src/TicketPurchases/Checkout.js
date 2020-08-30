@@ -231,16 +231,20 @@ const Checkout = props => {
       .then(response => {
         console.log("order received");
         console.log("response: ", response);
-        setOrderStatus(true);
-        console.log("Order status: ", orderStatus);
-        onlyShowPurchaseConfirmation();
-        purchaseConfirmHandler();
+        if (response.status) {
+          setOrderStatus(true);
+          console.log("Order status: ", orderStatus);
+        } else {
+          throw Error();
+        }
       })
       .catch(error => {
         console.log("processExpressPayment() error.message: ", error.message);
+        setOrderStatus(false);})
+      .finally(() => {
         onlyShowPurchaseConfirmation();
         purchaseConfirmHandler();
-      });
+      })
   };
 
   // determines whether or not to display the purchase amount

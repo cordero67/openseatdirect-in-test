@@ -20,13 +20,19 @@ let vendorInfo = {};
 let ordersArray = [
     {
         event: "OSD Launch Party",
-        email: "bobs@hex.com",
+        firstName: "Robert",
+        lastName: "Montgomery",
+        email: "robertmontgomery@openseatdirect.com",
+        orderDate: "Sep 19, 2020",
         tickets: 4,
         amount: 24.50
     },
     {
         event: "Hoboken Sack Race",
+        firstName: "Michael",
+        lastName: "Trautman",
         email: "sally@ailf.com",
+        orderDate: "Sep 19, 2020",
         tickets: "2",
         amount: "45.00"
     }
@@ -90,7 +96,7 @@ const Orders = (props) => {
           redirect: "follow",
         };
 
-        let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
+        let fetchstr = `${API}/order/${vendorInfo.id}`;
 
         fetch(fetchstr, requestOptions)
           .then(handleErrors)
@@ -98,9 +104,9 @@ const Orders = (props) => {
           .then((result) => {
             localStorage.setItem("events", result);
             let js = JSON.parse(result);
-            console.log("eventDescriptions unordered: ", js);
+            console.log("ticket orders unordered: ", js);
             js.sort(compareValues("startDateTime", "asc"));
-            console.log("eventDescriptions ordered: ", js);
+            console.log("ticket orders ordered: ", js);
             setEventDescriptions(js);
             //initializeDisplays(js);
             setIsSuccessfull(true)
@@ -141,13 +147,15 @@ const Orders = (props) => {
                                     textAlign: "center",
                                     display: "grid",
                                     columnGap: "10px",
-                                    gridTemplateColumns: "350px 20px 300px 120px 120px",
-                                    paddingLeft: "20px",
+                                    gridTemplateColumns: "200px 100px 100px 260px 100px 80px 100px",
+                                    paddingLeft: "30px",
                                     paddingRight: "30px"
                                     }}>
                                 <div style={{textAlign: "left"}}>{item.event}</div>
-                                <div></div>
+                                <div style={{textAlign: "left"}}>{item.firstName}</div>
+                                <div style={{textAlign: "left"}}>{item.lastName}</div>
                                 <div style={{textAlign: "left"}}>{item.email}</div>
+                                <div style={{textAlign: "left"}}>{item.orderDate}</div>
                                 <div>{item.tickets}</div>
                                 <div>{item.amount}</div>
                                 <br></br>
@@ -209,8 +217,10 @@ const Orders = (props) => {
             <div className={classes.DisplayPanel2}>
                 <div className={classes.OrdersHeader}>
                     <div style={{ textAlign: "left" }}>Event</div>
-                    <div></div>
+                    <div>First</div>
+                    <div>Last</div>
                     <div className={classes.Expand}>Customer email</div>
+                    <div style={{ textAlign: "center" }}>Order Date</div>
                     <div style={{ textAlign: "center" }}># Tickets</div>
                     <div style={{ textAlign: "center" }}>Amount</div>
                 </div>

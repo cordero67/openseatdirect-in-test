@@ -30,7 +30,8 @@ import {
   faTrashAlt,
   faGripVertical,
   faCog,
-  faTruckMonster,
+  faChevronUp,
+  faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Popup } from "semantic-ui-react";
 import {
@@ -2067,7 +2068,6 @@ const loadEventInfo = (eventTix) => {
 
     return (
       <div>
-
         <div
           style={{
             height: "30px",
@@ -2182,29 +2182,6 @@ const loadEventInfo = (eventTix) => {
           }
 
         {priceFeatureSettings(ticket)}
-        <div
-          style={{
-            padding: "5px",
-            borderTop: "1px solid lightgrey",
-            height: "30px",
-            textAlign: "center",
-          }}
-        >
-          <button
-            style={{
-              fontSize: "15px",
-              color: "blue",
-              border: "none",
-              backgroundColor: "white",
-              cursor: "pointer",
-              display: "inlineBlock",
-              outline: "none",
-            }}
-            onClick={(event) => switchTicketSettings(event, ticket.key)}
-          >
-            ^ Minimize features
-          </button>
-        </div>
       </div>
     );
   };
@@ -2463,20 +2440,6 @@ const loadEventInfo = (eventTix) => {
                   <FontAwesomeIcon
                     color="blue"
                     cursor="pointer"
-                    onClick={(event) => switchTicketSettings(event, item.key)}
-                    icon={faCog}
-                  />
-                </div>
-                <div
-                  style={{
-                    padding: "20px 5px",
-                    boxSizing: "borderBox",
-                    textAlign: "center",
-                  }}
-                >
-                  <FontAwesomeIcon
-                    color="blue"
-                    cursor="pointer"
                     onClick={() => {
                       activateShowModal(item);
                       console.log("Ticket Detail: ", ticketDetails);
@@ -2512,6 +2475,66 @@ const loadEventInfo = (eventTix) => {
                 </div>
                 : null
               }
+              <div
+                style={{
+                  padding: "5px",
+                  borderTop: "1px solid lightgrey",
+                  height: "30px",
+                  textAlign: "center",
+                }}
+              >
+              {!item.settings ? (
+                <button
+                  style={{
+                    fontSize: "15px",
+                    color: "blue",
+                    border: "none",
+                    backgroundColor: "white",
+                    cursor: "pointer",
+                    display: "inlineBlock",
+                    outline: "none",
+                  }}
+                  onClick={(event) => switchTicketSettings(event, item.key)}
+                >
+                <FontAwesomeIcon
+                  color="blue"
+                  size="sm"
+                  cursor="pointer"
+                  onClick={() => {
+                      //let tempDisplay = {...ticketDisplay};
+                      //tempDisplay[item.eventNum] = false;
+                      //setTicketDisplay(tempDisplay);
+                  }}
+                  icon={faChevronDown}
+                />
+                  {" "}Show additional features
+                </button>) : 
+                <button
+                  style={{
+                    fontSize: "15px",
+                    color: "blue",
+                    border: "none",
+                    backgroundColor: "white",
+                    cursor: "pointer",
+                    display: "inlineBlock",
+                    outline: "none",
+                  }}
+                  onClick={(event) => switchTicketSettings(event, item.key)}
+                >
+                <FontAwesomeIcon
+                  color="blue"
+                  size="sm"
+                  cursor="pointer"
+                  onClick={() => {
+                      //let tempDisplay = {...ticketDisplay};
+                      //tempDisplay[item.eventNum] = false;
+                      //setTicketDisplay(tempDisplay);
+                  }}
+                  icon={faChevronUp}
+                />
+                  {" "}Hide additional features
+                </button>}
+              </div>
               {item.settings ? additionalSettings(item) : null}
             </Aux>
           );
@@ -3576,7 +3599,7 @@ const loadEventInfo = (eventTix) => {
               <div
                 style={{
                   display: `grid`,
-                  gridTemplateColumns: "360px 100px 165px 80px",
+                  gridTemplateColumns: "360px 165px 165px 80px",
                   height: "40px",
                   fontSize: "15px",
                   backgroundColor: "#E7E7E7",
@@ -3611,16 +3634,6 @@ const loadEventInfo = (eventTix) => {
                   }}
                 >
                   Price<span style={{ color: "red" }}>*</span>
-                </div>
-    
-                <div
-                  style={{
-                    padding: "10px 10px 10px 5px",
-                    boxSizing: "borderBox",
-                    fontWeight: 600,
-                  }}
-                >
-                  Features
                 </div>
               </div>
               {ticketTypeDisplay()}
