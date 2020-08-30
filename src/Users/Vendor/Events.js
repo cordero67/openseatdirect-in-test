@@ -12,6 +12,7 @@ import {
  
 import classes from "./VendorDashboard.module.css";
 import { compareValues, getDates } from "./VendorFunctions";
+import { Button, Popup } from "semantic-ui-react";
 
 
 let vendorInfo = {};
@@ -215,13 +216,38 @@ const Events = (props) => {
             console.log("zero events");
             return (
                 <div style={{ textAlign: "center", fontSize: "20px" }}>
+                    <br></br>
+                    <br></br>
+                    <br></br>
                     <br></br>You currently have no events.
                 </div>
             )
         } else if (!isLoading && !isSuccessfull) {
             return (
                 <div className={classes.SystemDownMessage}>
-                    <div>System error please refresh this page.</div>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <div className={classes.SummaryHeader}>
+                        System error please reload/refresh this page.
+                    </div>
+                    
+                    <br></br>
+                    <div style={{textAlign: "center"}}>
+                        <Button className={classes.EventsButton}
+                            style={{
+                                backgroundColor: "white",
+                                border: "1px solid blue",
+                                color: "blue",
+                                padding: "0px"
+                            }}
+                            content="Reload Page"
+                            onClick={() => {
+                                window.location.reload();
+                                return false;
+                            }}
+                        />
+                    </div>
                 </div>
             )
         } else {

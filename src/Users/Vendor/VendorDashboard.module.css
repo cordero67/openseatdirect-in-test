@@ -287,6 +287,25 @@ column-gap: 5px;*/
     overflow-Y: auto;
 }
 
+.OrdersHeader {
+    z-index: 200;
+    display: grid;
+    position: fixed;
+    top: 110px;
+    column-gap: 10px;
+    background-color: #e7e7e7;
+    border-bottom: 1px solid lightgrey;
+    width: 1030px;
+    height: 40px;
+    grid-template-columns: 350px 20px 300px 120px 120px;
+    font-size: 15px;
+    font-weight: 600;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    padding-left: 20px;
+    padding-right: 30px;
+}
+
 .MainDisplayHeader {
     z-index: 200;
     display: grid;
@@ -318,6 +337,23 @@ column-gap: 5px;*/
   padding-bottom: 0px;
   margin-bottom: 55px;
   padding-left: 0px;
+}
+
+.EventsButton {
+  font-size: 16px;
+  width: 120px;
+  height: 30px;
+  margin: auto;
+  text-align: center;
+}
+
+.SummaryHeader {
+  padding-top: 60px;
+  color: #2F5596;
+  font-size: 26px;
+  font-weight: 600;
+  padding-bottom: 20px;
+  text-align: center;
 }
 
 /*

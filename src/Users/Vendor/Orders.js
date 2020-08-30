@@ -12,9 +12,25 @@ import {
  
 import classes from "./VendorDashboard.module.css";
 import { compareValues, getDates } from "./VendorFunctions";
+import { Button, Popup } from "semantic-ui-react";
 
 
 let vendorInfo = {};
+
+let ordersArray = [
+    {
+        event: "OSD Launch Party",
+        email: "bobs@hex.com",
+        tickets: 4,
+        amount: 24.50
+    },
+    {
+        event: "Hoboken Sack Race",
+        email: "sally@ailf.com",
+        tickets: "2",
+        amount: "45.00"
+    }
+]
 
 const Orders = (props) => {
 
@@ -109,16 +125,15 @@ const Orders = (props) => {
         }
 
     const mainDisplay = () => {
-        if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
+        //if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
+        if (true) {
             return (
                 <div>
                     <br></br>
                     <br></br>
                     <br></br>
                     <br></br>
-                    {eventDescriptions.map((item, index) => {
-                        let shortMonth, dayDate, longDateTime;
-                        [shortMonth, dayDate, longDateTime] = getDates(item);
+                    {ordersArray.map((item, index) => {
 
                         return (
                             <div key={index} 
@@ -126,83 +141,15 @@ const Orders = (props) => {
                                     textAlign: "center",
                                     display: "grid",
                                     columnGap: "10px",
-                                    gridTemplateColumns: "60px 20px 640px 100px 80px",
+                                    gridTemplateColumns: "350px 20px 300px 120px 120px",
                                     paddingLeft: "20px",
                                     paddingRight: "30px"
                                     }}>
-                                <div style={{ textAlign: "center"}}>
-                                    <span
-                                        style={{
-                                        fontSize: "12px",
-                                        fontWeight: "400",
-                                        color: "red",
-                                        }}
-                                    >
-                                        {shortMonth}
-                                    </span>
-                                    <br></br>
-                                    <span style={{ fontSize: "18px", color: "black", fontWeight: "600" }}>
-                                        {dayDate}
-                                    </span>
-                                </div>
-                                <div style={{ fontSize: "12px", textAlign: "center" }}>
-                                
-                                    <FontAwesomeIcon
-                                    color="black"
-                                    size="sm"
-                                    cursor="pointer"
-                                    onClick={() => {
-                                        //let tempDisplay = {...ticketDisplay};
-                                        //tempDisplay[item.eventNum] = false;
-                                        //setTicketDisplay(tempDisplay);
-                                    }}
-                                    icon={faChevronUp}
-                                    />
-                                
-                                </div>
-                                <div>
-                                    <div
-                                        style={{
-                                            fontSize: "16px",
-                                            textAlign: "left", fontWeight: "600" 
-                                        }}
-                                    >
-                                        {item.eventTitle}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: "13px",
-                                            textAlign: "left", fontWeight: "500" 
-                                        }}
-                                    >
-                                    {longDateTime}
-                                    </div>
-                                </div>
-                                <div style={{fontSize: "16px", fontWeight: "600"}}>{item.isDraft ? <span style={{color: "blue"}}>Draft</span> : <span style={{color: "green"}}>Live</span>}</div>
-                                <div
-                                style={{
-                                    fontSize: "12px",
-                                    textAlign: "center",
-                                    position: "relative"
-                                }}
-                                > {item.isDraft ? 
-                                    <FontAwesomeIcon
-                                        style={{ zIndex: "100" }}
-                                        color="blue"
-                                        size="lg"
-                                        cursor="pointer"
-                                        onClick={() => editEvent(item)}
-                                        icon={faEdit}
-                                    /> : 
-                                    <FontAwesomeIcon
-                                        style={{ zIndex: "100" }}
-                                        color="green"
-                                        size="lg"
-                                        cursor="pointer"
-                                        onClick={() => editEvent(item)}
-                                        icon={faEdit}
-                                    />}
-                                </div>
+                                <div style={{textAlign: "left"}}>{item.event}</div>
+                                <div></div>
+                                <div style={{textAlign: "left"}}>{item.email}</div>
+                                <div>{item.tickets}</div>
+                                <div>{item.amount}</div>
                                 <br></br>
                             </div>
                         );
@@ -210,15 +157,42 @@ const Orders = (props) => {
                 </div>
             )
         } else if (!isLoading && isSuccessfull) {
+            console.log("eventDescriptions.length: zero: ", eventDescriptions.length);
+            console.log("zero events");
             return (
                 <div style={{ textAlign: "center", fontSize: "20px" }}>
-                    <br></br>You currently have no events.
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>You currently have no ticket orders.
                 </div>
             )
         } else if (!isLoading && !isSuccessfull) {
             return (
                 <div className={classes.SystemDownMessage}>
-                    <div>System error please refresh this page.</div>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <div className={classes.SummaryHeader}>
+                        System error please reload/refresh this page.
+                    </div>
+                    
+                    <br></br>
+                    <div style={{textAlign: "center"}}>
+                        <Button className={classes.EventsButton}
+                            style={{
+                                backgroundColor: "white",
+                                border: "1px solid blue",
+                                color: "blue",
+                                padding: "0px"
+                            }}
+                            content="Reload Page"
+                            onClick={() => {
+                                window.location.reload();
+                                return false;
+                            }}
+                        />
+                    </div>
                 </div>
             )
         } else {
@@ -229,16 +203,16 @@ const Orders = (props) => {
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
-                EVENTS
+                ORDERS
             </div>
             
             <div className={classes.DisplayPanel2}>
-                <div className={classes.MainDisplayHeader}>
-                    <div style={{ textAlign: "center" }}>Date</div>
+                <div className={classes.OrdersHeader}>
+                    <div style={{ textAlign: "left" }}>Event</div>
                     <div></div>
-                    <div className={classes.Expand}>Event</div>
-                    <div style={{ textAlign: "center" }}>Status</div>
-                    <div style={{ textAlign: "center" }}>Edit</div>
+                    <div className={classes.Expand}>Customer email</div>
+                    <div style={{ textAlign: "center" }}># of Tickets</div>
+                    <div style={{ textAlign: "center" }}>Total Amount</div>
                 </div>
                 {mainDisplay()}
             </div>
