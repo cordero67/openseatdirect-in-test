@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
  
 import classes from "./VendorDashboard.module.css";
-import { compareValues, getDates } from "./VendorFunctions";
+import { compareValues, getDate } from "./VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 
 
@@ -145,6 +145,10 @@ const Orders = (props) => {
                     <br></br>
                     <br></br>
                     {ticketOrders.map((item, index) => {
+                        let shortDateTime;
+                        console.log("item: ", item);
+                        [shortDateTime] = getDate(item);
+                        console.log("shortDateTime: ", shortDateTime)
 
                         return (
                             <div key={index} 
@@ -152,7 +156,7 @@ const Orders = (props) => {
                                     textAlign: "center",
                                     display: "grid",
                                     columnGap: "10px",
-                                    gridTemplateColumns: "200px 100px 100px 260px 100px 80px 100px",
+                                    gridTemplateColumns: "200px 100px 100px 280px 100px 60px 100px",
                                     paddingLeft: "30px",
                                     paddingRight: "30px"
                                     }}>
@@ -160,9 +164,9 @@ const Orders = (props) => {
                                 <div style={{textAlign: "left"}}>{item.order_firstName}</div>
                                 <div style={{textAlign: "left"}}>{item.order_lastName}</div>
                                 <div style={{textAlign: "left"}}>{item.order_email}</div>
-                                <div style={{textAlign: "left"}}>{item.order_createdAt}</div>
+                                <div style={{textAlign: "left"}}>{shortDateTime}</div>
                                 <div>{item.order_numTickets}</div>
-                                <div>{item.order_totalAmount}</div>
+                                <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount.toFixed(2)}</div>
                                 <br></br>
                             </div>
                         );
@@ -229,8 +233,8 @@ const Orders = (props) => {
                     <div>First</div>
                     <div>Last</div>
                     <div className={classes.Expand}>Customer email</div>
-                    <div style={{ textAlign: "center" }}>Order Date</div>
-                    <div style={{ textAlign: "center" }}># Tickets</div>
+                    <div>Order Date</div>
+                    <div style={{ textAlign: "center" }}>Tickets</div>
                     <div style={{ textAlign: "center" }}>Amount</div>
                 </div>
                 {mainDisplay()}

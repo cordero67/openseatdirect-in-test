@@ -26,6 +26,20 @@
     "NOV",
     "DEC",
   ];
+  const monthAbbr2 = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const weekDays = [
     "Monday",
@@ -94,6 +108,62 @@
     }
 
     return [tempMonthAbbr, tempDate, tempLongDateTime]
+  }
+
+  export const getDate = (item) => {
+
+    let tempDateTime;
+    let tempMonthNames;
+    let tempDate;
+    let tempYear;
+    let tempAmPm;
+    let tempHours;
+    let tempMinutes;
+    let tempLongDateTime;
+
+/*
+    console.log("eventTix.startDateTime: ", eventTix.startDateTime);
+    tempDescription.startDate = new Date(eventTix.startDateTime);
+    console.log("tempDescription.startDate: ", tempDescription.startDate);
+    tempDescription.startDate.setMinutes( tempDescription.startDate.getMinutes() + tempDescription.startDate.getTimezoneOffset() );
+    console.log("tempDescription.startDate: ", tempDescription.startDate);
+*/
+
+    //console.log("item.startDateTime: ", item.startDateTime);
+    tempDateTime = new Date(item.order_createdAt);
+    tempDateTime.setMinutes( tempDateTime.getMinutes() + tempDateTime.getTimezoneOffset() );
+    //console.log("tempDateTime: ", tempDateTime);
+
+
+    tempMonthNames = monthAbbr2[tempDateTime.getMonth()];
+    tempDate = tempDateTime.getDate();
+    tempYear = tempDateTime.getFullYear();
+    if (tempDateTime.getHours() === 0) {
+      tempHours = 12;
+      tempAmPm = "AM";
+    } else if (tempDateTime.getHours() < 12) {
+      tempHours = tempDateTime.getHours();
+      tempAmPm = "AM";
+    } else {
+      tempHours = tempDateTime.getHours() - 12;
+      tempAmPm = "PM";
+    }
+
+    if (tempDateTime.getMinutes() > 9) {
+      tempMinutes = tempDateTime.getMinutes();
+    } else {
+      tempMinutes = "0" + tempDateTime.getMinutes();
+    }
+
+    if (tempDateTime.getHours() === 0 && tempDateTime.getMinutes() === 0) {
+      tempLongDateTime = `${tempMonthNames} ${tempDate}\, ${tempYear} 12 Midnight`;
+    } else if (tempDateTime.getHours() === 12 && tempDateTime.getMinutes() === 0) {
+      tempLongDateTime = `${tempMonthNames} ${tempDate}\, ${tempYear} 12 Noon`;
+    } else {
+      tempLongDateTime = `${tempMonthNames} ${tempDate}\, ${tempYear} ${tempHours}\:${tempMinutes}${tempAmPm}`;
+    }
+
+    return [tempLongDateTime]
   }
 
   export const compareValues = (key, order) => {
