@@ -36,6 +36,14 @@ const Onboarding = (props) => {
         paypalExpress_client_secret: ""
     });
 
+    let sandboxStatus;
+    
+    if (PAYPAL_USE_SANDBOX === "true") {
+        sandboxStatus = true
+    } else {
+        sandboxStatus = false
+    }
+
     // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
     const [pageView, setPageView] = useState("summary")
     const [preFetchView, setPreFetchView] = useState("")
@@ -1006,7 +1014,7 @@ const inputPromoCode = () => {
                                             method: "PATCH",
                                             headers: myHeaders,
                                             body:JSON.stringify({
-                                                useSandbox: true,
+                                                useSandbox: sandboxStatus,
                                                 paymentGatewayType: "PayPalExpress",
                                                 paypalExpress_client_id: paypalExpress_client_id,
                                                 paypalExpress_client_secret: paypalExpress_client_secret
