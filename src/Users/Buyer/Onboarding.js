@@ -142,13 +142,13 @@ const Onboarding = (props) => {
     ];
 
     const paymentPlans = [
-        { label: "$25 every 3 months", value: "P-5DT364104U926810EL5FRXSY" },
-        { label: "$75 for one full year", value: "P-5YA13382D9271245EL5FRXTA" }
+        { label: "$25 every 3 months", value: "P-4V0299289E472821LL5HH4VQ" },
+        { label: "$75 for one full year", value: "P-8LK60211LP500930RL5HH4VY" }
     ];
 
     const discountPlans = [
-        { label: "$15 every 3 months: discount applied", value: "P-3U3085871T847894PL5FRXTI" },
-        { label: "$50 for one full year: discount applied", value: "P-6UY26644UT426184FL5FRXTI" }
+        { label: "$15 every 3 months: discount applied", value: "P-5UC34262KS301513YL5HH4VY" },
+        { label: "$50 for one full year: discount applied", value: "P-1M909572E79522236L5HH4WA" }
     ];
 
     const shownPlans = () => {
@@ -863,7 +863,7 @@ const inputPromoCode = () => {
                                 >STEP 2: Paypal Receipt
                             </div>
                             <br></br>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px" }}>Congratulations your have successfully paid for your {(paidPlan())}.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px" }}>Congratulations you have successfully paid for your {(paidPlan())}.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you for your payment.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Now let's make sure you get paid instantly whenever you sell a ticket.</div>
                             <div style={{textAlign: "center", paddingTop: "40px"}}>
