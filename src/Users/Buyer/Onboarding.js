@@ -142,13 +142,13 @@ const Onboarding = (props) => {
     ];
 
     const paymentPlans = [
-        { label: "$20 every 3 months", value: "P-5DT364104U926810EL5FRXSY" },
-        { label: "$70 for one full year", value: "P-5YA13382D9271245EL5FRXTA" }
+        { label: "$25 every 3 months", value: "P-5DT364104U926810EL5FRXSY" },
+        { label: "$75 for one full year", value: "P-5YA13382D9271245EL5FRXTA" }
     ];
 
     const discountPlans = [
-        { label: "$10 every 3 months: discount applied", value: "P-3U3085871T847894PL5FRXTI" },
-        { label: "$35 for one full year: discount applied", value: "P-6UY26644UT426184FL5FRXTI" }
+        { label: "$15 every 3 months: discount applied", value: "P-3U3085871T847894PL5FRXTI" },
+        { label: "$50 for one full year: discount applied", value: "P-6UY26644UT426184FL5FRXTI" }
     ];
 
     const shownPlans = () => {
@@ -862,6 +862,7 @@ const inputPromoCode = () => {
                                 }}
                                 >STEP 2: Paypal Receipt
                             </div>
+                            <br></br>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px" }}>Congratulations your have successfully paid for your {(paidPlan())}.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you for your payment.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Now let's make sure you get paid instantly whenever you sell a ticket.</div>
@@ -906,7 +907,7 @@ const inputPromoCode = () => {
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>These two items are located in the "My Apps & Credentials" section of your
                                 <button
                                     style={{
-                                        fontSize: "15px",
+                                        fontSize: "16px",
                                         color: "blue",
                                         border: "none",
                                         backgroundColor: "white",
@@ -922,13 +923,13 @@ const inputPromoCode = () => {
                                 </button>
                             </div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px"}}>
-                                Additional instructions can be found
                                 <button
                                     style={{
-                                        fontSize: "15px",
+                                        fontSize: "16px",
                                         color: "blue",
                                         border: "none",
                                         backgroundColor: "white",
+                                        paddingLeft: "0px",
                                         cursor: "pointer",
                                         display: "inlineBlock",
                                         outline: "none",
@@ -937,7 +938,7 @@ const inputPromoCode = () => {
                                         window.location.href = "https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing";
                                     }}
                                 >
-                                    here.
+                                Additional instructions.
                                 </button>
                             </div>
                             
