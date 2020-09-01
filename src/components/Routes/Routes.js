@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 
+// /onboardingpdf
+
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import MainNew from "../HomePage/HomePageNEW";
@@ -20,6 +22,7 @@ import PasswordRecovery from "../../Users/Authentication/PasswordRecovery";
 import PasswordReset from "../../Users/Authentication/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
+import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorDashboard from "../../Users/Vendor/VendorDashboard";
 
 import Header from "../Headers/Header";
@@ -160,6 +163,18 @@ const Routes = () => {
         </React.Fragment>
       )}
     />
+
+    <Route
+      path="/paypalonboarding"
+      exact
+      render={(routeProps) => (
+          <PaypalOnboarding />
+      )}
+    />
+
+
+
+
 
     <Route
       path="/vendordashboard"

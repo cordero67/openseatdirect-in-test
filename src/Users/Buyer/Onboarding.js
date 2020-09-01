@@ -495,7 +495,7 @@ const Onboarding = (props) => {
                     </div>
                     <br></br>
                     <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Choose between our two ticket plans:</div>
-                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px"}}>"Free Tickets" plan allows you to issue up to 50 free tickets per month.</div>
+                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px"}}>"Free Tickets" plan allows you to issue up to 500 free tickets per month.</div>
                     <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px", paddingBottom: "40px"}}>"Paid (and Free) Tickets" plan lets you issue an unlimited amount of paid and free tickets.</div>
                     <div  className={classes.PaymentCanvas}>
                         <RadioForm
@@ -926,7 +926,7 @@ const inputPromoCode = () => {
                                         outline: "none",
                                     }}
                                     onClick={() => {
-                                        window.location.href = "https://developer.paypal.com/developer/applications/";
+                                        window.location.href = "https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing";
                                     }}
                                 >
                                     here.

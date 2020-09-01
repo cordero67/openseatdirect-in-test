@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
+import { API } from "../config";
 import { getAllPastEventData, getEventImage } from "./apiEvents";
 
 import classes from "./Events.module.css";
@@ -27,7 +28,7 @@ const EventsPasts = () => {
       res.map((item, index) => {
         console.log("new res");
         console.log("new res event num: ", res[index].eventNum);
-        res[index]["url"] = `https://www.openseatdirect.com/api/event/photo/e/${res[index].eventNum}`;
+        res[index]["url"] = `${API}/event/photo/e/${res[index].eventNum}`;
         //res[index].url = index;
         item.url = "";
       })
