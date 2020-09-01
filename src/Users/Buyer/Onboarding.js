@@ -129,8 +129,8 @@ const Onboarding = (props) => {
     };
 
     const ticketPlans = [
-        { label: "Free tickets only", value: "free" },
-        { label: "Paid (and free) tickets", value: "basicPaidQuarter" }
+        { label: "Free Tickets", value: "free" },
+        { label: "Paid (and Free) Tickets", value: "basicPaidQuarter" }
     ];
 
     const paymentPlans = [
@@ -143,18 +143,23 @@ const Onboarding = (props) => {
         { label: "$35 for one full year: discount applied", value: "P-6UY26644UT426184FL5FRXTI" }
     ];
 
-/*
-['P-5DT364104U926810EL5FRXSY',
-'P-5YA13382D9271245EL5FRXTA',
-'P-3U3085871T847894PL5FRXTI',
-'P-6UY26644UT426184FL5FRXTI']
-*/
-
     const shownPlans = () => {
         if(promoCodeDetails.appliedPromoCode === "CASHNOW") {
             return discountPlans;
         } else {
             return paymentPlans;
+        }
+    }
+
+    const paidPlan = () => {
+        if (paypal_plan_id === "P-3U3085871T847894PL5FRXTI") {
+            return <Aux>$10 Quaterly Paid Tickets plan </Aux>
+        } else if (paypal_plan_id === "P-6UY26644UT426184FL5FRXTI") {
+            return <Aux>$35 Annual Paid Tickets plan</Aux>
+        } else if (paypal_plan_id === "P-5DT364104U926810EL5FRXSY") {
+            return <Aux>$20 Quaterly Paid Tickets plan</Aux>
+        } else if (paypal_plan_id === "P-5YA13382D9271245EL5FRXTA") {
+            return <Aux>$70 anual Paid Tickets plan</Aux>
         }
     }
 
@@ -188,10 +193,6 @@ const Onboarding = (props) => {
         }
         return response;
     };
-
-
-
-
 
 // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
     const showPayPal = (
@@ -272,40 +273,11 @@ const Onboarding = (props) => {
         return (
             <div className={classes.DisplayPanel}
                 style={{textAlign: "center"}}>
-                <div className={classes.SummaryHeader}>OpenSeatDirect reintroduces the lost tradition of selling tickets direct to your fans.</div>
-                    <div className={classes.CompleteUpperGrid}>
-                        <div>Get Cash Now!!!</div>
-                        <div>Absolutely NO Fees</div>
-                        <div>Own All Your Data</div>
-                    </div>
-                    <div className={classes.CompleteMiddleGrid}>
-                        <img
-                            src={CashNow}
-                            alt="OpenSeatDirect Logo"
-                            style={{width: "100%"}}
-                            //className={styleName}
-                        />
-                        <img
-                            src={NoFees}
-                            alt="OpenSeatDirect Logo"
-                            style={{width: "100%"}}
-                            //className={styleName}
-                        />
-                        <img
-                            src={SingleLocation}
-                            alt="OpenSeatDirect Logo"
-                            style={{width: "100%"}}
-                            //className={styleName}
-                        />
-                    </div>
-                    <div className={classes.CompleteLowerGrid}>
-                        <div>Don't wait until after the event passes. Get paid on tickets you sell right away.</div>
-                        <div>We're not kidding. Your customers NEVER pay any type of extra fee.</div>
-                        <div>Control all transaction and ticket buyer data from a single location. </div>
-                    </div>
+                
                 <div className={classes.SummaryHeader}>
                     3 easy steps to start selling tickets and receiving your cash now!!!
                 </div>
+                <br></br>
                 <div className={classes.SummaryGridTitle}
                     style={{ fontWeight: "600"}}>
                     <div>STEP 1</div>
@@ -347,14 +319,15 @@ const Onboarding = (props) => {
             <div className={classes.DisplayPanel}>
                 <div
                     style={{
-                        paddingTop: "60px",
+                        paddingTop: "40px",
                         paddingLeft: "80px",
                         fontSize: "22px",
                         fontWeight: "600"
                     }}
                     >STEP 1: Basic Information about your Organization
                 </div>
-                <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Explanation text.</div>
+                <br></br>
+                <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Please provide us with the following pieces of information:</div>
                 <div className={classes.VendorCanvas}>
                 {subTitleDisplay()}
                 <br></br>
@@ -513,16 +486,17 @@ const Onboarding = (props) => {
                 <div>
                     <div
                         style={{
-                            paddingLeft: "80px",
                             paddingTop: "40px",
+                            paddingLeft: "80px",
                             fontSize: "22px",
                             fontWeight: "600"
                         }}
                         >STEP 2: Select a Ticket Plan
                     </div>
-                    <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Explanation text.</div>
-                    <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>What you can do with free tickets only plan. Up to X number of free tickets per month/year.</div>
-                    <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>What you can do with free and paid tickets plan.</div>
+                    <br></br>
+                    <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Choose between our two ticket plans:</div>
+                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px"}}>"Free Tickets" plan allows you to issue up to 50 free tickets per month.</div>
+                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px", paddingBottom: "40px"}}>"Paid (and Free) Tickets" plan lets you issue an unlimited amount of paid and free tickets.</div>
                     <div  className={classes.PaymentCanvas}>
                         <RadioForm
                             details={ticketPlans}
@@ -822,14 +796,17 @@ const inputPromoCode = () => {
                         <div>
                             <div
                                 style={{
-                                    paddingLeft: "80px",
                                     paddingTop: "40px",
+                                    paddingLeft: "80px",
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
                                 >STEP 2: Choose a Payment Plan
                             </div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Explanation text.</div>
+                            <br></br>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Choose a payment plan and submit your payment:</div>
+                            <br></br>
+                            <br></br>
                             <div className={classes.PaymentCanvas}>
                                 {promoOption()}
                                 <br></br>
@@ -870,15 +847,16 @@ const inputPromoCode = () => {
                         <div>
                             <div
                                 style={{
-                                    paddingLeft: "80px",
                                     paddingTop: "40px",
+                                    paddingLeft: "80px",
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
                                 >STEP 2: Paypal Receipt
                             </div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Your payment was successfull.</div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Order details.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px" }}>Congratulations your have successfully paid for your {(paidPlan())}.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you for your payment.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Now let's make sure you get paid instantly whenever you sell a ticket.</div>
                             <div style={{textAlign: "center", paddingTop: "40px"}}>
                                 <Button className={classes.OrganizationButton}
                                     style={{
@@ -908,16 +886,55 @@ const inputPromoCode = () => {
                         <div>
                             <div
                                 style={{
-                                    paddingLeft: "80px",
                                     paddingTop: "40px",
+                                    paddingLeft: "80px",
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
-                                >STEP 2: Link Your Paypal Account 
+                                >STEP 2: Link Your Paypal Merchant Account 
                             </div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Explanation text. This is how you can get paid immediately upon each ticket sale, etc...</div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", color: "red" }}>Link to video.</div>
-                            <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px", color: "red" }}>Link to word document.</div>
+                            <br></br>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Please provide the ClientId and Secret from your PayPal merchant account.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>These two items are located in the "My Apps & Credentials" section of your
+                                <button
+                                    style={{
+                                        fontSize: "15px",
+                                        color: "blue",
+                                        border: "none",
+                                        backgroundColor: "white",
+                                        cursor: "pointer",
+                                        display: "inlineBlock",
+                                        outline: "none",
+                                    }}
+                                    onClick={() => {
+                                        window.location.href = "https://developer.paypal.com/developer/applications/";
+                                    }}
+                                >
+                                    PayPal Dashboard.
+                                </button>
+                            </div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px"}}>
+                                Additional instructions can be found
+                                <button
+                                    style={{
+                                        fontSize: "15px",
+                                        color: "blue",
+                                        border: "none",
+                                        backgroundColor: "white",
+                                        cursor: "pointer",
+                                        display: "inlineBlock",
+                                        outline: "none",
+                                    }}
+                                    onClick={() => {
+                                        window.location.href = "https://developer.paypal.com/developer/applications/";
+                                    }}
+                                >
+                                    here.
+                                </button>
+                            </div>
+                            
+                            
+                            
                             <div  className={classes.PaypalCanvas}>
                                 <div className="form-group">
                                     <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
@@ -1047,8 +1064,8 @@ const inputPromoCode = () => {
                     <div className={classes.DisplayPanel}>
                         <div
                             style={{
-                                paddingLeft: "80px",
                                 paddingTop: "40px",
+                                paddingLeft: "80px",
                                 fontSize: "22px",
                                 fontWeight: "600"
                             }}
@@ -1060,44 +1077,6 @@ const inputPromoCode = () => {
 
                         <div className={classes.CompleteHeaderLine2}>
                             enjoy the benefits that OpenSeatDirect provides.
-                        </div>
-
-                        <div className={classes.CompleteCanvas}>
-
-                            <div className={classes.RightSkewedGrid}>
-                                <div style={{paddingTop: "10px"}}>Receive the proceeds from all sales immediately!!!</div>
-                                <img
-                                    src={CashNow}
-                                    alt="OpenSeatDirect Logo"
-                                    style={{height: "100%"}}
-                                    //className={styleName}
-                                />
-                            </div>
-
-                            <div className={classes.LeftSkewedGrid}>
-                                <img
-                                    src={NoFees}
-                                    alt="OpenSeatDirect Logo"
-                                    style={{height: "100%"}}
-                                    //className={styleName}
-                                />
-                                <div style={{paddingTop: "10px"}}>Your customers never face any type of ticket fee.</div>
-                            </div>
-
-                            <div className={classes.RightSkewedGrid}>
-                                <div style={{paddingTop: "10px"}}>You own all transaction and customer data.</div>
-                                <img
-                                    src={SingleLocation}
-                                    alt="OpenSeatDirect Logo"
-                                    style={{height: "100%"}}
-                                    //className={styleName}
-                                />
-                            </div>
-
-                        </div>
-                        
-                        <div className={classes.SummaryHeader}>
-                        So are you ready to create your first event?
                         </div>
                 <br></br>
                         <div style={{textAlign: "center"}}>
@@ -1123,8 +1102,8 @@ const inputPromoCode = () => {
                     <div className={classes.DisplayPanel}>
                         <div
                             style={{
-                                paddingLeft: "80px",
                                 paddingTop: "40px",
+                                paddingLeft: "80px",
                                 fontSize: "22px",
                                 fontWeight: "600"
                             }}

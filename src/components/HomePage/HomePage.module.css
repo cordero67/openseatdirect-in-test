@@ -93,3 +93,40 @@
     font-size: 44px;
   }
 }
+
+
+
+.CompleteUpperGrid {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+  column-gap: 100px;
+  padding-left: 95px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.CompleteMiddleGrid {
+  display: grid;
+  grid-template-columns: 120px 120px 120px;
+  column-gap: 180px;
+  padding-left: 135px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.CompleteLowerGrid {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+  column-gap: 100px;
+  padding-left: 95px;
+  padding-bottom: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
+}

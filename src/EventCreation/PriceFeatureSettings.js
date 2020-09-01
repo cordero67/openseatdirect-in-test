@@ -181,8 +181,6 @@ const priceFeatureSettings = (props) => {
               </div>
             </div>
 
-
-                //XX START CODE REPLICATION REQUIRED
             <PromoCodeDisplay
                 ticket={props.ticket}
                 changePromoCodesName={props.changePromoCodesName}
@@ -190,8 +188,6 @@ const priceFeatureSettings = (props) => {
                 changePromoCodesPercent={props.changePromoCodesPercent}
                 deletePromoCode={props.deletePromoCode}
             />
-            //XX END CODE REPLICATION REQUIRED
-            
   
             <div
               style={{
