@@ -142,7 +142,7 @@ const Onboarding = (props) => {
     ];
 
     const paymentPlans = [
-        { label: "$25 every 3 months", value: "P-0PL38258XL781531RL5HSFTQ" },
+        { label: "$25 every 3 months", value: "P-86923698ML350284WL5HSLRQ" },
         { label: "$75 for one full year", value: "P-2T148806V2408743NL5HSFTY" }
     ];
 
