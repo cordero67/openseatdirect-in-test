@@ -161,13 +161,13 @@ const Onboarding = (props) => {
 
     const paidPlan = () => {
         if (paypal_plan_id === "P-3U3085871T847894PL5FRXTI") {
-            return <Aux>$10 Quaterly Paid Tickets plan </Aux>
+            return <Aux>$15 Quaterly Paid Tickets plan </Aux>
         } else if (paypal_plan_id === "P-6UY26644UT426184FL5FRXTI") {
-            return <Aux>$35 Annual Paid Tickets plan</Aux>
+            return <Aux>$50 Annual Paid Tickets plan</Aux>
         } else if (paypal_plan_id === "P-5DT364104U926810EL5FRXSY") {
-            return <Aux>$20 Quaterly Paid Tickets plan</Aux>
+            return <Aux>$25 Quaterly Paid Tickets plan</Aux>
         } else if (paypal_plan_id === "P-5YA13382D9271245EL5FRXTA") {
-            return <Aux>$70 anual Paid Tickets plan</Aux>
+            return <Aux>$75 anual Paid Tickets plan</Aux>
         }
     }
 
