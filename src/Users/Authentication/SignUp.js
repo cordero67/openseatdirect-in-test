@@ -54,9 +54,11 @@ const SignUp = () => {
 
   const showSuccess = (
     <div>
-      <div>To complete the sign-up process, please click the link in the e-mail sent to your inbox:</div>
+      <div>To complete the sign-up process, please click the link in the message sent to your e-mail inbox:</div>
       <br></br>
-      <div>{values.email}.</div>
+      <div style={{color: "blue"}}>{values.email}.</div>
+      <br></br>
+      <div>Please check your spam/junk folder if you do not see our message in your main inbox.</div>
       <br></br>
       <div>Back to <Link to="/signin" style={{color: "blue"}}>Signin</Link></div>
     </div>
@@ -159,7 +161,7 @@ const SignUp = () => {
       <div className={classes.BlankCanvas} style={{height: "490px"}}>
         <br></br>
         <div className={classes.Header}>
-          Come Aboard!!!
+          Come Aboard!
         </div>
         <br></br>
         <div className={classes.Section}>

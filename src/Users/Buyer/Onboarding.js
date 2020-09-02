@@ -809,10 +809,10 @@ const inputPromoCode = () => {
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
-                                >STEP 2: Choose a Payment Plan
+                                >STEP 2: Choose a Subscription Plan
                             </div>
                             <br></br>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Choose a payment plan and submit your payment:</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Choose a subscription plan and submit your payment to PayPal:</div>
                             <br></br>
                             <br></br>
                             <div className={classes.PaymentCanvas}>

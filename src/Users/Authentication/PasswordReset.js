@@ -151,7 +151,7 @@ const PasswordReset = () => {
       <div className={classes.BlankCanvas} style={{height: "490px"}}>
         <br></br>
         <div className={classes.Header}>
-          Come Aboard!!!
+          Come Aboard!
         </div>
         <br></br>
         <div className={classes.Section}>
