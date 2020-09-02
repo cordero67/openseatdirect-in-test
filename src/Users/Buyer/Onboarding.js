@@ -142,13 +142,13 @@ const Onboarding = (props) => {
     ];
 
     const paymentPlans = [
-        { label: "$25 every 3 months", value: "P-4V0299289E472821LL5HH4VQ" },
-        { label: "$75 for one full year", value: "P-8LK60211LP500930RL5HH4VY" }
+        { label: "$25 every 3 months", value: "P-7P319947PD044470YL5HRTPQ" },
+        { label: "$75 for one full year", value: "P-0BK72680BE568652WL5HRTPY" }
     ];
 
     const discountPlans = [
-        { label: "$15 every 3 months: discount applied", value: "P-5UC34262KS301513YL5HH4VY" },
-        { label: "$50 for one full year: discount applied", value: "P-1M909572E79522236L5HH4WA" }
+        { label: "$15 every 3 months: discount applied", value: "P-7RV74831D6680843JL5HRTPY" },
+        { label: "$50 for one full year: discount applied", value: "P-80C89847A4392831JL5HRTQA" }
     ];
 
     const shownPlans = () => {
@@ -263,9 +263,9 @@ const Onboarding = (props) => {
                     console.log("error occurs: ", err)
                 }
                 options = {{
-                    //clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
-                        currency: "USD",
-                        vault: true
+                    clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
+                    currency: "USD",
+                    vault: true
                 }}
                 catchError = {err => {
                     console.log("catchError 'err': ", err);
