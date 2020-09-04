@@ -142,13 +142,13 @@ const Onboarding = (props) => {
     ];
 
     const paymentPlans = [
-        { label: "$25 every 3 months", value: "P-86923698ML350284WL5HSLRQ" },
-        { label: "$70 for one full year", value: "P-2T148806V2408743NL5HSFTY" }
+        { label: "$25 every 3 months", value: "P-38K11886GW041664JL5JHRNA" },
+        { label: "$70 for one full year", value: "P-1TJ77997J0051064ML5JHRNI" }
     ];
 
     const discountPlans = [
-        { label: "$20 every 3 months: discount applied", value: "P-2DK36627GX695315GL5HSFUA" },
-        { label: "$50 for one full year: discount applied", value: "P-3KU60828U33449932L5HSFUA" }
+        { label: "$20 every 3 months: discount applied", value: "P-0J204573U8254533LL5JHRNI" },
+        { label: "$50 for one full year: discount applied", value: "P-0CX6745565737532ML5JHRNQ" }
     ];
 
     const shownPlans = () => {
@@ -504,7 +504,7 @@ const Onboarding = (props) => {
                     <br></br>
                     <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Choose between our two ticket plans:</div>
                     <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px"}}>"Free Tickets" plan allows you to issue up to 500 free tickets per month.</div>
-                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px", paddingBottom: "40px"}}>"Paid (and Free) Tickets" plan lets you issue an unlimited amount of paid and free tickets.</div>
+                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px", paddingBottom: "40px"}}>"Paid (and Free) Tickets" plan allows you issue an unlimited amount of paid and free tickets.</div>
                     <div  className={classes.PaymentCanvas}>
                         <RadioForm
                             details={ticketPlans}
