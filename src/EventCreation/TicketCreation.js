@@ -15,7 +15,9 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import {
   faTrashAlt,
   faGripVertical,
-  faCog
+  faCog,
+  faChevronUp,
+  faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Popup } from "semantic-ui-react";
 
@@ -209,21 +211,6 @@ const TicketCreation = (props) => {
                     }}
                   ></input>
                 </div>
-
-                <div
-                  style={{
-                    padding: "20px 5px",
-                    boxSizing: "borderBox",
-                    textAlign: "center",
-                  }}
-                >
-                  <FontAwesomeIcon
-                    color="blue"
-                    cursor="pointer"
-                    onClick={(event) => props.changeSettings(event, item.key)}
-                    icon={faCog}
-                  />
-                </div>
                 
                 <div
                   style={{
@@ -272,6 +259,67 @@ const TicketCreation = (props) => {
                 : null
               }
               
+
+              <div
+                  style={{
+                      padding: "5px",
+                      borderTop: "1px solid lightgrey",
+                      height: "30px",
+                      textAlign: "center",
+                  }}
+              >
+                {!item.settings ? (
+                  <button
+                    style={{
+                      fontSize: "15px",
+                      color: "blue",
+                      border: "none",
+                      backgroundColor: "white",
+                      cursor: "pointer",
+                      display: "inlineBlock",
+                      outline: "none",
+                    }}
+                    onClick={(event) => {props.changeSettings(event, item.key)}}
+                  >
+                  <FontAwesomeIcon
+                    color="blue"
+                    size="sm"
+                    cursor="pointer"
+                    onClick={() => {
+                        //let tempDisplay = {...ticketDisplay};
+                        //tempDisplay[item.eventNum] = false;
+                        //setTicketDisplay(tempDisplay);
+                    }}
+                    icon={faChevronDown}
+                  />
+                    {" "}Show additional features
+                  </button>) : 
+                <button
+                  style={{
+                    fontSize: "15px",
+                    color: "blue",
+                    border: "none",
+                    backgroundColor: "white",
+                    cursor: "pointer",
+                    display: "inlineBlock",
+                    outline: "none",
+                  }}
+                  onClick={(event) => {props.changeSettings(event, item.key)}}
+                >
+                <FontAwesomeIcon
+                  color="blue"
+                  size="sm"
+                  cursor="pointer"
+                  onClick={() => {
+                      //let tempDisplay = {...ticketDisplay};
+                      //tempDisplay[item.eventNum] = false;
+                      //setTicketDisplay(tempDisplay);
+                  }}
+                  icon={faChevronUp}
+                />
+                  {" "}Hide additional features
+                </button>}
+              </div>
               {item.settings ?
                 <PriceSettings
                   ticket={item}
@@ -352,16 +400,6 @@ const TicketCreation = (props) => {
                 }}
               >
                 Price<span style={{ color: "red" }}>*</span>
-              </div>
-  
-              <div
-                style={{
-                  padding: "10px 10px 10px 5px",
-                  boxSizing: "borderBox",
-                  fontWeight: 600,
-                }}
-              >
-                Features
               </div>
             </div>
             {ticketTypeDisplay()}

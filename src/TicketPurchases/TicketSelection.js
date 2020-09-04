@@ -591,7 +591,7 @@ const TicketSelection = () => {
         );
       }
     }
-  };  
+  };
 
   return (
     <Aux>

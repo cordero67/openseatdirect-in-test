@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
  
 import classes from "./VendorDashboard.module.css";
-import { compareValues, getDates } from "./VendorFunctions";
+import { compareValues, getDate } from "./VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 
 
@@ -40,8 +40,8 @@ let ordersArray = [
 
 const Orders = (props) => {
 
-    const [eventDescriptions, setEventDescriptions] = useState();//
-    const [ticketDisplay, setTicketDisplay] = useState();
+    const [ticketOrders, setTicketOrders] = useState();//
+    const [orderDisplay, setOrderDisplay] = useState();
     const [isLoading, setIsLoading] = useState(true);//
     const [isSuccessfull, setIsSuccessfull] = useState(true);//
 
@@ -53,14 +53,16 @@ const Orders = (props) => {
         return response;
       };
 
-    // intilializes the show property of each ticket type to "false"
+    /*
+    // intilializes the show property of each order to "false"
     const initializeDisplays = (events) => {
         let tempObject = {};
         events.forEach((item, index) => {
         tempObject[item.eventNum] = false;
         })
-        setTicketDisplay(tempObject);
+        setOrderDisplay(tempObject);
     }
+    */
     
     useEffect(() => {
         if (
@@ -78,13 +80,13 @@ const Orders = (props) => {
     
         if (
             typeof window !== "undefined" &&
-            localStorage.getItem(`events`) !== null
+            localStorage.getItem(`orders`) !== null
           ) {
-            let tempEvents = JSON.parse(localStorage.getItem("events"));
-            setEventDescriptions(tempEvents)
-            console.log("events existed")
+            let tempOrders = JSON.parse(localStorage.getItem("orders"));
+            setTicketOrders(tempOrders)
+            console.log("orders existed")
           } else {
-            console.log("events do not exist")
+            console.log("orders do not exist")
           }
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -102,12 +104,12 @@ const Orders = (props) => {
           .then(handleErrors)
           .then((response) => response.text())
           .then((result) => {
-            localStorage.setItem("events", result);
+            localStorage.setItem("orders", result);
             let js = JSON.parse(result);
             console.log("ticket orders unordered: ", js);
             js.sort(compareValues("startDateTime", "asc"));
             console.log("ticket orders ordered: ", js);
-            setEventDescriptions(js);
+            setTicketOrders(js);
             //initializeDisplays(js);
             setIsSuccessfull(true)
             setIsLoading(false);
@@ -121,6 +123,7 @@ const Orders = (props) => {
 
         }, []);
   
+        /*
         const editEvent = (item) => {
           if (typeof window !== "undefined") {
             console.log("JSON.stringify(item): ", JSON.stringify(item));
@@ -129,17 +132,23 @@ const Orders = (props) => {
           }
           // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
         }
-
+*/
     const mainDisplay = () => {
-        //if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
-        if (true) {
+        console.log("ticketOrders: ", ticketOrders)
+        if (!isLoading && isSuccessfull && ticketOrders.length !== 0) {
+            console.log("SUCCESS")
+        //if (false) {
             return (
                 <div>
                     <br></br>
                     <br></br>
                     <br></br>
                     <br></br>
-                    {ordersArray.map((item, index) => {
+                    {ticketOrders.map((item, index) => {
+                        let shortDateTime;
+                        console.log("item: ", item);
+                        [shortDateTime] = getDate(item);
+                        console.log("shortDateTime: ", shortDateTime)
 
                         return (
                             <div key={index} 
@@ -147,17 +156,17 @@ const Orders = (props) => {
                                     textAlign: "center",
                                     display: "grid",
                                     columnGap: "10px",
-                                    gridTemplateColumns: "200px 100px 100px 260px 100px 80px 100px",
+                                    gridTemplateColumns: "200px 100px 100px 280px 100px 60px 100px",
                                     paddingLeft: "30px",
                                     paddingRight: "30px"
                                     }}>
-                                <div style={{textAlign: "left"}}>{item.event}</div>
-                                <div style={{textAlign: "left"}}>{item.firstName}</div>
-                                <div style={{textAlign: "left"}}>{item.lastName}</div>
-                                <div style={{textAlign: "left"}}>{item.email}</div>
-                                <div style={{textAlign: "left"}}>{item.orderDate}</div>
-                                <div>{item.tickets}</div>
-                                <div>{item.amount}</div>
+                                <div style={{textAlign: "left"}}>{item.eventTitle}</div>
+                                <div style={{textAlign: "left"}}>{item.order_firstName}</div>
+                                <div style={{textAlign: "left"}}>{item.order_lastName}</div>
+                                <div style={{textAlign: "left"}}>{item.order_email}</div>
+                                <div style={{textAlign: "left"}}>{shortDateTime}</div>
+                                <div>{item.order_numTickets}</div>
+                                <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount.toFixed(2)}</div>
                                 <br></br>
                             </div>
                         );
@@ -165,10 +174,12 @@ const Orders = (props) => {
                 </div>
             )
         } else if (!isLoading && isSuccessfull) {
-            console.log("eventDescriptions.length: zero: ", eventDescriptions.length);
+            console.log("ticketOrders.length: zero: ", ticketOrders.length);
             console.log("zero events");
             return (
                 <div style={{ textAlign: "center", fontSize: "20px" }}>
+                    <br></br>
+                    <br></br>
                     <br></br>
                     <br></br>
                     <br></br>
@@ -178,6 +189,8 @@ const Orders = (props) => {
         } else if (!isLoading && !isSuccessfull) {
             return (
                 <div className={classes.SystemDownMessage}>
+                    <br></br>
+                    <br></br>
                     <br></br>
                     <br></br>
                     <br></br>
@@ -220,8 +233,8 @@ const Orders = (props) => {
                     <div>First</div>
                     <div>Last</div>
                     <div className={classes.Expand}>Customer email</div>
-                    <div style={{ textAlign: "center" }}>Order Date</div>
-                    <div style={{ textAlign: "center" }}># Tickets</div>
+                    <div>Order Date</div>
+                    <div style={{ textAlign: "center" }}>Tickets</div>
                     <div style={{ textAlign: "center" }}>Amount</div>
                 </div>
                 {mainDisplay()}

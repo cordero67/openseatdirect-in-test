@@ -119,15 +119,15 @@ const PriceSettings = (props) => {
                 <div>
                     Minimum{" "}
                     <input className={tempMinWarning}
-                    type="text"
-                    id="minTicketsAllowedPerOrder"
-                    placeholder="# of tickets"
-                    name="minTicketsAllowedPerOrder"
-                    value={props.ticket.minTicketsAllowedPerOrder}
-                    onChange={(event) => {
-                        console.log("ticket: ", props.ticket)
-                        props.changeTicket(event, props.ticket.key);
-                    }}
+                        type="text"
+                        id="minTicketsAllowedPerOrder"
+                        placeholder="# of tickets"
+                        name="minTicketsAllowedPerOrder"
+                        value={props.ticket.minTicketsAllowedPerOrder}
+                        onChange={(event) => {
+                            console.log("ticket: ", props.ticket)
+                            props.changeTicket(event, props.ticket.key);
+                        }}
                     ></input>{" "}
                     ticket(s)
                 </div>
@@ -169,32 +169,6 @@ const PriceSettings = (props) => {
                 changePromoCodesPercent={props.changePromoCodesPercent}
                 deletePromoCode={props.deletePromoCode}
             />
-
-            <div
-                style={{
-                    padding: "5px",
-                    borderTop: "1px solid lightgrey",
-                    height: "30px",
-                    textAlign: "center",
-                }}
-            >
-                <button
-                    style={{
-                        fontSize: "15px",
-                        color: "blue",
-                        border: "none",
-                        backgroundColor: "white",
-                        cursor: "pointer",
-                        display: "inlineBlock",
-                        outline: "none",
-                    }}
-                    onClick={(event) =>
-                        props.switchSettings(event, props.ticket.key)
-                    }
-                >
-                    ^ Minimize additional ticket features
-                </button>
-            </div>
         </div>
     )
 };

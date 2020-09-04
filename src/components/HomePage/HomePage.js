@@ -63,13 +63,13 @@ const Home = () => {
       <h1 className={styles.TextTagLine}>
         Ensuring you a direct ticket
         <br></br>
-        to your fans!!!
+        to your fans!
       </h1>
     )
   } else {
     tagLine = (
       <h1 className={styles.TextTagLine}>
-        Ensuring you a direct ticket to your fans!!!
+        Ensuring you a direct ticket to your fans!
       </h1>
     )
   }

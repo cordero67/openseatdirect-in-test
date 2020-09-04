@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 
+// /onboardingpdf
+
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
+import MainNew from "../HomePage/HomePageNEW";
 import Video from "../Video/Video";
 import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
@@ -19,6 +22,7 @@ import PasswordRecovery from "../../Users/Authentication/PasswordRecovery";
 import PasswordReset from "../../Users/Authentication/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
+import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorDashboard from "../../Users/Vendor/VendorDashboard";
 
 import Header from "../Headers/Header";
@@ -52,6 +56,24 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Main />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+
+<Route
+        path="/new"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <MainNew />
             <Footer></Footer>
           </React.Fragment>
         )}
@@ -141,6 +163,18 @@ const Routes = () => {
         </React.Fragment>
       )}
     />
+
+    <Route
+      path="/paypalonboarding"
+      exact
+      render={(routeProps) => (
+          <PaypalOnboarding />
+      )}
+    />
+
+
+
+
 
     <Route
       path="/vendordashboard"

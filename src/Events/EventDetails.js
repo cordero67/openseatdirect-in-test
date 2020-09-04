@@ -69,14 +69,13 @@ const EventDetail = props => {
     let d = Date.parse(event.startDateTime) + 86400;
     console.log("d: ", d)
     console.log("d+: ", d + 86400)
+    console.log("event.tickets: ", event.tickets)
 
-    if ('tickets' in event && event.tickets &&
+    if ('tickets' in event && event.tickets.length > 0 &&
       Date.now() < d
     ) {
       ticketStatus = true;
     }
-
-    // 86400 seconds in a day
 
     // defines the eniter "eventDetails" variable
     eventDetails = {

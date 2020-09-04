@@ -54,12 +54,16 @@ const PasswordRecovery = () => {
   const showSuccess = (
     <div>
       <div>
-        If there is an account associated with {values.email} you will receive an email with a link to reset your password.
+        If there is an account associated with
       </div>
       <br></br>
-      <button>
-        <Link to="/events">Continue</Link>
-      </button>
+      <div style={{color: "blue"}}>{values.email}</div>
+      <br></br>
+      <div>
+        you will receive a message with a password reset link.
+      </div>
+      <br></br>
+      <div>Back to <Link to="/signin" style={{color: "blue"}}>Signin</Link></div>
     </div>
   );
 

@@ -449,8 +449,8 @@ const EventDetails = (props) => {
 
             <div className={classes.DateTimeInputs}>
                 <DateSelector
-                    startDate={props.event.startDate}
                     type={"startDate"}
+                    startDate={props.event.startDate}
                     current={props.event.startDate}
                     change={(date) => props.changeDate(date, "start")}
                     beforeDate={new Date()}
@@ -463,8 +463,9 @@ const EventDetails = (props) => {
                     //endDate={eventDescription.endDate}
                 />
                 <DateSelector
-                    startDate={props.event.startDate}
                     type={"endDate"}
+                    startDate={props.event.startDate}
+                    current={props.event.endDate}
                     change={(date) => props.changeDate(date, "end")}
                     beforeDate={props.event.startDate}
                 />
