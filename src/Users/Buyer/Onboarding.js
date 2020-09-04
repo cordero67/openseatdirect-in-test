@@ -263,7 +263,7 @@ const Onboarding = (props) => {
                     console.log("error occurs: ", err)
                 }
                 options = {{
-                    clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
+                    clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
                     currency: "USD",
                     vault: true
                 }}
