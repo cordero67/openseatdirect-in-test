@@ -142,13 +142,13 @@ const Onboarding = (props) => {
     ];
 
     const paymentPlans = [
-        { label: "$25 every 3 months", value: "P-38K11886GW041664JL5JHRNA" },
-        { label: "$70 for one full year", value: "P-1TJ77997J0051064ML5JHRNI" }
+        { label: "$25 every 3 months", value: "P-5DT364104U926810EL5FRXSY" },
+        { label: "$70 for one full year", value: "P-5YA13382D9271245EL5FRXTA" }
     ];
 
     const discountPlans = [
-        { label: "$20 every 3 months: discount applied", value: "P-0J204573U8254533LL5JHRNI" },
-        { label: "$50 for one full year: discount applied", value: "P-0CX6745565737532ML5JHRNQ" }
+        { label: "$20 every 3 months: discount applied", value: "P-3U3085871T847894PL5FRXTI" },
+        { label: "$50 for one full year: discount applied", value: "P-6UY26644UT426184FL5FRXTI" }
     ];
 
     const shownPlans = () => {
