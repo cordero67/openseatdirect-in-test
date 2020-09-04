@@ -876,12 +876,11 @@ const inputPromoCode = () => {
                                     }}
                                     content="Continue"
                                     onClick={() => {
-                                        // UNDELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
                                         updatePageView();
-                                        // DELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
-                                        setPageView("paypal")
                                         console.log("pageView: ", pageView)
                                     }}
+
+
                                 />
                             </div>
                         </div>
