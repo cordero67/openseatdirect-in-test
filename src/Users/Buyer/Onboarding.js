@@ -879,7 +879,7 @@ const inputPromoCode = () => {
                                         // UNDELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
                                         updatePageView();
                                         // DELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
-                                        setPageView("paypal")
+                                        //setPageView("paypal")
                                         console.log("pageView: ", pageView)
                                     }}
                                 />
