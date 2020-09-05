@@ -147,8 +147,8 @@ const Onboarding = (props) => {
     ];
 
     const discountPlans = [
-        { label: "$20 every 3 months: discount applied", value: "P-3U3085871T847894PL5FRXTI" },
-        { label: "$50 for one full year: discount applied", value: "P-6UY26644UT426184FL5FRXTI" }
+        { label: "$20 every 3 months: discount applied", value: "P-6UY26644UT426184FL5FRXTI" },
+        { label: "$50 for one full year: discount applied", value: "P-98D01263TC390114NL5JHRNQ" }
     ];
 
     const shownPlans = () => {
@@ -167,7 +167,7 @@ const Onboarding = (props) => {
         } else if (paypal_plan_id === "P-5DT364104U926810EL5FRXSY") {
             return <Aux>$25 Quaterly Paid Tickets plan</Aux>
         } else if (paypal_plan_id === "P-5YA13382D9271245EL5FRXTA") {
-            return <Aux>$75 anual Paid Tickets plan</Aux>
+            return <Aux>$75 Annual Paid Tickets plan</Aux>
         }
     }
 
@@ -240,29 +240,27 @@ const Onboarding = (props) => {
                             })
                             .then((response) => {// first show a success model with a continue button to go to paypal clientId model 
                                 console.log("response: ", response);
-
                                 console.log ("fetch return got back data on organization:", response);
-                                    
                                 let tempData = JSON.parse(localStorage.getItem("user"));
                                 console.log("tempData: ", tempData)
                                 tempData.user.accountId = response.result;
                                 localStorage.setItem("user", JSON.stringify(tempData));
 
                                 setPageView("receipt");
-                                //return response.json();
                             }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
                             .catch((err)=>{
-                                window.alert ("Paypal Problem at OSD. Pleaase contact support if you cannot create events")
+                                window.alert ("Paypal Problem at OSD. Please contact support if you cannot create events")
                             })
                     })
                     .catch((err)=>{
-                        window.alert ("Paypal Problem at OSD. Pleaase contact support if you cannot create events")
+                        window.alert ("Paypal Problem at OSD. Please contact support if you cannot create events")
                     })
                 }}
                 onError = {(err) => 
                     console.log("error occurs: ", err)
                 }
                 options = {{
+                    //clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
                     clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
                     currency: "USD",
                     vault: true
@@ -581,7 +579,6 @@ const Onboarding = (props) => {
                                                     if (data.message){
                                                             errmsg = data.message;
                                                     };
-                                                    //window.alert (errmsg);
                                             };
                                         })
                                         .catch ((err)=>{
@@ -876,12 +873,11 @@ const inputPromoCode = () => {
                                     }}
                                     content="Continue"
                                     onClick={() => {
-                                        // UNDELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
                                         updatePageView();
-                                        // DELETE ONCE RETURN FROM SERVER CONTAINS THE RESPONSE FIELD
-                                        //setPageView("paypal")
                                         console.log("pageView: ", pageView)
                                     }}
+
+
                                 />
                             </div>
                         </div>
