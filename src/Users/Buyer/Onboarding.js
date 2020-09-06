@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { API, PAYPAL_USE_SANDBOX } from "../../config";
+import { API, PAYPAL_USE_SANDBOX, SUBSCRIPTION_PROMO_CODE } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -24,6 +24,9 @@ import { threeDSecure } from "braintree-web";
 let passThrough = true;
 
 const Onboarding = (props) => {
+    console.log("API: ", API)
+    console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX)
+
     const [values, setValues] = useState({
         accountName: "",
         accountEmail: "",
@@ -36,13 +39,8 @@ const Onboarding = (props) => {
         paypalExpress_client_secret: ""
     });
 
-    let sandboxStatus;
-    
-    if (PAYPAL_USE_SANDBOX === "true") {
-        sandboxStatus = true
-    } else {
-        sandboxStatus = false
-    }
+    let sandbox = false;
+    console.log("sandbox: ", sandbox);
 
     // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
     const [pageView, setPageView] = useState("summary")
@@ -141,14 +139,64 @@ const Onboarding = (props) => {
         { label: "Paid (and Free) Tickets", value: "basicPaidQuarter" }
     ];
 
+    let subscriptions;
+
+    if (sandbox === false) {
+        // production subscription plans
+        console.log("production subscription plans");
+        subscriptions = {
+            quarterly: {
+                name: "$25 quarterly (first quarter free)",
+                id: "P-38K11886GW041664JL5JHRNA"
+            },
+            annually: {
+                name: "$70 annually",
+                id: "P-1TJ77997J0051064ML5JHRNI"
+            },
+            quarterlyDiscounted: {
+                name: "$20 quarterly (first quarter free): discounted",
+                id: "P-0J204573U8254533LL5JHRNI"
+            },
+            annuallyDiscounted: {
+                name: "$50 annually: discounted",
+                id: "P-0CX6745565737532ML5JHRNQ"
+            },
+            clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k"
+        }
+    } else {
+        // sandbox subscription plans
+        console.log("sandbox subscription plans");
+        subscriptions = {
+            quarterly: {
+                name: "$20 quarterly (first quarter free)",
+                id: "P-5DT364104U926810EL5FRXSY"
+            },
+            annually: {
+                name: "$70 annually",
+                id: "P-5YA13382D9271245EL5FRXTA"
+            },
+            quarterlyDiscounted: {
+                name: "$10 quarterly (first quarter free): discounted",
+                id: "P-3U3085871T847894PL5FRXTI"
+            },
+            annuallyDiscounted: {
+                name: "$35 annually: discounted",
+                id: "P-6UY26644UT426184FL5FRXTI"
+            },
+            clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7"
+        }
+
+    }
+
     const paymentPlans = [
-        { label: "$25 every 3 months", value: "P-5DT364104U926810EL5FRXSY" },
-        { label: "$70 for one full year", value: "P-5YA13382D9271245EL5FRXTA" }
+        //{ label: "$25 quarterly (first quarter free)", value: "P-5DT364104U926810EL5FRXSY" },
+        { label: subscriptions.quarterly.name, value: subscriptions.quarterly.id },
+        { label: subscriptions.annually.name, value: subscriptions.annually.id }
     ];
 
     const discountPlans = [
-        { label: "$20 every 3 months: discount applied", value: "P-6UY26644UT426184FL5FRXTI" },
-        { label: "$50 for one full year: discount applied", value: "P-98D01263TC390114NL5JHRNQ" }
+        { label: subscriptions.quarterlyDiscounted.name, value: subscriptions.quarterlyDiscounted.id },
+        { label: subscriptions.annuallyDiscounted.name, value: subscriptions.annuallyDiscounted.id }
     ];
 
     const shownPlans = () => {
@@ -240,7 +288,7 @@ const Onboarding = (props) => {
                             })
                             .then((response) => {// first show a success model with a continue button to go to paypal clientId model 
                                 console.log("response: ", response);
-                                console.log ("fetch return got back data on organization:", response);
+                                console.log("fetch return got back data on organization:", response);
                                 let tempData = JSON.parse(localStorage.getItem("user"));
                                 console.log("tempData: ", tempData)
                                 tempData.user.accountId = response.result;
@@ -249,11 +297,15 @@ const Onboarding = (props) => {
                                 setPageView("receipt");
                             }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
                             .catch((err)=>{
-                                window.alert ("Paypal Problem at OSD. Please contact support if you cannot create events")
+                                window.alert (
+                                    "Paypal Problem at OSD. Please contact support if you cannot create events"
+                                )
                             })
                     })
                     .catch((err)=>{
-                        window.alert ("Paypal Problem at OSD. Please contact support if you cannot create events")
+                        window.alert (
+                            "Paypal Problem at OSD. Please contact support if you cannot create events"
+                        )
                     })
                 }}
                 onError = {(err) => 
@@ -261,7 +313,7 @@ const Onboarding = (props) => {
                 }
                 options = {{
                     //clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
-                    clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
+                    clientId: subscriptions.clientId,
                     currency: "USD",
                     vault: true
                 }}
@@ -452,7 +504,6 @@ const Onboarding = (props) => {
                                     console.log("tempData: ", tempData)
                                     tempData.user.accountId = data.result;
                                     localStorage.setItem("user", JSON.stringify(tempData));
-
                                     if (data.status){
                                         switch (data.result.status){
                                             case(4): 
@@ -1011,7 +1062,7 @@ const inputPromoCode = () => {
                                             method: "PATCH",
                                             headers: myHeaders,
                                             body:JSON.stringify({
-                                                useSandbox: sandboxStatus,
+                                                useSandbox: sandbox,
                                                 paymentGatewayType: "PayPalExpress",
                                                 paypalExpress_client_id: paypalExpress_client_id,
                                                 paypalExpress_client_secret: paypalExpress_client_secret
