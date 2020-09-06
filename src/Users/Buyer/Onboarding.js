@@ -39,7 +39,7 @@ const Onboarding = (props) => {
         paypalExpress_client_secret: ""
     });
 
-    let sandbox = false;
+    let sandbox = true;
     console.log("sandbox: ", sandbox);
 
     // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
