@@ -1051,7 +1051,7 @@ const inputPromoCode = () => {
                                             method: "PATCH",
                                             headers: myHeaders,
                                             body:JSON.stringify({
-                                                useSandbox: sandbox,
+                                                useSandbox: PAYPAL_USE_SANDBOX,
                                                 paymentGatewayType: "PayPalExpress",
                                                 paypalExpress_client_id: paypalExpress_client_id,
                                                 paypalExpress_client_secret: paypalExpress_client_secret
