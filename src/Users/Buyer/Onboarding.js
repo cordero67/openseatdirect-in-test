@@ -877,8 +877,6 @@ const inputPromoCode = () => {
                                         updatePageView();
                                         console.log("pageView: ", pageView)
                                     }}
-
-
                                 />
                             </div>
                         </div>
@@ -1012,7 +1010,7 @@ const inputPromoCode = () => {
                                             method: "PATCH",
                                             headers: myHeaders,
                                             body:JSON.stringify({
-                                                useSandbox: sandboxStatus,
+                                                useSandbox: false,
                                                 paymentGatewayType: "PayPalExpress",
                                                 paypalExpress_client_id: paypalExpress_client_id,
                                                 paypalExpress_client_secret: paypalExpress_client_secret
