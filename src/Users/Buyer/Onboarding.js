@@ -26,6 +26,7 @@ let passThrough = true;
 const Onboarding = (props) => {
     console.log("API: ", API)
     console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX)
+    console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX)
 
     const [values, setValues] = useState({
         accountName: "",
@@ -141,7 +142,7 @@ const Onboarding = (props) => {
 
     let subscriptions;
 
-    if (sandbox === false) {
+    if (PAYPAL_USE_SANDBOX === "true") {
         // production subscription plans
         console.log("production subscription plans");
         subscriptions = {
