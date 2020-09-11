@@ -207,18 +207,18 @@ const Onboarding = (props) => {
             return paymentPlans;
         }
     }
-
+/*
     const paidPlan = () => {
         if (paypal_plan_id === "P-3U3085871T847894PL5FRXTI") {
-            return <Aux>$15 Quaterly Paid Tickets plan </Aux>
+            return <Aux>$15 Quarterly Paid Tickets plan </Aux>
         } else if (paypal_plan_id === "P-6UY26644UT426184FL5FRXTI") {
             return <Aux>$50 Annual Paid Tickets plan</Aux>
         } else if (paypal_plan_id === "P-5DT364104U926810EL5FRXSY") {
-            return <Aux>$25 Quaterly Paid Tickets plan</Aux>
+            return <Aux>$25 Quarterly Paid Tickets plan</Aux>
         } else if (paypal_plan_id === "P-5YA13382D9271245EL5FRXTA") {
             return <Aux>$75 Annual Paid Tickets plan</Aux>
         }
-    }
+    }*/
 
     const subTitleDisplay = () => {
         //if (pageErrors || eventTitleOmission) {
@@ -912,7 +912,7 @@ const inputPromoCode = () => {
                                 >STEP 2: Paypal Receipt
                             </div>
                             <br></br>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px" }}>Congratulations you have successfully paid for your subscription.{(paidPlan())}.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px" }}>Congratulations you have successfully paid for your subscription.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you for your payment.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Now let's make sure you get paid instantly whenever you sell a ticket.</div>
                             <div style={{textAlign: "center", paddingTop: "40px"}}>
