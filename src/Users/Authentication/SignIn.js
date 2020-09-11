@@ -30,8 +30,8 @@ const SignIn = () => {
 
   const getStatus= (user) =>{ 
     if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status}
-    else {
+        return user.accountId.status
+    } else {
         return 0;
     } 
   }
