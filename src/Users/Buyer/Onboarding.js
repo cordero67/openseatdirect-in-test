@@ -142,7 +142,7 @@ const Onboarding = (props) => {
 
     let subscriptions;
 
-    if (PAYPAL_USE_SANDBOX === "true") {
+    if (PAYPAL_USE_SANDBOX === "false") {
         // production subscription plans
         console.log("production subscription plans");
         subscriptions = {
