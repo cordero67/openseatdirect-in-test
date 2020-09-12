@@ -139,29 +139,7 @@ const Onboarding = (props) => {
 
     let subscriptions;
 
-    if (PAYPAL_USE_SANDBOX === "false") {
-        // production subscription plans
-        console.log("production subscription plans");
-        subscriptions = {
-            quarterly: {
-                name: "$25 quarterly (first quarter free)",
-                id: "P-38K11886GW041664JL5JHRNA"
-            },
-            annually: {
-                name: "$70 annually",
-                id: "P-1TJ77997J0051064ML5JHRNI"
-            },
-            quarterlyDiscounted: {
-                name: "$20 quarterly (first quarter free): discounted",
-                id: "P-0J204573U8254533LL5JHRNI"
-            },
-            annuallyDiscounted: {
-                name: "$50 annually: discounted",
-                id: "P-0CX6745565737532ML5JHRNQ"
-            },
-            clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k"
-        }
-    } else {
+    if (PAYPAL_USE_SANDBOX === "true") {
         // sandbox subscription plans
         console.log("sandbox subscription plans");
         subscriptions = {
@@ -182,6 +160,28 @@ const Onboarding = (props) => {
                 id: "P-6UY26644UT426184FL5FRXTI"
             },
             clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7"
+        }
+    } else {
+        // production subscription plans
+        console.log("production subscription plans");
+        subscriptions = {
+            quarterly: {
+                name: "$25 quarterly (first quarter free)",
+                id: "P-38K11886GW041664JL5JHRNA"
+            },
+            annually: {
+                name: "$70 annually",
+                id: "P-1TJ77997J0051064ML5JHRNI"
+            },
+            quarterlyDiscounted: {
+                name: "$20 quarterly (first quarter free): discounted",
+                id: "P-0J204573U8254533LL5JHRNI"
+            },
+            annuallyDiscounted: {
+                name: "$50 annually: discounted",
+                id: "P-0CX6745565737532ML5JHRNQ"
+            },
+            clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k"
         }
 
     }
