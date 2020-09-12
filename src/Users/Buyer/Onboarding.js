@@ -40,9 +40,6 @@ const Onboarding = (props) => {
         paypalExpress_client_secret: ""
     });
 
-    //let sandbox = true;
-    //console.log("sandbox: ", sandbox);
-
     // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
     const [pageView, setPageView] = useState("summary")
     const [preFetchView, setPreFetchView] = useState("")
