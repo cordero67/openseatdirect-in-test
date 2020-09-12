@@ -24,7 +24,7 @@ import { threeDSecure } from "braintree-web";
 let passThrough = true;
 
 const Onboarding = (props) => {
-    console.log("API2: ", process.env.API2)
+    console.log("API2: ", API2)
     console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX)
     console.log("SUBSCRIPTION_PROMO_CODE: ", SUBSCRIPTION_PROMO_CODE)
     console.log("API: ", API)
