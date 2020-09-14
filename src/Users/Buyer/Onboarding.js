@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { API, API2, PAYPAL_USE_SANDBOX, SUBSCRIPTION_PROMO_CODE } from "../../config";
+import { API, API2, PAYPAL_USE_SANDBOX, SUBSCRIPTION_PROMO_CODE, nodeVar } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -24,10 +24,11 @@ import { threeDSecure } from "braintree-web";
 let passThrough = true;
 
 const Onboarding = (props) => {
-    console.log("API2: ", API2)
-    console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX)
-    console.log("SUBSCRIPTION_PROMO_CODE: ", SUBSCRIPTION_PROMO_CODE)
-    console.log("API: ", API)
+    console.log("API2: ", API2);
+    console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX);
+    console.log("SUBSCRIPTION_PROMO_CODE: ", SUBSCRIPTION_PROMO_CODE);
+    console.log("API: ", API);
+    console.log("nodeVar: ", nodeVar)
 
     const [values, setValues] = useState({
         accountName: "",
@@ -830,8 +831,6 @@ const inputPromoCode = () => {
       );
     }
   };
-
-
 
     const paymentPage =()=>{
                 return (
