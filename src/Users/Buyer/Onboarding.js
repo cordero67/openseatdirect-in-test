@@ -10,23 +10,16 @@ import { PayPalButton } from "react-paypal-button-v2";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 
-import CashNow from "../../assets/CashNow.jpg";
-import NoFees from "../../assets/NoFees.png";
-import SingleLocation from "../../assets/SingleLocation.png";
-
 import RadioForm from "./RadioForm";
 
 import classes from "./BuyerDashboard.module.css";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";  // experimental..
-import { threeDSecure } from "braintree-web";
-
-let passThrough = true;
 
 const Onboarding = (props) => {
-    console.log("API: ", API)
-    console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX)
-    console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX)
+    console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX);
+    console.log("SUBSCRIPTION_PROMO_CODE: ", SUBSCRIPTION_PROMO_CODE);
+    console.log("API: ", API);
 
     const [values, setValues] = useState({
         accountName: "",
@@ -39,9 +32,6 @@ const Onboarding = (props) => {
         paypalExpress_client_id: "",
         paypalExpress_client_secret: ""
     });
-
-    let sandbox = true;
-    console.log("sandbox: ", sandbox);
 
     // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
     const [pageView, setPageView] = useState("summary")
@@ -101,7 +91,6 @@ const Onboarding = (props) => {
     useEffect(() => {
         setLoading(true);
         if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
-
             let tempUser2 = JSON.parse(localStorage.getItem("user"));
             console.log("tempUser2: ", tempUser2)
             updateValues();
@@ -142,34 +131,12 @@ const Onboarding = (props) => {
 
     let subscriptions;
 
-    if (PAYPAL_USE_SANDBOX === "false") {
-        // production subscription plans
-        console.log("production subscription plans");
-        subscriptions = {
-            quarterly: {
-                name: "$25 quarterly (first quarter free)",
-                id: "P-38K11886GW041664JL5JHRNA"
-            },
-            annually: {
-                name: "$70 annually",
-                id: "P-1TJ77997J0051064ML5JHRNI"
-            },
-            quarterlyDiscounted: {
-                name: "$20 quarterly (first quarter free): discounted",
-                id: "P-0J204573U8254533LL5JHRNI"
-            },
-            annuallyDiscounted: {
-                name: "$50 annually: discounted",
-                id: "P-0CX6745565737532ML5JHRNQ"
-            },
-            clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k"
-        }
-    } else {
+    if (PAYPAL_USE_SANDBOX === "true") {
         // sandbox subscription plans
         console.log("sandbox subscription plans");
         subscriptions = {
             quarterly: {
-                name: "$20 quarterly (first quarter free)",
+                name: "$20 quarterly (1 quarter free trial)",
                 id: "P-5DT364104U926810EL5FRXSY"
             },
             annually: {
@@ -177,7 +144,7 @@ const Onboarding = (props) => {
                 id: "P-5YA13382D9271245EL5FRXTA"
             },
             quarterlyDiscounted: {
-                name: "$10 quarterly (first quarter free): discounted",
+                name: "$10 quarterly (1 quarter free trial): discounted",
                 id: "P-3U3085871T847894PL5FRXTI"
             },
             annuallyDiscounted: {
@@ -186,11 +153,31 @@ const Onboarding = (props) => {
             },
             clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7"
         }
-
+    } else {
+        // production subscription plans
+        console.log("production subscription plans");
+        subscriptions = {
+            quarterly: {
+                name: "$25 quarterly (1 quarter free trial)",
+                id: "P-38K11886GW041664JL5JHRNA"
+            },
+            annually: {
+                name: "$70 annually",
+                id: "P-1TJ77997J0051064ML5JHRNI"
+            },
+            quarterlyDiscounted: {
+                name: "$20 quarterly (1 quarter free trial): discounted",
+                id: "P-0J204573U8254533LL5JHRNI"
+            },
+            annuallyDiscounted: {
+                name: "$50 annually: discounted",
+                id: "P-0CX6745565737532ML5JHRNQ"
+            },
+            clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k"
+        }
     }
 
     const paymentPlans = [
-        //{ label: "$25 quarterly (first quarter free)", value: "P-5DT364104U926810EL5FRXSY" },
         { label: subscriptions.quarterly.name, value: subscriptions.quarterly.id },
         { label: subscriptions.annually.name, value: subscriptions.annually.id }
     ];
@@ -201,20 +188,19 @@ const Onboarding = (props) => {
     ];
 
     const shownPlans = () => {
-        if(promoCodeDetails.appliedPromoCode === "CASHNOW") {
+        if(promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE) {
             return discountPlans;
         } else {
             return paymentPlans;
         }
     }
     
+    /*
     const subTitleDisplay = () => {
-        //if (pageErrors || eventTitleOmission) {
-        if (false) {
+        if (pageErrors || eventTitleOmission) {
           return (
             <div className={classes.GridSubTitle}>
-              <div style={{ textAlign: "left" }}>
-              </div>
+              <div style={{ textAlign: "left" }}></div>
               <div style={{ textAlign: "center", color: "red"}}>
                 Please correct input errors identified below.
               </div>
@@ -229,7 +215,8 @@ const Onboarding = (props) => {
             </div>
           )
         }
-      }
+    }
+    */
 
     const handleErrors = response => {
         console.log ("inside handleErrors ", response);
@@ -301,7 +288,6 @@ const Onboarding = (props) => {
                     console.log("error occurs: ", err)
                 }
                 options = {{
-                    //clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
                     clientId: subscriptions.clientId,
                     currency: "USD",
                     vault: true
@@ -312,8 +298,6 @@ const Onboarding = (props) => {
             />
         </div>
     );
-
-
 
     const summaryPage =()=>{
         console.log ("in summaryPage");
@@ -376,7 +360,7 @@ const Onboarding = (props) => {
                 <br></br>
                 <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Please provide us with the following pieces of information:</div>
                 <div className={classes.VendorCanvas}>
-                {subTitleDisplay()}
+                {/*subTitleDisplay()*/}
                 <br></br>
                     <div className="form-group">
                         <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
@@ -517,7 +501,6 @@ const Onboarding = (props) => {
                                     console.log (err);
                                     setPageView("error");
                                 })
-                                //.finally (() => setIsDisabled(false));
                             }}
                         />
                     </div>
@@ -636,9 +619,7 @@ const Onboarding = (props) => {
                 </div>
             </div>
         )
-
     }
-
 
     const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
         let tempPromoCodeDetails = { ...promoCodeDetails };
@@ -653,14 +634,11 @@ const Onboarding = (props) => {
     
   // updates "promoCodeDetails", "ticketInfo" and "orderTotals" based on promo code change
   const applyPromoCodeHandler = (event, inputtedPromoCode) => {
-    //console.log("inside applyPromoCodeHandler")
-
     if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
         console.log("valid code");
         setPromoCodeDetails(
         amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails)
       );
-      
     } else {
         //console.log("INVALID code");
         let tempobject = { ...promoCodeDetails };
@@ -759,7 +737,7 @@ const inputPromoCode = () => {
     appliedPromoCode: "",
     inputtedPromoValue: "",
     lastInvalidPromoCode: "",
-    eventPromoCodes: ["CASHNOW"],
+    eventPromoCodes: [SUBSCRIPTION_PROMO_CODE],
   });
 
  const clearPromoDetails = (promoCodeDetails) => {
@@ -833,8 +811,6 @@ const inputPromoCode = () => {
     }
   };
 
-
-
     const paymentPage =()=>{
                 return (
                     <div className={classes.DisplayPanel}>
@@ -885,8 +861,9 @@ const inputPromoCode = () => {
                     </div>
                 )
 
-    }
-    const receiptPage =()=>{
+            }
+
+            const receiptPage =()=>{
                 return (
                     <div className={classes.DisplayPanel}>
                         <div>
@@ -916,16 +893,14 @@ const inputPromoCode = () => {
                                         updatePageView();
                                         console.log("pageView: ", pageView)
                                     }}
-
-
                                 />
                             </div>
                         </div>
                     </div>
                 )
+            }
 
-    }
-    const paypalPage =()=>{
+            const paypalPage =()=>{
                 return (
                     <div className={classes.DisplayPanel}>
                         <div>
@@ -977,9 +952,7 @@ const inputPromoCode = () => {
                                 Additional instructions.
                                 </button>
                             </div>
-                            
-                            
-                            
+
                             <div  className={classes.PaypalCanvas}>
                                 <div className="form-group">
                                     <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
@@ -1051,7 +1024,7 @@ const inputPromoCode = () => {
                                             method: "PATCH",
                                             headers: myHeaders,
                                             body:JSON.stringify({
-                                                useSandbox: sandbox,
+                                                useSandbox: PAYPAL_USE_SANDBOX,
                                                 paymentGatewayType: "PayPalExpress",
                                                 paypalExpress_client_id: paypalExpress_client_id,
                                                 paypalExpress_client_secret: paypalExpress_client_secret
@@ -1102,8 +1075,8 @@ const inputPromoCode = () => {
                         </div>
                     </div>
                 )
-
     }
+
     const completedPage =()=>{
                 return (
                     <div className={classes.DisplayPanel}>
@@ -1142,6 +1115,7 @@ const inputPromoCode = () => {
                 )
 
     }
+    
     const errorPage =()=>{
                 return (
                     <div className={classes.DisplayPanel}>
