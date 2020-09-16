@@ -27,7 +27,6 @@ const getStatus= () =>{
   //console.log("tempData.user.accountId: ", tempData.user.accountId)
   //console.log("tempData.user.accountId.status: ", tempData.user.accountId.status)
   if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
-    console.log("tempData.accountId.status: ", tempData.user.accountId.status)
     return tempData.user.accountId.status}
   else {
     console.log("returns 0")

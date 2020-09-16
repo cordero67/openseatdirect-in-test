@@ -29,9 +29,24 @@ const Onboarding = (props) => {
         ticketPlan: "",
         inputError: "",
         paypal_plan_id: "",
+        paypal_plan_id_full: "",
+        paypal_plan_id_discount: "",
         paypalExpress_client_id: "",
         paypalExpress_client_secret: ""
     });
+
+    console.log("values: ", values)
+
+    const [promoCodeDetails, setPromoCodeDetails] = useState({
+        available: false,
+        applied: false,
+        input: false,
+        errorMessage: "",
+        appliedPromoCode: "",
+        inputtedPromoValue: "",
+        lastInvalidPromoCode: "",
+        eventPromoCodes: [SUBSCRIPTION_PROMO_CODE],
+      });
 
     // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
     const [pageView, setPageView] = useState("summary")
@@ -39,7 +54,7 @@ const Onboarding = (props) => {
     const [loading, setLoading ] = useState("false")
 
     //const [isDisabled, setIsDisabled] = useState(true)
-    const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypal_plan_id, paypalExpress_client_id, paypalExpress_client_secret } = values;
+    const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypal_plan_id, paypal_plan_id_full, paypal_plan_id_discount, paypalExpress_client_id, paypalExpress_client_secret } = values;
 
     const getStatus= () =>{ 
         let tempData = JSON.parse(localStorage.getItem("user"));
@@ -79,9 +94,29 @@ const Onboarding = (props) => {
             if (tempUser.user.accountId.accountUrl) tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
             if (tempUser.user.accountId.status) tempBuyerInfo.status = tempUser.user.accountId.status;
             if (tempUser.user.accountId.ticketPlan) tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
-            if (tempUser.user.accountId.paypal_plan_id) tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
             if (tempUser.user.accountId.paypalExpress_client_id) tempBuyerInfo.paypalExpress_client_id = tempUser.user.accountId.paypalExpress_client_id;
             if (tempUser.user.accountId.paypalExpress_client_secret) tempBuyerInfo.paypalExpress_client_secret = tempUser.user.accountId.paypalExpress_client_secret;
+            
+            if (PAYPAL_USE_SANDBOX === "true") {
+                console.log("PAYPAL_USE_SANDBOX is ", PAYPAL_USE_SANDBOX, " Sandbox true");
+                tempBuyerInfo.paypal_plan_id_full = "P-5DT364104U926810EL5FRXSY";
+                tempBuyerInfo.paypal_plan_id_discount = "P-3U3085871T847894PL5FRXTI";
+                if (!tempUser.user.accountId.paypal_plan_id) {
+                    tempBuyerInfo.paypal_plan_id = "P-5DT364104U926810EL5FRXSY";
+                } else {
+                    tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
+                }
+            } else {
+                console.log("PAYPAL_USE_SANDBOX is ", PAYPAL_USE_SANDBOX, " Sandbox false");
+                tempBuyerInfo.paypal_plan_id_full = "P-38K11886GW041664JL5JHRNA";
+                tempBuyerInfo.paypal_plan_id_discount = "P-0J204573U8254533LL5JHRNI";
+                if (!tempUser.user.accountId.paypal_plan_id) {
+                    tempBuyerInfo.paypal_plan_id = "P-38K11886GW041664JL5JHRNA";
+                } else {
+                    tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
+                }
+            }
+
             setValues(tempBuyerInfo);
             
             console.log("tempBuyerInfo: ", tempBuyerInfo)
@@ -124,6 +159,18 @@ const Onboarding = (props) => {
         console.log("values: ", values)
     };
 
+    const radioChangePayment = (event, value, name) => {
+        let tempValues = { ...values };
+        tempValues[name] = value.value;
+        tempValues.paypal_plan_id = value.value;
+        console.log("tempValues: ", tempValues)
+        console.log("tempValues.paypal_plan_id: ", tempValues.paypal_plan_id)
+        console.log("tempValues.paypal_plan_id_full: ", tempValues.paypal_plan_id_full)
+        console.log("tempValues.paypal_plan_id_discount: ", tempValues.paypal_plan_id_discount)
+        setValues(tempValues);
+        console.log("values: ", values)
+    };
+
     const ticketPlans = [
         { label: "Free Tickets", value: "free" },
         { label: "Paid (and Free) Tickets", value: "basicPaidQuarter" }
@@ -132,7 +179,7 @@ const Onboarding = (props) => {
     let subscriptions;
 
     if (PAYPAL_USE_SANDBOX === "true") {
-        // sandbox subscription plans
+        // SANBOX subscription plans
         console.log("sandbox subscription plans");
         subscriptions = {
             quarterly: {
@@ -154,7 +201,7 @@ const Onboarding = (props) => {
             clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7"
         }
     } else {
-        // production subscription plans
+        // PRODUCTION subscription plans
         console.log("production subscription plans");
         subscriptions = {
             quarterly: {
@@ -192,6 +239,42 @@ const Onboarding = (props) => {
             return discountPlans;
         } else {
             return paymentPlans;
+        }
+    }
+
+    const paymentPanel = () => {
+        if(promoCodeDetails.appliedPromoCode === "CASHNOW") {
+            return (
+                <Aux>
+                    <RadioForm
+                        details={shownPlans()}
+                        group="eventTypeGroup"
+                        current={paypal_plan_id_discount}
+                        change={(event, value) => {
+                            console.log("Inside DISCOUNT Radio");
+                            radioChangePayment(event, value, "paypal_plan_id_discount")
+                        }}
+                    />
+                    <br></br>
+                    {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
+                </Aux>
+            )
+        } else {
+            return (
+                <Aux>
+                    <RadioForm
+                        details={shownPlans()}
+                        group="eventTypeGroup"
+                        current={paypal_plan_id_full}
+                        change={(event, value) => {
+                            console.log("Inside FULL Radio");
+                            radioChangePayment(event, value, "paypal_plan_id_full")
+                        }}
+                    />
+                    <br></br>
+                    {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
+                </Aux>
+            )
         }
     }
     
@@ -637,10 +720,13 @@ const Onboarding = (props) => {
     if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
         console.log("valid code");
         setPromoCodeDetails(
-        amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails)
-      );
+            amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails)
+        );
+        let tempValues = {...values};
+        tempValues.paypal_plan_id = tempValues.paypal_plan_id_discount
+        setValues(tempValues)
+
     } else {
-        //console.log("INVALID code");
         let tempobject = { ...promoCodeDetails };
         tempobject.errorMessage = "Sorry, that promo code is invalid";
         tempobject.lastInvalidPromoCode = inputtedPromoCode;
@@ -729,17 +815,6 @@ const inputPromoCode = () => {
     }
   };
 
-  const [promoCodeDetails, setPromoCodeDetails] = useState({
-    available: false,
-    applied: false,
-    input: false,
-    errorMessage: "",
-    appliedPromoCode: "",
-    inputtedPromoValue: "",
-    lastInvalidPromoCode: "",
-    eventPromoCodes: [SUBSCRIPTION_PROMO_CODE],
-  });
-
  const clearPromoDetails = (promoCodeDetails) => {
     let tempPromoCodeDetails;
     tempPromoCodeDetails = { ...promoCodeDetails };
@@ -756,7 +831,6 @@ const inputPromoCode = () => {
   // creates contents inside promo code input form
   const promoOption = () => {
     if (promoCodeDetails.applied) {
-    //if (false) {
       return (
         <Aux>
           <div className={classes.AppliedPromoCode}>
@@ -774,6 +848,9 @@ const inputPromoCode = () => {
               onClick={() => {
                     console.log("inside remove")
                     setPromoCodeDetails(clearPromoDetails(promoCodeDetails));
+                    let tempValues = {...values};
+                    tempValues.paypal_plan_id = tempValues.paypal_plan_id_full
+                    setValues(tempValues)
               }}
             >
               Remove
@@ -783,7 +860,6 @@ const inputPromoCode = () => {
         </Aux>
       );
     } else if (promoCodeDetails.input) {
-    //} else if (false) {
       return (
         <Aux>
           {inputPromoCode()}
@@ -791,7 +867,6 @@ const inputPromoCode = () => {
         </Aux>
       );
     } else if (!promoCodeDetails.input) {
-    //} else if (true) {
       return (
         <Aux>
           <div
@@ -831,16 +906,7 @@ const inputPromoCode = () => {
                             <div className={classes.PaymentCanvas}>
                                 {promoOption()}
                                 <br></br>
-                                <RadioForm
-                                    details={shownPlans()}
-                                    group="eventTypeGroup"
-                                    current={paypal_plan_id}
-                                    change={(event, value) =>
-                                        radioChange(event, value, "paypal_plan_id")
-                                    }
-                                />
-                                <br></br>
-                                {ticketPlan !== "free" ? showPayPal : null}
+                                {paymentPanel()}
                             </div>
                             <div style={{textAlign: "center", paddingTop: "40px"}}>
                                 <Button className={classes.OrganizationButton}
