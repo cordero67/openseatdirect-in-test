@@ -360,16 +360,19 @@ const Onboarding = (props) => {
                                     "Paypal Problem at OSD. Please contact support if you cannot create events"
                                 )
                             })
-                    })
-                    .catch((err)=>{
-                        window.alert (
-                            "Paypal Problem at OSD. Please contact support if you cannot create events"
-                        )
-                    })
+                        })
+                        .catch((err)=>{
+                            window.alert (
+                                "Paypal Problem at OSD. Please contact support if you cannot create events"
+                            )
+                        })
                 }}
-                onError = {(err) => 
-                    console.log("error occurs: ", err)
-                }
+                onError = {(err) => {
+                    console.log("error occurs: ", err);
+                    window.alert (
+                        "Problem connecting with PayPal. Please check your internet connection and refresh this page."
+                    )
+                }}
                 options = {{
                     clientId: subscriptions.clientId,
                     currency: "USD",
@@ -943,9 +946,9 @@ const inputPromoCode = () => {
                                 >STEP 2: Paypal Receipt
                             </div>
                             <br></br>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px" }}>Congratulations you have successfully paid for your subscription.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you for your payment.</div>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Now let's make sure you get paid instantly whenever you sell a ticket.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>OSD is experiences delays in processing your payment.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", color: "red", paddingTop: "20px", paddingBottom: "40px" }}>PLEASE DO NOT RESUBMIT A PAYMENT.</div>
                             <div style={{textAlign: "center", paddingTop: "40px"}}>
                                 <Button className={classes.OrganizationButton}
                                     style={{
