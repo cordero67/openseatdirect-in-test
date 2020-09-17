@@ -345,38 +345,45 @@ const Onboarding = (props) => {
                             .then ((response)=>{
                                 return response.json();
                             })
-                            .then((response) => {// first show a success model with a continue button to go to paypal clientId model 
-                                console.log("response: ", response);
-                                console.log("fetch return got back data on organization:", response);
-                                let tempData = JSON.parse(localStorage.getItem("user"));
-                                console.log("tempData: ", tempData)
-                                tempData.user.accountId = response.result;
-                                localStorage.setItem("user", JSON.stringify(tempData));
-
-                                setPageView("receipt");
+                            .then((response) => {// first show a success model with a continue button to go to paypal clientId model
+                                if(response.status) {
+                                    console.log("response: ", response);
+                                    console.log("fetch return got back data on organization:", response);
+                                    let tempData = JSON.parse(localStorage.getItem("user"));
+                                    console.log("tempData: ", tempData)
+                                    tempData.user.accountId = response.result;
+                                    localStorage.setItem("user", JSON.stringify(tempData));
+                                    setPageView("receipt");
+                                } else {
+                                    setPageView("receiptErrorPage");
+                                }
                             }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
                             .catch((err)=>{
-                                window.alert (
-                                    "Paypal Problem at OSD. Please contact support if you cannot create events"
-                                )
+                                setPageView("receiptErrorPage");
                             })
-                    })
-                    .catch((err)=>{
-                        window.alert (
-                            "Paypal Problem at OSD. Please contact support if you cannot create events"
-                        )
-                    })
+                        })
+                        .catch((err)=>{
+                            window.alert (
+                                "Problem with Paypal."
+                            )
+                        })
                 }}
-                onError = {(err) => 
-                    console.log("error occurs: ", err)
-                }
+                onError = {(err) => {
+                    console.log("error occurs: ", err);
+                    window.alert (
+                        "Problem connecting with PayPal. Please try again."
+                    )
+                }}
                 options = {{
                     clientId: subscriptions.clientId,
                     currency: "USD",
                     vault: true
                 }}
                 catchError = {err => {
-                    console.log("catchError 'err': ", err);
+                    console.log("error occurs: ", err);
+                    window.alert (
+                        "Problem connecting with PayPal. Please try again."
+                    )
                 }}
             />
         </div>
@@ -940,12 +947,47 @@ const inputPromoCode = () => {
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
-                                >STEP 2: Paypal Receipt
+                                >STEP 2: Payment Confirmation
                             </div>
                             <br></br>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px" }}>Congratulations you have successfully paid for your subscription.</div>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you for your payment.</div>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Now let's make sure you get paid instantly whenever you sell a ticket.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you, your payment was successfully received by PayPal.</div>
+                            <div style={{textAlign: "center", paddingTop: "40px"}}>
+                                <Button className={classes.OrganizationButton}
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: "1px solid blue",
+                                        color: "blue",
+                                        padding: "0px",
+                                    }}
+                                    content="Continue"
+                                    onClick={() => {
+                                        updatePageView();
+                                        console.log("pageView: ", pageView)
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+            const receiptErrorPage =()=>{
+                return (
+                    <div className={classes.DisplayPanel}>
+                        <div>
+                            <div
+                                style={{
+                                    paddingTop: "40px",
+                                    paddingLeft: "80px",
+                                    fontSize: "22px",
+                                    fontWeight: "600"
+                                }}
+                                >STEP 2: Payment Confirmation
+                            </div>
+                            <br></br>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you, your payment was successfully received by PayPal.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>OSD is experiences delays in processing your payment.</div>
+                            <div style={{fontSize: "16px", paddingLeft: "80px", color: "red", paddingTop: "20px", paddingBottom: "40px" }}>PLEASE DO NOT RESUBMIT A PAYMENT.</div>
                             <div style={{textAlign: "center", paddingTop: "40px"}}>
                                 <Button className={classes.OrganizationButton}
                                     style={{
