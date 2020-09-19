@@ -511,22 +511,9 @@ const Onboarding = (props) => {
                         />
                     </div>
                 </div>
-                <div className={classes.OrganizationButtonGrid}>
-                    <div style={{paddingLeft: "65px"}}>
-                        <Button className={classes.OrganizationButton}
-                            style={{
-                                backgroundColor: "white",
-                                border: "1px solid blue",
-                                color: "blue",
-                                padding: "0px"
-                            }}
-                            content="Back"
-                            onClick={() => {
-                                setPageView("summary");
-                            }}
-                        />
-                    </div>
-                    <div style={{paddingLeft: "65px"}}>
+                
+                    
+                    <div style={{textAlign: "center", paddingLeft: "65px"}}>
                         <Button className={classes.OrganizationButton}
                             style={{
                                 backgroundColor: 'white',
@@ -596,7 +583,6 @@ const Onboarding = (props) => {
                                 })
                             }}
                         />
-                    </div>
                 </div>
             </div>
         )
@@ -630,22 +616,7 @@ const Onboarding = (props) => {
                         />
                         <br></br>
                     </div>
-                    <div className={classes.OrganizationButtonGrid}>
-                        <div style={{paddingLeft: "65px"}}>
-                            <Button className={classes.OrganizationButton}
-                                style={{
-                                    backgroundColor: "white",
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    padding: "0px"
-                                }}
-                                content="Back"
-                                onClick={() => {
-                                    setPageView("organization");
-                                }}
-                            />
-                        </div>
-                        <div style={{paddingLeft: "65px"}}>
+                        <div style={{textAlign: "center"}}>
                             <Button className={classes.OrganizationButton}
                                 style={{
                                     backgroundColor: 'white',
@@ -707,7 +678,6 @@ const Onboarding = (props) => {
                                     }
                                 }}
                             />
-                        </div>
                     </div>
                 </div>
             </div>
@@ -918,7 +888,7 @@ const inputPromoCode = () => {
                                 <br></br>
                                 {paymentPanel()}
                             </div>
-                            <div style={{textAlign: "center", paddingTop: "40px"}}>
+                            <div style={{textAlign: "center"}}>
                                 <Button className={classes.OrganizationButton}
                                     style={{
                                         backgroundColor: 'white',
@@ -991,21 +961,6 @@ const inputPromoCode = () => {
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you, your payment was successfully received by PayPal.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>OSD is experiences delays in processing your payment.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", color: "red", paddingTop: "20px", paddingBottom: "40px" }}>PLEASE DO NOT RESUBMIT A PAYMENT.</div>
-                            <div style={{textAlign: "center", paddingTop: "40px"}}>
-                                <Button className={classes.OrganizationButton}
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid blue",
-                                        color: "blue",
-                                        padding: "0px",
-                                    }}
-                                    content="Continue"
-                                    onClick={() => {
-                                        updatePageView();
-                                        console.log("pageView: ", pageView)
-                                    }}
-                                />
-                            </div>
                         </div>
                     </div>
                 )
