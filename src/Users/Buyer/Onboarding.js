@@ -353,12 +353,15 @@ const Onboarding = (props) => {
                                     console.log("tempData: ", tempData)
                                     tempData.user.accountId = response.result;
                                     localStorage.setItem("user", JSON.stringify(tempData));
+                                    console.log("if portion of .then if-than-else")
                                     setPageView("receipt");
                                 } else {
+                                    console.log("else portion of .then if-than-else")
                                     setPageView("receiptErrorPage");
                                 }
                             }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
                             .catch((err)=>{
+                                console.log(".catch portion of .then if-than-else")
                                 setPageView("receiptErrorPage");
                             })
                         })
@@ -1270,6 +1273,7 @@ const inputPromoCode = () => {
                 case ("ticket"):    return ticketPage();
                 case ("payment"):   return paymentPage();
                 case ("receipt"):   return receiptPage();
+                case ("receiptErrorPage"):   return receiptErrorPage();
                 case("paypal"):     return paypalPage();
                 case("completed"):  return completedPage();
                 case("error"):      return errorPage();
