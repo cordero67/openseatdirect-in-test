@@ -353,12 +353,15 @@ const Onboarding = (props) => {
                                     console.log("tempData: ", tempData)
                                     tempData.user.accountId = response.result;
                                     localStorage.setItem("user", JSON.stringify(tempData));
+                                    console.log("if portion of .then if-than-else")
                                     setPageView("receipt");
                                 } else {
+                                    console.log("else portion of .then if-than-else")
                                     setPageView("receiptErrorPage");
                                 }
                             }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
                             .catch((err)=>{
+                                console.log(".catch portion of .then if-than-else")
                                 setPageView("receiptErrorPage");
                             })
                         })
@@ -508,22 +511,9 @@ const Onboarding = (props) => {
                         />
                     </div>
                 </div>
-                <div className={classes.OrganizationButtonGrid}>
-                    <div style={{paddingLeft: "65px"}}>
-                        <Button className={classes.OrganizationButton}
-                            style={{
-                                backgroundColor: "white",
-                                border: "1px solid blue",
-                                color: "blue",
-                                padding: "0px"
-                            }}
-                            content="Back"
-                            onClick={() => {
-                                setPageView("summary");
-                            }}
-                        />
-                    </div>
-                    <div style={{paddingLeft: "65px"}}>
+                
+                    
+                    <div style={{textAlign: "center", paddingLeft: "65px"}}>
                         <Button className={classes.OrganizationButton}
                             style={{
                                 backgroundColor: 'white',
@@ -593,7 +583,6 @@ const Onboarding = (props) => {
                                 })
                             }}
                         />
-                    </div>
                 </div>
             </div>
         )
@@ -614,8 +603,8 @@ const Onboarding = (props) => {
                     </div>
                     <br></br>
                     <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Choose between our two ticket plans:</div>
-                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px"}}>"Free Tickets" plan allows you to issue up to 500 free tickets per month.</div>
-                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px", paddingBottom: "40px"}}>"Paid (and Free) Tickets" plan allows you issue an unlimited amount of paid and free tickets.</div>
+                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px"}}>"Free Tickets" plan allows you to create up to 500 free tickets per month.</div>
+                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px", paddingBottom: "40px"}}>"Paid (and Free) Tickets" plan allows you to create an unlimited amount of paid and free tickets.</div>
                     <div  className={classes.PaymentCanvas}>
                         <RadioForm
                             details={ticketPlans}
@@ -627,22 +616,7 @@ const Onboarding = (props) => {
                         />
                         <br></br>
                     </div>
-                    <div className={classes.OrganizationButtonGrid}>
-                        <div style={{paddingLeft: "65px"}}>
-                            <Button className={classes.OrganizationButton}
-                                style={{
-                                    backgroundColor: "white",
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    padding: "0px"
-                                }}
-                                content="Back"
-                                onClick={() => {
-                                    setPageView("organization");
-                                }}
-                            />
-                        </div>
-                        <div style={{paddingLeft: "65px"}}>
+                        <div style={{textAlign: "center"}}>
                             <Button className={classes.OrganizationButton}
                                 style={{
                                     backgroundColor: 'white',
@@ -704,7 +678,6 @@ const Onboarding = (props) => {
                                     }
                                 }}
                             />
-                        </div>
                     </div>
                 </div>
             </div>
@@ -915,7 +888,7 @@ const inputPromoCode = () => {
                                 <br></br>
                                 {paymentPanel()}
                             </div>
-                            <div style={{textAlign: "center", paddingTop: "40px"}}>
+                            <div style={{textAlign: "center"}}>
                                 <Button className={classes.OrganizationButton}
                                     style={{
                                         backgroundColor: 'white',
@@ -988,21 +961,6 @@ const inputPromoCode = () => {
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you, your payment was successfully received by PayPal.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>OSD is experiences delays in processing your payment.</div>
                             <div style={{fontSize: "16px", paddingLeft: "80px", color: "red", paddingTop: "20px", paddingBottom: "40px" }}>PLEASE DO NOT RESUBMIT A PAYMENT.</div>
-                            <div style={{textAlign: "center", paddingTop: "40px"}}>
-                                <Button className={classes.OrganizationButton}
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid blue",
-                                        color: "blue",
-                                        padding: "0px",
-                                    }}
-                                    content="Continue"
-                                    onClick={() => {
-                                        updatePageView();
-                                        console.log("pageView: ", pageView)
-                                    }}
-                                />
-                            </div>
                         </div>
                     </div>
                 )
@@ -1270,6 +1228,7 @@ const inputPromoCode = () => {
                 case ("ticket"):    return ticketPage();
                 case ("payment"):   return paymentPage();
                 case ("receipt"):   return receiptPage();
+                case ("receiptErrorPage"):   return receiptErrorPage();
                 case("paypal"):     return paypalPage();
                 case("completed"):  return completedPage();
                 case("error"):      return errorPage();
