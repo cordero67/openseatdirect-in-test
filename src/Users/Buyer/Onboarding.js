@@ -512,8 +512,8 @@ const Onboarding = (props) => {
                     </div>
                 </div>
                 
-                    
-                    <div style={{textAlign: "center", paddingLeft: "65px"}}>
+                    <br></br>
+                    <div style={{textAlign: "center"}}>
                         <Button className={classes.OrganizationButton}
                             style={{
                                 backgroundColor: 'white',
@@ -616,6 +616,7 @@ const Onboarding = (props) => {
                         />
                         <br></br>
                     </div>
+                        <br></br>
                         <div style={{textAlign: "center"}}>
                             <Button className={classes.OrganizationButton}
                                 style={{
@@ -888,6 +889,7 @@ const inputPromoCode = () => {
                                 <br></br>
                                 {paymentPanel()}
                             </div>
+                        <br></br>
                             <div style={{textAlign: "center"}}>
                                 <Button className={classes.OrganizationButton}
                                     style={{
@@ -1074,7 +1076,8 @@ const inputPromoCode = () => {
                                     />
                                 </div>
                             </div>
-                            <div style={{textAlign: "center", paddingTop: "40px"}}>
+                            <br></br>
+                            <div style={{textAlign: "center"}}>
                                 <Button className={classes.OrganizationButton}
                                     style={{
                                         backgroundColor: 'white',
@@ -1162,7 +1165,7 @@ const inputPromoCode = () => {
                         <div className={classes.CompleteHeaderLine2}>
                             enjoy the benefits that OpenSeatDirect provides.
                         </div>
-                <br></br>
+                        <br></br>
                         <div style={{textAlign: "center"}}>
                             <Button className={classes.SummaryButton}
                                 style={{
