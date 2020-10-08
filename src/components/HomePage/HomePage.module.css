@@ -35,7 +35,13 @@
 }
 .TextMain {
   vertical-align: middle;
+  text-align: center;
   font-size: 30px;
+  font-style: bold;
+}
+.TextPhrase {
+  vertical-align: middle;
+  text-align: center;
   font-style: bold;
 }
 .TextTagLine {

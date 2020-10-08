@@ -1,0 +1,109 @@
+.MainContainer {
+  padding-top: 60px
+}
+
+.TopContainer {
+  color: #fff;
+  background-color: #2F5596;
+  padding-top: 80px;
+  padding-bottom: 80px
+}
+
+.ImageContainer {
+  color: blue;
+  vertical-align: middle;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px
+}
+
+.ImageBox {
+  max-height: auto;
+  max-width: 600px;
+  padding-top: 20px;
+  padding-bottom: 20px
+}
+
+.MiddleContainer {
+  padding-top: 30px;
+  padding-bottom: 50px;
+}
+
+.LowerContainer {
+  padding-top: 30px;
+  padding-bottom: 50px;
+}
+
+.TextMain {
+  vertical-align: middle;
+  text-align: center;
+  font-size: 30px;
+  font-style: bold;
+  margin-top: 30px
+}
+
+.TextPhrase {
+  vertical-align: middle;
+  text-align: center;
+  font-style: bold;
+}
+
+.UpperGrid {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+  column-gap: 100px;
+  padding-left: calc(50% - 400px);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.MiddleGrid {
+  display: grid;
+  grid-template-columns: 120px 120px 120px;
+  column-gap: 180px;
+  padding-left: calc(50% - 360px);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.LowerGrid {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+  column-gap: 100px;
+  padding-left: calc(50% - 400px);
+  padding-bottom: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.BlankCanvas {
+  background-color: white;
+  margin: auto;
+  width: 500px;
+  padding-top: 30px;
+  padding-left: 80px;
+  padding-right: 80px;
+  text-align: left;
+  overflow-y: auto;
+}
+
+.Header {
+  font-size: 24px;
+  font-weight: 600;
+  padding-bottom: 5px;
+}
+
+.TextMain {
+  font-size: 52px;  
+}
+
+.TextTagLine {
+  font-size: 44px;
+}

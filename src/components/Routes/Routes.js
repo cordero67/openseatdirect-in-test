@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 
-// /onboardingpdf
-
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import MainNew from "../HomePage/HomePageNEW";
@@ -171,10 +169,6 @@ const Routes = () => {
           <PaypalOnboarding />
       )}
     />
-
-
-
-
 
     <Route
       path="/vendordashboard"

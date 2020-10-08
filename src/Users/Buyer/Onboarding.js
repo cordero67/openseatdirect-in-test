@@ -28,7 +28,7 @@ const Onboarding = (props) => {
         accountUrl: "",
         ticketPlan: "",
         inputError: "",
-        paypal_plan_id: "",
+        paypal_plan_id: "P-38K11886GW041664JL5JHRNA",
         paypal_plan_id_full: "",
         paypal_plan_id_discount: "",
         paypalExpress_client_id: "",
@@ -61,10 +61,58 @@ const Onboarding = (props) => {
         console.log("tempData: ", tempData)
         if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
             console.log("tempData.data.accountId.status: ", tempData.user.accountId.status)
-            return tempData.user.accountId.status}
-        else {
+            return tempData.user.accountId.status
+        } else {
             return 0;
         } 
+    }
+    
+    let subscriptions;
+
+    if (PAYPAL_USE_SANDBOX === true) {
+        // SANBOX subscription plans
+        console.log("sandbox subscription plans");
+        subscriptions = {
+            quarterly: {
+                name: "$20 quarterly (1 quarter free trial)",
+                id: "P-5DT364104U926810EL5FRXSY"
+            },
+            annually: {
+                name: "$70 annually",
+                id: "P-5YA13382D9271245EL5FRXTA"
+            },
+            quarterlyDiscounted: {
+                name: "$10 quarterly (1 quarter free trial): discounted",
+                id: "P-3U3085871T847894PL5FRXTI"
+            },
+            annuallyDiscounted: {
+                name: "$35 annually: discounted",
+                id: "P-6UY26644UT426184FL5FRXTI"
+            },
+            clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7"
+        }
+    } else {
+        // PRODUCTION subscription plans
+        console.log("production subscription plans");
+        subscriptions = {
+            quarterly: {
+                name: "$25 quarterly (1 quarter free trial)",
+                id: "P-38K11886GW041664JL5JHRNA"
+            },
+            annually: {
+                name: "$70 annually",
+                id: "P-1TJ77997J0051064ML5JHRNI"
+            },
+            quarterlyDiscounted: {
+                name: "$20 quarterly (1 quarter free trial): discounted",
+                id: "P-0J204573U8254533LL5JHRNI"
+            },
+            annuallyDiscounted: {
+                name: "$50 annually: discounted",
+                id: "P-0CX6745565737532ML5JHRNQ"
+            },
+            clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k"
+        }
     }
 
     const updatePageView = () =>{
@@ -81,6 +129,7 @@ const Onboarding = (props) => {
         };
     }
 
+    // edit so that it is driven by the "status" value
     const updateValues = () => {
         let tempUser = JSON.parse(localStorage.getItem("user"));
         console.log("tempUser: ", tempUser)
@@ -96,8 +145,8 @@ const Onboarding = (props) => {
             if (tempUser.user.accountId.ticketPlan) tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
             if (tempUser.user.accountId.paypalExpress_client_id) tempBuyerInfo.paypalExpress_client_id = tempUser.user.accountId.paypalExpress_client_id;
             if (tempUser.user.accountId.paypalExpress_client_secret) tempBuyerInfo.paypalExpress_client_secret = tempUser.user.accountId.paypalExpress_client_secret;
-            
-            if (PAYPAL_USE_SANDBOX === "true") {
+
+            if (PAYPAL_USE_SANDBOX === true) {
                 console.log("PAYPAL_USE_SANDBOX is ", PAYPAL_USE_SANDBOX, " Sandbox true");
                 tempBuyerInfo.paypal_plan_id_full = "P-5DT364104U926810EL5FRXSY";
                 tempBuyerInfo.paypal_plan_id_discount = "P-3U3085871T847894PL5FRXTI";
@@ -105,7 +154,7 @@ const Onboarding = (props) => {
                     tempBuyerInfo.paypal_plan_id = "P-5DT364104U926810EL5FRXSY";
                 } else {
                     tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
-                }
+                }   
             } else {
                 console.log("PAYPAL_USE_SANDBOX is ", PAYPAL_USE_SANDBOX, " Sandbox false");
                 tempBuyerInfo.paypal_plan_id_full = "P-38K11886GW041664JL5JHRNA";
@@ -176,54 +225,6 @@ const Onboarding = (props) => {
         { label: "Paid (and Free) Tickets", value: "basicPaidQuarter" }
     ];
 
-    let subscriptions;
-
-    if (PAYPAL_USE_SANDBOX === "true") {
-        // SANBOX subscription plans
-        console.log("sandbox subscription plans");
-        subscriptions = {
-            quarterly: {
-                name: "$20 quarterly (1 quarter free trial)",
-                id: "P-5DT364104U926810EL5FRXSY"
-            },
-            annually: {
-                name: "$70 annually",
-                id: "P-5YA13382D9271245EL5FRXTA"
-            },
-            quarterlyDiscounted: {
-                name: "$10 quarterly (1 quarter free trial): discounted",
-                id: "P-3U3085871T847894PL5FRXTI"
-            },
-            annuallyDiscounted: {
-                name: "$35 annually: discounted",
-                id: "P-6UY26644UT426184FL5FRXTI"
-            },
-            clientId: "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7"
-        }
-    } else {
-        // PRODUCTION subscription plans
-        console.log("production subscription plans");
-        subscriptions = {
-            quarterly: {
-                name: "$25 quarterly (1 quarter free trial)",
-                id: "P-38K11886GW041664JL5JHRNA"
-            },
-            annually: {
-                name: "$70 annually",
-                id: "P-1TJ77997J0051064ML5JHRNI"
-            },
-            quarterlyDiscounted: {
-                name: "$20 quarterly (1 quarter free trial): discounted",
-                id: "P-0J204573U8254533LL5JHRNI"
-            },
-            annuallyDiscounted: {
-                name: "$50 annually: discounted",
-                id: "P-0CX6745565737532ML5JHRNQ"
-            },
-            clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k"
-        }
-    }
-
     const paymentPlans = [
         { label: subscriptions.quarterly.name, value: subscriptions.quarterly.id },
         { label: subscriptions.annually.name, value: subscriptions.annually.id }
@@ -243,7 +244,9 @@ const Onboarding = (props) => {
     }
 
     const paymentPanel = () => {
+        console.log("Values info: ", values)
         if(promoCodeDetails.appliedPromoCode === "CASHNOW") {
+            console.log("PayPal info")
             return (
                 <Aux>
                     <RadioForm
@@ -260,6 +263,7 @@ const Onboarding = (props) => {
                 </Aux>
             )
         } else {
+            console.log("Values info: ", values)
             return (
                 <Aux>
                     <RadioForm

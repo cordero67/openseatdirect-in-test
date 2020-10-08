@@ -156,16 +156,35 @@ const EventDetail = props => {
         })
       }
 
+      let ticketCurrency;
+      let pricision;
+      if (priceArray.length >= 1) {
+        if (eventDetails.tickets[0].currency === "USD") {
+          ticketCurrency = "$";
+          pricision = 2;
+        } else if (eventDetails.tickets[0].currency === "JPY") {
+          ticketCurrency = "¥";
+          pricision = 0;
+        } else {
+          ticketCurrency = "$";
+          pricision = 2;
+        }
+      }
+
       if (priceArray.length > 1) {
+        //console.log("Currency: ", eventDetails.tickets[0].currency);
+        //let ticketCurrency = eventDetails.tickets[0].currency;
         return (
           <div>
-            ${Math.min(...priceArray).toFixed(2)} - ${Math.max(...priceArray).toFixed(2)}
+            {ticketCurrency}{Math.min(...priceArray).toFixed(pricision)} - {ticketCurrency}{Math.max(...priceArray).toFixed(pricision)}
           </div>
         )
       } else if (priceArray.length === 1) {
+        //console.log("Currency: ", eventDetails.tickets[0].currency);
+        //let ticketCurrency = eventDetails.tickets[0].currency;
         return (
           <div>
-            ${Math.min(...priceArray).toFixed(2)}
+            {ticketCurrency}{Math.min(...priceArray).toFixed(pricision)}
           </div>
         )
       } else {
@@ -280,7 +299,11 @@ const EventDetail = props => {
           <div className={styles.TextLeft}>{eventDetails.locationVenueName}</div>
           <div className={styles.TextLeft}>{eventDetails.locationAddress1}</div>
           <div className={styles.TextLeft}>{eventDetails.locationAddress2}</div>
-          <div className={styles.TextRight}>{eventDetails.locationCity}, {eventDetails.locationState} {eventDetails.locationCountryCode}</div>
+          <div className={styles.TextRight}>
+            {eventDetails.locationCity}
+            {(eventDetails.locationCity && eventDetails.locationState) || (eventDetails.locationCity && eventDetails.locationCountryCode)? ", " : null}
+            {eventDetails.locationState} {eventDetails.locationCountryCode}
+          </div>
           <div className={styles.TextLeft}>{eventDetails.locationNote}</div>
           <br></br>
         </Aux>

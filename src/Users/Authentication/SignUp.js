@@ -99,7 +99,7 @@ const SignUp = () => {
           className="form-control"
           onChange={handleChange}
           value={password}
-          placeholder="Must contain a number and special character"
+          placeholder="Minimum 8 characters, must include one number"
         />
       </div>
 

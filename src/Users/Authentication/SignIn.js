@@ -2,7 +2,7 @@ import React, { useState} from "react";
 import { Redirect, Link } from "react-router-dom";
 
 import { useOurApi } from "./apiUsers";
-import { API, PAYPAL_USE_SANDBOX, SUBSCRIPTION_PROMO_CODE } from "../../config";
+import { API, SUBSCRIPTION_PROMO_CODE } from "../../config";
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
@@ -10,7 +10,6 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "../User.module.css";
 
 const SignIn = () => {
-  console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX);
   console.log("SUBSCRIPTION_PROMO_CODE: ", SUBSCRIPTION_PROMO_CODE);
   console.log("API: ", API);
 
