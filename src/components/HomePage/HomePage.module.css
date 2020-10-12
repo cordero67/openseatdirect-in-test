@@ -1,112 +1,66 @@
-.container {
-  position: relative;
-  background: #2f5596;
-  height: 100%;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.MainContainer {
+  font-family: "Roboto", sans-serif;
+  padding-top: 60px;
+  padding-left: 20px;
+  padding-bottom: 0px
 }
 
-.container_image {
-  background-image: url("../../assets/OpenSeatDirect/WhiteLettering_BlueBackground_1024.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  padding-top: 0px;
-  width: 100%;
-  height: 100%;
-}
-
-.container::before {
-  position: absolute;
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.77);
-  content: "";
-}
-
-.content {
+.TopContainer {
   color: #fff;
+  background-color: #101C32;
   text-align: center;
-  position: relative;
-  align-items: center;
+  padding-top: 60px;
+  padding-bottom: 60px
 }
-.TextMain {
+
+.MarketingText {
+  font-family: Lato;
+  font-size: 52px;
+  font-weight: 600;
+  padding-top: 40px;
+  padding-bottom: 40px        
+}
+
+.ImageContainer {
+  color: blue;
   vertical-align: middle;
   text-align: center;
-  font-size: 30px;
-  font-style: bold;
+  padding-top: 60px;
+  padding-bottom: 60px
 }
-.TextPhrase {
-  vertical-align: middle;
+
+.ImageBox {
+  max-height: auto;
+  max-width: 600px;
+}
+
+.MiddleContainer {
+  color: #fff;
+  background-color: #101C32;
   text-align: center;
-  font-style: bold;
-}
-.TextTagLine {
-  vertical-align: middle;
-  font-size: 22px;
-  font-style: italic;
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 
-
-@media (min-width: 450px) {
-  .TextMain {
-    font-size: 42px;
-  }
-  .TextTagLine {
-    font-size: 34px;
-  }
+.DescriptionText {
+  font-family: Lato;
+  font-size: 26px;
+  font-weight: 600;
+  padding-top: 30px;
+  padding-bottom: 30px        
 }
 
-
-@media (min-width: 580px) {
-  .TextMain {
-    font-size: 34px;
-  }
-  .TextTagLine {
-    font-size: 26px;
-  }
+.LowerContainer {
+  text-align: center;
+  padding-top: 60px;
+  padding-bottom: 60px;
 }
 
-
-@media (min-width: 700px) {
-  .TextMain {
-    font-size: 38px;
-  }
-  .TextTagLine {
-    font-size: 30px;
-  }
-}
-
-
-@media (min-width: 840px) {
-  .TextMain {
-    font-size: 44px;
-  }
-  .TextTagLine {
-    font-size: 36px;
-  }
-}
-
-
-@media (min-width: 980px) {
-  .TextMain {
-    font-size: 52px;  
-  }
-  .TextTagLine {
-    font-size: 44px;
-  }
-}
-
-
-
-.CompleteUpperGrid {
+.UpperGrid {
   display: grid;
   grid-template-columns: 200px 200px 200px;
   column-gap: 100px;
-  padding-left: 95px;
+  padding-left: calc(50% - 400px);
   padding-top: 10px;
   padding-bottom: 10px;
   font-size: 22px;
@@ -114,11 +68,11 @@
   text-align: center;
 }
 
-.CompleteMiddleGrid {
+.MiddleGrid {
   display: grid;
   grid-template-columns: 120px 120px 120px;
   column-gap: 180px;
-  padding-left: 135px;
+  padding-left: calc(50% - 360px);
   padding-top: 10px;
   padding-bottom: 10px;
   font-size: 22px;
@@ -126,13 +80,60 @@
   text-align: center;
 }
 
-.CompleteLowerGrid {
+.LowerGrid {
   display: grid;
   grid-template-columns: 200px 200px 200px;
   column-gap: 100px;
-  padding-left: 95px;
-  padding-bottom: 20px;
+  padding-left: calc(50% - 400px);
+  padding-top: 10px;
+  padding-bottom: 10px;
   font-size: 16px;
   font-weight: 400;
   text-align: center;
+}
+
+
+
+
+
+
+
+
+.SignUpForm {
+  background-color: white;
+  margin: auto;
+  width: 500px;
+  padding-top: 0px;
+  padding-left: 80px;
+  padding-right: 80px;
+  padding-bottom: 0px;
+  text-align: left;
+}
+
+.Appointment {
+  background-color: white;
+  margin: auto;
+  padding-top: 40px;
+  padding-left: 80px;
+  padding-right: 80px;
+  padding-bottom: 40px;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.Header {
+  font-size: 24px;
+  font-weight: 600;
+  padding-bottom: 5px;
+  text-align: center; 
 }

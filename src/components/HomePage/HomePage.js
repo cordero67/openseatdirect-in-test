@@ -5,13 +5,26 @@ import { Button } from "react-bootstrap";
 
 import Video from "../Video/Video";
 
+import CashNow from "../../assets/CashNow.jpg";
+import NoFees from "../../assets/NoFees.png";
+import SingleLocation from "../../assets/SingleLocation.png";
+import OSDImage from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png"
+
 import Aux from "../../hoc/Auxiliary/Auxiliary";
-import styles from "./HomePage.module.css";
+import classes from "./HomePage.module.css";
 
 const Home = () => {
   // defines styling variables
   //const [isRestyling, setIsRestyling] = useState(false);
   const [displaySize, setDisplaySize] = useState("large");
+
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+
+  const { name, email, password } = values;
 
   const stylingUpdate = (inWidth) => {
     //setIsRestyling(true);
@@ -33,139 +46,212 @@ const Home = () => {
     stylingUpdate(window.innerWidth);
   };
 
-  let marketingLine;
-  if (displaySize === "small") {
-    marketingLine = (
-      <h1 className={styles.TextMain}>
-        A Single Market
-        <br></br>
-        Solution for
-        <br></br>
-        Controlling the
-        <br></br>
-        Entire Ticket Journey
-      </h1>
-    )
-  } else {
-    marketingLine = (
-      <h1 className={styles.TextMain}>
-        A Single Market Solution for
-        <br></br>
-        <br></br>
-        Controlling the Entire Ticket Journey
-      </h1>
-    )
+  
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value
+    });
   }
 
-  let tagLine;
-  if (displaySize === "small") {
-    tagLine = (
-      <h1 className={styles.TextTagLine}>
-        Ensuring you a direct ticket
+  const signUpForm = (
+    <Aux>
+      <div className="form-group">
         <br></br>
-        to your fans!
-      </h1>
-    )
-  } else {
-    tagLine = (
-      <h1 className={styles.TextTagLine}>
-        Ensuring you a direct ticket to your fans!
-      </h1>
-    )
-  }
+        <label style={{ fontSize: "16px" }}>
+          Full Name
+        </label>
+        <input
+          type="text"
+          name="name"
+          className="form-control"
+          onChange={handleChange}
+          value={name}
+        />
+      </div>
 
-  let breaksTop;
-  if (displaySize === "small") {
-    breaksTop = (
-      <Aux>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        </Aux>
-    )
-  } else {
-    breaksTop = (
-      <Aux>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-      </Aux>
-    )
-  }
+      <div className="form-group">
+        <label>E-mail Address</label>
+        <input
+          type="email"
+          name="email"
+          className="form-control"
+          onChange={handleChange}
+          value={email}
+        />
+      </div>
 
-  let breaksMiddle;
-  if (displaySize === "small") {
-    breaksMiddle = (
-      <Aux>
-        <br></br>
-        <br></br>
-        </Aux>
-    )
-  } else {
-    breaksMiddle = (
-      <Aux>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-      </Aux>
-    )
-  }
+      <div className="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          className="form-control"
+          onChange={handleChange}
+          value={password}
+          placeholder="Minimum 8 characters, must include one number"
+        />
+      </div>
 
-  let breaksBottom;
-  if (displaySize === "small") {
-    breaksBottom = (
-      <Aux>
-        <br></br>
-        </Aux>
-    )
-  } else {
-    breaksBottom = (
-      <Aux>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-      </Aux>
-    )
-  }
+      <div style={{textAlign: "center", paddingTop: "15px"}}>
+        <button
+          onClick={() => {
+            console.log("clicked button",{
+              name: values.name,
+              email: values.email,
+              password: values.password,
+            });
+          }}
+          className="btn btn-primary">
+          SUBMIT
+        </button>
+      </div>
+    </Aux>
+  );
 
-    return (
-      <Aux>
-        <div className={styles.container}>
-          <div className={styles.container_image}>
-              {breaksTop}
-              <div className={styles.content}>
-                {marketingLine}
-              </div>
-              {breaksMiddle}
-              <div className={styles.content}>
-                {tagLine}
-              </div>
-              {breaksBottom}
-              <div className={styles.content}>
-                <h1>
-                  <NavLink to="/video" exact>
-                    <Button variant="outline-light">LEARN MORE</Button>
-                  </NavLink>
-                  <Route path="/video" exact component={Video} />
-                </h1>
-              </div>
-              <br></br>
+  /*
+  
+        setBody({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        })
+  */
 
-          </div>
+  let appointment = (
+    <div className={classes.Header}>
+        Talk one-on-one with an onboarding specialist
+    </div>
+  )
+
+
+
+
+
+
+
+
+
+    let marketingLine = (
+      <div>
+        <div className={classes.MarketingText}>
+          GET CASH NOW
+        </div>
+        <div className={classes.MarketingText}>
+          for every ticket you sell to your events.
+        </div>
+      </div>
+    )
+
+    let marketingPhrase = (
+      <div>
+        <div className={classes.DescriptionText}>
+          a subscription based service that eliminates the traditional ticketing middleman
+        </div>
+        <div className={classes.DescriptionText}>
+          allowing you to interact directly with your fans and control the entire ticketing process.
+        </div>
+      </div>
+    )
+
+    let marketingPoints = (
+      <Aux>
+        <div className={classes.UpperGrid}>
+          <div>Get Cash Now!!!</div>
+          <div>Absolutely NO Fees</div>
+          <div>Own All Your Data</div>
+        </div>
+  
+        <div className={classes.MiddleGrid}>
+          <img
+              src={CashNow}
+              alt="OpenSeatDirect Logo"
+              style={{width: "100%"}}
+          />
+          <img
+              src={NoFees}
+              alt="OpenSeatDirect Logo"
+              style={{width: "100%"}}
+          />
+          <img
+              src={SingleLocation}
+              alt="OpenSeatDirect Logo"
+              style={{width: "100%"}}
+          />
+        </div>
+        
+        <div className={classes.LowerGrid}>
+            <div>Don't wait until after the event passes. Get paid on tickets you sell right away.</div>
+            <div>We're not kidding. You and your customers NEVER pay any ticketing fees.</div>
+            <div>All transaction information in one place: buyer emails, transaction info and data. </div>
         </div>
       </Aux>
+    )
+
+    return (
+      <div className={classes.MainContainer}>
+        <div className={classes.TopContainer}>
+          {marketingLine}
+        </div>
+
+        <div className={classes.ImageContainer}>
+          <img
+            className={classes.ImageBox}
+            src={OSDImage}
+          >
+          </img>
+        </div>
+        <div className={classes.MiddleContainer}>
+          {marketingPhrase}
+        </div>
+        <div className={classes.LowerContainer}>
+          {marketingPoints}
+        </div>
+
+
+
+
+
+
+
+
+
+        <div className={classes.SignUpForm}>
+          <br></br>
+          <div className={classes.Header}>
+            Sign Up Now!
+          </div>
+          <br></br>
+          <div>
+            {signUpForm}
+          </div>
+          <br></br>
+        </div>
+
+
+
+        <div className={classes.Appointment}>
+          {appointment}
+          
+          <br></br>
+          <br></br>
+          <Button href="https://calendly.com/dahday/openseatdirect-connect?back=1&month=2020-10">
+            SCHEDULE APPOINTMENT
+          </Button>
+          <br></br>
+          <br></br>
+        </div>
+
+
+
+      </div>
     );
   
 }
 
 export default Home;
+
+/*
+
+
+        */

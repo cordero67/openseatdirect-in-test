@@ -3,7 +3,6 @@ import { Route, Redirect } from "react-router-dom";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
-import MainNew from "../HomePage/HomePageNEW";
 import Video from "../Video/Video";
 import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
@@ -54,24 +53,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Main />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-
-<Route
-        path="/new"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <MainNew />
             <Footer></Footer>
           </React.Fragment>
         )}
