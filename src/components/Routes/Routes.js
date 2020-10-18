@@ -53,7 +53,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Main />
-            <Footer></Footer>
           </React.Fragment>
         )}
       />
