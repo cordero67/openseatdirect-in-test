@@ -33,11 +33,10 @@
 
 .DescriptionText {
   font-family: Lato;
-  font-size: 26px;
-  line-height: 56px;
   font-weight: 600;
   text-align: center;
 }
+
 .ImageContainer {
   color: blue;
   vertical-align: middle;

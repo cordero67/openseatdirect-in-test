@@ -115,6 +115,7 @@ const EventDetail = props => {
   };
 
   const stylingUpdate = (inWidth) => {
+    console.log("width is ", inWidth)
     // based on window width, displays one or two panes
     if (inWidth < 800) {
       setShowLargerDoublePane(false);

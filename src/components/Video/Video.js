@@ -52,6 +52,7 @@ const Video = () => {
   };
 
   const stylingUpdate = (inWidth, inHeight) => {
+    console.log("stylingUpdate")
     // based on window width, displays one or two panes
     let width;
     let height;
@@ -83,9 +84,11 @@ const Video = () => {
   }, []);
 
   window.onresize = function(event) {
+    console.log("resized")
     let width;
     let height;
     if (window.innerWidth < 330) {
+      console.log("resized")
       height = "174.375";
       width = "310";
     } else if (window.innerWidth < 380) {

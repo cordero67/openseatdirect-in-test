@@ -3,8 +3,6 @@ import { Route, NavLink } from "react-router-dom";
 
 import { Button } from "react-bootstrap";
 
-import Video from "../Video/Video";
-
 import CashNow from "../../assets/CashNow.jpg";
 import NoFees from "../../assets/NoFees.png";
 import SingleLocation from "../../assets/SingleLocation.png";
@@ -14,9 +12,8 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./HomePage.module.css";
 
 const Home = () => {
-  // defines styling variables
-  //const [isRestyling, setIsRestyling] = useState(false);
-  const [displaySize, setDisplaySize] = useState("large");
+  const [isResizing, setIsResizing] = useState(false);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
 
   const [values, setValues] = useState({
     name: "",
@@ -27,34 +24,29 @@ const Home = () => {
   const { name, email, password } = values;
 
   const stylingUpdate = (inWidth) => {
-    //setIsRestyling(true);
-    // based on window width, displays one or two panes
-    if (inWidth < 580) {
-      setDisplaySize("small");
-    } else {
-      setDisplaySize("large");
-    }
-    //setIsRestyling(false);
+    console.log("stylingUpdate")
+    setIsResizing(true);
+    setScreenSize(inWidth);
+    setIsResizing(false);
+    console.log("screenSize: ", screenSize)
   };
 
   useEffect(() => {
+    console.log("screen width: ", window.innerWidth)
     stylingUpdate(window.innerWidth);
   }, []);
 
-  //DID NOT MAKE A CHANGE
   window.onresize = function(event) {
+    console.log("resized")
     stylingUpdate(window.innerWidth);
   };
 
-  
   const handleChange = (event) => {
     setValues({
       ...values,
       [event.target.name]: event.target.value
     });
   }
-
-
 
   /*
   
@@ -99,29 +91,77 @@ const Home = () => {
     </Aux>
   )
 
-
-
+    let tagLine = (
+      <div className={classes.MarketingText}>
+        GET CASH NOW!
+      </div>
+    )
 
     let marketingLine = (
-      <div>
-        <div className={classes.MarketingText}>
-          GET CASH NOW!
-        </div>
-        <div className={classes.DescriptionText}>
+      <div className={classes.DescriptionText}>
         Don't wait until after the event passes. Get paid on tickets you sell right away.
-        </div>
       </div>
     )
 
-    let marketingPhrase = (
-      <div>
-        <div className={classes.DescriptionText}>
-          a subscription-based service that eliminates the traditional ticketing middleman
-          <br></br>
-          allowing you to interact directly with your fans and control the entire ticketing process.
-        </div>
-      </div>
-    )
+    let marketingPhrase = () => {
+      if (screenSize >= 1050) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+            a subscription-based service that eliminates traditional ticketing middlemen
+            <br></br>
+            allowing you to interact directly with your fans and control the entire ticketing process.
+          </div>
+        ) 
+      } else if (screenSize >= 900 && screenSize < 1050) {
+        return (
+          <div style={{fontSize: "22px", lineHeight: "48px"}}>
+            a subscription-based service that eliminates traditional ticketing middlemen
+            <br></br>
+            allowing you to interact directly with your fans and control the entire ticketing process.
+          </div>
+        )
+      } else if (screenSize >= 650 && screenSize < 900) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+            a subscription-based service that
+            <br></br>
+            eliminates traditional ticketing middlemen
+            <br></br>
+            allowing you to interact directly with your fans and
+            <br></br>
+            control the entire ticketing process.
+          </div>
+        )
+      } else if (screenSize >= 500 && screenSize < 650) {
+        return (
+          <div style={{fontSize: "20px", lineHeight: "46px"}}>
+            a subscription-based service that
+            <br></br>
+            eliminates traditional ticketing middlemen
+            <br></br>
+            allowing you to interact directly with your fans and
+            <br></br>
+            control the entire ticketing process.
+          </div>
+        )
+      } else {
+        return (
+          <div style={{fontSize: "20px", lineHeight: "46px"}}>
+            a subscription-based service
+            <br></br>
+            that eliminates
+            <br></br>
+            traditional ticketing middlemen
+            <br></br>
+            allowing you to interact
+            <br></br>
+            directly with your fans and
+            <br></br>
+            control the entire ticketing process.
+          </div>
+        )
+      }
+    }
 
     const signUpForm = (
       <Aux>
@@ -185,6 +225,79 @@ const Home = () => {
 
     return (
       <div className={classes.MainContainer}>
+        {isResizing ? null : (
+          <div>
+
+            <div className={classes.TextContainer2}>
+              <div className={classes.DescriptionText}>
+                {marketingPhrase()}
+              </div>
+            </div>
+
+
+          </div>
+        )}
+      </div>
+    )
+}
+
+export default Home;
+/*
+
+          <div>
+            <div className={classes.TextContainer}>
+              {tagLine}
+              {marketingLine}
+            </div>
+
+            <div className={classes.ImageContainer}>
+              <img
+                className={classes.ImageBox}
+                src={OSDImage}
+              >
+              </img>
+            </div>
+
+            <div className={classes.TextContainer2}>
+              <div className={classes.DescriptionText}>
+                {marketingPhrase()}
+              </div>
+            </div>
+
+            <div className={classes.SectionContainer}>
+              {marketingPoints}
+            </div>
+
+            <div className={classes.SectionContainer}>
+              <div className={classes.DescriptionText}>
+                Sign up for a free trial or a subscription for as low as $7 a month.
+              </div>
+
+              <div className={classes.SignUpForm}>
+                <div>
+                  {signUpForm}
+                </div>
+              </div>
+            </div>
+
+            <div className={classes.SectionContainer}>
+              {appointment}
+              <br></br>
+              <Button href="https://calendly.com/dahday/openseatdirect-connect?back=1&month=2020-10">
+                SCHEDULE APPOINTMENT
+              </Button>
+            </div>
+
+          </div>
+
+*/
+
+
+
+
+/*
+: 
+      <div className={classes.MainContainer}>
 
         <div className={classes.TextContainer}>
           {marketingLine}
@@ -199,7 +312,7 @@ const Home = () => {
         </div>
 
         <div className={classes.TextContainer2}>
-          {marketingPhrase}
+          {marketingPhrase()}
         </div>
 
         <div className={classes.SectionContainer}>
@@ -208,7 +321,7 @@ const Home = () => {
         
         <div className={classes.SectionContainer}>
           <div className={classes.DescriptionText}>
-            Sign up for a free trial or a subscription for less than $7 a month.
+            Sign up for a free trial or a subscription for as low as $7 a month.
           </div>
 
           <div className={classes.SignUpForm}>
@@ -218,8 +331,6 @@ const Home = () => {
           </div>
         </div>
 
-
-
         <div className={classes.SectionContainer}>
           {appointment}
           <br></br>
@@ -227,14 +338,4 @@ const Home = () => {
             SCHEDULE APPOINTMENT
           </Button>
         </div>
-      </div>
-    );
-  
-}
-
-export default Home;
-
-/*
-
-
-        */
+      </div> }*/

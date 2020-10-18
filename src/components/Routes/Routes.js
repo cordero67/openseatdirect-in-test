@@ -46,14 +46,7 @@ const Routes = () => {
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Main />
-            <Footer></Footer>
           </React.Fragment>
         )}
       />
