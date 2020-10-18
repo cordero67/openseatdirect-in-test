@@ -4,17 +4,31 @@
   padding-bottom: 20px
 }
 
-.TextContainer {
+.TopContainer {
   color: #fff;
   background-color: #101C32;
   padding-top: 40px;
   padding-bottom: 40px
 }
 
-.TextContainer2 {
+.TextContainer {
   color: #101C32;
+  padding-top: 0px;
+  padding-bottom: 40px
+}
+
+.OSDImageContainer {
+  vertical-align: middle;
+  text-align: center;
   padding-top: 40px;
   padding-bottom: 40px
+}
+
+.ImageContainer {
+  vertical-align: middle;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px
 }
 
 .SectionContainer {
@@ -25,8 +39,6 @@
 
 .MarketingText {
   font-family: Lato;
-  font-size: 52px;
-  line-height: 94px;
   font-weight: 600;
   text-align: center;
 }
@@ -37,13 +49,35 @@
   text-align: center;
 }
 
-.ImageContainer {
-  color: blue;
-  vertical-align: middle;
+.Grid {
+  display: grid;
+  grid-template-columns: 250px 250px 250px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   text-align: center;
-  padding-top: 40px;
-  padding-bottom: 40px
 }
+
+.ImageGrid {
+  display: grid;
+  grid-template-columns: 120px 120px 120px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .SignUpForm {
   background-color: white;
@@ -56,43 +90,13 @@
   text-align: left;
 }
 
-.ImageBox {
-  max-height: auto;
-  max-width: calc(100% - 700px);
-}
-
-.UpperGrid {
-  display: grid;
-  grid-template-columns: 200px 200px 200px;
-  column-gap: 100px;
-  padding-left: calc(50% - 400px);
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 22px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.MiddleGrid {
-  display: grid;
-  grid-template-columns: 120px 120px 120px;
-  column-gap: 180px;
-  padding-left: calc(50% - 360px);
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 22px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.LowerGrid {
-  display: grid;
-  grid-template-columns: 200px 200px 200px;
-  column-gap: 100px;
-  padding-left: calc(50% - 400px);
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 16px;
-  font-weight: 400;
-  text-align: center;
+.SignUpFormTight {
+  background-color: white;
+  margin: auto;
+  width: calc(100% - 20px);
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 20px;
+  text-align: left;
 }
