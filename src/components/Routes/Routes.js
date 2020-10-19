@@ -39,6 +39,27 @@ const Routes = () => {
     setShowSideDrawer(!showSideDrawer);
   };
 
+
+  console.log("Inside Routes");
+  console.log("Inside Routes");
+
+  const [isResizing, setIsResizing] = useState(false);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
+  console.log("screenSize Routes: ", screenSize);
+  
+  const stylingUpdate = (inWidth) => {
+      console.log("stylingUpdate in Routes")
+      setIsResizing(true);
+      setScreenSize(inWidth);
+      setIsResizing(false);
+      console.log("screenSize in Routes: ", screenSize)
+  };
+
+  window.onresize = function(event) {
+    console.log("resized in Routes")
+    stylingUpdate(window.innerWidth);
+  };
+
   return (
     <Aux>
       <Route

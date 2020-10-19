@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Route, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import { useOurApi } from "./apiUsers";
+import { API } from "../../config";
 
 import { Button } from "react-bootstrap";
 
@@ -22,6 +25,18 @@ const Home = () => {
   });
 
   const { name, email, password } = values;
+
+  let  myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const url1 = `${API}/signup`;
+  const method1 = "POST";
+  const body1  = null;
+  const initialData1 ={status: true, message:"hi first time"};
+  
+  const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method1, url1,myHeaders,body1, initialData1);
+
+  const sysmessage = networkError ? "NetworkError...please check your connectivity" : "SYSTEM ERROR - please try again";
 
   const stylingUpdate = (inWidth) => {
     console.log("stylingUpdate")
@@ -47,16 +62,6 @@ const Home = () => {
       [event.target.name]: event.target.value
     });
   }
-
-  /*
-  
-        setBody({
-          name: values.name,
-          email: values.email,
-          password: values.password,
-        })
-  */
-
     
     let tagLine = () => {
       if (screenSize >= 500) {
@@ -67,10 +72,8 @@ const Home = () => {
         ) 
       } else {
         return (
-          <div style={{paddingBottom: "20px", fontSize: "52px", lineHeight: "64px"}}>
-            GET CASH
-            <br></br>
-            NOW!
+          <div style={{paddingBottom: "20px", fontSize: "36px", lineHeight: "54px"}}>
+            GET CASH NOW!
           </div>
         )
       }
@@ -91,7 +94,7 @@ const Home = () => {
         )
       } else if (screenSize >= 650 && screenSize < 900) {
         return (
-          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
             Don't wait until after the event passes.
             <br></br>
             Get paid on tickets you sell right away.
@@ -99,7 +102,7 @@ const Home = () => {
         )
       } else if (screenSize >= 450 && screenSize < 650) {
         return (
-          <div style={{fontSize: "20px", lineHeight: "46px"}}>
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
             Don't wait until after the event passes.
             <br></br>
             Get paid on tickets you sell right away.
@@ -107,14 +110,10 @@ const Home = () => {
         )
       } else {
         return (
-          <div style={{fontSize: "20px", lineHeight: "46px"}}>
-            Don't wait until
+          <div style={{fontSize: "18px", lineHeight: "26px"}}>
+            Don't wait until after the event passes.
             <br></br>
-            after the event passes.
-            <br></br>
-            Get paid on tickets
-            <br></br>
-            you sell right away.
+            Get paid on tickets you sell right away.
           </div>
         )
       }
@@ -164,7 +163,7 @@ const Home = () => {
     let marketingPhrase = () => {
       if (screenSize >= 1050) {
         return (
-          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
             a subscription-based service that eliminates traditional ticketing middlemen
             <br></br>
             allowing you to interact directly with your fans and control the entire ticketing process.
@@ -172,7 +171,7 @@ const Home = () => {
         ) 
       } else if (screenSize >= 900 && screenSize < 1050) {
         return (
-          <div style={{fontSize: "22px", lineHeight: "48px"}}>
+          <div style={{fontSize: "22px", lineHeight: "32px"}}>
             a subscription-based service that eliminates traditional ticketing middlemen
             <br></br>
             allowing you to interact directly with your fans and control the entire ticketing process.
@@ -180,7 +179,7 @@ const Home = () => {
         )
       } else if (screenSize >= 650 && screenSize < 900) {
         return (
-          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
             a subscription-based service that
             <br></br>
             eliminates traditional ticketing middlemen
@@ -192,7 +191,7 @@ const Home = () => {
         )
       } else if (screenSize >= 500 && screenSize < 650) {
         return (
-          <div style={{fontSize: "20px", lineHeight: "46px"}}>
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
             a subscription-based service that
             <br></br>
             eliminates traditional ticketing middlemen
@@ -204,7 +203,7 @@ const Home = () => {
         )
       } else {
         return (
-          <div style={{fontSize: "20px", lineHeight: "46px"}}>
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
             a subscription-based service
             <br></br>
             that eliminates
@@ -345,7 +344,7 @@ const Home = () => {
             </div>
             <div className={classes.ImageContainer}>
               <img
-                style={{maxHeight: "auto", maxWidth: "200px"}}
+                style={{maxHeight: "auto", maxWidth: "150px"}}
                 src={CashNow}
               >
               </img>
@@ -366,7 +365,7 @@ const Home = () => {
             </div>
             <div className={classes.ImageContainer}>
               <img
-                style={{maxHeight: "auto", maxWidth: "200px"}}
+                style={{maxHeight: "auto", maxWidth: "150px"}}
                 src={NoFees}
               >
               </img>
@@ -387,7 +386,7 @@ const Home = () => {
             </div>
             <div className={classes.ImageContainer}>
               <img
-                style={{maxHeight: "auto", maxWidth: "200px"}}
+                style={{maxHeight: "auto", maxWidth: "150px"}}
                 src={SingleLocation}
               >
               </img>
@@ -399,7 +398,6 @@ const Home = () => {
               <br></br>
                 transaction info and data.
             </div>
-  
   
           </div>
         )
@@ -415,13 +413,13 @@ const Home = () => {
         ) 
       } else if (screenSize >= 900 && screenSize < 1050) {
         return (
-          <div style={{fontSize: "22px", lineHeight: "48px"}}>
+          <div style={{fontSize: "22px", lineHeight: "32px"}}>
             Sign up for a free trial or a subscription for as low as $7 a month.
           </div>
         )
       } else if (screenSize >= 650 && screenSize < 900) {
         return (
-          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
             Sign up for a free trial or a
             <br></br>
             subscription for as low as $7 a month.
@@ -429,7 +427,7 @@ const Home = () => {
         )
       } else {
         return (
-          <div style={{fontSize: "20px", lineHeight: "46px"}}>
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
             Sign up for a free trial or a
             <br></br>
             subscription for as low as $7 a month.
@@ -437,6 +435,35 @@ const Home = () => {
         )
       }
     }
+
+    const showError = () => {
+      if (hasError) {
+        return (
+          <div style={{color: "red"}}> {sysmessage}</div>
+        )
+      } else if (data.status) {
+        return (
+          null
+        )
+      } else {
+        return (
+          <div style={{color: "red"}}> {data.error}</div>
+        )
+      }
+    };
+
+    const showSuccess = (
+      <div>
+        <div>To complete the sign-up process, please click the link in the message sent to your e-mail inbox:</div>
+        <br></br>
+        <div style={{color: "blue"}}>{values.email}.</div>
+        <br></br>
+        <div>Please check your spam/junk folder if you do not see our message in your main inbox.</div>
+        <div>For "gmail" accounts, please check your "All Mail" folder.</div>
+        <br></br>
+        <div>Go to <Link to="/signin" style={{color: "blue"}}>Signin</Link></div>
+      </div>
+    );
 
     const signUpForm = (
       <Aux>
@@ -454,7 +481,9 @@ const Home = () => {
         </div>
   
         <div className="form-group">
-          <label>E-mail Address</label>
+          <label style={{ fontSize: "16px" }}>
+            E-mail Address
+          </label>
           <input
             type="email"
             name="email"
@@ -465,7 +494,9 @@ const Home = () => {
         </div>
   
         <div className="form-group">
-          <label>Password</label>
+          <label style={{ fontSize: "16px" }}>
+            Password
+          </label>
           <input
             type="password"
             name="password"
@@ -484,30 +515,57 @@ const Home = () => {
                 email: values.email,
                 password: values.password,
               });
+              setBody({
+                name: values.name,
+                email: values.email,
+                password: values.password,
+              })
             }}
             className="btn btn-primary">
-            SUBMIT
+            CREATE ACCOUNT
           </button>
         </div>
       </Aux>
     );
 
+    const mainDisplay = () => {
+      //NEED A BETTER TEST
+      //without "data.message !== "hi first time it places the data object into local storage with every keystroke
+      //this then generates an error in navigation component when it is looking for "role"
+      if (data.status && data.message !== "hi first time") {
+        return (
+          <Aux>
+            {showSuccess}
+          </Aux>
+        )
+      } else {
+        return (
+          <div>
+            <div>
+              {showError()}
+              {signUpForm}
+            </div>  
+          </div>
+        )
+      }
+    }
+
     let appointment = () => {
       if (screenSize >= 1050) {
         return (
-          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
           Talk one-on-one with an onboarding specialist
           </div>
         ) 
       } else if (screenSize >= 900 && screenSize < 1050) {
         return (
-          <div style={{fontSize: "22px", lineHeight: "48px"}}>
+          <div style={{fontSize: "22px", lineHeight: "32px"}}>
           Talk one-on-one with an onboarding specialist
           </div>
         )
       } else if (screenSize >= 650 && screenSize < 900) {
         return (
-          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
             Talk one-on-one with 
             <br></br>
             an onboarding specialist
@@ -515,7 +573,7 @@ const Home = () => {
         )
       } else {
         return (
-          <div style={{fontSize: "20px", lineHeight: "46px"}}>
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
           Talk one-on-one with 
           <br></br>
           an onboarding specialist
@@ -543,7 +601,7 @@ const Home = () => {
             </div>
 
             <div className={classes.TextContainer}>
-              <div className={classes.DescriptionText}>
+              <div className={classes.DescriptionText} style={{fontWeight: "400"}}>
                 {marketingPhrase()}
               </div>
             </div>
@@ -556,22 +614,23 @@ const Home = () => {
               <div className={classes.DescriptionText}>
                 {signUpText()}
               </div>
+
               {screenSize >= 500 ? (
                 <div className={classes.SignUpForm}>
                   <div>
-                    {signUpForm}
+                    {mainDisplay()}
                   </div>
                 </div>
                 ) :  (
                   <div className={classes.SignUpFormTight}>
                     <div>
-                      {signUpForm}
+                      {mainDisplay()}
                     </div>
                   </div>
                 )
               }
-            </div>
 
+            </div>
 
             <div className={classes.SectionContainer}>
               <div className={classes.DescriptionText}>

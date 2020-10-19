@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from "react";
 
 import { withRouter } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
@@ -11,6 +11,24 @@ import classes from './Header.module.css';
 const Header = ({ history, logo, positioning, clicked }) => {
   
   let headerDisplay;
+
+  const [isResizing, setIsResizing] = useState(false);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
+  
+  const stylingUpdate = (inWidth) => {
+      console.log("stylingUpdate in Header")
+      setIsResizing(true);
+      setScreenSize(inWidth);
+      setIsResizing(false);
+      console.log("screenSize in Header: ", screenSize)
+  };
+
+  window.onresize = function(event) {
+    console.log("resized in Header")
+    stylingUpdate(window.innerWidth);
+  };
+
+  console.log("Inside Header");
 
   headerDisplay = (
     <header className={classes.Header} style={{position: positioning}}>

@@ -60,6 +60,8 @@ const SignUp = () => {
       <br></br>
       <div>Please check your spam/junk folder if you do not see our message in your main inbox.</div>
       <br></br>
+      <div>For "gmail" accounts, please check your "All Mail" folder.</div>
+      <br></br>
       <div>Back to <Link to="/signin" style={{color: "blue"}}>Signin</Link></div>
     </div>
   );
