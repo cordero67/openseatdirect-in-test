@@ -1,171 +1,652 @@
 import React, { useState, useEffect } from "react";
-import { Route, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import { useOurApi } from "./apiUsers";
+import { API } from "../../config";
 
 import { Button } from "react-bootstrap";
 
-import Video from "../Video/Video";
+import CashNow from "../../assets/CashNow.jpg";
+import NoFees from "../../assets/NoFees.png";
+import SingleLocation from "../../assets/SingleLocation.png";
+import OSDImage from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png"
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
-import styles from "./HomePage.module.css";
+import classes from "./HomePage.module.css";
 
 const Home = () => {
-  // defines styling variables
-  //const [isRestyling, setIsRestyling] = useState(false);
-  const [displaySize, setDisplaySize] = useState("large");
+  const [isResizing, setIsResizing] = useState(false);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
+
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+
+  const { name, email, password } = values;
+
+  let  myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const url1 = `${API}/signup`;
+  const method1 = "POST";
+  const body1  = null;
+  const initialData1 ={status: true, message:"hi first time"};
+  
+  const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method1, url1,myHeaders,body1, initialData1);
+
+  const sysmessage = networkError ? "NetworkError...please check your connectivity" : "SYSTEM ERROR - please try again";
 
   const stylingUpdate = (inWidth) => {
-    //setIsRestyling(true);
-    // based on window width, displays one or two panes
-    if (inWidth < 580) {
-      setDisplaySize("small");
-    } else {
-      setDisplaySize("large");
-    }
-    //setIsRestyling(false);
+    console.log("stylingUpdate")
+    setIsResizing(true);
+    setScreenSize(inWidth);
+    setIsResizing(false);
+    console.log("screenSize: ", screenSize)
   };
 
   useEffect(() => {
+    console.log("screen width: ", window.innerWidth)
     stylingUpdate(window.innerWidth);
   }, []);
 
-  //DID NOT MAKE A CHANGE
   window.onresize = function(event) {
+    console.log("resized")
     stylingUpdate(window.innerWidth);
   };
 
-  let marketingLine;
-  if (displaySize === "small") {
-    marketingLine = (
-      <h1 className={styles.TextMain}>
-        A Single Market
-        <br></br>
-        Solution for
-        <br></br>
-        Controlling the
-        <br></br>
-        Entire Ticket Journey
-      </h1>
-    )
-  } else {
-    marketingLine = (
-      <h1 className={styles.TextMain}>
-        A Single Market Solution for
-        <br></br>
-        <br></br>
-        Controlling the Entire Ticket Journey
-      </h1>
-    )
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value
+    });
   }
-
-  let tagLine;
-  if (displaySize === "small") {
-    tagLine = (
-      <h1 className={styles.TextTagLine}>
-        Ensuring you a direct ticket
-        <br></br>
-        to your fans!
-      </h1>
-    )
-  } else {
-    tagLine = (
-      <h1 className={styles.TextTagLine}>
-        Ensuring you a direct ticket to your fans!
-      </h1>
-    )
-  }
-
-  let breaksTop;
-  if (displaySize === "small") {
-    breaksTop = (
-      <Aux>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        </Aux>
-    )
-  } else {
-    breaksTop = (
-      <Aux>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-      </Aux>
-    )
-  }
-
-  let breaksMiddle;
-  if (displaySize === "small") {
-    breaksMiddle = (
-      <Aux>
-        <br></br>
-        <br></br>
-        </Aux>
-    )
-  } else {
-    breaksMiddle = (
-      <Aux>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-      </Aux>
-    )
-  }
-
-  let breaksBottom;
-  if (displaySize === "small") {
-    breaksBottom = (
-      <Aux>
-        <br></br>
-        </Aux>
-    )
-  } else {
-    breaksBottom = (
-      <Aux>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-        <br></br>
-      </Aux>
-    )
-  }
-
-    return (
-      <Aux>
-        <div className={styles.container}>
-          <div className={styles.container_image}>
-              {breaksTop}
-              <div className={styles.content}>
-                {marketingLine}
-              </div>
-              {breaksMiddle}
-              <div className={styles.content}>
-                {tagLine}
-              </div>
-              {breaksBottom}
-              <div className={styles.content}>
-                <h1>
-                  <NavLink to="/video" exact>
-                    <Button variant="outline-light">LEARN MORE</Button>
-                  </NavLink>
-                  <Route path="/video" exact component={Video} />
-                </h1>
-              </div>
-              <br></br>
-
+    
+    let tagLine = () => {
+      if (screenSize >= 500) {
+        return (
+          <div style={{fontSize: "52px", lineHeight: "94px"}}>
+            GET CASH NOW!
           </div>
+        ) 
+      } else {
+        return (
+          <div style={{paddingBottom: "20px", fontSize: "36px", lineHeight: "54px"}}>
+            GET CASH NOW!
+          </div>
+        )
+      }
+    }
+
+    let marketingLine = () => {
+      if (screenSize >= 1050) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+            Don't wait until after the event passes. Get paid on tickets you sell right away.
+          </div>
+        ) 
+      } else if (screenSize >= 900 && screenSize < 1050) {
+        return (
+          <div style={{fontSize: "22px", lineHeight: "48px"}}>
+            Don't wait until after the event passes. Get paid on tickets you sell right away.
+          </div>
+        )
+      } else if (screenSize >= 650 && screenSize < 900) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
+            Don't wait until after the event passes.
+            <br></br>
+            Get paid on tickets you sell right away.
+          </div>
+        )
+      } else if (screenSize >= 450 && screenSize < 650) {
+        return (
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
+            Don't wait until after the event passes.
+            <br></br>
+            Get paid on tickets you sell right away.
+          </div>
+        )
+      } else {
+        return (
+          <div style={{fontSize: "18px", lineHeight: "26px"}}>
+            Don't wait until after the event passes.
+            <br></br>
+            Get paid on tickets you sell right away.
+          </div>
+        )
+      }
+    }
+
+    let OSDimage = () => {
+      if (screenSize >= 1050) {
+        return (
+          <img
+            style={{maxHeight: "auto", maxWidth: "700px"}}
+            src={OSDImage}
+          >
+          </img>
+        )
+      } else if (screenSize >= 900 && screenSize < 1050) {
+        return (
+          <img
+            style={{maxHeight: "auto", maxWidth: "600px"}}
+            src={OSDImage}
+          >
+          </img>
+        )
+      } else if (screenSize >= 650 && screenSize < 900) {
+        return (
+          <img
+            style={{maxHeight: "auto", maxWidth: "500px"}}
+            src={OSDImage}
+          ></img>
+        )
+      } else if (screenSize >= 500 && screenSize < 650) {
+        return (
+          <img
+            style={{maxHeight: "auto", maxWidth: "400px"}}
+            src={OSDImage}
+          ></img>
+        )
+      } else {
+        return (
+          <img
+            style={{maxHeight: "auto", maxWidth: "300px"}}
+            src={OSDImage}
+          ></img>
+        )
+      }
+    }
+
+    let marketingPhrase = () => {
+      if (screenSize >= 1050) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
+            a subscription-based service that eliminates traditional ticketing middlemen
+            <br></br>
+            allowing you to interact directly with your fans and control the entire ticketing process.
+          </div>
+        ) 
+      } else if (screenSize >= 900 && screenSize < 1050) {
+        return (
+          <div style={{fontSize: "22px", lineHeight: "32px"}}>
+            a subscription-based service that eliminates traditional ticketing middlemen
+            <br></br>
+            allowing you to interact directly with your fans and control the entire ticketing process.
+          </div>
+        )
+      } else if (screenSize >= 650 && screenSize < 900) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
+            a subscription-based service that
+            <br></br>
+            eliminates traditional ticketing middlemen
+            <br></br>
+            allowing you to interact directly with your fans and
+            <br></br>
+            control the entire ticketing process.
+          </div>
+        )
+      } else if (screenSize >= 500 && screenSize < 650) {
+        return (
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
+            a subscription-based service that
+            <br></br>
+            eliminates traditional ticketing middlemen
+            <br></br>
+            allowing you to interact directly with your fans and
+            <br></br>
+            control the entire ticketing process.
+          </div>
+        )
+      } else {
+        return (
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
+            a subscription-based service
+            <br></br>
+            that eliminates
+            <br></br>
+            traditional ticketing middlemen
+            <br></br>
+            allowing you to interact
+            <br></br>
+            directly with your fans and
+            <br></br>
+            control the entire ticketing process.
+          </div>
+        )
+      }
+    }
+
+    let MarketingPoints = () => {
+      if (screenSize >= 1050) {
+        return (
+          <div>
+            <div
+              className={classes.Grid}
+              style={{fontFamily: "Lato", paddingLeft: "calc(50% - 475px)", columnGap: "100px", fontSize: "26px", fontWeight: "600"}}>
+                <div>Get Cash Now!</div>
+                <div>Absolutely NO Fees</div>
+                <div>Own All Your Data</div>
+            </div>
+            <div
+              className={classes.ImageGrid}
+              style={{fontFamily: "Lato", paddingLeft: "calc(50% - 410px)", columnGap: "230px", fontSize: "16px"}}>
+  
+              <img
+                  src={CashNow}
+                  alt="OpenSeatDirect Logo"
+                  style={{width: "100%"}}
+              />
+              <img
+                  src={NoFees}
+                  alt="OpenSeatDirect Logo"
+                  style={{width: "100%"}}
+              />
+              <img
+                  src={SingleLocation}
+                  alt="OpenSeatDirect Logo"
+                  style={{width: "100%"}}
+              />
+            </div>
+            <div
+              className={classes.Grid}
+              style={{fontFamily: "Lato", paddingLeft: "calc(50% - 475px)", columnGap: "100px", fontSize: "16px"}}>
+                <div>
+                  Don't wait until after the
+                  <br></br>
+                  event passes. Get paid on
+                  <br></br>
+                  tickets you sell right away.
+                </div>
+                <div>
+                  We're not kidding.
+                  <br></br>
+                  You and your customers
+                  <br></br>
+                  NEVER pay any ticketing fees.
+                </div>
+                <div>
+                  All transaction information
+                  <br></br>
+                  in one place: buyer emails,
+                  <br></br>
+                  transaction info and data.
+                </div>
+            </div>
+          </div>
+        )
+      } else if (screenSize >= 900 && screenSize < 1050) {
+        return (
+          <div>
+            <div
+              className={classes.Grid}
+              style={{fontFamily: "Lato", paddingLeft: "calc(50% - 425px)", columnGap: "50px", fontSize: "26px", fontWeight: "600"}}>
+                <div>Get Cash Now!</div>
+                <div>Absolutely NO Fees</div>
+                <div>Own All Your Data</div>
+            </div>
+            <div
+              className={classes.ImageGrid}
+              style={{fontFamily: "Lato", paddingLeft: "calc(50% - 360px)", columnGap: "180px", fontSize: "16px"}}>
+  
+              <img
+                  src={CashNow}
+                  alt="OpenSeatDirect Logo"
+                  style={{width: "100%"}}
+              />
+              <img
+                  src={NoFees}
+                  alt="OpenSeatDirect Logo"
+                  style={{width: "100%"}}
+              />
+              <img
+                  src={SingleLocation}
+                  alt="OpenSeatDirect Logo"
+                  style={{width: "100%"}}
+              />
+            </div>
+            <div
+              className={classes.Grid}
+              style={{fontFamily: "Lato", paddingLeft: "calc(50% - 425px)", columnGap: "50px", fontSize: "16px"}}>
+                <div>
+                  Don't wait until after the
+                  <br></br>
+                  event passes. Get paid on
+                  <br></br>
+                  tickets you sell right away.
+                </div>
+                <div>
+                  We're not kidding.
+                  <br></br>
+                  You and your customers
+                  <br></br>
+                  NEVER pay any ticketing fees.
+                </div>
+                <div>
+                  All transaction information
+                  <br></br>
+                  in one place: buyer emails,
+                  <br></br>
+                  transaction info and data.
+                </div>
+            </div>
+          </div>
+        )
+      } else {
+        return (
+          <div>
+  
+            <div className={classes.DescriptionText} style={{fontSize: "26px", fontWeight: "600"}}>
+              <div>Get Cash Now!</div>
+            </div>
+            <div className={classes.ImageContainer}>
+              <img
+                style={{maxHeight: "auto", maxWidth: "150px"}}
+                src={CashNow}
+              >
+              </img>
+            </div>
+            <div style={{fontFamily: "Lato", textAlign: "center", fontSize: "20px", fontWeight: "400"}}>
+              Don't wait until after the
+              <br></br>
+              event passes. Get paid on
+              <br></br>
+              tickets you sell right away.
+            </div>
+            <br></br>
+            <br></br>
+  
+  
+            <div className={classes.DescriptionText} style={{fontSize: "26px", fontWeight: "600"}}>
+              <div>Absolutely NO Fees</div>
+            </div>
+            <div className={classes.ImageContainer}>
+              <img
+                style={{maxHeight: "auto", maxWidth: "150px"}}
+                src={NoFees}
+              >
+              </img>
+            </div>
+            <div style={{fontFamily: "Lato", textAlign: "center", fontSize: "20px", fontWeight: "400"}}>
+              We're not kidding.
+              <br></br>
+              You and your customers
+              <br></br>
+              NEVER pay any ticketing fees.
+            </div>
+            <br></br>
+            <br></br>
+  
+  
+            <div className={classes.DescriptionText} style={{fontSize: "26px", fontWeight: "600"}}>
+              <div>Own All Your Data</div>
+            </div>
+            <div className={classes.ImageContainer}>
+              <img
+                style={{maxHeight: "auto", maxWidth: "150px"}}
+                src={SingleLocation}
+              >
+              </img>
+            </div>
+            <div style={{fontFamily: "Lato", textAlign: "center", fontSize: "20px", fontWeight: "400"}}>
+              All transaction information
+              <br></br>
+                in one place: buyer emails,
+              <br></br>
+                transaction info and data.
+            </div>
+  
+          </div>
+        )
+      }
+    }
+
+    let signUpText = () => {
+      if (screenSize >= 1050) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "52px"}}>
+            Sign up for a free trial or a subscription for as low as $7 a month.
+          </div>
+        ) 
+      } else if (screenSize >= 900 && screenSize < 1050) {
+        return (
+          <div style={{fontSize: "22px", lineHeight: "32px"}}>
+            Sign up for a free trial or a subscription for as low as $7 a month.
+          </div>
+        )
+      } else if (screenSize >= 650 && screenSize < 900) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
+            Sign up for a free trial or a
+            <br></br>
+            subscription for as low as $7 a month.
+          </div>
+        )
+      } else {
+        return (
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
+            Sign up for a free trial or a
+            <br></br>
+            subscription for as low as $7 a month.
+          </div>
+        )
+      }
+    }
+
+    const showError = () => {
+      if (hasError) {
+        return (
+          <div style={{color: "red"}}> {sysmessage}</div>
+        )
+      } else if (data.status) {
+        return (
+          null
+        )
+      } else {
+        return (
+          <div style={{color: "red"}}> {data.error}</div>
+        )
+      }
+    };
+
+    const showSuccess = (
+      <div>
+        <div>To complete the sign-up process, please click the link in the message sent to your e-mail inbox:</div>
+        <br></br>
+        <div style={{color: "blue"}}>{values.email}.</div>
+        <br></br>
+        <div>Please check your spam/junk folder if you do not see our message in your main inbox.</div>
+        <div>For "gmail" accounts, please check your "All Mail" folder.</div>
+        <br></br>
+        <div>Go to <Link to="/signin" style={{color: "blue"}}>Signin</Link></div>
+      </div>
+    );
+
+    const signUpForm = (
+      <Aux>
+        <div className="form-group">
+          <label style={{ fontSize: "16px" }}>
+            Full Name
+          </label>
+          <input
+            type="text"
+            name="name"
+            className="form-control"
+            onChange={handleChange}
+            value={name}
+          />
+        </div>
+  
+        <div className="form-group">
+          <label style={{ fontSize: "16px" }}>
+            E-mail Address
+          </label>
+          <input
+            type="email"
+            name="email"
+            className="form-control"
+            onChange={handleChange}
+            value={email}
+          />
+        </div>
+  
+        <div className="form-group">
+          <label style={{ fontSize: "16px" }}>
+            Password
+          </label>
+          <input
+            type="password"
+            name="password"
+            className="form-control"
+            onChange={handleChange}
+            value={password}
+            placeholder="Minimum 8 characters, must include one number"
+          />
+        </div>
+  
+        <div style={{textAlign: "center", paddingTop: "15px"}}>
+          <button
+            onClick={() => {
+              console.log("clicked button",{
+                name: values.name,
+                email: values.email,
+                password: values.password,
+              });
+              setBody({
+                name: values.name,
+                email: values.email,
+                password: values.password,
+              })
+            }}
+            className="btn btn-primary">
+            CREATE ACCOUNT
+          </button>
         </div>
       </Aux>
     );
-  
+
+    const mainDisplay = () => {
+      //NEED A BETTER TEST
+      //without "data.message !== "hi first time it places the data object into local storage with every keystroke
+      //this then generates an error in navigation component when it is looking for "role"
+      if (data.status && data.message !== "hi first time") {
+        return (
+          <Aux>
+            {showSuccess}
+          </Aux>
+        )
+      } else {
+        return (
+          <div>
+            <div>
+              {showError()}
+              {signUpForm}
+            </div>  
+          </div>
+        )
+      }
+    }
+
+    let appointment = () => {
+      if (screenSize >= 1050) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
+          Talk one-on-one with an onboarding specialist
+          </div>
+        ) 
+      } else if (screenSize >= 900 && screenSize < 1050) {
+        return (
+          <div style={{fontSize: "22px", lineHeight: "32px"}}>
+          Talk one-on-one with an onboarding specialist
+          </div>
+        )
+      } else if (screenSize >= 650 && screenSize < 900) {
+        return (
+          <div style={{fontSize: "26px", lineHeight: "36px"}}>
+            Talk one-on-one with 
+            <br></br>
+            an onboarding specialist
+          </div>
+        )
+      } else {
+        return (
+          <div style={{fontSize: "20px", lineHeight: "30px"}}>
+          Talk one-on-one with 
+          <br></br>
+          an onboarding specialist
+          </div>
+        )
+      }
+    }
+
+    return (
+      <div className={classes.MainContainer}>
+
+        {isResizing ? null : (
+          <div>
+            <div className={classes.TopContainer}>
+              <div className={classes.MarketingText}>
+                {tagLine()}
+              </div>
+              <div className={classes.MarketingText}>
+                {marketingLine()}
+              </div>
+            </div>
+
+            <div className={classes.OSDImageContainer}>
+              {OSDimage()}
+            </div>
+
+            <div className={classes.TextContainer}>
+              <div className={classes.DescriptionText} style={{fontWeight: "400"}}>
+                {marketingPhrase()}
+              </div>
+            </div>
+
+            <div className={classes.SectionContainer}>
+              {MarketingPoints()}
+            </div>
+
+            <div className={classes.SectionContainer}>
+              <div className={classes.DescriptionText}>
+                {signUpText()}
+              </div>
+
+              {screenSize >= 500 ? (
+                <div className={classes.SignUpForm}>
+                  <div>
+                    {mainDisplay()}
+                  </div>
+                </div>
+                ) :  (
+                  <div className={classes.SignUpFormTight}>
+                    <div>
+                      {mainDisplay()}
+                    </div>
+                  </div>
+                )
+              }
+
+            </div>
+
+            <div className={classes.SectionContainer}>
+              <div className={classes.DescriptionText}>
+                {appointment()}
+              </div>
+              <br></br>
+              <Button href="https://calendly.com/dahday/openseatdirect-connect?back=1&month=2020-10">
+                SCHEDULE APPOINTMENT
+              </Button>
+            </div>
+
+
+          </div>
+        )}
+      </div>
+    )
 }
 
 export default Home;

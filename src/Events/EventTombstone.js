@@ -25,11 +25,13 @@ const event = props => {
       className={classes.EventImage}
       src={eventImage}
       alt="No logo available"
-      //onError={(e) => {
+      //background-image=url('default.png')
+      onerror="onerror=null;src='../../assets/Get_Your_Tickets.png'"
+      //onerror={(e) => {
       //  e.target.src = '../../assets/Get_Your_Tickets.png'
-      //onError={() => {
-      //  onError()
-     //}}
+      //onerror={() => {
+      //  onerror()
+    // }}
       onClick={props.clicked}
     />
     <div className={classes.EventDetail}>

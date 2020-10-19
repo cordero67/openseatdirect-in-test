@@ -60,6 +60,8 @@ const SignUp = () => {
       <br></br>
       <div>Please check your spam/junk folder if you do not see our message in your main inbox.</div>
       <br></br>
+      <div>For "gmail" accounts, please check your "All Mail" folder.</div>
+      <br></br>
       <div>Back to <Link to="/signin" style={{color: "blue"}}>Signin</Link></div>
     </div>
   );
@@ -99,7 +101,7 @@ const SignUp = () => {
           className="form-control"
           onChange={handleChange}
           value={password}
-          placeholder="Must contain a number and special character"
+          placeholder="Minimum 8 characters, must include one number"
         />
       </div>
 

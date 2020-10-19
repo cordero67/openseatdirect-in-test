@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import { isAuthenticated } from '../../Users/apiUsers';
@@ -19,6 +19,19 @@ const isActive = (page, path) => {
 
 const NavigationItems = (props) => {
 
+    const [isResizing, setIsResizing] = useState(false);
+    //const [screenSize, setScreenSize] = useState(window.innerWidth);
+    const [screenSize, setScreenSize] = useState(500);
+    console.log("screenSize: ", screenSize)
+    
+    const stylingUpdate = (inWidth) => {
+        console.log("stylingUpdate in Header")
+        setIsResizing(true);
+        setScreenSize(inWidth);
+        setIsResizing(false);
+        console.log("screenSize in Header: ", screenSize)
+    };
+
     return (
         <ul className={classes.HeaderItems}>
             <li>
@@ -29,13 +42,16 @@ const NavigationItems = (props) => {
                 </NavLink>
             </li>
 
+            {screenSize === 400 ? (
             <li>
                 <NavLink
                     to="/eventspast"
                     style={isActive(props.currentPage, "/eventspast")}
                 >PAST EVENTS
                 </NavLink>
-            </li>
+            </li>)
+
+            : null}
 
             {!isAuthenticated() && 
                 <li>

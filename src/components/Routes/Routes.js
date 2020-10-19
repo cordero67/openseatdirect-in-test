@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 
-// /onboardingpdf
-
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
-import MainNew from "../HomePage/HomePageNEW";
 import Video from "../Video/Video";
 import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
@@ -42,6 +39,27 @@ const Routes = () => {
     setShowSideDrawer(!showSideDrawer);
   };
 
+
+  console.log("Inside Routes");
+  console.log("Inside Routes");
+
+  const [isResizing, setIsResizing] = useState(false);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
+  console.log("screenSize Routes: ", screenSize);
+  
+  const stylingUpdate = (inWidth) => {
+      console.log("stylingUpdate in Routes")
+      setIsResizing(true);
+      setScreenSize(inWidth);
+      setIsResizing(false);
+      console.log("screenSize in Routes: ", screenSize)
+  };
+
+  window.onresize = function(event) {
+    console.log("resized in Routes")
+    stylingUpdate(window.innerWidth);
+  };
+
   return (
     <Aux>
       <Route
@@ -56,25 +74,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Main />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-
-<Route
-        path="/new"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <MainNew />
-            <Footer></Footer>
           </React.Fragment>
         )}
       />
@@ -171,10 +170,6 @@ const Routes = () => {
           <PaypalOnboarding />
       )}
     />
-
-
-
-
 
     <Route
       path="/vendordashboard"
