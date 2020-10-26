@@ -180,9 +180,18 @@ const EventEdit = () => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
-      if (localStorage.getItem(`editEvent`) !== null) {
-        let tempEvent = JSON.parse(localStorage.getItem("editEvent"));
-        loadEventInfo(tempEvent);
+      if (localStorage.getItem(`eventNum`) !== null) {
+        let tempEventNum = JSON.parse(localStorage.getItem("eventNum"));
+        let tempEvents = JSON.parse(localStorage.getItem("events"));
+        let tempEventPosition;
+        tempEvents.forEach((event, index) => {
+          if(event.eventNum === tempEventNum) {
+            console.log("Found a match");
+            tempEventPosition = index;
+          }
+        })
+
+        loadEventInfo(tempEvents[tempEventPosition]);
         console.log("found a valid event to edit")
       }
       else {

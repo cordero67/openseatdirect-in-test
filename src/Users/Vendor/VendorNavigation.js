@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
-import classes from "./VendorDashboard.module.css";
+import classes from "./ControlPanel.module.css";
 
 import { signout } from '../apiUsers';
 
@@ -33,7 +33,7 @@ const VendorNavigation = (props) => {
             verticalAlign: "middle",
             lineHeight: "normal",
           }}>
-          MY DASHBOARD
+          CONTROL PANEL
         </span>
       </div>
 
@@ -75,6 +75,19 @@ const VendorNavigation = (props) => {
               name="events"
               onClick={props.clicked}>
               EVENTS
+            </button>
+          </li>
+
+          <li>
+            <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "dashboard" ? "#fff" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="dashboard"
+              onClick={props.clicked}>
+              EVENT DASHBOARD
             </button>
           </li>
 

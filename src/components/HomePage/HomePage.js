@@ -67,13 +67,13 @@ const Home = () => {
       if (screenSize >= 500) {
         return (
           <div style={{fontSize: "52px", lineHeight: "94px"}}>
-            GET CASH NOW!
+            TICKETING MADE EASY!
           </div>
         ) 
       } else {
         return (
           <div style={{paddingBottom: "20px", fontSize: "36px", lineHeight: "54px"}}>
-            GET CASH NOW!
+            TICKETING MADE EASY!
           </div>
         )
       }

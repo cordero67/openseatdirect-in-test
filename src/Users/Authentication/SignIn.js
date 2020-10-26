@@ -50,7 +50,7 @@ const SignIn = () => {
     console.log("tempData: ", tempData)
     // determines dashboard based on user's role
     if (getStatus(tempData.user) === 7 || getStatus(tempData.user) === 8) {
-      return <Redirect to="/vendordashboard" />;
+      return <Redirect to="/controlpanel" />;
     } else {
       return <Redirect to="/buyerdashboard" />;
     }

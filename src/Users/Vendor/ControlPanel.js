@@ -6,15 +6,16 @@ import { API } from "../../config";
 import VendorNavigation from "./VendorNavigation";
 import Account from "./Account";
 import Events from "./Events";
+import EventDashboard from "./EventDashboard";
 import Orders from "./Orders";
 import Profile from "./Profile";
 import CreateEvent from "../../EventCreation/CreateEvent";
-import classes from "./VendorDashboard.module.css";
+import classes from "./ControlPanel.module.css";
 
-const VendorDashboard = () => {
+const ControlPanel = () => {
 
-  const [buyerInfo, setBuyerInfo] = useState();//
-  const [isLoading, setIsLoading] = useState(true);//
+  const [buyerInfo, setBuyerInfo] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [paneView, setPaneView] = useState("events")
 
@@ -63,7 +64,15 @@ const MainDisplay = () => {
       )
     } else if (paneView === "events") {
       return (
-        <Events/>
+        <Events
+          clicked={() => {
+          setPaneView("dashboard")
+        }}
+        />
+      )
+    } else if (paneView === "dashboard") {
+      return (
+        <EventDashboard/>
       )
     } else if (paneView === "orders") {
         return (
@@ -114,4 +123,4 @@ const Navigation = () => {
   );
 };
 
-export default VendorDashboard;
+export default ControlPanel;

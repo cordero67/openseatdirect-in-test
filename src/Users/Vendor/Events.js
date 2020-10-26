@@ -10,7 +10,7 @@ import {
   faEdit
 } from "@fortawesome/free-solid-svg-icons";
  
-import classes from "./VendorDashboard.module.css";
+import classes from "./ControlPanel.module.css";
 import { compareValues, getDates } from "./VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 
@@ -43,28 +43,28 @@ const Events = (props) => {
     
     useEffect(() => {
         if (
-          typeof window !== "undefined" &&
-          localStorage.getItem(`user`) !== null
+            typeof window !== "undefined" &&
+            localStorage.getItem(`user`) !== null
         ) {
-          let tempUser = JSON.parse(localStorage.getItem("user"));
-          vendorInfo.token = tempUser.token;
-          vendorInfo.id = tempUser.user._id;
-          //vendorInfo.name = tempUser.user.name
-          //console.log("vendorInfo.name: ", tempUser.user.name)
+            let tempUser = JSON.parse(localStorage.getItem("user"));
+            vendorInfo.token = tempUser.token;
+            vendorInfo.id = tempUser.user._id;
+            //vendorInfo.name = tempUser.user.name
+            //console.log("vendorInfo.name: ", tempUser.user.name)
         } else {
-          //window.location.href = "/signin";
+            //window.location.href = "/signin";
         }
     
         if (
             typeof window !== "undefined" &&
             localStorage.getItem(`events`) !== null
-          ) {
+        ) {
             let tempEvents = JSON.parse(localStorage.getItem("events"));
             setEventDescriptions(tempEvents)
             console.log("events existed")
-          } else {
+        } else {
             console.log("events do not exist")
-          }
+        }
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
@@ -78,9 +78,9 @@ const Events = (props) => {
         let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
 
         fetch(fetchstr, requestOptions)
-          .then(handleErrors)
-          .then((response) => response.text())
-          .then((result) => {
+        .then(handleErrors)
+        .then((response) => response.text())
+        .then((result) => {
             localStorage.setItem("events", result);
             let js = JSON.parse(result);
             console.log("eventDescriptions unordered: ", js);
@@ -91,23 +91,32 @@ const Events = (props) => {
             setIsSuccessfull(true)
             setIsLoading(false);
             return js;
-          })
-          .catch((error) => {
+        })
+        .catch((error) => {
             console.log("error", error);
             setIsSuccessfull(false)
             setIsLoading(false);
-          });
+        });
 
-        }, []);
+    }, []);
   
-        const editEvent = (item) => {
-          if (typeof window !== "undefined") {
-            console.log("JSON.stringify(item): ", JSON.stringify(item));
-            localStorage.setItem("editEvent", JSON.stringify(item));
-            window.location.href = `/eventedit/?eventID=${item.eventNum}`;
-          }
-          // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
+    const editEvent = (item) => {
+        if (typeof window !== "undefined") {
+        console.log("JSON.stringify(item): ", JSON.stringify(item));
+        localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
+        window.location.href = `/eventedit/?eventID=${item.eventNum}`;
         }
+        // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
+    }
+  
+    const eventDetail = (item) => {
+        if (typeof window !== "undefined") {
+        console.log("JSON.stringify(item): ", JSON.stringify(item));
+        localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
+        //window.location.href = `/eventedit/?eventID=${item.eventNum}`;
+        }
+        // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
+    }
 
     const mainDisplay = () => {
         if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
@@ -162,15 +171,25 @@ const Events = (props) => {
                                     />
                                 
                                 </div>
-                                <div>
-                                    <div
+                                <div style={{textAlign: "left" }}>
+                                    <button
                                         style={{
                                             fontSize: "16px",
-                                            textAlign: "left", fontWeight: "600" 
+                                            textAlign: "left",
+                                            fontWeight: "600",
+                                            paddingLeft: "0px",
+                                            border: "none",
+                                            backgroundColor: "white",
+                                            cursor: "pointer",
+                                            display: "inlineBlock",
+                                            outline: "none",
                                         }}
+                                        onClick={() => {
+                                            eventDetail(item);
+                                            props.clicked()}}
                                     >
                                         {item.eventTitle}
-                                    </div>
+                                    </button>
                                     <div
                                         style={{
                                             fontSize: "13px",

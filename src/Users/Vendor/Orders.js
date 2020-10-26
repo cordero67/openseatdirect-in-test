@@ -10,7 +10,7 @@ import {
   faEdit
 } from "@fortawesome/free-solid-svg-icons";
  
-import classes from "./VendorDashboard.module.css";
+import classes from "./ControlPanel.module.css";
 import { compareValues, getDate } from "./VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 
@@ -52,17 +52,6 @@ const Orders = (props) => {
         }
         return response;
       };
-
-    /*
-    // intilializes the show property of each order to "false"
-    const initializeDisplays = (events) => {
-        let tempObject = {};
-        events.forEach((item, index) => {
-        tempObject[item.eventNum] = false;
-        })
-        setOrderDisplay(tempObject);
-    }
-    */
     
     useEffect(() => {
         if (
@@ -122,17 +111,6 @@ const Orders = (props) => {
           });
 
         }, []);
-  
-        /*
-        const editEvent = (item) => {
-          if (typeof window !== "undefined") {
-            console.log("JSON.stringify(item): ", JSON.stringify(item));
-            localStorage.setItem("editEvent", JSON.stringify(item));
-            window.location.href = `/eventedit/?eventID=${item.eventNum}`;
-          }
-          // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
-        }
-*/
     const mainDisplay = () => {
         console.log("ticketOrders: ", ticketOrders)
         if (!isLoading && isSuccessfull && ticketOrders.length !== 0) {

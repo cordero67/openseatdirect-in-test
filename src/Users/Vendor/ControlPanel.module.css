@@ -325,6 +325,24 @@ column-gap: 5px;*/
     padding-right: 30px;
 }
 
+.DashboardHeader {
+    z-index: 200;
+    position: fixed;
+    top: 110px;
+    background-color: #e7e7e7;
+    border-bottom: 1px solid lightgrey;
+    width: 1030px;
+    height: 60px;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 600;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 30px;
+}
+
+
 .DashboardMain {
   /*border: 1px solid green;*/
   display: grid;
