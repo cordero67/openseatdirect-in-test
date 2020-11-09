@@ -16,7 +16,7 @@ const ControlPanel = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [paneView, setPaneView] = useState("dashboard")
+  const [paneView, setPaneView] = useState("events")
 
   useEffect(() => {
     setIsLoading(true);

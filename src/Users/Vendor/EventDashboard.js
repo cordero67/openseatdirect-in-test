@@ -164,9 +164,6 @@ const EventDashboard = (props) => {
     setIsLoading(false);
   }, []);
 
-  
-
-
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
     setOrder({
