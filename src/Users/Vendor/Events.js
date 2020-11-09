@@ -87,7 +87,6 @@ const Events = (props) => {
             js.sort(compareValues("startDateTime", "asc"));
             console.log("eventDescriptions ordered: ", js);
             setEventDescriptions(js);
-            //initializeDisplays(js);
             setIsSuccessfull(true)
             setIsLoading(false);
             return js;
@@ -111,7 +110,7 @@ const Events = (props) => {
   
     const eventDetail = (item) => {
         if (typeof window !== "undefined") {
-        console.log("JSON.stringify(item): ", JSON.stringify(item));
+        //console.log("JSON.stringify(item): ", JSON.stringify(item));
         localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
         //window.location.href = `/eventedit/?eventID=${item.eventNum}`;
         }

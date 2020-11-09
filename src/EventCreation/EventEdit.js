@@ -797,7 +797,7 @@ const loadEventInfo = (eventTix) => {
             show={true}
             details={eventStatus}
             toDashboard={() => {
-              window.location.href = `/vendordashboard`;
+              window.location.href = `/vendoraccount`;
             }}
           ></SavedModal>
         </Aux>
@@ -2871,7 +2871,7 @@ const loadEventInfo = (eventTix) => {
                 }}
                 content="Cancel Edit"
                 onClick={() => {
-                  window.location.href = `/vendordashboard`
+                  window.location.href = `/controlpanel`
                 }}
               />
             </div>
