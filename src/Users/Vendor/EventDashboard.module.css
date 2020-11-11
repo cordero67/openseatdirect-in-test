@@ -469,6 +469,30 @@ column-gap: 5px;*/
   padding-left: 10px
 }
 
+.PriceBox {
+  height: 25px;
+  width: 70px;
+  border: 0.5px solid grey;
+  padding-right: 7px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.PriceBoxWarning {
+  height: 25px;
+  width: 70px;
+  border: 0.5px solid red;
+  padding-right: 7px;
+  text-align: center;
+  font-size: 15px;
+}
+
+
+
+
+
+
+
 /*
 .SystemDownMessage {
   z-index: 200;

@@ -143,6 +143,7 @@ const EventDashboard = (props) => {
               firstTicket.faceValue = parseFloat(tempTicketDetails[0].ticketPrice).toFixed(2);
               firstTicket.numTickets = 1;
               firstTicket.chargedPrice = parseFloat(tempTicketDetails[0].ticketPrice).toFixed(2);
+              firstTicket.chargedPriceWarning = "";
               firstTicket.compTicket = false;
               firstTicket.priceSummary = tempTicketDetails[0].priceSummary;
               firstTicket.subTotal = parseFloat(firstTicket.numTickets) * parseFloat(firstTicket.chargedPrice);
@@ -302,78 +303,97 @@ const EventDashboard = (props) => {
   const changeTicket = (event, key) => {
     console.log("changing ticket info")
 
-      console.log("order: ", order);
-      console.log("Event name: ", event.target.name);
-      console.log("Event value: ", event.target.value);
+    console.log("order: ", order);
+    console.log("Event name: ", event.target.name);
+    console.log("Event value: ", event.target.value);
 
-      let tempOrder = {...order};
-      let tempTickets = [...tempOrder.tickets];
-      console.log("tempTickets: ", tempTickets)
+    let tempOrder = {...order};
+    let tempTickets = [...tempOrder.tickets];
+    console.log("tempTickets: ", tempTickets)
 
-      tempTickets.forEach((ticket, index) => {
-        if (ticket.key === key) {
-          console.log("key: ", ticket.key)
+    let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
-          if (event.target.name === "ticketName") {
-            console.log("ticketName");
-            ticket.ticketName = event.target.value;
+    tempTickets.forEach((ticket, index) => {
+      if (ticket.key === key) {
+        console.log("key: ", ticket.key)
 
-            ticketDetails.forEach((eventTicket, index) => {
-              if (eventTicket.ticketName === event.target.value) {
-                console.log("We have a match: ", ticket)
-                ticket.ticketName = eventTicket.ticketName;
-                ticket.ticketId = eventTicket.ticketId;
-                ticket.availTickets = eventTicket.ticketQuantity;
-                ticket.faceValue = parseFloat(eventTicket.ticketPrice).toFixed(2);
-                //ticket.compTicket = false;
-                //ticket.numTickets = 1;
-                ticket.priceSummary = eventTicket.priceSummary;
-                if (ticket.compTicket) {
-                  ticket.chargedPrice = parseFloat(0).toFixed(2);
-                } else {
-                  ticket.chargedPrice = parseFloat(eventTicket.ticketPrice).toFixed(2);
-                }
-                ticket.paymentType = "CashUSD";
-                ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
-                console.log("ticket: ", ticket)
+        if (event.target.name === "ticketName") {
+          console.log("ticketName");
+          ticket.ticketName = event.target.value;
+
+          ticketDetails.forEach((eventTicket, index) => {
+            if (eventTicket.ticketName === event.target.value) {
+              console.log("We have a match: ", ticket)
+              ticket.ticketName = eventTicket.ticketName;
+              ticket.ticketId = eventTicket.ticketId;
+              ticket.availTickets = eventTicket.ticketQuantity;
+              ticket.faceValue = parseFloat(eventTicket.ticketPrice).toFixed(2);
+              //ticket.compTicket = false;
+              //ticket.numTickets = 1;
+              ticket.priceSummary = eventTicket.priceSummary;
+              if (ticket.compTicket) {
+                ticket.chargedPrice = parseFloat(0).toFixed(2);
+              } else {
+                ticket.chargedPrice = parseFloat(eventTicket.ticketPrice).toFixed(2);
               }
-            })
-
-          } else if (event.target.name === "numTickets") {
-            console.log("numTickets");
-            ticket.numTickets = event.target.value;
-            ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
-
-          } else if (event.target.name === "compTicket") {
-            console.log("compTicket");
-            ticket.compTicket = !ticket.compTicket
-            if (!ticket.compTicket) {
-              ticket.chargedPrice = parseFloat(ticket.faceValue).toFixed(2);
-            } else {
-              ticket.chargedPrice = parseFloat(0).toFixed(2);
-            }
-            ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
-
-          } else if (event.target.name === "chargedPrice") {
-            console.log("chargedPrice");
-            ticket.chargedPrice = event.target.value;
-            if (ticket.chargedPrice === "") {
-              ticket.subTotal = parseFloat(0).toFixed(2);
-            } else {
+              ticket.chargedPriceWarning = "";
+              ticket.paymentType = "CashUSD";
               ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+              console.log("ticket: ", ticket)
             }
+          })
 
-          } else if (event.target.name === "paymentType") {
-            console.log("paymentType");
-            ticket.paymentType = event.target.value;
+        } else if (event.target.name === "numTickets") {
+          console.log("numTickets");
+          ticket.numTickets = event.target.value;
+          ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+
+        } else if (event.target.name === "compTicket") {
+          console.log("compTicket");
+          ticket.compTicket = !ticket.compTicket
+          if (!ticket.compTicket) {
+            ticket.chargedPrice = parseFloat(ticket.faceValue).toFixed(2);
+          } else {
+            ticket.chargedPrice = parseFloat(0).toFixed(2);
           }
-        }
-      })
+          ticket.chargedPriceWarning = "";
+          ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
 
-      tempOrder.tickets = tempTickets
-      console.log("tempOrder.tickets: ", tempOrder.tickets)
-      console.log("tempOrder: ", tempOrder)
-      setOrder(tempOrder);
+        } else if (event.target.name === "chargedPrice") {
+          console.log("chargedPrice");
+          ticket.chargedPrice = event.target.value;
+          if (ticket.chargedPrice === "") {
+            //chargedPriceWarning = "empty value represents zero price"
+            ticket.chargedPriceWarning = ""
+            ticket.subTotal = parseFloat(0).toFixed(2);
+
+          } else if (isNaN(ticket.chargedPrice)) {
+            //chargedPriceWarning = "LETTERS ARE INCLUDED"
+            ticket.chargedPriceWarning = "Not a valid number";
+            ticket.subTotal = "NaN"
+
+          } else if (priceRegex.test(ticket.chargedPrice)){
+            //chargedPriceWarning = "max 2 decimals"
+            ticket.chargedPriceWarning = ""
+            ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+
+          } else {
+            //chargedPriceWarning = "more than 2 decimals"
+            ticket.chargedPriceWarning = "Not a valid price"
+            ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+          }
+
+        } else if (event.target.name === "paymentType") {
+          console.log("paymentType");
+          ticket.paymentType = event.target.value;
+        }
+      }
+    })
+
+    tempOrder.tickets = tempTickets
+    console.log("tempOrder.tickets: ", tempOrder.tickets)
+    console.log("tempOrder: ", tempOrder)
+    setOrder(tempOrder);
   }
 
   // UPDATED CODE
@@ -424,10 +444,6 @@ const EventDashboard = (props) => {
 
   // UPDATED CODE
   const ticketCart = () => {
-    let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
-
-
-
 
     if (!isLoading) {
       return (
@@ -466,36 +482,14 @@ const EventDashboard = (props) => {
             }}>
 
             {order.tickets.map((ticket, index) => {
-              console.log("ticket: ", ticket)
-              console.log("priceRegex: ", priceRegex.test(ticket.chargedPrice))
-              console.log("charged price: ", ticket.chargedPrice)
-              console.log(ticket.chargedPrice, " is a number: ", !isNaN(ticket.chargedPrice))
 
-              let chargedPriceWarning;
-
-              if (ticket.chargedPrice === "") {
-                //chargedPriceWarning = "empty value represents zero price"
-                chargedPriceWarning = ""
-              } else if (isNaN(ticket.chargedPrice)) {
-                //chargedPriceWarning = "LETTERS ARE INCLUDED"
-                chargedPriceWarning = "Not a valid number"
-              } else if (priceRegex.test(ticket.chargedPrice)){
-                //chargedPriceWarning = "max 2 decimals"
-                chargedPriceWarning = ""
+              let priceBox;
+              
+              if (ticket.chargedPriceWarning === "") {
+                priceBox = classes.PriceBox;
               } else {
-                //chargedPriceWarning = "more than 2 decimals"
-                chargedPriceWarning = "Not a valid price"
+                priceBox = classes.PriceBoxWarning;
               }
-              console.log("chargedPriceWarning: ", chargedPriceWarning)
-/*
-|| (
-                !isNaN(parseFloat(ticket.chargedPrice)))
-                )  ?
-                "OK price" :
-                "Not a valid price"*/
-
-
-
 
               return (
                 <div>
@@ -581,14 +575,7 @@ const EventDashboard = (props) => {
 
                     <div>
                       <input
-                        style={{
-                          width: "70px",
-                          height: "25px",
-                          paddingRight: "7px",
-                          textAlign: "center",
-                          fontSize: "15px",
-                          border: "0.5px solid grey"
-                        }}
+                        className={priceBox}
                         type="number decimal"
                         step=".01"
                         name="chargedPrice"
@@ -662,7 +649,7 @@ const EventDashboard = (props) => {
                           fontSize: "12px"
                         }}
                       >
-                        {chargedPriceWarning}
+                        {ticket.chargedPriceWarning}
                       </div>
                   </div>
                 </div>
@@ -718,7 +705,8 @@ const EventDashboard = (props) => {
                   textAlign: "center",
                   padding: "0px"
                 }}
-                disabled={order.tickets.length === 0 || order.recipient.completed === false}
+                disabled={validOrder()}
+                //disabled={order.tickets.length === 0 || order.recipient.completed === false}
                 content="Review Order"
                 onClick={reviewOrder}
               />
@@ -745,7 +733,19 @@ const EventDashboard = (props) => {
   }
 
 
-  
+  const validOrder = () => {
+    let invalid = true;
+    let ticketWarnings = false;
+    order.tickets.forEach((ticket, index) => {
+      if (ticket.chargedPriceWarning) {
+        ticketWarnings = true;
+      }
+    })
+    if(order.tickets.length > 0 && order.recipient.completed === true && !ticketWarnings) {
+      invalid = false;
+    }
+    return invalid;
+  }
 
 
   const updateRecipient = (event) => {
@@ -1043,510 +1043,3 @@ const EventDashboard = (props) => {
 }
 
 export default EventDashboard;
-
-
-
-/*
-
-
-
-          <div style={{paddingTop: "5px"}}>{(order.recipient.email && !regsuper.test(order.recipient.email))
-            ? <span style={{color: "red", fontSize: "12px", paddingBottom: "5px"}}>Not a valid email address</span>
-            : null
-          }</div>
-
-
-
-
-
-  // NEED TO EDIT
-  const resetNewTickets = () => {
-    if (ticketDetails.length >= 1) {
-      let newTicketKey = Math.floor(Math.random() * 1000000000000000);
-      let tempNewTickets = {};
-    
-      tempNewTickets.key = newTicketKey;
-      tempNewTickets.ticketName = ticketDetails[0].ticketName;
-      tempNewTickets.ticketId = ticketDetails[0].ticketId;
-      tempNewTickets.availTickets = ticketDetails[0].ticketQuantity;
-      tempNewTickets.fullPrice = ticketDetails[0].ticketPrice;
-      tempNewTickets.numTickets = 1;
-      tempNewTickets.chargedPrice = ticketDetails[0].ticketPrice;
-      tempNewTickets.compTicket = false;
-      tempNewTickets.priceSummary = ticketDetails[0].priceSummary;
-      tempNewTickets.subTotal = tempNewTickets.numTickets * tempNewTickets.chargedPrice;
-      tempNewTickets.paymentType = "CashUSD";
-
-      console.log("tempNewTickets: ", tempNewTickets);
-      console.log("ticketDetails[index]: ", ticketDetails[0])
-
-      setNewTickets(tempNewTickets);
-    }
-  }
-
-
-
-  const ticketsCart = () => {
-    if (order.tickets.length > 0) {
-      let orderTotal = 0;
-      return (
-        <Fragment>
-          <div style={{
-            width: "680px",
-            borderBottom: "1px solid black",
-            paddingTop: "10px"
-          }}>
-            {order.tickets.map((ticket, index) => {
-              if (ticket.chargedPrice !== "COMP") {
-                orderTotal = (orderTotal + ticket.subTotal)
-              };
-
-              // truncates the name of each ticket type
-              let adjustedTicketName;
-              let num = 30;
-
-              if (ticket.ticketName.length <= num) {
-                adjustedTicketName = ticket.ticketName;
-              } else {
-                adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
-              }
-
-              return (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "260px 80px 70px 45px 110px 70px 40px",
-                    gridGap: "10px",
-                    height: "28px"
-                  }}
-                >
-                  <div>{adjustedTicketName}</div>
-                  <div style={{textAlign: "center"}}>{ticket.numTickets}</div>
-                  {ticket.price === "COMP" ? <div style={{textAlign: "right", paddingRight: "10px"}}>COMP</div> : <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.price).toFixed(2)}</div>}
-                  {ticket.price === "COMP" ?
-                    <div style={{textAlign: "center"}}>
-                      <FontAwesomeIcon
-                        icon={faCheck}
-                      />
-                    </div> :
-                    <div></div>
-                  }
-                  {ticket.price === "COMP" ? <div></div> : <div style={{paddingLeft: "20px"}}>{ticket.paymentType}</div>}
-                  <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
-                  <div style={{textAlign: "center"}}>
-                    <FontAwesomeIcon
-                      color="blue"
-                      cursor="pointer"
-                      onClick={() => {
-                        deleteTickets(ticket.key)
-                      }}
-                      icon={faTrashAlt}
-                    />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </Fragment>
-      )
-    } else {
-      return null;
-    }
-  }
-
-
-  const addTickets = () => {
-    let tempOrder = {...order};
-    let tempTickets = [...tempOrder.tickets];
-    let tempNewTickets = {};
-
-    tempNewTickets.key = newTickets.key;
-    tempNewTickets.ticketName = newTickets.ticketName;
-    tempNewTickets.ticketId = newTickets.ticketId;
-    tempNewTickets.numTickets = newTickets.numTickets;
-    if (newTickets.chargedPrice == 0 || newTickets.chargedPrice === "COMP") {
-      tempNewTickets.price = "COMP";
-      tempNewTickets.subTotal = 0;
-    } else {
-      tempNewTickets.price = newTickets.chargedPrice;
-      tempNewTickets.subTotal = newTickets.subTotal;
-    }
-    tempNewTickets.paymentType = newTickets.paymentType;
-
-    tempTickets.push(tempNewTickets);
-    tempOrder.tickets = tempTickets;
-
-    console.log("tempTickets: ", tempTickets);
-    console.log("tempOrder: ", tempOrder);
-
-    setOrder(tempOrder);
-    resetNewTickets();
-  }
-
-
-  const changeNewTickets = (event) => {
-    console.log("Event name: ", event.target.name);
-    console.log("Event value: ", event.target.value);
-    let tempNewTickets = {...newTickets};
-
-    if (event.target.name === "ticketName") {
-      tempNewTickets.ticketName = event.target.value
-      ticketDetails.forEach((ticket, index) => {
-        if (ticket.ticketName === event.target.value) {
-          console.log("We have a match: ", ticket)
-          tempNewTickets.ticketName = ticket.ticketName;
-          tempNewTickets.ticketId = ticket.ticketId;
-          tempNewTickets.availTickets = ticket.ticketQuantity;
-          tempNewTickets.fullPrice = ticket.ticketPrice;
-          tempNewTickets.compTicket = false;
-          tempNewTickets.priceSummary = ticket.priceSummary;
-          tempNewTickets.numTickets = 1;
-          tempNewTickets.chargedPrice = ticket.ticketPrice;
-          tempNewTickets.paymentType = "CashUSD";
-          tempNewTickets.subTotal = tempNewTickets.numTickets * tempNewTickets.chargedPrice;
-          console.log("newTickets: ", tempNewTickets)
-          setNewTickets(tempNewTickets);
-        }
-      })
-    } else if (event.target.name === "numTickets") {
-      tempNewTickets.numTickets = event.target.value;
-      tempNewTickets.subTotal = tempNewTickets.numTickets * tempNewTickets.chargedPrice;
-      if(newTickets.compTicket) {
-        tempNewTickets.subTotal = 0.00;
-      }
-    } else if (event.target.name === "chargedPrice") {
-      tempNewTickets.chargedPrice = event.target.value;
-      tempNewTickets.subTotal = tempNewTickets.numTickets * tempNewTickets.chargedPrice;
-    } else if (event.target.name === "compTicket") {
-      tempNewTickets.compTicket = !newTickets.compTicket
-      if (!newTickets.compTicket) {
-        tempNewTickets.chargedPrice = "COMP";
-        tempNewTickets.subTotal = 0.00;
-      } else {
-        console.log("tempNewTickets.chargedPrice: ", tempNewTickets.chargedPrice)
-        tempNewTickets.chargedPrice = newTickets.fullPrice;
-        tempNewTickets.subTotal = tempNewTickets.chargedPrice * tempNewTickets.numTickets;
-      }
-    } else if (event.target.name === "paymentType") {
-      tempNewTickets.paymentType = event.target.value;
-    }
-    console.log("tempNewTickets: ", tempNewTickets)
-    setNewTickets(tempNewTickets)
-  }
-
-
-
-            // populates "newtickets" object with info from first ticket type
-            if (tempTicketDetails.length >= 1) {
-              let newTicketKey = Math.floor(Math.random() * 1000000000000000);
-              let tempNewTickets = {};
-              console.log("tempTicketDetails[0]: ", tempTicketDetails[0])
-              tempNewTickets.key = newTicketKey;
-              tempNewTickets.ticketName = tempTicketDetails[0].ticketName;
-              tempNewTickets.ticketId = tempTicketDetails[0].ticketId;
-              tempNewTickets.availTickets = tempTicketDetails[0].ticketQuantity;
-              tempNewTickets.fullPrice = tempTicketDetails[0].ticketPrice;
-              tempNewTickets.numTickets = 1;
-              tempNewTickets.chargedPrice = tempTicketDetails[0].ticketPrice;
-              tempNewTickets.compTicket = false;
-              tempNewTickets.priceSummary = tempTicketDetails[0].priceSummary;
-              tempNewTickets.subTotal = tempNewTickets.numTickets * tempNewTickets.chargedPrice;
-              tempNewTickets.paymentType = "CashUSD";
-              console.log("tempNewTickets: ", tempNewTickets);
-              setNewTickets(tempNewTickets);
-            }
-
-  const ticketsOrder = () => {
-    if (order.tickets.length > 0) {
-      let orderTotal = 0;
-      return (
-        <Fragment>
-          <div style={{
-            width: "680px",
-            borderBottom: "1px solid black",
-            paddingTop: "10px"
-          }}>
-            {order.tickets.map((ticket, index) => {
-              if (ticket.chargedPrice !== "COMP") {
-                orderTotal = (orderTotal + ticket.subTotal)
-              };
-
-              let adjustedTicketName;
-              let num = 30;
-
-              if (ticket.ticketName.length <= num) {
-                adjustedTicketName = ticket.ticketName;
-              } else {
-                adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
-              }
-
-              return (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "260px 80px 70px 45px 110px 70px 40px",
-                    gridGap: "10px",
-                    height: "28px"
-                  }}
-                >
-                  <div>{adjustedTicketName}</div>
-                  <div style={{textAlign: "center"}}>{ticket.numTickets}</div>
-                  {ticket.price === "COMP" ? <div style={{textAlign: "right", paddingRight: "10px"}}>COMP</div> : <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.price).toFixed(2)}</div>}
-                  {ticket.price === "COMP" ?
-                    <div style={{textAlign: "center"}}>
-                      <FontAwesomeIcon
-                        icon={faCheck}
-                      />
-                    </div> :
-                    <div></div>
-                  }
-                  {ticket.price === "COMP" ? <div></div> : <div style={{paddingLeft: "20px"}}>{ticket.paymentType}</div>}
-                  <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
-                  <div style={{textAlign: "center"}}>
-                    <FontAwesomeIcon
-                      color="blue"
-                      cursor="pointer"
-                      onClick={() => {
-                        deleteTickets(ticket.key)
-                      }}
-                      icon={faTrashAlt}
-                    />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </Fragment>
-      )
-    } else {
-      return (
-        <div style={{
-          borderBottom: "1px solid black",
-          width: "680px",
-          paddingTop: "10px",
-          paddingBottom: "10px",
-          textAlign: "center"
-        }}>
-          There are no tickets in this order
-        </div>
-      )
-    }
-  }
-
-  const ticketDisplay = () => {
-    if (!isLoading) {
-      return (
-        <div
-          style={{
-            width: "690px",
-            paddingTop: "20px",
-            paddingBottom: "20px",
-            marginLeft: "20px"
-          }}
-        >
-          <div style={{fontSize: "16px", fontWeight: "600", paddingBottom: "15px"}}>Ticket(s)</div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "260px 80px 45px 70px 110px 70px",
-              gridGap: "10px",
-              width: "680px",
-              borderBottom: "1px solid black",
-              fontWeight: "600",
-              paddingBottom: "10px"
-            }}
-          >
-            <div>Ticket Type</div>
-            <div style={{textAlign: "center"}}># Tickets</div>
-            <div style={{textAlign: "center"}}>Comp</div>
-            <div style={{textAlign: "center"}}>Price</div>
-            <div style={{paddingLeft: "10px"}}>Payment Type</div>
-            <div style={{textAlign: "center"}}>Total</div>
-          </div>
-
-          <div>{ticketsOrder()}</div>
-          <br></br>
-          <br></br>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "260px 80px 45px 70px 110px 70px",
-              gridGap: "10px",
-              width: "680px",
-              fontWeight: "400",
-              paddingBottom: "10px"
-            }}>
-            <div>
-              <select
-                style={{
-                  width: "260px",
-                  height: "25px", 
-                  fontSize: "15px",
-                  border: "0.5px solid grey"
-                }}
-                type="text"
-                name="ticketName"
-                required
-                value={newTickets.ticketName}
-                onChange={changeNewTickets}
-              >
-                {ticketDetails.map((ticket, index) => {
-                  return (
-                    <option>{ticket.ticketName}</option>
-                  )
-                })}
-              </select>
-            </div>
-            <div>
-              <select
-                style={{width: "80px", height: "25px", 
-                fontSize: "15px", paddingLeft: "5px", textAlign: "right", border: "0.5px solid grey"}}
-                type="number"
-                name="numTickets"
-                value={newTickets.numTickets}
-                required
-                onChange={changeNewTickets}
-              >
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-              </select>
-            </div>
-            <div
-              style={{
-                paddingTop: "2.5px",
-                paddingLeft: "12px"
-              }}
-            >
-              <input
-                type="checkbox"
-                id=""
-                name="compTicket"
-                style={{
-                  outline: "0.5px solid lightgrey",
-                  borderRadius: "0px",
-                  width: "20px",
-                  height: "20px"
-                }}
-                checked={newTickets.compTicket}
-                onChange={changeNewTickets} 
-              />
-            </div>
-            <div>
-              <input
-                style={{
-                  width: "70px",
-                  height: "25px",
-                  paddingRight: "7px",
-                  textAlign: "center",
-                  fontSize: "15px",
-                  border: "0.5px solid grey"
-                }}
-                type="text"
-                name="chargedPrice"
-                disabled={newTickets.compTicket}  
-                value={newTickets.chargedPrice}
-                onChange={changeNewTickets}
-              />
-            </div>
-            <div style={{paddingLeft: "10px"}}>
-              <select
-                
-                style={{
-                  border: "0.5px solid grey",
-                  width: "110px",
-                  height: "25px",
-                  fontSize: "15px"
-                }}
-                  type="payment"
-                  name="paymentType"
-                  required
-                  disabled={newTickets.compTicket}
-                  value={newTickets.paymentType}
-                  onChange={changeNewTickets}
-              >
-                <option>CashUSD</option>
-                <option>CashApp</option>
-                <option>Venmo</option>
-                <option>Paypal</option>
-                <option>BitCoin</option>
-                <option>Ethereum</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div style={{paddingRight: "10px", textAlign: "right"}}>{parseFloat(newTickets.subTotal).toFixed(2)}</div>
-          </div>
-        <div
-          style={{
-            fontWeight: "400",
-            width: "680px",
-            textAlign: "left",
-            paddingBottom: "20px"
-          }}
-        >
-          {newTickets.priceSummary}
-        </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "320px 320px",
-              gridGap: "40px",
-              width: "680px",
-              fontWeight: "400",
-              paddingBottom: "10px"
-            }}>
-          <div style={{width: "320px", textAlign: "right"}}>
-            <Button
-              style={{
-                backgroundColor: 'white',
-                border: "1px solid green",
-                color: "green",
-                fontSize: "15px",
-                fontWeight: "600",
-                width: "150px",
-                height: "30px",
-                margin: "auto",
-                textAlign: "center",
-                padding: "0px"
-              }}
-              disabled={newTickets.numTickets === 0 || newTickets.chargedPrice === ""}
-              content="Add Ticket"
-              onClick={addTickets}
-            />
-          </div>
-
-          <div style={{width: "320px"}}>
-            <Button
-              style={{
-                backgroundColor: "blue",
-                border: "1px solid blue",
-                color: "white",
-                fontSize: "15px",
-                fontWeight: "600",
-                width: "150px",
-                height: "30px",
-                margin: "auto",
-                textAlign: "center",
-                padding: "0px"
-              }}
-              disabled={order.tickets.length === 0 || order.recipient.completed === false}
-              content="Review Order"
-              onClick={reviewOrder}
-            />
-          </div>
-
-        </div>
-
-      </div>)
-    } else {
-      return null;
-    }
-  }
-  */
