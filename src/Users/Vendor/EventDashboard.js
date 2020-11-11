@@ -6,9 +6,8 @@ import OrderModal from "./Modals/OrderModal";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import Scroll, { animateScroll } from 'react-scroll';
 
-import classes from "./ControlPanel.module.css";
+import classes from "./EventDashboard.module.css";
 import { Button } from "semantic-ui-react";
 
 const EventDashboard = (props) => {
@@ -18,8 +17,6 @@ const EventDashboard = (props) => {
   const [eventsList, setEventsList] = useState([]);//
 
   const [ticketDetails, setTicketDetails] = useState([]);//
-
-  const [newTickets, setNewTickets] = useState({}); // ticket input variable
 
   const [order, setOrder] = useState({
     recipient: {
@@ -32,7 +29,13 @@ const EventDashboard = (props) => {
     tickets: []
   });
 
-  const [showEventModal, setShowEventModal] = useState(true);
+  
+  const [recipientFirstNameWarning, setRecipientFirstNameWarning] = useState(false);
+  const [recipientLastNameWarning, setRecipientLastNameWarning] = useState(false);
+  const [recipientEmailWarning, setRecipientEmailWarning] = useState(false);
+  const [recipientMessageWarning, setRecipientMessageWarning] = useState(false);
+
+  const [showEventsList, setShowEventsList] = useState(true);
   const [showOrderSummary, setShowOrderSummary] = useState(false)
 
   const [isLoading, setIsLoading] = useState(false);//
@@ -47,7 +50,6 @@ const EventDashboard = (props) => {
         console.log("Events or Event Num DO NOT exist")
         props.clicked()
       } else {
-        console.log("Events and Event Num exist")
         let tempEventNum = JSON.parse(localStorage.getItem("eventNum"));
         let tempEvents = JSON.parse(localStorage.getItem("events"));
         let tempEventsList = [];
@@ -55,23 +57,23 @@ const EventDashboard = (props) => {
         // maps through the entire "events" object to find the selected event
         tempEvents.forEach((event, index) => {
 
-          // populates the "eventsList" object that allows for navigation to another event
+          // populates the "eventsList" array that allows for navigation to another event
           tempEventsList.push({eventNum: event.eventNum, eventTitle: event.eventTtile});
 
           if (event.eventNum === tempEventNum) {
             console.log("Found a match: ", event);
 
-            // stores all specific event data received from server
+            // stores all specific event data received from server into "selectedEventDetails" object
             setSelectedEventDetails(event);
             console.log("selectedEventDetails: ", selectedEventDetails)
 
             let tempTicketDetails = [];
 
-            // for selected event, ticket information is stored in "ticketsDetails" object
+            // for selected event, tickets information is stored in "ticketsDetails" object
             if (event.tickets.length > 0) {
-              console.log("Ticket length: ", event.tickets.length)
+              
+              // for selected event, tickets information is stored in "ticketsDetails" object
               event.tickets.forEach((ticket, index) => {
-              console.log("ticket type number: ", index)
               
                 // constructs price function data
                 let tempPriceFeature;
@@ -81,36 +83,35 @@ const EventDashboard = (props) => {
 
                 if ("priceFunction" in ticket) {
                   tempPriceFeature = ticket.priceFunction.form
-                  console.log("ticket.priceFunction.form: ", ticket.priceFunction.form)
 
                   if (ticket.priceFunction.form === "promo") {
                     tempPromoCodes = ticket.priceFunction.args.promocodes;
-                    tempPriceSummary = `(Full price: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
+                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
 
                   } else if (ticket.priceFunction.form === "twofer") {
                     tempPriceFeatureArgs = ticket.priceFunction.args;
-                    tempPriceSummary = `(Full price: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} for $${parseFloat(tempPriceFeatureArgs.for).toFixed(2)})`
+                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} for $${parseFloat(tempPriceFeatureArgs.for).toFixed(2)})`
 
                   } else if (ticket.priceFunction.form === "bogo" && ticket.priceFunction.args.discount === "1")  {
                     tempPriceFeatureArgs = ticket.priceFunction.args;
-                    tempPriceSummary = `(Full price: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} get ${parseInt(tempPriceFeatureArgs.get)} for FREE)`
+                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} get ${parseInt(tempPriceFeatureArgs.get)} for FREE)`
 
                   } else if (ticket.priceFunction.form === "bogo")  {
                     tempPriceFeatureArgs = ticket.priceFunction.args;
-                    tempPriceSummary = `(Full price: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} get ${parseInt(tempPriceFeatureArgs.get)} for a ${tempPriceFeatureArgs.discount * 100}% discount)`
+                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} get ${parseInt(tempPriceFeatureArgs.get)} for a ${tempPriceFeatureArgs.discount * 100}% discount)`
 
                   } else {
-                    tempPriceSummary = `(Full price: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
+                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
 
                   }
                 } else {
-                  tempPriceSummary = `(Full price: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
+                  tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
                 }
                 console.log("tempPriceSummary: ", tempPriceSummary)
 
                 let newTicketKey = Math.floor(Math.random() * 1000000000000000);
                 
-                // new object added to "ticketDetails" object
+                // new object added to "ticketDetails" array
                 tempTicketDetails.push({
                   key: newTicketKey,
                   ticketName: ticket.ticketName,
@@ -126,33 +127,40 @@ const EventDashboard = (props) => {
               })
             }
 
-            // populates tickets object with selected event
+            // populates "ticketDetails" array with selected event
             setTicketDetails(tempTicketDetails);
             console.log("Ticket Details: ", tempTicketDetails)
 
-            // populates "newtickets" object with info from first ticket type
+            // populates first element in tickets" array of "order" object
             if (tempTicketDetails.length >= 1) {
-              let newTicketKey = Math.floor(Math.random() * 1000000000000000);
-              let tempNewTickets = {};
+              let ticketKey = Math.floor(Math.random() * 1000000000000000);
+              let firstTicket = {};
               console.log("tempTicketDetails[0]: ", tempTicketDetails[0])
-              tempNewTickets.key = newTicketKey;
-              tempNewTickets.ticketName = tempTicketDetails[0].ticketName;
-              tempNewTickets.ticketId = tempTicketDetails[0].ticketId;
-              tempNewTickets.availTickets = tempTicketDetails[0].ticketQuantity;
-              tempNewTickets.fullPrice = tempTicketDetails[0].ticketPrice;
-              tempNewTickets.numTickets = 1;
-              tempNewTickets.chargedPrice = tempTicketDetails[0].ticketPrice;
-              tempNewTickets.compTicket = false;
-              tempNewTickets.priceSummary = tempTicketDetails[0].priceSummary;
-              tempNewTickets.subTotal = tempNewTickets.numTickets * tempNewTickets.chargedPrice;
-              tempNewTickets.paymentType = "CashUSD";
-              console.log("tempNewTickets: ", tempNewTickets);
-              setNewTickets(tempNewTickets);
+              firstTicket.key = ticketKey;
+              firstTicket.ticketName = tempTicketDetails[0].ticketName;
+              firstTicket.ticketId = tempTicketDetails[0].ticketId;
+              firstTicket.availTickets = tempTicketDetails[0].ticketQuantity;
+              firstTicket.faceValue = parseFloat(tempTicketDetails[0].ticketPrice).toFixed(2);
+              firstTicket.numTickets = 1;
+              firstTicket.chargedPrice = parseFloat(tempTicketDetails[0].ticketPrice).toFixed(2);
+              firstTicket.compTicket = false;
+              firstTicket.priceSummary = tempTicketDetails[0].priceSummary;
+              firstTicket.subTotal = parseFloat(firstTicket.numTickets) * parseFloat(firstTicket.chargedPrice);
+              firstTicket.priceInput = "ticket";
+              firstTicket.paymentType = "CashUSD";
+              console.log("firstTicket: ", firstTicket);
+              let tempOrder={...order};
+              let tempTickets=[...tempOrder.tickets];
+              tempTickets.push(firstTicket)
+              console.log("tempTickets: ", tempTickets);
+              tempOrder.tickets=tempTickets
+              console.log("tempOrder: ", tempOrder);
+              setOrder(tempOrder);
             }
           }
         })
         
-        // populates the "eventsList" object that allows for navigation to another event
+        // populates the "eventsList" array that allows for navigation to another event
         setEventsList(tempEventsList);
         console.log("All Events: ", tempEventsList)
       }
@@ -164,6 +172,8 @@ const EventDashboard = (props) => {
     setIsLoading(false);
   }, []);
 
+
+  // NEED TO EDIT
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
     setOrder({
@@ -181,14 +191,7 @@ const EventDashboard = (props) => {
     //localStorage.removeItem(`image_${event}`);
   };
 
-
-
-
-
-
-
-
-
+  // NEED TO EDIT
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
     if (!response.ok) {
@@ -197,15 +200,15 @@ const EventDashboard = (props) => {
     return response;
   };
 
+  // NEED TO EDIT
   const submitOrder = () => {
-    let newOrder = {};
+    let order = {};
     let ticketArray = [];
-    newOrder.firstName = order.recipient.firstName;
-    newOrder.lastName = order.recipient.lastName;
-    newOrder.email = order.recipient.email;
-    newOrder.message = order.recipient.message;
-    newOrder.eventNum = selectedEventDetails.eventNum;
-    console.log("newOrder: ", newOrder)
+    order.firstName = order.recipient.firstName;
+    order.lastName = order.recipient.lastName;
+    order.email = order.recipient.email;
+    order.message = order.recipient.message;
+    order.eventNum = selectedEventDetails.eventNum;
     console.log("order: ", order)
     
     order.tickets.forEach((ticket, index) => {
@@ -224,7 +227,7 @@ const EventDashboard = (props) => {
       ticketArray.push(tempObject);
     });
     
-    newOrder.tickets = ticketArray;
+    order.tickets = ticketArray;
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -232,10 +235,9 @@ const EventDashboard = (props) => {
     let fetcharg ={
         method: "POST",
         headers: myHeaders,
-        body:JSON.stringify (newOrder),
+        body:JSON.stringify (order),
     };
     console.log("fetching with: ", url, fetcharg);
-    console.log("newOrder: ", newOrder)
     console.log("order: ", order)
     
     /**/
@@ -258,6 +260,929 @@ const EventDashboard = (props) => {
     })
     
   }
+
+  // NEED TO EDIT
+  const reviewOrder = () => {
+    console.log("order: ", order)
+    setShowOrderSummary(true);
+  }
+
+
+  
+  // UPDATED CODE
+  const addNewTicket = () => {
+    if (ticketDetails.length >= 1) {
+      let ticketKey = Math.floor(Math.random() * 1000000000000000);
+      let newTicket = {};
+      console.log("ticketDetails[0]: ", ticketDetails[0])
+      newTicket.key = ticketKey;
+      newTicket.ticketName = ticketDetails[0].ticketName;
+      newTicket.ticketId = ticketDetails[0].ticketId;
+      newTicket.availTickets = ticketDetails[0].ticketQuantity;
+      newTicket.faceValue = parseFloat(ticketDetails[0].ticketPrice).toFixed(2);
+      newTicket.numTickets = 1;
+      newTicket.chargedPrice = parseFloat(ticketDetails[0].ticketPrice).toFixed(2);
+      newTicket.compTicket = false;
+      newTicket.priceSummary = ticketDetails[0].priceSummary;
+      newTicket.subTotal = parseFloat(newTicket.numTickets) * parseFloat(newTicket.chargedPrice);
+      newTicket.priceInput = "ticket";
+      newTicket.paymentType = "CashUSD";
+      console.log("newTicket: ", newTicket);
+      let tempOrder={...order};
+      let tempTickets=[...tempOrder.tickets];
+      tempTickets.push(newTicket)
+      console.log("tempTickets: ", tempTickets);
+      tempOrder.tickets=tempTickets
+      console.log("tempNewOrder: ", tempOrder);
+      setOrder(tempOrder);
+    }
+  }
+
+  // UPDATED CODE
+  const changeTicket = (event, key) => {
+    console.log("changing ticket info")
+
+      console.log("order: ", order);
+      console.log("Event name: ", event.target.name);
+      console.log("Event value: ", event.target.value);
+
+      let tempOrder = {...order};
+      let tempTickets = [...tempOrder.tickets];
+      console.log("tempTickets: ", tempTickets)
+
+      tempTickets.forEach((ticket, index) => {
+        if (ticket.key === key) {
+          console.log("key: ", ticket.key)
+
+          if (event.target.name === "ticketName") {
+            console.log("ticketName");
+            ticket.ticketName = event.target.value;
+
+            ticketDetails.forEach((eventTicket, index) => {
+              if (eventTicket.ticketName === event.target.value) {
+                console.log("We have a match: ", ticket)
+                ticket.ticketName = eventTicket.ticketName;
+                ticket.ticketId = eventTicket.ticketId;
+                ticket.availTickets = eventTicket.ticketQuantity;
+                ticket.faceValue = parseFloat(eventTicket.ticketPrice).toFixed(2);
+                //ticket.compTicket = false;
+                //ticket.numTickets = 1;
+                ticket.priceSummary = eventTicket.priceSummary;
+                if (ticket.compTicket) {
+                  ticket.chargedPrice = parseFloat(0).toFixed(2);
+                } else {
+                  ticket.chargedPrice = parseFloat(eventTicket.ticketPrice).toFixed(2);
+                }
+                ticket.paymentType = "CashUSD";
+                ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+                console.log("ticket: ", ticket)
+              }
+            })
+
+          } else if (event.target.name === "numTickets") {
+            console.log("numTickets");
+            ticket.numTickets = event.target.value;
+            ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+
+          } else if (event.target.name === "compTicket") {
+            console.log("compTicket");
+            ticket.compTicket = !ticket.compTicket
+            if (!ticket.compTicket) {
+              ticket.chargedPrice = parseFloat(ticket.faceValue).toFixed(2);
+            } else {
+              ticket.chargedPrice = parseFloat(0).toFixed(2);
+            }
+            ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+
+          } else if (event.target.name === "chargedPrice") {
+            console.log("chargedPrice");
+            ticket.chargedPrice = event.target.value;
+            if (ticket.chargedPrice === "") {
+              ticket.subTotal = parseFloat(0).toFixed(2);
+            } else {
+              ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+            }
+
+          } else if (event.target.name === "paymentType") {
+            console.log("paymentType");
+            ticket.paymentType = event.target.value;
+          }
+        }
+      })
+
+      tempOrder.tickets = tempTickets
+      console.log("tempOrder.tickets: ", tempOrder.tickets)
+      console.log("tempOrder: ", tempOrder)
+      setOrder(tempOrder);
+  }
+
+  // UPDATED CODE
+  const deleteTickets = (key) => {
+    console.log("order: ", order.tickets)
+    console.log("key: ", key)
+    if (order.tickets.length === 1) {
+      console.log("Only 1 ticket in order")
+      let ticketKey = Math.floor(Math.random() * 1000000000000000);
+      let firstTicket = {};
+      console.log("ticketDetails[0]: ", ticketDetails[0])
+      firstTicket.key = ticketKey;
+      firstTicket.ticketName = ticketDetails[0].ticketName;
+      firstTicket.ticketId = ticketDetails[0].ticketId;
+      firstTicket.availTickets = ticketDetails[0].ticketQuantity;
+      firstTicket.faceValue = parseFloat(ticketDetails[0].ticketPrice).toFixed(2);
+      firstTicket.numTickets = 1;
+      firstTicket.chargedPrice = parseFloat(ticketDetails[0].ticketPrice).toFixed(2);
+      firstTicket.compTicket = false;
+      firstTicket.priceSummary = ticketDetails[0].priceSummary;
+      firstTicket.subTotal = parseFloat(firstTicket.numTickets) * parseFloat(firstTicket.chargedPrice);
+      firstTicket.priceInput = "ticket";
+      firstTicket.paymentType = "CashUSD";
+      console.log("firstTicket: ", firstTicket);
+      let tempOrder={...order};
+      let tempTickets=[...tempOrder.tickets];
+      tempTickets = [firstTicket];
+      console.log("tempTickets: ", tempTickets);
+      tempOrder.tickets=tempTickets
+      console.log("tempOrder: ", tempOrder);
+      setOrder(tempOrder);
+    } else {
+      console.log("more than 1 ticket in order")
+      let tempOrder = {...order};
+      let tempTickets = [...tempOrder.tickets]
+      tempTickets.forEach((ticket, index) => {
+        console.log("ticket.key: ", ticket.key)
+        if (ticket.key === key) {
+          console.log("ticket.key: ", ticket.key)
+          console.log("ticket: ", ticket)
+          tempTickets.splice(index, 1);
+        }
+      })
+      tempOrder.tickets = tempTickets;
+      setOrder(tempOrder)
+    }
+  };
+
+  // UPDATED CODE
+  const ticketCart = () => {
+    let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
+
+
+
+
+    if (!isLoading) {
+      return (
+        <div
+          style={{
+            width: "690px",
+            paddingTop: "20px",
+            paddingBottom: "20px",
+            marginLeft: "20px"
+          }}
+        >
+          <div style={{fontSize: "16px", fontWeight: "600", paddingBottom: "15px"}}>Ticket Cart</div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "260px 80px 45px 70px 110px 70px",
+              gridGap: "10px",
+              width: "680px",
+              borderBottom: "1px solid black",
+              fontWeight: "600",
+              paddingBottom: "10px"
+            }}
+          >
+            <div>Ticket Type</div>
+            <div style={{textAlign: "center"}}># Tickets</div>
+            <div style={{textAlign: "center"}}>Comp</div>
+            <div style={{textAlign: "center"}}>Price</div>
+            <div style={{paddingLeft: "10px"}}>Payment Type</div>
+            <div style={{textAlign: "center"}}>Total</div>
+          </div>
+          <div
+            style={{
+              width: "680px",
+              borderBottom: "1px solid black",
+              paddingTop: "10px"
+            }}>
+
+            {order.tickets.map((ticket, index) => {
+              console.log("ticket: ", ticket)
+              console.log("priceRegex: ", priceRegex.test(ticket.chargedPrice))
+              console.log("charged price: ", ticket.chargedPrice)
+              console.log(ticket.chargedPrice, " is a number: ", !isNaN(ticket.chargedPrice))
+
+              let chargedPriceWarning;
+
+              if (ticket.chargedPrice === "") {
+                //chargedPriceWarning = "empty value represents zero price"
+                chargedPriceWarning = ""
+              } else if (isNaN(ticket.chargedPrice)) {
+                //chargedPriceWarning = "LETTERS ARE INCLUDED"
+                chargedPriceWarning = "Not a valid number"
+              } else if (priceRegex.test(ticket.chargedPrice)){
+                //chargedPriceWarning = "max 2 decimals"
+                chargedPriceWarning = ""
+              } else {
+                //chargedPriceWarning = "more than 2 decimals"
+                chargedPriceWarning = "Not a valid price"
+              }
+              console.log("chargedPriceWarning: ", chargedPriceWarning)
+/*
+|| (
+                !isNaN(parseFloat(ticket.chargedPrice)))
+                )  ?
+                "OK price" :
+                "Not a valid price"*/
+
+
+
+
+              return (
+                <div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "260px 80px 45px 70px 110px 70px 40px",
+                      gridGap: "10px",
+                      width: "680px",
+                      fontWeight: "400"
+                    }}
+                  >
+                    <div>
+                      <select
+                        style={{
+                          width: "260px",
+                          height: "25px", 
+                          fontSize: "15px",
+                          border: "0.5px solid grey"
+                        }}
+                        type="text"
+                        name="ticketName"
+                        required
+                        value={ticket.ticketName}
+                        onChange={(event) => {
+                          changeTicket(event, ticket.key)
+                        }}
+                      >
+                        {ticketDetails.map((ticket2, index2) => {
+                          return (
+                            <option>{ticket2.ticketName}</option>
+                          )
+                        })}
+
+                      </select>
+                    </div>
+                    <div>
+                      <select
+                        style={{width: "80px", height: "25px", 
+                        fontSize: "15px", paddingLeft: "5px", textAlign: "right", border: "0.5px solid grey"}}
+                        type="number"
+                        name="numTickets"
+                        value={ticket.numTickets}
+                        required
+                        onChange={(event) => {
+                          changeTicket(event, ticket.key)
+                        }}
+                      >
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                      </select>
+                    </div>
+                    <div
+                      style={{
+                        paddingTop: "2.5px",
+                        paddingLeft: "12px"
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        id=""
+                        name="compTicket"
+                        style={{
+                          outline: "0.5px solid lightgrey",
+                          borderRadius: "0px",
+                          width: "20px",
+                          height: "20px"
+                        }}
+                        checked={ticket.compTicket}
+                        onChange={(event) => {
+                          changeTicket(event, ticket.key)
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <input
+                        style={{
+                          width: "70px",
+                          height: "25px",
+                          paddingRight: "7px",
+                          textAlign: "center",
+                          fontSize: "15px",
+                          border: "0.5px solid grey"
+                        }}
+                        type="number decimal"
+                        step=".01"
+                        name="chargedPrice"
+                        disabled={ticket.compTicket}  
+                        value={ticket.chargedPrice}
+                        onChange={(event) => {
+                          changeTicket(event, ticket.key)
+                        }}
+                      />
+                    </div>
+
+                    <div style={{paddingLeft: "10px"}}>
+                      <select
+                        style={{
+                          border: "0.5px solid grey",
+                          width: "110px",
+                          height: "25px",
+                          fontSize: "15px"
+                        }}
+                          type="payment"
+                          name="paymentType"
+                          required
+                          disabled={ticket.compTicket}
+                          value={ticket.paymentType}
+                          onChange={(event) => {
+                            changeTicket(event, ticket.key)
+                          }}
+                      >
+                        <option>CashUSD</option>
+                        <option>CashApp</option>
+                        <option>Venmo</option>
+                        <option>Paypal</option>
+                        <option>BitCoin</option>
+                        <option>Ethereum</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                    <div style={{paddingRight: "10px", textAlign: "right"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
+            
+                    <div style={{textAlign: "center"}}>
+                      <FontAwesomeIcon
+                        color="blue"
+                        cursor="pointer"
+                        onClick={() => {
+                          deleteTickets(ticket.key)
+                        }}
+                        icon={faTrashAlt}
+                      />
+                    </div>
+
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "415px 200px"
+                    }}>
+                    <div
+                      style={{
+                        fontWeight: "400",
+                        width: "680px",
+                        textAlign: "left",
+                        paddingBottom: "10px"
+                      }}
+                      >
+                      {ticket.priceSummary}
+                      </div>
+                      <div
+                        style={{
+                          color: "red",
+                          fontSize: "12px"
+                        }}
+                      >
+                        {chargedPriceWarning}
+                      </div>
+                  </div>
+                </div>
+              )
+            })}
+
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "320px 320px",
+              gridGap: "40px",
+              width: "680px",
+              fontWeight: "400",
+              paddingTop: "20px",
+              paddingBottom: "0px"
+            }}>
+
+            <div style={{width: "320px", textAlign: "right"}}>
+              <Button
+                style={{
+                  backgroundColor: 'white',
+                  border: "1px solid green",
+                  color: "green",
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  width: "150px",
+                  height: "30px",
+                  margin: "auto",
+                  textAlign: "center",
+                  padding: "0px"
+                }}
+                //disabled={}
+                content="Additional Ticket"
+                onClick={addNewTicket}
+              />
+            </div>
+
+
+          
+            <div style={{width: "320px"}}>
+              <Button
+                style={{
+                  backgroundColor: "blue",
+                  border: "1px solid blue",
+                  color: "white",
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  width: "150px",
+                  height: "30px",
+                  margin: "auto",
+                  textAlign: "center",
+                  padding: "0px"
+                }}
+                disabled={order.tickets.length === 0 || order.recipient.completed === false}
+                content="Review Order"
+                onClick={reviewOrder}
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              color: "red",
+              fontSize: "12px",
+              fontWeight: "400",
+              paddingTop: "5px",
+              paddingLeft: "360px"
+            }}
+          >
+            {!order.recipient.completed ? "please correct input errors identified above" : null}
+          </div>
+
+
+      </div>)
+    } else {
+      return null;
+    }
+  }
+
+
+  
+
+
+  const updateRecipient = (event) => {
+    const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    let tempOrder = {...order};
+    let tempRecipient = {...tempOrder.recipient};
+
+    tempRecipient[event.target.name] = event.target.value;
+    if (tempRecipient.firstName === "" ||
+      tempRecipient.lastName === "" ||
+      tempRecipient.email === "" ||
+      !regsuper.test(tempRecipient.email)
+    ) {
+      tempRecipient.completed = false;
+    } else {
+      tempRecipient.completed = true;
+    }
+    tempOrder.recipient = tempRecipient;
+    console.log("tempRecipient: ", tempRecipient);
+    console.log("tempOrder: ", tempOrder);
+    setOrder(tempOrder)
+  }
+
+
+
+  const displayMessage = (limit, variable) => {
+    if (variable && variable.length >= limit) {
+      return (
+        <div
+          style={{
+            paddingLeft: "10px",
+            height: "14px",
+            color: "red",
+            fontSize: "12px",
+            fontWeight: "700",
+          }}
+        >
+          Maximum characters used
+        </div>
+      );
+    } else if (variable && variable.length >= limit - 10) {
+      return (
+        <div
+          style={{
+            paddingLeft: "10px",
+            height: "14px",
+            color: "red",
+            fontSize: "12px",
+          }}
+        >
+          Remaining {limit - variable.length}
+        </div>
+      );
+    } else if (variable) {
+      return (
+        <div
+          style={{
+            paddingLeft: "10px",
+            height: "14px",
+            color: "black",
+            fontSize: "12px",
+          }}
+        >
+          Remaining {limit - variable.length}
+        </div>
+      );
+    } else {
+      return (
+        <div
+          style={{
+            paddingLeft: "10px",
+            height: "14px",
+            color: "black",
+            fontSize: "12px",
+          }}
+        >
+          Remaining {limit}
+        </div>
+      );
+    }
+  };
+
+
+
+
+  const recipientDisplay = () => {
+
+    // defines styling for recipient boxes
+    let firstNameBox;
+    let lastNameBox;
+    let emailBox;
+    let emailWarning;
+
+    const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    console.log("order.recipient: ", order.recipient);
+    
+    if (order.recipient.firstName === "") {
+      firstNameBox = classes.FirstNameBoxWarning;
+    } else {
+      firstNameBox = classes.FirstNameBox;
+    }
+    
+    if (order.recipient.lastName === "") {
+      lastNameBox = classes.LastNameBoxWarning;
+    } else {
+      lastNameBox = classes.LastNameBox;
+    }
+    
+    if (order.recipient.email === "" || !regsuper.test(order.recipient.email)) {
+      emailBox = classes.EmailBoxWarning;
+    } else {
+      emailBox = classes.EmailBox;
+    }
+
+    if (order.recipient.email && !regsuper.test(order.recipient.email)) {
+      emailWarning = (
+        <div style={{color: "red", fontSize: "12px", paddingLeft: "10px", paddingBottom: "5px"}}>
+          Not a valid email address
+        </div>
+      )
+    } else if (recipientEmailWarning) {
+      emailWarning = displayMessage(64, order.recipient.email)
+    } else {
+      emailWarning = null
+    }
+
+    return (
+        <div
+          style={{
+            width: "690px",
+            paddingTop: "20px",
+            paddingBottom: "20px",
+            paddingLeft: "20px"
+          }}
+        >
+          <div style={{fontSize: "16px", fontWeight: "600", paddingBottom: "15px"}}>
+            Recipient <span style={{fontSize: "15px", fontWeight: "400", fontStyle: "italic"}}><span style={{color: "red"}}>*</span>required</span>
+          </div>
+
+        <div style={{display: "grid", gridGap: "10px", gridTemplateColumns: "325px 325px", paddingBottom: "10px"}}>
+          <div>
+            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
+              First Name<span style={{color: "red"}}>*</span>
+            </label>
+            <input className={firstNameBox}
+              type="text"
+              name="firstName"
+              placeholder="Limit 32 characters"
+              maxLength="64"
+              onFocus={() => setRecipientFirstNameWarning(true)}
+              onBlur={() => setRecipientFirstNameWarning(false)}
+              onChange={updateRecipient}
+            />
+            {recipientFirstNameWarning
+              ? displayMessage(64, order.recipient.firstName)
+              : null
+            }
+          </div>
+
+          <div>
+            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
+              Last Name<span style={{color: "red"}}>*</span>
+            </label>
+            <input className={lastNameBox}
+              type="text"
+              name="lastName"
+              placeholder="Limit 32 characters"
+              maxLength="64"
+              onFocus={() => setRecipientLastNameWarning(true)}
+              onBlur={() => setRecipientLastNameWarning(false)}
+              onChange={updateRecipient}
+            />
+            {recipientLastNameWarning
+              ? displayMessage(64, order.recipient.lastName)
+              : null
+            }
+          </div>
+        </div>
+        <div style={{width: "660px", paddingBottom: "10px"}}>
+          <div>
+            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
+              Email Address<span style={{color: "red"}}>*</span>
+            </label>
+            <input
+              className={emailBox}
+              type="email"
+              name="email"
+              placeholder="Limit 64 characters"
+              maxLength="64"
+              onFocus={() => setRecipientEmailWarning(true)}
+              onBlur={() => setRecipientEmailWarning(false)}
+              onChange={updateRecipient}
+            />
+            <div>{emailWarning}</div>
+          </div>
+        </div>
+
+
+        <div style={{width: "660px", paddingBottom: "0px"}}>
+          <div>
+            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
+              Message <span style={{fontStyle: "italic"}}>(internal use only)</span>
+            </label>
+            <input
+              className={classes.InputBox}
+              type="text"
+              name="message"
+              maxLength="64"
+              onFocus={() => setRecipientMessageWarning(true)}
+              onBlur={() => setRecipientMessageWarning(false)}
+              placeholder="Limit 64 characters"
+              onChange={updateRecipient}
+            />
+              {recipientMessageWarning
+                ? displayMessage(64, order.recipient.message)
+                : null
+              }
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const orderSummary = () => {
+    if (showOrderSummary) {
+      return (
+        <Fragment>
+          <OrderModal
+            show={true}
+            title={selectedEventDetails.eventTitle}
+            details={order}
+            closeModal={() => {
+              setShowOrderSummary(false);
+            }}
+            submit={submitOrder}
+          ></OrderModal>
+        </Fragment>
+      )
+    } else {
+      return null;
+    }
+  }
+
+  const mainDisplay = () => {
+    return (
+      <div style={{paddingTop: "80px", paddingLeft: "30px"}}>
+        <div style={{fontWeight: "600", fontSize: "18px"}}>Ticket Order Entry</div>
+        {recipientDisplay()}
+        {ticketCart()}
+        {orderSummary()}
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className={classes.DisplayPanelTitle}>
+          EVENT DASHBOARD
+      </div>
+      
+      <div className={classes.DisplayPanel2}>
+        <div className={classes.DashboardHeader}>
+          <div style={{paddingBottom: "5px"}}>
+            <div style={{fontSize: "22px", fontWeight: "600"}}>{!isLoading ? selectedEventDetails.eventTitle : "empty"}</div>
+          </div>
+          <div>
+            <button
+              style={{
+                fontSize: "14px",
+                textAlign: "left",
+                fontWeight: "400",
+                paddingLeft: "0px",
+                color: "blue",
+                border: "none",
+                backgroundColor: "#E7E7E7",
+                cursor: "pointer",
+                display: "inlineBlock",
+                outline: "none",
+              }}
+              onClick={() => {
+                setShowEventsList(!showEventsList)
+              }}
+            >
+              Switch Event
+            </button>
+          </div>
+            {showEventsList ? null : null}
+        </div>
+        {mainDisplay()}
+      </div>
+    </div>
+  )
+}
+
+export default EventDashboard;
+
+
+
+/*
+
+
+
+          <div style={{paddingTop: "5px"}}>{(order.recipient.email && !regsuper.test(order.recipient.email))
+            ? <span style={{color: "red", fontSize: "12px", paddingBottom: "5px"}}>Not a valid email address</span>
+            : null
+          }</div>
+
+
+
+
+
+  // NEED TO EDIT
+  const resetNewTickets = () => {
+    if (ticketDetails.length >= 1) {
+      let newTicketKey = Math.floor(Math.random() * 1000000000000000);
+      let tempNewTickets = {};
+    
+      tempNewTickets.key = newTicketKey;
+      tempNewTickets.ticketName = ticketDetails[0].ticketName;
+      tempNewTickets.ticketId = ticketDetails[0].ticketId;
+      tempNewTickets.availTickets = ticketDetails[0].ticketQuantity;
+      tempNewTickets.fullPrice = ticketDetails[0].ticketPrice;
+      tempNewTickets.numTickets = 1;
+      tempNewTickets.chargedPrice = ticketDetails[0].ticketPrice;
+      tempNewTickets.compTicket = false;
+      tempNewTickets.priceSummary = ticketDetails[0].priceSummary;
+      tempNewTickets.subTotal = tempNewTickets.numTickets * tempNewTickets.chargedPrice;
+      tempNewTickets.paymentType = "CashUSD";
+
+      console.log("tempNewTickets: ", tempNewTickets);
+      console.log("ticketDetails[index]: ", ticketDetails[0])
+
+      setNewTickets(tempNewTickets);
+    }
+  }
+
+
+
+  const ticketsCart = () => {
+    if (order.tickets.length > 0) {
+      let orderTotal = 0;
+      return (
+        <Fragment>
+          <div style={{
+            width: "680px",
+            borderBottom: "1px solid black",
+            paddingTop: "10px"
+          }}>
+            {order.tickets.map((ticket, index) => {
+              if (ticket.chargedPrice !== "COMP") {
+                orderTotal = (orderTotal + ticket.subTotal)
+              };
+
+              // truncates the name of each ticket type
+              let adjustedTicketName;
+              let num = 30;
+
+              if (ticket.ticketName.length <= num) {
+                adjustedTicketName = ticket.ticketName;
+              } else {
+                adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
+              }
+
+              return (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "260px 80px 70px 45px 110px 70px 40px",
+                    gridGap: "10px",
+                    height: "28px"
+                  }}
+                >
+                  <div>{adjustedTicketName}</div>
+                  <div style={{textAlign: "center"}}>{ticket.numTickets}</div>
+                  {ticket.price === "COMP" ? <div style={{textAlign: "right", paddingRight: "10px"}}>COMP</div> : <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.price).toFixed(2)}</div>}
+                  {ticket.price === "COMP" ?
+                    <div style={{textAlign: "center"}}>
+                      <FontAwesomeIcon
+                        icon={faCheck}
+                      />
+                    </div> :
+                    <div></div>
+                  }
+                  {ticket.price === "COMP" ? <div></div> : <div style={{paddingLeft: "20px"}}>{ticket.paymentType}</div>}
+                  <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
+                  <div style={{textAlign: "center"}}>
+                    <FontAwesomeIcon
+                      color="blue"
+                      cursor="pointer"
+                      onClick={() => {
+                        deleteTickets(ticket.key)
+                      }}
+                      icon={faTrashAlt}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </Fragment>
+      )
+    } else {
+      return null;
+    }
+  }
+
+
+  const addTickets = () => {
+    let tempOrder = {...order};
+    let tempTickets = [...tempOrder.tickets];
+    let tempNewTickets = {};
+
+    tempNewTickets.key = newTickets.key;
+    tempNewTickets.ticketName = newTickets.ticketName;
+    tempNewTickets.ticketId = newTickets.ticketId;
+    tempNewTickets.numTickets = newTickets.numTickets;
+    if (newTickets.chargedPrice == 0 || newTickets.chargedPrice === "COMP") {
+      tempNewTickets.price = "COMP";
+      tempNewTickets.subTotal = 0;
+    } else {
+      tempNewTickets.price = newTickets.chargedPrice;
+      tempNewTickets.subTotal = newTickets.subTotal;
+    }
+    tempNewTickets.paymentType = newTickets.paymentType;
+
+    tempTickets.push(tempNewTickets);
+    tempOrder.tickets = tempTickets;
+
+    console.log("tempTickets: ", tempTickets);
+    console.log("tempOrder: ", tempOrder);
+
+    setOrder(tempOrder);
+    resetNewTickets();
+  }
+
 
   const changeNewTickets = (event) => {
     console.log("Event name: ", event.target.name);
@@ -309,95 +1234,27 @@ const EventDashboard = (props) => {
     setNewTickets(tempNewTickets)
   }
 
-  const resetNewTickets = () => {
-    if (ticketDetails.length >= 1) {
-      let newTicketKey = Math.floor(Math.random() * 1000000000000000);
-      let tempNewTickets = {};
-    
-      tempNewTickets.key = newTicketKey;
-      tempNewTickets.ticketName = ticketDetails[0].ticketName;
-      tempNewTickets.ticketId = ticketDetails[0].ticketId;
-      tempNewTickets.availTickets = ticketDetails[0].ticketQuantity;
-      tempNewTickets.fullPrice = ticketDetails[0].ticketPrice;
-      tempNewTickets.numTickets = 1;
-      tempNewTickets.chargedPrice = ticketDetails[0].ticketPrice;
-      tempNewTickets.compTicket = false;
-      tempNewTickets.priceSummary = ticketDetails[0].priceSummary;
-      tempNewTickets.subTotal = tempNewTickets.numTickets * tempNewTickets.chargedPrice;
-      tempNewTickets.paymentType = "CashUSD";
 
-      console.log("tempNewTickets: ", tempNewTickets);
-      console.log("ticketDetails[index]: ", ticketDetails[0])
 
-      setNewTickets(tempNewTickets);
-    }
-  }
-
-  const addTickets = () => {
-    Scroll.animateScroll.scrollToBottom();
-    let tempOrder = {...order};
-    let tempTickets = [...tempOrder.tickets];
-    let tempNewTickets = {};
-
-    tempNewTickets.key = newTickets.key;
-    tempNewTickets.ticketName = newTickets.ticketName;
-    tempNewTickets.ticketId = newTickets.ticketId;
-    tempNewTickets.numTickets = newTickets.numTickets;
-    if (newTickets.chargedPrice == 0 || newTickets.chargedPrice === "COMP") {
-      tempNewTickets.price = "COMP";
-      tempNewTickets.subTotal = 0;
-    } else {
-      tempNewTickets.price = newTickets.chargedPrice;
-      tempNewTickets.subTotal = newTickets.subTotal;
-    }
-    tempNewTickets.paymentType = newTickets.paymentType;
-
-    tempTickets.push(tempNewTickets);
-    tempOrder.tickets = tempTickets;
-
-    console.log("tempTickets: ", tempTickets);
-    console.log("tempOrder: ", tempOrder);
-
-    setOrder(tempOrder);
-    resetNewTickets();
-  }
-
-  const deleteTickets = (key) => {
-    console.log("order: ", order.tickets)
-    console.log("key: ", key)
-    // delete all promoCode info and set back to default in this specific ticket
-    let tempOrder = {...order};
-    let tempTickets = [...tempOrder.tickets]
-    tempTickets.forEach((ticket, index) => {
-      if (ticket.key === key) {
-        console.log("ticket.key: ", ticket.key)
-        console.log("ticket: ", ticket)
-        tempTickets.splice(index, 1);
-      }
-    })
-    tempOrder.tickets = tempTickets;
-    setOrder(tempOrder)
-  };
-
-  const reviewOrder = () => {
-    console.log("order: ", order)
-    setShowOrderSummary(true);
-  }
-
-  const updateRecipient = (event) => {
-    let tempOrder = {...order};
-    let tempRecipient = {...tempOrder.recipient};
-    tempRecipient[event.target.name] = event.target.value;
-    tempOrder.recipient = tempRecipient;
-    if (tempOrder.recipient.firstName === "" || tempOrder.recipient.lastName === "" || tempOrder.recipient.email === "") {
-      tempOrder.recipient.completed = false;
-    } else {
-      tempOrder.recipient.completed = true;
-    }
-    console.log("tempRecipient: ", tempRecipient);
-    console.log("tempOrder: ", tempOrder);
-    setOrder(tempOrder)
-  }
+            // populates "newtickets" object with info from first ticket type
+            if (tempTicketDetails.length >= 1) {
+              let newTicketKey = Math.floor(Math.random() * 1000000000000000);
+              let tempNewTickets = {};
+              console.log("tempTicketDetails[0]: ", tempTicketDetails[0])
+              tempNewTickets.key = newTicketKey;
+              tempNewTickets.ticketName = tempTicketDetails[0].ticketName;
+              tempNewTickets.ticketId = tempTicketDetails[0].ticketId;
+              tempNewTickets.availTickets = tempTicketDetails[0].ticketQuantity;
+              tempNewTickets.fullPrice = tempTicketDetails[0].ticketPrice;
+              tempNewTickets.numTickets = 1;
+              tempNewTickets.chargedPrice = tempTicketDetails[0].ticketPrice;
+              tempNewTickets.compTicket = false;
+              tempNewTickets.priceSummary = tempTicketDetails[0].priceSummary;
+              tempNewTickets.subTotal = tempNewTickets.numTickets * tempNewTickets.chargedPrice;
+              tempNewTickets.paymentType = "CashUSD";
+              console.log("tempNewTickets: ", tempNewTickets);
+              setNewTickets(tempNewTickets);
+            }
 
   const ticketsOrder = () => {
     if (order.tickets.length > 0) {
@@ -476,126 +1333,6 @@ const EventDashboard = (props) => {
     }
   }
 
-  const recipientDisplay = () => {
-
-    // defines styling for recipient boxes
-    let firstNameBox;
-    let lastNameBox;
-    let emailBox;
-    let messageBox;
-
-    const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    //console.log("Email is :", regsuper.test(order.recipient.email));
-
-
-
-
-    console.log("order.recipient: ", order.recipient);
-    
-    if (order.recipient.firstName === "") {
-      firstNameBox = classes.FirstNameBoxWarning;
-    } else {
-      firstNameBox = classes.FirstNameBox;
-    }
-    
-    if (order.recipient.lastName === "") {
-      lastNameBox = classes.LastNameBoxWarning;
-    } else {
-      lastNameBox = classes.LastNameBox;
-    }
-    
-    if (order.recipient.email === "") {
-      emailBox = classes.EmailBoxWarning;
-    } else {
-      emailBox = classes.EmailBox;
-    }
-    
-    /*
-    if (order.recipient.message.length > 64) {
-      messageBox = classes.MessageBoxWarning;
-    } else {
-      messageBox = classes.MessageBoxWarning;
-    }
-    */
-
-    return (
-        <div
-          style={{
-            width: "690px",
-            paddingTop: "20px",
-            paddingBottom: "20px",
-            paddingLeft: "20px"
-          }}
-        >
-          <div style={{fontSize: "16px", fontWeight: "600", paddingBottom: "15px"}}>
-            Recipient <span style={{fontSize: "15px", fontWeight: "400", fontStyle: "italic"}}><span style={{color: "red"}}>*</span>required</span>
-          </div>
-
-        <div style={{display: "grid", gridGap: "10px", gridTemplateColumns: "325px 325px", paddingBottom: "10px"}}>
-          <div>
-            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
-              First Name<span style={{color: "red"}}>*</span>
-            </label>
-            <input className={firstNameBox}
-              type="text"
-              name="firstName"
-              placeholder="Limit 32 characters"
-              onChange={updateRecipient}
-            />
-          </div>
-
-          <div>
-            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
-              Last Name<span style={{color: "red"}}>*</span>
-            </label>
-            <input className={lastNameBox}
-              type="text"
-              name="lastName"
-              placeholder="Limit 32 characters"
-              onChange={updateRecipient}
-            />
-          </div>
-        </div>
-        <div style={{width: "660px", paddingBottom: "10px"}}>
-          <div>
-            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
-              Email Address<span style={{color: "red"}}>*</span>
-            </label>
-            <input className={emailBox}
-              type="email"
-              name="email"
-              placeholder="Limit 64 characters"
-              onChange={updateRecipient}
-            />
-          </div>
-          <div style={{paddingTop: "5px"}}>{(order.recipient.email && !regsuper.test(order.recipient.email))
-            ? <span style={{color: "red", paddingBottom: "5px"}}>Not a valid email address</span>
-            : null
-          }</div>
-        </div>
-
-
-        <div style={{width: "660px", paddingBottom: "0px"}}>
-          <div>
-            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
-              Internal Order Message <span style={{fontStyle: "italic"}}>(not provided to ticket buyer)</span>
-            </label>
-            <input className={classes.InputBox}
-              type="text"
-              name="message"
-              placeholder="Limit 64 characters"
-              onChange={updateRecipient}
-            />
-          </div>
-        </div>
-        <div style={{paddingTop: "5px"}}>
-          warning message
-        </div>
-      </div>
-    )
-  }
-
   const ticketDisplay = () => {
     if (!isLoading) {
       return (
@@ -611,7 +1348,7 @@ const EventDashboard = (props) => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "260px 80px 70px 45px 110px 70px",
+              gridTemplateColumns: "260px 80px 45px 70px 110px 70px",
               gridGap: "10px",
               width: "680px",
               borderBottom: "1px solid black",
@@ -621,8 +1358,8 @@ const EventDashboard = (props) => {
           >
             <div>Ticket Type</div>
             <div style={{textAlign: "center"}}># Tickets</div>
-            <div style={{textAlign: "center"}}>Price</div>
             <div style={{textAlign: "center"}}>Comp</div>
+            <div style={{textAlign: "center"}}>Price</div>
             <div style={{paddingLeft: "10px"}}>Payment Type</div>
             <div style={{textAlign: "center"}}>Total</div>
           </div>
@@ -633,7 +1370,7 @@ const EventDashboard = (props) => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "260px 80px 70px 45px 110px 70px",
+              gridTemplateColumns: "260px 80px 45px 70px 110px 70px",
               gridGap: "10px",
               width: "680px",
               fontWeight: "400",
@@ -682,23 +1419,6 @@ const EventDashboard = (props) => {
                 <option>10</option>
               </select>
             </div>
-            <div>
-              <input
-                style={{
-                  width: "70px",
-                  height: "25px",
-                  paddingRight: "7px",
-                  textAlign: "center",
-                  fontSize: "15px",
-                  border: "0.5px solid grey"
-                }}
-                type="text"
-                name="chargedPrice"
-                disabled={newTickets.compTicket}  
-                value={newTickets.chargedPrice}
-                onChange={changeNewTickets}
-              />
-            </div>
             <div
               style={{
                 paddingTop: "2.5px",
@@ -717,6 +1437,23 @@ const EventDashboard = (props) => {
                 }}
                 checked={newTickets.compTicket}
                 onChange={changeNewTickets} 
+              />
+            </div>
+            <div>
+              <input
+                style={{
+                  width: "70px",
+                  height: "25px",
+                  paddingRight: "7px",
+                  textAlign: "center",
+                  fontSize: "15px",
+                  border: "0.5px solid grey"
+                }}
+                type="text"
+                name="chargedPrice"
+                disabled={newTickets.compTicket}  
+                value={newTickets.chargedPrice}
+                onChange={changeNewTickets}
               />
             </div>
             <div style={{paddingLeft: "10px"}}>
@@ -785,8 +1522,6 @@ const EventDashboard = (props) => {
             />
           </div>
 
-
-
           <div style={{width: "320px"}}>
             <Button
               style={{
@@ -814,212 +1549,4 @@ const EventDashboard = (props) => {
       return null;
     }
   }
-
-  const orderSummary = () => {
-    if (showOrderSummary) {
-      return (
-        <Fragment>
-          <OrderModal
-            show={true}
-            title={selectedEventDetails.eventTitle}
-            details={order}
-            closeModal={() => {
-              setShowOrderSummary(false);
-            }}
-            submit={submitOrder}
-          ></OrderModal>
-        </Fragment>
-      )
-    } else {
-      return null;
-    }
-  }
-
-  const mainDisplay = () => {
-    return (
-      <div style={{paddingTop: "80px", paddingLeft: "30px"}}>
-        <div style={{fontWeight: "600", fontSize: "18px"}}>Ticket Order Entry</div>
-        {recipientDisplay()}
-        {ticketDisplay()}
-        {orderSummary()}
-      </div>
-    )
-  }
-
-  return (
-    <div>
-      <div className={classes.DisplayPanelTitle}>
-          EVENT DASHBOARD
-      </div>
-      
-      <div className={classes.DisplayPanel2}>
-        <div className={classes.DashboardHeader}>
-          <div style={{paddingBottom: "5px"}}>
-            <div style={{fontSize: "22px", fontWeight: "600"}}>{!isLoading ? selectedEventDetails.eventTitle : "empty"}</div>
-          </div>
-          <div>
-            <button
-              style={{
-                fontSize: "14px",
-                textAlign: "left",
-                fontWeight: "400",
-                paddingLeft: "0px",
-                color: "blue",
-                border: "none",
-                backgroundColor: "#E7E7E7",
-                cursor: "pointer",
-                display: "inlineBlock",
-                outline: "none",
-              }}
-              onClick={() => {
-                setShowEventModal(!showEventModal)
-              }}
-            >
-              Switch Event
-            </button>
-          </div>
-            {showEventModal ? null : null}
-        </div>
-        {mainDisplay()}
-      </div>
-    </div>
-  )
-}
-
-export default EventDashboard;
-
-/*
-  const ticketsOrderOLD = () => {
-    if (order.tickets.length > 0) {
-      let orderTotal = 0;
-      return (
-        <Fragment>
-          <div style={{
-            width: "660px",
-            borderBottom: "1px solid black",
-            paddingTop: "10px",
-            paddingLeft: "20px"
-          }}>
-            {order.tickets.map((ticket, index) => {
-              if (ticket.chargedPrice !== "COMP") {
-                orderTotal = (orderTotal + ticket.subTotal)
-              };
-              return (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "260px 80px 70px 110px 70px 40px",
-                    gridGap: "10px",
-                    height: "28px"
-                  }}
-                >
-                  <div>{ticket.ticketName}</div>
-                  <div style={{textAlign: "center"}}>{ticket.numTickets}</div>
-                  {ticket.price === "COMP" ? <div style={{textAlign: "right", paddingRight: "10px"}}>COMP</div> : <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.price).toFixed(2)}</div>}
-                  {ticket.price === "COMP" ? <div></div> : <div style={{paddingLeft: "20px"}}>{ticket.paymentType}</div>}
-                  <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
-                  <div style={{textAlign: "center"}}>
-                    <FontAwesomeIcon
-                      color="blue"
-                      cursor="pointer"
-                      onClick={() => {
-                        deleteTickets(ticket.key)
-                      }}
-                      icon={faTrashAlt}
-                    />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "560px 70px",
-              width: "660px",
-              fontWeight: "600",
-              paddingTop: "10px",
-              paddingBottom: "10px",
-              paddingLeft: "20px"
-            }}
-          >
-            <div>Order Total</div>
-            <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(orderTotal).toFixed(2)}</div>
-          </div>
-        </Fragment>
-      )
-    } else {
-      return (
-        <div style={{
-          borderBottom: "1px solid black",
-          width: "660px",
-          paddingTop: "10px",
-          paddingBottom: "10px",
-          paddingLeft: "20px",
-          textAlign: "center"
-        }}>
-          There are no tickets in this order
-        </div>
-      )
-    }
-  }
-
-  const orderDisplay = () => {
-    if (!isLoading) {
-      return (
-        <div
-          style={{
-            backgroundColor: "#F5F5F5",
-            width: "970px",
-            paddingTop: "20px",
-            paddingBottom: "20px",
-            paddingLeft: "20px"
-          }}
-        >
-          <div style={{fontSize: "16px", fontWeight: "600", paddingBottom: "15px"}}>Ticket(s) in Order:</div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "260px 80px 70px 110px 70px",
-              gridGap: "10px",
-              width: "660px",
-              borderBottom: "1px solid black",
-              fontWeight: "600",
-              paddingBottom: "10px",
-              paddingLeft: "20px"
-            }}
-          >
-            <div>Ticket Type</div>
-            <div style={{textAlign: "center"}}># Tickets</div>
-            <div style={{textAlign: "center"}}>Price</div>
-            <div style={{paddingLeft: "10px"}}>Payment Type</div>
-            <div style={{textAlign: "center"}}>Total</div>
-          </div>
-          {ticketsOrderOLD()}
-
-          <div style={{width: "425px", paddingTop: "20px", paddingLeft: "265px"}}>
-            <Button
-              style={{
-                backgroundColor: "blue",
-                border: "1px solid blue",
-                color: "white",
-                fontSize: "15px",
-                fontWeight: "600",
-                width: "150px",
-                height: "30px",
-                margin: "auto",
-                textAlign: "center",
-                padding: "0px"
-              }}
-              disabled={order.tickets.length === 0 || order.recipient.completed === false}
-              content="Review Order"
-              onClick={reviewOrder}
-            />
-          </div>
-        </div>
-      )
-    } else {
-      return null;
-    }
-  }
-*/
+  */
