@@ -415,7 +415,7 @@ const TicketCreation = (props) => {
               >
               <Button
                 style={{fontSize: "12px"}}
-                content="Add a ticket"
+                content="Add a Ticket"
                 icon="add circle"
                 color="green"
                 onClick={props.createNewTicketHandler}

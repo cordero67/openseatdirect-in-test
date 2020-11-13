@@ -430,7 +430,7 @@ column-gap: 5px;*/
 .FirstNameBoxWarning {
   height: 30px;
   width: 325px;
-  border: 0.5px solid red;
+  border: 1px solid red;
   padding-left: 10px
 }
 
@@ -444,7 +444,7 @@ column-gap: 5px;*/
 .LastNameBoxWarning {
   height: 30px;
   width: 325px;
-  border: 0.5px solid red;
+  border: 1px solid red;
   padding-left: 10px
 }
 
@@ -458,7 +458,7 @@ column-gap: 5px;*/
 .EmailBoxWarning {
   height: 30px;
   width: 660px;
-  border: 0.5px solid red;
+  border: 1px solid red;
   padding-left: 10px
 }
 
@@ -481,7 +481,7 @@ column-gap: 5px;*/
 .PriceBoxWarning {
   height: 25px;
   width: 70px;
-  border: 0.5px solid red;
+  border: 1px solid red;
   padding-right: 7px;
   text-align: center;
   font-size: 15px;

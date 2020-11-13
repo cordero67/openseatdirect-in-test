@@ -547,7 +547,7 @@ const CreateEvent = (props) => {
             show={true}
             details={eventStatus}
             toDashboard={() => {
-              window.location.href = `/controlpanel`;
+              window.location.href = `/vendoraccount`;
             }}
           ></SavedModal>
         </Aux>

@@ -5,7 +5,7 @@ import classes from "./OrderModal.module.css";
 
 import { Button } from "semantic-ui-react";
 
-const TicketModal = (props) => {
+const OrderModal = (props) => {
 
   let allTotal = 0;
   let cashTotal = 0;
@@ -15,6 +15,100 @@ const TicketModal = (props) => {
   let bitcoinTotal = 0;
   let ethereumTotal = 0;
   let otherTotal = 0;
+
+  const modalTitle = () => {
+    if (props.status === "review") {
+      return <Fragment>Review and submit order</Fragment>
+    } else if (props.status === "confirmation") {
+      return <Fragment>Order confirmed and tickets issued</Fragment>
+    } else if (props.status === "error") {
+      return <Fragment>Your order could not be sent</Fragment>
+    }
+  }
+
+  const modalButtons = () => {
+    if (props.status === "review") {
+      return (
+        <Fragment>
+          <Button
+            style={{
+              marginTop: "5px",
+              marginRight: "10px",
+              width: "120px",
+              height: "30px",
+              fontWeight: "600",
+              textAlign: "center",
+              paddingTop: "7px",
+            }}
+            content="Edit"
+            basic
+            color="red"
+            icon="edit"
+            onClick={props.close}
+          />
+          <Button
+            style={{
+              marginTop: "5px",
+              marginLeft: "10px",
+              width: "120px",
+              height: "30px",
+              fontWeight: "600",
+              textAlign: "center",
+              paddingTop: "7px",
+            }}
+            content="  Submit"
+            basic
+            color="green"
+            icon="external alternate"
+            onClick={props.submit}
+          />
+        </Fragment>
+      )
+    } else if (props.status === "confirmation") {
+      return (
+        <Fragment>
+          <Button
+            style={{
+              backgroundColor: "#fff",
+              border: "1px solid blue",
+              color: "blue",
+              fontSize: "15px",
+              fontWeight: "600",
+              width: "120px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px"
+            }}
+            content=" Continue"
+            icon="arrow alternate circle right outline"
+            onClick={props.clicked}
+          />
+        </Fragment>
+      )
+    } else if (props.status === "error") {
+      return (
+        <Fragment>
+          <Button
+            style={{
+              marginTop: "5px",
+              marginRight: "10px",
+              width: "120px",
+              height: "30px",
+              fontWeight: "600",
+              textAlign: "center",
+              paddingTop: "7px",
+            }}
+            content="Edit"
+            basic
+            color="red"
+            icon="edit"
+            onClick={props.close}
+          />
+        </Fragment>
+      )
+    }
+  }
 
   const ticketsList = () => {
     return (
@@ -44,8 +138,8 @@ const TicketModal = (props) => {
             >
               <div style={{textAlign: "left"}}>{adjustedTicketName}</div>
               <div style={{textAlign: "center"}}>{ticket.numTickets}</div>
-              {ticket.price === "COMP" ? <div>COMP</div> : <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.price).toFixed(2)}</div>}
-              {ticket.price === "COMP" ? <div></div> : <div style={{textAlign: "left", paddingLeft: "20px"}}>{ticket.paymentType}</div>}
+              {ticket.chargedPrice === "COMP" ? <div>COMP</div> : <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.chargedPrice).toFixed(2)}</div>}
+              {ticket.chargedPrice === "COMP" ? <div></div> : <div style={{textAlign: "left", paddingLeft: "20px"}}>{ticket.paymentType}</div>}
               <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
             </div>
           </Fragment>
@@ -74,14 +168,14 @@ const TicketModal = (props) => {
         otherTotal += ticket.subTotal;
       }
     })
-    console.log("allTotal: ", allTotal);
-    console.log("cashTotal: ", cashTotal);
-    console.log("cashAppTotal: ", cashAppTotal);
-    console.log("venmoTotal: ", venmoTotal);
-    console.log("paypalTotal: ", paypalTotal);
-    console.log("bitcoinTotal: ", bitcoinTotal);
-    console.log("ethereumTotal: ", ethereumTotal);
-    console.log("otherTotal: ", otherTotal);
+
+    let allTotalBorder;
+
+    if (false) {
+      allTotalBorder = "none"
+    } else {
+      allTotalBorder = "1px solid black"
+    }
 
     return (
       <Fragment>
@@ -93,115 +187,64 @@ const TicketModal = (props) => {
           paddingTop: "5px"
         }}>
       </div>
+      <div
+        style={{
+          marginRight: "8px",
+          marginLeft: "440px"
+        }}>
         {cashTotal > 0 ?
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "100px 70px",
-              gridGap: "10px",
-              fontWeight: "600",
-              paddingTop: "5px",
-              paddingBottom: "5px",
-              paddingLeft: "450px"
-            }}>
-            <div style={{textAlign: "left"}}>USD Total:</div>
+          <div className={classes.SubTotal}>
+            <div style={{textAlign: "right"}}>USD Total:</div>
             <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(cashTotal).toFixed(2)}</div>
           </div> :
           null
         }
         {cashAppTotal > 0 ?
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "100px 70px",
-              gridGap: "10px",
-              fontWeight: "600",
-              paddingTop: "5px",
-              paddingBottom: "5px",
-              paddingLeft: "450px"
-            }}>
-            <div style={{textAlign: "left"}}>cashApp Total:</div>
+          <div className={classes.SubTotal}>
+            <div style={{textAlign: "right"}}>cashApp Total:</div>
             <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(cashAppTotal).toFixed(2)}</div>
           </div> :
           null
         }
         {venmoTotal > 0 ?
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "100px 70px",
-              gridGap: "10px",
-              fontWeight: "600",
-              paddingTop: "5px",
-              paddingBottom: "5px",
-              paddingLeft: "450px"
-            }}>
-            <div style={{textAlign: "left"}}>Venmo Total:</div>
+          <div className={classes.SubTotal}>
+            <div style={{textAlign: "right"}}>Venmo Total:</div>
             <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(venmoTotal).toFixed(2)}</div>
           </div> :
           null
         }
         {paypalTotal > 0 ?
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "100px 70px",
-              gridGap: "10px",
-              fontWeight: "600",
-              paddingTop: "5px",
-              paddingBottom: "5px",
-              paddingLeft: "450px"
-            }}>
-            <div style={{textAlign: "left"}}>PayPal Total:</div>
+          <div className={classes.SubTotal}>
+            <div style={{textAlign: "right"}}>PayPal Total:</div>
             <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(paypalTotal).toFixed(2)}</div>
           </div> :
           null
         }
         {bitcoinTotal > 0 ?
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "100px 70px",
-              gridGap: "10px",
-              fontWeight: "600",
-              paddingTop: "5px",
-              paddingBottom: "5px",
-              paddingLeft: "450px"
-            }}>
-            <div style={{textAlign: "left"}}>Bitcoin Total:</div>
+          <div className={classes.SubTotal}>
+            <div style={{textAlign: "right"}}>Bitcoin Total:</div>
             <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(bitcoinTotal).toFixed(2)}</div>
           </div> :
           null
         }
         {ethereumTotal > 0 ?
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "100px 70px",
-              gridGap: "10px",
-              fontWeight: "600",
-              paddingTop: "5px",
-              paddingBottom: "5px",
-              paddingLeft: "450px"
-            }}>
-            <div style={{textAlign: "left"}}>Ethereum Total:</div>
+          <div className={classes.SubTotal}>
+            <div style={{textAlign: "right"}}>Ethereum Total:</div>
             <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ethereumTotal).toFixed(2)}</div>
           </div> :
           null
         }
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "100px 70px",
-            gridGap: "10px",
-            borderTop: "1px solid black",
-            fontWeight: "600",
-            paddingTop: "5px",
-            paddingBottom: "5px",
-            marginLeft: "450px"
-          }}>
-          <div style={{textAlign: "left"}}>Grand Total:</div>
+        {otherTotal > 0 ?
+          <div className={classes.SubTotal}>
+            <div style={{textAlign: "right"}}>other Total:</div>
+            <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(otherTotal).toFixed(2)}</div>
+          </div> :
+          null
+        }
+        <div className={classes.SubTotal}>
+          <div style={{textAlign: "right"}}>Grand Total:</div>
           <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(allTotal).toFixed(2)}</div>
+        </div>
         </div>
       </Fragment>
     )
@@ -223,7 +266,7 @@ const TicketModal = (props) => {
             fontSize: "28px",
           }}
         >
-          Please confirm ticket order
+          {modalTitle()}
         </div>
         <br></br>
         <br></br>
@@ -239,20 +282,35 @@ const TicketModal = (props) => {
         <br></br>
         <div
           style={{
+            display: "grid",
+            gridTemplateColumns: "80px 400px",
             fontSize: "16px",
-            textAlign: "left"
+            textAlign: "left",
+            paddingBottom: "10px"
           }}
         >
-          <div style={{fontWeight: "600", paddingBottom: "10px"}}>Recipient</div>
+          <div style={{fontWeight: "600"}}>Recipient:</div>
           <div>
             {props.details.recipient.lastName}, {props.details.recipient.firstName}
           </div>
-          <div>
-            {props.details.recipient.email}
-          </div>
-          <div>
-            {props.details.recipient.message}
-          </div>
+        </div>
+        <div
+          style={{
+            fontSize: "16px",
+            textAlign: "left",
+            paddingLeft: "80px",
+            paddingBottom: "10px"
+          }}>
+          {props.details.recipient.email}
+        </div>
+        <div
+          style={{
+            fontSize: "16px",
+            textAlign: "left",
+            paddingLeft: "80px",
+            paddingBottom: "10px"
+          }}>
+          {props.details.recipient.message}
         </div>
         <br></br>
 
@@ -286,41 +344,13 @@ const TicketModal = (props) => {
         <div>{paymentTypeTotals()}</div>
         <br></br>
 
-        <Button
-          style={{
-            marginTop: "5px",
-            marginRight: "10px",
-            width: "110px",
-            height: "30px",
-            fontWeight: "600",
-            textAlign: "center",
-            paddingTop: "7px",
-          }}
-          content="Edit"
-          basic
-          color="red"
-          onClick={props.closeModal}
-        />
-        <Button
-          style={{
-            marginTop: "5px",
-            marginLeft: "10px",
-            width: "110px",
-            height: "30px",
-            fontWeight: "600",
-            textAlign: "center",
-            paddingTop: "7px",
-          }}
-          content="Submit"
-          basic
-          color="green"
-          onClick={props.submit}
-        />
+        {modalButtons()}
 
+        <br></br>
         <br></br>
       </div>
     </Fragment>
   );
 };
 
-export default TicketModal;
+export default OrderModal;

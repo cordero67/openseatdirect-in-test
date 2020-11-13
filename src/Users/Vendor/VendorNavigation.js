@@ -102,51 +102,6 @@ const VendorNavigation = (props) => {
                 <li
                   style={{
                     paddingTop: "5px",
-                    paddingBottom: "0px",
-                    paddingLeft: "0px"
-                }}>
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="dashboard"
-                    onClick={props.clicked}>
-                    Ticket Orders
-                  </button>
-                </li>
-              ) :
-              null
-            }
-
-            {props.pane === "dashboard" ?
-              (
-                <li
-                  style={{
-                    paddingTop: "5px",
-                    paddingBottom: "0px"
-                }}>
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="dashboard"
-                    onClick={props.clicked}>
-                    Sales Analytics 
-                  </button>
-                </li>
-              ) :
-              null
-            }
-
-            {props.pane === "dashboard" ?
-              (
-                <li
-                  style={{
-                    paddingTop: "5px",
                     paddingBottom: "0px"
                 }}>
                   <button
@@ -158,28 +113,6 @@ const VendorNavigation = (props) => {
                     name="dashboard"
                     onClick={props.clicked}>
                     Ticket Order Entry
-                  </button>
-                </li>
-              ) :
-              null
-            }
-
-            {props.pane === "dashboard" ?
-              (
-                <li
-                  style={{
-                    paddingTop: "5px",
-                    paddingBottom: "0px"
-                }}>
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="dashboard"
-                    onClick={props.clicked}>
-                    Event Edit
                   </button>
                 </li>
               ) :
@@ -260,3 +193,77 @@ const VendorNavigation = (props) => {
 };
 
 export default VendorNavigation;
+
+/*
+
+
+            {props.pane === "dashboard" ?
+              (
+                <li
+                  style={{
+                    paddingTop: "5px",
+                    paddingBottom: "0px",
+                    paddingLeft: "0px"
+                }}>
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="dashboard"
+                    onClick={props.clicked}>
+                    Ticket Orders
+                  </button>
+                </li>
+              ) :
+              null
+            }
+
+            {props.pane === "dashboard" ?
+              (
+                <li
+                  style={{
+                    paddingTop: "5px",
+                    paddingBottom: "0px"
+                }}>
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="dashboard"
+                    onClick={props.clicked}>
+                    Sales Analytics 
+                  </button>
+                </li>
+              ) :
+              null
+            }
+
+
+            {props.pane === "dashboard" ?
+              (
+                <li
+                  style={{
+                    paddingTop: "5px",
+                    paddingBottom: "0px"
+                }}>
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="dashboard"
+                    onClick={props.clicked}>
+                    Event Edit
+                  </button>
+                </li>
+              ) :
+              null
+            }
+
+
+            */

@@ -2,7 +2,7 @@ import React, { useEffect, useState, Fragment } from "react";
 
 import { API } from "../../config";
 import EventsModal from "./Modals/EventsModal";
-import OrderModal from "./Modals/OrderModal"; 
+import OrderModal from "./Modals/OrderModal";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -36,161 +36,141 @@ const EventDashboard = (props) => {
   const [recipientMessageWarning, setRecipientMessageWarning] = useState(false);
 
   const [showEventsList, setShowEventsList] = useState(true);
-  const [showOrderSummary, setShowOrderSummary] = useState(false)
+  const [modalView, setModalView] = useState("hide")
 
   const [isLoading, setIsLoading] = useState(false);//
+  const [isSuccessful, setIsSuccessful] = useState(false);//
+
+  const loadEventData = (eventNum) => {
+        
+    let tempEvents = JSON.parse(localStorage.getItem("events"));
+    let tempEventsList = [];
+
+    // maps through the entire "events" object to find the selected event
+    tempEvents.forEach((event, index) => {
+
+      // populates the "eventsList" array that allows for navigation to another event
+      tempEventsList.push({eventNum: event.eventNum, eventTitle: event.eventTitle});
+
+      if (event.eventNum === eventNum) {
+        console.log("Found a match: ", event);
+
+        // stores all specific event data received from server into "selectedEventDetails" object
+        setSelectedEventDetails(event);
+        console.log("selectedEventDetails: ", selectedEventDetails)
+
+        let tempTicketDetails = [];
+
+        // for selected event, tickets information is stored in "ticketsDetails" object
+        if (event.tickets.length > 0) {
+          
+          // for selected event, tickets information is stored in "ticketsDetails" object
+          event.tickets.forEach((ticket, index) => {
+          
+            // constructs price function data
+            let tempPriceFeature;
+            let tempPriceFeatureArgs;
+            let tempPromoCodes = [];
+            let tempPriceSummary;
+
+            if ("priceFunction" in ticket) {
+              tempPriceFeature = ticket.priceFunction.form
+
+              if (ticket.priceFunction.form === "promo") {
+                tempPromoCodes = ticket.priceFunction.args.promocodes;
+                tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
+
+              } else if (ticket.priceFunction.form === "twofer") {
+                tempPriceFeatureArgs = ticket.priceFunction.args;
+                tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} for $${parseFloat(tempPriceFeatureArgs.for).toFixed(2)})`
+
+              } else if (ticket.priceFunction.form === "bogo" && ticket.priceFunction.args.discount === "1")  {
+                tempPriceFeatureArgs = ticket.priceFunction.args;
+                tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} get ${parseInt(tempPriceFeatureArgs.get)} for FREE)`
+
+              } else if (ticket.priceFunction.form === "bogo")  {
+                tempPriceFeatureArgs = ticket.priceFunction.args;
+                tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} get ${parseInt(tempPriceFeatureArgs.get)} for a ${tempPriceFeatureArgs.discount * 100}% discount)`
+
+              } else {
+                tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
+
+              }
+            } else {
+              tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
+            }
+            console.log("tempPriceSummary: ", tempPriceSummary)
+
+            let newTicketKey = Math.floor(Math.random() * 1000000000000000);
+            
+            // new object added to "ticketDetails" array
+            tempTicketDetails.push({
+              key: newTicketKey,
+              ticketName: ticket.ticketName,
+              ticketId: ticket._id,
+              ticketPrice: ticket.currentTicketPrice,
+              ticketQuantity: ticket.remainingQuantity,
+              currency: ticket.currency,
+              priceFeature: tempPriceFeature,
+              priceFeatureArgs: tempPriceFeatureArgs,
+              promoCodes: tempPromoCodes,
+              priceSummary: tempPriceSummary
+            })
+          })
+        }
+
+        // populates "ticketDetails" array with selected event
+        setTicketDetails(tempTicketDetails);
+        console.log("Ticket Details: ", tempTicketDetails)
+
+        // populates first element in tickets" array of "order" object
+        if (tempTicketDetails.length >= 1) {
+          let ticketKey = Math.floor(Math.random() * 1000000000000000);
+          let firstTicket = {};
+          console.log("tempTicketDetails[0]: ", tempTicketDetails[0])
+          firstTicket.key = ticketKey;
+          firstTicket.ticketName = tempTicketDetails[0].ticketName;
+          firstTicket.ticketId = tempTicketDetails[0].ticketId;
+          firstTicket.availTickets = tempTicketDetails[0].ticketQuantity;
+          firstTicket.faceValue = parseFloat(tempTicketDetails[0].ticketPrice).toFixed(2);
+          firstTicket.numTickets = 1;
+          firstTicket.chargedPrice = parseFloat(tempTicketDetails[0].ticketPrice).toFixed(2);
+          firstTicket.chargedPriceWarning = "";
+          firstTicket.compTicket = false;
+          firstTicket.priceSummary = tempTicketDetails[0].priceSummary;
+          firstTicket.subTotal = parseFloat(firstTicket.numTickets) * parseFloat(firstTicket.chargedPrice);
+          firstTicket.priceInput = "ticket";
+          firstTicket.paymentType = "CashUSD";
+          console.log("firstTicket: ", firstTicket);
+          let tempOrder={...order};
+          tempOrder.tickets=[firstTicket]
+          console.log("tempOrder: ", tempOrder);
+          setOrder(tempOrder);
+        }
+      }
+    })
+    
+    // populates the "eventsList" array that allows for navigation to another event
+    setEventsList(tempEventsList);
+    console.log("All Events: ", tempEventsList)
+  }
 
   useEffect(() => {
     setIsLoading(true);
-
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) { if (localStorage.getItem(`events`) === null || localStorage.getItem(`eventNum`) === null ) {
+    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+      if (localStorage.getItem(`events`) === null || localStorage.getItem(`eventNum`) === null ) {
         console.log("Events or Event Num DO NOT exist")
         props.clicked()
       } else {
-        let tempEventNum = JSON.parse(localStorage.getItem("eventNum"));
-        let tempEvents = JSON.parse(localStorage.getItem("events"));
-        let tempEventsList = [];
-
-        // maps through the entire "events" object to find the selected event
-        tempEvents.forEach((event, index) => {
-
-          // populates the "eventsList" array that allows for navigation to another event
-          tempEventsList.push({eventNum: event.eventNum, eventTitle: event.eventTtile});
-
-          if (event.eventNum === tempEventNum) {
-            console.log("Found a match: ", event);
-
-            // stores all specific event data received from server into "selectedEventDetails" object
-            setSelectedEventDetails(event);
-            console.log("selectedEventDetails: ", selectedEventDetails)
-
-            let tempTicketDetails = [];
-
-            // for selected event, tickets information is stored in "ticketsDetails" object
-            if (event.tickets.length > 0) {
-              
-              // for selected event, tickets information is stored in "ticketsDetails" object
-              event.tickets.forEach((ticket, index) => {
-              
-                // constructs price function data
-                let tempPriceFeature;
-                let tempPriceFeatureArgs;
-                let tempPromoCodes = [];
-                let tempPriceSummary;
-
-                if ("priceFunction" in ticket) {
-                  tempPriceFeature = ticket.priceFunction.form
-
-                  if (ticket.priceFunction.form === "promo") {
-                    tempPromoCodes = ticket.priceFunction.args.promocodes;
-                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
-
-                  } else if (ticket.priceFunction.form === "twofer") {
-                    tempPriceFeatureArgs = ticket.priceFunction.args;
-                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} for $${parseFloat(tempPriceFeatureArgs.for).toFixed(2)})`
-
-                  } else if (ticket.priceFunction.form === "bogo" && ticket.priceFunction.args.discount === "1")  {
-                    tempPriceFeatureArgs = ticket.priceFunction.args;
-                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} get ${parseInt(tempPriceFeatureArgs.get)} for FREE)`
-
-                  } else if (ticket.priceFunction.form === "bogo")  {
-                    tempPriceFeatureArgs = ticket.priceFunction.args;
-                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)}, Buy ${parseInt(tempPriceFeatureArgs.buy)} get ${parseInt(tempPriceFeatureArgs.get)} for a ${tempPriceFeatureArgs.discount * 100}% discount)`
-
-                  } else {
-                    tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
-
-                  }
-                } else {
-                  tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
-                }
-                console.log("tempPriceSummary: ", tempPriceSummary)
-
-                let newTicketKey = Math.floor(Math.random() * 1000000000000000);
-                
-                // new object added to "ticketDetails" array
-                tempTicketDetails.push({
-                  key: newTicketKey,
-                  ticketName: ticket.ticketName,
-                  ticketId: ticket._id,
-                  ticketPrice: ticket.currentTicketPrice,
-                  ticketQuantity: ticket.remainingQuantity,
-                  currency: ticket.currency,
-                  priceFeature: tempPriceFeature,
-                  priceFeatureArgs: tempPriceFeatureArgs,
-                  promoCodes: tempPromoCodes,
-                  priceSummary: tempPriceSummary
-                })
-              })
-            }
-
-            // populates "ticketDetails" array with selected event
-            setTicketDetails(tempTicketDetails);
-            console.log("Ticket Details: ", tempTicketDetails)
-
-            // populates first element in tickets" array of "order" object
-            if (tempTicketDetails.length >= 1) {
-              let ticketKey = Math.floor(Math.random() * 1000000000000000);
-              let firstTicket = {};
-              console.log("tempTicketDetails[0]: ", tempTicketDetails[0])
-              firstTicket.key = ticketKey;
-              firstTicket.ticketName = tempTicketDetails[0].ticketName;
-              firstTicket.ticketId = tempTicketDetails[0].ticketId;
-              firstTicket.availTickets = tempTicketDetails[0].ticketQuantity;
-              firstTicket.faceValue = parseFloat(tempTicketDetails[0].ticketPrice).toFixed(2);
-              firstTicket.numTickets = 1;
-              firstTicket.chargedPrice = parseFloat(tempTicketDetails[0].ticketPrice).toFixed(2);
-              firstTicket.chargedPriceWarning = "";
-              firstTicket.compTicket = false;
-              firstTicket.priceSummary = tempTicketDetails[0].priceSummary;
-              firstTicket.subTotal = parseFloat(firstTicket.numTickets) * parseFloat(firstTicket.chargedPrice);
-              firstTicket.priceInput = "ticket";
-              firstTicket.paymentType = "CashUSD";
-              console.log("firstTicket: ", firstTicket);
-              let tempOrder={...order};
-              let tempTickets=[...tempOrder.tickets];
-              tempTickets.push(firstTicket)
-              console.log("tempTickets: ", tempTickets);
-              tempOrder.tickets=tempTickets
-              console.log("tempOrder: ", tempOrder);
-              setOrder(tempOrder);
-            }
-          }
-        })
-        
-        // populates the "eventsList" array that allows for navigation to another event
-        setEventsList(tempEventsList);
-        console.log("All Events: ", tempEventsList)
+        let eventNum = JSON.parse(localStorage.getItem("eventNum"));
+        loadEventData(eventNum);
       }
-
     } else {
       window.location.href = "/signin";
     }
 
     setIsLoading(false);
   }, []);
-
-
-  // NEED TO EDIT
-  // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
-  const purchaseConfirmHandler = () => {
-    setOrder({
-      recipient: {
-        firstName: "",
-        lastName: "",
-        email: "",
-        message: "",
-        completed: false
-      },
-      tickets: []
-    })
-    //let event = JSON.parse(localStorage.getItem("eventNum"));
-    //localStorage.removeItem(`cart_${event}`);
-    //localStorage.removeItem(`image_${event}`);
-  };
 
   // NEED TO EDIT
   const handleErrors = response => {
@@ -203,14 +183,15 @@ const EventDashboard = (props) => {
 
   // NEED TO EDIT
   const submitOrder = () => {
-    let order = {};
-    let ticketArray = [];
-    order.firstName = order.recipient.firstName;
-    order.lastName = order.recipient.lastName;
-    order.email = order.recipient.email;
-    order.message = order.recipient.message;
-    order.eventNum = selectedEventDetails.eventNum;
     console.log("order: ", order)
+    let newOrder = {};
+    let ticketArray = [];
+    newOrder.firstName = order.recipient.firstName;
+    newOrder.lastName = order.recipient.lastName;
+    newOrder.email = order.recipient.email;
+    newOrder.message = order.recipient.message;
+    newOrder.eventNum = selectedEventDetails.eventNum;
+    console.log("newOrder: ", newOrder)
     
     order.tickets.forEach((ticket, index) => {
       console.log("item #", index)
@@ -218,17 +199,19 @@ const EventDashboard = (props) => {
       tempObject.key = ticket.key;
       tempObject.ticketID = ticket.ticketId;
       tempObject.ticketsSelected = ticket.numTickets;
-      if (ticket.price === "COMP") {
+      if (ticket.chargedPrice === "0.00") {
+        console.log("COMP Ticket issued")
         tempObject.ticketPrice = 0;
         tempObject.paymentType = "COMP";
       } else {
-        tempObject.ticketPrice = ticket.price;
+        tempObject.ticketPrice = ticket.chargedPrice;
         tempObject.paymentType = ticket.paymentType;
       }
-      ticketArray.push(tempObject);
+      // UNCOMMENT TO ALLOW ORDERS TO BE SENT TO SERVER
+      //ticketArray.push(tempObject);
     });
     
-    order.tickets = ticketArray;
+    newOrder.tickets = ticketArray;
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -236,12 +219,11 @@ const EventDashboard = (props) => {
     let fetcharg ={
         method: "POST",
         headers: myHeaders,
-        body:JSON.stringify (order),
+        body:JSON.stringify (newOrder),
     };
     console.log("fetching with: ", url, fetcharg);
-    console.log("order: ", order)
+    console.log("newOrder: ", newOrder)
     
-    /**/
     fetch(url, fetcharg )
     .then(handleErrors)
     .then ((response)=>{
@@ -249,26 +231,19 @@ const EventDashboard = (props) => {
         return response.json()})
     .then ((data)=>{
         console.log ("fetch return got back data:", data);
+        setModalView("confirmation")
         //setOrderStatus(true);
         //console.log("Order status: ", orderStatus);
         //onlyShowPurchaseConfirmation();
-        purchaseConfirmHandler();
+        //purchaseConfirmHandler();
     })
     .catch ((error)=>{
         console.log("freeTicketHandler() error.message: ", error.message);
+        setModalView("error")
         //onlyShowPurchaseConfirmation();
-        purchaseConfirmHandler();
+        //purchaseConfirmHandler();
     })
-    
   }
-
-  // NEED TO EDIT
-  const reviewOrder = () => {
-    console.log("order: ", order)
-    setShowOrderSummary(true);
-  }
-
-
   
   // UPDATED CODE
   const addNewTicket = () => {
@@ -283,6 +258,7 @@ const EventDashboard = (props) => {
       newTicket.faceValue = parseFloat(ticketDetails[0].ticketPrice).toFixed(2);
       newTicket.numTickets = 1;
       newTicket.chargedPrice = parseFloat(ticketDetails[0].ticketPrice).toFixed(2);
+      newTicket.chargedPriceWarning = "";
       newTicket.compTicket = false;
       newTicket.priceSummary = ticketDetails[0].priceSummary;
       newTicket.subTotal = parseFloat(newTicket.numTickets) * parseFloat(newTicket.chargedPrice);
@@ -442,10 +418,88 @@ const EventDashboard = (props) => {
     }
   };
 
+
+
+  const editEvent = () => {
+    let eventNum = JSON.parse(localStorage.getItem("eventNum"));
+    window.location.href = `/eventedit/?eventID=${eventNum}`;
+  }
+
+
+  // UPDATED CODE
+  const noTicketsDisplay = () => {
+
+    if (ticketDetails.length === 0) {
+      return (
+        <div
+          style={{
+            fontSize: "16px",
+            paddingLeft: "20px"
+          }}>
+          <br></br>
+          <div>There are no tickets associated with this event</div>
+          <br></br>
+          <div>
+            Either
+            <button
+              style={{
+                color: "blue",
+                border: "none",
+                backgroundColor: "white",
+                cursor: "pointer",
+                display: "inlineBlock",
+                outline: "none",
+                fontWeight: "600"
+              }}
+              onClick={editEvent}
+            >
+            {" "}edit{" "}
+            </button>
+            this event to include tickets
+          </div>
+          <br></br>
+          <div>Or, select another event</div>
+          
+        {eventsList.map((event, index) => {
+          let currentEventNum = JSON.parse(localStorage.getItem("eventNum"));
+          if (currentEventNum !== event.eventNum) {
+            return (
+              <div style={{paddingLeft: "20px", paddingTop: "10px"}}>
+                <button
+                  style={{
+                    color: "blue",
+                    border: "none",
+                    backgroundColor: "white",
+                    cursor: "pointer",
+                    display: "inlineBlock",
+                    outline: "none",
+                    fontWeight: "600"
+                  }}
+                  onClick={() => {
+                    switchEvent(event.eventNum);
+                  }}
+                >
+                  {event.eventTitle}
+                </button>
+              </div>
+            )
+          } else {
+            return null;
+          }
+        })}
+        </div>
+      )
+    } else {
+      return null;
+    }
+  }
+
+
+
   // UPDATED CODE
   const ticketCart = () => {
 
-    if (!isLoading) {
+    if (!isLoading && ticketDetails.length > 0) {
       return (
         <div
           style={{
@@ -672,43 +726,45 @@ const EventDashboard = (props) => {
             <div style={{width: "320px", textAlign: "right"}}>
               <Button
                 style={{
-                  backgroundColor: 'white',
-                  border: "1px solid green",
+                  //backgroundColor: 'white',
+                  //border: "1px solid green",
                   color: "green",
                   fontSize: "15px",
                   fontWeight: "600",
-                  width: "150px",
+                  width: "170px",
                   height: "30px",
                   margin: "auto",
                   textAlign: "center",
                   padding: "0px"
                 }}
-                //disabled={}
+                icon="plus square outline"
+                basic
+                color="green"
                 content="Additional Ticket"
                 onClick={addNewTicket}
               />
             </div>
 
-
-          
             <div style={{width: "320px"}}>
               <Button
                 style={{
-                  backgroundColor: "blue",
+                  backgroundColor: "#fff",
                   border: "1px solid blue",
-                  color: "white",
+                  color: "blue",
                   fontSize: "15px",
                   fontWeight: "600",
-                  width: "150px",
+                  width: "170px",
                   height: "30px",
                   margin: "auto",
                   textAlign: "center",
                   padding: "0px"
                 }}
                 disabled={validOrder()}
-                //disabled={order.tickets.length === 0 || order.recipient.completed === false}
+                icon="edit"
                 content="Review Order"
-                onClick={reviewOrder}
+                onClick={() => {
+                  setModalView("review")
+                }}
               />
             </div>
           </div>
@@ -722,7 +778,7 @@ const EventDashboard = (props) => {
               paddingLeft: "360px"
             }}
           >
-            {!order.recipient.completed ? "please correct input errors identified above" : null}
+            {validOrder() ? "please correct errors identified above" : null}
           </div>
 
 
@@ -731,7 +787,6 @@ const EventDashboard = (props) => {
       return null;
     }
   }
-
 
   const validOrder = () => {
     let invalid = true;
@@ -769,8 +824,6 @@ const EventDashboard = (props) => {
     console.log("tempOrder: ", tempOrder);
     setOrder(tempOrder)
   }
-
-
 
   const displayMessage = (limit, variable) => {
     if (variable && variable.length >= limit) {
@@ -829,9 +882,6 @@ const EventDashboard = (props) => {
     }
   };
 
-
-
-
   const recipientDisplay = () => {
 
     // defines styling for recipient boxes
@@ -874,7 +924,8 @@ const EventDashboard = (props) => {
       emailWarning = null
     }
 
-    return (
+    if (ticketDetails.length > 0) {
+      return (
         <div
           style={{
             width: "690px",
@@ -887,103 +938,152 @@ const EventDashboard = (props) => {
             Recipient <span style={{fontSize: "15px", fontWeight: "400", fontStyle: "italic"}}><span style={{color: "red"}}>*</span>required</span>
           </div>
 
-        <div style={{display: "grid", gridGap: "10px", gridTemplateColumns: "325px 325px", paddingBottom: "10px"}}>
-          <div>
-            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
-              First Name<span style={{color: "red"}}>*</span>
-            </label>
-            <input className={firstNameBox}
-              type="text"
-              name="firstName"
-              placeholder="Limit 32 characters"
-              maxLength="64"
-              onFocus={() => setRecipientFirstNameWarning(true)}
-              onBlur={() => setRecipientFirstNameWarning(false)}
-              onChange={updateRecipient}
-            />
-            {recipientFirstNameWarning
-              ? displayMessage(64, order.recipient.firstName)
-              : null
-            }
-          </div>
-
-          <div>
-            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
-              Last Name<span style={{color: "red"}}>*</span>
-            </label>
-            <input className={lastNameBox}
-              type="text"
-              name="lastName"
-              placeholder="Limit 32 characters"
-              maxLength="64"
-              onFocus={() => setRecipientLastNameWarning(true)}
-              onBlur={() => setRecipientLastNameWarning(false)}
-              onChange={updateRecipient}
-            />
-            {recipientLastNameWarning
-              ? displayMessage(64, order.recipient.lastName)
-              : null
-            }
-          </div>
-        </div>
-        <div style={{width: "660px", paddingBottom: "10px"}}>
-          <div>
-            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
-              Email Address<span style={{color: "red"}}>*</span>
-            </label>
-            <input
-              className={emailBox}
-              type="email"
-              name="email"
-              placeholder="Limit 64 characters"
-              maxLength="64"
-              onFocus={() => setRecipientEmailWarning(true)}
-              onBlur={() => setRecipientEmailWarning(false)}
-              onChange={updateRecipient}
-            />
-            <div>{emailWarning}</div>
-          </div>
-        </div>
-
-
-        <div style={{width: "660px", paddingBottom: "0px"}}>
-          <div>
-            <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
-              Message <span style={{fontStyle: "italic"}}>(internal use only)</span>
-            </label>
-            <input
-              className={classes.InputBox}
-              type="text"
-              name="message"
-              maxLength="64"
-              onFocus={() => setRecipientMessageWarning(true)}
-              onBlur={() => setRecipientMessageWarning(false)}
-              placeholder="Limit 64 characters"
-              onChange={updateRecipient}
-            />
-              {recipientMessageWarning
-                ? displayMessage(64, order.recipient.message)
+          <div style={{display: "grid", gridGap: "10px", gridTemplateColumns: "325px 325px", paddingBottom: "10px"}}>
+            <div>
+              <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
+                First Name<span style={{color: "red"}}>*</span>
+              </label>
+              <input className={firstNameBox}
+                type="text"
+                name="firstName"
+                placeholder="Limit 32 characters"
+                value={order.recipient.firstName}
+                maxLength="64"
+                onFocus={() => setRecipientFirstNameWarning(true)}
+                onBlur={() => setRecipientFirstNameWarning(false)}
+                onChange={updateRecipient}
+              />
+              {recipientFirstNameWarning
+                ? displayMessage(64, order.recipient.firstName)
                 : null
               }
+            </div>
+
+            <div>
+              <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
+                Last Name<span style={{color: "red"}}>*</span>
+              </label>
+              <input className={lastNameBox}
+                type="text"
+                name="lastName"
+                placeholder="Limit 32 characters"
+                value={order.recipient.lastName}
+                maxLength="64"
+                onFocus={() => setRecipientLastNameWarning(true)}
+                onBlur={() => setRecipientLastNameWarning(false)}
+                onChange={updateRecipient}
+              />
+              {recipientLastNameWarning
+                ? displayMessage(64, order.recipient.lastName)
+                : null
+              }
+            </div>
+          </div>
+          <div style={{width: "660px", paddingBottom: "10px"}}>
+            <div>
+              <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
+                Email Address<span style={{color: "red"}}>*</span>
+              </label>
+              <input
+                className={emailBox}
+                type="email"
+                name="email"
+                placeholder="Limit 64 characters"
+                value={order.recipient.email}
+                maxLength="64"
+                onFocus={() => setRecipientEmailWarning(true)}
+                onBlur={() => setRecipientEmailWarning(false)}
+                onChange={updateRecipient}
+              />
+              <div>{emailWarning}</div>
+            </div>
+          </div>
+          <div style={{width: "660px", paddingBottom: "0px"}}>
+            <div>
+              <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
+                Message <span style={{fontStyle: "italic"}}>(internal use only)</span>
+              </label>
+              <input
+                className={classes.InputBox}
+                type="text"
+                name="message"
+                value={order.recipient.message}
+                maxLength="64"
+                onFocus={() => setRecipientMessageWarning(true)}
+                onBlur={() => setRecipientMessageWarning(false)}
+                placeholder="Limit 64 characters"
+                onChange={updateRecipient}
+              />
+                {recipientMessageWarning
+                  ? displayMessage(64, order.recipient.message)
+                  : null
+                }
+            </div>
           </div>
         </div>
-      </div>
-    )
+      )
+    } else return null
   }
 
-  const orderSummary = () => {
-    if (showOrderSummary) {
+  const orderModalDisplay = () => {
+    if (modalView === "review" || modalView === "confirmation" || modalView === "error") {
       return (
         <Fragment>
           <OrderModal
             show={true}
+            status={modalView}
             title={selectedEventDetails.eventTitle}
             details={order}
-            closeModal={() => {
-              setShowOrderSummary(false);
+            close={() => {
+              setModalView("hide");
             }}
             submit={submitOrder}
           ></OrderModal>
+        </Fragment>
+      )
+    } else {
+      return null;
+    }
+  }
+
+  const switchEvent = (eventNum) => {
+    console.log("Again, closed by event: ", eventNum);
+    
+    if (typeof window !== "undefined") {
+      localStorage.setItem("eventNum", JSON.stringify(eventNum));
+      }
+
+    setIsLoading(true);
+    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+      if (localStorage.getItem(`events`) === null) {
+        console.log("Events or Event Num DO NOT exist")
+        props.clicked()
+      } else {
+        //let eventNum = JSON.parse(localStorage.getItem("eventNum"));
+        loadEventData(eventNum);
+      }
+    } else {
+      window.location.href = "/signin";
+    }
+
+    setIsLoading(false);
+  }
+
+  const eventsModalDisplay = () => {
+    if (modalView === "events") {
+      return (
+        <Fragment>
+          <EventsModal
+            show={true}
+            status={modalView}
+            details={eventsList}
+            clicked={(eventNum) => {
+              console.log("Closed by event: ", eventNum);
+              switchEvent(eventNum);
+              setModalView("hide");
+            }}
+            submit={submitOrder}
+          ></EventsModal>
         </Fragment>
       )
     } else {
@@ -995,9 +1095,11 @@ const EventDashboard = (props) => {
     return (
       <div style={{paddingTop: "80px", paddingLeft: "30px"}}>
         <div style={{fontWeight: "600", fontSize: "18px"}}>Ticket Order Entry</div>
+        {noTicketsDisplay()}
         {recipientDisplay()}
         {ticketCart()}
-        {orderSummary()}
+        {orderModalDisplay()}
+        {eventsModalDisplay()}
       </div>
     )
   }
@@ -1028,13 +1130,12 @@ const EventDashboard = (props) => {
                 outline: "none",
               }}
               onClick={() => {
-                setShowEventsList(!showEventsList)
+                setModalView("events")
               }}
             >
               Switch Event
             </button>
           </div>
-            {showEventsList ? null : null}
         </div>
         {mainDisplay()}
       </div>

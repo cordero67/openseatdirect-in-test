@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import Aux from "../../../hoc/Auxiliary/Auxiliary";
@@ -7,109 +7,67 @@ import classes from "./EventsModal.module.css";
 import { Button } from "semantic-ui-react";
 
 const EventsModal = (props) => {
-  console.log("item", props.details);
+  console.log("props.details", props.details);
 
-  let titleText;
-  if (props.details.status === "saved") {
-    titleText = props.details.savedMessage;
-  } else if (props.details.status === "live") {
-    titleText = props.details.liveMessage;
-  } else if (props.details.status === "error") {
-    titleText = props.details.errorMessage;
-  } else if (props.details.status === "failure") {
-    if (!props.details.failureMessage ) {
-      titleText = "Please fix input errors and resubmit.";
-    } else {
-      titleText = props.details.failureMessage;
-    }
-  }
+  let titleText = "Select a different event";
 
-  let buttonSelection;
-  if (props.details.status === "saved") {
-    buttonSelection = (
-      <div className={classes.CropBoxControls}>
-        <div
-          style={{
-            margin: "auto",
-            textAlign: "center",
-            paddingTop: "5px",
-          }}
-        >
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid blue",
-              color: "blue",
-              fontSize: "12px",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Continue"
-            onClick={props.toDashboard}
-          />
-        </div>
+  const eventsList = () => {
+    console.log("props.details: ", props.details)
+    return (
+      <div style={{paddingLeft: "20px"}}>
+        {props.details.map((event, index) => {
+          return (
+            <div
+              style={{
+                textAlign: "left",
+                paddingTop: "10px"
+              }}
+            >
+              <button
+                style={{
+                  color: "blue",
+                  border: "none",
+                  backgroundColor: "white",
+                  cursor: "pointer",
+                  display: "inlineBlock",
+                  outline: "none",
+                  fontWeight: "400"
+                }}
+                onClick={() => {
+                  props.clicked(event.eventNum)
+                }}
+              >
+                {event.eventTitle}
+              </button>
+            </div>
+          )
+        })}
+<br></br>
+<br></br>
+
+            <Button
+                style={{
+                  backgroundColor: "#fff",
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  width: "100px",
+                  height: "30px",
+                  margin: "auto",
+                  textAlign: "center",
+                  padding: "0px"
+                }}
+                icon="close icon"
+                content="Cancel"
+                basic
+                color="red"
+                onClick={() => {
+                  //setModalView("review")
+                }}
+              />
       </div>
     )
-  } else if (props.details.status === "live") {
-    buttonSelection = (
-      <div className={classes.CropBoxControls}>
-        <div
-          style={{
-            margin: "auto",
-            textAlign: "center",
-            paddingTop: "5px",
-          }}
-        >
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid green",
-              color: "green",
-              fontSize: "12px",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Continue"
-            onClick={props.toDashboard}
-          />
-        </div>
-      </div>
-    )
-  } if (props.details.status === "error" || props.details.status === "failure") {
-    buttonSelection = (
-      <div className={classes.CropBoxControls}>
-        <div
-          style={{
-            margin: "auto",
-            textAlign: "center",
-            paddingTop: "5px",
-          }}
-        >
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid red",
-              color: "red",
-              fontSize: "12px",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Continue"
-            onClick={props.editEvent}
-          />
-        </div>
-      </div>
-    ) 
-  }
+  };
+
 
   return (
     <Aux>
@@ -132,7 +90,7 @@ const EventsModal = (props) => {
         >
           {titleText}
         </div>
-        {buttonSelection}
+        <div>{eventsList()}</div>
         <br></br>
       </div>
     </Aux>
@@ -140,3 +98,8 @@ const EventsModal = (props) => {
 };
 
 export default EventsModal;
+
+/*
+<i class="plus icon"></i>
+<i class="window close outline icon"></i>
+*/
