@@ -40,9 +40,56 @@ const EventDashboard = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);//
   const [isSuccessful, setIsSuccessful] = useState(false);//
+  const [orderStatus, setOrderStatus] = useState(false);
 
   const loadEventData = (eventNum) => {
-        
+
+
+/*
+  // **********
+  // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
+  const showSuccess = () => {
+    if (paypalStatus && orderStatus) {
+      return (
+        <OrderConfirmTT
+          transactionInfo={transactionInfo}
+        ></OrderConfirmTT>
+      );
+    } else if (paypalStatus && !orderStatus) {
+      return (
+        <OrderConfirmTF
+          transactionInfo={transactionInfo}
+        ></OrderConfirmTF>
+      );
+    //} else if (freeTicketStatus) {
+    } else if (freeTicketStatus && orderStatus) {
+      return (
+        <FreeConfirmTT
+          transactionInfo={transactionInfo}
+        ></FreeConfirmTT>
+      )
+    } else if (freeTicketStatus && !orderStatus) {
+      return (
+        <div>Problem with OSD Server in processing your tickets</div>
+      )
+    }  else {
+      return (
+        <Aux>
+          <span className={styles.SubSectionHeader}>Order Rejection</span>
+          <br></br>
+          <br></br>
+          <div>
+            <span style={{ color: "red" }}>
+              WE NEED TO DECIDE ON AN ERROR MESSAGE!!!
+            </span>
+          </div>
+        </Aux>
+      );
+    }
+  };
+  */
+
+
     let tempEvents = JSON.parse(localStorage.getItem("events"));
     let tempEventsList = [];
 
@@ -208,7 +255,7 @@ const EventDashboard = (props) => {
         tempObject.paymentType = ticket.paymentType;
       }
       // UNCOMMENT TO ALLOW ORDERS TO BE SENT TO SERVER
-      //ticketArray.push(tempObject);
+      ticketArray.push(tempObject);
     });
     
     newOrder.tickets = ticketArray;

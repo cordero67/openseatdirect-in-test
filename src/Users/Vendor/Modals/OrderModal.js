@@ -22,7 +22,16 @@ const OrderModal = (props) => {
     } else if (props.status === "confirmation") {
       return <Fragment>Order confirmed and tickets issued</Fragment>
     } else if (props.status === "error") {
-      return <Fragment>Your order could not be sent</Fragment>
+      return (
+        <div>
+          <div style={{paddingBottom: "10px"}}>
+            Your order was not successful
+          </div>
+          <div style={{paddingBottom: "10px"}}>
+            Please check the order information and resubmit
+          </div>
+        </div>
+      )
     }
   }
 
@@ -91,18 +100,19 @@ const OrderModal = (props) => {
         <Fragment>
           <Button
             style={{
-              marginTop: "5px",
-              marginRight: "10px",
+              backgroundColor: "#fff",
+              border: "1px solid blue",
+              color: "blue",
+              fontSize: "15px",
+              fontWeight: "600",
               width: "120px",
               height: "30px",
-              fontWeight: "600",
+              margin: "auto",
               textAlign: "center",
-              paddingTop: "7px",
+              padding: "0px"
             }}
-            content="Edit"
-            basic
-            color="red"
-            icon="edit"
+            content=" Continue"
+            icon="angle right"
             onClick={props.close}
           />
         </Fragment>
