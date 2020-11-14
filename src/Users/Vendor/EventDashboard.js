@@ -255,7 +255,7 @@ const EventDashboard = (props) => {
         tempObject.paymentType = ticket.paymentType;
       }
       // UNCOMMENT TO ALLOW ORDERS TO BE SENT TO SERVER
-      ticketArray.push(tempObject);
+      //ticketArray.push(tempObject);
     });
     
     newOrder.tickets = ticketArray;
@@ -1129,7 +1129,9 @@ const EventDashboard = (props) => {
               switchEvent(eventNum);
               setModalView("hide");
             }}
-            submit={submitOrder}
+            close={() => {
+              setModalView("hide");
+            }}
           ></EventsModal>
         </Fragment>
       )

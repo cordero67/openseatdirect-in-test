@@ -55,16 +55,16 @@ const Orders = (props) => {
     
     useEffect(() => {
         if (
-          typeof window !== "undefined" &&
-          localStorage.getItem(`user`) !== null
+            typeof window !== "undefined" &&
+            localStorage.getItem(`user`) !== null
         ) {
-          let tempUser = JSON.parse(localStorage.getItem("user"));
-          vendorInfo.token = tempUser.token;
-          vendorInfo.id = tempUser.user._id;
-          //vendorInfo.name = tempUser.user.name
-          //console.log("vendorInfo.name: ", tempUser.user.name)
+            let tempUser = JSON.parse(localStorage.getItem("user"));
+            vendorInfo.token = tempUser.token;
+            vendorInfo.id = tempUser.user._id;
+            //vendorInfo.name = tempUser.user.name
+            //console.log("vendorInfo.name: ", tempUser.user.name)
         } else {
-          //window.location.href = "/signin";
+             //window.location.href = "/signin";
         }
     
         if (
@@ -90,27 +90,28 @@ const Orders = (props) => {
         let fetchstr = `${API}/order/${vendorInfo.id}`;
 
         fetch(fetchstr, requestOptions)
-          .then(handleErrors)
-          .then((response) => response.text())
-          .then((result) => {
-            localStorage.setItem("orders", result);
-            let js = JSON.parse(result);
-            console.log("ticket orders unordered: ", js);
-            js.sort(compareValues("startDateTime", "asc"));
-            console.log("ticket orders ordered: ", js);
-            setTicketOrders(js);
-            //initializeDisplays(js);
-            setIsSuccessfull(true)
-            setIsLoading(false);
-            return js;
-          })
-          .catch((error) => {
-            console.log("error", error);
-            setIsSuccessfull(false)
-            setIsLoading(false);
-          });
+            .then(handleErrors)
+            .then((response) => response.text())
+            .then((result) => {
+                localStorage.setItem("orders", result);
+                let js = JSON.parse(result);
+                console.log("ticket orders unordered: ", js);
+                js.sort(compareValues("startDateTime", "asc"));
+                console.log("ticket orders ordered: ", js);
+                setTicketOrders(js);
+                //initializeDisplays(js);
+                setIsSuccessfull(true)
+                setIsLoading(false);
+                return js;
+            })
+            .catch((error) => {
+                console.log("error", error);
+                setIsSuccessfull(false)
+                setIsLoading(false);
+            });
 
-        }, []);
+    }, []);
+
     const mainDisplay = () => {
         console.log("ticketOrders: ", ticketOrders)
         if (!isLoading && isSuccessfull && ticketOrders.length !== 0) {

@@ -16,34 +16,39 @@ const EventsModal = (props) => {
     return (
       <div style={{paddingLeft: "20px"}}>
         {props.details.map((event, index) => {
-          return (
-            <div
-              style={{
-                textAlign: "left",
-                paddingTop: "10px"
-              }}
-            >
-              <button
+          let currentEventNum = JSON.parse(localStorage.getItem("eventNum"));
+          if (currentEventNum !== event.eventNum) {
+            return (
+              <div
                 style={{
-                  color: "blue",
-                  border: "none",
-                  backgroundColor: "white",
-                  cursor: "pointer",
-                  display: "inlineBlock",
-                  outline: "none",
-                  fontWeight: "400"
-                }}
-                onClick={() => {
-                  props.clicked(event.eventNum)
+                  textAlign: "left",
+                  paddingTop: "10px"
                 }}
               >
-                {event.eventTitle}
-              </button>
-            </div>
-          )
+                <button
+                  style={{
+                    color: "blue",
+                    border: "none",
+                    backgroundColor: "white",
+                    cursor: "pointer",
+                    display: "inlineBlock",
+                    outline: "none",
+                    fontWeight: "400"
+                  }}
+                  onClick={() => {
+                    props.clicked(event.eventNum)
+                  }}
+                >
+                  {event.eventTitle}
+                </button>
+              </div>
+            )
+          } else {
+            return null;
+          }
         })}
-<br></br>
-<br></br>
+        <br></br>
+        <br></br>
 
             <Button
                 style={{
@@ -60,9 +65,7 @@ const EventsModal = (props) => {
                 content="Cancel"
                 basic
                 color="red"
-                onClick={() => {
-                  //setModalView("review")
-                }}
+                onClick={props.close}
               />
       </div>
     )
