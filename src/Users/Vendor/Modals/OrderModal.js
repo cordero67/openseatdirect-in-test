@@ -91,7 +91,7 @@ const OrderModal = (props) => {
             }}
             content=" Continue"
             icon="arrow alternate circle right outline"
-            onClick={props.clicked}
+            onClick={props.close}
           />
         </Fragment>
       )

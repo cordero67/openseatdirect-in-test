@@ -7,6 +7,7 @@ import VendorNavigation from "./VendorNavigation";
 import Account from "./Account";
 import Events from "./Events";
 import EventDashboard from "./EventDashboard";
+import EventDashboardUpdate from "./EventDashboardUpdate";
 import Orders from "./Orders";
 import Profile from "./Profile";
 import CreateEvent from "../../EventCreation/CreateEvent";
@@ -17,6 +18,7 @@ const ControlPanel = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [paneView, setPaneView] = useState("events")
+  const [subPaneView, setSubPaneView] = useState("ticketEntry")
 
   useEffect(() => {
     setIsLoading(true);
@@ -51,10 +53,15 @@ const MainDisplay = () => {
     } else if (paneView === "dashboard") {
       return (
         <EventDashboard
-        clicked={() => {
-          setPaneView("events")
-        }}
-      />
+          clicked={() => {
+            setPaneView("events")
+          }}
+        />
+      )
+    } else if (paneView === "dashboardNEW") {
+      return (
+        <EventDashboardUpdate
+        subPane={subPaneView}/>
       )
     } else if (paneView === "orders") {
       return (
@@ -82,6 +89,7 @@ const Navigation = () => {
         <VendorNavigation
           name="My Name"
           pane={paneView}
+          subPane={subPaneView}
           clicked={(event) => {
             console.log("Clicked button")
             console.log("event: ", event.target)

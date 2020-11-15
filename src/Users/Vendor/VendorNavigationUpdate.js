@@ -82,7 +82,7 @@ const VendorNavigation = (props) => {
             <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#b8b8b8",
+                backgroundColor: props.parentPane === "dashboard" ? "#e0e0e0" : "#b8b8b8",
                 outline: "none"
               }}
               name="dashboard"
@@ -97,7 +97,7 @@ const VendorNavigation = (props) => {
               padding: "0px"
           }}>
 
-            {props.pane === "dashboard" ?
+            {props.subPane === "dashboard" ?
               (
                 <li
                   style={{
@@ -107,10 +107,10 @@ const VendorNavigation = (props) => {
                   <button
                     className={classes.NavigationSubButton}
                     style={{
-                      backgroundColor: props.pane === "dashboard" ? "#fff" : "#e0e0e0",
+                      backgroundColor: props.pane === "ticketOrder" ? "#fff" : "#e0e0e0",
                       outline: "none"
                     }}
-                    name="dashboard"
+                    name="ticketOrder"
                     onClick={props.clicked}>
                     Ticket Order Entry
                   </button>
@@ -119,10 +119,6 @@ const VendorNavigation = (props) => {
               null
             }
           </div>
-
-
-
-
 
           <li>
           <button
@@ -201,62 +197,6 @@ export default VendorNavigation;
 /*
 
 
-          <li>
-            <button
-              className={classes.NavigationButton}
-              style={{
-                backgroundColor: props.pane === "dashboardNEW" ? "#e0e0e0" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="dashboardNEW"
-              onClick={props.clicked}>
-              NEW DASHBOARD
-            </button>
-          </li>
-
-          <div
-            style={{
-              backgroundColor: "#e0e0e0",
-              padding: "0px"
-          }}>
-
-            {props.pane === "dashboardNEW" ?
-              (
-                <li
-                  style={{
-                    paddingTop: "5px",
-                    paddingBottom: "0px"
-                }}>
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.subPane === "ticketOrder" ? "#fff" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="ticketOrder"
-                    onClick={props.clickedSub}>
-                    Ticket Order Entry
-                  </button>
-
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.subPane === "eventOrders" ? "#fff" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="eventOrders"
-                    onClick={props.clickedSub}>
-                    Event Orders
-                  </button>
-                </li>
-              ) :
-              null
-            }
-          </div>
-
-
-
-          
             {props.pane === "dashboard" ?
               (
                 <li

@@ -249,10 +249,10 @@ const EventDashboard = (props) => {
       if (ticket.chargedPrice === "0.00") {
         console.log("COMP Ticket issued")
         tempObject.ticketPrice = 0;
-        tempObject.paymentMethod = "COMP";
+        tempObject.paymentType = "COMP";
       } else {
         tempObject.ticketPrice = ticket.chargedPrice;
-        tempObject.paymentMethod = ticket.paymentType;
+        tempObject.paymentType = ticket.paymentType;
       }
       // UNCOMMENT TO ALLOW ORDERS TO BE SENT TO SERVER
       ticketArray.push(tempObject);
