@@ -7,7 +7,7 @@ import OrderModal from "./Modals/OrderModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
-import classes from "./ControlPanel.module.css";
+import classes from "./VendorAccountOLD.module.css";
 import { Button } from "semantic-ui-react";
 
 

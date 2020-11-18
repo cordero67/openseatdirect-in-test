@@ -20,7 +20,7 @@ import PasswordReset from "../../Users/Authentication/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
-import VendorAccount from "../../Users/Vendor/ControlPanel";
+import VendorAccount from "../../Users/Vendor/VendorAccount";
 
 import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";

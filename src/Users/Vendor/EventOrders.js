@@ -10,33 +10,12 @@ import {
   faEdit
 } from "@fortawesome/free-solid-svg-icons";
  
-import classes from "./ControlPanel.module.css";
+import classes from "./VendorAccountOLD.module.css";
 import { compareValues, getDate } from "./VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 
 
 let vendorInfo = {};
-
-let ordersArray = [
-    {
-        event: "OSD Launch Party",
-        firstName: "Robert",
-        lastName: "Montgomery",
-        email: "robertmontgomery@openseatdirect.com",
-        orderDate: "Sep 19, 2020",
-        tickets: 4,
-        amount: 24.50
-    },
-    {
-        event: "Hoboken Sack Race",
-        firstName: "Michael",
-        lastName: "Trautman",
-        email: "sally@ailf.com",
-        orderDate: "Sep 19, 2020",
-        tickets: "2",
-        amount: "45.00"
-    }
-]
 
 const Orders = (props) => {
 
@@ -52,6 +31,33 @@ const Orders = (props) => {
         }
         return response;
       };
+
+
+
+/*
+      useEffect(() => {
+        setIsLoading(true);
+        if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+          if (localStorage.getItem(`events`) === null || localStorage.getItem(`eventNum`) === null ) {
+            console.log("Events or Event Num DO NOT exist")
+            props.clicked()
+          } else {
+            let eventNum = JSON.parse(localStorage.getItem("eventNum"));
+            loadEventData(eventNum);
+          }
+        } else {
+          window.location.href = "/signin";
+        }
+    
+        setIsLoading(false);
+      }, []);
+
+
+
+*/
+
+
+
     
     useEffect(() => {
         if (
@@ -113,9 +119,7 @@ const Orders = (props) => {
     }, []);
 
     const mainDisplay = () => {
-        console.log("ticketOrders: ", ticketOrders)
         if (!isLoading && isSuccessfull && ticketOrders.length !== 0) {
-            console.log("SUCCESS")
         //if (false) {
             return (
                 <div>
@@ -125,9 +129,7 @@ const Orders = (props) => {
                     <br></br>
                     {ticketOrders.map((item, index) => {
                         let shortDateTime;
-                        console.log("item: ", item);
                         [shortDateTime] = getDate(item);
-                        console.log("shortDateTime: ", shortDateTime)
 
                         return (
                             <div key={index} 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
-import classes from "./ControlPanel.module.css";
+import classes from "./VendorAccountOLD.module.css";
 
 import { signout } from '../apiUsers';
 
@@ -77,16 +77,18 @@ const VendorNavigation = (props) => {
             </button>
           </li>
 
-        
           <li>
             <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#b8b8b8",
+                backgroundColor: (props.pane === "ticketOrderEntry" || props.pane === "eventOrders") ? "#e0e0e0" : "#b8b8b8",
                 outline: "none"
               }}
-              name="dashboard"
-              onClick={props.clicked}>
+              name="ticketOrderEntry"
+              onClick={(event) => {
+                if (props.pane !== "ticketOrderEntry" && props.pane !== "eventOrders")
+                props.clicked(event)
+              }}>
               EVENT DASHBOARD
             </button>
           </li>
@@ -97,7 +99,7 @@ const VendorNavigation = (props) => {
               padding: "0px"
           }}>
 
-            {props.pane === "dashboard" ?
+            {(props.pane === "ticketOrderEntry" || props.pane === "eventOrders") ?
               (
                 <li
                   style={{
@@ -107,19 +109,29 @@ const VendorNavigation = (props) => {
                   <button
                     className={classes.NavigationSubButton}
                     style={{
-                      backgroundColor: props.pane === "dashboard" ? "#fff" : "#e0e0e0",
+                      backgroundColor: props.pane === "ticketOrderEntry" ? "#fff" : "#e0e0e0",
                       outline: "none"
                     }}
-                    name="dashboard"
+                    name="ticketOrderEntry"
                     onClick={props.clicked}>
                     Ticket Order Entry
+                  </button>
+
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "eventOrders" ? "#fff" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="eventOrders"
+                    onClick={props.clicked}>
+                    Event Orders
                   </button>
                 </li>
               ) :
               null
             }
           </div>
-
 
 
 
@@ -201,16 +213,17 @@ export default VendorNavigation;
 /*
 
 
+        
           <li>
             <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "dashboardNEW" ? "#e0e0e0" : "#b8b8b8",
+                backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#b8b8b8",
                 outline: "none"
               }}
-              name="dashboardNEW"
+              name="dashboard"
               onClick={props.clicked}>
-              NEW DASHBOARD
+              EVENT DASHBOARD
             </button>
           </li>
 
@@ -220,7 +233,7 @@ export default VendorNavigation;
               padding: "0px"
           }}>
 
-            {props.pane === "dashboardNEW" ?
+            {props.pane === "dashboard" ?
               (
                 <li
                   style={{
@@ -230,100 +243,18 @@ export default VendorNavigation;
                   <button
                     className={classes.NavigationSubButton}
                     style={{
-                      backgroundColor: props.subPane === "ticketOrder" ? "#fff" : "#e0e0e0",
+                      backgroundColor: props.pane === "dashboard" ? "#fff" : "#e0e0e0",
                       outline: "none"
                     }}
-                    name="ticketOrder"
-                    onClick={props.clickedSub}>
+                    name="dashboard"
+                    onClick={props.clicked}>
                     Ticket Order Entry
-                  </button>
-
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.subPane === "eventOrders" ? "#fff" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="eventOrders"
-                    onClick={props.clickedSub}>
-                    Event Orders
                   </button>
                 </li>
               ) :
               null
             }
           </div>
-
-
-
-          
-            {props.pane === "dashboard" ?
-              (
-                <li
-                  style={{
-                    paddingTop: "5px",
-                    paddingBottom: "0px",
-                    paddingLeft: "0px"
-                }}>
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="dashboard"
-                    onClick={props.clicked}>
-                    Ticket Orders
-                  </button>
-                </li>
-              ) :
-              null
-            }
-
-            {props.pane === "dashboard" ?
-              (
-                <li
-                  style={{
-                    paddingTop: "5px",
-                    paddingBottom: "0px"
-                }}>
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="dashboard"
-                    onClick={props.clicked}>
-                    Sales Analytics 
-                  </button>
-                </li>
-              ) :
-              null
-            }
-
-
-            {props.pane === "dashboard" ?
-              (
-                <li
-                  style={{
-                    paddingTop: "5px",
-                    paddingBottom: "0px"
-                }}>
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="dashboard"
-                    onClick={props.clicked}>
-                    Event Edit
-                  </button>
-                </li>
-              ) :
-              null
-            }
 
 
             */

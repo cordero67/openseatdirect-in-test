@@ -3,48 +3,35 @@ import React, { useEffect, useState, Fragment } from "react";
 import { API } from "../../config";
 import EventsModal from "./Modals/EventsModal";
 import OrderModal from "./Modals/OrderModal";
+import { compareValues } from "./VendorFunctions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
-import classes from "./EventDashboard.module.css";
+import classes from "./TicketOrderEntry.module.css";
 import { Button } from "semantic-ui-react";
 
-const EventDashboard = (props) => {
+const TicketOrderEntry = (props) => {
 
-  const [selectedEventDetails, setSelectedEventDetails] = useState({});//
-
-  const [eventsList, setEventsList] = useState([]);//
-
-  const [ticketDetails, setTicketDetails] = useState([]);//
-
+  const [selectedEventDetails, setSelectedEventDetails] = useState({}); //event details of a single event
+  const [eventsList, setEventsList] = useState([]); //event identifiers for all events
+  const [ticketDetails, setTicketDetails] = useState([]); //ticket details of a single event
   const [order, setOrder] = useState({
-    recipient: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      message: "",
-      completed: false
-    },
+    recipient: {},
     tickets: []
-  });
+  }); //manual generated ticket order
 
-  
+  // complete, empty, noEvents, eventNumOnly, noEventMatch, no
+  const [orderView, setOrderView] = useState("complete");
+  const [modalView, setModalView] = useState("hide"); //
+  const [isLoading, setIsLoading] = useState(false); //
+  //const [isSuccessful, setIsSuccessful] = useState(false);//
+
+  // recipient field input warnings
   const [recipientFirstNameWarning, setRecipientFirstNameWarning] = useState(false);
   const [recipientLastNameWarning, setRecipientLastNameWarning] = useState(false);
   const [recipientEmailWarning, setRecipientEmailWarning] = useState(false);
   const [recipientMessageWarning, setRecipientMessageWarning] = useState(false);
-
-  const [showEventsList, setShowEventsList] = useState(true);
-  const [modalView, setModalView] = useState("hide")
-
-  const [isLoading, setIsLoading] = useState(false);//
-  const [isSuccessful, setIsSuccessful] = useState(false);//
-  const [orderStatus, setOrderStatus] = useState(false);
-
-  const loadEventData = (eventNum) => {
-
-
 /*
   // **********
   // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
@@ -89,15 +76,32 @@ const EventDashboard = (props) => {
   };
   */
 
+  const populateEventsList = () => {
+    let tempEvents = JSON.parse(localStorage.getItem("events"));
+    console.log("eventDescriptions unordered: ", tempEvents);
+    tempEvents.sort(compareValues("startDateTime", "asc"));
+    console.log("eventDescriptions ordered: ", tempEvents);
+
+    let tempEventsList = [];
+
+    // maps through the entire "events" object to create the "eventsList"
+    tempEvents.forEach((event, index) => {
+      tempEventsList.push({eventNum: event.eventNum, eventTitle: event.eventTitle});
+    })
+    // populates the "eventsList" array that allows for navigation to another event
+    setEventsList(tempEventsList);
+    console.log("All Events: ", tempEventsList)
+  }
+
+  const loadEventData = (eventNum) => {
 
     let tempEvents = JSON.parse(localStorage.getItem("events"));
-    let tempEventsList = [];
+    console.log("eventDescriptions unordered: ", tempEvents);
+    tempEvents.sort(compareValues("startDateTime", "asc"));
+    console.log("eventDescriptions ordered: ", tempEvents);
 
     // maps through the entire "events" object to find the selected event
     tempEvents.forEach((event, index) => {
-
-      // populates the "eventsList" array that allows for navigation to another event
-      tempEventsList.push({eventNum: event.eventNum, eventTitle: event.eventTitle});
 
       if (event.eventNum === eventNum) {
         console.log("Found a match: ", event);
@@ -109,7 +113,7 @@ const EventDashboard = (props) => {
         let tempTicketDetails = [];
 
         // for selected event, tickets information is stored in "ticketsDetails" object
-        if (event.tickets.length > 0) {
+        if ("tickets" in event && event.tickets.length > 0) {
           
           // for selected event, tickets information is stored in "ticketsDetails" object
           event.tickets.forEach((ticket, index) => {
@@ -146,7 +150,6 @@ const EventDashboard = (props) => {
             } else {
               tempPriceSummary = `(Face value: $${parseFloat(ticket.currentTicketPrice).toFixed(2)})`
             }
-            console.log("tempPriceSummary: ", tempPriceSummary)
 
             let newTicketKey = Math.floor(Math.random() * 1000000000000000);
             
@@ -174,7 +177,6 @@ const EventDashboard = (props) => {
         if (tempTicketDetails.length >= 1) {
           let ticketKey = Math.floor(Math.random() * 1000000000000000);
           let firstTicket = {};
-          console.log("tempTicketDetails[0]: ", tempTicketDetails[0])
           firstTicket.key = ticketKey;
           firstTicket.ticketName = tempTicketDetails[0].ticketName;
           firstTicket.ticketId = tempTicketDetails[0].ticketId;
@@ -187,7 +189,7 @@ const EventDashboard = (props) => {
           firstTicket.priceSummary = tempTicketDetails[0].priceSummary;
           firstTicket.subTotal = parseFloat(firstTicket.numTickets) * parseFloat(firstTicket.chargedPrice);
           firstTicket.priceInput = "ticket";
-          firstTicket.paymentType = "CashUSD";
+          firstTicket.paymentType = "cash";
           console.log("firstTicket: ", firstTicket);
           let tempOrder={...order};
           tempOrder.tickets=[firstTicket]
@@ -197,27 +199,92 @@ const EventDashboard = (props) => {
       }
     })
     
-    // populates the "eventsList" array that allows for navigation to another event
-    setEventsList(tempEventsList);
-    console.log("All Events: ", tempEventsList)
   }
 
   useEffect(() => {
     setIsLoading(true);
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
-      if (localStorage.getItem(`events`) === null || localStorage.getItem(`eventNum`) === null ) {
-        console.log("Events or Event Num DO NOT exist")
-        props.clicked()
+
+      // breakout this code into a "getOrderView()" function
+      if (localStorage.getItem(`events`) !== null && localStorage.getItem(`eventNum`) !== null) {
+        let storedEvents = JSON.parse(localStorage.getItem("events"));
+        let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
+
+
+        if (storedEvents.length > 0) {
+          console.log("there is at least one event");
+          // populate the eventsList array
+          populateEventsList();
+          
+          // Now check if specific event exists
+
+          let eventExists = false;
+          storedEvents.forEach((event, index) => {
+            if (event.eventNum === storedEventNum) {
+              console.log("We have a match at: ", event.eventNum);
+              eventExists = true;
+            }
+          })
+          console.log("Was an event found: ", eventExists);
+          if (eventExists) {
+            console.log("a match was found");
+            loadEventData(storedEventNum);
+            setOrderView("complete");
+          } else {
+            setOrderView("selectEventNum")
+          }
+
+        // this is good
+        } else {
+          console.log("Events array is empty");
+          // redirect to "events" tab
+          props.clicked("events")
+        }
+
+
+
+
+      } else if (localStorage.getItem(`events`) !== null && localStorage.getItem(`eventNum`) === null){
+        console.log("There are events but no event num")
+      } else if (localStorage.getItem(`events`) === null && localStorage.getItem(`eventNum`) !== null){
+        console.log("There is an event num but no events")
       } else {
-        let eventNum = JSON.parse(localStorage.getItem("eventNum"));
-        loadEventData(eventNum);
+        console.log("Both events and event num DO NOT exist")
+        props.clicked()
       }
+
+
+
     } else {
       window.location.href = "/signin";
     }
 
     setIsLoading(false);
   }, []);
+
+
+
+
+  const orderDisplay = () => {
+    if (orderView === "complete") {
+      return (
+        <div>
+          {recipientDisplay()}
+          {ticketCart()}
+        </div>
+      )
+    } else if (orderView === "selectEventNum") {
+      return (
+        <div>
+        <div>the event in storage can't be found, please select an event</div>
+        </div>
+      )
+    }
+    else {
+      return null;
+    }
+  }
+
 
   // NEED TO EDIT
   const handleErrors = response => {
@@ -246,13 +313,14 @@ const EventDashboard = (props) => {
       tempObject.key = ticket.key;
       tempObject.ticketID = ticket.ticketId;
       tempObject.ticketsSelected = ticket.numTickets;
+      tempObject.ticketName = ticket.ticketName;
       if (ticket.chargedPrice === "0.00") {
         console.log("COMP Ticket issued")
         tempObject.ticketPrice = 0;
-        tempObject.paymentType = "COMP";
+        tempObject.paymentMethod = "COMP";
       } else {
         tempObject.ticketPrice = ticket.chargedPrice;
-        tempObject.paymentType = ticket.paymentType;
+        tempObject.paymentMethod = ticket.paymentType;
       }
       // UNCOMMENT TO ALLOW ORDERS TO BE SENT TO SERVER
       ticketArray.push(tempObject);
@@ -310,7 +378,7 @@ const EventDashboard = (props) => {
       newTicket.priceSummary = ticketDetails[0].priceSummary;
       newTicket.subTotal = parseFloat(newTicket.numTickets) * parseFloat(newTicket.chargedPrice);
       newTicket.priceInput = "ticket";
-      newTicket.paymentType = "CashUSD";
+      newTicket.paymentType = "cash";
       console.log("newTicket: ", newTicket);
       let tempOrder={...order};
       let tempTickets=[...tempOrder.tickets];
@@ -360,7 +428,7 @@ const EventDashboard = (props) => {
                 ticket.chargedPrice = parseFloat(eventTicket.ticketPrice).toFixed(2);
               }
               ticket.chargedPriceWarning = "";
-              ticket.paymentType = "CashUSD";
+              ticket.paymentType = "cash";
               ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
               console.log("ticket: ", ticket)
             }
@@ -439,7 +507,7 @@ const EventDashboard = (props) => {
       firstTicket.priceSummary = ticketDetails[0].priceSummary;
       firstTicket.subTotal = parseFloat(firstTicket.numTickets) * parseFloat(firstTicket.chargedPrice);
       firstTicket.priceInput = "ticket";
-      firstTicket.paymentType = "CashUSD";
+      firstTicket.paymentType = "cash";
       console.log("firstTicket: ", firstTicket);
       let tempOrder={...order};
       let tempTickets=[...tempOrder.tickets];
@@ -705,11 +773,11 @@ const EventDashboard = (props) => {
                             changeTicket(event, ticket.key)
                           }}
                       >
-                        <option>CashUSD</option>
+                        <option>cash</option>
                         <option>CashApp</option>
                         <option>Venmo</option>
                         <option>Paypal</option>
-                        <option>BitCoin</option>
+                        <option>Bitcoin</option>
                         <option>Ethereum</option>
                         <option>Other</option>
                       </select>
@@ -1145,8 +1213,7 @@ const EventDashboard = (props) => {
       <div style={{paddingTop: "80px", paddingLeft: "30px"}}>
         <div style={{fontWeight: "600", fontSize: "18px"}}>Ticket Order Entry</div>
         {noTicketsDisplay()}
-        {recipientDisplay()}
-        {ticketCart()}
+        {orderDisplay()}
         {orderModalDisplay()}
         {eventsModalDisplay()}
       </div>
@@ -1192,4 +1259,4 @@ const EventDashboard = (props) => {
   )
 }
 
-export default EventDashboard;
+export default TicketOrderEntry;

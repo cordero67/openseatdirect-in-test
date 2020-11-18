@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import { API } from "../../config";
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,7 +9,7 @@ import {
   faEdit
 } from "@fortawesome/free-solid-svg-icons";
  
-import classes from "./ControlPanel.module.css";
+import classes from "./VendorAccountOLD.module.css";
 import { compareValues, getDates } from "./VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 
@@ -21,8 +20,8 @@ const Events = (props) => {
 
     const [eventDescriptions, setEventDescriptions] = useState();//
     const [ticketDisplay, setTicketDisplay] = useState();
-    const [isLoading, setIsLoading] = useState(true);//
-    const [isSuccessfull, setIsSuccessfull] = useState(true);//
+    const [isLoading, setIsLoading] = useState(false);//
+    const [isSuccessfull, setIsSuccessfull] = useState(false);//
 
     const handleErrors = response => {
         console.log("Inside 'apiCore' 'handleErrors()'", response);
@@ -30,7 +29,7 @@ const Events = (props) => {
             throw Error(response.status);
         }
         return response;
-      };
+    };
 
     // intilializes the show property of each ticket type to "false"
     const initializeDisplays = (events) => {
@@ -42,6 +41,7 @@ const Events = (props) => {
     }
     
     useEffect(() => {
+        setIsLoading(true);
         if (
             typeof window !== "undefined" &&
             localStorage.getItem(`user`) !== null
@@ -49,53 +49,54 @@ const Events = (props) => {
             let tempUser = JSON.parse(localStorage.getItem("user"));
             vendorInfo.token = tempUser.token;
             vendorInfo.id = tempUser.user._id;
-            //vendorInfo.name = tempUser.user.name
-            //console.log("vendorInfo.name: ", tempUser.user.name)
+            console.log("Got user");
         } else {
-            //window.location.href = "/signin";
+            window.location.href = "/signin";
         }
     
         if (
             typeof window !== "undefined" &&
             localStorage.getItem(`events`) !== null
         ) {
+            console.log("events exist");
             let tempEvents = JSON.parse(localStorage.getItem("events"));
-            setEventDescriptions(tempEvents)
-            console.log("events existed")
+            setEventDescriptions(tempEvents);
+            setIsSuccessfull(true);
+            setIsLoading(false);
         } else {
-            console.log("events do not exist")
-        }
-        let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
+            console.log("events do not exist");
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
+        
+            let requestOptions = {
+              method: "GET",
+              headers: myHeaders,
+              redirect: "follow",
+            };
     
-        let requestOptions = {
-          method: "GET",
-          headers: myHeaders,
-          redirect: "follow",
-        };
-
-        let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
-
-        fetch(fetchstr, requestOptions)
-        .then(handleErrors)
-        .then((response) => response.text())
-        .then((result) => {
-            localStorage.setItem("events", result);
-            let js = JSON.parse(result);
-            console.log("eventDescriptions unordered: ", js);
-            js.sort(compareValues("startDateTime", "asc"));
-            console.log("eventDescriptions ordered: ", js);
-            setEventDescriptions(js);
-            setIsSuccessfull(true)
-            setIsLoading(false);
-            return js;
-        })
-        .catch((error) => {
-            console.log("error", error);
-            setIsSuccessfull(false)
-            setIsLoading(false);
-        });
+            let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
+    
+            fetch(fetchstr, requestOptions)
+            .then(handleErrors)
+            .then((response) => response.text())
+            .then((result) => {
+                localStorage.setItem("events", result);
+                let js = JSON.parse(result);
+                console.log("eventDescriptions unordered: ", js);
+                js.sort(compareValues("startDateTime", "asc"));
+                console.log("eventDescriptions ordered: ", js);
+                setEventDescriptions(js);
+                setIsSuccessfull(true);
+                setIsLoading(false);
+                return js;
+            })
+            .catch((error) => {
+                console.log("error", error);
+                setIsSuccessfull(false);
+                setIsLoading(false);
+            });
+        }
 
     }, []);
   

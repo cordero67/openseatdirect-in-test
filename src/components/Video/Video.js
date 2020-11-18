@@ -119,7 +119,7 @@ const Video = () => {
           </div>
 
           <div className={styles.VideoSection}>
-            <YouTube videoId="wDkdnWzPNW0" opts={opts} onReady={_onReady} />
+            <YouTube videoId="gbR_440hyEM" opts={opts} onReady={_onReady} />
           </div>
         </div>
       </div>
