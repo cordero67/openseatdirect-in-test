@@ -17,7 +17,12 @@ const TicketOrderEntry = (props) => {
   const [eventsList, setEventsList] = useState([]); //event identifiers for all events
   const [ticketDetails, setTicketDetails] = useState([]); //ticket details of a single event
   const [order, setOrder] = useState({
-    recipient: {},
+    recipient: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      message: ""
+    },
     tickets: []
   }); //manual generated ticket order
 
@@ -240,9 +245,6 @@ const TicketOrderEntry = (props) => {
           // redirect to "events" tab
           props.clicked("events")
         }
-
-
-
 
       } else if (localStorage.getItem(`events`) !== null && localStorage.getItem(`eventNum`) === null){
         console.log("There are events but no event num")
