@@ -7,14 +7,14 @@
 .TopContainer {
   color: #fff;
   background-color: #101C32;
-  padding-top: 40px;
-  padding-bottom: 40px
+  padding-top: 15px;
+  padding-bottom: 15px
 }
 
 .TextContainer {
   color: #101C32;
-  padding-top: 0px;
-  padding-bottom: 40px
+  padding-top: 20px;
+  padding-bottom: 20px
 }
 
 .OSDImageContainer {

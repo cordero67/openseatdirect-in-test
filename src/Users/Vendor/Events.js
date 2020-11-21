@@ -129,7 +129,7 @@ const Events = (props) => {
                     <br></br>
                     {eventDescriptions.map((item, index) => {
                         let shortMonth, dayDate, longDateTime;
-                        [shortMonth, dayDate, longDateTime] = getDates(item);
+                        [shortMonth, dayDate, longDateTime] = getDates(item.startDateTime);
 
                         return (
                             <div key={index} 
@@ -167,7 +167,7 @@ const Events = (props) => {
                                         //tempDisplay[item.eventNum] = false;
                                         //setTicketDisplay(tempDisplay);
                                     }}
-                                    icon={faChevronUp}
+                                    icon={faChevronDown}
                                     />
                                 
                                 </div>
@@ -176,6 +176,7 @@ const Events = (props) => {
                                         style={{
                                             fontSize: "16px",
                                             textAlign: "left",
+                                            color: "blue",
                                             fontWeight: "600",
                                             paddingLeft: "0px",
                                             border: "none",
@@ -193,20 +194,21 @@ const Events = (props) => {
                                     <div
                                         style={{
                                             fontSize: "13px",
-                                            textAlign: "left", fontWeight: "500" 
+                                            textAlign: "left",
+                                            fontWeight: "600" 
                                         }}
                                     >
                                     {longDateTime}
                                     </div>
                                 </div>
-                                <div style={{fontSize: "16px", fontWeight: "600"}}>{item.isDraft ? <span style={{color: "blue"}}>Draft</span> : <span style={{color: "green"}}>Live</span>}</div>
+                                <div style={{fontSize: "16px", fontWeight: "600"}}>{item.isDraft ? <span style={{color: "red"}}>Draft</span> : <span style={{color: "green"}}>Live</span>}</div>
                                 <div
                                 style={{
                                     fontSize: "12px",
                                     textAlign: "center",
                                     position: "relative"
                                 }}
-                                > {item.isDraft ? 
+                                >
                                     <FontAwesomeIcon
                                         style={{ zIndex: "100" }}
                                         color="blue"
@@ -214,15 +216,7 @@ const Events = (props) => {
                                         cursor="pointer"
                                         onClick={() => editEvent(item)}
                                         icon={faEdit}
-                                    /> : 
-                                    <FontAwesomeIcon
-                                        style={{ zIndex: "100" }}
-                                        color="green"
-                                        size="lg"
-                                        cursor="pointer"
-                                        onClick={() => editEvent(item)}
-                                        icon={faEdit}
-                                    />}
+                                    />
                                 </div>
                                 <br></br>
                             </div>

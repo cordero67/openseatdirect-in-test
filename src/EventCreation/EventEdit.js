@@ -2534,11 +2534,11 @@ const loadEventInfo = (eventTix) => {
                   color="blue"
                   size="sm"
                   cursor="pointer"
-                  onClick={() => {
+                  //onClick={() => {
                       //let tempDisplay = {...ticketDisplay};
                       //tempDisplay[item.eventNum] = false;
                       //setTicketDisplay(tempDisplay);
-                  }}
+                  //}}
                   icon={faChevronUp}
                 />
                   {" "}Hide additional features
@@ -2685,14 +2685,9 @@ const loadEventInfo = (eventTix) => {
     if (pageErrors || eventTitleOmission) {
       return (
         <div className={classes.GridSubTitle}>
-          {eventDescription.isDraft ? (
-            <div style={{ textAlign: "left", color: "blue", fontWeight: "600" }}>
+            <div style={{ textAlign: "left", fontWeight: "600" }}>
               #{eventDescription.eventNum}
-            </div>) : (
-            <div style={{ textAlign: "left", color: "green", fontWeight: "600" }}>
-              #{eventDescription.eventNum}
-            </div>)
-          }
+            </div>
           <div style={{ textAlign: "center", color: "red"}}>
             Please correct input errors identified below.
           </div>
@@ -2701,14 +2696,9 @@ const loadEventInfo = (eventTix) => {
     } else {
       return (
         <div className={classes.GridSubTitle}>
-          {eventDescription.isDraft ? (
-            <div style={{ textAlign: "left", color: "blue", fontWeight: "600" }}>
+            <div style={{ textAlign: "left", fontWeight: "600" }}>
               #{eventDescription.eventNum}
-            </div>) : (
-            <div style={{ textAlign: "left", color: "green", fontWeight: "600" }}>
-              #{eventDescription.eventNum}
-            </div>)
-          }
+            </div>
         </div>
       )
     }
@@ -2721,7 +2711,7 @@ const loadEventInfo = (eventTix) => {
           style={{
             paddingTop: "6px",
             fontSize: "20px",
-            color: "blue",
+            color: "red",
             fontWeight: "600",
             textAlign: "center",
             fontStyle: "italic"
@@ -2753,8 +2743,8 @@ const loadEventInfo = (eventTix) => {
           <Button
             style={{
               backgroundColor: 'white',
-              border: "1px solid blue",
-              color: "blue",
+              border: "1px solid red",
+              color: "red",
               fontSize: "12px",
               width: "90px",
               height: "30px",
@@ -2773,8 +2763,8 @@ const loadEventInfo = (eventTix) => {
           <Button
             style={{
               backgroundColor: 'white',
-              border: "1px solid green",
-              color: "green",
+              border: "1px solid #228B22",
+              color: "#228B22",
               fontSize: "12px",
               width: "90px",
               height: "30px",
@@ -2799,8 +2789,8 @@ const loadEventInfo = (eventTix) => {
               <Button
                 style={{
                   backgroundColor: 'white',
-                  border: "1px solid blue",
-                  color: "blue",
+                  border: "1px solid red",
+                  color: "red",
                   fontSize: "12px",
                   width: "90px",
                   height: "30px",
@@ -2860,8 +2850,8 @@ const loadEventInfo = (eventTix) => {
               <Button
                 style={{
                   backgroundColor: 'white',
-                  border: "1px solid red",
-                  color: "red",
+                  border: "1px solid black",
+                  color: "black",
                   fontSize: "12px",
                   width: "90px",
                   height: "30px",
@@ -2871,7 +2861,7 @@ const loadEventInfo = (eventTix) => {
                 }}
                 content="Cancel Edit"
                 onClick={() => {
-                  window.location.href = `/controlpanel`
+                  window.location.href = `/vendoraccount`
                 }}
               />
             </div>

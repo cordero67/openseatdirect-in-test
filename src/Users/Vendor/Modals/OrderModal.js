@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 
+import { getStartDate } from "../VendorFunctions";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./OrderModal.module.css";
 
@@ -15,6 +16,11 @@ const OrderModal = (props) => {
   let bitcoinTotal = 0;
   let ethereumTotal = 0;
   let otherTotal = 0;
+
+  
+  let longDateTime;
+  [longDateTime] = getStartDate(props.dateTime);
+  console.log("longDateTime: ", longDateTime)
 
   const modalTitle = () => {
     if (props.status === "review") {
@@ -53,7 +59,7 @@ const OrderModal = (props) => {
             basic
             color="red"
             icon="edit"
-            onClick={props.close}
+            onClick={props.edit}
           />
           <Button
             style={{
@@ -162,7 +168,7 @@ const OrderModal = (props) => {
     console.log("tickets: ", props.details.tickets)
     props.details.tickets.forEach((ticket, index) => {
       allTotal += ticket.subTotal;
-      if (ticket.paymentType === "CashUSD") {
+      if (ticket.paymentType === "cash") {
         cashTotal += ticket.subTotal;
       } else if(ticket.paymentType === "CashApp")  {
         cashAppTotal += ticket.subTotal;
@@ -170,7 +176,7 @@ const OrderModal = (props) => {
         venmoTotal += ticket.subTotal;
       } else if(ticket.paymentType === "Paypal")  {
         paypalTotal += ticket.subTotal;
-      } else if(ticket.paymentType === "BitCoin")  {
+      } else if(ticket.paymentType === "Bitcoin")  {
         bitcoinTotal += ticket.subTotal;
       } else if(ticket.paymentType === "Ethereum")  {
         ethereumTotal += ticket.subTotal;
@@ -204,7 +210,7 @@ const OrderModal = (props) => {
         }}>
         {cashTotal > 0 ?
           <div className={classes.SubTotal}>
-            <div style={{textAlign: "right"}}>USD Total:</div>
+            <div style={{textAlign: "right"}}>cash Total:</div>
             <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(cashTotal).toFixed(2)}</div>
           </div> :
           null
@@ -289,6 +295,17 @@ const OrderModal = (props) => {
         >
           {props.title}
         </div>
+        
+        <div
+          style={{
+            fontSize: "16px",
+            textAlign: "left",
+            fontWeight: "500",
+            paddingTop: "5px"
+          }}
+        >
+          {longDateTime}
+        </div>
         <br></br>
         <div
           style={{
@@ -301,7 +318,7 @@ const OrderModal = (props) => {
         >
           <div style={{fontWeight: "600"}}>Recipient:</div>
           <div>
-            {props.details.recipient.lastName}, {props.details.recipient.firstName}
+            {props.details.recipient.firstName}{" "}{props.details.recipient.lastName}
           </div>
         </div>
         <div

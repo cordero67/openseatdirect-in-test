@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 
 import { API } from "../../config";
+import { compareValues } from "./VendorFunctions";
 
 import VendorNavigation from "./VendorNavigation";
 import Events from "./Events";
 import TicketOrderEntry from "./TicketOrderEntry";
+import SalesAnalytics from "./SalesAnalytics";
 import EventOrders from "./EventOrders";
 import Orders from "./Orders";
 import CreateEvent from "../../EventCreation/CreateEvent";
@@ -12,8 +14,6 @@ import Profile from "./Profile";
 import Account from "./Account";
 
 import classes from "./VendorAccount.module.css";
-
-let vendorInfo = {};
 
 const VendorAccount = () => {
 
@@ -35,13 +35,13 @@ const VendorAccount = () => {
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      vendorInfo.token = tempUser.token;
-      vendorInfo.id = tempUser.user._id;
+      let vendorToken = tempUser.token;
+      let vendorId = tempUser.user._id;
 
       console.log("loading event and order data");
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
+      myHeaders.append("Authorization", "Bearer " + vendorToken);
   
       let requestOptions = {
         method: "GET",
@@ -50,20 +50,24 @@ const VendorAccount = () => {
       };
 
       // retrieves event information
-      let fetchstr = `${API}/event/alluser/${vendorInfo.id}`;
+      let fetchstr = `${API}/event/alluser/${vendorId}`;
 
       fetch(fetchstr, requestOptions)
       .then(handleErrors)
       .then((response) => response.text())
       .then((result) => {
-        localStorage.setItem("events", result);
+        let tempEvents = JSON.parse(result);
+        console.log("eventDescriptions unordered: ", tempEvents);
+        tempEvents.sort(compareValues("startDateTime", "asc"));
+        console.log("eventDescriptions ordered: ", tempEvents);
+        localStorage.setItem("events", JSON. stringify(tempEvents));
       })
       .catch((error) => {
         console.log("error in event information retrieval", error);
       });
       
       // retrieves order information
-      fetchstr = `${API}/order/${vendorInfo.id}`;
+      fetchstr = `${API}/order/${vendorId}`;
 
       fetch(fetchstr, requestOptions)
       .then(handleErrors)
@@ -100,6 +104,10 @@ const MainDisplay = () => {
           }}
         />
       )
+    } else if (paneView === "salesAnalytics") {
+      return (
+        <SalesAnalytics/>
+      )
     } else if (paneView === "eventOrders") {
       return (
         <EventOrders/>
@@ -112,7 +120,7 @@ const MainDisplay = () => {
       return (
         <CreateEvent/>
       )
-  } else if (paneView === "profile") {
+    } else if (paneView === "profile") {
       return (
         <Profile/>
       )

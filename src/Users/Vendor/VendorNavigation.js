@@ -73,7 +73,7 @@ const VendorNavigation = (props) => {
               }}
               name="events"
               onClick={props.clicked}>
-              EVENTS
+              ALL EVENTS
             </button>
           </li>
 
@@ -81,12 +81,16 @@ const VendorNavigation = (props) => {
             <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: (props.pane === "ticketOrderEntry" || props.pane === "eventOrders") ? "#e0e0e0" : "#b8b8b8",
+                backgroundColor: (
+                  props.pane === "salesAnalytics" ||
+                  props.pane === "ticketOrderEntry" ||
+                  props.pane === "eventOrders"
+                  ) ? "#e0e0e0" : "#b8b8b8",
                 outline: "none"
               }}
               name="ticketOrderEntry"
               onClick={(event) => {
-                if (props.pane !== "ticketOrderEntry" && props.pane !== "eventOrders")
+                if (props.pane !== "salesAnalytics" && props.pane !== "ticketOrderEntry" && props.pane !== "eventOrders")
                 props.clicked(event)
               }}>
               EVENT DASHBOARD
@@ -99,13 +103,24 @@ const VendorNavigation = (props) => {
               padding: "0px"
           }}>
 
-            {(props.pane === "ticketOrderEntry" || props.pane === "eventOrders") ?
+            {(props.pane === "salesAnalytics" || props.pane === "ticketOrderEntry" || props.pane === "eventOrders") ?
               (
                 <li
                   style={{
                     paddingTop: "5px",
                     paddingBottom: "0px"
                 }}>
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "salesAnalytics" ? "#fff" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="salesAnalytics"
+                    onClick={props.clicked}>
+                    Sales Analytics
+                  </button>
+
                   <button
                     className={classes.NavigationSubButton}
                     style={{
