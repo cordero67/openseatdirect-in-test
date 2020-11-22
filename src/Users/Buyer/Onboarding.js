@@ -403,7 +403,7 @@ const Onboarding = (props) => {
                 style={{textAlign: "center"}}>
                 
                 <div className={classes.SummaryHeader}>
-                    3 easy steps to start selling tickets and receiving your cash now!!!
+                    3 easy steps to start selling tickets and receiving your cash now!
                 </div>
                 <br></br>
                 <div className={classes.SummaryGridTitle}
@@ -426,14 +426,30 @@ const Onboarding = (props) => {
                     If you have 10 minutes to spare, you have time to sign up now.
                 </div>
                 <br></br>
-                <Button className={classes.SummaryButton}
+                <Button className={classes.OnboardingButton}
                     style={{
                         backgroundColor: "white",
-                        border: "1px solid green",
-                        color: "green",
+                        fontWeight: "600",
                         padding: "0px"
                     }}
-                    content="Start"
+                    content="Start Signup"
+                    basic
+                    color="green"
+                    icon="external alternate"
+                    onClick={() => {
+                        setPageView("organization");
+                    }}
+                />
+                <br></br>
+                <br></br>
+                <Button className={classes.OnboardingButton}
+                    style={{
+                        backgroundColor: "white",
+                        border: "1px solid black",
+                        color: "black",
+                        padding: "0px"
+                    }}
+                    content="Not Now"
                     onClick={() => {
                         setPageView("organization");
                     }}

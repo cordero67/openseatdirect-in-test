@@ -8,6 +8,28 @@
   font-weight: 600;
 }
 
+.RegularButton {
+  font-size: 15px;
+  width: 170px;
+  height: 30px;
+  margin: auto;
+  text-align: center;
+}
+
+.WarningBlack {
+  padding-left: 10px;
+  height: 14px;
+  color: black;
+  font-size: 12px;
+}
+
+.WarningRed {
+  padding-left: 10px;
+  height: 14px;
+  color: red;
+  font-size: 12px;
+}
+
 
 
 

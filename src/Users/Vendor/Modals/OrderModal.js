@@ -71,7 +71,7 @@ const OrderModal = (props) => {
               textAlign: "center",
               paddingTop: "7px",
             }}
-            content="  Submit"
+            content=" Submit"
             basic
             color="green"
             icon="external alternate"

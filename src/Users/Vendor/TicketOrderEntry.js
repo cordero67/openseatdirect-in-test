@@ -32,6 +32,8 @@ const TicketOrderEntry = (props) => {
   const [recipientEmailWarning, setRecipientEmailWarning] = useState(false);
   const [recipientMessageWarning, setRecipientMessageWarning] = useState(false);
 
+  const paymentTypes = ["cash", "CashApp", "Venmo", "Paypal", "Bitcoin", "Ethereum", "other"]
+
   // UPDATED CODE
   const loadEventData = (eventNum) => {
     let tempEvents = JSON.parse(localStorage.getItem("events"));
@@ -46,6 +48,23 @@ const TicketOrderEntry = (props) => {
         let tempTicketDetails = [];
         if ("tickets" in event && event.tickets.length > 0) {
           event.tickets.forEach((ticket, index) => {
+            let ticketsAvailableArray = [];
+            let maxAmount;
+            let i;
+
+            if (ticket.maxTicketsAllowedPerOrder) {
+              maxAmount = Math.min(
+                ticket.maxTicketsAllowedPerOrder,
+                ticket.remainingQuantity
+              );
+            } else {
+              maxAmount = Math.min(10, ticket.remainingQuantity);
+            }
+
+            for (i = 1; i <= maxAmount; i++) {
+              ticketsAvailableArray.push(i);
+            }
+
             let newTicketKey = Math.floor(Math.random() * 1000000000000000);
             tempTicketDetails.push({
               key: newTicketKey,
@@ -53,10 +72,14 @@ const TicketOrderEntry = (props) => {
               ticketId: ticket._id,
               ticketPrice: ticket.currentTicketPrice,
               ticketQuantity: ticket.remainingQuantity,
-              maxTicketsAllowedPerOrder: ticket.maxTicketsAllowedPerOrder,
+              maxTicketsAvailable: ticketsAvailableArray,
               currency: ticket.currency
             })
+
+            console.log("tempTicketDetails: ", tempTicketDetails)
+
           })
+
         }
 
         setTicketDetails(tempTicketDetails);
@@ -84,7 +107,7 @@ const TicketOrderEntry = (props) => {
     addedTicket.availTickets = ticket.ticketQuantity;
     addedTicket.faceValue = parseFloat(ticket.ticketPrice).toFixed(2);
     addedTicket.numTickets = 1;
-    addedTicket.maxTicketsAllowedPerOrder = parseInt(ticket.maxTicketsAllowedPerOrder);
+    addedTicket.maxTicketsAvailable = ticket.maxTicketsAvailable;
     addedTicket.chargedPrice = parseFloat(ticket.ticketPrice).toFixed(2);
     addedTicket.chargedPriceWarning = "";
     addedTicket.compTicket = false;
@@ -111,10 +134,11 @@ const TicketOrderEntry = (props) => {
             let eventExists = false;
             storedEvents.forEach((event, index) => {
               if (event.eventNum === storedEventNum) {
+                loadEventData(storedEventNum);
                 eventExists = true;
 
                 if ("tickets" in event && event.tickets.length > 0) {
-                  loadEventData(storedEventNum);
+                  //loadEventData(storedEventNum);
                   setOrderView("complete");
 
                 } else {
@@ -163,9 +187,7 @@ const TicketOrderEntry = (props) => {
             You must first
             <button
               className={classes.NoButton}
-              onClick={() => {
-                props.clicked("events")
-              }}
+              onClick={() => {props.clicked("events")}}
             >
             {" "}select{" "}
             </button>
@@ -291,45 +313,32 @@ const TicketOrderEntry = (props) => {
       let tempOrder={...order};
       let tempTickets=[...tempOrder.tickets];
       tempTickets.push(addedTicket)
-      console.log("tempTickets: ", tempTickets);
       tempOrder.tickets=tempTickets
-      console.log("tempNewOrder: ", tempOrder);
       setOrder(tempOrder);
     }
   }
   // UPDATED CODE
 
-
+  // UPDATED CODE
   const changeTicket = (event, key) => {
-    console.log("changing ticket info")
-
-    console.log("order: ", order);
-    console.log("Event name: ", event.target.name);
-    console.log("Event value: ", event.target.value);
-
     let tempOrder = {...order};
     let tempTickets = [...tempOrder.tickets];
-    console.log("tempTickets: ", tempTickets)
 
     let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
     tempTickets.forEach((ticket, index) => {
       if (ticket.key === key) {
-        console.log("key: ", ticket.key)
 
         if (event.target.name === "ticketName") {
-          console.log("ticketName");
           ticket.ticketName = event.target.value;
 
           ticketDetails.forEach((eventTicket, index) => {
             if (eventTicket.ticketName === event.target.value) {
-              console.log("We have a match: ", ticket)
               ticket.ticketName = eventTicket.ticketName;
               ticket.ticketId = eventTicket.ticketId;
               ticket.availTickets = eventTicket.ticketQuantity;
+              ticket.maxTicketsAvailable = eventTicket.maxTicketsAvailable;
               ticket.faceValue = parseFloat(eventTicket.ticketPrice).toFixed(2);
-              //ticket.compTicket = false;
-              //ticket.numTickets = 1;
               if (ticket.compTicket) {
                 ticket.chargedPrice = parseFloat(0).toFixed(2);
               } else {
@@ -338,17 +347,14 @@ const TicketOrderEntry = (props) => {
               ticket.chargedPriceWarning = "";
               ticket.paymentType = "cash";
               ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
-              console.log("ticket: ", ticket)
             }
           })
 
         } else if (event.target.name === "numTickets") {
-          console.log("numTickets");
           ticket.numTickets = event.target.value;
           ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
 
         } else if (event.target.name === "compTicket") {
-          console.log("compTicket");
           ticket.compTicket = !ticket.compTicket
           if (!ticket.compTicket) {
             ticket.chargedPrice = parseFloat(ticket.faceValue).toFixed(2);
@@ -359,52 +365,42 @@ const TicketOrderEntry = (props) => {
           ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
 
         } else if (event.target.name === "chargedPrice") {
-          console.log("chargedPrice");
           ticket.chargedPrice = event.target.value;
           if (ticket.chargedPrice === "") {
-            //chargedPriceWarning = "empty value represents zero price"
             ticket.chargedPriceWarning = ""
             ticket.subTotal = parseFloat(0).toFixed(2);
 
           } else if (isNaN(ticket.chargedPrice)) {
-            //chargedPriceWarning = "LETTERS ARE INCLUDED"
             ticket.chargedPriceWarning = "Not a valid number";
             ticket.subTotal = "NaN"
 
           } else if (priceRegex.test(ticket.chargedPrice)){
-            //chargedPriceWarning = "max 2 decimals"
             ticket.chargedPriceWarning = ""
             ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
 
           } else {
-            //chargedPriceWarning = "more than 2 decimals"
             ticket.chargedPriceWarning = "Not a valid price"
             ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
           }
 
         } else if (event.target.name === "paymentType") {
-          console.log("paymentType");
           ticket.paymentType = event.target.value;
         }
       }
     })
 
     tempOrder.tickets = tempTickets
-    console.log("tempOrder.tickets: ", tempOrder.tickets)
-    console.log("tempOrder: ", tempOrder)
     setOrder(tempOrder);
   }
+  // UPDATED CODE
 
   // UPDATED CODE
   const deleteTickets = (key) => {
-    console.log("order: ", order.tickets)
-    console.log("key: ", key)
     if (order.tickets.length === 1) {
       console.log("Only 1 ticket in order")
       let addedTicket = newTicket(ticketDetails[0]);
       let tempOrder={...order};
       tempOrder.tickets=[addedTicket]
-      console.log("tempOrder: ", tempOrder);
       setOrder(tempOrder);
     } else {
       let tempOrder = {...order};
@@ -428,7 +424,6 @@ const TicketOrderEntry = (props) => {
   // UPDATED CODE
 
   const ticketCart = () => {
-
     if (!isLoading && ticketDetails.length > 0) {
       return (
         <div
@@ -466,9 +461,7 @@ const TicketOrderEntry = (props) => {
             }}>
 
             {order.tickets.map((ticket, index) => {
-
               let priceBox;
-              
               if (ticket.chargedPriceWarning === "") {
                 priceBox = classes.PriceBox;
               } else {
@@ -488,12 +481,7 @@ const TicketOrderEntry = (props) => {
                   >
                     <div>
                       <select
-                        style={{
-                          width: "260px",
-                          height: "25px", 
-                          fontSize: "15px",
-                          border: "0.5px solid grey"
-                        }}
+                        style={{width: "260px", height: "25px", fontSize: "15px", border: "0.5px solid grey"}}
                         type="text"
                         name="ticketName"
                         required
@@ -512,8 +500,14 @@ const TicketOrderEntry = (props) => {
                     </div>
                     <div>
                       <select
-                        style={{width: "80px", height: "25px", 
-                        fontSize: "15px", paddingLeft: "5px", textAlign: "right", border: "0.5px solid grey"}}
+                        style={{
+                          width: "80px",
+                          height: "25px", 
+                          fontSize: "15px",
+                          paddingLeft: "5px",
+                          textAlign: "right",
+                          border: "0.5px solid grey"
+                        }}
                         type="number"
                         name="numTickets"
                         value={ticket.numTickets}
@@ -522,34 +516,18 @@ const TicketOrderEntry = (props) => {
                           changeTicket(event, ticket.key)
                         }}
                       >
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                        <option>10</option>
+
+                        {ticket.maxTicketsAvailable.map(number => {
+                          return <option>{number}</option>
+                        })}
                       </select>
                     </div>
-                    <div
-                      style={{
-                        paddingTop: "2.5px",
-                        paddingLeft: "12px"
-                      }}
-                    >
+                    <div style={{paddingTop: "2.5px", paddingLeft: "12px"}}>
                       <input
                         type="checkbox"
                         id=""
                         name="compTicket"
-                        style={{
-                          outline: "0.5px solid lightgrey",
-                          borderRadius: "0px",
-                          width: "20px",
-                          height: "20px"
-                        }}
+                        style={{outline: "0.5px solid lightgrey", borderRadius: "0px", width: "20px", height: "20px"}}
                         checked={ticket.compTicket}
                         onChange={(event) => {
                           changeTicket(event, ticket.key)
@@ -565,9 +543,7 @@ const TicketOrderEntry = (props) => {
                         name="chargedPrice"
                         disabled={ticket.compTicket}  
                         value={ticket.chargedPrice}
-                        onChange={(event) => {
-                          changeTicket(event, ticket.key)
-                        }}
+                        onChange={(event) => {changeTicket(event, ticket.key)}}
                       />
                     </div>
 
@@ -584,17 +560,11 @@ const TicketOrderEntry = (props) => {
                           required
                           disabled={ticket.compTicket}
                           value={ticket.paymentType}
-                          onChange={(event) => {
-                            changeTicket(event, ticket.key)
-                          }}
+                          onChange={(event) => {changeTicket(event, ticket.key)}}
                       >
-                        <option>cash</option>
-                        <option>CashApp</option>
-                        <option>Venmo</option>
-                        <option>Paypal</option>
-                        <option>Bitcoin</option>
-                        <option>Ethereum</option>
-                        <option>other</option>
+                        {paymentTypes.map((type, index) => {
+                          return <option>{type}</option>
+                        })}
                       </select>
                     </div>
                     <div style={{paddingRight: "10px", textAlign: "right"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
@@ -640,18 +610,8 @@ const TicketOrderEntry = (props) => {
 
             <div style={{width: "320px", textAlign: "right"}}>
               <Button
-                style={{
-                  //backgroundColor: 'white',
-                  //border: "1px solid green",
-                  color: "green",
-                  fontSize: "15px",
-                  fontWeight: "600",
-                  width: "170px",
-                  height: "30px",
-                  margin: "auto",
-                  textAlign: "center",
-                  padding: "0px"
-                }}
+                className={classes.RegularButton}
+                style={{fontWeight: "600", paddingTop: "8px"}}
                 icon="plus square outline"
                 basic
                 color="green"
@@ -662,24 +622,12 @@ const TicketOrderEntry = (props) => {
 
             <div style={{width: "320px"}}>
               <Button
-                style={{
-                  backgroundColor: "#fff",
-                  border: "1px solid blue",
-                  color: "blue",
-                  fontSize: "15px",
-                  fontWeight: "600",
-                  width: "170px",
-                  height: "30px",
-                  margin: "auto",
-                  textAlign: "center",
-                  padding: "0px"
-                }}
+                className={classes.RegularButton}
+                style={{backgroundColor: "#fff", border: "1px solid blue", color: "blue", fontWeight: "600", paddingTop: "7px"}}
                 disabled={validOrder()}
                 icon="edit"
                 content="Preview Order"
-                onClick={() => {
-                  setModalView("review")
-                }}
+                onClick={() => {setModalView("review")}}
               />
             </div>
           </div>
@@ -717,7 +665,6 @@ const TicketOrderEntry = (props) => {
     return invalid;
   }
 
-
   const updateRecipient = (event) => {
     const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -735,67 +682,38 @@ const TicketOrderEntry = (props) => {
       tempRecipient.completed = true;
     }
     tempOrder.recipient = tempRecipient;
-    console.log("tempRecipient: ", tempRecipient);
-    console.log("tempOrder: ", tempOrder);
     setOrder(tempOrder)
   }
 
+  // UPDATED CODE
   const displayMessage = (limit, variable) => {
     if (variable && variable.length >= limit) {
       return (
-        <div
-          style={{
-            paddingLeft: "10px",
-            height: "14px",
-            color: "red",
-            fontSize: "12px",
-            fontWeight: "700",
-          }}
-        >
+        <div className={classes.WarningRed} style={{fontWeight: "700"}}>
           Maximum characters used
         </div>
       );
     } else if (variable && variable.length >= limit - 10) {
       return (
-        <div
-          style={{
-            paddingLeft: "10px",
-            height: "14px",
-            color: "red",
-            fontSize: "12px",
-          }}
-        >
+        <div className={classes.WarningRed}>
           Remaining {limit - variable.length}
         </div>
       );
     } else if (variable) {
       return (
-        <div
-          style={{
-            paddingLeft: "10px",
-            height: "14px",
-            color: "black",
-            fontSize: "12px",
-          }}
-        >
+        <div className={classes.WarningBlack}>
           Remaining {limit - variable.length}
         </div>
       );
     } else {
       return (
-        <div
-          style={{
-            paddingLeft: "10px",
-            height: "14px",
-            color: "black",
-            fontSize: "12px",
-          }}
-        >
+        <div className={classes.WarningBlack}>
           Remaining {limit}
         </div>
       );
     }
   };
+  // UPDATED CODE
 
   const recipientDisplay = () => {
 
@@ -859,10 +777,7 @@ const TicketOrderEntry = (props) => {
                 onBlur={() => setRecipientFirstNameWarning(false)}
                 onChange={updateRecipient}
               />
-              {recipientFirstNameWarning
-                ? displayMessage(64, order.recipient.firstName)
-                : null
-              }
+              {recipientFirstNameWarning ? displayMessage(64, order.recipient.firstName) : null}
             </div>
 
             <div>
@@ -879,10 +794,7 @@ const TicketOrderEntry = (props) => {
                 onBlur={() => setRecipientLastNameWarning(false)}
                 onChange={updateRecipient}
               />
-              {recipientLastNameWarning
-                ? displayMessage(64, order.recipient.lastName)
-                : null
-              }
+              {recipientLastNameWarning ? displayMessage(64, order.recipient.lastName) : null}
             </div>
           </div>
           <div style={{width: "660px", paddingBottom: "10px"}}>
@@ -920,10 +832,7 @@ const TicketOrderEntry = (props) => {
                 placeholder="Limit 64 characters"
                 onChange={updateRecipient}
               />
-                {recipientMessageWarning
-                  ? displayMessage(64, order.recipient.message)
-                  : null
-                }
+                {recipientMessageWarning ? displayMessage(64, order.recipient.message) : null}
             </div>
           </div>
         </div>
@@ -945,22 +854,15 @@ const TicketOrderEntry = (props) => {
               setModalView("hide");
             }}
             close={() => {
-              setOrder({
-                recipient: {
-                  firstName: "ttt",
-                  lastName: "",
-                  email: "",
-                  message: "hhhh"
-                },
-                tickets: []
-              });
-              if (ticketDetails.length > 0) {
-                let addedTicket = newTicket(ticketDetails[0]);
-                let tempOrder={...order};
-                tempOrder.tickets=[addedTicket]
-                console.log("tempOrder: ", tempOrder);
-                setOrder(tempOrder);
-              }
+              let tempOrder={...order};
+              tempOrder.recipient={
+                firstName: "",
+                lastName: "",
+                email: "",
+                message: ""
+              };
+              tempOrder.tickets=[newTicket(ticketDetails[0])];
+              setOrder(tempOrder);
               setModalView("hide");
             }}
             submit={submitOrder}
@@ -1005,6 +907,18 @@ const TicketOrderEntry = (props) => {
     )
   }
 
+  const eventTitle = () => {
+    if (!isLoading && "eventTitle" in selectedEventDetails) {
+      return (
+        <div>{selectedEventDetails.eventTitle}</div>
+      )
+    } else {
+      return (
+        <div><br></br></div>
+      )
+    }
+  }
+
   return (
     <div>
       <div className={classes.DisplayPanelTitle}>
@@ -1014,7 +928,7 @@ const TicketOrderEntry = (props) => {
       <div className={classes.DisplayPanel2}>
         <div className={classes.DashboardHeader}>
           <div style={{paddingBottom: "5px"}}>
-            <div style={{fontSize: "22px", fontWeight: "600"}}>{!isLoading ? selectedEventDetails.eventTitle : "empty"}</div>
+            <div style={{fontSize: "22px", fontWeight: "600"}}>{eventTitle()}</div>
           </div>
           <div>
             <button
