@@ -5,9 +5,9 @@ import { compareValues } from "./VendorFunctions";
 
 import VendorNavigation from "./VendorNavigation";
 import Events from "./Events";
-import TicketOrderEntry from "./TicketOrderEntry";
+import ManualOrderEntry from "./ManualOrderEntry";
 import SalesAnalytics from "./SalesAnalytics";
-import EventOrders from "./EventOrders";
+import TicketSales from "./TicketSales";
 import Orders from "./Orders";
 import CreateEvent from "../../EventCreation/CreateEvent";
 import Profile from "./Profile";
@@ -92,13 +92,13 @@ const MainDisplay = () => {
       return (
         <Events
           clicked={() => {
-            setPaneView("ticketOrderEntry")
+            setPaneView("ticketSales")
           }}
         />
       )
-    } else if (paneView === "ticketOrderEntry") {
+    } else if (paneView === "manualOrderEntry") {
       return (
-        <TicketOrderEntry
+        <ManualOrderEntry
           clicked={() => {
             setPaneView("events")
           }}
@@ -108,9 +108,13 @@ const MainDisplay = () => {
       return (
         <SalesAnalytics/>
       )
-    } else if (paneView === "eventOrders") {
+    } else if (paneView === "ticketSales") {
       return (
-        <EventOrders/>
+        <TicketSales
+          clicked={() => {
+            setPaneView("events")
+          }}
+        />
       )
     } else if (paneView === "orders") {
       return (

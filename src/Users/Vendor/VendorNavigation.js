@@ -73,7 +73,7 @@ const VendorNavigation = (props) => {
               }}
               name="events"
               onClick={props.clicked}>
-              ALL EVENTS
+              MY EVENTS
             </button>
           </li>
 
@@ -83,14 +83,14 @@ const VendorNavigation = (props) => {
               style={{
                 backgroundColor: (
                   props.pane === "salesAnalytics" ||
-                  props.pane === "ticketOrderEntry" ||
-                  props.pane === "eventOrders"
+                  props.pane === "manualOrderEntry" ||
+                  props.pane === "ticketSales"
                   ) ? "#e0e0e0" : "#b8b8b8",
                 outline: "none"
               }}
-              name="ticketOrderEntry"
+              name="manualOrderEntry"
               onClick={(event) => {
-                if (props.pane !== "salesAnalytics" && props.pane !== "ticketOrderEntry" && props.pane !== "eventOrders")
+                if (props.pane !== "salesAnalytics" && props.pane !== "manualOrderEntry" && props.pane !== "ticketSales")
                 props.clicked(event)
               }}>
               EVENT DASHBOARD
@@ -103,53 +103,40 @@ const VendorNavigation = (props) => {
               padding: "0px"
           }}>
 
-            {(props.pane === "salesAnalytics" || props.pane === "ticketOrderEntry" || props.pane === "eventOrders") ?
+            {(props.pane === "salesAnalytics" || props.pane === "manualOrderEntry" || props.pane === "ticketSales") ?
               (
                 <li
                   style={{
                     paddingTop: "5px",
                     paddingBottom: "0px"
                 }}>
+
                   <button
                     className={classes.NavigationSubButton}
                     style={{
-                      backgroundColor: props.pane === "salesAnalytics" ? "#fff" : "#e0e0e0",
+                      backgroundColor: props.pane === "ticketSales" ? "#fff" : "#e0e0e0",
                       outline: "none"
                     }}
-                    name="salesAnalytics"
+                    name="ticketSales"
                     onClick={props.clicked}>
-                    Sales Analytics
+                    Ticket Orders
                   </button>
 
                   <button
                     className={classes.NavigationSubButton}
                     style={{
-                      backgroundColor: props.pane === "ticketOrderEntry" ? "#fff" : "#e0e0e0",
+                      backgroundColor: props.pane === "manualOrderEntry" ? "#fff" : "#e0e0e0",
                       outline: "none"
                     }}
-                    name="ticketOrderEntry"
+                    name="manualOrderEntry"
                     onClick={props.clicked}>
-                    Ticket Order Entry
-                  </button>
-
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "eventOrders" ? "#fff" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="eventOrders"
-                    onClick={props.clicked}>
-                    Event Orders
+                    Manual Order Entry
                   </button>
                 </li>
               ) :
               null
             }
           </div>
-
-
-
 
           <li>
           <button
@@ -225,51 +212,16 @@ const VendorNavigation = (props) => {
 
 export default VendorNavigation;
 
+
 /*
-
-
-        
-          <li>
-            <button
-              className={classes.NavigationButton}
-              style={{
-                backgroundColor: props.pane === "dashboard" ? "#e0e0e0" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="dashboard"
-              onClick={props.clicked}>
-              EVENT DASHBOARD
-            </button>
-          </li>
-
-          <div
-            style={{
-              backgroundColor: "#e0e0e0",
-              padding: "0px"
-          }}>
-
-            {props.pane === "dashboard" ?
-              (
-                <li
-                  style={{
-                    paddingTop: "5px",
-                    paddingBottom: "0px"
-                }}>
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "dashboard" ? "#fff" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="dashboard"
-                    onClick={props.clicked}>
-                    Ticket Order Entry
-                  </button>
-                </li>
-              ) :
-              null
-            }
-          </div>
-
-
-            */
+<button
+className={classes.NavigationSubButton}
+style={{
+  backgroundColor: props.pane === "salesAnalytics" ? "#fff" : "#e0e0e0",
+  outline: "none"
+}}
+name="salesAnalytics"
+onClick={props.clicked}>
+Sales Analytics
+</button>
+*/

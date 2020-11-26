@@ -154,8 +154,11 @@ const OrderModal = (props) => {
             >
               <div style={{textAlign: "left"}}>{adjustedTicketName}</div>
               <div style={{textAlign: "center"}}>{ticket.numTickets}</div>
-              {ticket.chargedPrice === "COMP" ? <div>COMP</div> : <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.chargedPrice).toFixed(2)}</div>}
-              {ticket.chargedPrice === "COMP" ? <div></div> : <div style={{textAlign: "left", paddingLeft: "20px"}}>{ticket.paymentType}</div>}
+              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.chargedPrice).toFixed(2)}</div>
+              {parseFloat(ticket.chargedPrice).toFixed(2) !== "0.00" ?
+                <div style={{textAlign: "left", paddingLeft: "20px"}}>{ticket.paymentType}</div> :
+                <div style={{textAlign: "left", paddingLeft: "20px"}}>comp</div>
+              }
               <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
             </div>
           </Fragment>
@@ -168,7 +171,7 @@ const OrderModal = (props) => {
     console.log("tickets: ", props.details.tickets)
     props.details.tickets.forEach((ticket, index) => {
       allTotal += ticket.subTotal;
-      if (ticket.paymentType === "cash") {
+      if (ticket.paymentType === "cash" && ticket.subTotal !== 0) {
         cashTotal += ticket.subTotal;
       } else if(ticket.paymentType === "CashApp")  {
         cashAppTotal += ticket.subTotal;
@@ -185,13 +188,24 @@ const OrderModal = (props) => {
       }
     })
 
-    let allTotalBorder;
+    let allTotalBorder = classes.Total;
 
-    if (false) {
-      allTotalBorder = "none"
-    } else {
-      allTotalBorder = "1px solid black"
+    console.log("allTotal: ", allTotal)
+    console.log("typeof: ", typeof allTotal)
+
+    if (parseInt(allTotal) === 0) {
+      console.log("equal to 0")
+      allTotalBorder=classes.SubTotal
     }
+    /*
+    if (allTotal === "0") {
+      console.log("equal to '0'")
+    }
+    
+    if (allTotal === "0.00") {
+      console.log("equal to '0.00'")
+    }
+    */
 
     return (
       <Fragment>
@@ -257,7 +271,7 @@ const OrderModal = (props) => {
           </div> :
           null
         }
-        <div className={classes.SubTotal}>
+        <div className={allTotalBorder}>
           <div style={{textAlign: "right"}}>Grand Total:</div>
           <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(allTotal).toFixed(2)}</div>
         </div>

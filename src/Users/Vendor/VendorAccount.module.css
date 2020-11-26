@@ -11,10 +11,9 @@
 }
 
 .DashboardCanvas {
-  background-color: white;
+  background-color: green;
   display: grid;
-  grid-template-columns: 170px auto;
-  border: 1px solid #3D3D3D;
+  grid-template-columns: 170px 1130px;
   width: 1200px;
   height: 100%;
   margin: auto;

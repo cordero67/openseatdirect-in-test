@@ -126,7 +126,6 @@ const Events = (props) => {
                     <br></br>
                     <br></br>
                     <br></br>
-                    <br></br>
                     {eventDescriptions.map((item, index) => {
                         let shortMonth, dayDate, longDateTime;
                         [shortMonth, dayDate, longDateTime] = getDates(item.startDateTime);
@@ -271,7 +270,7 @@ const Events = (props) => {
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
-                EVENTS
+                MY EVENTS
             </div>
             
             <div className={classes.DisplayPanel2}>
