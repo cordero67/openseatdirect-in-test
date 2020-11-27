@@ -484,6 +484,7 @@ const Checkout = props => {
         body:JSON.stringify (order),
     };
     console.log("fetching with: ", url, fetcharg);
+    console.log("Free ticket order: ", order)
     fetch(url, fetcharg )
     .then(handleErrors)
     .then ((response)=>{

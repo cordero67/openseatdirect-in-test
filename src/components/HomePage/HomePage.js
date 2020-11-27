@@ -62,60 +62,34 @@ const Home = () => {
       [event.target.name]: event.target.value
     });
   }
+
+  
+    let topContainer;
     
     let tagLine = () => {
-      if (screenSize >= 500) {
+      if (screenSize >= 800) {
+        topContainer = classes.TopContainer;
+        return (
+          <div style={{fontSize: "64px", lineHeight: "94px"}}>
+            TICKETING MADE EASY!
+          </div>
+        ) 
+      } else if (screenSize >= 650 && screenSize < 800) {
+        topContainer = classes.TopContainer;
         return (
           <div style={{fontSize: "52px", lineHeight: "94px"}}>
-            GET CASH NOW!
+            TICKETING MADE EASY!
           </div>
         ) 
       } else {
+        topContainer = classes.TopContainerTight;
         return (
-          <div style={{paddingBottom: "20px", fontSize: "36px", lineHeight: "54px"}}>
-            GET CASH NOW!
-          </div>
-        )
-      }
-    }
-
-    let marketingLine = () => {
-      if (screenSize >= 1050) {
-        return (
-          <div style={{fontSize: "26px", lineHeight: "52px"}}>
-            Don't wait until after the event passes. Get paid on tickets you sell right away.
+          <div style={{fontSize: "48px", lineHeight: "64px"}}>
+            TICKETING
+            <br></br>
+            MADE EASY!
           </div>
         ) 
-      } else if (screenSize >= 900 && screenSize < 1050) {
-        return (
-          <div style={{fontSize: "22px", lineHeight: "48px"}}>
-            Don't wait until after the event passes. Get paid on tickets you sell right away.
-          </div>
-        )
-      } else if (screenSize >= 650 && screenSize < 900) {
-        return (
-          <div style={{fontSize: "26px", lineHeight: "36px"}}>
-            Don't wait until after the event passes.
-            <br></br>
-            Get paid on tickets you sell right away.
-          </div>
-        )
-      } else if (screenSize >= 450 && screenSize < 650) {
-        return (
-          <div style={{fontSize: "20px", lineHeight: "30px"}}>
-            Don't wait until after the event passes.
-            <br></br>
-            Get paid on tickets you sell right away.
-          </div>
-        )
-      } else {
-        return (
-          <div style={{fontSize: "18px", lineHeight: "26px"}}>
-            Don't wait until after the event passes.
-            <br></br>
-            Get paid on tickets you sell right away.
-          </div>
-        )
       }
     }
 
@@ -161,26 +135,26 @@ const Home = () => {
     }
 
     let marketingPhrase = () => {
-      if (screenSize >= 1050) {
+      if (screenSize >= 1200) {
         return (
           <div style={{fontSize: "26px", lineHeight: "36px"}}>
-            a subscription-based service that eliminates traditional ticketing middlemen
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span> a subscription-based service that eliminates traditional ticketing middlemen
             <br></br>
             allowing you to interact directly with your fans and control the entire ticketing process.
           </div>
         ) 
-      } else if (screenSize >= 900 && screenSize < 1050) {
+      } else if (screenSize >= 1000 && screenSize < 1200) {
         return (
           <div style={{fontSize: "22px", lineHeight: "32px"}}>
-            a subscription-based service that eliminates traditional ticketing middlemen
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span> a subscription-based service that eliminates traditional ticketing middlemen
             <br></br>
             allowing you to interact directly with your fans and control the entire ticketing process.
           </div>
         )
-      } else if (screenSize >= 650 && screenSize < 900) {
+      } else if (screenSize >= 650 && screenSize < 1000) {
         return (
           <div style={{fontSize: "26px", lineHeight: "36px"}}>
-            a subscription-based service that
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span> a subscription-based service that
             <br></br>
             eliminates traditional ticketing middlemen
             <br></br>
@@ -192,7 +166,7 @@ const Home = () => {
       } else if (screenSize >= 500 && screenSize < 650) {
         return (
           <div style={{fontSize: "20px", lineHeight: "30px"}}>
-            a subscription-based service that
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span> a subscription-based service that
             <br></br>
             eliminates traditional ticketing middlemen
             <br></br>
@@ -204,15 +178,15 @@ const Home = () => {
       } else {
         return (
           <div style={{fontSize: "20px", lineHeight: "30px"}}>
-            a subscription-based service
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span>
             <br></br>
-            that eliminates
+            a subscription-based service that
             <br></br>
-            traditional ticketing middlemen
+            eliminates traditional ticketing
             <br></br>
-            allowing you to interact
+            middlemen allowing you to
             <br></br>
-            directly with your fans and
+            interact directly with your fans and
             <br></br>
             control the entire ticketing process.
           </div>
@@ -220,7 +194,7 @@ const Home = () => {
       }
     }
 
-    let MarketingPoints = () => {
+    let marketingPoints = () => {
       if (screenSize >= 1050) {
         return (
           <div>
@@ -591,13 +565,6 @@ const Home = () => {
               <div className={classes.MarketingText}>
                 {tagLine()}
               </div>
-              <div className={classes.MarketingText}>
-                {marketingLine()}
-              </div>
-            </div>
-
-            <div className={classes.OSDImageContainer}>
-              {OSDimage()}
             </div>
 
             <div className={classes.TextContainer}>
@@ -607,7 +574,7 @@ const Home = () => {
             </div>
 
             <div className={classes.SectionContainer}>
-              {MarketingPoints()}
+              {marketingPoints()}
             </div>
 
             <div className={classes.SectionContainer}>

@@ -1,29 +1,49 @@
-import React, { Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
-import classes from "./VendorDashboard.module.css";
+import classes from "./VendorAccountOLD.module.css";
 
 import { signout } from '../apiUsers';
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+
 const VendorNavigation = (props) => {
 
-  console.log("props: ", props);
+  const [buyerInfo, setBuyerInfo] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      let tempBuyerInfo = {};
+      tempBuyerInfo.name = tempUser.user.name
+      setBuyerInfo(tempBuyerInfo);
+    } else {
+      window.location.href = "/signin";
+    }
+    setIsLoading(false);
+  }, []);
   
   return (
     <Fragment>
-
       <div className={classes.NavigationTitle}>
-          {true ?
+          {!isLoading ?
             <span
               style={{
                 display: "inline-block",
                 verticalAlign: "middle",
                 lineHeight: "normal",
               }}>
-              {props.buyerInfo.name}
+              {buyerInfo.name}
             </span> :
-            "Dashboard"}
+            null}
       </div>
 
       <div className={classes.DashboardTitle}>
@@ -33,17 +53,122 @@ const VendorNavigation = (props) => {
             verticalAlign: "middle",
             lineHeight: "normal",
           }}>
-          MY DASHBOARD
+          <FontAwesomeIcon
+            color="white"
+            cursor="pointer"
+            icon={faHome}
+          />{" "}MY ACCOUNT
         </span>
       </div>
 
       <ul className={classes.NavigationBar}>
         <div className={classes.NavigationItems}>
+
           <li>
             <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "profile" ? "#fff" : "#b8b8b8",
+                backgroundColor: props.pane === "events" ? "#e0e0e0" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="events"
+              onClick={props.clicked}>
+              MY EVENTS
+            </button>
+          </li>
+
+          <li>
+            <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: (
+                  props.pane === "salesAnalytics" ||
+                  props.pane === "manualOrderEntry" ||
+                  props.pane === "ticketSales"
+                  ) ? "#e0e0e0" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="manualOrderEntry"
+              onClick={(event) => {
+                if (props.pane !== "salesAnalytics" && props.pane !== "manualOrderEntry" && props.pane !== "ticketSales")
+                props.clicked(event)
+              }}>
+              EVENT DASHBOARD
+            </button>
+          </li>
+
+          <div
+            style={{
+              backgroundColor: "#e0e0e0",
+              padding: "0px"
+          }}>
+
+            {(props.pane === "salesAnalytics" || props.pane === "manualOrderEntry" || props.pane === "ticketSales") ?
+              (
+                <li
+                  style={{
+                    paddingTop: "5px",
+                    paddingBottom: "0px"
+                }}>
+
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "ticketSales" ? "#fff" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="ticketSales"
+                    onClick={props.clicked}>
+                    Ticket Orders
+                  </button>
+
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "manualOrderEntry" ? "#fff" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="manualOrderEntry"
+                    onClick={props.clicked}>
+                    Manual Order Entry
+                  </button>
+                </li>
+              ) :
+              null
+            }
+          </div>
+
+          <li>
+          <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "orders" ? "#e0e0e0" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="orders"
+              onClick={props.clicked}>
+              ALL ORDERS
+            </button>
+          </li>
+
+          <li>
+          <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "create" ? "#e0e0e0" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="create"
+              onClick={props.clicked}>
+              CREATE EVENT
+            </button>
+          </li>
+          
+          <li>
+            <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "profile" ? "#e0e0e0" : "#b8b8b8",
                 outline: "none"
               }}
               name="profile"
@@ -56,51 +181,12 @@ const VendorNavigation = (props) => {
             <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "account" ? "#fff" : "#b8b8b8",
+                backgroundColor: props.pane === "account" ? "#e0e0e0" : "#b8b8b8",
                 outline: "none"
               }}
               name="account"
               onClick={props.clicked}>
               ACCOUNT
-            </button>
-          </li>
-
-          <li>
-          <button
-              className={classes.NavigationButton}
-              style={{
-                backgroundColor: props.pane === "events" ? "#fff" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="events"
-              onClick={props.clicked}>
-              EVENTS
-            </button>
-          </li>
-
-          <li>
-          <button
-              className={classes.NavigationButton}
-              style={{
-                backgroundColor: props.pane === "orders" ? "#fff" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="orders"
-              onClick={props.clicked}>
-              ORDERS
-            </button>
-          </li>
-
-          <li>
-          <button
-              className={classes.NavigationButton}
-              style={{
-                backgroundColor: props.pane === "create" ? "#fff" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="create"
-              onClick={props.clicked}>
-              CREATE EVENT
             </button>
           </li>
 
@@ -125,3 +211,17 @@ const VendorNavigation = (props) => {
 };
 
 export default VendorNavigation;
+
+
+/*
+<button
+className={classes.NavigationSubButton}
+style={{
+  backgroundColor: props.pane === "salesAnalytics" ? "#fff" : "#e0e0e0",
+  outline: "none"
+}}
+name="salesAnalytics"
+onClick={props.clicked}>
+Sales Analytics
+</button>
+*/

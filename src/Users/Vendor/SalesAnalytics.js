@@ -4,7 +4,7 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import classes from "./VendorAccountOLD.module.css";
 
-const Profile = (props) => {
+const SalesAnalytics = (props) => {
 
     const [buyerInfo, setBuyerInfo] = useState();
     const [isLoading, setIsLoading] = useState(true);
@@ -31,15 +31,13 @@ const Profile = (props) => {
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
-                PROFILE
+                SALES ANALYTICS
             </div>
             <div className={classes.DisplayPanel}>
-                <div>Name:{" "}{isLoading ? null : buyerInfo.name}</div>
-                <br></br>
-                <div>E-mail:{" "}{isLoading ? null : buyerInfo.email}</div>
+                <div>Coming soon!</div>
             </div>
         </div>
     )
 }
 
-export default Profile;
+export default SalesAnalytics;

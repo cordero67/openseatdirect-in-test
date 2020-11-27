@@ -20,7 +20,7 @@ import PasswordReset from "../../Users/Authentication/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
 import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
-import VendorDashboard from "../../Users/Vendor/VendorDashboard";
+import VendorAccount from "../../Users/Vendor/VendorAccount";
 
 import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";
@@ -172,7 +172,7 @@ const Routes = () => {
     />
 
     <Route
-      path="/vendordashboard"
+      path="/vendoraccount"
       exact
       render={(routeProps) => (
         <React.Fragment>
@@ -182,7 +182,7 @@ const Routes = () => {
             clicked={toggleSideDrawer}
           />
           <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-          <VendorDashboard />
+          <VendorAccount />
           <Footer></Footer>
         </React.Fragment>
       )}

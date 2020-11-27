@@ -547,7 +547,7 @@ const CreateEvent = (props) => {
             show={true}
             details={eventStatus}
             toDashboard={() => {
-              window.location.href = `/vendordashboard`;
+              window.location.href = `/vendoraccount`;
             }}
           ></SavedModal>
         </Aux>
@@ -974,8 +974,8 @@ const CreateEvent = (props) => {
                     <Button
                         style={{
                         backgroundColor: 'white',
-                        border: "1px solid blue",
-                        color: "blue",
+                        border: "1px solid red",
+                        color: "red",
                         fontSize: "12px",
                         width: "90px",
                         height: "30px",
@@ -997,8 +997,8 @@ const CreateEvent = (props) => {
                     <Button
                         style={{
                         backgroundColor: 'white',
-                        border: "1px solid green",
-                        color: "green",
+                        border: "1px solid #228B22",
+                        color: "#228B22",
                         fontSize: "12px",
                         width: "90px",
                         height: "30px",
@@ -1019,8 +1019,8 @@ const CreateEvent = (props) => {
                     <Button
                         style={{
                         backgroundColor: 'white',
-                        border: "1px solid red",
-                        color: "red",
+                        border: "1px solid black",
+                        color: "black",
                         fontSize: "12px",
                         width: "90px",
                         height: "30px",

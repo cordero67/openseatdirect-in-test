@@ -433,11 +433,19 @@
   text-align: center;
 }
 
+.OnboardingButton {
+  font-size: 16px;
+  width: 150px;
+  height: 30px;
+  margin: auto;
+  text-align: center;
+}
+
 .OrganizationButtonGrid {
-    display: grid;
-    grid-template-columns: 250px 250px;
-    padding-top: 40px;
-    padding-left: 245px;
+  display: grid;
+  grid-template-columns: 250px 250px;
+  padding-top: 40px;
+  padding-left: 245px;
 }
 
 .OrganizationButton {

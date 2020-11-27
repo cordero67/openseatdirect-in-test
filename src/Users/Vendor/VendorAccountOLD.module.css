@@ -80,7 +80,6 @@
   height: calc(100vh - 167px);
   margin-top: 50px;
   padding-top: 0px;
-  padding-bottom: 15px;
   padding-left: 0px;
   padding-right: 0px;
   box-sizing: border-box;
@@ -175,14 +174,13 @@ column-gap: 5px;*/
   padding-top: 10px;
   padding-left: 0px;
   list-style: none;
-  width: 100%;
+  width: 170px;
   height: auto;
   text-align: left;
   box-sizing: border-box;
 }
 .NavigationItems li {
   padding-top: 10px;
-  padding-bottom: 10px;
   display: block;
 }
 .NavigationItems a {
@@ -206,12 +204,59 @@ column-gap: 5px;*/
   text-decoration: underline;
 }
 
+.NavigationSubItems {
+  font-size: 14px;
+  font-weight: 600;
+  padding-top: 10px;
+  padding-left: 0px;
+  list-style: none;
+  width: 100%;
+  height: auto;
+  text-align: left;
+  box-sizing: border-box;
+}
+.NavigationSubItems li {
+  display: block;
+}
+.NavigationSubItems a {
+  color: "#000";
+  text-decoration: none;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: 600;
+  text-align: left;
+}
+.NavigationSubItems a:hover {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.NavigationSubItems a:active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.NavigationSubItems a.active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .NavigationButton {
   font-family: "Roboto", sans-serif;
   font-size: 14px;
-  padding-left: 5px;
-  padding-left: 5px;
   padding-left: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-block;
+  width: 170px;
+  height: 20px;
+  text-align: left;
+  outline: none;
+}
+
+.NavigationSubButton {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  padding-left: 30px;
   border: none;
   cursor: pointer;
   font-weight: 500;
@@ -325,6 +370,24 @@ column-gap: 5px;*/
     padding-right: 30px;
 }
 
+.DashboardHeader {
+    z-index: 200;
+    position: fixed;
+    top: 110px;
+    background-color: #e7e7e7;
+    border-bottom: 1px solid lightgrey;
+    width: 1030px;
+    height: 60px;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 600;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 30px;
+}
+
+
 .DashboardMain {
   /*border: 1px solid green;*/
   display: grid;
@@ -354,6 +417,55 @@ column-gap: 5px;*/
   font-weight: 600;
   padding-bottom: 20px;
   text-align: center;
+}
+
+.FirstNameBox {
+  height: 30px;
+  width: 325px;
+  border: 0.5px solid grey;
+  padding-left: 10px
+}
+
+.FirstNameBoxWarning {
+  height: 30px;
+  width: 325px;
+  border: 0.5px solid red;
+  padding-left: 10px
+}
+
+.LastNameBox {
+  height: 30px;
+  width: 325px;
+  border: 0.5px solid grey;
+  padding-left: 10px
+}
+
+.LastNameBoxWarning {
+  height: 30px;
+  width: 325px;
+  border: 0.5px solid red;
+  padding-left: 10px
+}
+
+.EmailBox {
+  height: 30px;
+  width: 660px;
+  border: 0.5px solid grey;
+  padding-left: 10px
+}
+
+.EmailBoxWarning {
+  height: 30px;
+  width: 660px;
+  border: 0.5px solid red;
+  padding-left: 10px
+}
+
+.InputBox {
+  height: 30px;
+  width: 660px;
+  border: 0.5px solid grey;
+  padding-left: 10px
 }
 
 /*

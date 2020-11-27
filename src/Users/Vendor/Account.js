@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 
-import classes from "./VendorDashboard.module.css";
+import classes from "./VendorAccountOLD.module.css";
 
 const Account = (props) => {
     return (

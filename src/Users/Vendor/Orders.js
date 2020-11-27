@@ -10,7 +10,7 @@ import {
   faEdit
 } from "@fortawesome/free-solid-svg-icons";
  
-import classes from "./VendorDashboard.module.css";
+import classes from "./VendorAccountOLD.module.css";
 import { compareValues, getDate } from "./VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 
@@ -52,30 +52,19 @@ const Orders = (props) => {
         }
         return response;
       };
-
-    /*
-    // intilializes the show property of each order to "false"
-    const initializeDisplays = (events) => {
-        let tempObject = {};
-        events.forEach((item, index) => {
-        tempObject[item.eventNum] = false;
-        })
-        setOrderDisplay(tempObject);
-    }
-    */
     
     useEffect(() => {
         if (
-          typeof window !== "undefined" &&
-          localStorage.getItem(`user`) !== null
+            typeof window !== "undefined" &&
+            localStorage.getItem(`user`) !== null
         ) {
-          let tempUser = JSON.parse(localStorage.getItem("user"));
-          vendorInfo.token = tempUser.token;
-          vendorInfo.id = tempUser.user._id;
-          //vendorInfo.name = tempUser.user.name
-          //console.log("vendorInfo.name: ", tempUser.user.name)
+            let tempUser = JSON.parse(localStorage.getItem("user"));
+            vendorInfo.token = tempUser.token;
+            vendorInfo.id = tempUser.user._id;
+            //vendorInfo.name = tempUser.user.name
+            //console.log("vendorInfo.name: ", tempUser.user.name)
         } else {
-          //window.location.href = "/signin";
+             //window.location.href = "/signin";
         }
     
         if (
@@ -101,38 +90,28 @@ const Orders = (props) => {
         let fetchstr = `${API}/order/${vendorInfo.id}`;
 
         fetch(fetchstr, requestOptions)
-          .then(handleErrors)
-          .then((response) => response.text())
-          .then((result) => {
-            localStorage.setItem("orders", result);
-            let js = JSON.parse(result);
-            console.log("ticket orders unordered: ", js);
-            js.sort(compareValues("startDateTime", "asc"));
-            console.log("ticket orders ordered: ", js);
-            setTicketOrders(js);
-            //initializeDisplays(js);
-            setIsSuccessfull(true)
-            setIsLoading(false);
-            return js;
-          })
-          .catch((error) => {
-            console.log("error", error);
-            setIsSuccessfull(false)
-            setIsLoading(false);
-          });
+            .then(handleErrors)
+            .then((response) => response.text())
+            .then((result) => {
+                localStorage.setItem("orders", result);
+                let js = JSON.parse(result);
+                console.log("ticket orders unordered: ", js);
+                js.sort(compareValues("startDateTime", "asc"));
+                console.log("ticket orders ordered: ", js);
+                setTicketOrders(js);
+                //initializeDisplays(js);
+                setIsSuccessfull(true)
+                setIsLoading(false);
+                return js;
+            })
+            .catch((error) => {
+                console.log("error", error);
+                setIsSuccessfull(false)
+                setIsLoading(false);
+            });
 
-        }, []);
-  
-        /*
-        const editEvent = (item) => {
-          if (typeof window !== "undefined") {
-            console.log("JSON.stringify(item): ", JSON.stringify(item));
-            localStorage.setItem("editEvent", JSON.stringify(item));
-            window.location.href = `/eventedit/?eventID=${item.eventNum}`;
-          }
-          // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
-        }
-*/
+    }, []);
+
     const mainDisplay = () => {
         console.log("ticketOrders: ", ticketOrders)
         if (!isLoading && isSuccessfull && ticketOrders.length !== 0) {

@@ -41,55 +41,55 @@ const BuyerDashboard = () => {
     setIsLoading(false);
   }, []);
 
-const MainDisplay = () => {
-  if(!isLoading) {
-    if (paneView === "profile") {
+  const MainDisplay = () => {
+    if(!isLoading) {
+      if (paneView === "profile") {
+        return (
+          <Profile
+            loading={isLoading}
+            name={buyerInfo.name}
+            email={buyerInfo.email}
+          />
+        )
+      } else if (paneView === "onboarding") {
+        return (
+          <Onboarding
+            userid={buyerInfo.id}
+            token={buyerInfo.token}
+          />
+        )
+      }
+    } else {
+      return null
+    }
+  }
+
+  const Navigation = () => {
+    if(!isLoading) {
       return (
-        <Profile
-          loading={isLoading}
-          name={buyerInfo.name}
-          email={buyerInfo.email}
-        />
+          <BuyerNavigation
+            name="My Name"
+            buyerInfo={buyerInfo}
+            loading={isLoading}
+            pane={paneView}
+            clicked={(event) => {
+              console.log("Clicked button")
+              console.log("event: ", event.target)
+              console.log("event.name: ", event.target.name)
+              setPaneView(event.target.name)
+            }}
+          />
       )
-    } else if (paneView === "onboarding") {
+    } else {return null}
+  }
+
+  const onboardingMessage = () => {
+    if (true) {
       return (
-        <Onboarding
-          userid={buyerInfo.id}
-          token={buyerInfo.token}
-        />
+        <div style={{zIndex: "400"}}>Onboarding</div>
       )
     }
-  } else {
-    return null
   }
-}
-
-const Navigation = () => {
-  if(!isLoading) {
-    return (
-        <BuyerNavigation
-          name="My Name"
-          buyerInfo={buyerInfo}
-          loading={isLoading}
-          pane={paneView}
-          clicked={(event) => {
-            console.log("Clicked button")
-            console.log("event: ", event.target)
-            console.log("event.name: ", event.target.name)
-            setPaneView(event.target.name)
-          }}
-        />
-    )
-  } else {return null}
-}
-
-const onboardingMessage = () => {
-  if (true) {
-    return (
-      <div style={{zIndex: "400"}}>Onboarding</div>
-    )
-  }
-}
 
   return (
     <div className={classes.DashboardContainer}>
@@ -102,37 +102,3 @@ const onboardingMessage = () => {
 };
 
 export default BuyerDashboard;
-
-/*
-const MainDisplay = () => {
-  if(!isLoading) {
-    if (paneView === "profile") {
-      return (
-        <Profile
-          loading={isLoading}
-          name={buyerInfo.name}
-          email={buyerInfo.email}
-        />
-      )
-    } else if (paneView === "onboarding") {
-      return (
-        <Onboarding
-          userid={buyerInfo.id}
-          token={buyerInfo.token}
-        />
-      )
-    } else if (paneView === "wallet") {
-        return (
-          <TicketWallet/>
-        )
-    } else if (paneView === "preferences") {
-        return (
-          <Preferences/>
-        )
-    } else {
-      return null;
-    }
-  } else {
-    return null
-  }
-}*/
