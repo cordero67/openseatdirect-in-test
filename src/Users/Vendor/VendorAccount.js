@@ -92,7 +92,7 @@ const MainDisplay = () => {
       return (
         <Events
           clicked={() => {
-            setPaneView("ticketSales")
+            setPaneView("manualOrderEntry")
           }}
         />
       )
