@@ -193,16 +193,7 @@ const TicketSales = (props) => {
             return (
               <div>
                 <div className={classes.Orders}>
-                  <div style={{ fontSize: "12px", textAlign: "center" }}>          
-                    <FontAwesomeIcon
-                      color="black"
-                      size="sm"
-                      cursor="pointer"
-                      onClick={() => {
-                        switchView(item);
-                      }}
-                      icon={item.view ? faChevronUp : faChevronDown}
-                    />
+                  <div style={{ fontSize: "12px", textAlign: "center" }}>
                   </div>
                   <div style={{textAlign: "left"}}>{shortDateTime}</div>
                   <div style={{textAlign: "left"}}>{item.order_firstName}</div>
