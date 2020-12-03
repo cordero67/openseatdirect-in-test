@@ -88,7 +88,7 @@ const VendorNavigation = (props) => {
                   ) ? "#e0e0e0" : "#b8b8b8",
                 outline: "none"
               }}
-              name="manualOrderEntry"
+              name="editEvent"
               onClick={(event) => {
                 if (props.pane !== "salesAnalytics" && props.pane !== "manualOrderEntry" && props.pane !== "ticketSales")
                 props.clicked(event)
@@ -103,7 +103,10 @@ const VendorNavigation = (props) => {
               padding: "0px"
           }}>
 
-            {(props.pane === "salesAnalytics" || props.pane === "manualOrderEntry" || props.pane === "ticketSales") ?
+            {(props.pane === "salesAnalytics" ||
+              props.pane === "ticketSales" ||
+              props.pane === "manualOrderEntry" ||
+              props.pane === "editEvent") ?
               (
                 <li
                   style={{
@@ -132,6 +135,18 @@ const VendorNavigation = (props) => {
                     onClick={props.clicked}>
                     Manual Order Entry
                   </button>
+
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "editEvent" ? "#fff" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="editEvent"
+                    onClick={props.clicked}>
+                    Event Edit
+                  </button>
+
                 </li>
               ) :
               null

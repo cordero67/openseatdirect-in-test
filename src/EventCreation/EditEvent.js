@@ -20,7 +20,7 @@ import RadioForm from "./RadioForm";
 import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
 
-import classes from "./EventCreation.module.css";
+import classes from "./EditEvent.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -153,7 +153,7 @@ const EventEdit = () => {
 
       const uint8 = new Uint8Array(resPhotoData.data.data);
       const len =  uint8.byteLength;
-      if (len == 0){ // no photo data
+      if (len ==0){ // no photo data
               setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
               return;
       };
@@ -596,6 +596,7 @@ const loadEventInfo = (eventTix) => {
       }
 
       // eliminate empty ticket types
+      let tempTicketDetailsArray = [];
       let tempTicketDetails = [...ticketDetails];
 
       let ticketDetailsFields = [
@@ -2830,16 +2831,50 @@ const loadEventInfo = (eventTix) => {
 
   const mainDisplay = () => {
       return (
-        <div className={classes.MainContainer}>
+
+/*
+  .DisplayPanel {
+    background-color: white;
+    font-size: 15px;
+    //width: 1030px;
+    height: calc(100vh - 167px);
+    //margin-top: 50px;
+    //top: 10px;
+    //padding-bottom: 15px;
+    //padding-left: 20px;
+    //padding-right: 20px;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    overflow-y: auto;
+  }
+*/
+
+        <div
+          style={{
+            backgroundColor: "white",
+            height: "400px",
+            height: "calc(100vh - 243px)",
+            scrollbarWidth: "thin",
+            overflowY: "auto",
+            fontSize: "15px",
+            width: "1030px",
+            marginTop: "127px",
+            paddingTop: "10px",
+            paddingBotton: "15px",
+            paddingLeft: "20px",
+            paddingRight: "20px"
+          }}>
+
+
+
+
+
+           
+          
           <div className={classes.GridTitlePanel}>
             <div className={classes.GridTitle}>
-              <div
-                style={{
-                  paddingTop: "5px",
-                  fontSize: "30px",
-                  fontWeight: "600",
-                  }}>
-                  Edit Event
+              <div style={{paddingTop: "6px"}}>
+                  Event Edit
               </div>
               {currentStatus()}
               {buttonDisplay()}
@@ -2866,6 +2901,850 @@ const loadEventInfo = (eventTix) => {
               {subTitleDisplay()}
             </div>
           </div>
+          <div>
+            <div className={classes.CategoryTitle} style={{ width: "140px" }}>
+              Event Details
+            </div>
+
+            <div style={{ border: "1px solid grey" }}>
+              <div className={classes.SectionTitleTight}>
+                Event Title<span style={{ color: "red" }}>*</span>
+              </div>
+              <div className={classes.InputBox}>
+                <input
+                  className={
+                    eventTitleOmission
+                      ? classes.InputBoxContentError
+                      : classes.InputBoxContent
+                  }
+                  style={{ width: "600px" }}
+                  onFocus={() => {
+                    setEventTitleWarning(true);
+                    setEventTitleOmission(false);
+                  }}
+                  onBlur={() => {
+                    setEventTitleWarning(false);
+                    setEventTitleOmission(false);
+                  }}
+                  type="text"
+                  id="eventTitle"
+                  maxLength="64"
+                  placeholder="Short title of event: limit 64 characters"
+                  name="eventTitle"
+                  value={eventDescription.eventTitle}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></input>
+                {eventTitleWarning
+                  ? displayMessage(64, eventDescription.eventTitle)
+                  : null}
+                {eventTitleOmission ? (
+                  <div
+                    style={{
+                      paddingLeft: "10px",
+                      height: "14px",
+                      color: "red",
+                      fontSize: "12px",
+                      fontWeight: "700",
+                    }}
+                  >
+                    This is a required field
+                  </div>
+                ) : null}
+              </div>
+    
+              <div className={classes.SectionTitle}>
+                Event Type: please select one
+              </div>
+              <RadioForm
+                details={eventTypeList}
+                group="eventTypeGroup"
+                current={eventDescription.eventType}
+                change={(event, value) =>
+                  changeEventDescriptionRadio(event, value, "eventType")
+                }
+              />
+    
+              {eventDescription.eventType === "live" ? (
+                <Aux>
+                  <div className={classes.SectionTitleTight}>Event Location</div>
+    
+                  <div className={classes.InputBoxTight}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setEventLocationWarning(true)}
+                      onBlur={() => setEventLocationWarning(false)}
+                      type="text"
+                      id="locationVenueName"
+                      maxLength="140"
+                      name="locationVenueName"
+                      placeholder="Venue Name: limit 140 characters"
+                      value={eventDescription.locationVenueName}
+                      onChange={(event) => {
+                        changeEventDescription(event);
+                      }}
+                    ></input>
+                    {eventLocationWarning
+                      ? displayMessage(140, eventDescription.locationVenueName)
+                      : null}
+                  </div>
+    
+                  <div className={classes.InputBoxTight}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setEventAddress1Warning(true)}
+                      onBlur={() => setEventAddress1Warning(false)}
+                      type="text"
+                      id="locationAddress1"
+                      name="locationAddress1"
+                      maxLength="64"
+                      placeholder="Address1: limit 64 characters"
+                      value={eventDescription.locationAddress1}
+                      onChange={(event) => {
+                        changeEventDescription(event);
+                      }}
+                    ></input>
+                    {eventAddress1Warning
+                      ? displayMessage(64, eventDescription.locationAddress1)
+                      : null}
+                  </div>
+    
+                  <div className={classes.InputBoxTight}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setEventAddress2Warning(true)}
+                      onBlur={() => setEventAddress2Warning(false)}
+                      type="text"
+                      id="locationAddress2"
+                      name="locationAddress2"
+                      maxLength="64"
+                      placeholder="Address2: limit 64 characters"
+                      value={eventDescription.locationAddress2}
+                      onChange={(event) => {
+                        changeEventDescription(event);
+                      }}
+                    ></input>
+                    {eventAddress2Warning
+                      ? displayMessage(64, eventDescription.locationAddress2)
+                      : null}
+                  </div>
+    
+                  <div className={classes.InputBoxTight}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setEventCityWarning(true)}
+                      onBlur={() => setEventCityWarning(false)}
+                      type="text"
+                      id="locationCity"
+                      name="locationCity"
+                      maxLength="64"
+                      placeholder="City: limit 64 characters"
+                      value={eventDescription.locationCity}
+                      onChange={(event) => {
+                        let tempDescription = { ...eventDescription };
+                        tempDescription.locationCity = event.target.value;
+                        setEventDescription(tempDescription);
+                      }}
+                    ></input>
+                    {eventCityWarning
+                      ? displayMessage(64, eventDescription.locationCity)
+                      : null}
+                  </div>
+    
+                  <div
+                    className={classes.InputBoxTight}
+                    style={{
+                      display: `grid`,
+                      gridTemplateColumns: "300px 300px",
+                    }}
+                  >
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "295px" }}
+                      onFocus={() => setEventStateWarning(true)}
+                      onBlur={() => setEventStateWarning(false)}
+                      type="text"
+                      id="locationState"
+                      maxLength="2"
+                      placeholder="State: 2 letter code"
+                      value={eventDescription.locationState}
+                      onChange={(event) => {
+                        let tempDescription = { ...eventDescription };
+                        tempDescription.locationState = event.target.value;
+                        setEventDescription(tempDescription);
+                      }}
+                    ></input>
+    
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "300px" }}
+                      onFocus={() => setEventZipPostalWarning(true)}
+                      onBlur={() => setEventZipPostalWarning(false)}
+                      type="text"
+                      id="locationPostalCode"
+                      maxLength="5"
+                      placeholder="Zip/Postal"
+                      value={eventDescription.locationZipPostalCode}
+                      onChange={(event) => {
+                        let tempDescription = { ...eventDescription };
+                        tempDescription.locationZipPostalCode = event.target.value;
+                        setEventDescription(tempDescription);
+                      }}
+                    ></input>
+              
+                    {eventStateWarning
+                        ? (<div>
+                          {displayMessage(2, eventDescription.locationState)}
+                        </div>)
+                        : null}
+              
+                    {eventZipPostalWarning
+                      ? (<div>
+                        <div>{" "}</div>
+                      </div>)
+                      : null}
+
+                    {eventZipPostalWarning
+                      ? (<div>
+                        {displayMessage(5, eventDescription.locationZipPostalCode)}
+                      </div>)
+                      : null}
+                    </div>
+
+                  <div className={classes.InputBoxTight}>
+                    <CountrySelector
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      current={eventDescription.locationCountryCode}
+                      //defaultValue="United States of America"
+                      getCountry={changeCountryCode}
+                    />
+                  </div>
+    
+                  <div className={classes.InputBox}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setEventAdditionalWarning(true)}
+                      onBlur={() => setEventAdditionalWarning(false)}
+                      type="text"
+                      id="locationAddressAdditional"
+                      maxLength="256"
+                      placeholder="Notes: 'e.g. Enter through backdoor' limit 256 characters"
+                      value={eventDescription.locationNote}
+                      onChange={(event) => {
+                        let tempDescription = { ...eventDescription };
+                        tempDescription.locationNote = event.target.value;
+                        setEventDescription(tempDescription);
+                      }}
+                    ></input>
+                    {eventAdditionalWarning
+                      ? displayMessage(256, eventDescription.locationNote)
+                      : null}
+                  </div>
+                  <div className={classes.SectionTitleTight}>
+                    Online Information
+                  </div>
+    
+                  <div className={classes.InputBoxTight}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setWebinarLinkWarning(true)}
+                      onBlur={() => setWebinarLinkWarning(false)}
+                      type="text"
+                      id="webinarLink"
+                      maxLength="254"
+                      placeholder="Webinar Link: limit 256 characters"
+                      value={eventDescription.webinarLink}
+                      onChange={(event) => {
+                        let tempDescription = { ...eventDescription };
+                        tempDescription.webinarLink = event.target.value;
+                        setEventDescription(tempDescription);
+                      }}
+                    ></input>
+                    {webinarLinkWarning
+                      ? displayMessage(256, eventDescription.webinarLink)
+                      : null}
+                  </div>
+    
+                  <div className={classes.InputBox}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setWebinarInfoWarning(true)}
+                      onBlur={() => setWebinarInfoWarning(false)}
+                      type="text"
+                      id="onlineInformation"
+                      maxLength="1000"
+                      placeholder="Additional Instructions: limit 1000 characters"
+                      value={eventDescription.onlineInformation}
+                      onChange={(event) => {
+                        let tempDescription = { ...eventDescription };
+                        tempDescription.onlineInformation = event.target.value;
+                        setEventDescription(tempDescription);
+                      }}
+                    ></input>
+                    {webinarInfoWarning
+                      ? displayMessage(1000, eventDescription.onlineInformation)
+                      : null}
+                  </div>
+                </Aux>
+              ) : null}
+    
+              {eventDescription.eventType === "online" ? (
+                <Aux>
+                  <div className={classes.SectionTitleTight}>
+                    Online Information
+                  </div>
+    
+                  <div className={classes.InputBoxTight}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setWebinarLinkWarning(true)}
+                      onBlur={() => setWebinarLinkWarning(false)}
+                      type="text"
+                      id="webinarLink"
+                      maxLength="256"
+                      placeholder="Webinar Link: limit 256 characters"
+                      value={eventDescription.webinarLink}
+                      onChange={(event) => {
+                        let tempDescription = { ...eventDescription };
+                        tempDescription.webinarLink = event.target.value;
+                        setEventDescription(tempDescription);
+                      }}
+                    ></input>
+                    {webinarLinkWarning
+                      ? displayMessage(256, eventDescription.webinarLink)
+                      : null}
+                  </div>
+    
+                  <div className={classes.InputBox}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setWebinarInfoWarning(true)}
+                      onBlur={() => setWebinarInfoWarning(false)}
+                      type="text"
+                      id="onlineInformation"
+                      maxLength="1000"
+                      placeholder="Additional Instructions: limit 1000 characters"
+                      value={eventDescription.onlineInformation}
+                      onChange={(event) => {
+                        let tempDescription = { ...eventDescription };
+                        tempDescription.onlineInformation = event.target.value;
+                        setEventDescription(tempDescription);
+                      }}
+                    ></input>
+                    {webinarInfoWarning
+                      ? displayMessage(1000, eventDescription.onlineInformation)
+                      : null}
+                  </div>
+                </Aux>
+              ) : null}
+    
+              {eventDescription.eventType === "tba" ? (
+                <Aux>
+                  <div className={classes.SectionTitleTight}>
+                    To be announced information
+                  </div>
+    
+                  <div className={classes.InputBox}>
+                    <input
+                      className={classes.InputBoxContent}
+                      style={{ width: "600px" }}
+                      onFocus={() => setTbaInfoWarning(true)}
+                      onBlur={() => setTbaInfoWarning(false)}
+                      type="text"
+                      id="tbaInformation"
+                      maxLength="1000"
+                      placeholder="Additional Instructions: limit 1000 characters"
+                      value={eventDescription.tbaInformation}
+                      onChange={(event) => {
+                        let tempDescription = { ...eventDescription };
+                        tempDescription.tbaInformation = event.target.value;
+                        setEventDescription(tempDescription);
+                      }}
+                    ></input>
+                    {tbaInfoWarning
+                      ? displayMessage(1000, eventDescription.tbaInformation)
+                      : null}
+                  </div>
+                </Aux>
+              ) : null}
+    
+              <div className={classes.SectionTitle}>Event Dates and Time</div>
+              <div className={classes.DateTimeHeader}>
+                <div>
+                  Start Date<span style={{ color: "red" }}>*</span>
+                </div>
+                <div>
+                  Start Time<span style={{ color: "red" }}>*</span>
+                </div>
+                <div>End Date</div>
+                <div>End Time</div>
+                <div>Time Zone</div>
+              </div>
+    
+              <div className={classes.DateTimeInputs}>
+                <DateSelector
+                  type={"startDate"}
+                  startDate={eventDescription.startDate}
+                  current={eventDescription.startDate}
+                  change={(date) => changeEventDate(date, "start")}
+                  beforeDate={new Date()}
+                />
+                <TimeSelector
+                  current={eventDescription.startTime}
+                  name="startTime"
+                  getTime={changeStartTime}
+                  //startDate={eventDescription.startDate}
+                  //startTime={eventDescription.startTime}
+                  //endDate={eventDescription.endDate}
+                />
+                <DateSelector
+                  type={"endDate"}
+                  startDate={eventDescription.startDate}
+                  current={eventDescription.endDate}
+                  change={(date) => changeEventDate(date, "end")}
+                  beforeDate={eventDescription.startDate}
+                />
+                <TimeSelector
+                  current={eventDescription.endTime}
+                  name="endTime"
+                  getTime={changeEndTime}
+                  //startDate={parseInt(eventDescription.startDate)}
+                  //startTime={parseInt(eventDescription.startTime)}
+                  //endDate={eventDescription.endDate}
+                />
+                <TimeZoneSelector
+                  current={eventDescription.timeZone}
+                  //defaultValue="Eastern Time - New York"
+                  getTimeZone={changeTimeZone}
+                />
+              </div>
+    
+              <div className={classes.SectionTitleTight}>
+                Event Image{" "}
+                <Popup
+                  position="right center"
+                  content="Additional information"
+                  header="Event Image"
+                  trigger={
+                    <FontAwesomeIcon
+                      color="blue"
+                      cursor="pointer"
+                      icon={faInfoCircle}
+                    />
+                  }
+                />
+              </div>
+    
+              <div
+                style={{
+                  height: "227px",
+                  fontSize: "16px",
+                  padding: "5px 10px 10px 25px",
+                  boxSizing: "borderBox",
+                  backgroundColor: "#E7E7E7",
+                }}
+              >
+                {imageCanvas()}
+              </div>
+    
+              <div className={classes.SectionTitleTight}>
+                Detailed Event Description
+              </div>
+              <div
+                style={{
+                  padding: "5px 270px 10px 25px",
+                  border: "0px solid green",
+                  boxSizing: "borderBox",
+                  height: "auto",
+                  backgroundColor: "#E7E7E7",
+                }}
+              >
+                <Editor
+                  apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
+                  onEditorChange={changeLongDescription}
+                  initialValue={eventDescription.longDescription}
+                  plugins="wordcount autoresize"
+                  init={{
+                    toolbar:
+                      "undo redo | fontsizeselect fontselect | bold italic underline | forecolor ",
+                    toolbar_items_size: "small",
+                    autoresize_bottom_margin: 0,
+                    padding: "0 0 0 0",
+                    min_height: 250,
+                    max_height: 400,
+                    icons: "jam",
+                    skin: "fabric",
+                    resize: true,
+                    menubar: "edit format",
+                  }}
+                />
+              </div>
+    
+              <div className={classes.SectionTitleTight}>Event Category</div>
+              <div className={classes.InputBox}>
+              <CategorySelector
+                  current={eventDescription.eventCategory}
+                  //defaultValue="United States of America"
+                  getCategory={changeCategory}
+                />
+              </div>
+    
+              <div className={classes.SectionTitleTight}>
+                Event Specific Social Media Links
+              </div>
+              <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
+                <FontAwesomeIcon
+                  className={classes.SocialMediaIcon}
+                  style={{ color: "#43609c" }}
+                  icon={faFacebook}
+                />
+                <div className={classes.SocialMediaName}>facebook.com/ </div>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "400px" }}
+                  onFocus={() => setFacebookWarning(true)}
+                  onBlur={() => setFacebookWarning(false)}
+                  type="text"
+                  id="facebookLink"
+                  maxLength="64"
+                  placeholder="your facebook address: limit 64 characters"
+                  name="facebookLink"
+                  value={eventDescription.facebookLink}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></input>
+                </div>
+              
+              {facebookWarning
+                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
+                    <div>{" "}</div>
+                    <div>{" "}</div>
+                    {displayMessage(64, eventDescription.facebookLink)}
+                  </div>)
+                  : null}
+
+              <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
+                <FontAwesomeIcon
+                  className={classes.SocialMediaIcon}
+                  style={{ color: "#0084b4" }}
+                  icon={faTwitter}
+                />
+                <div className={classes.SocialMediaName}>twitter.com/ </div>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "400px" }}
+                  onFocus={() => setTwitterWarning(true)}
+                  onBlur={() => setTwitterWarning(false)}
+                  type="text"
+                  maxLength="64"
+                  id="twitterLink"
+                  placeholder="your twitter address: limit 64 characters"
+                  name="twitterLink"
+                  value={eventDescription.twitterLink}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></input>
+              </div>
+              
+              {twitterWarning
+                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
+                    <div>{" "}</div>
+                    <div>{" "}</div>
+                    {displayMessage(64, eventDescription.twitterLink)}
+                  </div>)
+                  : null}
+    
+              <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
+                <FontAwesomeIcon
+                  className={classes.SocialMediaIcon}
+                  style={{ color: "#0e76a8" }}
+                  icon={faLinkedin}
+                />
+                <div className={classes.SocialMediaName}>linkedin.com/ </div>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "400px" }}
+                  onFocus={() => setLinkedinWarning(true)}
+                  onBlur={() => setLinkedinWarning(false)}
+                  type="text"
+                  maxLength="64"
+                  id="linkedinLink"
+                  placeholder="your linkedin address: limit 64 characters"
+                  name="linkedinLink"
+                  value={eventDescription.linkedinLink}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></input>
+              </div>
+              
+              {linkedinWarning
+                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
+                    <div>{" "}</div>
+                    <div>{" "}</div>
+                    {displayMessage(64, eventDescription.linkedinLink)}
+                  </div>)
+                  : null}
+    
+              <div className={classes.SocialMediaLink} style={{ height: "55px" }}>
+                <FontAwesomeIcon
+                  className={classes.SocialMediaIcon}
+                  style={{ color: "#8a3ab9" }}
+                  icon={faInstagram}
+                />
+                <div className={classes.SocialMediaName}>instagram.com/ </div>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "400px" }}
+                  onFocus={() => setInstagramWarning(true)}
+                  onBlur={() => setInstagramWarning(false)}
+                  type="text"
+                  maxLength="64"
+                  id="instagramLink"
+                  placeholder="your instagram address: limit 64 characters"
+                  name="instagramLink"
+                  value={eventDescription.instagramLink}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></input>
+              </div>
+              
+              {instagramWarning
+                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
+                    <div>{" "}</div>
+                    <div>{" "}</div>
+                    {displayMessage(64, eventDescription.instagramLink)}
+                  </div>)
+                  : null}
+
+                  
+    
+              <div className={classes.SectionTitleTight}>
+                Social Media Event Description
+              </div>
+              <div className={classes.TextBox}>
+                <textarea
+                  style={{
+                    padding: "9px 10px",
+                    border: "1px solid lightgrey",
+                    boxSizing: "borderBox",
+                    lineHeight: "1.75",
+                    height: "80px",
+                    width: "600px",
+                    resize: "vertical",
+                  }}
+                  onFocus={() => setShortDescriptionWarning(true)}
+                  onBlur={() => setShortDescriptionWarning(false)}
+                  type="text"
+                  id="shortDescription"
+                  maxLength="140"
+                  placeholder="Short description of event for social media posts: limit 140 characters"
+                  name="shortDescription"
+                  value={eventDescription.shortDescription}
+                  onChange={(event) => {
+                    changeEventDescription(event);
+                  }}
+                ></textarea>
+                {shortDescriptionWarning
+                  ? displayMessage(140, eventDescription.shortDescription)
+                  : null}
+              </div>
+    
+              <div className={classes.SectionTitleTight}>
+                Customize OpenSeatDirect Vanity URL
+              </div>
+              <div
+                style={{
+                  display: `grid`,
+                  gridTemplateColumns: "220px 500px",
+                  height: "45px",
+                  fontSize: "16px",
+                  padding: "5px 10px 10px 35px",
+                  boxSizing: "borderBox",
+                  backgroundColor: "#E7E7E7",
+                }}
+              >
+                <div className={classes.SocialMediaName}>
+                  www.openseatdirect.com/et/{" "}
+                </div>
+                <input
+                  className={classes.InputBoxContent}
+                  style={{ width: "500px" }}
+                  onFocus={() => setVanityWarning(true)}
+                  onBlur={() => setVanityWarning(false)}
+                  type="text"
+                  id="vanityLink"
+                  maxLength="75"
+                  placeholder="vanity url: limit 75 characters"
+                  name="vanityLink"
+                  value={eventDescription.vanityLink}
+                  onChange={(event) => {
+                    let tempDescription = { ...eventDescription };
+                    tempDescription.vanityLink = event.target.value;
+                    setEventDescription(tempDescription);
+                  }}
+                ></input>
+              </div>
+    
+              <div
+                style={{
+                  display: `grid`,
+                  gridTemplateColumns: "220px 500px",
+                  height: "18px",
+                  fontSize: "10px",
+                  padding: "0px 10px 0px 35px",
+                  boxSizing: "borderBox",
+                  backgroundColor: "#E7E7E7",
+                }}
+              >
+                <div>{" "}</div>
+                {vanityWarning
+                  ? displayMessage(75, eventDescription.vanityLink)
+                  : null}
+              </div>
+    
+            </div>
+    
+            <br></br>
+            <div className={classes.CategoryTitle} style={{ width: "160px" }}>
+              Ticket Creation
+            </div>
+
+            <div style={{ border: "1px solid grey" }}>
+              <div
+                style={{
+                  display: `grid`,
+                  gridTemplateColumns: "360px 165px 165px 80px",
+                  height: "40px",
+                  fontSize: "15px",
+                  backgroundColor: "#E7E7E7",
+                  boxSizing: "borderBox",
+                }}
+              >
+                <div
+                  style={{
+                    padding: "10px 10px 10px 25px",
+                    boxSizing: "borderBox",
+                    fontWeight: 600,
+                  }}
+                >
+                  Ticket Name<span style={{ color: "red" }}>*</span>
+                </div>
+    
+                <div
+                  style={{
+                    padding: "10px 10px 10px 5px",
+                    boxSizing: "borderBox",
+                    fontWeight: 600,
+                  }}
+                >
+                  Quantity<span style={{ color: "red" }}>*</span>
+                </div>
+    
+                <div
+                  style={{
+                    padding: "10px 10px 10px 5px",
+                    boxSizing: "borderBox",
+                    fontWeight: 600,
+                  }}
+                >
+                  Price<span style={{ color: "red" }}>*</span>
+                </div>
+              </div>
+              {ticketTypeDisplay()}
+    
+              <div
+                style={{
+                  padding: "10px 5px 10px 5px",
+                  borderTop: "1px solid lightgrey",
+                  boxSizing: "borderBox",
+                  height: "56px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                }}
+              >
+                <Button
+                  style={{fontSize: "12px"}}
+                  content="Add a ticket"
+                  icon="add circle"
+                  color="green"
+                  onClick={createNewTicketHandler}
+                />
+              </div>
+            </div>
+    
+            <br></br>
+            <div className={classes.CategoryTitle} style={{ width: "195px" }}>
+              Additional Settings
+            </div>
+            <div style={{ border: "1px solid grey" }}>
+              <div className={classes.SectionTitle}>
+                Refund Policy: please select one
+              </div>
+              <RadioForm
+                details={refundPolicyList}
+                group="refundGroup"
+                current={eventDescription.refundPolicy}
+                change={(event, value) =>
+                  changeEventDescriptionRadio(event, value, "refundPolicy")
+                }
+              />
+            </div>
+            <div style={{ margin: "auto", textAlign: "center" }}>
+
+            </div>
+            <br></br>
+          </div>
+
+        </div>
+      );
+  }
+
+  
+  const tabTitle = (
+    <div className={classes.DashboardHeader}>
+      {(true) ?
+      <div style={{fontSize: "26px", fontWeight: "600"}}>Event Title for Event Edit</div>
+      :
+      <div><br></br></div>}
+      <div style={{paddingTop: "5px"}}>
+      <button
+        className={classes.SwitchButton}
+        //onClick={() => {props.clicked("events")}}
+      >
+        Switch Event
+      </button>
+      </div>
+    </div>
+  )
+
+  return (
+    <div>
+      {tabTitle}
+      {mainDisplay()}
+
+    </div>
+  )
+};
+
+export default EventEdit;
+
+
+          /*
 
 
           <div className={classes.MainGrid}>
@@ -3675,15 +4554,4 @@ const loadEventInfo = (eventTix) => {
 
             </div>
           </div>
-        </div>
-      );
-  }
-
-  return (
-    <div>
-      <div>{mainDisplay()}</div>
-    </div>
-  )
-};
-
-export default EventEdit;
+          */

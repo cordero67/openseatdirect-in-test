@@ -5,11 +5,17 @@ import { useOurApi } from "./apiUsers";
 import { API } from "../../config";
 
 import { Button } from "react-bootstrap";
+import HaHaForHireLights from "../../assets/HaHaForHireLightsCropped.jpg"
+
+//import DemoCarousel from "./DemoCarousel.js";
 
 import CashNow from "../../assets/CashNow.jpg";
 import NoFees from "../../assets/NoFees.png";
 import SingleLocation from "../../assets/SingleLocation.png";
 import OSDImage from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png"
+
+import HaHaForHire from "../../assets/HaHaForHireComedyNight.png"
+import RikaRikaStudio from "../../assets/RikaRikaStudio.png"
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./HomePage.module.css";
@@ -70,21 +76,21 @@ const Home = () => {
       if (screenSize >= 800) {
         topContainer = classes.TopContainer;
         return (
-          <div style={{fontSize: "64px", lineHeight: "94px"}}>
+          <div style={{fontSize: "64px", lineHeight: "94px", textAlign: "center"}}>
             TICKETING MADE EASY!
           </div>
         ) 
       } else if (screenSize >= 650 && screenSize < 800) {
         topContainer = classes.TopContainer;
         return (
-          <div style={{fontSize: "52px", lineHeight: "94px"}}>
+          <div style={{fontSize: "52px", lineHeight: "94px", textAlign: "center"}}>
             TICKETING MADE EASY!
           </div>
         ) 
       } else {
         topContainer = classes.TopContainerTight;
         return (
-          <div style={{fontSize: "48px", lineHeight: "64px"}}>
+          <div style={{fontSize: "48px", lineHeight: "64px", textAlign: "center"}}>
             TICKETING
             <br></br>
             MADE EASY!
@@ -558,12 +564,15 @@ const Home = () => {
 
     return (
       <div className={classes.MainContainer}>
-
         {isResizing ? null : (
           <div>
             <div className={classes.TopContainer}>
-              <div className={classes.MarketingText}>
+              <div className={classes.TagLineText}
+                style={{position: "absolute", paddingLeft: "40px", paddingTop: "20px"}}>
                 {tagLine()}
+              </div>
+              <div>
+                <img style={{width: "100%", maxWidth: "1200px", position: "absolute"}} src={HaHaForHireLights}/>
               </div>
             </div>
 
@@ -596,7 +605,6 @@ const Home = () => {
                   </div>
                 )
               }
-
             </div>
 
             <div className={classes.SectionContainer}>
@@ -608,7 +616,6 @@ const Home = () => {
                 SCHEDULE APPOINTMENT
               </Button>
             </div>
-
 
           </div>
         )}

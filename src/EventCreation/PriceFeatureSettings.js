@@ -1,7 +1,7 @@
 //ENTIRE CODE HAS BEEN CHECKED VERSUS ORIGINAL
 //EXCEPT FOR <PromoCodeDisplay/> SECTION LABELED BELOW
 
-import React, { useState, useRef } from "react";
+import React from "react";
 
 import classes from "./EventCreation.module.css";
 import Aux from "../hoc/Auxiliary/Auxiliary";

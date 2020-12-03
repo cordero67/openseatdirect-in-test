@@ -4,11 +4,9 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Order.module.css";
 
 const OrderSummary = props => {
-  //console.log("inside ordersummary")
   let purchaseTotal = 0;
-  let adjPurchaseTotal;
   let fixedPurchaseTotal;
-  props.ticketOrder.map(item => {
+  props.ticketOrder.forEach(item => {
     if(item.ticketsSelected > 0) {
       
       purchaseTotal += (item.ticketsSelected * item.adjustedTicketPrice);

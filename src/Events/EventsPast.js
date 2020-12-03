@@ -4,7 +4,7 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../config";
-import { getAllPastEventData, getEventImage } from "./apiEvents";
+import { getAllPastEventData } from "./apiEvents";
 
 import classes from "./Events.module.css";
 import Event from "./EventTombstone";
@@ -25,7 +25,7 @@ const EventsPasts = () => {
       return res;
     })
     .then(res => {
-      res.map((item, index) => {
+      res.forEach((item, index) => {
         console.log("new res");
         console.log("new res event num: ", res[index].eventNum);
         res[index]["url"] = `${API}/event/photo/e/${res[index].eventNum}`;

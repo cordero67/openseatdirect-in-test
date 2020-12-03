@@ -5,8 +5,9 @@ import { compareValues } from "./VendorFunctions";
 
 import VendorNavigation from "./VendorNavigation";
 import Events from "./Events";
-import ManualOrderEntry from "./ManualOrderEntry";
 import SalesAnalytics from "./SalesAnalytics";
+import ManualOrderEntry from "./ManualOrderEntry";
+import EditEvent from "../../EventCreation/EditEvent";
 import TicketSales from "./TicketSales";
 import Orders from "./Orders";
 import CreateEvent from "../../EventCreation/CreateEvent";
@@ -60,7 +61,7 @@ const VendorAccount = () => {
         console.log("eventDescriptions unordered: ", tempEvents);
         tempEvents.sort(compareValues("startDateTime", "asc"));
         console.log("eventDescriptions ordered: ", tempEvents);
-        localStorage.setItem("events", JSON. stringify(tempEvents));
+        localStorage.setItem("events", JSON.stringify(tempEvents));
       })
       .catch((error) => {
         console.log("error in event information retrieval", error);
@@ -92,15 +93,19 @@ const MainDisplay = () => {
       return (
         <Events
           clicked={() => {
+            setPaneView("editEvent")
+          }}
+          salesAnalytics={() => {
+            setPaneView("salesAnalytics")
+          }}
+          historicalOrders={() => {
             setPaneView("ticketSales")
           }}
-        />
-      )
-    } else if (paneView === "manualOrderEntry") {
-      return (
-        <ManualOrderEntry
-          clicked={() => {
-            setPaneView("events")
+          issueTickets={() => {
+            setPaneView("manualOrderEntry")
+          }}
+          editEvent={() => {
+            setPaneView("editEvent")
           }}
         />
       )
@@ -111,6 +116,22 @@ const MainDisplay = () => {
     } else if (paneView === "ticketSales") {
       return (
         <TicketSales
+          clicked={() => {
+            setPaneView("events")
+          }}
+        />
+      )
+    } else if (paneView === "editEvent") {
+      return (
+        <EditEvent
+          clicked={() => {
+            setPaneView("events")
+          }}
+        />
+      )
+    } else if (paneView === "manualOrderEntry") {
+      return (
+        <ManualOrderEntry
           clicked={() => {
             setPaneView("events")
           }}

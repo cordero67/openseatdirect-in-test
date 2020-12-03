@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 
 import { isAuthenticated } from '../../Users/apiUsers';
 
-import Aux from '../../hoc/Auxiliary/Auxiliary';
 import classes from './HeaderItems.module.css';
 
 // determines if current menu item, i.e. "<NavLink>" is the active link
@@ -20,7 +19,6 @@ const isActive = (page, path) => {
 const NavigationItems = (props) => {
 
     const [isResizing, setIsResizing] = useState(false);
-    //const [screenSize, setScreenSize] = useState(window.innerWidth);
     const [screenSize, setScreenSize] = useState(500);
     console.log("screenSize: ", screenSize)
     

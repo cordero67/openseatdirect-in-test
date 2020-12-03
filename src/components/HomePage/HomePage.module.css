@@ -6,9 +6,13 @@
 
 .TopContainer {
   color: #fff;
-  background-color: #101C32;
-  padding-top: 15px;
-  padding-bottom: 15px
+  /*background-color: #101C32;*/
+  background-color: red;
+  height: 600px;
+  margin: auto;
+
+  /*padding-top: 15px;
+  padding-bottom: 15px*/
 }
 
 .TextContainer {
@@ -38,6 +42,13 @@
 }
 
 .MarketingText {
+  font-family: Lato;
+  font-weight: 600;
+  text-align: center;
+}
+
+.TagLineText {
+  z-index: 200;
   font-family: Lato;
   font-weight: 600;
   text-align: center;

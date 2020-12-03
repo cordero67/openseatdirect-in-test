@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 
 import { API } from "../../config";
+import Analytics from "../../assets/analytics.png";
+import Receipt from "../../assets/receipt.png";
+import Ticket from "../../assets/ticket.png";
+import Edit from "../../assets/edit.png";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChevronUp,
   faChevronDown,
   faEdit
 } from "@fortawesome/free-solid-svg-icons";
  
 import classes from "./VendorAccountOLD.module.css";
 import { compareValues, getDates } from "./VendorFunctions";
-import { Button, Popup } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 
 
 let vendorInfo = {};
@@ -19,7 +22,6 @@ let vendorInfo = {};
 const Events = (props) => {
 
     const [eventDescriptions, setEventDescriptions] = useState();//
-    const [ticketDisplay, setTicketDisplay] = useState();
     const [isLoading, setIsLoading] = useState(false);//
     const [isSuccessfull, setIsSuccessfull] = useState(false);//
 
@@ -30,15 +32,6 @@ const Events = (props) => {
         }
         return response;
     };
-
-    // intilializes the show property of each ticket type to "false"
-    const initializeDisplays = (events) => {
-        let tempObject = {};
-        events.forEach((item, index) => {
-        tempObject[item.eventNum] = false;
-        })
-        setTicketDisplay(tempObject);
-    }
     
     useEffect(() => {
         setIsLoading(true);
@@ -135,8 +128,10 @@ const Events = (props) => {
                                 style={{
                                     textAlign: "center",
                                     display: "grid",
-                                    columnGap: "10px",
-                                    gridTemplateColumns: "60px 20px 640px 100px 80px",
+                                    columnGap: "5px",
+                                    gridTemplateColumns: "60px 500px 80px 80px 80px 80px 80px",
+                                    paddingTop: "15px",
+                                    paddingBottom: "5px",
                                     paddingLeft: "20px",
                                     paddingRight: "30px"
                                     }}>
@@ -155,22 +150,7 @@ const Events = (props) => {
                                         {dayDate}
                                     </span>
                                 </div>
-                                <div style={{ fontSize: "12px", textAlign: "center" }}>
-                                
-                                    <FontAwesomeIcon
-                                    color="black"
-                                    size="sm"
-                                    cursor="pointer"
-                                    onClick={() => {
-                                        //let tempDisplay = {...ticketDisplay};
-                                        //tempDisplay[item.eventNum] = false;
-                                        //setTicketDisplay(tempDisplay);
-                                    }}
-                                    icon={faChevronDown}
-                                    />
-                                
-                                </div>
-                                <div style={{textAlign: "left" }}>
+                                <div style={{textAlign: "left"}}>
                                     <button
                                         style={{
                                             fontSize: "16px",
@@ -186,7 +166,8 @@ const Events = (props) => {
                                         }}
                                         onClick={() => {
                                             eventDetail(item);
-                                            props.clicked()}}
+                                            props.clicked()
+                                        }}
                                     >
                                         {item.eventTitle}
                                     </button>
@@ -200,24 +181,99 @@ const Events = (props) => {
                                     {longDateTime}
                                     </div>
                                 </div>
-                                <div style={{fontSize: "16px", fontWeight: "600"}}>{item.isDraft ? <span style={{color: "red"}}>Draft</span> : <span style={{color: "green"}}>Live</span>}</div>
+                                <div style={{fontSize: "16px", fontWeight: "600", paddingTop: "12px"}}>
+                                    {item.isDraft ?
+                                        <span style={{color: "red"}}>Draft</span> :
+                                        <span style={{color: "green"}}>Live</span>}
+                                </div>
                                 <div
-                                style={{
-                                    fontSize: "12px",
-                                    textAlign: "center",
-                                    position: "relative"
-                                }}
+                                    style={{
+                                        color: "blue",
+                                        width: "50px",
+                                        fontSize: "12px",
+                                        textAlign: "center",
+                                        position: "relative",
+                                        paddingTop: "10px",
+                                        paddingLeft: "30px"
+                                    }}
                                 >
-                                    <FontAwesomeIcon
-                                        style={{ zIndex: "100" }}
+                                    <img
+                                        src={Analytics}
                                         color="blue"
-                                        size="lg"
+                                        alt="OpenSeatDirect Logo"
+                                        style={{width: "100%"}}
                                         cursor="pointer"
-                                        onClick={() => editEvent(item)}
-                                        icon={faEdit}
+                                        onClick={() => {
+                                            props.salesAnalytics();
+                                        }}
                                     />
                                 </div>
-                                <br></br>
+                                <div
+                                    style={{
+                                        color: "blue",
+                                        width: "50px",
+                                        fontSize: "12px",
+                                        textAlign: "center",
+                                        position: "relative",
+                                        paddingTop: "10px",
+                                        paddingLeft: "30px"
+                                    }}
+                                >
+                                    <img
+                                        src={Receipt}
+                                        color="blue"
+                                        alt="OpenSeatDirect Logo"
+                                        style={{width: "80%"}}
+                                        cursor="pointer"
+                                        onClick={() => {
+                                            props.historicalOrders();
+                                        }}
+                                    />
+                                </div>
+                                <div
+                                    style={{
+                                        color: "blue",
+                                        width: "50px",
+                                        fontSize: "12px",
+                                        textAlign: "center",
+                                        position: "relative",
+                                        paddingTop: "10px",
+                                        paddingLeft: "30px"
+                                    }}
+                                >
+                                    <img
+                                        src={Ticket}
+                                        color="blue"
+                                        alt="OpenSeatDirect Logo"
+                                        style={{width: "140%"}}
+                                        cursor="pointer"
+                                        onClick={() => {
+                                            props.issueTickets();
+                                        }}
+                                    />
+                                </div>
+                                <div
+                                    style={{
+                                        color: "blue",
+                                        width: "50px",
+                                        fontSize: "12px",
+                                        textAlign: "center",
+                                        position: "relative",
+                                        paddingTop: "10px",
+                                        paddingLeft: "30px"
+                                    }}
+                                >
+                                    <img
+                                        src={Edit}
+                                        color="blue"
+                                        alt="OpenSeatDirect Logo"
+                                        style={{width: "100%"}}
+                                        cursor="pointer"
+                                        onClick={() => {
+                                            props.editEvent();
+                                        }}
+                                    />
+                                </div>
                             </div>
                         );
                     })}
@@ -272,14 +328,30 @@ const Events = (props) => {
             <div className={classes.DisplayPanelTitle}>
                 MY EVENTS
             </div>
-            
             <div className={classes.DisplayPanel2}>
-                <div className={classes.MainDisplayHeader}>
+                <div className={classes.MainDisplayHeader2}>
                     <div style={{ textAlign: "center" }}>Date</div>
-                    <div></div>
                     <div className={classes.Expand}>Event</div>
-                    <div style={{ textAlign: "center" }}>Status</div>
-                    <div style={{ textAlign: "center" }}>Edit</div>
+                    <div style={{ textAlign: "center" }}>
+                        <div>Event</div>
+                        <div>Status</div>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                        <div>Sales</div>
+                        <div>Analytics</div>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                        <div>Historical</div>
+                        <div>Orders</div>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                        <div>Issue</div>
+                        <div>Tickets</div>
+                     </div>
+                    <div style={{ textAlign: "center" }}>
+                        <div>Edit</div>
+                        <div>Event</div>
+                    </div>
                 </div>
                 {mainDisplay()}
             </div>

@@ -30,41 +30,35 @@ const TicketSales = (props) => {
       if (localStorage.getItem(`orders`) !== null && localStorage.getItem(`events`) !== null) {
         let storedEvents = JSON.parse(localStorage.getItem("events"));
         let storedOrders = JSON.parse(localStorage.getItem("orders"));
-
-        if (storedOrders.length > 0) {
           
-          if (localStorage.getItem(`eventNum`) !== null) {
-            let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
-            storedEvents.forEach((event, index) => {
-              if (event.eventNum === storedEventNum) {
-                loadEventTitle(storedEventNum)
-              }
-            })
-
-            let ordersExist = false;
-            let tempEventOrders = [];
-            storedOrders.forEach((order) => {
-              if (order.eventNum === storedEventNum) {
-                order.key = Math.floor(Math.random() * 1000000000000000);
-                order.view = false;
-                tempEventOrders.push(order)
-                ordersExist = true;
-              }
-            })
-            
-            if (ordersExist) {
-              setEventOrders(tempEventOrders)
-              setOrdersView("complete");
-            } else {
-              setOrdersView("noOrders");
+        if (localStorage.getItem(`eventNum`) !== null) {
+          let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
+          storedEvents.forEach((event, index) => {
+            if (event.eventNum === storedEventNum) {
+              loadEventTitle(storedEventNum)
             }
+          })
 
+          let ordersExist = false;
+          let tempEventOrders = [];
+          storedOrders.forEach((order) => {
+            if (order.eventNum === storedEventNum) {
+              order.key = Math.floor(Math.random() * 1000000000000000);
+              order.view = false;
+              tempEventOrders.push(order)
+              ordersExist = true;
+            }
+          })
+          
+          if (ordersExist) {
+            setEventOrders(tempEventOrders)
+            setOrdersView("complete");
           } else {
-            setOrdersView("noEventSelected");
+            setOrdersView("noOrders");
           }
 
         } else {
-          props.clicked("events")
+          setOrdersView("noEventSelected");
         }
 
       } else {
@@ -320,7 +314,7 @@ const TicketSales = (props) => {
   )
 
   return (
-    <div className={classes.DisplayPanel}>
+    <div>
       {tabTitle}
       {mainDisplay()}
     </div>

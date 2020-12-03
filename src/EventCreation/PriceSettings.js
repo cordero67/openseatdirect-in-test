@@ -1,7 +1,7 @@
 //ENTIRE CODE HAS BEEN CHECKED VERSUS ORIGINAL
 //EXCEPT FOR <PriceFeatureSettings/> SECTION LABELED BELOW
 
-import React, { useState, useRef } from "react";
+import React from "react";
 
 import PriceFeatureSettings from "./PriceFeatureSettings";
 

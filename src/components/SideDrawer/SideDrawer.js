@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 
 import { Nav } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faTimesCircle, faWindowClose } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 //<i class="far fa-window-close"></i>
 

@@ -732,8 +732,7 @@ const ManualOrderEntry = (props) => {
   const tabTitle = (
     <div className={classes.DashboardHeader}>
       {(!isLoading && "eventTitle" in selectedEventDetails) ?
-      <div style={{fontSize: "26px", fontWeight: "600"}}>{selectedEventDetails.eventTitle}</div>
-      :
+      <div style={{fontSize: "26px", fontWeight: "600"}}>{selectedEventDetails.eventTitle}</div> :
       <div><br></br></div>}
       <div style={{paddingTop: "5px"}}>
       <button
@@ -747,7 +746,7 @@ const ManualOrderEntry = (props) => {
   )
   
   return (
-    <div className={classes.DisplayPanel}>
+    <div>
       {tabTitle}
       {mainDisplay()}
     </div>

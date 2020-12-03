@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { isAuthenticated } from "../../Users/apiUsers";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus, faChevronUp, faChevronDown, } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown, } from "@fortawesome/free-solid-svg-icons";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./SideDrawerItems.module.css";

@@ -2,7 +2,7 @@
 //EXCEPT FOR SMALL STYLING SECTION LABELED BELOW
 //EXCEPT FOR <PriceSettings/> SECTION LABELED BELOW
 
-import React, { useState, useRef } from "react";
+import React from "react";
 
 import TicketModal from "./Modals/TicketModal";
 import PriceSettings from "./PriceSettings";
@@ -15,7 +15,6 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import {
   faTrashAlt,
   faGripVertical,
-  faCog,
   faChevronUp,
   faChevronDown
 } from "@fortawesome/free-solid-svg-icons";

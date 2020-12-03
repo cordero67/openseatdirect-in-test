@@ -3,9 +3,6 @@ import { Redirect, Link } from "react-router-dom";
 
 import { useOurApi } from "./apiUsers";
 import { API, SUBSCRIPTION_PROMO_CODE } from "../../config";
-import Spinner from "../../components/UI/Spinner/SpinnerNew";
-
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import classes from "../User.module.css";
 

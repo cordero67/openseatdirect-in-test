@@ -1,3 +1,19 @@
+.EventPanelTitle {
+  display: grid;
+  grid-template-columns: 200px 390px 95px 95px 95px 95px;
+  column-gap: 5px;
+  position: fixed;
+  width: 1030px;
+  background-color: white;
+  border-bottom: 1px solid grey;
+  height: 50px;
+  padding-left: 15px;
+  padding-top: 10px;
+  font-size: 26px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
 .DashboardContainer {
   font-family: "Roboto", sans-serif;
   background-color: #2f5596;
@@ -40,22 +56,6 @@
   box-sizing: border-box;
 }
 
-.EventPanelTitle {
-  display: grid;
-  grid-template-columns: 200px 390px 95px 95px 95px 95px;
-  column-gap: 5px;
-  position: fixed;
-  top: 60px;
-  width: 1030px;
-  background-color: white;
-  border-bottom: 1px solid grey;
-  height: 50px;
-  padding-left: 15px;
-  padding-top: 10px;
-  font-size: 26px;
-  font-weight: 600;
-  box-sizing: border-box;
-}
 
 
 .DisplayPanel {
@@ -72,6 +72,24 @@
   scrollbar-width: thin;
   overflow-y: auto;
 }
+
+
+
+.DisplayPanel {
+  background-color: white;
+  font-size: 15px;
+  width: 1030px;
+  height: calc(100vh - 167px);
+  margin-top: 50px;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  overflow-y: auto;
+}
+
 
 .MainEventGrid {
   background-color: white;
@@ -88,21 +106,6 @@
 grid-template-columns: 200px 395px 95px 95px 95px;
 column-gap: 5px;*/
 
-
-.DisplayPanel {
-  background-color: white;
-  font-size: 15px;
-  width: 1030px;
-  height: calc(100vh - 167px);
-  margin-top: 50px;
-  padding-top: 10px;
-  padding-bottom: 15px;
-  padding-left: 20px;
-  padding-right: 20px;
-  box-sizing: border-box;
-  scrollbar-width: thin;
-  overflow-y: auto;
-}
 
 .NavigationTitle {
   position: fixed;
@@ -253,19 +256,3 @@ column-gap: 5px;*/
   overflow-y: auto;
   box-sizing: border-box;
 }
-
-/*
-.SystemDownMessage {
-  z-index: 200;
-  position: fixed;
-  top: 195px;
-  text-align: center;
-  background-color: #fff;
-  color: red;
-  height: calc(100vh - 255px);
-  width: 1030px;
-  font-size: 20px;
-  font-weight: 400;
-  padding-top: 40px;
-}
-*/
