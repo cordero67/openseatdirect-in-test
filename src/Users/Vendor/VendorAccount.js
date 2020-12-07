@@ -50,6 +50,7 @@ const VendorAccount = () => {
         redirect: "follow",
       };
 
+
       // retrieves event information
       let fetchstr = `${API}/event/alluser/${vendorId}`;
 

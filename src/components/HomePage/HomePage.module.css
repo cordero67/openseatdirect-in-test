@@ -1,18 +1,20 @@
 .MainContainer {
-  font-family: "Roboto", sans-serif;
+  font-family: Helvetica, sans-serif;
   padding-top: 60px;
   padding-bottom: 20px
 }
 
-.TopContainer {
+.TopContainerLarge {
   color: #fff;
-  /*background-color: #101C32;*/
-  background-color: red;
+  background-color: black;
+  font-family: Helvetica, sans-serif;
   height: 600px;
-  margin: auto;
+  padding-left: calc(50vw - 605px);
+}
 
-  /*padding-top: 15px;
-  padding-bottom: 15px*/
+.ImageBox {
+  box-sizing: border-box;
+  width: 600px;
 }
 
 .TextContainer {

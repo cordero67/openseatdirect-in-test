@@ -78,82 +78,6 @@ const VendorNavigation = (props) => {
           </li>
 
           <li>
-            <button
-              className={classes.NavigationButton}
-              style={{
-                backgroundColor: (
-                  props.pane === "salesAnalytics" ||
-                  props.pane === "manualOrderEntry" ||
-                  props.pane === "ticketSales"
-                  ) ? "#e0e0e0" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="editEvent"
-              onClick={(event) => {
-                if (props.pane !== "salesAnalytics" && props.pane !== "manualOrderEntry" && props.pane !== "ticketSales")
-                props.clicked(event)
-              }}>
-              EVENT DASHBOARD
-            </button>
-          </li>
-
-          <div
-            style={{
-              backgroundColor: "#e0e0e0",
-              padding: "0px"
-          }}>
-
-            {(props.pane === "salesAnalytics" ||
-              props.pane === "ticketSales" ||
-              props.pane === "manualOrderEntry" ||
-              props.pane === "editEvent") ?
-              (
-                <li
-                  style={{
-                    paddingTop: "5px",
-                    paddingBottom: "0px"
-                }}>
-
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "ticketSales" ? "#fff" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="ticketSales"
-                    onClick={props.clicked}>
-                    Ticket Orders
-                  </button>
-
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "manualOrderEntry" ? "#fff" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="manualOrderEntry"
-                    onClick={props.clicked}>
-                    Manual Order Entry
-                  </button>
-
-                  <button
-                    className={classes.NavigationSubButton}
-                    style={{
-                      backgroundColor: props.pane === "editEvent" ? "#fff" : "#e0e0e0",
-                      outline: "none"
-                    }}
-                    name="editEvent"
-                    onClick={props.clicked}>
-                    Event Edit
-                  </button>
-
-                </li>
-              ) :
-              null
-            }
-          </div>
-
-          <li>
           <button
               className={classes.NavigationButton}
               style={{
@@ -229,14 +153,80 @@ export default VendorNavigation;
 
 
 /*
-<button
-className={classes.NavigationSubButton}
-style={{
-  backgroundColor: props.pane === "salesAnalytics" ? "#fff" : "#e0e0e0",
-  outline: "none"
-}}
-name="salesAnalytics"
-onClick={props.clicked}>
-Sales Analytics
-</button>
+          <li>
+            <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: (
+                  props.pane === "salesAnalytics" ||
+                  props.pane === "manualOrderEntry" ||
+                  props.pane === "ticketSales"
+                  ) ? "#e0e0e0" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="editEvent"
+              onClick={(event) => {
+                if (props.pane !== "salesAnalytics" && props.pane !== "manualOrderEntry" && props.pane !== "ticketSales")
+                props.clicked(event)
+              }}>
+              EVENT DASHBOARD
+            </button>
+          </li>
+
+          <div
+            style={{
+              backgroundColor: "#e0e0e0",
+              padding: "0px"
+          }}>
+
+            {(props.pane === "salesAnalytics" ||
+              props.pane === "ticketSales" ||
+              props.pane === "manualOrderEntry" ||
+              props.pane === "editEvent") ?
+              (
+                <li
+                  style={{
+                    paddingTop: "5px",
+                    paddingBottom: "0px"
+                }}>
+
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "ticketSales" ? "#fff" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="ticketSales"
+                    onClick={props.clicked}>
+                    Ticket Orders
+                  </button>
+
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "manualOrderEntry" ? "#fff" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="manualOrderEntry"
+                    onClick={props.clicked}>
+                    Manual Order Entry
+                  </button>
+
+                  <button
+                    className={classes.NavigationSubButton}
+                    style={{
+                      backgroundColor: props.pane === "editEvent" ? "#fff" : "#e0e0e0",
+                      outline: "none"
+                    }}
+                    name="editEvent"
+                    onClick={props.clicked}>
+                    Event Edit
+                  </button>
+
+                </li>
+              ) :
+              null
+            }
+          </div>
+
 */

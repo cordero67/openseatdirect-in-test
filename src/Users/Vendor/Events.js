@@ -3,21 +3,20 @@ import React, { useEffect, useState } from "react";
 import { API } from "../../config";
 import Analytics from "../../assets/analytics.png";
 import Receipt from "../../assets/receipt.png";
+import ReceiptBlue from "../../assets/receiptBlue.png";
 import Ticket from "../../assets/ticket.png";
 import Edit from "../../assets/edit.png";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
-  faEdit
+  faEdit,
+  faTicketAlternative
 } from "@fortawesome/free-solid-svg-icons";
  
 import classes from "./VendorAccountOLD.module.css";
 import { compareValues, getDates } from "./VendorFunctions";
 import { Button } from "semantic-ui-react";
-
-
-let vendorInfo = {};
 
 const Events = (props) => {
 
@@ -40,27 +39,13 @@ const Events = (props) => {
             localStorage.getItem(`user`) !== null
         ) {
             let tempUser = JSON.parse(localStorage.getItem("user"));
-            vendorInfo.token = tempUser.token;
-            vendorInfo.id = tempUser.user._id;
+            let vendorToken = tempUser.token;
+            let vendorId = tempUser.user._id;
             console.log("Got user");
-        } else {
-            window.location.href = "/signin";
-        }
-    
-        if (
-            typeof window !== "undefined" &&
-            localStorage.getItem(`events`) !== null
-        ) {
-            console.log("events exist");
-            let tempEvents = JSON.parse(localStorage.getItem("events"));
-            setEventDescriptions(tempEvents);
-            setIsSuccessfull(true);
-            setIsLoading(false);
-        } else {
-            console.log("events do not exist");
+
             let myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
+            myHeaders.append("Authorization", "Bearer " + vendorToken);
         
             let requestOptions = {
               method: "GET",
@@ -68,7 +53,8 @@ const Events = (props) => {
               redirect: "follow",
             };
     
-            let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
+            // retrieves event information
+            let fetchstr =  `${API}/event/alluser/${vendorId}`;
     
             fetch(fetchstr, requestOptions)
             .then(handleErrors)
@@ -89,6 +75,22 @@ const Events = (props) => {
                 setIsSuccessfull(false);
                 setIsLoading(false);
             });
+
+            // retrieves order information
+            fetchstr = `${API}/order/${vendorId}`;
+
+            fetch(fetchstr, requestOptions)
+            .then(handleErrors)
+            .then((response) => response.text())
+            .then((result) => {
+                localStorage.setItem("orders", result);
+            })
+            .catch((error) => {
+                console.log("error in order information retrieval", error);
+            });
+
+        } else {
+            window.location.href = "/signin";
         }
 
     }, []);
@@ -186,15 +188,19 @@ const Events = (props) => {
                                         <span style={{color: "red"}}>Draft</span> :
                                         <span style={{color: "green"}}>Live</span>}
                                 </div>
-                                <div
+                                <button
                                     style={{
+                                        fontSize: "16px",
+                                        textAlign: "left",
                                         color: "blue",
+                                        fontWeight: "600",
                                         width: "50px",
-                                        fontSize: "12px",
-                                        textAlign: "center",
-                                        position: "relative",
-                                        paddingTop: "10px",
-                                        paddingLeft: "30px"
+                                        paddingLeft: "25px",
+                                        border: "none",
+                                        backgroundColor: "white",
+                                        cursor: "pointer",
+                                        display: "inlineBlock",
+                                        outline: "none",
                                     }}
                                 >
                                     <img
@@ -207,16 +213,20 @@ const Events = (props) => {
                                             props.salesAnalytics();
                                         }}
                                     />
-                                </div>
-                                <div
+                                </button>
+                                <button
                                     style={{
+                                        fontSize: "16px",
+                                        textAlign: "left",
                                         color: "blue",
-                                        width: "50px",
-                                        fontSize: "12px",
-                                        textAlign: "center",
-                                        position: "relative",
-                                        paddingTop: "10px",
-                                        paddingLeft: "30px"
+                                        fontWeight: "600",
+                                        width: "60px",
+                                        paddingLeft: "30px",
+                                        border: "none",
+                                        backgroundColor: "white",
+                                        cursor: "pointer",
+                                        display: "inlineBlock",
+                                        outline: "none",
                                     }}
                                 >
                                     <img
@@ -229,16 +239,20 @@ const Events = (props) => {
                                             props.historicalOrders();
                                         }}
                                     />
-                                </div>
-                                <div
+                                </button>
+                                <button
                                     style={{
+                                        fontSize: "16px",
+                                        textAlign: "left",
                                         color: "blue",
+                                        fontWeight: "600",
                                         width: "50px",
-                                        fontSize: "12px",
-                                        textAlign: "center",
-                                        position: "relative",
-                                        paddingTop: "10px",
-                                        paddingLeft: "30px"
+                                        paddingLeft: "25px",
+                                        border: "none",
+                                        backgroundColor: "white",
+                                        cursor: "pointer",
+                                        display: "inlineBlock",
+                                        outline: "none",
                                     }}
                                 >
                                     <img
@@ -251,27 +265,26 @@ const Events = (props) => {
                                             props.issueTickets();
                                         }}
                                     />
-                                </div>
+                                </button>
                                 <div
                                     style={{
                                         color: "blue",
-                                        width: "50px",
-                                        fontSize: "12px",
+                                        width: "60px",
+                                        fontSize: "22px",
                                         textAlign: "center",
                                         position: "relative",
                                         paddingTop: "10px",
                                         paddingLeft: "30px"
                                     }}
                                 >
-                                    <img
-                                        src={Edit}
-                                        color="blue"
-                                        alt="OpenSeatDirect Logo"
-                                        style={{width: "100%"}}
-                                        cursor="pointer"
-                                        onClick={() => {
-                                            props.editEvent();
-                                        }}
+                                    <FontAwesomeIcon
+                                    color="blue"
+                                    size="sm"
+                                    cursor="pointer"
+                                    onClick={() => {
+                                        props.editEvent();
+                                    }}
+                                    icon={faEdit}
                                     />
                                 </div>
                             </div>

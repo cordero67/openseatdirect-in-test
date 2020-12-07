@@ -5,7 +5,8 @@ import { useOurApi } from "./apiUsers";
 import { API } from "../../config";
 
 import { Button } from "react-bootstrap";
-import HaHaForHireLights from "../../assets/HaHaForHireLightsCropped.jpg"
+import HaHaForHireLights from "../../assets/HaHaForHireLights.png"
+import DJGirl from "../../assets/DJGirl.png"
 
 //import DemoCarousel from "./DemoCarousel.js";
 
@@ -74,26 +75,81 @@ const Home = () => {
     
     let tagLine = () => {
       if (screenSize >= 800) {
-        topContainer = classes.TopContainer;
+        topContainer = classes.TopContainerLarge;
         return (
-          <div style={{fontSize: "64px", lineHeight: "94px", textAlign: "center"}}>
-            TICKETING MADE EASY!
+          <div style={{paddingTop: "20px"}}>
+            <div style={{fontSize: "58px", fontFamily: "Helvetica, sans-serif", lineHeight: "72px", textAlign: "center"}}>
+              DIY TICKETING
+              <br></br>
+              MADE EASY!
+            </div>
+            <div style={{fontSize: "22px", fontFamily: "Helvetica, sans-serif", lineHeight: "42px", textAlign: "center"}}>
+              Eliminate the middle-man.
+            </div>
           </div>
         ) 
       } else if (screenSize >= 650 && screenSize < 800) {
-        topContainer = classes.TopContainer;
+        topContainer = classes.TopContainerLarge;
         return (
-          <div style={{fontSize: "52px", lineHeight: "94px", textAlign: "center"}}>
-            TICKETING MADE EASY!
+          <div style={{paddingTop: "20px"}}>
+            <div style={{fontSize: "52px", lineHeight: "94px", textAlign: "center"}}>
+              DIY TICKETING
+              <br></br>
+              MADE EASY!
+            </div>
+            <div style={{fontSize: "22px", fontFamily: "Helvetica, sans-serif", lineHeight: "54px", textAlign: "center"}}>
+              Eliminate the middle-man.
+            </div>
           </div>
         ) 
       } else {
-        topContainer = classes.TopContainerTight;
+        topContainer = classes.TopContainer;
         return (
           <div style={{fontSize: "48px", lineHeight: "64px", textAlign: "center"}}>
-            TICKETING
+            DIY TICKETING
             <br></br>
             MADE EASY!
+          </div>
+        ) 
+      }
+    }
+        
+    let tagLine2 = () => {
+      if (screenSize >= 800) {
+        topContainer = classes.TopContainerLarge;
+        return (
+          <div style={{paddingTop: "20px"}}>
+            <div style={{fontSize: "58px", fontFamily: "Helvetica, sans-serif", lineHeight: "72px", textAlign: "center"}}>
+              ELIMINATE THE
+              <br></br>
+              MIDDLEMAN
+            </div>
+            <div style={{fontSize: "22px", fontFamily: "Helvetica, sans-serif", lineHeight: "42px", textAlign: "center"}}>
+              DIY ticketing made easy.
+            </div>
+          </div>
+        ) 
+      } else if (screenSize >= 650 && screenSize < 800) {
+        topContainer = classes.TopContainerLarge;
+        return (
+          <div style={{paddingTop: "20px"}}>
+            <div style={{fontSize: "52px", lineHeight: "94px", textAlign: "center"}}>
+              ELIMINATE THE
+              <br></br>
+              MIDDLEMAN
+            </div>
+            <div style={{fontSize: "22px", fontFamily: "Helvetica, sans-serif", lineHeight: "54px", textAlign: "center"}}>
+              DIY ticketing made easy.
+            </div>
+          </div>
+        ) 
+      } else {
+        topContainer = classes.TopContainer;
+        return (
+          <div style={{fontSize: "48px", lineHeight: "64px", textAlign: "center"}}>
+            ELIMINATE THE
+              <br></br>
+              MIDDLEMAN
           </div>
         ) 
       }
@@ -144,17 +200,27 @@ const Home = () => {
       if (screenSize >= 1200) {
         return (
           <div style={{fontSize: "26px", lineHeight: "36px"}}>
-            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span> a subscription-based service that eliminates traditional ticketing middlemen
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span> a subscription-based DIY alternative solution that eliminates traditional ticketing middlemen
             <br></br>
             allowing you to interact directly with your fans and control the entire ticketing process.
+            <br></br>
+            <br></br>
+            Our solution frees event creators and promoters from money-grabbing ticket platforms, and instead
+            <br></br>
+            allows them to receive cash deposits at the time of sale and eliminate checkout fees.
           </div>
         ) 
       } else if (screenSize >= 1000 && screenSize < 1200) {
         return (
           <div style={{fontSize: "22px", lineHeight: "32px"}}>
-            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span> a subscription-based service that eliminates traditional ticketing middlemen
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span> a subscription-based DIY alternative solution that eliminates traditional ticketing middlemen
             <br></br>
             allowing you to interact directly with your fans and control the entire ticketing process.
+            <br></br>
+            <br></br>
+            Our solution frees event creators and promoters from money-grabbing ticket platforms, and instead
+            <br></br>
+            allows them to receive cash deposits at the time of sale and eliminate checkout fees.
           </div>
         )
       } else if (screenSize >= 650 && screenSize < 1000) {
@@ -562,20 +628,53 @@ const Home = () => {
       }
     }
 
+    /*
+      <div className={classes.TopContainer}>
+        <div className={classes.TagLineText}
+          style={{position: "absolute", paddingLeft: "40px", paddingTop: "20px"}}>
+          {tagLine()}
+        </div>
+        <div style={{width: "1200", height: "600px", position: "absolute", overflow: "hidden"}}>
+          <img src={HaHaForHireLights}/>
+        </div>
+      </div>
+
+      
+
+      <div className={classes.TopContainer}>
+        <div className={classes.TagLineText}
+          style={{position: "absolute", paddingLeft: "40px", paddingTop: "20px"}}>
+          {tagLine2()}
+        </div>
+        <div style={{width: "1200", height: "600px", position: "absolute", overflow: "hidden"}}>
+          <img src={HaHaForHireLights}/>
+        </div>
+      </div>
+    */
+
     return (
       <div className={classes.MainContainer}>
         {isResizing ? null : (
           <div>
-            <div className={classes.TopContainer}>
+            <div className={classes.TopContainerLarge}>
               <div className={classes.TagLineText}
                 style={{position: "absolute", paddingLeft: "40px", paddingTop: "20px"}}>
                 {tagLine()}
               </div>
               <div>
-                <img style={{width: "100%", maxWidth: "1200px", position: "absolute"}} src={HaHaForHireLights}/>
+                <img style={{maxWidth: "1200px", position: "absolute"}} src={DJGirl}/>
               </div>
             </div>
 
+            <div className={classes.TopContainerLarge}>
+              <div className={classes.TagLineText}
+                style={{position: "absolute", paddingLeft: "40px", paddingTop: "20px"}}>
+                {tagLine2()}
+              </div>
+              <div>
+                <img style={{maxWidth: "1200px", position: "absolute"}} src={DJGirl}/>
+              </div>
+            </div>
             <div className={classes.TextContainer}>
               <div className={classes.DescriptionText} style={{fontWeight: "400"}}>
                 {marketingPhrase()}

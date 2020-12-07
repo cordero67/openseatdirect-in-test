@@ -55,6 +55,16 @@ const SideDrawerItems = (props) => {
         </NavLink>
       </li>
 
+      <li>
+        <NavLink
+          to="/eventspast"
+          style={isActive(props.currentPage, "/eventspast")}
+          onClick={props.clicked}
+        >
+          PAST EVENTS
+        </NavLink>
+      </li>
+
       {isAuthenticated() && (getStatus() === 7 || getStatus() === 8) ? (
         <li>
           <NavLink
