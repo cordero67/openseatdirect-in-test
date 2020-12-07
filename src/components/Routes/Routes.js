@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
-import Main from "../HomePage/HomePage";
+import LandingPage from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
@@ -73,7 +73,7 @@ const Routes = () => {
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <Main />
+            <LandingPage />
           </React.Fragment>
         )}
       />

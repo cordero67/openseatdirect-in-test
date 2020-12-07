@@ -72,6 +72,7 @@ const EventsPasts = () => {
     window.location.href = `/ed/${eventItem.eventUrl}?eventID=${eventItem.eventNum}`;
   };
 
+
   const eventsNew = () => {
     if (isSuccessfull) {
       console.log("eventDescriptions: ", eventDescriptions)
@@ -109,6 +110,7 @@ const EventsPasts = () => {
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
+        <div className={classes.EventsHeader}>Past Events:</div>
         <section className={classes.Events}>{!isLoadingEvents ? eventsNew() : <Spinner/>}</section>
       </div>
     </div>
