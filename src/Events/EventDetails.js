@@ -109,7 +109,7 @@ const EventDetail = props => {
       shortDescription: event.shortDescription,//
       longDescription: event.longDescription,//
       tickets: event.tickets,
-      forSale: ticketStatus, 
+      //forSale: ticketStatus, 
     };
     console.log("EVENT DETAILS variable in 'loadEventDetails()': ", eventDetails);
   };
@@ -269,7 +269,7 @@ const EventDetail = props => {
           <div className={styles.ButtonContainer}>
             <button 
               onClick={ticketsHandler}
-              disabled={!eventDetails.forSale}
+              //disabled={!eventDetails.forSale}
               className={styles.ButtonGreen}
             >Tickets</button>
           </div>
@@ -282,7 +282,7 @@ const EventDetail = props => {
           <div className={styles.ButtonContainer}>
             <button
               onClick={ticketsHandler}
-              disabled={!eventDetails.forSale}
+              //disabled={!eventDetails.forSale}
               className={styles.ButtonGreen}
             >Tickets</button>
           </div>

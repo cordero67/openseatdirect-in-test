@@ -13,7 +13,6 @@ import EventDetails from "./EventDetails";
 import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./AdditionalSettings";
 
-import classes2 from "./EventCreation.module.css";
 import classes from "./VendorDashboard.module.css";
 import { Button } from "semantic-ui-react";
 import Aux from "../hoc/Auxiliary/Auxiliary";
@@ -964,127 +963,125 @@ const CreateEvent = (props) => {
 
 //START CODE REPLICATION CHECK
 
-    return (
+  return (
+    <div>
+      <div className={classes.EventPanelTitle}>
+        <div style={{paddingTop: "5px"}}>CREATE EVENT</div>
+        {subTitleDisplay()}
+        <div></div>
         <div>
-            <div className={classes.EventPanelTitle}>
-                <div style={{paddingTop: "5px"}}>CREATE EVENT</div>
-                {subTitleDisplay()}
-                <div></div>
-                <div>
-                    <Button
-                        style={{
-                        backgroundColor: 'white',
-                        border: "1px solid red",
-                        color: "red",
-                        fontSize: "12px",
-                        width: "90px",
-                        height: "30px",
-                        margin: "auto",
-                        textAlign: "center",
-                        padding: "0px"
-                        }}
-                        content="Save as Draft"
-                        onClick={() => {
-                          // ***** NEED TO INCLUDE
-                          let tempDescription = {...eventDescription };
-                          tempDescription.isDraft = true;
-                          setEventDescription(tempDescription);
-                          saveEvent("saved");
-                        }}
-                    />
-                </div>
-                <div>
-                    <Button
-                        style={{
-                        backgroundColor: 'white',
-                        border: "1px solid #228B22",
-                        color: "#228B22",
-                        fontSize: "12px",
-                        width: "90px",
-                        height: "30px",
-                        margin: "auto",
-                        textAlign: "center",
-                        padding: "0px",
-                        }}
-                        content="Go Live Now"
-                        onClick={() => {
-                        let tempDescription = {...eventDescription };
-                        tempDescription.isDraft = false;
-                        setEventDescription(tempDescription);
-                        saveEvent("live");
-                        }}
-                    />
-                </div>
-                <div>
-                    <Button
-                        style={{
-                        backgroundColor: 'white',
-                        border: "1px solid black",
-                        color: "black",
-                        fontSize: "12px",
-                        width: "90px",
-                        height: "30px",
-                        margin: "auto",
-                        textAlign: "center",
-                        padding: "0px",
-                        }}
-                        content="Cancel Create"
-                        onClick={() => {
-                          window.location.href = `/events`
-                        }}
-                    />
-                </div>
-            </div>
-            <div className={classes.DisplayPanel}>
-            {savedModal()}
-
-                <EventDetails
-                    event={eventDescription}
-                    titleOmission={eventTitleOmission}
-                    change={changeEventDescription}
-                    radioChange={changeEventDescriptionRadio}
-                    changeDate={changeEventDate}
-                    changeEventField={changeEventField}
-                    changeCategory={changeEventCategory}
-                    changeLong={changeLongDescription}
-                    changeImage={changeEventImage}
-                    changeOmission={() => {
-                        setEventTitleOmission(false);
-                    }}
-                />
-
-                <br></br>
-                <TicketCreation
-                    tickets={ticketDetails}
-                    radioChange={changeEventDescriptionRadio}
-                    changeTicket={changeTicketDetail}// ??? Dupe
-                    changeSettings={switchTicketSettings}
-                    showModal={activateShowModal}
-                    deactivateModal={deactivateShowModal}
-                    delete={deleteTicket}
-                    ticketChange={changeTicketDetail}// ??? Dupe
-                    switchSettings={switchTicketSettings}
-                    changeFeature={changePriceFeature}
-                    switchPriceFeature={switchPriceFeature}
-                    addPromoCode={addPromoCode}
-                    changeArgument={changeArgument}
-                    changePromoCodesName={changePromoCodesName}
-                    changePromoCodesAmount={changePromoCodesAmount}
-                    changePromoCodesPercent={changePromoCodesPercent}
-                    deletePromoCode={deletePromoCode}
-                    createNewTicketHandler={createNewTicketHandler}
-                    handleDragStart={handleDragStart}
-                    handleDragEnter={handleDragEnter}
-                    dragging={dragging}
-                />
-                <br></br>
-                <AdditionalSettings
-                    event={eventDescription}
-                    radioChange={changeEventDescriptionRadio}
-                />
-            </div>
+          <Button
+              style={{
+              backgroundColor: 'white',
+              border: "1px solid red",
+              color: "red",
+              fontSize: "12px",
+              width: "90px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px"
+              }}
+              content="Save as Draft"
+              onClick={() => {
+                // ***** NEED TO INCLUDE
+                let tempDescription = {...eventDescription };
+                tempDescription.isDraft = true;
+                setEventDescription(tempDescription);
+                saveEvent("saved");
+              }}
+          />
         </div>
-    )
+        <div>
+          <Button
+            style={{
+              backgroundColor: 'white',
+              border: "1px solid #228B22",
+              color: "#228B22",
+              fontSize: "12px",
+              width: "90px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="Go Live Now"
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = false;
+              setEventDescription(tempDescription);
+              saveEvent("live");
+            }}
+          />
+        </div>
+        <div>
+          <Button
+            style={{
+            backgroundColor: 'white',
+            border: "1px solid black",
+            color: "black",
+            fontSize: "12px",
+            width: "90px",
+            height: "30px",
+            margin: "auto",
+            textAlign: "center",
+            padding: "0px",
+            }}
+            content="Cancel Create"
+            onClick={() => {
+              window.location.href = `/events`
+            }}
+          />
+        </div>
+      </div>
+      <div className={classes.DisplayPanel}>
+        {savedModal()}
+        <EventDetails
+          event={eventDescription}
+          titleOmission={eventTitleOmission}
+          change={changeEventDescription}
+          radioChange={changeEventDescriptionRadio}
+          changeDate={changeEventDate}
+          changeEventField={changeEventField}
+          changeCategory={changeEventCategory}
+          changeLong={changeLongDescription}
+          changeImage={changeEventImage}
+          changeOmission={() => {
+              setEventTitleOmission(false);
+          }}
+        />
+        <br></br>
+        <TicketCreation
+          tickets={ticketDetails}
+          radioChange={changeEventDescriptionRadio}
+          changeTicket={changeTicketDetail}// ??? Dupe
+          changeSettings={switchTicketSettings}
+          showModal={activateShowModal}
+          deactivateModal={deactivateShowModal}
+          delete={deleteTicket}
+          ticketChange={changeTicketDetail}// ??? Dupe
+          switchSettings={switchTicketSettings}
+          changeFeature={changePriceFeature}
+          switchPriceFeature={switchPriceFeature}
+          addPromoCode={addPromoCode}
+          changeArgument={changeArgument}
+          changePromoCodesName={changePromoCodesName}
+          changePromoCodesAmount={changePromoCodesAmount}
+          changePromoCodesPercent={changePromoCodesPercent}
+          deletePromoCode={deletePromoCode}
+          createNewTicketHandler={createNewTicketHandler}
+          handleDragStart={handleDragStart}
+          handleDragEnter={handleDragEnter}
+          dragging={dragging}
+        />
+        <br></br>
+        <AdditionalSettings
+          event={eventDescription}
+          radioChange={changeEventDescriptionRadio}
+        />
+      </div>
+    </div>
+  )
 }
 
 export default CreateEvent;

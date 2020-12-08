@@ -156,7 +156,6 @@ export function image64toCanvasRef4 (canvasRefPreview, image64, percentCrop) {
           Math.floor(percentCrop.height*H*.01)
       );
 
-      let cnt = 0;
       while (cur.width * 0.5 > finalWidth) {
         //console.log ("looping:",  cnt++, cur.width, cur.height, finalWidth);
         cur = {
