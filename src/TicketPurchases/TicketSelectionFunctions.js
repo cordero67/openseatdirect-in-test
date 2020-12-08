@@ -18,6 +18,15 @@ export const loadEventDetails = event => {
 
   console.log("event.isDarft: ",event.isDraft)
   // defines the entire "eventDetails" variable
+
+  let ticketStatus;
+  ticketStatus = false;
+  let d = Date.parse(event.startDateTime) + 86400;
+  
+  if (Date.now() < d) {
+    ticketStatus = true;
+  }
+
   let tempEventDetails = {
     eventNum: event.eventNum,//
     eventTitle: event.eventTitle,//
@@ -43,7 +52,7 @@ export const loadEventDetails = event => {
     tbaInformation: event.tbaInformation,//
     webinarLink: event.webinarLink,//
     onlineInformation: event.onlineInformation,//
-
+    forSale: ticketStatus, 
   };
   console.log("INITIAL 'eventDetails': ", tempEventDetails)
   return tempEventDetails

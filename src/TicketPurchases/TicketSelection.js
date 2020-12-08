@@ -456,7 +456,10 @@ const TicketSelection = () => {
 
   // creates checkout button to proceed to checkout page
   const checkoutButton = () => {
-    if (!isLoadingEvent && orderTotals.ticketsPurchased > 0) {
+    if (!isLoadingEvent &&
+      orderTotals.ticketsPurchased > 0 &&
+      eventDetails.forSale
+    ) {
       return (
         <button
           onClick={purchaseTicketHandler}

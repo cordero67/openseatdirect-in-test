@@ -68,7 +68,14 @@ const VendorNavigation = (props) => {
             <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "events" ? "#e0e0e0" : "#b8b8b8",
+                backgroundColor: (props.pane === "events" ||
+                props.pane === "salesAnalytics" ||
+                props.pane === "ticketSales" ||
+                props.pane === "issueTickets" ||
+                props.pane === "editEvent")
+                ? "#e0e0e0" : "#b8b8b8",
+
+
                 outline: "none"
               }}
               name="events"

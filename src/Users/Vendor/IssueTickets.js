@@ -7,7 +7,7 @@ import { Button } from "semantic-ui-react";
 import { API } from "../../config";
 import OrderModal from "./Modals/OrderModal";
 
-import classes from "./ManualOrderEntry.module.css";
+import classes from "./IssueTickets.module.css";
 
 const ManualOrderEntry = (props) => {
   const [selectedEventDetails, setSelectedEventDetails] = useState({}); //event details of a single selected event
@@ -722,7 +722,7 @@ const ManualOrderEntry = (props) => {
   const mainDisplay = () => {
     return (
       <div style={{paddingTop: "80px", paddingLeft: "30px"}}>
-        <div style={{fontWeight: "600", fontSize: "18px"}}>Manual Order Entry</div>
+        <div style={{fontWeight: "600", fontSize: "18px"}}>Issue Tickets</div>
         {orderDisplay()}
         {orderModalDisplay()}
       </div>

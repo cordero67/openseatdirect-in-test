@@ -6,6 +6,8 @@
   margin: 10px 10px 10px 10px;
   box-sizing: border-box;
   cursor: pointer;
+  height: auto;
+  width: 100%;
 }
 
 .ImageBox {

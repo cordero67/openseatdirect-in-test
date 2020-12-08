@@ -4,7 +4,7 @@ import Aux from "../hoc/Auxiliary/Auxiliary";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../config";
-import { getAllPastEventData } from "./apiEvents";
+import { getAllPastEventData, getEventImage } from "./apiEvents";
 
 import classes from "./Events.module.css";
 import Event from "./EventTombstone";
@@ -25,7 +25,7 @@ const EventsPasts = () => {
       return res;
     })
     .then(res => {
-      res.forEach((item, index) => {
+      res.map((item, index) => {
         console.log("new res");
         console.log("new res event num: ", res[index].eventNum);
         res[index]["url"] = `${API}/event/photo/e/${res[index].eventNum}`;
@@ -72,6 +72,7 @@ const EventsPasts = () => {
     window.location.href = `/ed/${eventItem.eventUrl}?eventID=${eventItem.eventNum}`;
   };
 
+
   const eventsNew = () => {
     if (isSuccessfull) {
       console.log("eventDescriptions: ", eventDescriptions)
@@ -109,6 +110,7 @@ const EventsPasts = () => {
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
+        <div className={classes.EventsHeader}>Past Events:</div>
         <section className={classes.Events}>{!isLoadingEvents ? eventsNew() : <Spinner/>}</section>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 
 import { API } from "../../config";
 import Analytics from "../../assets/analytics.png";
@@ -6,6 +6,7 @@ import Receipt from "../../assets/receipt.png";
 import ReceiptBlue from "../../assets/receiptBlue.png";
 import Ticket from "../../assets/ticket.png";
 import Edit from "../../assets/edit.png";
+import WarningModal from "./Modals/WarningModal";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -24,6 +25,11 @@ const Events = (props) => {
     const [isLoading, setIsLoading] = useState(false);//
     const [isSuccessfull, setIsSuccessfull] = useState(false);//
 
+    const [showWarningModal, setShowWarningModal] = useState({
+        status: false,
+        type: ""
+    });
+
     const handleErrors = response => {
         console.log("Inside 'apiCore' 'handleErrors()'", response);
         if (!response.ok) {
@@ -31,6 +37,59 @@ const Events = (props) => {
         }
         return response;
     };
+
+    const loadServerData = () => {
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        let vendorToken = tempUser.token;
+        let vendorId = tempUser.user._id;
+        console.log("Got user");
+
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer " + vendorToken);
+    
+        let requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow",
+        };
+
+        // retrieves event information
+        let fetchstr =  `${API}/event/alluser/${vendorId}`;
+
+        fetch(fetchstr, requestOptions)
+        .then(handleErrors)
+        .then((response) => response.text())
+        .then((result) => {
+            localStorage.setItem("events", result);
+            let js = JSON.parse(result);
+            console.log("eventDescriptions unordered: ", js);
+            js.sort(compareValues("startDateTime", "asc"));
+            console.log("eventDescriptions ordered: ", js);
+            setEventDescriptions(js);
+            setIsSuccessfull(true);
+            setIsLoading(false);
+            return js;
+        })
+        .catch((error) => {
+            console.log("error", error);
+            setIsSuccessfull(false);
+            setIsLoading(false);
+        });
+
+        // retrieves order information
+        fetchstr = `${API}/order/${vendorId}`;
+
+        fetch(fetchstr, requestOptions)
+        .then(handleErrors)
+        .then((response) => response.text())
+        .then((result) => {
+            localStorage.setItem("orders", result);
+        })
+        .catch((error) => {
+            console.log("error in order information retrieval", error);
+        });
+    }
     
     useEffect(() => {
         setIsLoading(true);
@@ -38,80 +97,110 @@ const Events = (props) => {
             typeof window !== "undefined" &&
             localStorage.getItem(`user`) !== null
         ) {
-            let tempUser = JSON.parse(localStorage.getItem("user"));
-            let vendorToken = tempUser.token;
-            let vendorId = tempUser.user._id;
-            console.log("Got user");
-
-            let myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Authorization", "Bearer " + vendorToken);
-        
-            let requestOptions = {
-              method: "GET",
-              headers: myHeaders,
-              redirect: "follow",
-            };
-    
-            // retrieves event information
-            let fetchstr =  `${API}/event/alluser/${vendorId}`;
-    
-            fetch(fetchstr, requestOptions)
-            .then(handleErrors)
-            .then((response) => response.text())
-            .then((result) => {
-                localStorage.setItem("events", result);
-                let js = JSON.parse(result);
-                console.log("eventDescriptions unordered: ", js);
-                js.sort(compareValues("startDateTime", "asc"));
-                console.log("eventDescriptions ordered: ", js);
-                setEventDescriptions(js);
-                setIsSuccessfull(true);
-                setIsLoading(false);
-                return js;
-            })
-            .catch((error) => {
-                console.log("error", error);
-                setIsSuccessfull(false);
-                setIsLoading(false);
-            });
-
-            // retrieves order information
-            fetchstr = `${API}/order/${vendorId}`;
-
-            fetch(fetchstr, requestOptions)
-            .then(handleErrors)
-            .then((response) => response.text())
-            .then((result) => {
-                localStorage.setItem("orders", result);
-            })
-            .catch((error) => {
-                console.log("error in order information retrieval", error);
-            });
+            loadServerData();
 
         } else {
             window.location.href = "/signin";
         }
 
     }, []);
-  
-    const editEvent = (item) => {
+    
+    const setEventNum = (item) => {
         if (typeof window !== "undefined") {
-        console.log("JSON.stringify(item): ", JSON.stringify(item));
         localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
-        window.location.href = `/eventedit/?eventID=${item.eventNum}`;
         }
         // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
     }
-  
-    const eventDetail = (item) => {
-        if (typeof window !== "undefined") {
-        //console.log("JSON.stringify(item): ", JSON.stringify(item));
-        localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
-        //window.location.href = `/eventedit/?eventID=${item.eventNum}`;
+
+    const switchTab = (event, item) => {
+        console.log("Event name: ", event.target.name)
+        setIsLoading(true);
+        if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+            localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
+
+            if (localStorage.getItem(`orders`) !== null && localStorage.getItem(`events`) !== null) {
+                let storedEvents = JSON.parse(localStorage.getItem("events"));
+                let storedOrders = JSON.parse(localStorage.getItem("orders"));
+
+                if (event.target.name === "analytics") {
+                    setShowWarningModal({
+                        status: true,
+                        type: "analytics"
+                    });
+                } else if (event.target.name === "orders") {
+                    //check if there are any orders for this event
+                    let ordersExist = false;
+                    storedOrders.forEach((order) => {
+                        if (order.eventNum === item.eventNum) {
+                            ordersExist = true;
+                        }
+                    })
+                    
+                    if (ordersExist) {
+                        // switch to the historical orders tab
+                        console.log("there are orders for this event");
+                        props.ticketSales();
+    
+                    } else {
+                        console.log("there are NO orders for this event");
+                        setShowWarningModal({
+                            status: true,
+                            type: "orders"
+                        });
+                    }
+
+                } else if (event.target.name === "tickets") {
+                    //check if there are any orders for this event
+                    let ticketsExist = false;
+                    storedEvents.forEach((event) => {
+                        if (event.eventNum === item.eventNum &&
+                            "tickets" in event && event.tickets.length > 0) {
+                            ticketsExist = true;
+                        }
+                    })
+                    
+                    if (ticketsExist) {
+                        // switch to the historical orders tab
+                        console.log("there are tickets for this event");
+                        props.issueTickets();
+    
+                    } else {
+                        console.log("there are NO tickets for this event");
+                        setShowWarningModal({
+                            status: true,
+                            type: "tickets"
+                        });
+                    }
+
+                }
+
+            } else {
+                console.log("had to reload server data")
+                loadServerData();
+                // data issue, please resubmit selection
+            }
+            
+        } else {
+        window.location.href = "/signin";
         }
-        // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
+
+        setIsLoading(false);
     }
+
+    const warningModal = (
+        <Fragment>
+            <WarningModal
+                show={showWarningModal.status}
+                type={showWarningModal.type}
+                close={() => {
+                    setShowWarningModal({
+                        status: false,
+                        type: ""
+                    });
+                }}
+            ></WarningModal>
+        </Fragment>
+    )
 
     const mainDisplay = () => {
         if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
@@ -124,6 +213,7 @@ const Events = (props) => {
                     {eventDescriptions.map((item, index) => {
                         let shortMonth, dayDate, longDateTime;
                         [shortMonth, dayDate, longDateTime] = getDates(item.startDateTime);
+                        console.log("Event number: ", item.eventNum)
 
                         return (
                             <div key={index} 
@@ -167,7 +257,7 @@ const Events = (props) => {
                                             outline: "none",
                                         }}
                                         onClick={() => {
-                                            eventDetail(item);
+                                            setEventNum(item);
                                             props.clicked()
                                         }}
                                     >
@@ -209,8 +299,9 @@ const Events = (props) => {
                                         alt="OpenSeatDirect Logo"
                                         style={{width: "100%"}}
                                         cursor="pointer"
-                                        onClick={() => {
-                                            props.salesAnalytics();
+                                        name="analytics"
+                                        onClick={(event) => {
+                                            switchTab(event, item);
                                         }}
                                     />
                                 </button>
@@ -235,8 +326,9 @@ const Events = (props) => {
                                         alt="OpenSeatDirect Logo"
                                         style={{width: "80%"}}
                                         cursor="pointer"
-                                        onClick={() => {
-                                            props.historicalOrders();
+                                        name="orders"
+                                        onClick={(event) => {
+                                            switchTab(event, item);
                                         }}
                                     />
                                 </button>
@@ -261,8 +353,9 @@ const Events = (props) => {
                                         alt="OpenSeatDirect Logo"
                                         style={{width: "140%"}}
                                         cursor="pointer"
-                                        onClick={() => {
-                                            props.issueTickets();
+                                        name="tickets"
+                                        onClick={(event) => {
+                                            switchTab(event, item);
                                         }}
                                     />
                                 </button>
@@ -278,13 +371,14 @@ const Events = (props) => {
                                     }}
                                 >
                                     <FontAwesomeIcon
-                                    color="blue"
-                                    size="sm"
-                                    cursor="pointer"
-                                    onClick={() => {
-                                        props.editEvent();
-                                    }}
-                                    icon={faEdit}
+                                        color="blue"
+                                        size="sm"
+                                        cursor="pointer"
+                                        onClick={() => {
+                                            setEventNum(item);
+                                            props.editEvent();
+                                        }}
+                                        icon={faEdit}
                                     />
                                 </div>
                             </div>
@@ -367,6 +461,7 @@ const Events = (props) => {
                     </div>
                 </div>
                 {mainDisplay()}
+                {warningModal}
             </div>
         </div>
     )

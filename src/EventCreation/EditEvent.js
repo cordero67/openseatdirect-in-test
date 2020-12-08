@@ -42,7 +42,7 @@ import {
 // holds sign-in information
 let vendorInfo = {};
 
-const EventEdit = () => {
+const EventEdit = (props) => {
   const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [pageErrors, setPageErrors] = useState(false);
 
@@ -3724,7 +3724,7 @@ const loadEventInfo = (eventTix) => {
       <div style={{paddingTop: "5px"}}>
       <button
         className={classes.SwitchButton}
-        //onClick={() => {props.clicked("events")}}
+        onClick={() => {props.clicked("events")}}
       >
         Switch Event
       </button>
@@ -3736,7 +3736,7 @@ const loadEventInfo = (eventTix) => {
     <div>
       {tabTitle}
       {mainDisplay()}
-
+      {savedModal()}
     </div>
   )
 };
