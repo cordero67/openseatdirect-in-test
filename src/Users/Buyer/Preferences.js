@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 
-import classes from "./BuyerDashboard.module.css";
+import classes from "./BuyerAccount.module.css";
 
 const TicketWallet = (props) => {
     return (

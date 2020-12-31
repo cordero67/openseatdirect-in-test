@@ -11,7 +11,7 @@
 }
 
 .DashboardCanvas {
-  background-color: red;
+  background-color: white;
   display: grid;
   grid-template-columns: 170px 1130px;
   width: 1200px;

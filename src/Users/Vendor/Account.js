@@ -8,7 +8,7 @@ const Account = (props) => {
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
-                ACCOUNT
+                Account
             </div>
             <div className={classes.DisplayPanel}>
                 <div style={{fontSize: "24px"}}>Coming soon!!!</div>

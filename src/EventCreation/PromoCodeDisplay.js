@@ -150,7 +150,7 @@ const PromoCodeDisplay = (props) => {
                   style={{
                     padding: "9px 0px 9px 3px",
                     boxSizing: "borderBox",
-                    color: "blue",
+                    color: "blue"
                   }}
                 >
                   <FontAwesomeIcon

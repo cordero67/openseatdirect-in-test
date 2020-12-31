@@ -1,43 +1,25 @@
-import React, { useState, useRef, useEffect } from "react";
+
+
+
+
+import React, { useState, useRef, useEffect, Fragment } from "react";
 
 import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
 
-import ImgDropAndCrop from "./ImgDropAndCrop/ImgDropAndCrop";
+import { loadEventInfo } from "./EventCreationFunctions.js";
 
 // NEW LINE OF CODE
 import { extractImageFileExtensionFromBase64 } from "./ImgDropAndCrop/ResuableUtils";
-import { Editor } from "@tinymce/tinymce-react";
-import CountrySelector from "./Selectors/CountrySelector";
-import TimeSelector from "./Selectors/TimeSelector";
-import TimeZoneSelector from "./Selectors/TimeZoneSelector";
-import CategorySelector from "./Selectors/CategorySelector";
 
-import DateSelector from "./DateSelector";
-import RadioForm from "./RadioForm";
-
-import TicketModal from "./Modals/TicketModal";
 import SavedModal from "./Modals/SavedModal";
+import EventDetails from "./Components/EventDetails";
+import TicketCreation from "./TicketCreation";
+import AdditionalSettings from "./Components/AdditionalSettings";
 
 import classes from "./EditEvent.module.css";
-import Aux from "../hoc/Auxiliary/Auxiliary";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faInfoCircle,
-  faTrashAlt,
-  faGripVertical,
-  faChevronUp,
-  faChevronDown
-} from "@fortawesome/free-solid-svg-icons";
-import { Button, Popup } from "semantic-ui-react";
-import {
-  faFacebook,
-  faInstagram,
-  faLinkedin,
-  faTwitter,
-} from "@fortawesome/free-brands-svg-icons";
+import { Button } from "semantic-ui-react";
 
 // holds sign-in information
 let vendorInfo = {};
@@ -51,42 +33,40 @@ const EventEdit = (props) => {
 
   // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
-    eventNum: "",
-    eventTitle: "",
-    isDraft: true,
-    eventType: "live",
-    webinarLink: "",
-    onlineInformation: "",
-    tbaInformation: "",
-    locationVenueName: "",
-    locationAddress1: "",
-    locationAddress2: "",
-    locationCity: "",
-    locationState: "",
-    locationZipPostalCode: "",
-    locationCountryCode: "US",
-    locationNote: "",
-    startDate: new Date(new Date().toDateString()),
-    startTime: "19:00:00",
-    startDateTime: "",
-    endDate: new Date(new Date().toDateString()),
-    endTime: "20:00:00",
-    endDateTime: "",
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    photoChanged: false,
-    //photo: "",
-    shortDescription: "",
-    longDescription: "",
-    eventCategory: "",
-    facebookLink: "",
-    twitterLink: "",
-    linkedinLink: "",
-    instagramLink: "",
-    vanityLink: "",
-    refundPolicy: "noRefunds",
+    eventNum: "",// NOT USED IN CREATEEVENT
+    eventTitle: "",//duped with "createEvent"
+    isDraft: true,//duped with "createEvent"
+    eventType: "live",//duped with "createEvent"
+    webinarLink: "",//duped with "createEvent"
+    onlineInformation: "",//duped with "createEvent"
+    tbaInformation: "",//duped with "createEvent"
+    locationVenueName: "",//duped with "createEvent"
+    locationAddress1: "",//duped with "createEvent"
+    locationAddress2: "",//duped with "createEvent"
+    locationCity: "",//duped with "createEvent"
+    locationState: "",//duped with "createEvent"
+    locationZipPostalCode: "",//duped with "createEvent"
+    locationCountryCode: "US",//duped with "createEvent"
+    locationNote: "",//duped with "createEvent"
+    startDate: new Date(new Date().toDateString()),//duped with "createEvent"
+    startTime: "19:00:00",//duped with "createEvent"
+    endDate: new Date(new Date().toDateString()),//duped with "createEvent"
+    endTime: "20:00:00",//duped with "createEvent"
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,//duped with "createEvent"
+    photo: "",// ONLY USED IN CREATEEVENT
+    photoChanged: false,// NOT USED IN CREATEEVENT
+    shortDescription: "",//duped with "createEvent"
+    longDescription: "",//duped with "createEvent"
+    eventCategory: "",//duped with "createEvent"
+    facebookLink: "",//duped with "createEvent"
+    twitterLink: "",//duped with "createEvent"
+    linkedinLink: "",//duped with "createEvent"
+    instagramLink: "",//duped with "createEvent"
+    vanityLink: "",//duped with "createEvent"
+    refundPolicy: "noRefunds",//duped with "createEvent"
   });
 
-  // stores all Ticket Details variables
+  // stores all Ticket Details variables//all duped with "createEvent"
   const [ticketDetails, setTicketDetails] = useState([
     {
       key: "1",
@@ -114,21 +94,22 @@ const EventEdit = (props) => {
       promoCodeWarning: "",
       functionArgs: {},
       viewModal: false
-    },
+    }
   ]);
 
-  const [photoData, setPhotoData] = useState({imgSrc:null, imgSrcExt: null, isLoaded:false});
+  const [photoData, setPhotoData] = useState({imgSrc: null, imgSrcExt: null, isLoaded: false});
 
-  const [eventStatus, setEventStatus] = useState({
+  //START MATCHES "CreateEvent"
+  const [eventStatus, setEventStatus] = useState({//all duped with "createEvent"
     status: "", // "saved", "live", "error", "failure"
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
     errorMessage: "", //["Please fix input errors and resubmit."],
     failureMessage: "System error please try again.",
   });
+  //END MATCHES "CreateEvent"
 
-  const initPhotoData =( resPhotoData) =>{
-    //console.log ("in initPhotoData....");
+  const initPhotoData = (resPhotoData) => {
     // converts data from server fetch call to photodata for image display
     
     // check for required fields
@@ -166,19 +147,19 @@ const EventEdit = (props) => {
       setPhotoData({imgSrc:photodat, imgSrcExt: srcExt, isLoaded:true});
  }
 
-  useEffect(() => {
-    console.log("inside useEffet")
+  useEffect(() => {//all duped with "createEvent" except where noted
     // checks if 'user' exists in local storage
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
-      console.log("found a valid user")
       // loads sign-in data
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
+      //start section not in "createEvent"
       if (localStorage.getItem(`eventNum`) !== null) {
+        console.log("found a valid event to edit")
         let tempEventNum = JSON.parse(localStorage.getItem("eventNum"));
         let tempEvents = JSON.parse(localStorage.getItem("events"));
         let tempEventPosition;
@@ -189,8 +170,13 @@ const EventEdit = (props) => {
           }
         })
 
-        loadEventInfo(tempEvents[tempEventPosition]);
-        console.log("found a valid event to edit")
+        initPhotoData(tempEvents[tempEventPosition].photo);
+
+        const [tempTicketArray, tempDescription] = loadEventInfo(tempEvents[tempEventPosition]);
+        
+        setTicketDetails(tempTicketArray);
+        setEventDescription(tempDescription);
+        setOriginalEventDescription(tempDescription);
       }
       else {
         console.log("Did not find a valid event to edit")
@@ -201,205 +187,7 @@ const EventEdit = (props) => {
     }
   }, []);
 
-const loadEventInfo = (eventTix) => {
-    console.log("Inside 'loadEventInfo': ", eventTix);
-    let tempDescription = { ...eventDescription };
-
-    let eventDescriptionFields = [
-      "eventNum",
-      "eventTitle",
-      "isDraft",
-      "eventType",
-      "locationVenueName",
-      "locationAddress1",
-      "locationAddress2",
-      "locationCity",
-      "locationState",
-      "locationZipPostalCode",
-      "locationCountryCode",
-      "locationNote",
-      "webinarLink",
-      "onlineInformation",
-      "tbaInformation",
-      "timeZone",
-      "shortDescription",
-      "longDescription",
-      "eventCategory",
-      "facebookLink",
-      "twitterLink",
-      "linkedinLink",
-      "instagramLink",
-      "vanityLink",
-      "refundPolicy",
-    ];
-
-    eventDescriptionFields.forEach((field) => {
-      if (eventTix[field] == null) {
-        //console.log("field DOES NOT exists: ", field)
-        //tempDescription[field] = "";
-      } else {
-        //console.log("field exists: ", field)
-        //console.log("eventTix[", field, "]: ", eventTix[field])
-        tempDescription[field] = eventTix[field];
-        //console.log("eventDescription[field]: ", tempDescription[field] )
-      }
-    });
-
-    tempDescription.eventType = eventTix.eventType
-      ? eventTix.eventType
-      : "live";
-
-    tempDescription.refundPolicy = eventTix.refundPolicy
-      ? eventTix.refundPolicy
-      : "noRefunds";
-
-    tempDescription.startTime = eventTix.startDateTime.slice(11,19);
-    console.log("tempDescription.startTime: ", tempDescription.startTime)
-
-    tempDescription.endTime = eventTix.endDateTime.slice(11,19);
-    console.log("tempDescription.endTime: ", tempDescription.endTime)
-
-    console.log("eventTix.startDateTime: ", eventTix.startDateTime);
-    tempDescription.startDate = new Date(eventTix.startDateTime);
-    console.log("tempDescription.startDate: ", tempDescription.startDate);
-    tempDescription.startDate.setMinutes( tempDescription.startDate.getMinutes() + tempDescription.startDate.getTimezoneOffset() );
-    console.log("tempDescription.startDate: ", tempDescription.startDate);
-
-    console.log("eventTix.endDateTime: ", eventTix.endDateTime);
-    tempDescription.endDate = new Date(eventTix.endDateTime);
-    console.log("tempDescription.endDate: ", tempDescription.endDate);
-    tempDescription.endDate.setMinutes( tempDescription.endDate.getMinutes() + tempDescription.endDate.getTimezoneOffset() );
-    console.log("tempDescription.endDate: ", tempDescription.endDate);
-
-    initPhotoData( eventTix.photo);
-
-    console.log("tempDescription: ", tempDescription);
-    setEventDescription(tempDescription);
-    setOriginalEventDescription(tempDescription);
-
-    console.log("eventTix.tickets: ", eventTix.tickets);
-    // now populate the ticketsDetails variable
-    if (eventTix.tickets && eventTix.tickets.length !== 0) {
-      let tempArray = [];
-      eventTix.tickets.forEach((tix, index) => {
-        //console.log("in ticket #: ", index);
-        let tempPriceFeature = "none";
-        let tempPromoCodes = [];
-        let tempPromoCodesArray = [];
-        let tempFunctionArgs;
-        if (tix.priceFunction && tix.priceFunction.form && tix.priceFunction.args) {
-          tempPriceFeature = tix.priceFunction.form;
-          if (tempPriceFeature === "promo") {
-            console.log("priceFunction: ", tix.priceFunction);
-            console.log("tix.priceFunction.args: ", tix.priceFunction.args);
-            tempPromoCodes = tix.priceFunction.args.promocodes;  
-            tempPromoCodes.map((promo, index) => {
-              let tempPercent;
-              if (promo.percent === "true") {
-                tempPercent = true;
-                console.log("percent is true");
-              } else if (promo.percent === "false") {
-                tempPercent = false;
-                console.log("percent is false");
-              }
-              let element = {
-                key: index,
-                name: promo.name,
-                amount: promo.amount,
-                percent: tempPercent,
-              };
-              tempPromoCodesArray.push(element);
-            });
-          } else if (tempPriceFeature === "bogo") {
-            tempFunctionArgs = {
-              buy: tix.priceFunction.args.buy,
-              buyWarning: false,
-              get: tix.priceFunction.args.get,
-              getWarning: false,
-              discount: tix.priceFunction.args.discount*100,
-              discountWarning: false,
-              reqWarning: false,
-            };
-            console.log("bogo tempFunctionArgs: ", tempFunctionArgs)
-            if (tempFunctionArgs.discount === 100) {
-              tempPriceFeature = "bogof";
-            }
-            if (tempFunctionArgs.discount !== 100) {
-              tempPriceFeature = "bogod";
-            }
-          } else if (tempPriceFeature === "twofer") {
-            tempFunctionArgs = {
-              buy: tix.priceFunction.args.buy,
-              buyWarning: false,
-              for: tix.priceFunction.args.for,
-              forWarning: false,
-              reqWarning: false,
-            };
-          }
-        }
-
-        let currencyObject = {
-          USD: "USD $",
-          CAD: "CAD $",
-          MXN: "MXN $",
-          EUR: "EUR €",
-          GBP: "GBP £",
-          CZK: "CZK Kc",
-          DKK: "DKK kr",
-          HUF: "HUF Ft",
-          NOK: "NOK kr",
-          PLN: "PLN zl",
-          SEK: "SEK kr",
-          CHF: "CHF",
-          JPY: "JPY ¥",
-          AUD: "AUD $",
-          NZD: "NZD $",
-          HKD: "HKD $",
-          SGD: "SGD $",
-          ILS: "ILS ₪",
-          PHP: "PHP ₱",
-          TWD: "TWD NT$",
-          THB: "THB ฿",
-          RUB: "RUB ₽"
-        }
-
-        const longCurrency = () => {
-          if (tix.currency) {
-            console.log("tix.currency: ", tix.currency)
-            console.log("currencyObject[tix.currency]: ", currencyObject[tix.currency])
-            return currencyObject[tix.currency];
-          } else {
-            return "USD $"
-          }
-        }
-        
-        let newItem = {
-          key: tix.sort ? tix.sort : index,
-          sort: tix.sort ? tix.sort : index,
-          _id: tix._id,
-          ticketName: tix.ticketName,
-          // NEED TO WAIT FOR ORDERS API
-          remainingQuantity: tix.remainingQuantity,
-          currentTicketPrice: tix.currentTicketPrice,
-          currency: longCurrency(),
-          settings: false,
-          ticketDescription: tix.ticketDescription,
-          minTicketsAllowedPerOrder: tix.minTicketsAllowedPerOrder,
-          maxTicketsAllowedPerOrder: tix.maxTicketsAllowedPerOrder,
-          priceFeature: tempPriceFeature,
-          promoCodes: tempPromoCodesArray,
-          promoCodeNames: [],
-          promoCodeWarning: null, //NEED TO POPULATE!!!
-          functionArgs: tempFunctionArgs,
-          viewModal: false,
-        };
-        tempArray.push(newItem);
-      });
-      console.log("tempArray: ", tempArray);
-      setTicketDetails(tempArray);
-    }
-  };
-
+  //THIS SECTION IS FAIRLY UNIQUE COMPARED TO "CreateEvent"
   const saveEvent = async (newStatus) => {
     console.log("eventDescription: ", eventDescription)
     console.log("eventStatus: ", eventStatus)
@@ -514,6 +302,7 @@ const loadEventInfo = (eventTix) => {
         "timeZone",
         "shortDescription",
         "longDescription",
+        //"CreateEvent" has "photo"
         "eventCategory",
         "facebookLink",
         "twitterLink",
@@ -564,30 +353,26 @@ const loadEventInfo = (eventTix) => {
 
       // only sends changed fields to the server
       eventDescriptionFields.forEach((field) => {
-        if (
-          tempDescription[field] || originalEventDescription[field]
-        ) {
+        if (tempDescription[field] || originalEventDescription[field]) {
           console.log("eventDescription[field]: ", tempDescription[field] )
           formData.append(`${field}`, tempDescription[field]);
         }
       });
       
-      let tempStartDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
-      //console.log("startDate from dateFnsFormat: ", tempStartDate);
+      let startDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
+      //console.log("startDate from dateFnsFormat: ", startDate);
 
-      let tempEndDate = dateFnsFormat(eventDescription.endDate,'yyyy-MM-dd');
-      //console.log("endDate from dateFnsFormat: ", tempEndDate);
+      let endDate = dateFnsFormat(eventDescription.endDate,'yyyy-MM-dd');
+      //console.log("endDate from dateFnsFormat: ", endDate);
 
-      let tempStartDateTime = `${tempStartDate} ${eventDescription.startTime}Z`;
-      //console.log("startDateTime: ", tempStartDateTime);
+      let startDateTime = `${startDate} ${eventDescription.startTime}Z`;
+      //console.log("startDateTime: ", startDateTime);
 
-      let tempEndDateTime = `${tempEndDate} ${eventDescription.endTime}Z`;
-      //console.log("endDateTime: ", tempEndDateTime);
+      let endDateTime = `${endDate} ${eventDescription.endTime}Z`;
+      //console.log("endDateTime: ", endDateTime);
 
-      formData.append("startDateTime", tempStartDateTime);
-      formData.append("endDateTime", tempEndDateTime);
-
-      console.log("eventDescription.photo: ", eventDescription.photo)
+      formData.append("startDateTime", startDateTime);
+      formData.append("endDateTime", endDateTime);
 
       if (eventDescription.photoChanged) {
         formData.append("photo", eventDescription.photo);
@@ -596,7 +381,6 @@ const loadEventInfo = (eventTix) => {
       }
 
       // eliminate empty ticket types
-      let tempTicketDetailsArray = [];
       let tempTicketDetails = [...ticketDetails];
 
       let ticketDetailsFields = [
@@ -610,18 +394,10 @@ const loadEventInfo = (eventTix) => {
       ];
 
       tempTicketDetails.forEach((ticket, index) => {
-        console.log("Inside elimate cade")
-        console.log("ticket.eventName: ", ticket.ticketName)
-        console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
-        console.log("typeof ticket.remainingQuantity: ", typeof ticket.remainingQuantity)
-        console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice)
-        console.log("typeof ticket.currentTicketPrice: ", typeof ticket.currentTicketPrice)
-        if(('ticketName' in  ticket)  &&  ticket.ticketName.length && ticket.ticketName.length > 0 &&
-           ('remainingQuantity' in ticket) && ticket.remainingQuantity >0 &&
-           ('currentTicketPrice' in ticket) && ticket.currentTicketPrice >= 0) {
+        if (('ticketName' in  ticket)  &&  ticket.ticketName.length && ticket.ticketName.length > 0 &&
+          ('remainingQuantity' in ticket) && ticket.remainingQuantity >0 &&
+          ('currentTicketPrice' in ticket) && ticket.currentTicketPrice >= 0) {
    
-          console.log("We have a full ticket, index: ", index)
-             console.log("adding ticket , index ",ticket,  index);
           formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
 
           if (ticket.currency) {
@@ -633,11 +409,8 @@ const loadEventInfo = (eventTix) => {
 
           ticketDetailsFields.forEach((field) => {
             console.log ("1) FORM APPENDING>> if ",ticket[field], `tickets[${index}][${field}]`, ticket[field]);
-
             if (field in ticket && ticket[field] !== "" && ('undefined' !== typeof ticket[field]) ) {
-
               console.log ("2) FORM APPENDING>> if ",ticket[field], `tickets[${index}][${field}]`, ticket[field]);
-
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
           });
@@ -710,7 +483,7 @@ const loadEventInfo = (eventTix) => {
           }
         }
         else {
-          console.log(">>>>>>>skipped ticket ", index);
+          console.log("skipped ticket ", index);
         }
 
       });
@@ -770,10 +543,11 @@ const loadEventInfo = (eventTix) => {
     return response;
   };
 
+
   const savedModal = () => {
     if (eventStatus.status === "failure" || eventStatus.status === "error") {
       return (
-        <Aux>
+        <Fragment>
           <SavedModal
             show={true}
             details={eventStatus}
@@ -783,27 +557,52 @@ const loadEventInfo = (eventTix) => {
               setEventStatus(tempStatus);
             }}
           ></SavedModal>
-        </Aux>
+        </Fragment>
       );
     } else if (
       eventStatus.status === "saved" ||
       eventStatus.status === "live"
     ) {
       return (
-        <Aux>
+        <Fragment>
           <SavedModal
             show={true}
             details={eventStatus}
             toDashboard={() => {
-              window.location.href = `/vendoraccount`;
+              window.location.href = `/vendor`;
             }}
           ></SavedModal>
-        </Aux>
+        </Fragment>
       );
     } else return null;
   };
 
+  // garuantees that only one ticket has a "true" "viewModal" value
+  const activateShowModal = (ticket) => {
+    let tempDetails = [...ticketDetails];
+    tempDetails.forEach((item) => {
+      if (item.key === ticket.key) {
+        item.viewModal = true;
+      } else {
+        item.viewModal = false;
+      }
+    });
+    setTicketDetails(tempDetails);
+    console.log("Ticket Details: ", tempDetails);
+  };
+
+  // clears "viewModal" value for all tickets
+  const deactivateShowModal = (ticket) => {
+    let tempDetails = [...ticketDetails];
+    tempDetails.forEach((item) => {
+      item.viewModal = false;
+    });
+    setTicketDetails(tempDetails);
+    console.log("Ticket Details: ", tempDetails);
+  };
+
   // EVENT DESCRIPTION HANDLERS
+  // duped from createEvent
   const changeEventDescription = (event) => {
     let tempDescription = { ...eventDescription };
     tempDescription[event.target.name] = event.target.value;
@@ -818,6 +617,7 @@ const loadEventInfo = (eventTix) => {
     console.log("Event Description: ", tempDescription);
   }; 
 
+  // duped from createEvent
   const changeEventDate = (day, fieldName) => {
     console.log("day from Date selector: ", day);
     let tempDescription = { ...eventDescription };
@@ -841,47 +641,14 @@ const loadEventInfo = (eventTix) => {
     console.log("tempDescription: ", tempDescription);
   };
 
-  const changeStartTime = (value) => {
-    let tempDescription = { ...eventDescription };
-    tempDescription.startTime = value;
-    console.log("eventCategory: ", value);
-    setEventDescription(tempDescription);
-  };
-
-  const changeEndTime = (value) => {
-    let tempDescription = { ...eventDescription };
-    tempDescription.endTime = value;
-    console.log("eventCategory: ", value);
-    setEventDescription(tempDescription);
-  };
-
-  const changeCategory = (value) => {
-    let tempDescription = { ...eventDescription };
-    tempDescription.eventCategory = value;
-    console.log("eventCategory: ", value);
-    setEventDescription(tempDescription);
-  };
-
-  const changeCountryCode = (value) => {
-    let tempDescription = { ...eventDescription };
-    tempDescription.locationCountryCode = value;
-    console.log("locationCountryCode: ", value);
-    setEventDescription(tempDescription);
-  };
-
-  const changeTimeZone = (value) => {
-    let tempDescription = { ...eventDescription };
-    tempDescription.timeZone = value;
-    console.log("Timezone: ", value);
-    setEventDescription(tempDescription);
-  };
-
+  // duped from createEvent
   const changeEventDescriptionRadio = (event, value, name) => {
     let tempDescription = { ...eventDescription };
     tempDescription[name] = value.value;
     setEventDescription(tempDescription);
   };
 
+  // duped from createEvent
   const changeLongDescription = (editorContent) => {
     let tempDescription = { ...eventDescription };
     tempDescription.longDescription = editorContent;
@@ -889,6 +656,7 @@ const loadEventInfo = (eventTix) => {
   };
 
   // TICKET DETAILS HANDLERS
+  // duped from createEvent
   const changeTicketDetail = (event, id) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -900,6 +668,7 @@ const loadEventInfo = (eventTix) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
+  // duped from createEvent
   const switchTicketSettings = (event, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -911,6 +680,7 @@ const loadEventInfo = (eventTix) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
+  // duped from createEvent
   const changeArgument = (event, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -922,8 +692,8 @@ const loadEventInfo = (eventTix) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // STOPPED
-  const priceFeatureChangeHandler = (event, value, key) => {
+  // duped from createEvent
+  const changePriceFeature = (event, value, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
       if (item.key === key) {
@@ -947,6 +717,7 @@ const loadEventInfo = (eventTix) => {
     console.log("Ticket Details: ", ticketDetails);
   };
 
+  // duped from createEvent
   const createNewTicketHandler = () => {
     let newTicketKey = Math.floor(Math.random() * 1000000000000000);
     let newPromoKey = Math.floor(Math.random() * 1000000000000000);
@@ -980,6 +751,7 @@ const loadEventInfo = (eventTix) => {
     setTicketDetails(tempDetails);
   };
 
+  // duped from createEvent
   const deleteTicket = (id) => {
     if (ticketDetails.length === 1) {
       setTicketDetails([
@@ -1023,6 +795,7 @@ const loadEventInfo = (eventTix) => {
     }
   };
 
+  // duped from createEvent
   const deletePromoCode = (event, ticket, promoKey) => {
     if (ticket.promoCodes.length === 1) {
       // delete all promoCode info and set back to default in this specific ticket
@@ -1053,6 +826,7 @@ const loadEventInfo = (eventTix) => {
     }
   };
 
+  // duped from createEvent
   const switchPriceFeature = (event, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1068,6 +842,7 @@ const loadEventInfo = (eventTix) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
+  // duped from createEvent
   const addPromoCode = (event, key) => {
     let newPromoKey = Math.floor(Math.random() * 1000000000000000);
     let tempDetails = [...ticketDetails];
@@ -1086,6 +861,7 @@ const loadEventInfo = (eventTix) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
+  // duped from createEvent
   const changePromoCodesName = (event, ticketKey, promoKey) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1103,6 +879,7 @@ const loadEventInfo = (eventTix) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
+  // duped from createEvent
   const changePromoCodesPercent = (event, ticketKey, promoKey) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1121,6 +898,7 @@ const loadEventInfo = (eventTix) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
+  // duped from createEvent
   const changePromoCodesAmount = (event, ticketKey, promoKey) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1139,6 +917,483 @@ const loadEventInfo = (eventTix) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
+  // duped from createEvent
+  const subTitleDisplay = () => {
+    if (pageErrors || eventTitleOmission) {
+      return (
+        <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "14px", color: "red"}}>
+          Please correct input errors identified below.
+        </div>
+      )
+    } else {
+      return (
+        <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "14px", color: "red"}}>
+        </div>
+      )
+    }
+  }
+
+  // duped from createEvent
+  const [dragging, setDragging] = useState(false);
+
+  // duped from createEvent
+  const dragItem = useRef();
+  const dragNode = useRef();
+
+  // duped from createEvent
+  const handleDragStart = (event, index) => {
+    dragItem.current = index;
+    dragNode.current = event.target;
+    dragNode.current.addEventListener("dragend", handleDragEnd);
+    setTimeout(() => {
+      setDragging(true);
+    }, 0);
+  };
+
+  // duped from createEvent
+  const handleDragEnd = () => {
+    dragNode.current.removeEventListener("dragend", handleDragEnd);
+    setDragging(false);
+    dragItem.current = null;
+    dragNode.current = null;
+  };
+
+  // duped from createEvent
+  const handleDragEnter = (event, index) => {
+
+    if (index !== dragItem.current) {
+
+      const currentItem = dragItem.current;
+      setTicketDetails((oldDetails) => {
+        let newDetails = JSON.parse(JSON.stringify(oldDetails));
+        newDetails.splice(index, 0, newDetails.splice(currentItem, 1)[0]);
+        dragItem.current = index;
+        return newDetails;
+      });
+    } else {
+      console.log("SAME TARGET");
+    }
+  };
+
+  // duped from createEvent
+  const changeEventField = (value, field) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription[field] = value;
+    console.log("eventEndTime: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  // duped from createEvent
+  const changeEventCategory = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.eventCategory = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  // duped from createEvent
+  const changeEventImage = (image) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.photo = image;
+    tempDescription.photoChanged = true;
+    setEventDescription(tempDescription);
+  }
+
+  const currentStatus = () => {
+    if (eventDescription.isDraft) {
+      return (
+        <div
+          style={{
+            paddingTop: "6px",
+            fontSize: "20px",
+            color: "#B80000",
+            fontWeight: "400",
+            textAlign: "center"
+            }}>
+            STATUS DRAFT
+          </div>
+      )
+    } else {
+      return (
+        <div
+          style={{
+            paddingTop: "6px",
+            fontSize: "20px",
+            color: "#008F00",
+            fontWeight: "400",
+            textAlign: "center",
+            }}>
+          STATUS LIVE
+        </div>
+      )
+    }
+  }
+
+  const buttonDisplay = () => {
+    let draftStatus;
+    let liveStatus;
+
+    if (eventDescription.isDraft) {
+      draftStatus = "UPDATE DRAFT";
+      liveStatus = "GO LIVE NOW";
+    } else {
+      draftStatus = "SAVE AS DRAFT"
+      liveStatus = "UPDATE LIVE";
+    }
+
+    return (
+      <Fragment>
+        <div>
+          <Button
+            style={{
+              backgroundColor: 'white',
+              border: "1.5px solid #B80000",
+              borderRadius: "0px",
+              color: "black",
+              fontSize: "12px",
+              fontWeight: "400",
+              width: "120px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content={draftStatus}
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = true;
+              setEventDescription(tempDescription);
+              saveEvent("saved");
+            }}
+          />
+        </div>
+        <div>
+          <Button
+            style={{
+              backgroundColor: 'white',
+              border: "1.5px solid #008F00",
+              borderRadius: "0px",
+              color: "black",
+              fontSize: "12px",
+              fontWeight: "400",
+              width: "120px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content={liveStatus}
+            onClick={() => {
+              let tempDescription = {...eventDescription };
+              tempDescription.isDraft = false;
+              setEventDescription(tempDescription);
+              saveEvent("live");
+            }}
+          />
+        </div>
+        <div>
+          <Button
+            style={{
+              backgroundColor: 'white',
+              border: "1.5px solid black",
+              borderRadius: "0px",
+              color: "black",
+              fontSize: "12px",
+              fontWeight: "400",
+              width: "120px",
+              height: "30px",
+              margin: "auto",
+              textAlign: "center",
+              padding: "0px",
+            }}
+            content="CANCEL EDIT"
+            onClick={() => {
+              window.location.href = `/vendor`
+            }}
+          />
+        </div>
+      </Fragment>
+    )
+  }
+
+  const mainDisplay = () => {
+      return (
+        <div
+          style={{
+            backgroundColor: "white",
+            height: "400px",
+            height: "calc(100vh - 177px)",
+            scrollbarWidth: "thin",
+            overflowY: "auto",
+            fontSize: "15px",
+            width: "1030px",
+            marginTop: "60px",
+            paddingTop: "10px",
+            paddingBotton: "15px",
+            paddingLeft: "20px",
+            paddingRight: "20px"
+          }}>
+
+          <div className={classes.GridTitlePanel}>
+            <div className={classes.GridTitle}>
+              <div style={{fontSize: "26px", paddingTop: "6px"}}>
+                Event Edit
+              </div>
+              {currentStatus()}
+              {buttonDisplay()}
+            </div>
+            <div>
+              {subTitleDisplay()}
+            </div>
+          </div>
+          <div>
+            <EventDetails
+              event={eventDescription}
+              titleOmission={eventTitleOmission}
+              eventImage={"existing"}
+              photoData={photoData}
+              change={changeEventDescription}
+              radioChange={changeEventDescriptionRadio}
+              changeDate={changeEventDate}
+              changeEventField={changeEventField}
+              changeCategory={changeEventCategory}
+              changeLong={changeLongDescription}
+              changeImage={changeEventImage}
+              changeOmission={() => {
+                setEventTitleOmission(false);
+              }}
+            />
+            <br></br>
+            <TicketCreation
+              tickets={ticketDetails}
+              radioChange={changeEventDescriptionRadio}
+              changeTicket={changeTicketDetail}
+              changeSettings={switchTicketSettings}
+              showModal={activateShowModal}
+              deactivateModal={deactivateShowModal}
+              delete={deleteTicket}
+              switchSettings={switchTicketSettings}
+              changeFeature={changePriceFeature}
+              switchPriceFeature={switchPriceFeature}
+              addPromoCode={addPromoCode}
+              changeArgument={changeArgument}
+              changePromoCodesName={changePromoCodesName}
+              changePromoCodesAmount={changePromoCodesAmount}
+              changePromoCodesPercent={changePromoCodesPercent}
+              deletePromoCode={deletePromoCode}
+              createNewTicketHandler={createNewTicketHandler}
+              handleDragStart={handleDragStart}
+              handleDragEnter={handleDragEnter}
+              dragging={dragging}
+            />
+            <br></br>
+            <AdditionalSettings
+              event={eventDescription}
+              radioChange={changeEventDescriptionRadio}
+            />
+            <br></br>
+          </div>
+        </div>
+      );
+  }
+
+  const tabTitle = (
+    <div className={classes.DashboardHeader}>
+      {(true) ?
+      <div style={{fontSize: "26px", fontWeight: "600"}}>Event Title for Event Edit</div>
+      :
+      <div><br></br></div>}
+      <div style={{paddingTop: "5px"}}>
+      <button
+        className={classes.SwitchButton}
+        onClick={() => {props.clicked("events")}}
+      >
+        Switch Event
+      </button>
+      </div>
+    </div>
+  )
+
+  return (
+    <div>
+      {tabTitle}
+      {mainDisplay()}
+      {savedModal()}
+    </div>
+  )
+};
+
+export default EventEdit;
+/*
+const [eventTitleWarning, setEventTitleWarning] = useState(false);
+  const [shortDescriptionWarning, setShortDescriptionWarning] = useState(false);
+  const [eventLocationWarning, setEventLocationWarning] = useState(false);
+  const [eventAddress1Warning, setEventAddress1Warning] = useState(false);
+  const [eventAddress2Warning, setEventAddress2Warning] = useState(false);
+  const [eventCityWarning, setEventCityWarning] = useState(false);
+  const [eventStateWarning, setEventStateWarning] = useState(false);
+  const [eventZipPostalWarning, setEventZipPostalWarning] = useState(false);
+  const [eventAdditionalWarning, setEventAdditionalWarning] = useState(false);
+  const [webinarLinkWarning, setWebinarLinkWarning] = useState(false);
+  const [webinarInfoWarning, setWebinarInfoWarning] = useState(false);
+  const [tbaInfoWarning, setTbaInfoWarning] = useState(false);
+  const [facebookWarning, setFacebookWarning] = useState(false);
+  const [instagramWarning, setInstagramWarning] = useState(false);
+  const [linkedinWarning, setLinkedinWarning] = useState(false);
+  const [twitterWarning, setTwitterWarning] = useState(false);
+  const [vanityWarning, setVanityWarning] = useState(false);
+
+  // STOPPED
+  const priceFeatureChangeHandler = (event, value, key) => {
+    let tempDetails = [...ticketDetails];
+    tempDetails.forEach((item) => {
+      if (item.key === key) {
+        item.priceFeature = value;
+        item.promoCodes = [{ key: "1", name: "", amount: "", percent: false }];
+        item.promoCodeNames = [];
+        item.promoCodeWarning = "";
+        item.functionArgs = {};
+        if (value === "bogof") {
+          item.functionArgs = { buy: "", get: "", discount: 100 };
+        }
+        if (value === "bogod") {
+          item.functionArgs = { buy: "", get: "", discount: "" };
+        }
+        if (value === "twofer") {
+          item.functionArgs = { buy: "", for: "" };
+        }
+      }
+    });
+    setTicketDetails(tempDetails);
+    console.log("Ticket Details: ", ticketDetails);
+  };
+
+  const changeCategory = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.eventCategory = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  const changeStartTime = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.startTime = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  const changeEndTime = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.endTime = value;
+    console.log("eventCategory: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  const displayMessage = (limit, variable) => {
+    if (variable && variable.length >= limit) {
+      return (
+        <div
+          style={{
+            paddingLeft: "10px",
+            height: "14px",
+            color: "red",
+            fontSize: "12px",
+            fontWeight: "700",
+          }}
+        >
+          Maximum characters used
+        </div>
+      );
+    } else if (variable && variable.length >= limit - 10) {
+      return (
+        <div
+          style={{
+            paddingLeft: "10px",
+            height: "14px",
+            color: "red",
+            fontSize: "12px",
+          }}
+        >
+          Remaining {limit - variable.length}
+        </div>
+      );
+    } else if (variable) {
+      return (
+        <div
+          style={{
+            paddingLeft: "10px",
+            height: "14px",
+            color: "black",
+            fontSize: "12px",
+          }}
+        >
+          Remaining {limit - variable.length}
+        </div>
+      );
+    } else {
+      return (
+        <div
+          style={{
+            paddingLeft: "10px",
+            height: "14px",
+            color: "black",
+            fontSize: "12px",
+          }}
+        >
+          Remaining {limit}
+        </div>
+      );
+    }
+  };
+
+  const eventTypeList = [
+    { label: "Live Event", value: "live" },
+    { label: "Online Event only", value: "online" },
+    { label: "To be announced", value: "tba" },
+  ];
+
+  const refundPolicyList = [
+    {
+      label:
+        "1 day: Attendees can receive refunds up to 1 day before your event start date.",
+      value: "1day",
+    },
+    {
+      label:
+        "7 days: Attendees can receive refunds up to 7 days before your event start date.",
+      value: "7days",
+    },
+    {
+      label:
+        "30 days: Attendees can receive refunds up to 30 days before your event start date.",
+      value: "30days",
+    },
+    {
+      label:
+        "Undefined: I will respond to attendee refund requests on a case by case basis.",
+      value: "unknown",
+    },
+    { label: "No refunds: No refunds at any time.", value: "noRefunds" },
+  ];
+  
+
+  const changeCountryCode = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.locationCountryCode = value;
+    console.log("locationCountryCode: ", value);
+    setEventDescription(tempDescription);
+  };
+
+  const changeTimeZone = (value) => {
+    let tempDescription = { ...eventDescription };
+    tempDescription.timeZone = value;
+    console.log("Timezone: ", value);
+    setEventDescription(tempDescription);
+  };
+  */
+
+/*
+  //START CHECKED COMPONENT MATCH "PromoCodeDisplay"
   const promoCodesDisplay = (ticket) => {
     let display = (
       <div>
@@ -1300,7 +1555,9 @@ const loadEventInfo = (eventTix) => {
     );
     return display;
   };
+  //END CHECKED COMPONENT MATCH "PromoCodeDisplay"
 
+  //START CHECKED COMPONENT MATCH "PriceFeatureSettings"
   const priceFeatureSettings = (ticket) => {
     if (ticket.priceFeature === "none") {
       return (
@@ -1914,22 +2171,6 @@ const loadEventInfo = (eventTix) => {
         forWarningText = "";
       }
 
-      /*
-      if (ticket.functionArgs.forWarning) {
-        tempForWarning = classes.SpecialFeaturesBoxWarning;
-        forWarningText = "Not a valid price";
-      } else if (ticket.functionArgs.for) {
-        tempForWarning = classes.SpecialFeaturesBox;
-        forWarningText = "";
-      } else if (ticket.functionArgs.reqWarning) {
-        tempForWarning = classes.SpecialFeaturesBoxWarning;
-        forWarningText = "Required field";
-      } else {
-        tempForWarning = classes.SpecialFeaturesBox;
-        forWarningText = "";
-      }
-      */
-
       return (
         <Aux>
           <div
@@ -2037,7 +2278,9 @@ const loadEventInfo = (eventTix) => {
       );
     }
   };
+  //END CHECKED COMPONENT MATCH "PriceFeatureSettings"
 
+  //START CHECKED COMPONENT MATCH "PriceSettings"
   const additionalSettings = (ticket) => {
     // defines warnings for order min and max
     let orderRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
@@ -2192,68 +2435,11 @@ const loadEventInfo = (eventTix) => {
       </div>
     );
   };
+  //END CHECKED COMPONENT MATCH "PriceSettings"
+*/
 
-  // garuantees that only one ticket has a "true" "viewModal" value
-  const activateShowModal = (ticket) => {
-    let tempDetails = [...ticketDetails];
-    tempDetails.forEach((item) => {
-      if (item.key === ticket.key) {
-        item.viewModal = true;
-      } else {
-        item.viewModal = false;
-      }
-    });
-    setTicketDetails(tempDetails);
-    console.log("Ticket Details: ", tempDetails);
-  };
-
-  // clears "viewModal" value for all tickets
-  const deactivateShowModal = (ticket) => {
-    let tempDetails = [...ticketDetails];
-    tempDetails.forEach((item) => {
-      item.viewModal = false;
-    });
-    setTicketDetails(tempDetails);
-    console.log("Ticket Details: ", tempDetails);
-  };
-
-  const [dragging, setDragging] = useState(false);
-
-  const dragItem = useRef();
-  const dragNode = useRef();
-
-  const handleDragStart = (event, index) => {
-    dragItem.current = index;
-    dragNode.current = event.target;
-    dragNode.current.addEventListener("dragend", handleDragEnd);
-    setTimeout(() => {
-      setDragging(true);
-    }, 0);
-  };
-
-  const handleDragEnd = () => {
-    dragNode.current.removeEventListener("dragend", handleDragEnd);
-    setDragging(false);
-    dragItem.current = null;
-    dragNode.current = null;
-  };
-
-  const handleDragEnter = (event, index) => {
-
-    if (index !== dragItem.current) {
-
-      const currentItem = dragItem.current;
-      setTicketDetails((oldDetails) => {
-        let newDetails = JSON.parse(JSON.stringify(oldDetails));
-        newDetails.splice(index, 0, newDetails.splice(currentItem, 1)[0]);
-        dragItem.current = index;
-        return newDetails;
-      });
-    } else {
-      console.log("SAME TARGET");
-    }
-  };
-
+/*
+  //START CHECKED COMPONENT MATCH "TicketCreation"
   const ticketTypeDisplay = (index) => {
     let display = (
       <Aux>
@@ -2550,1075 +2736,11 @@ const loadEventInfo = (eventTix) => {
     );
     return display;
   };
+  //END CHECKED COMPONENT MATCH "TicketCreation"
+  */
 
-  const [eventTitleWarning, setEventTitleWarning] = useState(false);
-  const [shortDescriptionWarning, setShortDescriptionWarning] = useState(false);
-  const [eventLocationWarning, setEventLocationWarning] = useState(false);
-  const [eventAddress1Warning, setEventAddress1Warning] = useState(false);
-  const [eventAddress2Warning, setEventAddress2Warning] = useState(false);
-  const [eventCityWarning, setEventCityWarning] = useState(false);
-  const [eventStateWarning, setEventStateWarning] = useState(false);
-  const [eventZipPostalWarning, setEventZipPostalWarning] = useState(false);
-  const [eventAdditionalWarning, setEventAdditionalWarning] = useState(false);
-  const [webinarLinkWarning, setWebinarLinkWarning] = useState(false);
-  const [webinarInfoWarning, setWebinarInfoWarning] = useState(false);
-  const [tbaInfoWarning, setTbaInfoWarning] = useState(false);
-  const [facebookWarning, setFacebookWarning] = useState(false);
-  const [instagramWarning, setInstagramWarning] = useState(false);
-  const [linkedinWarning, setLinkedinWarning] = useState(false);
-  const [twitterWarning, setTwitterWarning] = useState(false);
-  const [vanityWarning, setVanityWarning] = useState(false);
-
-  const displayMessage = (limit, variable) => {
-    if (variable && variable.length >= limit) {
-      return (
-        <div
-          style={{
-            paddingLeft: "10px",
-            height: "14px",
-            color: "red",
-            fontSize: "12px",
-            fontWeight: "700",
-          }}
-        >
-          Maximum characters used
-        </div>
-      );
-    } else if (variable && variable.length >= limit - 10) {
-      return (
-        <div
-          style={{
-            paddingLeft: "10px",
-            height: "14px",
-            color: "red",
-            fontSize: "12px",
-          }}
-        >
-          Remaining {limit - variable.length}
-        </div>
-      );
-    } else if (variable) {
-      return (
-        <div
-          style={{
-            paddingLeft: "10px",
-            height: "14px",
-            color: "black",
-            fontSize: "12px",
-          }}
-        >
-          Remaining {limit - variable.length}
-        </div>
-      );
-    } else {
-      return (
-        <div
-          style={{
-            paddingLeft: "10px",
-            height: "14px",
-            color: "black",
-            fontSize: "12px",
-          }}
-        >
-          Remaining {limit}
-        </div>
-      );
-    }
-  };
-
-  const eventTypeList = [
-    { label: "Live Event", value: "live" },
-    { label: "Online Event only", value: "online" },
-    { label: "To be announced", value: "tba" },
-  ];
-
-  const refundPolicyList = [
-    {
-      label:
-        "1 day: Attendees can receive refunds up to 1 day before your event start date.",
-      value: "1day",
-    },
-    {
-      label:
-        "7 days: Attendees can receive refunds up to 7 days before your event start date.",
-      value: "7days",
-    },
-    {
-      label:
-        "30 days: Attendees can receive refunds up to 30 days before your event start date.",
-      value: "30days",
-    },
-    {
-      label:
-        "Undefined: I will respond to attendee refund requests on a case by case basis.",
-      value: "unknown",
-    },
-    { label: "No refunds: No refunds at any time.", value: "noRefunds" },
-  ];
-
-  // MMs code
-  const imageCanvas = () => {
-    if (!photoData.isLoaded) {
-      return <p>  Loading .... </p>
-    } else { 
-      return (
-        <ImgDropAndCrop
-          imagein={photoData}
-          change={(image) => {
-            let tempDescription = { ...eventDescription };
-            console.log("image: ", image)
-            tempDescription.photo = image;
-            tempDescription.photoChanged = true;
-            console.log("image: ", tempDescription.photo)
-            setEventDescription(tempDescription);
-            console.log(" on change");
-            console.log("tempDescription: ", tempDescription)
-          }}
-        />
-      )
-    }
-  };
-
-  const subTitleDisplay = () => {
-    if (pageErrors || eventTitleOmission) {
-      return (
-        <div className={classes.GridSubTitle}>
-            <div style={{ textAlign: "left", fontWeight: "600" }}>
-              #{eventDescription.eventNum}
-            </div>
-          <div style={{ textAlign: "center", color: "red"}}>
-            Please correct input errors identified below.
-          </div>
-        </div>
-      )
-    } else {
-      return (
-        <div className={classes.GridSubTitle}>
-            <div style={{ textAlign: "left", fontWeight: "600" }}>
-              #{eventDescription.eventNum}
-            </div>
-        </div>
-      )
-    }
-  }
-
-  const currentStatus = () => {
-    if (eventDescription.isDraft) {
-      return (
-        <div
-          style={{
-            paddingTop: "6px",
-            fontSize: "20px",
-            color: "red",
-            fontWeight: "600",
-            textAlign: "center",
-            fontStyle: "italic"
-            }}>
-            STATUS DRAFT
-          </div>
-      )
-    } else {
-      return (
-        <div
-          style={{
-            paddingTop: "6px",
-            fontSize: "20px",
-            color: "green",
-            fontWeight: "600",
-            textAlign: "center",
-            fontStyle: "italic"
-            }}>
-          STATUS LIVE
-        </div>
-      )
-    }
-  }
-
-  const buttonDisplay = () => {
-    if (eventDescription.isDraft) {
-      return (
-        <Aux>
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid red",
-              color: "red",
-              fontSize: "12px",
-              width: "90px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Update Draft"
-            onClick={() => {
-              let tempDescription = {...eventDescription };
-              tempDescription.isDraft = true;
-              setEventDescription(tempDescription);
-              saveEvent("saved");
-            }}
-          />
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid #228B22",
-              color: "#228B22",
-              fontSize: "12px",
-              width: "90px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Go Live Now"
-            onClick={() => {
-              let tempDescription = {...eventDescription };
-              tempDescription.isDraft = false;
-              setEventDescription(tempDescription);
-              saveEvent("live");
-            }}
-          />
-        </Aux>
-      )
-    } else {
-      return (
-        <Aux>
-          
-              <Button
-                style={{
-                  backgroundColor: 'white',
-                  border: "1px solid red",
-                  color: "red",
-                  fontSize: "12px",
-                  width: "90px",
-                  height: "30px",
-                  margin: "auto",
-                  textAlign: "center",
-                  padding: "0px",
-                }}
-                content="Save as Draft"
-                onClick={() => {
-                  let tempDescription = {...eventDescription };
-                  tempDescription.isDraft = true;
-                  setEventDescription(tempDescription);
-                  saveEvent("saved");
-                }}
-              />
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid green",
-              color: "green",
-              fontSize: "12px",
-              width: "90px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Update Live"
-            onClick={() => {
-              let tempDescription = {...eventDescription };
-              tempDescription.isDraft = false;
-              setEventDescription(tempDescription);
-              saveEvent("live");
-            }}
-          />
-        </Aux>
-      )
-    }
-  }
-
-  const mainDisplay = () => {
-      return (
-
-/*
-  .DisplayPanel {
-    background-color: white;
-    font-size: 15px;
-    //width: 1030px;
-    height: calc(100vh - 167px);
-    //margin-top: 50px;
-    //top: 10px;
-    //padding-bottom: 15px;
-    //padding-left: 20px;
-    //padding-right: 20px;
-    box-sizing: border-box;
-    scrollbar-width: thin;
-    overflow-y: auto;
-  }
-*/
-
-        <div
-          style={{
-            backgroundColor: "white",
-            height: "400px",
-            height: "calc(100vh - 243px)",
-            scrollbarWidth: "thin",
-            overflowY: "auto",
-            fontSize: "15px",
-            width: "1030px",
-            marginTop: "127px",
-            paddingTop: "10px",
-            paddingBotton: "15px",
-            paddingLeft: "20px",
-            paddingRight: "20px"
-          }}>
-
-
-
-
-
-           
-          
-          <div className={classes.GridTitlePanel}>
-            <div className={classes.GridTitle}>
-              <div style={{paddingTop: "6px"}}>
-                  Event Edit
-              </div>
-              {currentStatus()}
-              {buttonDisplay()}
-
-              <Button
-                style={{
-                  backgroundColor: 'white',
-                  border: "1px solid black",
-                  color: "black",
-                  fontSize: "12px",
-                  width: "90px",
-                  height: "30px",
-                  margin: "auto",
-                  textAlign: "center",
-                  padding: "0px",
-                }}
-                content="Cancel Edit"
-                onClick={() => {
-                  window.location.href = `/vendoraccount`
-                }}
-              />
-            </div>
-            <div>
-              {subTitleDisplay()}
-            </div>
-          </div>
-          <div>
-            <div className={classes.CategoryTitle} style={{ width: "140px" }}>
-              Event Details
-            </div>
-
-            <div style={{ border: "1px solid grey" }}>
-              <div className={classes.SectionTitleTight}>
-                Event Title<span style={{ color: "red" }}>*</span>
-              </div>
-              <div className={classes.InputBox}>
-                <input
-                  className={
-                    eventTitleOmission
-                      ? classes.InputBoxContentError
-                      : classes.InputBoxContent
-                  }
-                  style={{ width: "600px" }}
-                  onFocus={() => {
-                    setEventTitleWarning(true);
-                    setEventTitleOmission(false);
-                  }}
-                  onBlur={() => {
-                    setEventTitleWarning(false);
-                    setEventTitleOmission(false);
-                  }}
-                  type="text"
-                  id="eventTitle"
-                  maxLength="64"
-                  placeholder="Short title of event: limit 64 characters"
-                  name="eventTitle"
-                  value={eventDescription.eventTitle}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-                {eventTitleWarning
-                  ? displayMessage(64, eventDescription.eventTitle)
-                  : null}
-                {eventTitleOmission ? (
-                  <div
-                    style={{
-                      paddingLeft: "10px",
-                      height: "14px",
-                      color: "red",
-                      fontSize: "12px",
-                      fontWeight: "700",
-                    }}
-                  >
-                    This is a required field
-                  </div>
-                ) : null}
-              </div>
-    
-              <div className={classes.SectionTitle}>
-                Event Type: please select one
-              </div>
-              <RadioForm
-                details={eventTypeList}
-                group="eventTypeGroup"
-                current={eventDescription.eventType}
-                change={(event, value) =>
-                  changeEventDescriptionRadio(event, value, "eventType")
-                }
-              />
-    
-              {eventDescription.eventType === "live" ? (
-                <Aux>
-                  <div className={classes.SectionTitleTight}>Event Location</div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventLocationWarning(true)}
-                      onBlur={() => setEventLocationWarning(false)}
-                      type="text"
-                      id="locationVenueName"
-                      maxLength="140"
-                      name="locationVenueName"
-                      placeholder="Venue Name: limit 140 characters"
-                      value={eventDescription.locationVenueName}
-                      onChange={(event) => {
-                        changeEventDescription(event);
-                      }}
-                    ></input>
-                    {eventLocationWarning
-                      ? displayMessage(140, eventDescription.locationVenueName)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventAddress1Warning(true)}
-                      onBlur={() => setEventAddress1Warning(false)}
-                      type="text"
-                      id="locationAddress1"
-                      name="locationAddress1"
-                      maxLength="64"
-                      placeholder="Address1: limit 64 characters"
-                      value={eventDescription.locationAddress1}
-                      onChange={(event) => {
-                        changeEventDescription(event);
-                      }}
-                    ></input>
-                    {eventAddress1Warning
-                      ? displayMessage(64, eventDescription.locationAddress1)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventAddress2Warning(true)}
-                      onBlur={() => setEventAddress2Warning(false)}
-                      type="text"
-                      id="locationAddress2"
-                      name="locationAddress2"
-                      maxLength="64"
-                      placeholder="Address2: limit 64 characters"
-                      value={eventDescription.locationAddress2}
-                      onChange={(event) => {
-                        changeEventDescription(event);
-                      }}
-                    ></input>
-                    {eventAddress2Warning
-                      ? displayMessage(64, eventDescription.locationAddress2)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventCityWarning(true)}
-                      onBlur={() => setEventCityWarning(false)}
-                      type="text"
-                      id="locationCity"
-                      name="locationCity"
-                      maxLength="64"
-                      placeholder="City: limit 64 characters"
-                      value={eventDescription.locationCity}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.locationCity = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {eventCityWarning
-                      ? displayMessage(64, eventDescription.locationCity)
-                      : null}
-                  </div>
-    
-                  <div
-                    className={classes.InputBoxTight}
-                    style={{
-                      display: `grid`,
-                      gridTemplateColumns: "300px 300px",
-                    }}
-                  >
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "295px" }}
-                      onFocus={() => setEventStateWarning(true)}
-                      onBlur={() => setEventStateWarning(false)}
-                      type="text"
-                      id="locationState"
-                      maxLength="2"
-                      placeholder="State: 2 letter code"
-                      value={eventDescription.locationState}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.locationState = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-    
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "300px" }}
-                      onFocus={() => setEventZipPostalWarning(true)}
-                      onBlur={() => setEventZipPostalWarning(false)}
-                      type="text"
-                      id="locationPostalCode"
-                      maxLength="5"
-                      placeholder="Zip/Postal"
-                      value={eventDescription.locationZipPostalCode}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.locationZipPostalCode = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-              
-                    {eventStateWarning
-                        ? (<div>
-                          {displayMessage(2, eventDescription.locationState)}
-                        </div>)
-                        : null}
-              
-                    {eventZipPostalWarning
-                      ? (<div>
-                        <div>{" "}</div>
-                      </div>)
-                      : null}
-
-                    {eventZipPostalWarning
-                      ? (<div>
-                        {displayMessage(5, eventDescription.locationZipPostalCode)}
-                      </div>)
-                      : null}
-                    </div>
-
-                  <div className={classes.InputBoxTight}>
-                    <CountrySelector
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      current={eventDescription.locationCountryCode}
-                      //defaultValue="United States of America"
-                      getCountry={changeCountryCode}
-                    />
-                  </div>
-    
-                  <div className={classes.InputBox}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventAdditionalWarning(true)}
-                      onBlur={() => setEventAdditionalWarning(false)}
-                      type="text"
-                      id="locationAddressAdditional"
-                      maxLength="256"
-                      placeholder="Notes: 'e.g. Enter through backdoor' limit 256 characters"
-                      value={eventDescription.locationNote}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.locationNote = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {eventAdditionalWarning
-                      ? displayMessage(256, eventDescription.locationNote)
-                      : null}
-                  </div>
-                  <div className={classes.SectionTitleTight}>
-                    Online Information
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setWebinarLinkWarning(true)}
-                      onBlur={() => setWebinarLinkWarning(false)}
-                      type="text"
-                      id="webinarLink"
-                      maxLength="254"
-                      placeholder="Webinar Link: limit 256 characters"
-                      value={eventDescription.webinarLink}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.webinarLink = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {webinarLinkWarning
-                      ? displayMessage(256, eventDescription.webinarLink)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBox}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setWebinarInfoWarning(true)}
-                      onBlur={() => setWebinarInfoWarning(false)}
-                      type="text"
-                      id="onlineInformation"
-                      maxLength="1000"
-                      placeholder="Additional Instructions: limit 1000 characters"
-                      value={eventDescription.onlineInformation}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.onlineInformation = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {webinarInfoWarning
-                      ? displayMessage(1000, eventDescription.onlineInformation)
-                      : null}
-                  </div>
-                </Aux>
-              ) : null}
-    
-              {eventDescription.eventType === "online" ? (
-                <Aux>
-                  <div className={classes.SectionTitleTight}>
-                    Online Information
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setWebinarLinkWarning(true)}
-                      onBlur={() => setWebinarLinkWarning(false)}
-                      type="text"
-                      id="webinarLink"
-                      maxLength="256"
-                      placeholder="Webinar Link: limit 256 characters"
-                      value={eventDescription.webinarLink}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.webinarLink = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {webinarLinkWarning
-                      ? displayMessage(256, eventDescription.webinarLink)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBox}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setWebinarInfoWarning(true)}
-                      onBlur={() => setWebinarInfoWarning(false)}
-                      type="text"
-                      id="onlineInformation"
-                      maxLength="1000"
-                      placeholder="Additional Instructions: limit 1000 characters"
-                      value={eventDescription.onlineInformation}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.onlineInformation = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {webinarInfoWarning
-                      ? displayMessage(1000, eventDescription.onlineInformation)
-                      : null}
-                  </div>
-                </Aux>
-              ) : null}
-    
-              {eventDescription.eventType === "tba" ? (
-                <Aux>
-                  <div className={classes.SectionTitleTight}>
-                    To be announced information
-                  </div>
-    
-                  <div className={classes.InputBox}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setTbaInfoWarning(true)}
-                      onBlur={() => setTbaInfoWarning(false)}
-                      type="text"
-                      id="tbaInformation"
-                      maxLength="1000"
-                      placeholder="Additional Instructions: limit 1000 characters"
-                      value={eventDescription.tbaInformation}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.tbaInformation = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {tbaInfoWarning
-                      ? displayMessage(1000, eventDescription.tbaInformation)
-                      : null}
-                  </div>
-                </Aux>
-              ) : null}
-    
-              <div className={classes.SectionTitle}>Event Dates and Time</div>
-              <div className={classes.DateTimeHeader}>
-                <div>
-                  Start Date<span style={{ color: "red" }}>*</span>
-                </div>
-                <div>
-                  Start Time<span style={{ color: "red" }}>*</span>
-                </div>
-                <div>End Date</div>
-                <div>End Time</div>
-                <div>Time Zone</div>
-              </div>
-    
-              <div className={classes.DateTimeInputs}>
-                <DateSelector
-                  type={"startDate"}
-                  startDate={eventDescription.startDate}
-                  current={eventDescription.startDate}
-                  change={(date) => changeEventDate(date, "start")}
-                  beforeDate={new Date()}
-                />
-                <TimeSelector
-                  current={eventDescription.startTime}
-                  name="startTime"
-                  getTime={changeStartTime}
-                  //startDate={eventDescription.startDate}
-                  //startTime={eventDescription.startTime}
-                  //endDate={eventDescription.endDate}
-                />
-                <DateSelector
-                  type={"endDate"}
-                  startDate={eventDescription.startDate}
-                  current={eventDescription.endDate}
-                  change={(date) => changeEventDate(date, "end")}
-                  beforeDate={eventDescription.startDate}
-                />
-                <TimeSelector
-                  current={eventDescription.endTime}
-                  name="endTime"
-                  getTime={changeEndTime}
-                  //startDate={parseInt(eventDescription.startDate)}
-                  //startTime={parseInt(eventDescription.startTime)}
-                  //endDate={eventDescription.endDate}
-                />
-                <TimeZoneSelector
-                  current={eventDescription.timeZone}
-                  //defaultValue="Eastern Time - New York"
-                  getTimeZone={changeTimeZone}
-                />
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Event Image{" "}
-                <Popup
-                  position="right center"
-                  content="Additional information"
-                  header="Event Image"
-                  trigger={
-                    <FontAwesomeIcon
-                      color="blue"
-                      cursor="pointer"
-                      icon={faInfoCircle}
-                    />
-                  }
-                />
-              </div>
-    
-              <div
-                style={{
-                  height: "227px",
-                  fontSize: "16px",
-                  padding: "5px 10px 10px 25px",
-                  boxSizing: "borderBox",
-                  backgroundColor: "#E7E7E7",
-                }}
-              >
-                {imageCanvas()}
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Detailed Event Description
-              </div>
-              <div
-                style={{
-                  padding: "5px 270px 10px 25px",
-                  border: "0px solid green",
-                  boxSizing: "borderBox",
-                  height: "auto",
-                  backgroundColor: "#E7E7E7",
-                }}
-              >
-                <Editor
-                  apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
-                  onEditorChange={changeLongDescription}
-                  initialValue={eventDescription.longDescription}
-                  plugins="wordcount autoresize"
-                  init={{
-                    toolbar:
-                      "undo redo | fontsizeselect fontselect | bold italic underline | forecolor ",
-                    toolbar_items_size: "small",
-                    autoresize_bottom_margin: 0,
-                    padding: "0 0 0 0",
-                    min_height: 250,
-                    max_height: 400,
-                    icons: "jam",
-                    skin: "fabric",
-                    resize: true,
-                    menubar: "edit format",
-                  }}
-                />
-              </div>
-    
-              <div className={classes.SectionTitleTight}>Event Category</div>
-              <div className={classes.InputBox}>
-              <CategorySelector
-                  current={eventDescription.eventCategory}
-                  //defaultValue="United States of America"
-                  getCategory={changeCategory}
-                />
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Event Specific Social Media Links
-              </div>
-              <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-                <FontAwesomeIcon
-                  className={classes.SocialMediaIcon}
-                  style={{ color: "#43609c" }}
-                  icon={faFacebook}
-                />
-                <div className={classes.SocialMediaName}>facebook.com/ </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "400px" }}
-                  onFocus={() => setFacebookWarning(true)}
-                  onBlur={() => setFacebookWarning(false)}
-                  type="text"
-                  id="facebookLink"
-                  maxLength="64"
-                  placeholder="your facebook address: limit 64 characters"
-                  name="facebookLink"
-                  value={eventDescription.facebookLink}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-                </div>
-              
-              {facebookWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.facebookLink)}
-                  </div>)
-                  : null}
-
-              <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-                <FontAwesomeIcon
-                  className={classes.SocialMediaIcon}
-                  style={{ color: "#0084b4" }}
-                  icon={faTwitter}
-                />
-                <div className={classes.SocialMediaName}>twitter.com/ </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "400px" }}
-                  onFocus={() => setTwitterWarning(true)}
-                  onBlur={() => setTwitterWarning(false)}
-                  type="text"
-                  maxLength="64"
-                  id="twitterLink"
-                  placeholder="your twitter address: limit 64 characters"
-                  name="twitterLink"
-                  value={eventDescription.twitterLink}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-              </div>
-              
-              {twitterWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.twitterLink)}
-                  </div>)
-                  : null}
-    
-              <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-                <FontAwesomeIcon
-                  className={classes.SocialMediaIcon}
-                  style={{ color: "#0e76a8" }}
-                  icon={faLinkedin}
-                />
-                <div className={classes.SocialMediaName}>linkedin.com/ </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "400px" }}
-                  onFocus={() => setLinkedinWarning(true)}
-                  onBlur={() => setLinkedinWarning(false)}
-                  type="text"
-                  maxLength="64"
-                  id="linkedinLink"
-                  placeholder="your linkedin address: limit 64 characters"
-                  name="linkedinLink"
-                  value={eventDescription.linkedinLink}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-              </div>
-              
-              {linkedinWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.linkedinLink)}
-                  </div>)
-                  : null}
-    
-              <div className={classes.SocialMediaLink} style={{ height: "55px" }}>
-                <FontAwesomeIcon
-                  className={classes.SocialMediaIcon}
-                  style={{ color: "#8a3ab9" }}
-                  icon={faInstagram}
-                />
-                <div className={classes.SocialMediaName}>instagram.com/ </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "400px" }}
-                  onFocus={() => setInstagramWarning(true)}
-                  onBlur={() => setInstagramWarning(false)}
-                  type="text"
-                  maxLength="64"
-                  id="instagramLink"
-                  placeholder="your instagram address: limit 64 characters"
-                  name="instagramLink"
-                  value={eventDescription.instagramLink}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-              </div>
-              
-              {instagramWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.instagramLink)}
-                  </div>)
-                  : null}
-
-                  
-    
-              <div className={classes.SectionTitleTight}>
-                Social Media Event Description
-              </div>
-              <div className={classes.TextBox}>
-                <textarea
-                  style={{
-                    padding: "9px 10px",
-                    border: "1px solid lightgrey",
-                    boxSizing: "borderBox",
-                    lineHeight: "1.75",
-                    height: "80px",
-                    width: "600px",
-                    resize: "vertical",
-                  }}
-                  onFocus={() => setShortDescriptionWarning(true)}
-                  onBlur={() => setShortDescriptionWarning(false)}
-                  type="text"
-                  id="shortDescription"
-                  maxLength="140"
-                  placeholder="Short description of event for social media posts: limit 140 characters"
-                  name="shortDescription"
-                  value={eventDescription.shortDescription}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></textarea>
-                {shortDescriptionWarning
-                  ? displayMessage(140, eventDescription.shortDescription)
-                  : null}
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Customize OpenSeatDirect Vanity URL
-              </div>
-              <div
-                style={{
-                  display: `grid`,
-                  gridTemplateColumns: "220px 500px",
-                  height: "45px",
-                  fontSize: "16px",
-                  padding: "5px 10px 10px 35px",
-                  boxSizing: "borderBox",
-                  backgroundColor: "#E7E7E7",
-                }}
-              >
-                <div className={classes.SocialMediaName}>
-                  www.openseatdirect.com/et/{" "}
-                </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "500px" }}
-                  onFocus={() => setVanityWarning(true)}
-                  onBlur={() => setVanityWarning(false)}
-                  type="text"
-                  id="vanityLink"
-                  maxLength="75"
-                  placeholder="vanity url: limit 75 characters"
-                  name="vanityLink"
-                  value={eventDescription.vanityLink}
-                  onChange={(event) => {
-                    let tempDescription = { ...eventDescription };
-                    tempDescription.vanityLink = event.target.value;
-                    setEventDescription(tempDescription);
-                  }}
-                ></input>
-              </div>
-    
-              <div
-                style={{
-                  display: `grid`,
-                  gridTemplateColumns: "220px 500px",
-                  height: "18px",
-                  fontSize: "10px",
-                  padding: "0px 10px 0px 35px",
-                  boxSizing: "borderBox",
-                  backgroundColor: "#E7E7E7",
-                }}
-              >
-                <div>{" "}</div>
-                {vanityWarning
-                  ? displayMessage(75, eventDescription.vanityLink)
-                  : null}
-              </div>
-    
-            </div>
-    
+  /*
+  //START CHECKED COMPONENT MATCH "TicketCreation"
             <br></br>
             <div className={classes.CategoryTitle} style={{ width: "160px" }}>
               Ticket Creation
@@ -3686,872 +2808,5 @@ const loadEventInfo = (eventTix) => {
                 />
               </div>
             </div>
-    
-            <br></br>
-            <div className={classes.CategoryTitle} style={{ width: "195px" }}>
-              Additional Settings
-            </div>
-            <div style={{ border: "1px solid grey" }}>
-              <div className={classes.SectionTitle}>
-                Refund Policy: please select one
-              </div>
-              <RadioForm
-                details={refundPolicyList}
-                group="refundGroup"
-                current={eventDescription.refundPolicy}
-                change={(event, value) =>
-                  changeEventDescriptionRadio(event, value, "refundPolicy")
-                }
-              />
-            </div>
-            <div style={{ margin: "auto", textAlign: "center" }}>
-
-            </div>
-            <br></br>
-          </div>
-
-        </div>
-      );
-  }
-
-  
-  const tabTitle = (
-    <div className={classes.DashboardHeader}>
-      {(true) ?
-      <div style={{fontSize: "26px", fontWeight: "600"}}>Event Title for Event Edit</div>
-      :
-      <div><br></br></div>}
-      <div style={{paddingTop: "5px"}}>
-      <button
-        className={classes.SwitchButton}
-        onClick={() => {props.clicked("events")}}
-      >
-        Switch Event
-      </button>
-      </div>
-    </div>
-  )
-
-  return (
-    <div>
-      {tabTitle}
-      {mainDisplay()}
-      {savedModal()}
-    </div>
-  )
-};
-
-export default EventEdit;
-
-
-          /*
-
-
-          <div className={classes.MainGrid}>
-            {savedModal()}
-            <div className={classes.CategoryTitle} style={{ width: "140px" }}>
-              Event Details
-            </div>
-            <div style={{ border: "1px solid grey" }}>
-              <div className={classes.SectionTitleTight}>
-                Event Title<span style={{ color: "red" }}>*</span>
-              </div>
-              <div className={classes.InputBox}>
-                <input
-                  className={
-                    eventTitleOmission
-                      ? classes.InputBoxContentError
-                      : classes.InputBoxContent
-                  }
-                  style={{ width: "600px" }}
-                  onFocus={() => {
-                    setEventTitleWarning(true);
-                    setEventTitleOmission(false);
-                  }}
-                  onBlur={() => {
-                    setEventTitleWarning(false);
-                    setEventTitleOmission(false);
-                  }}
-                  type="text"
-                  id="eventTitle"
-                  maxLength="64"
-                  placeholder="Short title of event: limit 64 characters"
-                  name="eventTitle"
-                  value={eventDescription.eventTitle}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-                {eventTitleWarning
-                  ? displayMessage(64, eventDescription.eventTitle)
-                  : null}
-                {eventTitleOmission ? (
-                  <div
-                    style={{
-                      paddingLeft: "10px",
-                      height: "14px",
-                      color: "red",
-                      fontSize: "12px",
-                      fontWeight: "700",
-                    }}
-                  >
-                    This is a required field
-                  </div>
-                ) : null}
-              </div>
-    
-              <div className={classes.SectionTitle}>
-                Event Type: please select one
-              </div>
-              <RadioForm
-                details={eventTypeList}
-                group="eventTypeGroup"
-                current={eventDescription.eventType}
-                change={(event, value) =>
-                  changeEventDescriptionRadio(event, value, "eventType")
-                }
-              />
-    
-              {eventDescription.eventType === "live" ? (
-                <Aux>
-                  <div className={classes.SectionTitleTight}>Event Location</div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventLocationWarning(true)}
-                      onBlur={() => setEventLocationWarning(false)}
-                      type="text"
-                      id="locationVenueName"
-                      maxLength="140"
-                      name="locationVenueName"
-                      placeholder="Venue Name: limit 140 characters"
-                      value={eventDescription.locationVenueName}
-                      onChange={(event) => {
-                        changeEventDescription(event);
-                      }}
-                    ></input>
-                    {eventLocationWarning
-                      ? displayMessage(140, eventDescription.locationVenueName)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventAddress1Warning(true)}
-                      onBlur={() => setEventAddress1Warning(false)}
-                      type="text"
-                      id="locationAddress1"
-                      name="locationAddress1"
-                      maxLength="64"
-                      placeholder="Address1: limit 64 characters"
-                      value={eventDescription.locationAddress1}
-                      onChange={(event) => {
-                        changeEventDescription(event);
-                      }}
-                    ></input>
-                    {eventAddress1Warning
-                      ? displayMessage(64, eventDescription.locationAddress1)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventAddress2Warning(true)}
-                      onBlur={() => setEventAddress2Warning(false)}
-                      type="text"
-                      id="locationAddress2"
-                      name="locationAddress2"
-                      maxLength="64"
-                      placeholder="Address2: limit 64 characters"
-                      value={eventDescription.locationAddress2}
-                      onChange={(event) => {
-                        changeEventDescription(event);
-                      }}
-                    ></input>
-                    {eventAddress2Warning
-                      ? displayMessage(64, eventDescription.locationAddress2)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventCityWarning(true)}
-                      onBlur={() => setEventCityWarning(false)}
-                      type="text"
-                      id="locationCity"
-                      name="locationCity"
-                      maxLength="64"
-                      placeholder="City: limit 64 characters"
-                      value={eventDescription.locationCity}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.locationCity = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {eventCityWarning
-                      ? displayMessage(64, eventDescription.locationCity)
-                      : null}
-                  </div>
-    
-                  <div
-                    className={classes.InputBoxTight}
-                    style={{
-                      display: `grid`,
-                      gridTemplateColumns: "300px 300px",
-                    }}
-                  >
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "295px" }}
-                      onFocus={() => setEventStateWarning(true)}
-                      onBlur={() => setEventStateWarning(false)}
-                      type="text"
-                      id="locationState"
-                      maxLength="2"
-                      placeholder="State: 2 letter code"
-                      value={eventDescription.locationState}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.locationState = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-    
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "300px" }}
-                      onFocus={() => setEventZipPostalWarning(true)}
-                      onBlur={() => setEventZipPostalWarning(false)}
-                      type="text"
-                      id="locationPostalCode"
-                      maxLength="5"
-                      placeholder="Zip/Postal"
-                      value={eventDescription.locationZipPostalCode}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.locationZipPostalCode = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-              
-                    {eventStateWarning
-                        ? (<div>
-                          {displayMessage(2, eventDescription.locationState)}
-                        </div>)
-                        : null}
-              
-                    {eventZipPostalWarning
-                      ? (<div>
-                        <div>{" "}</div>
-                      </div>)
-                      : null}
-
-                    {eventZipPostalWarning
-                      ? (<div>
-                        {displayMessage(5, eventDescription.locationZipPostalCode)}
-                      </div>)
-                      : null}
-                    </div>
-
-                  <div className={classes.InputBoxTight}>
-                    <CountrySelector
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      current={eventDescription.locationCountryCode}
-                      //defaultValue="United States of America"
-                      getCountry={changeCountryCode}
-                    />
-                  </div>
-    
-                  <div className={classes.InputBox}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setEventAdditionalWarning(true)}
-                      onBlur={() => setEventAdditionalWarning(false)}
-                      type="text"
-                      id="locationAddressAdditional"
-                      maxLength="256"
-                      placeholder="Notes: 'e.g. Enter through backdoor' limit 256 characters"
-                      value={eventDescription.locationNote}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.locationNote = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {eventAdditionalWarning
-                      ? displayMessage(256, eventDescription.locationNote)
-                      : null}
-                  </div>
-                  <div className={classes.SectionTitleTight}>
-                    Online Information
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setWebinarLinkWarning(true)}
-                      onBlur={() => setWebinarLinkWarning(false)}
-                      type="text"
-                      id="webinarLink"
-                      maxLength="254"
-                      placeholder="Webinar Link: limit 256 characters"
-                      value={eventDescription.webinarLink}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.webinarLink = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {webinarLinkWarning
-                      ? displayMessage(256, eventDescription.webinarLink)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBox}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setWebinarInfoWarning(true)}
-                      onBlur={() => setWebinarInfoWarning(false)}
-                      type="text"
-                      id="onlineInformation"
-                      maxLength="1000"
-                      placeholder="Additional Instructions: limit 1000 characters"
-                      value={eventDescription.onlineInformation}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.onlineInformation = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {webinarInfoWarning
-                      ? displayMessage(1000, eventDescription.onlineInformation)
-                      : null}
-                  </div>
-                </Aux>
-              ) : null}
-    
-              {eventDescription.eventType === "online" ? (
-                <Aux>
-                  <div className={classes.SectionTitleTight}>
-                    Online Information
-                  </div>
-    
-                  <div className={classes.InputBoxTight}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setWebinarLinkWarning(true)}
-                      onBlur={() => setWebinarLinkWarning(false)}
-                      type="text"
-                      id="webinarLink"
-                      maxLength="256"
-                      placeholder="Webinar Link: limit 256 characters"
-                      value={eventDescription.webinarLink}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.webinarLink = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {webinarLinkWarning
-                      ? displayMessage(256, eventDescription.webinarLink)
-                      : null}
-                  </div>
-    
-                  <div className={classes.InputBox}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setWebinarInfoWarning(true)}
-                      onBlur={() => setWebinarInfoWarning(false)}
-                      type="text"
-                      id="onlineInformation"
-                      maxLength="1000"
-                      placeholder="Additional Instructions: limit 1000 characters"
-                      value={eventDescription.onlineInformation}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.onlineInformation = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {webinarInfoWarning
-                      ? displayMessage(1000, eventDescription.onlineInformation)
-                      : null}
-                  </div>
-                </Aux>
-              ) : null}
-    
-              {eventDescription.eventType === "tba" ? (
-                <Aux>
-                  <div className={classes.SectionTitleTight}>
-                    To be announced information
-                  </div>
-    
-                  <div className={classes.InputBox}>
-                    <input
-                      className={classes.InputBoxContent}
-                      style={{ width: "600px" }}
-                      onFocus={() => setTbaInfoWarning(true)}
-                      onBlur={() => setTbaInfoWarning(false)}
-                      type="text"
-                      id="tbaInformation"
-                      maxLength="1000"
-                      placeholder="Additional Instructions: limit 1000 characters"
-                      value={eventDescription.tbaInformation}
-                      onChange={(event) => {
-                        let tempDescription = { ...eventDescription };
-                        tempDescription.tbaInformation = event.target.value;
-                        setEventDescription(tempDescription);
-                      }}
-                    ></input>
-                    {tbaInfoWarning
-                      ? displayMessage(1000, eventDescription.tbaInformation)
-                      : null}
-                  </div>
-                </Aux>
-              ) : null}
-    
-              <div className={classes.SectionTitle}>Event Dates and Time</div>
-              <div className={classes.DateTimeHeader}>
-                <div>
-                  Start Date<span style={{ color: "red" }}>*</span>
-                </div>
-                <div>
-                  Start Time<span style={{ color: "red" }}>*</span>
-                </div>
-                <div>End Date</div>
-                <div>End Time</div>
-                <div>Time Zone</div>
-              </div>
-    
-              <div className={classes.DateTimeInputs}>
-                <DateSelector
-                  type={"startDate"}
-                  startDate={eventDescription.startDate}
-                  current={eventDescription.startDate}
-                  change={(date) => changeEventDate(date, "start")}
-                  beforeDate={new Date()}
-                />
-                <TimeSelector
-                  current={eventDescription.startTime}
-                  name="startTime"
-                  getTime={changeStartTime}
-                  //startDate={eventDescription.startDate}
-                  //startTime={eventDescription.startTime}
-                  //endDate={eventDescription.endDate}
-                />
-                <DateSelector
-                  type={"endDate"}
-                  startDate={eventDescription.startDate}
-                  current={eventDescription.endDate}
-                  change={(date) => changeEventDate(date, "end")}
-                  beforeDate={eventDescription.startDate}
-                />
-                <TimeSelector
-                  current={eventDescription.endTime}
-                  name="endTime"
-                  getTime={changeEndTime}
-                  //startDate={parseInt(eventDescription.startDate)}
-                  //startTime={parseInt(eventDescription.startTime)}
-                  //endDate={eventDescription.endDate}
-                />
-                <TimeZoneSelector
-                  current={eventDescription.timeZone}
-                  //defaultValue="Eastern Time - New York"
-                  getTimeZone={changeTimeZone}
-                />
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Event Image{" "}
-                <Popup
-                  position="right center"
-                  content="Additional information"
-                  header="Event Image"
-                  trigger={
-                    <FontAwesomeIcon
-                      color="blue"
-                      cursor="pointer"
-                      icon={faInfoCircle}
-                    />
-                  }
-                />
-              </div>
-    
-              <div
-                style={{
-                  height: "227px",
-                  fontSize: "16px",
-                  padding: "5px 10px 10px 25px",
-                  boxSizing: "borderBox",
-                  backgroundColor: "#E7E7E7",
-                }}
-              >
-                {imageCanvas()}
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Detailed Event Description
-              </div>
-              <div
-                style={{
-                  padding: "5px 270px 10px 25px",
-                  border: "0px solid green",
-                  boxSizing: "borderBox",
-                  height: "auto",
-                  backgroundColor: "#E7E7E7",
-                }}
-              >
-                <Editor
-                  apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
-                  onEditorChange={changeLongDescription}
-                  initialValue={eventDescription.longDescription}
-                  plugins="wordcount autoresize"
-                  init={{
-                    toolbar:
-                      "undo redo | fontsizeselect fontselect | bold italic underline | forecolor ",
-                    toolbar_items_size: "small",
-                    autoresize_bottom_margin: 0,
-                    padding: "0 0 0 0",
-                    min_height: 250,
-                    max_height: 400,
-                    icons: "jam",
-                    skin: "fabric",
-                    resize: true,
-                    menubar: "edit format",
-                  }}
-                />
-              </div>
-    
-              <div className={classes.SectionTitleTight}>Event Category</div>
-              <div className={classes.InputBox}>
-              <CategorySelector
-                  current={eventDescription.eventCategory}
-                  //defaultValue="United States of America"
-                  getCategory={changeCategory}
-                />
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Event Specific Social Media Links
-              </div>
-              <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-                <FontAwesomeIcon
-                  className={classes.SocialMediaIcon}
-                  style={{ color: "#43609c" }}
-                  icon={faFacebook}
-                />
-                <div className={classes.SocialMediaName}>facebook.com/ </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "400px" }}
-                  onFocus={() => setFacebookWarning(true)}
-                  onBlur={() => setFacebookWarning(false)}
-                  type="text"
-                  id="facebookLink"
-                  maxLength="64"
-                  placeholder="your facebook address: limit 64 characters"
-                  name="facebookLink"
-                  value={eventDescription.facebookLink}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-                </div>
-              
-              {facebookWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.facebookLink)}
-                  </div>)
-                  : null}
-
-              <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-                <FontAwesomeIcon
-                  className={classes.SocialMediaIcon}
-                  style={{ color: "#0084b4" }}
-                  icon={faTwitter}
-                />
-                <div className={classes.SocialMediaName}>twitter.com/ </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "400px" }}
-                  onFocus={() => setTwitterWarning(true)}
-                  onBlur={() => setTwitterWarning(false)}
-                  type="text"
-                  maxLength="64"
-                  id="twitterLink"
-                  placeholder="your twitter address: limit 64 characters"
-                  name="twitterLink"
-                  value={eventDescription.twitterLink}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-              </div>
-              
-              {twitterWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.twitterLink)}
-                  </div>)
-                  : null}
-    
-              <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-                <FontAwesomeIcon
-                  className={classes.SocialMediaIcon}
-                  style={{ color: "#0e76a8" }}
-                  icon={faLinkedin}
-                />
-                <div className={classes.SocialMediaName}>linkedin.com/ </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "400px" }}
-                  onFocus={() => setLinkedinWarning(true)}
-                  onBlur={() => setLinkedinWarning(false)}
-                  type="text"
-                  maxLength="64"
-                  id="linkedinLink"
-                  placeholder="your linkedin address: limit 64 characters"
-                  name="linkedinLink"
-                  value={eventDescription.linkedinLink}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-              </div>
-              
-              {linkedinWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.linkedinLink)}
-                  </div>)
-                  : null}
-    
-              <div className={classes.SocialMediaLink} style={{ height: "55px" }}>
-                <FontAwesomeIcon
-                  className={classes.SocialMediaIcon}
-                  style={{ color: "#8a3ab9" }}
-                  icon={faInstagram}
-                />
-                <div className={classes.SocialMediaName}>instagram.com/ </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "400px" }}
-                  onFocus={() => setInstagramWarning(true)}
-                  onBlur={() => setInstagramWarning(false)}
-                  type="text"
-                  maxLength="64"
-                  id="instagramLink"
-                  placeholder="your instagram address: limit 64 characters"
-                  name="instagramLink"
-                  value={eventDescription.instagramLink}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></input>
-              </div>
-              
-              {instagramWarning
-                  ? (<div className={classes.SocialMediaLink} style={{ height: "20px" }}>
-                    <div>{" "}</div>
-                    <div>{" "}</div>
-                    {displayMessage(64, eventDescription.instagramLink)}
-                  </div>)
-                  : null}
-
-                  
-    
-              <div className={classes.SectionTitleTight}>
-                Social Media Event Description
-              </div>
-              <div className={classes.TextBox}>
-                <textarea
-                  style={{
-                    padding: "9px 10px",
-                    border: "1px solid lightgrey",
-                    boxSizing: "borderBox",
-                    lineHeight: "1.75",
-                    height: "80px",
-                    width: "600px",
-                    resize: "vertical",
-                  }}
-                  onFocus={() => setShortDescriptionWarning(true)}
-                  onBlur={() => setShortDescriptionWarning(false)}
-                  type="text"
-                  id="shortDescription"
-                  maxLength="140"
-                  placeholder="Short description of event for social media posts: limit 140 characters"
-                  name="shortDescription"
-                  value={eventDescription.shortDescription}
-                  onChange={(event) => {
-                    changeEventDescription(event);
-                  }}
-                ></textarea>
-                {shortDescriptionWarning
-                  ? displayMessage(140, eventDescription.shortDescription)
-                  : null}
-              </div>
-    
-              <div className={classes.SectionTitleTight}>
-                Customize OpenSeatDirect Vanity URL
-              </div>
-              <div
-                style={{
-                  display: `grid`,
-                  gridTemplateColumns: "220px 500px",
-                  height: "45px",
-                  fontSize: "16px",
-                  padding: "5px 10px 10px 35px",
-                  boxSizing: "borderBox",
-                  backgroundColor: "#E7E7E7",
-                }}
-              >
-                <div className={classes.SocialMediaName}>
-                  www.openseatdirect.com/et/{" "}
-                </div>
-                <input
-                  className={classes.InputBoxContent}
-                  style={{ width: "500px" }}
-                  onFocus={() => setVanityWarning(true)}
-                  onBlur={() => setVanityWarning(false)}
-                  type="text"
-                  id="vanityLink"
-                  maxLength="75"
-                  placeholder="vanity url: limit 75 characters"
-                  name="vanityLink"
-                  value={eventDescription.vanityLink}
-                  onChange={(event) => {
-                    let tempDescription = { ...eventDescription };
-                    tempDescription.vanityLink = event.target.value;
-                    setEventDescription(tempDescription);
-                  }}
-                ></input>
-              </div>
-    
-              <div
-                style={{
-                  display: `grid`,
-                  gridTemplateColumns: "220px 500px",
-                  height: "18px",
-                  fontSize: "10px",
-                  padding: "0px 10px 0px 35px",
-                  boxSizing: "borderBox",
-                  backgroundColor: "#E7E7E7",
-                }}
-              >
-                <div>{" "}</div>
-                {vanityWarning
-                  ? displayMessage(75, eventDescription.vanityLink)
-                  : null}
-              </div>
-    
-            </div>
-    
-            <br></br>
-            <div className={classes.CategoryTitle} style={{ width: "160px" }}>
-              Ticket Creation
-            </div>
-    
-            <div style={{ border: "1px solid grey" }}>
-              <div
-                style={{
-                  display: `grid`,
-                  gridTemplateColumns: "360px 165px 165px 80px",
-                  height: "40px",
-                  fontSize: "15px",
-                  backgroundColor: "#E7E7E7",
-                  boxSizing: "borderBox",
-                }}
-              >
-                <div
-                  style={{
-                    padding: "10px 10px 10px 25px",
-                    boxSizing: "borderBox",
-                    fontWeight: 600,
-                  }}
-                >
-                  Ticket Name<span style={{ color: "red" }}>*</span>
-                </div>
-    
-                <div
-                  style={{
-                    padding: "10px 10px 10px 5px",
-                    boxSizing: "borderBox",
-                    fontWeight: 600,
-                  }}
-                >
-                  Quantity<span style={{ color: "red" }}>*</span>
-                </div>
-    
-                <div
-                  style={{
-                    padding: "10px 10px 10px 5px",
-                    boxSizing: "borderBox",
-                    fontWeight: 600,
-                  }}
-                >
-                  Price<span style={{ color: "red" }}>*</span>
-                </div>
-              </div>
-              {ticketTypeDisplay()}
-    
-              <div
-                style={{
-                  padding: "10px 5px 10px 5px",
-                  borderTop: "1px solid lightgrey",
-                  boxSizing: "borderBox",
-                  height: "56px",
-                  textAlign: "center",
-                  fontWeight: 600,
-                }}
-              >
-                <Button
-                  style={{fontSize: "12px"}}
-                  content="Add a ticket"
-                  icon="add circle"
-                  color="green"
-                  onClick={createNewTicketHandler}
-                />
-              </div>
-            </div>
-    
-            <br></br>
-            <div className={classes.CategoryTitle} style={{ width: "195px" }}>
-              Additional Settings
-            </div>
-            <div style={{ border: "1px solid grey" }}>
-              <div className={classes.SectionTitle}>
-                Refund Policy: please select one
-              </div>
-              <RadioForm
-                details={refundPolicyList}
-                group="refundGroup"
-                current={eventDescription.refundPolicy}
-                change={(event, value) =>
-                  changeEventDescriptionRadio(event, value, "refundPolicy")
-                }
-              />
-            </div>
-            <div style={{ margin: "auto", textAlign: "center" }}>
-
-            </div>
-          </div>
-          */
+  //END CHECKED COMPONENT MATCH "TicketCreation"
+  */

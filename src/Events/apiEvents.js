@@ -1,5 +1,7 @@
 import { API } from "../config";
 
+import { useEffect, useState, useRef } from "react"; //HENRIK SOMMERFELD example
+
 const compareValues = (key, order) => {
   return function innerSort(a, b) {
     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {

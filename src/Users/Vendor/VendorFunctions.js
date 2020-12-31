@@ -198,6 +198,28 @@ export const getStartDate = (item) => {
     return [tempLongDateTime]
   }
 
+
+  export const getDateNoTime = (item) => {
+
+    let tempDateTime;
+    let tempMonthNames;
+    let tempDate;
+    let tempYear;
+    let tempLongDateTime;
+
+    tempDateTime = new Date(item.order_createdAt);
+    tempDateTime.setMinutes( tempDateTime.getMinutes() + tempDateTime.getTimezoneOffset() );
+
+    tempMonthNames = monthAbbr2[tempDateTime.getMonth()];
+    tempDate = tempDateTime.getDate();
+    tempYear = tempDateTime.getFullYear();
+
+
+    tempLongDateTime = `${tempMonthNames} ${tempDate}\, ${tempYear} `;
+
+    return [tempLongDateTime]
+  }
+
   export const compareValues = (key, order) => {
     return function innerSort(a, b) {
       if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {

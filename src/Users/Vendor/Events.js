@@ -5,12 +5,12 @@ import Analytics from "../../assets/analytics.png";
 import Receipt from "../../assets/receipt.png";
 import ReceiptBlue from "../../assets/receiptBlue.png";
 import Ticket from "../../assets/ticket.png";
-import Edit from "../../assets/edit.png";
+import TicketBlue from "../../assets/ticketBlue.png";
 import WarningModal from "./Modals/WarningModal";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChevronDown,
   faEdit,
   faTicketAlternative
 } from "@fortawesome/free-solid-svg-icons";
@@ -163,7 +163,6 @@ const Events = (props) => {
                         // switch to the historical orders tab
                         console.log("there are tickets for this event");
                         props.issueTickets();
-    
                     } else {
                         console.log("there are NO tickets for this event");
                         setShowWarningModal({
@@ -171,7 +170,6 @@ const Events = (props) => {
                             type: "tickets"
                         });
                     }
-
                 }
 
             } else {
@@ -203,7 +201,15 @@ const Events = (props) => {
     )
 
     const mainDisplay = () => {
-        if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
+        if (isLoading) {
+            return (
+                <Fragment>
+                    <div style={{paddingTop: "120px"}}>
+                        <Spinner/>
+                    </div>
+                </Fragment>
+            );
+        } else if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
             console.log("eventDescriptions.length: ", eventDescriptions.length)
             return (
                 <div>
@@ -243,40 +249,30 @@ const Events = (props) => {
                                     </span>
                                 </div>
                                 <div style={{textAlign: "left"}}>
-                                    <button
+                                    <div
                                         style={{
                                             fontSize: "16px",
                                             textAlign: "left",
-                                            color: "blue",
                                             fontWeight: "600",
                                             paddingLeft: "0px",
-                                            border: "none",
-                                            backgroundColor: "white",
-                                            cursor: "pointer",
-                                            display: "inlineBlock",
-                                            outline: "none",
-                                        }}
-                                        onClick={() => {
-                                            setEventNum(item);
-                                            props.clicked()
                                         }}
                                     >
-                                        {item.eventTitle}
-                                    </button>
+                                    {item.eventTitle}
+                                    </div>
                                     <div
                                         style={{
                                             fontSize: "13px",
                                             textAlign: "left",
-                                            fontWeight: "600" 
+                                            fontWeight: "500" 
                                         }}
                                     >
                                     {longDateTime}
                                     </div>
                                 </div>
-                                <div style={{fontSize: "16px", fontWeight: "600", paddingTop: "12px"}}>
+                                <div style={{fontSize: "16px", fontWeight: "500", paddingTop: "12px"}}>
                                     {item.isDraft ?
-                                        <span style={{color: "red"}}>Draft</span> :
-                                        <span style={{color: "green"}}>Live</span>}
+                                        <span style={{color: "#B80000"}}>DRAFT</span> :
+                                        <span style={{color: "#008F00"}}>LIVE</span>}
                                 </div>
                                 <button
                                     style={{
@@ -397,7 +393,7 @@ const Events = (props) => {
                     <br></br>You currently have no events.
                 </div>
             )
-        } else if (!isLoading && !isSuccessfull) {
+        } else {
             return (
                 <div className={classes.SystemDownMessage}>
                     <br></br>
@@ -425,15 +421,13 @@ const Events = (props) => {
                     </div>
                 </div>
             )
-        } else {
-            return null;
         }
     }
 
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
-                MY EVENTS
+                My Events
             </div>
             <div className={classes.DisplayPanel2}>
                 <div className={classes.MainDisplayHeader2}>
@@ -448,7 +442,7 @@ const Events = (props) => {
                         <div>Analytics</div>
                     </div>
                     <div style={{ textAlign: "center" }}>
-                        <div>Historical</div>
+                        <div>Past</div>
                         <div>Orders</div>
                     </div>
                     <div style={{ textAlign: "center" }}>

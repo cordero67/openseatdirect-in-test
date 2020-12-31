@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 
 import { getDate } from "./VendorFunctions";
 
@@ -143,19 +143,17 @@ const TicketSales = (props) => {
             <div>
               <button 
                 className={classes.SortButton}
-                name="order_firstName"
-                onClick={(e) => {updateValues(e.target.name)}}
-              >
-                First
-              </button>
-            </div>
-            <div>
-              <button 
-                className={classes.SortButton}
                 name="order_lastName"
                 onClick={(e) => {updateValues(e.target.name)}}
               >
                 Last
+              </button>,{" "}
+              <button 
+                className={classes.SortButton}
+                name="order_firstName"
+                onClick={(e) => {updateValues(e.target.name)}}
+              >
+                First
               </button>
             </div>
             <div>
@@ -173,7 +171,7 @@ const TicketSales = (props) => {
                 name="order_numTickets"
                 onClick={(e) => {updateValues(e.target.name)}}
               >
-                # Tickets
+                Tickets
               </button>
             </div>
             <div style={{ textAlign: "center" }}>
@@ -205,33 +203,41 @@ const TicketSales = (props) => {
                     />
                   </div>
                   <div style={{textAlign: "left"}}>{shortDateTime}</div>
-                  <div style={{textAlign: "left"}}>{item.order_firstName}</div>
-                  <div style={{textAlign: "left"}}>{item.order_lastName}</div>
+                  <div style={{textAlign: "left"}}>{item.order_lastName},{" "}{item.order_firstName}</div>
                   <div style={{textAlign: "left"}}>{item.order_email}</div>
                   <div>{item.order_numTickets}</div>
                   <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount.toFixed(2)}</div>
                 </div>
                 {item.view ?
                   <div>
-                    {item.order_ticketItems.map((ticket, index) => {
-                      let paymentMethod;
-                      if ("order_gateway" in item) {
-                        paymentMethod = item.order_gateway;
-                      } else if (ticket.item_total_price.toFixed(2) !== "0.00") {
-                        paymentMethod = ticket.manualPaymentMethod;
-                      } else {
-                        paymentMethod = "comp";
-                      }
-                      return (
-                        <div className={classes.Tickets}>
-                          <div style={{textAlign: "right"}}>{ticket.numTix}</div>
-                          <div></div>
-                          <div style={{textAlign: "left"}}>{"@ "}{ticket.unit_price.toFixed(2)}{": "}{ticket.ticketName}</div>
-                          <div style={{textAlign: "right"}}>{ticket.item_total_price.toFixed(2)}</div>
-                          <div style={{textAlign: "left"}}>{": "}{paymentMethod}</div>
-                        </div>
-                      )
-                    })}
+                    <div className={classes.Tickets} style={{borderBottom: "1px solid black", width: "550px", marginLeft: "40px", paddingTop:  "5px"}}>
+                      <div style={{textAlign: "left"}}>Ticket Name</div>
+                      <div style={{textAlign: "center"}}>Price</div>
+                      <div style={{textAlign: "center"}}>Number</div>
+                      <div style={{textAlign: "center"}}>Total</div>
+                      <div style={{textAlign: "left"}}>Method</div>
+                    </div>
+                    <div>
+                      {item.order_ticketItems.map((ticket, index) => {
+                        let paymentMethod;
+                        if ("order_gateway" in item) {
+                          paymentMethod = item.order_gateway;
+                        } else if (ticket.item_total_price.toFixed(2) !== "0.00") {
+                          paymentMethod = ticket.manualPaymentMethod;
+                        } else {
+                          paymentMethod = "comp";
+                        }
+                        return (
+                          <div className={classes.Tickets} style={{width: "550px", marginLeft: "40px"}}>
+                            <div style={{textAlign: "left"}}>{ticket.ticketName}</div>
+                            <div style={{textAlign: "right", paddingRight: "10px"}}>{ticket.unit_price.toFixed(2)}</div>
+                            <div style={{textAlign: "center"}}>{ticket.numTix}</div>
+                            <div style={{textAlign: "right", paddingRight: "10px"}}>{ticket.item_total_price.toFixed(2)}</div>
+                            <div style={{textAlign: "left"}}>{paymentMethod}</div>
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div> :
                   null
                 }

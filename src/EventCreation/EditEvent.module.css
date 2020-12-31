@@ -80,23 +80,23 @@
 }
 
 .GridTitlePanel {
-  position: fixed;
-  top: 120px;
   left: calc((100vw - 860px)/2);
   border-bottom: 1px solid grey;
   background-color: #fff;
   /*background-color: #C2D9FF;*/
   z-index: 200;
-  padding: 15px;
+  padding-top: 15px;
+  padding-right: 0px;
+  padding-left: 0px;
   padding-bottom: 5px;
   box-sizing: border-box;
-  width: 1030px;
+  width: 1000px;
 }
 
 .GridTitle {
   display: grid;
-  grid-template-columns: 300px 395px 95px 95px 95px;
-  column-gap: 5px;
+  grid-template-columns: 200px 390px 120px 120px 120px;
+  column-gap: 10px;
   box-sizing: border-box;
   height: 30px;
   font-weight: 600;

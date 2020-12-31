@@ -42,42 +42,42 @@
 }
 
 .FirstNameBox {
-  height: 30px;
+  height: 40px;
   width: 325px;
   border: 0.5px solid grey;
   padding-left: 10px
 }
 
 .FirstNameBoxWarning {
-  height: 30px;
+  height: 40px;
   width: 325px;
   border: 1px solid red;
   padding-left: 10px
 }
 
 .LastNameBox {
-  height: 30px;
+  height: 40px;
   width: 325px;
   border: 0.5px solid grey;
   padding-left: 10px
 }
 
 .LastNameBoxWarning {
-  height: 30px;
+  height: 40px;
   width: 325px;
   border: 1px solid red;
   padding-left: 10px
 }
 
 .EmailBox {
-  height: 30px;
+  height: 40px;
   width: 660px;
   border: 0.5px solid grey;
   padding-left: 10px
 }
 
 .EmailBoxWarning {
-  height: 30px;
+  height: 40px;
   width: 660px;
   border: 1px solid red;
   padding-left: 10px
@@ -91,7 +91,7 @@
 }
 
 .InputBox {
-  height: 30px;
+  height: 40px;
   width: 660px;
   border: 0.5px solid grey;
   padding-left: 10px

@@ -11,8 +11,9 @@ import EditEvent from "../../EventCreation/EditEvent";
 import TicketSales from "./TicketSales";
 import Orders from "./Orders";
 import CreateEvent from "../../EventCreation/CreateEvent";
-import Profile from "./Profile";
+import Profile from "../ComponentPages/Profile";
 import Account from "./Account";
+import MyTickets from "../ComponentPages/MyTickets";
 
 import classes from "./VendorAccount.module.css";
 
@@ -29,6 +30,13 @@ const VendorAccount = () => {
       return response;
   };
 
+  const getStatus= (user) => { 
+    if ('accountId' in user && 'status' in user.accountId ) {
+        return user.accountId.status
+    } else {
+        return 0;
+    } 
+  }
   useEffect(() => {
     setIsLoading(true);
     if (
@@ -36,6 +44,10 @@ const VendorAccount = () => {
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
+      if (!(getStatus(tempUser.user) === 7) &&
+        !(getStatus(tempUser.user) === 8)) {
+        window.location.href = "/personal";
+      }
       let vendorToken = tempUser.token;
       let vendorId = tempUser.user._id;
 
@@ -109,6 +121,10 @@ const MainDisplay = () => {
             setPaneView("editEvent")
           }}
         />
+      )
+    } else if (paneView === "myTickets") {
+      return (
+        <MyTickets/>
       )
     } else if (paneView === "salesAnalytics") {
       return (

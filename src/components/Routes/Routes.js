@@ -15,10 +15,11 @@ import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import SignIn from "../../Users/Authentication/SignIn";
 import SignUp from "../../Users/Authentication/SignUp";
+import Slider from "../HomePage/Slider";
 import PasswordRecovery from "../../Users/Authentication/PasswordRecovery";
 import PasswordReset from "../../Users/Authentication/PasswordReset";
 import PrivateRoute from "./PrivateRoute";
-import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
+import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
 
@@ -74,6 +75,16 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Main />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/slider"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Slider />
           </React.Fragment>
         )}
       />
@@ -147,7 +158,7 @@ const Routes = () => {
       />
 
     <Route
-      path="/buyerdashboard"
+      path="/personal"
       exact
       render={(routeProps) => (
         <React.Fragment>
@@ -157,7 +168,7 @@ const Routes = () => {
             clicked={toggleSideDrawer}
           />
           <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-          <BuyerDashboard />
+          <BuyerAccount />
           <Footer></Footer>
         </React.Fragment>
       )}
@@ -172,7 +183,7 @@ const Routes = () => {
     />
 
     <Route
-      path="/vendoraccount"
+      path="/vendor"
       exact
       render={(routeProps) => (
         <React.Fragment>

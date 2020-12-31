@@ -12,7 +12,7 @@ import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import RadioForm from "./RadioForm";
 
-import classes from "./BuyerDashboard.module.css";
+import classes from "./BuyerAccount.module.css";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";  // experimental..
 
@@ -221,8 +221,8 @@ const Onboarding = (props) => {
     };
 
     const ticketPlans = [
-        { label: "Free Tickets", value: "free" },
-        { label: "Paid (and Free) Tickets", value: "basicPaidQuarter" }
+        { label: "Free Tickets: up to 500 free tickets per month", value: "free" },
+        { label: "Paid Tickets: unlimited amount of paid and free tickets", value: "basicPaidQuarter" }
     ];
 
     const paymentPlans = [
@@ -281,29 +281,6 @@ const Onboarding = (props) => {
             )
         }
     }
-    
-    /*
-    const subTitleDisplay = () => {
-        if (pageErrors || eventTitleOmission) {
-          return (
-            <div className={classes.GridSubTitle}>
-              <div style={{ textAlign: "left" }}></div>
-              <div style={{ textAlign: "center", color: "red"}}>
-                Please correct input errors identified below.
-              </div>
-            </div>
-          )
-        } else {
-          return (
-            <div className={classes.GridSubTitle}>
-              <div style={{ textAlign: "left" }}>
-                  {values.inputError}
-              </div>
-            </div>
-          )
-        }
-    }
-    */
 
     const handleErrors = response => {
         console.log ("inside handleErrors ", response);
@@ -405,55 +382,51 @@ const Onboarding = (props) => {
                 <div className={classes.SummaryHeader}>
                     3 easy steps to start selling tickets and receiving your cash now!
                 </div>
-                <br></br>
-                <div className={classes.SummaryGridTitle}
-                    style={{ fontWeight: "600"}}>
-                    <div>STEP 1</div>
-                    <div>STEP 2</div>
-                    <div>STEP 3</div>
+                <div style={{
+                    border: "1px solid #2F5596",
+                    backgroundColor: "#EFF3FA",
+                    marginLeft: "180px",
+                    marginRight: "180px",
+                    paddingTop: "10px",
+                    paddingBottom: "10px"
+                }}>
+                    <div className={classes.SummaryGridTitle}
+                        style={{ fontWeight: "500"}}>
+                        <div>Step 1</div>
+                        <div>Step 2</div>
+                        <div>Step 3</div>
+                    </div>
+                    <div className={classes.SummaryGrid}>
+                        <div>Provide Minimal</div>
+                        <div>Select a</div>
+                        <div>Create Your</div>
+                    </div>
+                    <div className={classes.SummaryGrid}>
+                        <div>Organization Info</div>
+                        <div>Ticket Plan</div>
+                        <div>First Event</div>
+                    </div>
                 </div>
-                <div className={classes.SummaryGrid}>
-                    <div>Provide Minimal</div>
-                    <div>Select a</div>
-                    <div>Create Your</div>
-                </div>
-                <div className={classes.SummaryGrid}>
-                    <div>Organization Info</div>
-                    <div>Ticket Plan</div>
-                    <div>First Event</div>
-                </div>
-                <div className={classes.SummaryHeader}>
+                <div className={classes.SummaryFooter}>
                     If you have 10 minutes to spare, you have time to sign up now.
                 </div>
-                <br></br>
-                <Button className={classes.OnboardingButton}
-                    style={{
-                        backgroundColor: "white",
-                        fontWeight: "600",
-                        padding: "0px"
-                    }}
-                    content="Start Signup"
-                    basic
-                    color="green"
-                    icon="external alternate"
-                    onClick={() => {
-                        setPageView("organization");
-                    }}
-                />
-                <br></br>
-                <br></br>
-                <Button className={classes.OnboardingButton}
-                    style={{
-                        backgroundColor: "white",
-                        border: "1px solid black",
-                        color: "black",
-                        padding: "0px"
-                    }}
-                    content="Not Now"
-                    onClick={() => {
-                        setPageView("organization");
-                    }}
-                />
+                
+            <button
+                style={{
+                    border: "1px solid #000",
+                    backgroundColor: "#008F00",
+                    color: "#fff",
+                    fontSize: "14px",
+                    width: "630px",
+                    height: "40px",
+                    fontWeight: "500"
+                }}
+                onClick={() => {
+                    setPageView("organization");
+                }}
+            >
+                START EVENT CREATOR SIGNUP
+            </button>
             </div>
         )
     }
@@ -468,81 +441,116 @@ const Onboarding = (props) => {
                         fontSize: "22px",
                         fontWeight: "600"
                     }}
-                    >STEP 1: Basic Information about your Organization
+                    >Step 1: Basic Information about your Organization
                 </div>
-                <br></br>
-                <div style={{paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Please provide us with the following pieces of information:</div>
                 <div className={classes.VendorCanvas}>
-                {/*subTitleDisplay()*/}
-                <br></br>
-                    <div className="form-group">
-                        <label>Company Name{" "}<span style={{color: "red"}}>*</span></label>
+                    <div style={{fontSize: "16px", paddingTop: "20px", paddingBottom: "20px" }}>
+                        Please provide us with the following pieces of information:
+                    </div>
+                    <div style={{paddingBottom: "20px", width: "420px", height: "85px"}}>
+                        <label style={{width: "420px", fontSize: "15px"}}>
+                            Company Name<span style={{color: "red"}}>*</span>
+                        </label>
                         <input
                             onFocus={() => {
                                 setValues({...values, inputError: ""});
                             }}
+                            style={{
+                                border: "1px solid #8DADD4",
+                                borderRadius: "0px",
+                                backgroundColor: "#EFF3FA",
+                                width: "420px",
+                                height: "40px",
+                                paddingLeft: "10px"
+                            }}
                             type="text"
                             name="accountName"
-                            className="form-control"
                             onChange={handleChange}
                             value={accountName}
                         />
                     </div>
-                    <br></br>
-                    <div className="form-group">
-                        <label>Company Email</label>
+
+                    <div style={{paddingBottom: "20px", width: "420px", height: "85px"}}>
+                        <label style={{width: "420px", fontSize: "15px"}}>
+                            Company E-mail Address
+                        </label>
                         <input
                             onFocus={() => {
                                 setValues({...values, inputError: ""});
                             }}
+                            style={{
+                                border: "1px solid #8DADD4",
+                                borderRadius: "0px",
+                                backgroundColor: "#EFF3FA",
+                                width: "420px",
+                                height: "40px",
+                                paddingLeft: "10px"
+                            }}
                             type="text"
                             name="accountEmail"
-                            className="form-control"
                             onChange={handleChange}
                             value={accountEmail}
                         />
                     </div>
-                    <br></br>
-                    <div className="form-group">
-                        <label>Company Phone or Cell Number</label>
+
+                    <div style={{paddingBottom: "20px", width: "420px", height: "85px"}}>
+                        <label style={{width: "420px", fontSize: "15px"}}>
+                            Company Phone or Cell Number
+                        </label>
                         <input
                             onFocus={() => {
                                 setValues({...values, inputError: ""});
                             }}
+                            style={{
+                                border: "1px solid #8DADD4",
+                                borderRadius: "0px",
+                                backgroundColor: "#EFF3FA",
+                                width: "420px",
+                                height: "40px",
+                                paddingLeft: "10px"
+                            }}
                             type="text"
                             name="accountPhone"
-                            className="form-control"
                             onChange={handleChange}
                             value={accountPhone}
                         />
                     </div>
-                    <br></br>
-                    <div className="form-group">
-                        <label>Company Website</label>
+
+                    <div style={{paddingBottom: "20px", width: "420px", height: "85px"}}>
+                        <label style={{width: "420px", fontSize: "15px"}}>
+                            Company Website
+                        </label>
                         <input
                             onFocus={() => {
                                 setValues({...values, inputError: ""});
                             }}
+                            style={{
+                                border: "1px solid #8DADD4",
+                                borderRadius: "0px",
+                                backgroundColor: "#EFF3FA",
+                                width: "420px",
+                                height: "40px",
+                                paddingLeft: "10px"
+                            }}
                             type="text"
                             name="accountUrl"
-                            className="form-control"
                             onChange={handleChange}
                             value={accountUrl}
                         />
                     </div>
-                </div>
-                
                     <br></br>
-                    <div style={{textAlign: "center"}}>
-                        <Button className={classes.OrganizationButton}
+                    <div style={{textAlign: "center", width: "420px", height: "85px"}}>
+                        <button
                             style={{
-                                backgroundColor: 'white',
-                                border: "1px solid green",
-                                color: "green",
-                                padding: "0px"
+                                border: "1px solid #000",
+                                backgroundColor: "#008F00",
+                                color: "#fff",
+                                fontSize: "14px",
+                                width: "420px",
+                                height: "40px",
+                                fontWeight: "500"
                             }}
                             disabled={!accountName}
-                            content="Submit"
                             onClick={() => {
                                 console.log("hit the button")
                                 //setIsDisabled(false);
@@ -602,8 +610,13 @@ const Onboarding = (props) => {
                                     setPageView("error");
                                 })
                             }}
-                        />
+                        >
+                            SUBMIT YOUR COMPANY INFORMATION
+                        </button>
+                    </div>
                 </div>
+
+
             </div>
         )
     }
@@ -619,33 +632,39 @@ const Onboarding = (props) => {
                             fontSize: "22px",
                             fontWeight: "600"
                         }}
-                        >STEP 2: Select a Ticket Plan
+                        >Step 2: Select a Ticket Plan
                     </div>
-                    <br></br>
-                    <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Choose between our two ticket plans:</div>
-                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px"}}>"Free Tickets" plan allows you to create up to 500 free tickets per month.</div>
-                    <div style={{fontSize: "16px", paddingLeft: "100px", paddingTop: "20px", paddingBottom: "40px"}}>"Paid (and Free) Tickets" plan allows you to create an unlimited amount of paid and free tickets.</div>
                     <div  className={classes.PaymentCanvas}>
-                        <RadioForm
-                            details={ticketPlans}
-                            group="eventTypeGroup"
-                            current={ticketPlan}
-                            change={(event, value) =>
-                                radioChange(event, value, "ticketPlan")
-                            }
-                        />
+                        <div
+                            style={{
+                                fontSize: "16px",
+                                paddingTop: "20px",
+                                paddingBottom: "20px"
+                            }}>
+                            Choose between our two ticket plans:
+                        </div>
+                            <RadioForm
+                                details={ticketPlans}
+                                group="eventTypeGroup"
+                                current={ticketPlan}
+                                change={(event, value) =>
+                                    radioChange(event, value, "ticketPlan")
+                                }
+                            />
                         <br></br>
-                    </div>
                         <br></br>
-                        <div style={{textAlign: "center"}}>
-                            <Button className={classes.OrganizationButton}
+                        <div style={{textAlign: "center", width: "420px", height: "85px", paddingLeft: "1px"}}>
+                            <button
                                 style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid green",
-                                    color: "green",
-                                    padding: "0px"
+                                    border: "1px solid #000",
+                                    backgroundColor: "#008F00",
+                                    color: "#fff",
+                                    fontSize: "14px",
+                                    width: "424px",
+                                    height: "40px",
+                                    fontWeight: "500"
                                 }}
-                                content="Submit"
+
                                 disabled={ticketPlan === "tbd"}
                                 onClick={() => {
                                     if (ticketPlan === "free") {
@@ -698,7 +717,10 @@ const Onboarding = (props) => {
                                         setPageView("payment");
                                     }
                                 }}
-                            />
+                            >
+                                SUBMIT YOUR TICKET PLAN SELECTION
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -898,32 +920,31 @@ const inputPromoCode = () => {
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
-                                >STEP 2: Choose a Subscription Plan
+                                >Step 2: Select a Subscription Plan
                             </div>
-                            <br></br>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Choose a subscription plan and submit your payment to PayPal:</div>
-                            <br></br>
-                            <br></br>
                             <div className={classes.PaymentCanvas}>
+                            <div style={{fontSize: "16px", paddingTop: "20px", paddingBottom: "20px"}}>Choose a plan and submit your payment to PayPal:</div>
                                 {promoOption()}
-                                <br></br>
                                 {paymentPanel()}
                             </div>
-                        <br></br>
-                            <div style={{textAlign: "center"}}>
-                                <Button className={classes.OrganizationButton}
+                            <div style={{textAlign: "center", paddingTop: "10px"}}>
+                                <button
                                     style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid blue",
-                                        color: "blue",
-                                        padding: "0px",
+                                        border: "1px solid #000",
+                                        backgroundColor: "#2F5596",
+                                        color: "#fff",
+                                        fontSize: "14px",
+                                        width: "424px",
+                                        height: "40px",
+                                        fontWeight: "500"
                                     }}
-                                    content="Back"
                                     onClick={() => {
                                         setPageView("ticket");
                                         console.log("pageView: ", pageView)
                                     }}
-                                />
+                                >
+                                    BACK TO SELECT A TICKET PLAN
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -942,7 +963,7 @@ const inputPromoCode = () => {
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
-                                >STEP 2: Payment Confirmation
+                                >Step 2: Payment Confirmation
                             </div>
                             <br></br>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you, your payment was successfully received by PayPal.</div>
@@ -977,7 +998,7 @@ const inputPromoCode = () => {
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
-                                >STEP 2: Payment Confirmation
+                                >Step 2: Payment Confirmation
                             </div>
                             <br></br>
                             <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you, your payment was successfully received by PayPal.</div>
@@ -999,11 +1020,13 @@ const inputPromoCode = () => {
                                     fontSize: "22px",
                                     fontWeight: "600"
                                 }}
-                                >STEP 2: Link Your Paypal Merchant Account 
+                                >Step 2: Link Your Paypal Merchant Account 
                             </div>
-                            <br></br>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>Please provide the ClientId and Secret from your PayPal merchant account.</div>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px"}}>These two items are located in the "My Apps & Credentials" section of your
+
+                            <div  className={classes.PaypalCanvas}>
+                                
+                            <div style={{fontSize: "16px", paddingTop: "20px"}}>Please provide the ClientId and Secret from your PayPal merchant account.</div>
+                            <div style={{fontSize: "16px", paddingTop: "20px"}}>These items are located in the "My Apps & Credentials" section of your
                                 <button
                                     style={{
                                         fontSize: "16px",
@@ -1021,7 +1044,7 @@ const inputPromoCode = () => {
                                     PayPal Dashboard.
                                 </button>
                             </div>
-                            <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px"}}>
+                            <div style={{fontSize: "16px", paddingTop: "20px", paddingBottom: "40px"}}>
                                 <button
                                     style={{
                                         fontSize: "16px",
@@ -1041,36 +1064,48 @@ const inputPromoCode = () => {
                                 </button>
                             </div>
 
-                            <div  className={classes.PaypalCanvas}>
-                                <div className="form-group">
-                                    <label>Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
-                                    <Popup
-                                        position="right center"
-                                        content="Your ID will only be used..."
-                                        header="Paypal Client ID"
-                                        trigger={
-                                            <FontAwesomeIcon
-                                                color="blue"
-                                                cursor="pointer"
-                                                icon={faInfoCircle}
-                                            />
-                                        }
-                                    />
+
+
+
+
+
+                                <div style={{paddingBottom: "20px", width: "670px", height: "85px"}}>
+                                    <label style={{width: "670px", fontSize: "15px"}}>
+                                        Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
+                                        <Popup
+                                            position="right center"
+                                            content="Your ID will only be used..."
+                                            header="Paypal Client ID"
+                                            trigger={
+                                                <FontAwesomeIcon
+                                                    color="blue"
+                                                    cursor="pointer"
+                                                    icon={faInfoCircle}
+                                                />
+                                            }
+                                        />
                                     </label>
                                     <input
                                         onFocus={() => {
                                             setValues({...values, inputError: ""});
                                         }}
+                                        style={{
+                                            border: "1px solid #8DADD4",
+                                            borderRadius: "0px",
+                                            backgroundColor: "#EFF3FA",
+                                            width: "670px",
+                                            height: "40px",
+                                            paddingLeft: "10px"
+                                        }}
                                         type="text"
                                         name="paypalExpress_client_id"
-                                        className="form-control"
                                         onChange={handleChange}
                                         value={paypalExpress_client_id}
                                     />
                                 </div>
-                                <br></br>
-                                <div className="form-group">
-                                    <label>Paypal Secret{" "}<span style={{color: "red"}}>*{" "}</span>
+                                <div>
+                                    <label style={{width: "670px", fontSize: "15px"}}>
+                                        Paypal Secret{" "}<span style={{color: "red"}}>*{" "}</span>
                                     <Popup
                                         position="right center"
                                         content="Your Paypal Secret will only be used..."
@@ -1088,25 +1123,32 @@ const inputPromoCode = () => {
                                         onFocus={() => {
                                             setValues({...values, inputError: ""});
                                         }}
+                                        style={{
+                                            border: "1px solid #8DADD4",
+                                            borderRadius: "0px",
+                                            backgroundColor: "#EFF3FA",
+                                            width: "670px",
+                                            height: "40px",
+                                            paddingLeft: "10px"
+                                        }}
                                         type="text"
                                         name="paypalExpress_client_secret"
-                                        className="form-control"
                                         onChange={handleChange}
                                         value={paypalExpress_client_secret}
                                     />
                                 </div>
-                            </div>
-                            <br></br>
-                            <div style={{textAlign: "center"}}>
-                                <Button className={classes.OrganizationButton}
+                            <div style={{textAlign: "center", paddingTop: "40px"}}>
+                                <button
                                     style={{
-                                        backgroundColor: 'white',
-                                        border: "1px solid green",
-                                        color: "green",
-                                        padding: "0px"
+                                        border: "1px solid #000",
+                                        backgroundColor: "#008F00",
+                                        color: "#fff",
+                                        fontSize: "14px",
+                                        width: "670px",
+                                        height: "40px",
+                                        fontWeight: "500"
                                     }}
                                     disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
-                                    content="Submit"
                                     onClick={() => {
                                         let url = `${API}/account/${props.userid}`;
                                         let fetcharg ={
@@ -1159,7 +1201,10 @@ const inputPromoCode = () => {
                                             setPageView("error");
                                         });
                                     }}
-                                />
+                                >
+                                    SUBMIT YOUR PAYPAL MERCHANT INFORMATION
+                                </button>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -1176,29 +1221,31 @@ const inputPromoCode = () => {
                                 fontSize: "22px",
                                 fontWeight: "600"
                             }}
-                            >STEP 3: Create an Event
+                            >Step 3: Create an Event
                         </div>
-                        <div className={classes.CompleteHeaderLine1}>
-                            Congratulations, you are now ready to create your first event and
-                        </div>
-
-                        <div className={classes.CompleteHeaderLine2}>
-                            enjoy the benefits that OpenSeatDirect provides.
-                        </div>
-                        <br></br>
-                        <div style={{textAlign: "center"}}>
-                            <Button className={classes.SummaryButton}
-                                style={{
-                                    backgroundColor: 'white',
-                                    border: "1px solid blue",
-                                    color: "blue",
-                                    padding: "0px",
-                                }}
-                                content="Continue"
-                                onClick={() => {
-                                    window.location.href = "/vendordashboard";
-                                }}
-                            />
+                        <div className={classes.CompleteCanvas}>
+                            <div className={classes.CompleteHeaderLine}>
+                                Congratulations, you are now ready to create your first event.
+                            </div>
+                            <br></br>
+                            <div style={{textAlign: "center"}}>
+                                <button
+                                    style={{
+                                        border: "1px solid #000",
+                                        backgroundColor: "#008F00",
+                                        color: "#fff",
+                                        fontSize: "14px",
+                                        width: "324px",
+                                        height: "40px",
+                                        fontWeight: "500"
+                                    }}
+                                    onClick={() => {
+                                        window.location.href = "/vendor";
+                                    }}
+                                >
+                                    GET STARTED
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )
@@ -1265,7 +1312,7 @@ const inputPromoCode = () => {
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
-            VENDOR SIGNUP
+            Event Creator Signup
             </div>
 
             {loading ? null : mainDisplay()}

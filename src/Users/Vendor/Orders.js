@@ -203,7 +203,7 @@ const Orders = (props) => {
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
-                ORDERS
+                Past Orders
             </div>
             
             <div className={classes.DisplayPanel2}>

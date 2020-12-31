@@ -30,6 +30,28 @@ const NavigationItems = (props) => {
         console.log("screenSize in Header: ", screenSize)
     };
 
+    const getStatus= () =>{ 
+      let tempData = JSON.parse(localStorage.getItem("user"));
+      //console.log("tempData: ", tempData)
+      //console.log("tempData.user: ", tempData.user)
+      //console.log("tempData.user.accountId: ", tempData.user.accountId)
+      //console.log("tempData.user.accountId.status: ", tempData.user.accountId.status)
+      if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
+        return tempData.user.accountId.status}
+      else {
+        console.log("returns 0")
+        return 0;
+      } 
+    }
+
+    let userPath;
+
+    if (isAuthenticated() && (getStatus() !== 7 && getStatus() !== 8)) {
+        userPath = "/personal"
+    } else if(isAuthenticated()) {
+        userPath = "/vendor"
+    }
+
     return (
         <ul className={classes.HeaderItems}>
             <li>
@@ -39,17 +61,6 @@ const NavigationItems = (props) => {
                 >EVENTS
                 </NavLink>
             </li>
-
-            {screenSize === 400 ? (
-            <li>
-                <NavLink
-                    to="/eventspast"
-                    style={isActive(props.currentPage, "/eventspast")}
-                >PAST EVENTS
-                </NavLink>
-            </li>)
-
-            : null}
 
             {!isAuthenticated() && 
                 <li>
@@ -61,17 +72,25 @@ const NavigationItems = (props) => {
                 </li>
             }
 
-            {isAuthenticated() && 
+            {userPath === "/vendor" && 
                 <li>
                     <NavLink
-                        to="/signin"
-                        onClick={props.signOut}
-                        style={{color: "#000"}}
-                    >SIGN OUT
+                        to="/vendor"
+                        style={isActive(props.currentPage, "/vendor")}
+                    >MY ACCOUNT
                     </NavLink>
                 </li>
             }
 
+            {userPath === "/personal" && 
+                <li>
+                    <NavLink
+                        to="/personal"
+                        style={isActive(props.currentPage, "/personal")}
+                    >MY ACCOUNT
+                    </NavLink>
+                </li>
+            }
 
         </ul>
     )

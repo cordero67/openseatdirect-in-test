@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
-import classes from "./OrderModal.module.css";
+import classes from "./WarningModal.module.css";
 
 import { Button } from "semantic-ui-react";
 
@@ -11,23 +11,27 @@ const OrderModal = (props) => {
     if (props.type === "orders") {
       return (
         <Fragment>
-          <div>Event Orders</div>
-          <div>There are no orders associated with this event</div>
+          <div style={{fontSize: "20px"}}>Past Orders</div>
+          <br></br>
+          <div style={{fontSize: "16px"}}>There are no past orders associated with this event</div>
         </Fragment>
       )
     } else if (props.type === "tickets") {
       return (
         <Fragment>
-          <div>Event Ticekts</div>
-          <div>There are no tickets available for this event</div>
-          <div>You must first create at least one ticket type</div>
+          <div style={{fontSize: "20px"}}>Issue Tickets</div>
+          <br></br>
+          <div style={{fontSize: "16px"}}>There are no tickets available for this event</div>
+          <br></br>
+          <div style={{fontSize: "16px"}}>You must first create at least one ticket type</div>
         </Fragment>
       )
     } else if (props.type === "analytics") {
       return (
         <Fragment>
-          <div>Sales Analytics</div>
-          <div>Coming soon!</div>
+          <div style={{fontSize: "20px"}}>Sales Analytics</div>
+          <br></br>
+          <div style={{fontSize: "20px"}}>Coming soon!</div>
         </Fragment>
       )
     }
@@ -35,23 +39,20 @@ const OrderModal = (props) => {
 
   const modalButtons = (
     <Fragment>
-      <Button
-        style={{
-          backgroundColor: "#fff",
-          border: "1px solid blue",
-          color: "blue",
-          fontSize: "15px",
-          fontWeight: "600",
-          width: "120px",
-          height: "30px",
-          margin: "auto",
-          textAlign: "center",
-          padding: "0px"
-        }}
-        content=" Continue"
-        icon="angle right"
+      <button
         onClick={props.close}
-      />
+        style={{
+          border: "1px solid #0000CC",
+          backgroundColor: "#fff",
+          color: "black",
+          fontSize: "14px",
+          width: "150px",
+          height: "40px",
+          fontWeight: "500"
+        }}
+      >
+        CONTINUE
+      </button>
     </Fragment>
   )
 
@@ -66,6 +67,7 @@ const OrderModal = (props) => {
         className={classes.Modal}
       >
         {modalContent()}
+        <br></br>
         {modalButtons}
       </div>
     </Fragment>

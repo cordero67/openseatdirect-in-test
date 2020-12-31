@@ -57,7 +57,7 @@ const VendorNavigation = (props) => {
             color="white"
             cursor="pointer"
             icon={faHome}
-          />{" "}MY ACCOUNT
+          />{" "}My Account
         </span>
       </div>
 
@@ -80,7 +80,20 @@ const VendorNavigation = (props) => {
               }}
               name="events"
               onClick={props.clicked}>
-              MY EVENTS
+              My Events
+            </button>
+          </li>
+
+          <li>
+          <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "myTickets" ? "#e0e0e0" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="myTickets"
+              onClick={props.clicked}>
+              My Tickets
             </button>
           </li>
 
@@ -93,7 +106,7 @@ const VendorNavigation = (props) => {
               }}
               name="orders"
               onClick={props.clicked}>
-              ALL ORDERS
+              Past Orders
             </button>
           </li>
 
@@ -106,7 +119,7 @@ const VendorNavigation = (props) => {
               }}
               name="create"
               onClick={props.clicked}>
-              CREATE EVENT
+              Create Event
             </button>
           </li>
           
@@ -119,7 +132,7 @@ const VendorNavigation = (props) => {
               }}
               name="profile"
               onClick={props.clicked}>
-              PROFILE
+              Profile
             </button>
           </li>
 
@@ -132,22 +145,22 @@ const VendorNavigation = (props) => {
               }}
               name="account"
               onClick={props.clicked}>
-              ACCOUNT
+              Account
             </button>
           </li>
 
           <li 
           >
             <NavLink
-            className={classes.NavigationButton}
-              to="/signin"
+              className={classes.NavigationButton}
+              to="/events"
               style={{color: "#000",
               fontWeight: "500"}}
               onClick={() => {
                 signout(() => {
                 })
               }}
-            >SIGN OUT
+            >Sign Out
             </NavLink>
           </li>
         </div>

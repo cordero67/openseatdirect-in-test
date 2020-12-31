@@ -13,11 +13,6 @@ const event = props => {
   //console.log("image: ", image)
 
   let newDate = dateFormat(props.date, "ddd, mmm d, yyyy - h:MM TT", true);
-  console.log("props.date: ", props.date)
-
-  //const onError = () => {
-  //  setImage(defaultImage)
-  //}
 
   return (
   <article className={classes.Event} onClick={props.clicked}>

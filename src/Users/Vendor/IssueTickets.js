@@ -612,7 +612,7 @@ const ManualOrderEntry = (props) => {
       return (
         <div className={classes.RecipientDisplay}>
           <div style={{fontSize: "16px", fontWeight: "600", paddingBottom: "15px"}}>
-            Ticket Recipient <span style={{fontSize: "15px", fontWeight: "400", fontStyle: "italic"}}><span style={{color: "red"}}>*</span>required</span>
+            Ticket Recipient
           </div>
           <div className={classes.NameGrid}>
             <div>

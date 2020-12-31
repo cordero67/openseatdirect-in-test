@@ -45,38 +45,34 @@ const OrderModal = (props) => {
     if (props.status === "review") {
       return (
         <Fragment>
-          <Button
+          <button
             style={{
-              marginTop: "5px",
-              marginRight: "10px",
-              width: "120px",
-              height: "30px",
-              fontWeight: "600",
-              textAlign: "center",
-              paddingTop: "7px",
+              border: "1px solid black",
+              backgroundColor: "#B80000",
+              color: "#fff",
+              fontSize: "14px",
+              width: "240px",
+              height: "40px",
+              fontWeight: "500"
             }}
-            content="Edit"
-            basic
-            color="red"
-            icon="edit"
             onClick={props.edit}
-          />
-          <Button
+          >
+            EDIT ORDER
+          </button>
+          <button
             style={{
-              marginTop: "5px",
-              marginLeft: "10px",
-              width: "120px",
-              height: "30px",
-              fontWeight: "600",
-              textAlign: "center",
-              paddingTop: "7px",
+              border: "1px solid black",
+              backgroundColor: "#008F00",
+              color: "#fff",
+              fontSize: "14px",
+              width: "240px",
+              height: "40px",
+              fontWeight: "500"
             }}
-            content=" Submit"
-            basic
-            color="green"
-            icon="external alternate"
             onClick={props.submit}
-          />
+          >
+            SUBMIT ORDER
+          </button>
         </Fragment>
       )
     } else if (props.status === "confirmation") {
