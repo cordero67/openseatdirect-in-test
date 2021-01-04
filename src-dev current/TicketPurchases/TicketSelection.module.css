@@ -1,0 +1,273 @@
+.EventHeader {
+    text-align: center;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: 60px;
+    border-bottom: 1px solid lightgrey;
+}
+.EventTitle {
+    font-size: 1.0rem;
+    font-weight: 600;
+}
+.EventDate {
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+.EventDescription {
+    font-weight: 400;
+    padding-bottom: 5px;
+    font-size: 0.875rem
+}
+.EventFooter {
+    display: grid;
+    grid-template-columns: auto 80px 130px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    border-top: 1px solid lightgrey;
+    height: 80px;
+}
+.CartLink {
+    padding-top: 8px;
+    font-size: 20px;
+    font-weight: 600;
+}
+.TotalAmount {
+    text-align: right;
+    padding-right: 10px;
+    padding-top: 8px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.Image {
+    height: auto;
+    width: 100%;
+}
+.ImageBox {
+    max-height: auto;
+    max-width: 70px;
+}
+
+.EmptyOrderSummary {
+    color: grey;
+    position: relative;
+    float: left;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+}
+
+.MainItemLeft {
+    background-color: #f9f9f9;
+    border-right: 1px solid lightgrey;
+}
+
+.ButtonGreen {
+    height: 44px;
+    width: 127px;
+    background-color: green;
+    color: white;
+    font-weight: 600;
+    border: 1px solid grey;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+
+.ButtonRed {
+    height: 44px;
+    width: 127px;
+    background-color: red;
+    color: white;
+    font-weight: 600;
+    border: 1px solid grey;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+.ButtonGrey {
+    height: 44px;
+    width: 127px;
+    background-color: #e7e7e7;
+    color: black;
+    font-variant-east-asian: 600;
+    border: 1px solid grey;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+
+.faShoppingCart {
+    font-size: 1.5rem;
+    vertical-align: center;
+}
+.faShoppingCart:hover {
+    border-color: transparent;
+}
+.cartBadge {
+    border-radius: 50%;
+    vertical-align: super;
+    font-size: 16px;
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: white;
+    font-style: italic;
+    background: red;
+}
+
+.PromoGrid {
+    height: 48px;
+    display: grid;
+    grid-template-columns: auto 80px;
+}
+.Red {
+    border: 1px solid red
+}
+.Blue {
+    border: 1px solid blue
+}
+.EnterPromoCode {
+    color: blue;
+    width: 140px;
+}
+.EnterPromoCode:hover {
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.AppliedPromoCode {
+    background-color: #EFF8E9;
+    padding-top: 5px;
+    padding-left: 5px;
+    height: 30px;
+}
+.RemovePromoCode {
+    color: blue;
+    font-size: 14px;
+    width: 80px;
+}
+.RemovePromoCode:hover {
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.PromoCodeInputBoxRed {
+    padding-left: 10px;
+    color: red;
+    background-color: white;
+    border: none;
+    outline: none;
+}
+.PromoCodeInputBoxBlack {
+    padding-left: 10px;
+    color: black;
+    background-color: white;
+    border: none;
+    outline: none;
+}
+.PromoCodeButtonBlue {
+    font-size: 14px;
+    text-align: center;
+    color: blue;
+    background-color: white;
+    border: none;
+    outline: none;
+}
+.PromoCodeButtonRed {
+    font-size: 14px;
+    text-align: center;
+    color: red;
+    background-color: white;
+    border: none;
+    outline: none;
+}
+
+.BlankCanvas {
+    background-color: #fff;
+    margin: auto;
+    vertical-align: center;
+    height: 100vh;
+    padding-top: 30px;
+    padding-left: 15px;
+    padding-right: 10px;
+    text-align: left;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+@media (min-width: 480px) {
+    .EventTitle {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+    .EventDate {
+        font-size: 0.9rem;
+        font-weight: 400;
+    }
+    .EventFooter {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+
+    .BlankCanvas {
+        padding-top: 30px;
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+}
+
+@media (min-width: 660px) {
+    .EventFooter {
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+
+    @media (min-height: 720px) {
+        .BlankCanvas {
+            height: 720px;
+        }
+    }
+}
+
+@media (min-width: 790px) {
+    .EventFooter {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+
+    .BlankCanvas {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+}
+
+@media (min-width: 1140px) {
+    .EventFooter {
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+
+    .PromoGrid {
+        grid-template-columns: 480px 77px;
+    }
+
+    .BlankCanvas {
+        width: 1080px;
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+}

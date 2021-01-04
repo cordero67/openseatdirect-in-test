@@ -11,6 +11,8 @@ import EventDetails from "../../Events/EventDetails";
 import EventDeletion from "../../EventCreation/DeleteEvent";
 import ContactUs from "../ContactUs/ContactUs";
 import CheckoutBT from "../../TicketPurchases/Checkout_bt";
+import CustomerInfo from "../../TicketPurchases/CustomerInfo";
+import FreeTicketInfo from "../../TicketPurchases/FreeTicketInfo";
 import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import SignIn from "../../Users/Authentication/SignIn";
@@ -310,6 +312,31 @@ const Routes = () => {
           </React.Fragment>
         )}
       />
+
+      <Route
+        path="/info"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <CustomerInfo />
+          </React.Fragment>
+        )}
+      />
+
+<Route
+        path="/freeticket"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <FreeTicketInfo />
+          </React.Fragment>
+        )}
+      />
+
+
+
+
+
       <Route
         path="/checkout"
         exact

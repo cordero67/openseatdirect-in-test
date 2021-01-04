@@ -15,7 +15,7 @@ import {
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling
 } from "./Styling";
-import { expressPaymentOnSuccess } from "./apiCore";
+import { paymentOnSuccess } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLink";
@@ -27,6 +27,7 @@ import styles from "./Order.module.css";
 let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
+let customerInformation = {};
 
 // defines an event's image
 let eventLogo = "";
@@ -47,13 +48,6 @@ let transactionInfo = {};
 const Checkout = props => {
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
-
-  // defines contact information to be sent to server
-  const [contactInformation, setContactInformation] = useState({
-    firstName: "",
-    lastName: "",
-    email: ""
-  });
 
   // defines all view control variables
   const [showConnectionStatus, setShowConnectionStatus] = useState(false);
@@ -106,7 +100,6 @@ const Checkout = props => {
 
   // transaction status variables
   const [paypalStatus, setPaypalStatus] = useState(false);
-  const [freeTicketStatus, setFreeTicketStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState(false);
 
   useEffect(() => {
@@ -118,6 +111,18 @@ const Checkout = props => {
         eventDetails = tempCart.eventDetails;
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
+        if("guestInfo" in tempCart) {
+          customerInformation = tempCart.guestInfo;
+          console.log("customerInformation: ", customerInformation)
+        } else if (localStorage.getItem("user") !== null) {
+          let tempUser = JSON.parse(localStorage.getItem("user"));
+          console.log("tempUser: ", tempUser);
+          customerInformation = {
+            sessionToken: tempUser.token,
+            userId: tempUser.user._id
+          };
+          console.log("customerInformation: ", customerInformation);
+        }
         setPaypalArray();
         console.log("Paypal Array: ", paypalArray);
         console.log("orderTotals: ", orderTotals);
@@ -182,17 +187,15 @@ const Checkout = props => {
     localStorage.removeItem(`image_${event}`);
   };
 
-  // **********
   // THIS SECTION NEEDS WORK
   // called by <PaypalButton> on a successful transaction
-  const payPalExpressBuy = details => {
+  const payPalPurchase = details => {
       details.purchase_units[0].items = paypalArray;
-    const paymentData = {
-      paypalOrderDetails: details
-    };
+    
+   const paymentData = details
 
     setPaypalStatus(true);
-    console.log("paypalStatus inside 'payPalExpressBuy': ", paypalStatus);
+    console.log("paypalStatus inside 'payPalPurchase': ", paypalStatus);
 
     transactionInfo = {
       eventTitle: eventDetails.eventTitle,//
@@ -227,7 +230,7 @@ const Checkout = props => {
     onlyShowLoadingSpinner();
     console.log("On Success 'details' object: ", details);
     // sends PayPal order object to the server
-    expressPaymentOnSuccess(paymentData)
+    paymentOnSuccess(paymentData, customerInformation)
       .then(response => {
         console.log("order received");
         console.log("response: ", response);
@@ -239,7 +242,7 @@ const Checkout = props => {
         }
       })
       .catch(error => {
-        console.log("processExpressPayment() error.message: ", error.message);
+        console.log("paymentOnSuccess() error.message: ", error.message);
         setOrderStatus(false);})
       .finally(() => {
         onlyShowPurchaseConfirmation();
@@ -256,8 +259,6 @@ const Checkout = props => {
     }
   };
 
-  // ********************************
-  // ********************************
   // ********************************
   // determines whether or not to display the cart and arrow
   const cartLink = show => {
@@ -361,7 +362,7 @@ const Checkout = props => {
             console.log("onCancel 'data': ", data);
           }}
           onSuccess={(details, data) => {
-            payPalExpressBuy(details);
+            payPalPurchase(details);
           }}
           onError = {(err) => {
             console.log("error occurs: ", err);
@@ -390,28 +391,6 @@ const Checkout = props => {
   );
 
   // determines what "contact information" has been filled out by the ticket buyer
-  const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-  let detailsMinimal = () => {
-    if(contactInformation.firstName
-      && contactInformation.lastName
-      && contactInformation.email
-      && regsuper.test(contactInformation.email)) {
-      return true
-    } else {
-      return false
-    }
-  }
-
-  const changeField = (event) => {
-    let tempInformation = {...contactInformation};
-    tempInformation[event.target.name] = event.target.value;
-    setContactInformation(tempInformation);
-    console.log(contactInformation);
-    console.log("regsuper.test(contactInformation.email): ", regsuper.test(contactInformation.email))
-  }
-
-  
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
     if (!response.ok) {
@@ -419,136 +398,6 @@ const Checkout = props => {
     }
     return response;
   };
-
-  const freeTicketHandler = () => {
-    setFreeTicketStatus(true);
-    console.log("freeTicketStatus inside 'freeTicketHandler': ", freeTicketStatus);
-
-    console.log("transactionInfo: ",transactionInfo)
-    transactionInfo = {
-      eventTitle: eventDetails.eventTitle,//
-      eventType: eventDetails.eventType,//
-      venue: eventDetails.locationVenueName,//
-      address1: eventDetails.locationAddress1,//
-      address2: eventDetails.locationAddress2,//
-      city: eventDetails.locationCity,//
-      state: eventDetails.locationState,//
-      zipPostalCode: eventDetails.locationZipPostalCode,//
-      countryCode: eventDetails.locationCountryCode,//
-      locationNote: eventDetails.locationNote,//
-      webinarLink: eventDetails.webinarLink,//
-      onlineInformation: eventDetails.onlineInformation,//
-      tbaInformation: eventDetails.tbaInformation,//
-      startDateTime: eventDetails.startDateTime,//
-      endDateTime: eventDetails.endDateTime,//
-      timeZone: eventDetails.timeZone,
-      email: contactInformation.email,
-      firstName: contactInformation.firstName,
-      lastName: contactInformation.lastName,
-      numTickets: orderTotals.ticketsPurchased,
-      fullAmount: orderTotals.fullPurchaseAmount,
-      discount: orderTotals.discountAmount,
-      totalAmount: orderTotals.finalPurchaseAmount,
-      tickets: ticketInfo,
-      organizerEmail: eventDetails.organizerEmail,
-    };
-    console.log("Inside freeTicketHandler");
-    let order = {};
-    let ticketArray = [];
-    order.firstName = contactInformation.firstName;
-    order.lastName = contactInformation.lastName;
-    order.eventNum = eventDetails.eventNum;
-    order.email = contactInformation.email;
-    console.log("order: ", order)
-    console.log("ticketInfo: ", ticketInfo)
-    ticketInfo.map((item, index) => {
-      console.log("item #", index)
-      if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-        let tempObject = {};
-        tempObject.ticketID = item.ticketID;
-        tempObject.ticketsSelected = item.ticketsSelected;
-        console.log("zero ticket #", index);
-        ticketArray.push(tempObject);
-      }
-    });
-    console.log("zero tickets:", ticketArray);
-    order.tickets = ticketArray;
-    console.log("orderobject: ", order)
-    let  myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    let url = `${API}/free/freeTickets`;
-    let fetcharg ={
-        method: "POST",
-        headers: myHeaders,
-        body:JSON.stringify (order),
-    };
-    console.log("fetching with: ", url, fetcharg);
-    console.log("Free ticket order: ", order)
-    fetch(url, fetcharg )
-    .then(handleErrors)
-    .then ((response)=>{
-        console.log ("then response: ", response);
-        return response.json()})
-    .then ((data)=>{
-        console.log ("fetch return got back data:", data);
-        setOrderStatus(true);
-        console.log("Order status: ", orderStatus);
-        onlyShowPurchaseConfirmation();
-        purchaseConfirmHandler();
-    })
-    .catch ((error)=>{
-        console.log("freeTicketHandler() error.message: ", error.message);
-        onlyShowPurchaseConfirmation();
-        purchaseConfirmHandler();
-    })
-  }
-
-  const freePayment = (
-    <div>
-      <div style={{display: "grid", gridGap: "4%", gridTemplateColumns: "48% 48%"}}>
-        <div className="form-group">
-          <br></br>
-          <label styles={{ fontSize: "16px" }}>
-            First Name<span style={{ color: "red" }}>*</span>
-          </label>
-          <input
-            type="text"
-            name="firstName"
-            className="form-control"
-              onChange={changeField}
-          />
-        </div>
-
-        <div className="form-group">
-          <br></br>
-          <label styles={{ fontSize: "16px" }}>
-            Last Name<span style={{ color: "red" }}>*</span>
-          </label>
-          <input
-            type="text"
-            name="lastName"
-            className="form-control"
-              onChange={changeField}
-          />
-        </div>
-      </div>
-      <div className="form-group">
-        <label>Email Address<span style={{ color: "red" }}>*</span></label>
-        <input
-          type="email"
-          name="email"
-          className="form-control"
-          onChange={changeField}
-        />
-      </div>
-
-      <div>{(contactInformation.email && !regsuper.test(contactInformation.email))
-        ? <span style={{ color: "red", padding: "5px"}}>A valid email address is required</span>
-        : null
-      }</div>
-    </div>
-  )
 
   // **********
   // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
@@ -565,18 +414,7 @@ const Checkout = props => {
           transactionInfo={transactionInfo}
         ></OrderConfirmTF>
       );
-    //} else if (freeTicketStatus) {
-    } else if (freeTicketStatus && orderStatus) {
-      return (
-        <FreeConfirmTT
-          transactionInfo={transactionInfo}
-        ></FreeConfirmTT>
-      )
-    } else if (freeTicketStatus && !orderStatus) {
-      return (
-        <div>Problem with OSD Server in processing your tickets</div>
-      )
-    }  else {
+    } else {
       return (
         <Aux>
           <span className={styles.SubSectionHeader}>Order Rejection</span>
@@ -588,27 +426,6 @@ const Checkout = props => {
             </span>
           </div>
         </Aux>
-      );
-    }
-  };
-
-  // creates submit button to send free ticket information to server
-  const checkoutButton = () => {
-    if (orderTotals.ticketsPurchased > 0 && detailsMinimal()) {
-      return (
-        <button
-          onClick={freeTicketHandler}
-          disabled={false}
-          className={styles.ButtonGreen}
-        >
-          <span style={{ color: "white" }}>Submit</span>
-        </button>
-      );
-    } else {
-      return (
-        <button disabled={true} className={styles.ButtonGrey}>
-          Submit
-        </button>
       );
     }
   };
@@ -639,7 +456,6 @@ const Checkout = props => {
           <div className={styles.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
-          <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
         </div>
       </Aux>
     );
@@ -725,8 +541,6 @@ const Checkout = props => {
               {dateRange}
             </div>
           </div>
-          { orderTotals.finalPurchaseAmount > 0 ? 
-            (
             <Aux>
               <div style={EventTicketSection}>
                 <span className={styles.TicketType}>Payment Information</span>
@@ -745,30 +559,6 @@ const Checkout = props => {
                 </div>
               </div>
             </Aux>
-            )
-            : 
-            (
-              <Aux>
-                <div style={EventTicketSection}>
-                  <span className={styles.TicketType}>Information</span>
-                  <br></br>
-                  <span className={styles.TicketTypeSmall}>
-                    Provide the following to receive your free tickets
-                  </span>
-                  <br></br>
-                  <br></br>
-                  {freePayment}
-                </div>
-                <div className={styles.EventFooter}>
-                  <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
-                  <div className={styles.TotalAmount}>
-                    {totalAmount(showDoublePane)}
-                  </div>
-                  <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
-                </div>
-              </Aux>
-            )       
-          }
         </div>
       </Aux>
     );

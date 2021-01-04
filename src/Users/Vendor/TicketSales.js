@@ -3,7 +3,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import { getDate } from "./VendorFunctions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faReceipt } from "@fortawesome/free-solid-svg-icons";
 
 import classes from "./TicketSales.module.css";
 
@@ -183,6 +183,7 @@ const TicketSales = (props) => {
                 Total
               </button>
             </div>
+            <div style={{textAlign: "center"}}>Receipt</div>
           </div>
           {eventOrders.map((item, index) => {
             let shortDateTime;
@@ -191,24 +192,26 @@ const TicketSales = (props) => {
             return (
               <div>
                 <div className={classes.Orders}>
-                  <div style={{ fontSize: "12px", textAlign: "center" }}>          
-                    <FontAwesomeIcon
-                      color="black"
-                      size="sm"
-                      cursor="pointer"
-                      onClick={() => {
-                        switchView(item);
-                      }}
-                      icon={item.view ? faChevronUp : faChevronDown}
-                    />
-                  </div>
                   <div style={{textAlign: "left"}}>{shortDateTime}</div>
                   <div style={{textAlign: "left"}}>{item.order_lastName},{" "}{item.order_firstName}</div>
                   <div style={{textAlign: "left"}}>{item.order_email}</div>
                   <div>{item.order_numTickets}</div>
                   <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount.toFixed(2)}</div>
+                  <div style={{ fontSize: "22px", textAlign: "center" }}>          
+                    <FontAwesomeIcon
+                      color="blue"
+                      size="sm"
+                      cursor="pointer"
+                      onClick={() => {
+                        //switchView(item);
+                      }}
+                      icon={faReceipt}
+                    />
+                  </div>
+                
+                
                 </div>
-                {item.view ?
+                {false ?
                   <div>
                     <div className={classes.Tickets} style={{borderBottom: "1px solid black", width: "550px", marginLeft: "40px", paddingTop:  "5px"}}>
                       <div style={{textAlign: "left"}}>Ticket Name</div>
@@ -305,9 +308,11 @@ const TicketSales = (props) => {
   const tabTitle = (
     <div className={classes.DashboardHeader}>
       {(!isLoading && selectedEventTitle !== "") ?
-      <div style={{fontSize: "26px", fontWeight: "600"}}>{selectedEventTitle}</div>
-      :
-      <div><br></br></div>}
+        <div style={{fontSize: "26px", fontWeight: "600"}}>{selectedEventTitle}</div>
+        :
+        <div>
+          <br></br>
+        </div>}
       <div style={{paddingTop: "5px"}}>
       <button
         className={classes.SwitchButton}

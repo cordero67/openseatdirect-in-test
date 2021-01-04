@@ -73,9 +73,7 @@
 }
 .EventFooter {
   display: grid;
-  grid-template-columns: auto 80px 130px;
-  padding-left: 15px;
-  padding-right: 15px;
+  grid-template-columns: auto 80px;
   padding-top: 18px;
   padding-bottom: 18px;
   border-top: 1px solid lightgrey;
@@ -199,6 +197,27 @@
   color: blue;
 }
 
+
+.InputBox {
+  border: 1px solid #8DADD4;
+  border-radius: 0px;
+  background-color: #EFF3FA;
+  width: 300px;
+  height: 40px;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+.InputBoxLarge {
+  border: 1px solid #8DADD4;
+  border-radius: 0px;
+  background-color: #EFF3FA;
+  width: 600px;
+  height: 40px;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
 .ButtonRed {
   height: 44px;
   width: 127px;
@@ -206,37 +225,23 @@
   color: white;
   font-weight: 600;
   border: 1px solid grey;
-  border-radius: 8px;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
 }
 .ButtonGreen {
-  height: 44px;
-  width: 127px;
+  height: 40px;
+  width: 200px;
   background-color: green;
   color: white;
-  font-weight: 600;
-  border: 1px solid grey;
-  border-radius: 8px;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  font-weight: 500;
+  border: 1px solid black;
 }
 .ButtonGrey {
-  height: 44px;
-  width: 127px;
-  background-color: #e7e7e7;
-  color: black;
-  font-weight: 600;
-  border: 1px solid grey;
-  border-radius: 8px;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
+  height: 40px;
+  width: 200px;
+  background-color: green;
+  opacity: 0.4;
+  color: white;
+  font-weight: 500;
+  border: 1px solid black;
 }
 
 .faShoppingCart {

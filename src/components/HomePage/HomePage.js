@@ -851,13 +851,13 @@ const Home = () => {
         ) 
       } else if (screenSize >= 900 && screenSize < 1050) {
         return (
-          <div style={{fontSize: "22px", lineHeight: "32px"}}>
+          <div style={{fontSize: "22px", fontWeight: "600", lineHeight: "32px"}}>
             Sign up for a free trial or a subscription for as low as $7 a month.
           </div>
         )
       } else if (screenSize >= 650 && screenSize < 900) {
         return (
-          <div style={{fontSize: "22px", lineHeight: "36px"}}>
+          <div style={{fontSize: "22px", fontWeight: "600", lineHeight: "36px"}}>
             Sign up for a free trial or a
             <br></br>
             subscription for as low as $7 a month.
@@ -865,7 +865,7 @@ const Home = () => {
         )
       } else {
         return (
-          <div style={{fontSize: "20px", lineHeight: "30px"}}>
+          <div style={{fontSize: "20px", fontWeight: "600", lineHeight: "30px"}}>
             Sign up for a free trial or a
             <br></br>
             subscription for as low as $7 a month.
@@ -905,68 +905,47 @@ const Home = () => {
 
     const signUpForm = (
       <Aux>
-        <div className="form-group">
-          <label style={{fontSize: "15px", color: "black"}}>
-            Full Name<span style={{color: "red"}}>*</span>
+        <div style={{paddingBottom: "20px"}}>
+          <label style={{width: "340px", fontSize: "15px", color: "black"}}>
+            Full Name{" "}<span style={{color: "red"}}>*</span>
           </label>
           <input
             type="text"
             name="name"
-            className="form-control"
-            style={{
-              border: "1px solid #8DADD4",
-              borderRadius: "0px",
-              backgroundColor: "#EFF3FA",
-              width: "340px",
-              height: "40px"
-            }}
+            className={classes.InputBox}
             onChange={handleChange}
             value={name}
           />
         </div>
   
-        <div className="form-group">
-          <label style={{fontSize: "15px", color: "black"}}>
-            E-mail Address<span style={{color: "red"}}>*</span>
+        <div style={{paddingBottom: "20px"}}>
+          <label style={{width: "340px", fontSize: "15px", color: "black"}}>
+            E-mail Addresss{" "}<span style={{color: "red"}}>*</span>
           </label>
           <input
             type="email"
             name="email"
-            className="form-control"
-            style={{
-              border: "1px solid #8DADD4",
-              borderRadius: "0px",
-              backgroundColor: "#EFF3FA",
-              width: "340px",
-              height: "40px"
-            }}
+            className={classes.InputBox}
             onChange={handleChange}
             value={email}
           />
         </div>
   
-        <div className="form-group">
-          <label style={{fontSize: "15px", color: "black"}}>
-            Password<span style={{color: "red"}}>*</span>
+        <div style={{paddingBottom: "20px"}}>
+          <label style={{width: "340px", fontSize: "15px", color: "black"}}>
+            Password{" "}<span style={{color: "red"}}>*</span>
           </label>
           <input
             type="text"
             name="password"
-            className="form-control"
-            style={{
-              border: "1px solid #8DADD4",
-              borderRadius: "0px",
-              backgroundColor: "#EFF3FA",
-              width: "340px",
-              height: "40px"
-            }}
+            className={classes.InputBox}
             onChange={handleChange}
             value={password}
-            placeholder="Minimum 8 characters, must include one number"
+            placeholder="Min 8 characters, must include one number"
           />
         </div>
   
-        <div style={{textAlign: "center", paddingTop: "20px"}}>
+        <div style={{paddingTop: "20px"}}>
           <button
             onClick={() => {
               console.log("clicked button",{
@@ -981,15 +960,7 @@ const Home = () => {
                 vendorIntent: true
               })
             }}
-              style={{
-                border: "1px solid black",
-                backgroundColor: "#2F5596",
-                color: "#fff",
-                fontSize: "14px",
-                width: "340px",
-                height: "40px",
-                fontWeight: "500"
-                }}
+              className={classes.SubmitButton}
               >
             CREATE YOUR ACCOUNT
           </button>
@@ -997,7 +968,7 @@ const Home = () => {
       </Aux>
     );
 
-    const mainDisplay = () => {
+    const signupDisplay = () => {
       //NEED A BETTER TEST
       //without "data.message !== "hi first time it places the data object into local storage with every keystroke
       //this then generates an error in navigation component when it is looking for "role"
@@ -1010,16 +981,19 @@ const Home = () => {
       } else {
         return (
           <div>
-            <div>
+            <div className={classes.DescriptionText}>
+              {signUpText()}
+            </div>
+            <div className={classes.SignUpForm}>
               {showError()}
               {signUpForm}
-            </div>  
+            </div>
           </div>
         )
       }
     }
 
-    let appointment = () => {
+    let appointmentText = () => {
       if (screenSize >= 1050) {
         return (
           <div style={{fontSize: "22px", fontWeight: "600", lineHeight: "36px"}}>
@@ -1028,13 +1002,13 @@ const Home = () => {
         ) 
       } else if (screenSize >= 900 && screenSize < 1050) {
         return (
-          <div style={{fontSize: "22px", lineHeight: "32px"}}>
+          <div style={{fontSize: "22px", fontWeight: "600", lineHeight: "32px"}}>
           Talk one-on-one with an onboarding specialist
           </div>
         )
       } else if (screenSize >= 650 && screenSize < 900) {
         return (
-          <div style={{fontSize: "22px", lineHeight: "36px"}}>
+          <div style={{fontSize: "22px", fontWeight: "600", lineHeight: "36px"}}>
             Talk one-on-one with 
             <br></br>
             an onboarding specialist
@@ -1042,7 +1016,7 @@ const Home = () => {
         )
       } else {
         return (
-          <div style={{fontSize: "20px", lineHeight: "30px"}}>
+          <div style={{fontSize: "20px", fontWeight: "600", lineHeight: "30px"}}>
           Talk one-on-one with 
           <br></br>
           an onboarding specialist
@@ -1050,6 +1024,20 @@ const Home = () => {
         )
       }
     }
+
+    const appointmentDisplay = (
+      <Fragment>
+        <div className={classes.DescriptionText}>
+        {appointmentText()}
+        </div>
+        <br></br>
+        <button
+          className={classes.SubmitButton}
+          href="https://calendly.com/dahday/openseatdirect-connect?back=1&month=2020-10">
+          SCHEDULE AN APPOINTMENT
+        </button>
+      </Fragment>
+    )
 
     const topImage = () => {
       if (screenWidth >= 1200) {
@@ -1124,12 +1112,34 @@ const Home = () => {
                 {marketingPoints()}
               </div>
 
+              
+
+              <div
+                className={classes.SectionContainer}
+                style={{paddingBottom: "60px"}}
+              >
+                {videoSection()}
+              </div>
 
               <div
                 className={classes.SectionContainer}
                 style={{backgroundColor: "#2F5596"}}
               >
                 {testimonials()}
+              </div>
+
+              <div
+                className={classes.SectionContainer}
+                style={{backgroundColor: "white"}}
+              >
+                {signupDisplay()}
+              </div>
+
+              <div
+                className={classes.SectionContainer}
+                style={{backgroundColor: "white"}}
+              >
+                {appointmentDisplay}
               </div>
             </div>
           </div>
@@ -1202,7 +1212,7 @@ export default Home;
           </div>
         )}
 
-<div
+        <div
           className={classes.SectionContainer}
           style={{backgroundColor: "white"}}
           //#E2EDFA

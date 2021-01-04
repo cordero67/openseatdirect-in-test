@@ -1,0 +1,110 @@
+/* THESE ARE ALL SIGNUP AND SIGNIN FORMATS*/
+.MainContainer {
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  min-height: calc(100vh - 60px);
+  width: 100vw;
+  z-index: 100;
+  padding-top: 60px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 40px;
+}
+
+@media (min-width: 500px) {
+  .MainContainer {
+    font-family: "Roboto", sans-serif;
+    background-color: #2f5596;
+    background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
+    min-height: calc(100vh - 60px);
+    width: 100vw;
+    z-index: 100;
+    padding-top: 120px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 40px;
+  }
+}
+
+.BlankCanvas {
+  background-color: white;
+  margin: auto;
+  width: auto;
+  z-index: 100;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: calc(50% - 170px);
+  padding-left: calc(50% - 170px);
+  text-align: left;
+  overflow-y: auto;
+}
+
+@media (min-width: 400px) {
+  .BlankCanvas {
+    background-color: green;
+    margin: auto;
+    width: 500px;
+    z-index: 100;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: calc(50% - 170px);
+    padding-left: calc(50% - 170px);
+    text-align: left;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 500px) {
+  .BlankCanvas {
+    background-color: white;
+    margin: auto;
+    width: 500px;
+    z-index: 100;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 80px;
+    padding-right: 80px;
+    text-align: left;
+    overflow-y: auto;
+  }
+}
+
+.Header {
+  font-size: 24px;
+  font-weight: 600;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.Alternates {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: "0px";
+  font-size: 14px;
+  padding-top: 20px;
+}
+.InputBox {
+  border: 1px solid #8DADD4;
+  border-radius: 0px;
+  background-color: #EFF3FA;
+  width: 340px;
+  height: 40px;
+  padding-left: 10px;
+}
+.InputCheckbox {
+  border: 1px solid #8DADD4;
+  border-radius: 0px;
+  background-color: #EFF3FA;
+  height: 40px;
+  font-size: 16px;
+  font-weight: 400;
+  padding-top: 10px;
+  padding-left: 10px;
+}
+.SubmitButton {
+  border: 1px solid black;
+  border-radius: 0px;
+  color: white;
+  background-color: #2F5596;
+  width: 340px;
+  height: 40px;
+}

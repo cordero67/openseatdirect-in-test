@@ -11,9 +11,6 @@
   padding-bottom: 40px;
 }
 
-
-
-
 @media (min-width: 500px) {
   .MainContainer {
     font-family: "Roboto", sans-serif;
@@ -44,7 +41,7 @@
 
 @media (min-width: 400px) {
   .BlankCanvas {
-    background-color: green;
+    background-color: white;
     margin: auto;
     width: 500px;
     z-index: 100;
@@ -78,10 +75,10 @@
   padding-top: 20px;
   padding-bottom: 20px;
 }
-.Section {
-  font-size: 14px;
-}
 .Alternates {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: "0px";
   font-size: 14px;
   padding-top: 20px;
 }

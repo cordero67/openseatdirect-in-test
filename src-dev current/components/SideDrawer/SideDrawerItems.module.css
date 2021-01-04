@@ -1,0 +1,40 @@
+.SideItems {
+    font-family: "Roboto", sans-serif;
+    font-size: 18px;
+    font-weight: 200;
+    padding-left: 0px;
+    list-style: none;
+    color: white;
+    width: 100%;
+    height: auto;
+    text-align: center;
+}
+.SideItems li {
+    border: none;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    display: block;
+}
+.SideItems a {
+    text-decoration: none;
+    font-weight: 500;
+    text-align: left;
+}
+.SideItems a:hover {
+    color: white;
+    font-weight: 700;
+    text-decoration: underline;
+}
+.SideItems a:active {
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.Title {
+    color: "#000";
+    text-decoration: none;
+    font-weight: 600;
+    text-align: left;
+    display: grid;
+    grid-template-columns: auto 13px;
+}

@@ -21,7 +21,7 @@
 }
 .EventFooter {
     display: grid;
-    grid-template-columns: auto 80px 130px;
+    grid-template-columns: auto 80px 200px;
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 18px;
@@ -70,17 +70,22 @@
 }
 
 .ButtonGreen {
-    height: 44px;
-    width: 127px;
-    background-color: green;
+    height: 40px;
+    width: 200px;
+    background-color: #008F00;
     color: white;
-    font-weight: 600;
+    font-weight: 400;
     border: 1px solid grey;
-    border-radius: 8px;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
+}
+
+.ButtonGreenOpac {
+    height: 40px;
+    width: 200px;
+    background-color: #008F00;
+    opacity: 0.3;
+    color: white;
+    font-weight: 400;
+    border: 1px solid grey;
 }
 
 .ButtonRed {
@@ -103,11 +108,6 @@
     color: black;
     font-variant-east-asian: 600;
     border: 1px solid grey;
-    border-radius: 8px;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
 }
 
 .faShoppingCart {

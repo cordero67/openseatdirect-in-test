@@ -1,0 +1,209 @@
+.MainContainer {
+  font-family: "Roboto", sans-serif;
+  background-color: #2f5596;
+  background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
+  height: calc(100vh - 60px);
+  padding-top: 120px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 40px;
+}
+.BlankCanvas {
+  background-color: white;
+  margin: auto;
+  width: 500px;
+  padding-top: 30px;
+  padding-left: 80px;
+  padding-right: 80px;
+  text-align: left;
+  overflow-y: auto;
+}
+.Header {
+  font-size: 24px;
+  font-weight: 600;
+  padding-bottom: 5px;
+}
+.SignInHeader {
+  font-size: 24px;
+  font-weight: 600;
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
+.Section {
+  font-size: 14px;
+  padding-bottom: 10px;
+}
+
+.DashboardContainer {
+  font-family: "Roboto", sans-serif;
+  background-color: #2f5596;
+  background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
+  height: calc(100vh - 57px);
+  box-sizing: border-box;
+  padding-top: 60px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+}
+
+.DashboardCanvas {
+  width: auto;
+  background-color: white;
+  box-sizing: border-box;
+  margin: auto;
+  width: 1200px;
+  height: calc(100vh - 115px);
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  text-align: left;
+}
+
+.DashboardTitle {
+  border-bottom: 1px solid grey;
+  box-sizing: border-box;
+  height: 75px;
+  font-weight: 700;
+  padding-left: 15px;
+  padding-top: 30px;
+  font-size: 30px;
+}
+
+.DashboardMain {
+  /*border: 1px solid green;*/
+  display: grid;
+  background-color: #f8f8f8;
+  grid-template-columns: 185px auto;
+  height: calc(100% - 77px);
+  font-size: 30px;
+  font-weight: 600;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-bottom: 55px;
+  padding-left: 0px;
+}
+
+.DashboardPanel {
+  overflow-y: auto;
+}
+
+.DashboardNavigation {
+  background-color: #e7e7e7;
+  height: calc(100% - 77px);
+  height: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  padding-top: 60px;
+  padding-bottom: 0px;
+  padding-left: 20px;
+  margin-bottom: 55px;
+  overflow-y: auto;
+}
+
+.NavigationItem {
+  font-weight: 500;
+  background-color: #e7e7e7;
+  font-size: 16px;
+  font-weight: 600;
+  padding-top: 5px;
+  padding-bottom: 15px;
+}
+
+.NavigationButton {
+  font-size: 16px;
+  color: blue;
+  border: none;
+  background-color: #e7e7e7;
+  cursor: pointer;
+  display: inlineBlock;
+  outline: none;
+}
+
+.NavigationButton :hover {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.NavigationItems {
+  font-family: "Roboto", sans-serif;
+  padding-left: 0px;
+  list-style: none;
+  width: 100%;
+  height: auto;
+  text-align: left;
+}
+.NavigationItems li {
+  /*border-bottom: 1px solid lightgrey;*/
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: block;
+}
+.NavigationItems a {
+  color: "#000";
+  text-decoration: none;
+  font-weight: 500;
+  text-align: left;
+}
+.NavigationItems a:hover {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.NavigationItems a:active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.NavigationItems a.active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.VendorEventButton {
+  font-size: 16px;
+  color: blue;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
+
+.TicketSummary {
+  display: grid;
+  grid-template-columns: 280px 80px 100px;
+  width: 460px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.EventTitle {
+  font-size: 16px;
+}
+
+.EventTitle div:hover {
+  color: blue;
+}
+
+.EventList {
+  font-size: 16px;
+  padding-left: 40px;
+}
+
+.Expand {
+  font-weight: 700px;
+  font-size: 16px;
+  word-wrap: break-word;
+  max-height: 75px;
+  overflow: hidden;
+}
+
+.SortButton {
+  font-weight: 600;
+  padding-right: 0px;
+  padding-left: 0px;
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}

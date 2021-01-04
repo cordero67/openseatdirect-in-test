@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
+import { API } from "../config.js";
 import { getEventData, getEventImage } from "./apiCore";
 import {
   loadEventDetails,
@@ -77,8 +78,33 @@ const TicketSelection = () => {
   // tracks ticket order general information
   const [orderTotals, setOrderTotals] = useState([]);
 
-  useEffect(() => {
+  
+  // stores payment receipt data received from PayPal
+  let transactionInfo = {};
 
+  let customerInformation = "";
+
+  // defines contact information to be sent to server
+  const [contactInformation, setContactInformation] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    sessionToken: "",
+    userId: ""
+  });
+
+  useEffect(() => {
+    
+    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      console.log("tempUser: ", tempUser)
+      setContactInformation({
+        name: tempUser.user.name,
+        email: tempUser.user.email,
+        sessionToken: tempUser.token,
+        userId: tempUser.user._id
+      });
+    }
 
     eventData(queryString.parse(window.location.search).eventID);
     // determines a one or two pane display based on initial window width
@@ -118,15 +144,21 @@ const TicketSelection = () => {
             localStorage.getItem(`cart_${eventDetails.eventNum}`)
           );
 
+          console.log("cart: ", cart)
+
           //NEED TO REFACTOR THESE THREE LINES
           setTicketInfo(cart.ticketInfo);
           setPromoCodeDetails(cart.promoCodeDetails);
           setOrderTotals(cart.orderTotals);
+          if ("guestInfo" in cart) {
+            customerInformation = cart.guestInfo
+            console.log("customerInformation: ", customerInformation)
+          }
           //NEED TO REFACTOR THESE THREE LINES
 
-          let event = JSON.parse(localStorage.getItem("eventNum"));
-          localStorage.removeItem(`cart_${event}`);
-          localStorage.removeItem(`image_${event}`);
+          //let event = JSON.parse(localStorage.getItem("eventNum"));
+          //localStorage.removeItem(`cart_${event}`);
+          //localStorage.removeItem(`image_${event}`);
         } else {
           console.log("ticketInfo: ", loadTicketInfo(res));
           console.log("res: ", res);
@@ -168,6 +200,106 @@ const TicketSelection = () => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
+  
+  const handleErrors = response => {
+    console.log ("inside handleErrors ", response);
+    if (!response.ok) {
+        throw Error(response.status);
+    }
+    return response;
+  };
+
+  const freeTicketHandler = () => {
+    //setFreeTicketStatus(true);
+    //console.log("freeTicketStatus inside 'freeTicketHandler': ", freeTicketStatus);
+
+    console.log("contactInformation: ", contactInformation)
+
+    transactionInfo = {
+      eventTitle: eventDetails.eventTitle,//
+      eventType: eventDetails.eventType,//
+      venue: eventDetails.locationVenueName,//
+      address1: eventDetails.locationAddress1,//
+      address2: eventDetails.locationAddress2,//
+      city: eventDetails.locationCity,//
+      state: eventDetails.locationState,//
+      zipPostalCode: eventDetails.locationZipPostalCode,//
+      countryCode: eventDetails.locationCountryCode,//
+      locationNote: eventDetails.locationNote,//
+      webinarLink: eventDetails.webinarLink,//
+      onlineInformation: eventDetails.onlineInformation,//
+      tbaInformation: eventDetails.tbaInformation,//
+      startDateTime: eventDetails.startDateTime,//
+      endDateTime: eventDetails.endDateTime,//
+      timeZone: eventDetails.timeZone,
+      email: contactInformation.email,
+      firstName: contactInformation.name,
+      lastName: contactInformation.name,
+      
+      numTickets: orderTotals.ticketsPurchased,
+      fullAmount: orderTotals.fullPurchaseAmount,
+      discount: orderTotals.discountAmount,
+      totalAmount: orderTotals.finalPurchaseAmount,
+      tickets: ticketInfo,
+      
+      organizerEmail: eventDetails.organizerEmail,
+    };
+    console.log("transactionInfo: ",transactionInfo)
+    console.log("Inside freeTicketHandler");
+    
+    let order = {};
+    let ticketArray = [];
+    //order.orderDetails.guestInfo.guestFirstname = contactInformation.firstName;
+    //order.orderDetails.guestInfo.guestLastname = contactInformation.lastName;
+    //order.orderDetails.guestInfo.guestEmail = contactInformation.email;
+    order.eventNum = eventDetails.eventNum;
+    console.log("order: ", order)
+    
+    console.log("ticketInfo: ", ticketInfo)
+    ticketInfo.map((item, index) => {
+      console.log("item #", index)
+      if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        console.log("zero ticket #", index);
+        ticketArray.push(tempObject);
+      }
+    });
+    console.log("zero tickets:", ticketArray);
+    order.tickets = ticketArray;
+    console.log("orderobject: ", order)
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${contactInformation.sessionToken}`);
+
+    let url = `${API}/free/signedFreeTickets/${contactInformation.userId}`
+    let fetcharg ={
+        method: "POST",
+        headers: myHeaders,
+        body:JSON.stringify (order),
+    };
+    console.log("fetching with: ", url, fetcharg);
+    console.log("Free ticket order: ", order)
+    fetch(url, fetcharg )
+    .then(handleErrors)
+    .then ((response)=>{
+        console.log ("then response: ", response);
+        return response.json()})
+    .then ((data)=>{
+        console.log ("fetch return got back data:", data);
+        //setOrderStatus(true);
+        //console.log("Order status: ", orderStatus);
+        //onlyShowPurchaseConfirmation();
+        //purchaseConfirmHandler();
+    })
+    .catch ((error)=>{
+        console.log("freeTicketHandler() error.message: ", error.message);
+        //onlyShowPurchaseConfirmation();
+        //purchaseConfirmHandler();
+    })
+  }
 
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
   const updateOrderTotals = (promoCode) => {
@@ -195,9 +327,6 @@ const TicketSelection = () => {
     setTicketInfo(clearTicketInfo(ticketInfo)); // I THINK THIS IS CORRECT!!!
     setOrderTotals(clearOrderTotals(ticketInfo, orderTotals)); // I THINK THIS IS CORRECT!!!
   };
-
-
-
 
   const inputPromoCode = () => {
     if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
@@ -432,33 +561,73 @@ const TicketSelection = () => {
 
   // stores "orderTotals" and "eventLogo" in "localStorage"
   const purchaseTicketHandler = (event) => {
-    if (typeof window !== "undefined") {
-      console.log("inside defined sectionpurchaseTicketHandler")
-      localStorage.setItem(
-        `image_${eventDetails.eventNum}`,
-        JSON.stringify(eventLogo)
-      );
-      localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
-      localStorage.setItem(
-        `cart_${eventDetails.eventNum}`,
-        JSON.stringify({
-          eventDetails: eventDetails,
-          promoCodeDetails: promoCodeDetails,
-          ticketInfo: ticketInfo,
-          orderTotals: orderTotals,
-        })
-      );
-    }
+
     console.log("eventDetails.gatewayURL: ", eventDetails.gatewayURL);
     console.log("orderTotals: ", orderTotals.finalPurchaseAmount);
-    window.location.href = "/checkout";
+
+    let signedIn = false;
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`image_${eventDetails.eventNum}`, JSON.stringify(eventLogo));
+      localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
+
+      if (localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
+        let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+        console.log("cart: ", cart)
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals,
+            guestInfo: cart.guestInfo
+          }))
+      } else {
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals
+          })
+        )
+      }
+
+      if (localStorage.getItem(`user`) !== null) {
+        signedIn = true;
+      }
+    }
+    if (signedIn === true) {
+      window.location.href = "/checkout";
+    } else if (orderTotals.finalPurchaseAmount === 0) {
+      window.location.href = "/freeticket";
+    } else {
+      window.location.href = "/info";
+    }
   };
 
   // creates checkout button to proceed to checkout page
   const checkoutButton = () => {
+    console.log("orderTotals.ticketsPurchased: ", orderTotals.ticketsPurchased)
+    console.log("eventDetails.forSale: ", eventDetails.forSale)
+    console.log("session token: ", contactInformation.sessionToken)
     if (!isLoadingEvent &&
-      orderTotals.ticketsPurchased > 0 &&
-      eventDetails.forSale
+      orderTotals.finalPurchaseAmount === 0 &&
+      contactInformation.sessionToken !== ""
+    ) {
+      return (
+        <button
+          onClick={freeTicketHandler}
+          disabled={false}
+          className={styles.ButtonGreen}
+        >
+          <span style={{ color: "white" }}>SUBMIT ORDER</span>
+        </button>
+      );
+    } else if (!isLoadingEvent &&
+      orderTotals.ticketsPurchased > 0
     ) {
       return (
         <button
@@ -466,13 +635,16 @@ const TicketSelection = () => {
           disabled={false}
           className={styles.ButtonGreen}
         >
-          <span style={{ color: "white" }}>Checkout</span>
+          <span style={{ color: "white" }}>CHECKOUT</span>
         </button>
       );
     } else if (!isLoadingEvent) {
       return (
-        <button disabled={true} className={styles.ButtonGrey}>
-          Checkout
+        <button
+          disabled={true}
+          className={styles.ButtonGreenOpac}
+        >
+          CHECKOUT
         </button>
       );
     } else return null;
@@ -506,12 +678,14 @@ const TicketSelection = () => {
     if (showDoublePane) {
       return (
         <div>
-          <img
-            className={styles.Image}
-            src={eventLogo}
-            alt="Event Logo Coming Soon!!!"
-          />
-          <div style={OrderSummarySection}>{orderSummary()}</div>
+          <div>
+            <img
+              className={styles.Image}
+              src={eventLogo}
+              alt="Event Logo Coming Soon!!!"
+            />
+            <div style={OrderSummarySection}>{orderSummary()}</div>
+          </div>
         </div>
       );
     } else {
@@ -531,7 +705,6 @@ const TicketSelection = () => {
       );
     }
   };
-
 
   // creates ticket pane with promo form and ticket sections
   const ticketPane = () => {

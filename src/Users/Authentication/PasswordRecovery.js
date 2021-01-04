@@ -88,10 +88,12 @@ const PasswordRecovery = () => {
   
   const alternateInputs = (
     <div className={classes.Alternates}>
-      Back to{" "}
-      <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>
-        Sign In.
-      </Link>
+      <div>
+        Back to{" "}
+        <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>
+          Sign In
+        </Link>
+      </div>
     </div>
   );
 

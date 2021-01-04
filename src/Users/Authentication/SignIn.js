@@ -120,27 +120,21 @@ const SignIn = () => {
   );
   
   const alternateInputs = (
-    <Fragment>
-      <div className={classes.Alternates}>
-        Forgot your{" "}
-        <Link to="/passwordrecovery" style={{fontWeight: "600", color: "blue"}}>
-          password.
-        </Link>
-      </div>
-      <div className={classes.Section}>
-        Don't have an account, go to{" "}
-        <Link to="/signup" style={{fontWeight: "600", color: "blue"}}>
-          Sign Up.
-        </Link>
-      </div>
-    </Fragment>
+    <div className={classes.Alternates}>
+      <Link to="/passwordrecovery" style={{fontWeight: "600", color: "blue"}}>
+        Forgot password?
+      </Link>
+      <Link to="/signup" style={{fontWeight: "600", color: "blue", textAlign: "right"}}>
+        Create account
+      </Link>
+    </div>
   )
 
   return (
     <div className={classes.MainContainer}>
-      <div className={classes.BlankCanvas} style={{height: "440px"}}>
+      <div className={classes.BlankCanvas} style={{height: "420px"}}>
         <div className={classes.Header}>
-          Sign In
+          Welcome back
         </div>
         <div>
           {showError()}

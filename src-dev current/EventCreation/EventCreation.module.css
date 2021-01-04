@@ -1,0 +1,420 @@
+.DisplayPanel {
+  background-color: white;
+  font-size: 15px;
+  width: 1030px;
+  height: calc(100vh - 117px);
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  overflow-y: auto;
+}
+
+
+.MainContainer {
+  font-family: "Roboto", sans-serif;
+  background-color: #2f5596;
+  background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
+  padding-top: 60px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 40px;
+}
+
+.MainGrid {
+  background-color: white;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  margin: auto;
+  margin-top: 66px;
+  width: 930px;
+  border: 1px solid grey;
+}
+
+.GridTitlePanel {
+  position: fixed;
+  top: 60px;
+  left: calc((100vw - 945px)/2);
+  border-bottom: 1px solid grey;
+  background-color: #fff;
+  /*background-color: #C2D9FF;*/
+  z-index: 200;
+  padding: 15px;
+  padding-bottom: 5px;
+  box-sizing: border-box;
+  width: 928px;
+}
+
+.GridTitle {
+  display: grid;
+  grid-template-columns: 200px 395px 95px 95px 95px;
+  column-gap: 5px;
+  box-sizing: border-box;
+  height: 30px;
+}
+
+.GridSubTitle {
+  margin: auto;
+  display: grid;
+  /*background-color: #C2D9FF;*/
+  grid-template-columns: 200px 380px;
+  column-gap: 10px;
+  box-sizing: border-box;
+  font-size: 14px;
+  height: 16px;
+}
+
+.GridBottom {
+  padding-top: 20px;
+  padding-left: 225px;
+  display: grid;
+  grid-template-columns: 150px 150px 150px;
+  box-sizing: border-box;
+  font-size: 30px;
+  font-weight: 600;
+  height: 70px;
+}
+
+.CategoryTitle {
+  margin: 10px 0px 0px 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
+  box-sizing: border-box;
+  font-size: 20px;
+  font-weight: 600;
+  height: 40px;
+  background-color: black;
+  color: white;
+}
+
+.SectionTitleTight {
+  padding: 10px 10px 0px 25px;
+  height: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.SectionTitle {
+  padding: 10px 10px 0px 25px;
+  height: 35px;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.DateTimeHeader {
+  display: grid;
+  grid-template-columns: 110px 120px 110px 120px 330px;
+  padding: 5px 10px 5px 35px;
+  box-sizing: border-box;
+  font-size: 16px;
+  background-color: #e7e7e7;
+  text-align: left;
+  font-weight: 400;
+}
+
+.DateTimeInputs {
+  display: grid;
+  grid-template-columns: 110px 120px 110px 120px 330px;
+  padding: 0px 10px 10px 35px;
+  font-size: 16px;
+  background-color: #e7e7e7;
+  box-sizing: border-box;
+}
+
+.InputBox {
+  height: auto;
+  font-size: 16px;
+  padding: 5px 10px 10px 25px;
+  box-sizing: border-box;
+  border-color: red;
+  background-color: #e7e7e7;
+}
+
+.InputBoxTight {
+  height: auto;
+  font-size: 16px;
+  padding: 5px 10px 0px 25px;
+  box-sizing: border-box;
+  background-color: #e7e7e7;
+}
+
+.InputBoxContent {
+  padding: 9px 10px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  line-height: 1.75;
+  height: 40px;
+}
+.InputBoxContentError {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+  line-height: 1.75;
+  height: 40px;
+}
+
+.TextBox {
+  height: auto;
+  font-size: 16px;
+  padding: 5px 10px 6px 25px;
+  box-sizing: border-box;
+  background-color: #e7e7e7;
+}
+
+.SocialMediaLink {
+  display: grid;
+  grid-template-columns: 40px 120px 400px;
+  height: 55px;
+  font-size: 16px;
+  padding: 5px 10px 10px 35px;
+  box-sizing: border-box;
+  background-color: #e7e7e7;
+}
+
+.SocialMediaIcon {
+  margin: auto;
+  padding-top: 1px;
+  /*padding: 11px 5px 0px 0px;
+    text-align: left;*/
+}
+
+.SocialMediaName {
+  padding: 11px 5px 0px 0px;
+  text-align: right;
+}
+
+.FeatureButton {
+  font-size: 15px;
+  color: blue;
+  border: none;
+  background-color: #e7e7e7;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
+
+.FeatureButton:focus {
+  outline: 0;
+}
+
+.PriceFeatureButton {
+  font-size: 16px;
+  color: blue;
+  border: none;
+  background-color: #e7e7e7;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
+
+.InfoIcon .InfoText {
+  color: blue;
+  cursor: pointer;
+}
+
+.InfoIcon:hover .InfoText {
+  color: red;
+  cursor: pointer;
+}
+
+.OrderLine {
+  display: grid;
+  grid-template-columns: 300px 300px;
+  padding: 5px 10px 10px 35px;
+  box-sizing: border-box;
+  background-color: #E7E7E7;
+  height: 55px;
+  font-size: 16px;
+}
+
+.TicketLine {
+  display: grid;
+  grid-template-columns: 360px 165px 165px 80px 80px;
+  height: 60px;
+  font-size: 16px;
+  border-top: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.DraggedTicketLine {
+  background-color: #f0f7fc;
+  display: grid;
+  grid-template-columns: 360px 100px 165px 80px 80px;
+  height: 60px;
+  font-size: 16px;
+  border-top: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.OrderBox {
+  padding: 9px 10px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  width: 100px;
+  height: 40px;
+}
+
+.OrderBoxWarning {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+  width: 100px;
+  height: 40px;
+}
+
+.NameBox {
+  padding: 9px 10px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.NameBoxWarning {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+}
+
+.QuantityBox {
+  padding: 9px 10px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  width: 155px;
+  height: 40px;
+}
+
+.QuantityBoxWarning {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+  width: 155px;
+  height: 40px;
+}
+
+.PriceBox {
+  margin: 10px 5px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 70px 83px;
+}
+
+.PriceBoxWarning {
+  margin: 10px 5px;
+  border: 1px solid red;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 70px 83px;
+}
+
+.ForPriceBox {
+  background-color: fff;
+  padding: 9px 0px 9px 0px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.ForPriceBoxWarning {
+  background-color: fff;
+  padding: 9px 0px 9px 0px;
+  border: 1px solid red;
+  box-sizing: border-box;
+}
+
+.TicketLineWarning {
+  display: grid;
+  grid-template-columns: 360px 130px 135px 80px 80px;
+  height: 16px;
+  font-size: 12px;
+  color: red;
+  border-top: 0px;
+  box-sizing: border-box;
+}
+
+.OrderLineWarning {
+  padding: 0px 10px 15px 115px;
+  display: grid;
+  grid-template-columns: 300px 300px;
+  box-sizing: border-box;
+  color: red;
+  background-color: #E7E7E7;
+  height: 22px;
+  font-size: 12px;
+}
+
+.BogofLineWarning {
+  padding: 0px 10px 15px 60px;
+  display: grid;
+  grid-template-columns: 230px 230px;
+  box-sizing: border-box;
+  color: red;
+  background-color: #E7E7E7;
+  height: 22px;
+  font-size: 12px;
+}
+
+.BogodLineWarning {
+  padding: 0px 10px 15px 60px;
+  display: grid;
+  grid-template-columns: 328px 203px 230px;
+  box-sizing: border-box;
+  color: red;
+  background-color: #E7E7E7;
+  height: 22px;
+  font-size: 12px;
+}
+
+.TwoferLineWarning {
+  padding: 0px 10px 15px 60px;
+  display: grid;
+  grid-template-columns: 197px 280px;
+  box-sizing: border-box;
+  color: red;
+  background-color: #E7E7E7;
+  height: 22px;
+  font-size: 12px;
+}
+
+.SpecialFeaturesBox {
+  padding: 9px 10px;
+  text-align: center;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  width: 100px;
+  height: 40px;
+}
+
+.SpecialFeaturesBoxWarning {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+  width: 100px;
+  height: 40px;
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container input {
+  display: block;
+  width: 100%;
+}
+
+.SendButton {
+  padding-top: 20px;
+  width: 130px;
+  height: 30px;
+}
+
+::placeholder {
+  color: #E0E0E0;
+  color: #C2C2C2;
+  opacity: 1;
+}

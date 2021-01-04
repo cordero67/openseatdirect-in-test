@@ -18,8 +18,8 @@ const EventsModal = (props) => {
         }}
         className={classes.Modal}
       >
-      <br></br>
-      <br></br>
+        <br></br>
+        <br></br>
         Would you like to setup a vendor account?
         <br></br>
         <br></br>

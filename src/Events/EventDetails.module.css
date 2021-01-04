@@ -90,15 +90,10 @@
   color: #6f7287;
 }
 .ButtonGreen {
-  background-color: green;
+  background-color: #008F00;
   color: white;
   font-weight: 500;
   border: 1px solid grey;
-  border-radius: 8px;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
   height: 44px;
   width: calc(100% - 20px);
 }

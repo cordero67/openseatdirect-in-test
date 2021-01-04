@@ -157,11 +157,11 @@ const SignUp = () => {
   );
   
   const alternateInputs = (
-    <div>
-      <div className={classes.Alternates}>
-        Already have an account, go to{" "}
+    <div className={classes.Alternates}>
+      <div>
+        Back to{" "}
         <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>
-          Sign In.
+          Sign In
         </Link>
       </div>
     </div>
@@ -192,7 +192,7 @@ const SignUp = () => {
     <div className={classes.MainContainer}>
       <div className={classes.BlankCanvas}>
         <div className={classes.Header}>
-          Create account
+          Tell us about yourself
         </div>
         <div className={classes.Section}>
           {mainDisplay()}

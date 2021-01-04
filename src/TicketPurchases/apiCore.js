@@ -44,23 +44,6 @@ export const getEventImage = eventId => {
     });
 };
 
-/*
-// retrieves the event image
-export const getEventImage = eventId => {
-  return fetch(`${API}/event/photo/e/${eventId}`, {
-    method: "GET"
-  })
-    .then(handleErrors)
-    .then(response => {
-      console.log("Received IMAGE");
-      return response.url;
-    })
-    .catch(err => {
-      throw Error(err);
-    });
-};
-*/
-
 var expandedLog = (function() {
   var MAX_DEPTH = 100;
 
@@ -109,6 +92,67 @@ export const expressPaymentOnSuccess = paymentTicketData => {
       })
   );
 };
+
+// PayPal Smart button fetch api
+export const paymentOnSuccess = (paypalOrderDetails, customerInformation) => {
+  if ("sessionToken" in customerInformation) {
+    console.log("User is logged in")
+    let orderDetails = {
+      orderDetails: {
+        paypalOrderDetails: paypalOrderDetails
+      }
+    }
+    return (
+      fetch(`${API}/paypal/signedPayment/${customerInformation.userId}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${customerInformation.sessionToken}`
+        },
+        body: JSON.stringify(orderDetails)
+      })
+        .then(handleErrors)
+        .then(response => {
+          return response.json();
+        })
+        // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
+        .catch(err => {
+          console.log("fetch API/paypal/guestPayment): ERROR THROWN", err);
+          throw Error(err);
+        })
+    );
+
+  } else {
+    console.log("User is NOT logged in")
+    let orderDetails = {
+      orderDetails: {
+        guestInfo: customerInformation,
+        paypalOrderDetails: paypalOrderDetails
+      }
+    }
+    return (
+      fetch(`${API}/paypal/guestPayment`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderDetails)
+      })
+        .then(handleErrors)
+        .then(response => {
+          return response.json();
+        })
+        // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
+        .catch(err => {
+          console.log("fetch API/paypal/guestPayment): ERROR THROWN", err);
+          throw Error(err);
+        })
+    );
+  }
+};
+
 
 // BrainTree fetch api
 export const processExpressPayment = paymentTicketData => {

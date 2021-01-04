@@ -1,0 +1,78 @@
+  .Modal {
+  position: fixed;
+  z-index: 700;
+  background-color: white;
+  width: 90%;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px black;
+  padding: 16px;
+  left: 5%;
+  right: 5%;
+  top: 10%;
+  text-align: center;
+  box-sizing: border-box;
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+}
+
+
+.BlankCanvas {
+  background-color: white;
+  margin: auto;
+  width: auto;
+  z-index: 100;
+  padding-left: calc(50% - 170px);
+  padding-left: calc(50% - 170px);
+  text-align: left;
+  overflow-y: auto;
+}
+
+.Header {
+  display: grid;
+  grid-template-columns: 90% 10%;
+  column-gap: "0px";
+  font-size: 24px;
+  font-weight: 600;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.Alternates {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: "0px";
+  font-size: 14px;
+  padding-top: 20px;
+}
+.InputBox {
+  border: 1px solid #8DADD4;
+  border-radius: 0px;
+  background-color: #EFF3FA;
+  width: 340px;
+  height: 40px;
+  padding-left: 10px;
+  font-size: 14px;
+}
+.SubmitButton {
+  border: 1px solid black;
+  border-radius: 0px;
+  color: white;
+  background-color: #2F5596;
+  width: 340px;
+  height: 40px;
+  font-size: 14px;
+}
+
+
+@media (min-width: 500px) {
+  .Modal {
+    width: 500px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 79px;
+    padding-right: 79px;
+    left: calc(50% - 250px);
+  }
+}

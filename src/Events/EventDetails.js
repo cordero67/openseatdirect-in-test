@@ -269,9 +269,8 @@ const EventDetail = props => {
           <div className={styles.ButtonContainer}>
             <button 
               onClick={ticketsHandler}
-              //disabled={!eventDetails.forSale}
               className={styles.ButtonGreen}
-            >Tickets</button>
+              >FIND TICKETS</button>
           </div>
         </div>
       )
@@ -282,9 +281,8 @@ const EventDetail = props => {
           <div className={styles.ButtonContainer}>
             <button
               onClick={ticketsHandler}
-              //disabled={!eventDetails.forSale}
               className={styles.ButtonGreen}
-            >Tickets</button>
+            >FIND TICKETS</button>
           </div>
         </div>
       )
