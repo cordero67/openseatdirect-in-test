@@ -6,22 +6,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReceipt } from "@fortawesome/free-solid-svg-icons";
 
 import classes from "./TicketSales.module.css";
+import ReceiptModal from "./Modals/ReceiptModal";
+
 
 const TicketSales = (props) => {
   const [selectedEventTitle, setSelectedEventTitle] = useState(""); //event details of a single selected event
 
   const [eventOrders, setEventOrders] = useState([]);
   const [ordersView, setOrdersView] = useState("complete"); // complete, noOrders, or noEventSelected
+  const [modalView, setModalView] = useState(false);
   const [isLoading, setIsLoading] = useState(false); //
 
-  const loadEventTitle = (eventNum) => {
-    let tempEvents = JSON.parse(localStorage.getItem("events"));
-    tempEvents.forEach((event, index) => {
-      if (event.eventNum === eventNum) {
-        setSelectedEventTitle(event.eventTitle);
-      }
-    })
-  }
+
+
+
+
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     setIsLoading(true);
@@ -30,16 +37,27 @@ const TicketSales = (props) => {
       if (localStorage.getItem(`orders`) !== null && localStorage.getItem(`events`) !== null) {
         let storedEvents = JSON.parse(localStorage.getItem("events"));
         let storedOrders = JSON.parse(localStorage.getItem("orders"));
-          
+
         if (localStorage.getItem(`eventNum`) !== null) {
           let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
+
+          let ordersExist = false;
+
           storedEvents.forEach((event, index) => {
             if (event.eventNum === storedEventNum) {
+
+
               loadEventTitle(storedEventNum)
+
+
+
+
+
+
+
             }
           })
 
-          let ordersExist = false;
           let tempEventOrders = [];
           storedOrders.forEach((order) => {
             if (order.eventNum === storedEventNum) {
@@ -56,15 +74,12 @@ const TicketSales = (props) => {
           } else {
             setOrdersView("noOrders");
           }
-
         } else {
           setOrdersView("noEventSelected");
         }
-
       } else {
         props.clicked("events")
       }
-        
     } else {
       window.location.href = "/signin";
     }
@@ -75,6 +90,18 @@ const TicketSales = (props) => {
   const [sortParameters, setSortParameters] = useState(
     {label: "order_createdAt", direction: "asc"}
   );
+
+
+
+  const loadEventTitle = (eventNum) => {
+    let tempEvents = JSON.parse(localStorage.getItem("events"));
+    tempEvents.forEach((event, index) => {
+      if (event.eventNum === eventNum) {
+        setSelectedEventTitle(event.eventTitle);
+      }
+    })
+  }
+
 
   const compareValues = (key, order) => {
     return function innerSort(a, b) {
@@ -203,7 +230,10 @@ const TicketSales = (props) => {
                       size="sm"
                       cursor="pointer"
                       onClick={() => {
+                        console.log("clicked button")
+                        receiptModalDisplay(item);
                         //switchView(item);
+
                       }}
                       icon={faReceipt}
                     />
@@ -305,14 +335,57 @@ const TicketSales = (props) => {
     )
   }
 
+
+
+          /*
+          <ReceiptModal
+            show={true}
+            status={modalView}
+            title={selectedEventDetails.eventTitle}
+            dateTime={selectedEventDetails.startDateTime}
+            details={order}
+            edit={() => {setModalView("hide")}}
+            close={() => {
+              let tempOrder={...order};
+              tempOrder.recipient={
+                firstName: "",
+                lastName: "",
+                email: "",
+                message: ""
+              };
+              tempOrder.tickets=[newTicket(ticketDetails[0])];
+              setOrder(tempOrder);
+              setModalView("hide");
+            }}
+            submit={submitOrder}
+          ></ReceiptModal>
+          */
+
+
+
+  const receiptModalDisplay = (item) => {
+    console.log("clicked icon");
+    console.log("item: ", item)
+      return (
+        <Fragment>
+          <ReceiptModal
+            show={true}
+            status={true}
+            title={item.eventTitle}
+            dateTime={item.startDateTime}
+            details={item}
+            close={() => {setModalView(false)}}
+          ></ReceiptModal>
+        </Fragment>
+      )
+  }
+
   const tabTitle = (
     <div className={classes.DashboardHeader}>
       {(!isLoading && selectedEventTitle !== "") ?
-        <div style={{fontSize: "26px", fontWeight: "600"}}>{selectedEventTitle}</div>
-        :
-        <div>
-          <br></br>
-        </div>}
+        <div style={{fontSize: "26px", fontWeight: "600"}}>{selectedEventTitle}</div>:
+        <div><br>
+        </br></div>}
       <div style={{paddingTop: "5px"}}>
       <button
         className={classes.SwitchButton}

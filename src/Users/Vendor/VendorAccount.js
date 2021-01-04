@@ -8,7 +8,7 @@ import Events from "./Events";
 import SalesAnalytics from "./SalesAnalytics";
 import IssueTickets from "./IssueTickets";
 import EditEvent from "../../EventCreation/EditEvent";
-import TicketSales from "./TicketSales";
+import TicketSales from "./TicketSalesOLD";
 import Orders from "./Orders";
 import CreateEvent from "../../EventCreation/CreateEvent";
 import Profile from "../ComponentPages/Profile";
