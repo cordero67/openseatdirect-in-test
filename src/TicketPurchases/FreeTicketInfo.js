@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import dateFormat from "dateformat";
 
-import { PayPalButton } from "react-paypal-button-v2";
-
 import { API } from "../config.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

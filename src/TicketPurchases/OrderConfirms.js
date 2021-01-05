@@ -1,15 +1,14 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Redirect } from "react-router-dom";
 import dateFormat from "dateformat";
 
-import Aux from "../hoc/Auxiliary/Auxiliary";
-import styles from "./Order.module.css";
+import classes from "./OrderConfirms.module.css";
 import { Button } from "semantic-ui-react";
 
 export const OrderConfirmTT = props => {
   let dateRange;
   if (dateFormat(props.transactionInfo.startDateTime, "m d yy", true) === dateFormat(props.transactionInfo.endDateTime, "m d yy", true)) {
-    dateRange = <Aux>{dateFormat(
+    dateRange = <Fragment>{dateFormat(
       props.transactionInfo.startDateTime,
       "ddd, mmm d, yyyy - h:MM TT",
       true
@@ -17,9 +16,9 @@ export const OrderConfirmTT = props => {
       props.transactionInfo.endDateTime,
       "shortTime",
       true
-    )}</Aux>
+    )}</Fragment>
   } else {
-    dateRange = <Aux>{dateFormat(
+    dateRange = <Fragment>{dateFormat(
       props.transactionInfo.startDateTime,
       "ddd, mmm d, yyyy - h:MM TT",
       true
@@ -27,7 +26,7 @@ export const OrderConfirmTT = props => {
       props.transactionInfo.endDateTime,
       "ddd, mmm d, yyyy - h:MM TT",
       true
-    )}</Aux>
+    )}</Fragment>
   }
 
 const eventLocation = () => {
@@ -88,11 +87,11 @@ const eventDetails = () => {
 }
 
 return (
-  <Aux>
-    <span className={styles.SubSectionHeader}>Order Confirmation</span>
+  <Fragment>
+    <span className={classes.SubSectionHeader}>Order Confirmation</span>
     <br></br>
     <br></br>
-    <div className={styles.SubBody}>
+    <div className={classes.SubBody}>
       <div>
         Thank you {props.transactionInfo.firstName}{" "}
         {props.transactionInfo.lastName}, your order was received and is in
@@ -156,7 +155,7 @@ return (
         }}
       />
     </div>
-  </Aux>
+  </Fragment>
 );
 };
 
@@ -164,7 +163,7 @@ return (
 export const OrderConfirmTF = props => {
   let dateRange;
   if (dateFormat(props.transactionInfo.startDateTime, "m d yy", true) === dateFormat(props.transactionInfo.endDateTime, "m d yy", true)) {
-    dateRange = <Aux>{dateFormat(
+    dateRange = <Fragment>{dateFormat(
       props.transactionInfo.startDateTime,
       "ddd, mmm d, yyyy - h:MM TT",
       true
@@ -172,9 +171,9 @@ export const OrderConfirmTF = props => {
       props.transactionInfo.endDateTime,
       "shortTime",
       true
-    )}</Aux>
+    )}</Fragment>
   } else {
-    dateRange = <Aux>{dateFormat(
+    dateRange = <Fragment>{dateFormat(
       props.transactionInfo.startDateTime,
       "ddd, mmm d, yyyy - h:MM TT",
       true
@@ -182,7 +181,7 @@ export const OrderConfirmTF = props => {
       props.transactionInfo.endDateTime,
       "ddd, mmm d, yyyy - h:MM TT",
       true
-    )}</Aux>
+    )}</Fragment>
   }
 
 const eventLocation = () => {
@@ -243,11 +242,11 @@ const eventLocation = () => {
   }
 
   return (
-    <Aux>
-      <span className={styles.SubSectionHeader}>Order in Process</span>
+    <Fragment>
+      <span className={classes.SubSectionHeader}>Order in Process</span>
       <br></br>
       <br></br>
-      <div className={styles.SubBody}>
+      <div className={classes.SubBody}>
         <div>
           Thank you {props.transactionInfo.firstName}{" "}
           {props.transactionInfo.lastName}, your order was received and is in
@@ -323,14 +322,14 @@ const eventLocation = () => {
           }}
         />
       </div>
-    </Aux>
+    </Fragment>
   );
 };
 
 export const FreeConfirmTT = props => {
   let dateRange;
   if (dateFormat(props.transactionInfo.startDateTime, "m d yy", true) === dateFormat(props.transactionInfo.endDateTime, "m d yy", true)) {
-    dateRange = <Aux>{dateFormat(
+    dateRange = <Fragment>{dateFormat(
       props.transactionInfo.startDateTime,
       "ddd, mmm d, yyyy - h:MM TT",
       true
@@ -338,9 +337,9 @@ export const FreeConfirmTT = props => {
       props.transactionInfo.endDateTime,
       "shortTime",
       true
-    )}</Aux>
+    )}</Fragment>
   } else {
-    dateRange = <Aux>{dateFormat(
+    dateRange = <Fragment>{dateFormat(
       props.transactionInfo.startDateTime,
       "ddd, mmm d, yyyy - h:MM TT",
       true
@@ -348,7 +347,7 @@ export const FreeConfirmTT = props => {
       props.transactionInfo.endDateTime,
       "ddd, mmm d, yyyy - h:MM TT",
       true
-    )}</Aux>
+    )}</Fragment>
   }
 
   const eventLocation = () => {
@@ -409,11 +408,11 @@ export const FreeConfirmTT = props => {
   }
 
   return (
-    <Aux>
-      <span className={styles.SubSectionHeader}>Order Confirmation</span>
+    <Fragment>
+      <span className={classes.SubSectionHeader}>Order Confirmation</span>
       <br></br>
       <br></br>
-      <div className={styles.SubBody}>
+      <div className={classes.SubBody}>
         <div>
           Thank you {props.transactionInfo.firstName}{" "}
           {props.transactionInfo.lastName}, your order was received and is in
@@ -434,15 +433,15 @@ export const FreeConfirmTT = props => {
             <br></br>
             Total Number of Tickets: {props.transactionInfo.numTickets}
             <br></br>
-            {props.transactionInfo.tickets.map(item => {
+            {/*props.transactionInfo.tickets.map(item => {
               return item.ticketsSelected > 0 ? (
                 <div key={item.ticketID}>
                   {item.ticketsSelected} X {item.ticketName}: $
                   {item.ticketsSelected * item.adjustedTicketPrice}
                 </div>
               ) : null;
-            })}
-            Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
+            })*/}
+            Total Purchase Amount: ${/*props.transactionInfo.totalAmount.toFixed(2)*/}
           </div>
           <br></br>
           OpenSeatDirect will be sending you a message to your email:{" "}
@@ -477,17 +476,17 @@ export const FreeConfirmTT = props => {
           }}
         />
       </div>
-    </Aux>
+    </Fragment>
   );
 };
 
 export const OrderConfirmationFF = props => {
   return (
-    <Aux>
-      <span className={styles.SubSectionHeader}>Order Confirmation</span>
+    <Fragment>
+      <span className={classes.SubSectionHeader}>Order Confirmation</span>
       <br></br>
       <br></br>
-      <div className={styles.SubBody}>
+      <div className={classes.SubBody}>
         <div>
           Thank you {props.transactionInfo.firstName}{" "}
           {props.transactionInfo.lastName}, your order was received and
@@ -540,6 +539,6 @@ export const OrderConfirmationFF = props => {
           display on your mobile device.
         </div>
       </div>
-    </Aux>
+    </Fragment>
   );
 };

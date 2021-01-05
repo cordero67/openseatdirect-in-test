@@ -10,7 +10,6 @@ import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
 import EventDeletion from "../../EventCreation/DeleteEvent";
 import ContactUs from "../ContactUs/ContactUs";
-import CheckoutBT from "../../TicketPurchases/Checkout_bt";
 import CustomerInfo from "../../TicketPurchases/CustomerInfo";
 import FreeTicketInfo from "../../TicketPurchases/FreeTicketInfo";
 import Checkout from "../../TicketPurchases/Checkout";
@@ -304,16 +303,6 @@ const Routes = () => {
       />
 
       <Route
-        path="/checkout_bt"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <CheckoutBT />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
         path="/info"
         exact
         render={(routeProps) => (
@@ -323,7 +312,7 @@ const Routes = () => {
         )}
       />
 
-<Route
+      <Route
         path="/freeticket"
         exact
         render={(routeProps) => (

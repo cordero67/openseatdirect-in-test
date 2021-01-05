@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import dateFormat from "dateformat";
 import queryString from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
-import Aux from "../hoc/Auxiliary/Auxiliary";
 import { API } from "../config.js";
 import { getEventData, getEventImage } from "./apiCore";
 import {
@@ -35,6 +34,8 @@ import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
+import { FreeConfirmTT } from "./Components/OrderConfirms";
+
 import TicketItem from "./TicketItem";
 import styles from "./TicketSelection.module.css";
 
@@ -51,10 +52,19 @@ const TicketSelection = () => {
   const [showDoublePane, setShowDoublePane] = useState(false);
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
 
+  const [display, setDisplay] = useState("spinner"); // spinner, connection, main, confirmation
+
+  const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
+  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(false);
+
   // Defines data loading control variables
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
   const [isSuccessfull, setIsSuccessfull] = useState(true);
-
+  
+  const [orderStatus, setOrderStatus] = useState(true);
+  const [freeTicketStatus, setFreeTicketStatus] = useState(false);
+  
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
 
@@ -78,7 +88,24 @@ const TicketSelection = () => {
   // tracks ticket order general information
   const [orderTotals, setOrderTotals] = useState([]);
 
-  
+  const onlyShowLoadingSpinner = () => {
+    setShowLoadingSpinner(true);
+    setShowPaymentDetails(false);
+    setShowPurchaseConfirmation(false);
+  };
+
+  const onlyShowPaymentDetails = () => {
+    setShowLoadingSpinner(false);
+    setShowPaymentDetails(true);
+    setShowPurchaseConfirmation(false);
+  };
+
+  const onlyShowPurchaseConfirmation = () => {
+    setShowLoadingSpinner(false);
+    setShowPaymentDetails(false);
+    setShowPurchaseConfirmation(true);
+  };
+
   // stores payment receipt data received from PayPal
   let transactionInfo = {};
 
@@ -169,7 +196,8 @@ const TicketSelection = () => {
           setOrderTotals(loadOrderTotals(res));
 
         }
-
+        onlyShowPaymentDetails();
+        setDisplay("main")
         // CURRENTLY ASKS FOR IMAGE SEPARATELY< IS THIS WHAT WE WANT TO DO?
         // only asks for image if event has been successfully imported
         getEventImage(eventID)
@@ -210,8 +238,8 @@ const TicketSelection = () => {
   };
 
   const freeTicketHandler = () => {
-    //setFreeTicketStatus(true);
-    //console.log("freeTicketStatus inside 'freeTicketHandler': ", freeTicketStatus);
+    setFreeTicketStatus(true);
+    console.log("freeTicketStatus inside 'freeTicketHandler': ", freeTicketStatus);
 
     console.log("contactInformation: ", contactInformation)
 
@@ -246,9 +274,9 @@ const TicketSelection = () => {
     };
     console.log("transactionInfo: ",transactionInfo)
     console.log("Inside freeTicketHandler");
-    
     let order = {};
     let ticketArray = [];
+    
     //order.orderDetails.guestInfo.guestFirstname = contactInformation.firstName;
     //order.orderDetails.guestInfo.guestLastname = contactInformation.lastName;
     //order.orderDetails.guestInfo.guestEmail = contactInformation.email;
@@ -256,6 +284,7 @@ const TicketSelection = () => {
     console.log("order: ", order)
     
     console.log("ticketInfo: ", ticketInfo)
+    
     ticketInfo.map((item, index) => {
       console.log("item #", index)
       if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
@@ -269,6 +298,7 @@ const TicketSelection = () => {
     console.log("zero tickets:", ticketArray);
     order.tickets = ticketArray;
     console.log("orderobject: ", order)
+    
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -291,15 +321,29 @@ const TicketSelection = () => {
         console.log ("fetch return got back data:", data);
         //setOrderStatus(true);
         //console.log("Order status: ", orderStatus);
-        //onlyShowPurchaseConfirmation();
+        onlyShowPurchaseConfirmation();
+        setDisplay("confirmation")
         //purchaseConfirmHandler();
     })
     .catch ((error)=>{
         console.log("freeTicketHandler() error.message: ", error.message);
-        //onlyShowPurchaseConfirmation();
+        onlyShowPurchaseConfirmation();
+        setDisplay("confirmation")
         //purchaseConfirmHandler();
     })
   }
+
+  
+  // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
+  const purchaseConfirmHandler = () => {
+    eventDetails = {};
+    ticketInfo = {};
+    orderTotals = {};
+    eventLogo = "";
+    let event = JSON.parse(localStorage.getItem("eventNum"));
+    localStorage.removeItem(`cart_${event}`);
+    localStorage.removeItem(`image_${event}`);
+  };
 
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
   const updateOrderTotals = (promoCode) => {
@@ -331,7 +375,7 @@ const TicketSelection = () => {
   const inputPromoCode = () => {
     if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
       return (
-        <Aux>
+        <Fragment>
           <form
             onSubmit={(event) => {
               applyPromoCodeHandler(
@@ -371,11 +415,11 @@ const TicketSelection = () => {
                 : null}
             </div>
           </form>
-        </Aux>
+        </Fragment>
       );
     } else {
       return (
-        <Aux>
+        <Fragment>
           <form
             onSubmit={(event) => {
               applyPromoCodeHandler(
@@ -411,7 +455,7 @@ const TicketSelection = () => {
               ? promoCodeDetails.errorMessage
               : null}
           </div>
-        </Aux>
+        </Fragment>
       );
     }
   };
@@ -422,7 +466,7 @@ const TicketSelection = () => {
       return null;
     } else if (promoCodeDetails.applied) {
       return (
-        <Aux>
+        <Fragment>
           <div className={styles.AppliedPromoCode}>
             <FontAwesomeIcon
               className={styles.faCheckCircle}
@@ -443,18 +487,18 @@ const TicketSelection = () => {
             </span>
           </div>
           <br></br>
-        </Aux>
+        </Fragment>
       );
     } else if (promoCodeDetails.input) {
       return (
-        <Aux>
+        <Fragment>
           {inputPromoCode()}
           <br></br>
-        </Aux>
+        </Fragment>
       );
     } else if (!promoCodeDetails.input) {
       return (
-        <Aux>
+        <Fragment>
           <div
             className={styles.EnterPromoCode}
             onClick={() => {
@@ -467,7 +511,7 @@ const TicketSelection = () => {
             Enter Promo Code
           </div>
           <br></br>
-        </Aux>
+        </Fragment>
       );
     }
   };
@@ -482,7 +526,7 @@ const TicketSelection = () => {
   const eventHeader = () => {
     if (!isLoadingEvent) {
       return (
-        <Aux>
+        <Fragment>
           <div className={styles.EventTitle}>{eventDetails.eventTitle}</div>
           <div className={styles.EventDate}>
             <DateRange
@@ -490,7 +534,7 @@ const TicketSelection = () => {
               end={eventDetails.endDateTime}
             />
           </div>
-        </Aux>
+        </Fragment>
       );
     } else {
       return null;
@@ -690,7 +734,7 @@ const TicketSelection = () => {
       );
     } else {
       return (
-        <Aux>
+        <Fragment>
           <div>
             <div style={OrderSummarySectionAlt}>{orderSummary()}</div>
           </div>
@@ -701,7 +745,7 @@ const TicketSelection = () => {
             </div>
             <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
           </div>
-        </Aux>
+        </Fragment>
       );
     }
   };
@@ -739,13 +783,7 @@ const TicketSelection = () => {
 
   // defines main display with ticket and order panes
   const mainDisplay = () => {
-    if (isLoadingEvent) {
-      return (
-        <div className={styles.BlankCanvas}>
-          <Spinner></Spinner>
-        </div>
-      );
-    } else {
+    if (display === "main") {
       if (showDoublePane && isSuccessfull) {
         return (
           <div style={MainGrid}>
@@ -766,13 +804,76 @@ const TicketSelection = () => {
           </div>
         );
       }
+    } else {
+      return null
     }
   };
 
+  
+
+    // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
+    const showSuccess = () => {
+      if (orderStatus) {
+        return (
+          <FreeConfirmTT
+            transactionInfo={transactionInfo}
+          ></FreeConfirmTT>
+        )
+      } else if (!orderStatus) {
+        return (
+          <div>Problem with OSD Server in processing your tickets</div>
+        )
+      }  else {
+        return (
+          <Fragment>
+            <span className={styles.SubSectionHeader}>Order Rejection</span>
+            <br></br>
+            <br></br>
+            <div>
+              <span style={{ color: "red" }}>
+                WE NEED TO DECIDE ON AN ERROR MESSAGE!!!
+              </span>
+            </div>
+          </Fragment>
+        );
+      }
+    };
+
+  
+  const purchaseConfirmation = () => {
+    if (display === "confirmation") {
+      return (
+        <div className={styles.BlankCanvas}>
+          <div style={{ paddingTop: "20px" }}>{showSuccess()}</div>
+        </div>
+      )
+    } else {
+      return null;
+      }
+    }
+
+  
+  // defines and sets "loadingSpinner" view status
+  const spinner = () => {
+    if (display === "spinner") {
+      return (
+        <div className={styles.BlankCanvas}>
+          <Spinner></Spinner>
+        </div>
+      )
+    } else {
+      return null
+    }
+  }
+
   return (
-    <Aux>
-      <div style={MainContainer}>{mainDisplay()}</div>
-    </Aux>
+    <Fragment>
+      <div style={MainContainer}>
+        {spinner()}
+        {mainDisplay()}
+        {purchaseConfirmation()}
+      </div>
+    </Fragment>
   );
 };
 
