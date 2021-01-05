@@ -1196,7 +1196,7 @@ const inputPromoCode = () => {
                                 }}
                                 content="Continue"
                                 onClick={() => {
-                                    window.location.href = "/vendordashboard";
+                                    window.location.href = "/vendoraccount";
                                 }}
                             />
                         </div>
