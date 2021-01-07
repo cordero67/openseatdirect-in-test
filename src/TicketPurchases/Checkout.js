@@ -20,7 +20,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
-import { OrderConfirmTT, OrderConfirmTF, FreeConfirmTT } from "./OrderConfirms";
+import { OrderConfirm } from "./Components/OrderConfirms";
 import styles from "./Order.module.css";
 
 // defines the variables that accept the "cart_" data from "localStorage"
@@ -185,6 +185,7 @@ const Checkout = props => {
     let event = JSON.parse(localStorage.getItem("eventNum"));
     localStorage.removeItem(`cart_${event}`);
     localStorage.removeItem(`image_${event}`);
+    localStorage.removeItem(`eventNum`);
   };
 
   // THIS SECTION NEEDS WORK
@@ -215,8 +216,7 @@ const Checkout = props => {
       endDateTime: eventDetails.endDateTime,//
       timeZone: eventDetails.timeZone,
       paypalEmail: details.payer.email_address,
-      firstName: details.payer.name.given_name,
-      lastName: details.payer.name.surname,
+      name: `${details.payer.name.given_name} ${details.payer.name.surname}`,
       numTickets: orderTotals.ticketsPurchased,
       fullAmount: orderTotals.fullPurchaseAmount,
       discount: orderTotals.discountAmount,
@@ -404,15 +404,17 @@ const Checkout = props => {
   const showSuccess = () => {
     if (paypalStatus && orderStatus) {
       return (
-        <OrderConfirmTT
+        <OrderConfirm
           transactionInfo={transactionInfo}
-        ></OrderConfirmTT>
+          serverResponse={true}
+        ></OrderConfirm>
       );
     } else if (paypalStatus && !orderStatus) {
       return (
-        <OrderConfirmTF
+        <OrderConfirm
           transactionInfo={transactionInfo}
-        ></OrderConfirmTF>
+          serverResponse={false}
+        ></OrderConfirm>
       );
     } else {
       return (

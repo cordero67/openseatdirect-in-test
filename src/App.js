@@ -20,6 +20,76 @@ import { BrowserRouter } from "react-router-dom";
 //button green: #008F00 rgb(0,143,0)
 //button blue: #0000CC rgb(0,0,204)
 
+/*
+
+.ButtonRed {
+  height: 40px;
+  width: 127px;
+  background-color: #B80000;
+  color: #fff;
+  border: 1px solid black;
+}
+.ButtonRed:hover {
+  background-color: #fff;
+  color: #B80000;
+  border: 2px solid #B80000;
+  font-weight: 600;
+}
+.ButtonRed:active {
+  background-color: #8F0000;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+}
+.ButtonBlue {
+  height: 40px;
+  width: 127px;
+  background-color: #0000CC;
+  color: #fff;
+  border: 1px solid black;
+}
+.ButtonBlue:hover {
+  background-color: #fff;
+  color: #0000CC;
+  border: 2px solid #0000CC;
+  font-weight: 600;
+}
+.ButtonBlue:active {
+  background-color: #000066;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+}
+.ButtonGreen {
+  height: 40px;
+  width: 127px;
+  background-color: #008F00;
+  color: #fff;
+  border: 1px solid black;
+}
+.ButtonGreen:hover {
+  background-color: #fff;
+  color: #008F00;
+  border: 2px solid #008F00;
+  font-weight: 600;
+}
+.ButtonGreen:active {
+  background-color: #006600;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+}
+.ButtonGreenOpac {
+    height: 40px;
+    width: 200px;
+    background-color: #008F00;
+    opacity: 0.3;
+    color: white;
+    font-weight: 400;
+    border: 1px solid grey;
+}
+*/
+
 import Routes from "./components/Routes/Routes";
 
 class App extends Component {

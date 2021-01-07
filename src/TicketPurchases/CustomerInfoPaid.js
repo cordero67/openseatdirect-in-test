@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import dateFormat from "dateformat";
 
+
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
@@ -23,8 +25,12 @@ let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
 
+
 // defines an event's image
 let eventLogo = "";
+
+
+
 
 // defines the styling variables
 let MainContainer = {};
@@ -46,8 +52,13 @@ const CustomerInfo = props => {
   });
 
   // defines all view control variables
+
   const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+
+
+
+
 
   // defines single or double pane view control variables
   const [showDoublePane, setShowDoublePane] = useState(false);
@@ -59,13 +70,48 @@ const CustomerInfo = props => {
     setShowPaymentDetails(true);
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   useEffect(() => {
     // downloads "order" information and "image" from "localStorage" and
     if (localStorage.getItem("eventNum")) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
         let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
-        console.log("tempCart: ", tempCart)
         eventDetails = tempCart.eventDetails;
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
@@ -84,7 +130,7 @@ const CustomerInfo = props => {
     onlyShowPaymentDetails();
   }, []);
 
-  window.onresize = function(event) {
+  window.onresize = function() {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
@@ -178,6 +224,110 @@ const CustomerInfo = props => {
     console.log("regsuper.test(contactInformation.guestEmail): ", regsuper.test(contactInformation.guestEmail))
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const guestForm = (
     <div>
       <div style={{display: "grid", gridGap: "4%", gridTemplateColumns: "48% 48%"}}>
@@ -229,36 +379,55 @@ const CustomerInfo = props => {
   )
 
   const loadCustomerInfo = () => {
-    console.log("Clicked button reminder");
-
     if (typeof window !== "undefined" && localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
       let user = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
-      console.log("inside defined sectionpurchaseTicketHandler")
-      console.log("user: ", user)
       user.guestInfo = contactInformation;
       localStorage.setItem(
         `cart_${eventDetails.eventNum}`,
         JSON.stringify(user)
       );
-
       window.location.href = "/checkout";
     }
-
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // creates submit button to send free ticket information to server
   const checkoutButton = () => {
     if (orderTotals.ticketsPurchased > 0 && detailsMinimal()) {
       return (
         <button
-          onClick={() => {
-            console.log("Clicked button");
-            loadCustomerInfo();
-          }}
+          onClick={loadCustomerInfo}
           disabled={false}
           className={classes.ButtonGreen}
         >
-          <span style={{ color: "white" }}>SUBMIT INFORMATION</span>
+          SUBMIT INFORMATION
         </button>
       );
     } else {
@@ -303,8 +472,33 @@ const CustomerInfo = props => {
   }
 
   // variables that define rendered items
+
   let loadingSpinner = null;
   let paymentPane = null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // defines and sets "loadingSpinner" view status
   if (showLoadingSpinner) {
@@ -354,10 +548,8 @@ const CustomerInfo = props => {
             </div>
           </div>
 
-
           <div style={EventTicketSection}>
-            <span className={classes.TicketType}>Contact Information</span>
-            <br></br>
+            <div className={classes.TicketType}>Contact Information (PAID)</div>
             <br></br>
             <div className={classes.TicketTypeSmall}>
               Continue as Guest or{" "}
@@ -396,40 +588,51 @@ const CustomerInfo = props => {
     );
   }
 
+
+
+
+
+
+
+
+
+
+
+
   // defines which of "paymentPane" and/or "orderPane" items to display
   let mainDisplay = null;
   if (showPaymentDetails) {
     if (showDoublePane) {
       mainDisplay = (
-          <div style={MainGrid}>
-            {paymentPane}
-            {orderPane}
-          </div>
+        <div style={MainGrid}>
+          {paymentPane}
+          {orderPane}
+        </div>
       );
     } else if (!showOrderSummaryOnly) {
       mainDisplay = (
-          <div style={MainGrid}>{paymentPane}</div>
+        <div style={MainGrid}>{paymentPane}</div>
       );
     } else {
       mainDisplay = (
-          <div style={MainGrid}>{orderPane}</div>
+        <div style={MainGrid}>{orderPane}</div>
       );
     }
   } else {
     mainDisplay = null;
   }
 
-
-
   return (
-      <div style={MainContainer}>
-        {loadingSpinner}
-        <SignInModal
-          show={modalStatus === "signin"}
-          closeModal={() => setModalStatus("none")}
-        />
-        {mainDisplay}
-      </div>
+    <div style={MainContainer}>
+      {loadingSpinner}
+      <SignInModal
+        show={modalStatus === "signin"}
+        closeModal={() => setModalStatus("none")}
+      />
+
+      {mainDisplay}
+      
+    </div>
   );
 };
 export default CustomerInfo;

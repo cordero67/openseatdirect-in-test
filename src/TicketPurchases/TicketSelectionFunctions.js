@@ -163,9 +163,12 @@ export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   let tempCodesArray = [];
   console.log("res: ", res)
   res.tickets.forEach((tktType, index) => {
+    console.log("ticket: ", index)
+    console.log("tktType: ", tktType)
+    console.log("tktType.priceFunction: ", tktType.priceFunction)
+    console.log("tktType.usePriceFunction: ", tktType.usePriceFunction)
 
-    if (tktType.priceFunction && tktType.priceFunction.form === "promo" && tktType.usePriceFunction) {
-    //if (tktType.priceFunction && tktType.priceFunction.form === "promo") {
+    if ("priceFunction" in tktType && tktType.priceFunction.form === "promo") {
       console.log("There is a promo code at position: ", index)
       tktType.priceFunction.args.promocodes.forEach(tktPromo => {
         if (!tempCodesArray.includes(tktPromo.name.toUpperCase())) {
@@ -177,6 +180,7 @@ export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   })
 
   let tempCodeDetail = { ...promoCodeDetails };
+  console.log("tempCodesArray: ", tempCodesArray)
   tempCodeDetail.eventPromoCodes = tempCodesArray;
   if (tempCodesArray.length > 0) {
     tempCodeDetail.available = true;

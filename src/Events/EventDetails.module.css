@@ -89,14 +89,45 @@
   font-weight: 400;
   color: #6f7287;
 }
+
+
 .ButtonGreen {
+  height: 40px;
+  width: calc(100% - 20px);
   background-color: #008F00;
+  color: #fff;
+  font-weight: 500;
+  border: 1px solid black;
+}
+.ButtonGreen:hover {
+  background-color: #fff;
+  color: #008F00;
+  border: 2px solid #008F00;
+  font-weight: 600;
+}
+.ButtonGreen:active {
+  background-color: #006600;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+}
+
+.ButtonGreenOpac {
+  height: 40px;
+  width: calc(100% - 20px);
+  background-color: #008F00;
+  opacity: 0.3;
   color: white;
   font-weight: 500;
-  border: 1px solid grey;
-  height: 44px;
-  width: calc(100% - 20px);
+  border: 1px solid black;
 }
+
+
+
+
+
+
+
 .Date {
   font-size: 18px;
   font-weight: 500;

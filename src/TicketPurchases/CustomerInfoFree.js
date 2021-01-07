@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import dateFormat from "dateformat";
 
 import { API } from "../config.js";
@@ -13,25 +13,24 @@ import {
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling
 } from "./Styling";
-import { paymentOnSuccess } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
-import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
-import { OrderConfirmTT, OrderConfirmTF, FreeConfirmTT } from "./OrderConfirms";
-import styles from "./Order.module.css";
+import SignInModal from "./Modals/SignInModal";
+import { OrderConfirm } from "./Components/OrderConfirms";
+import classes from "./Order.module.css";
 
 // defines the variables that accept the "cart_" data from "localStorage"
 let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
-let customerInformation = {};
+//let customerInformation = {};
 
 // defines an event's image
 let eventLogo = "";
 
 // defines the PayPal "purchase_units.items" value populated from "ticketOrder"
-let paypalArray = [];
+//let paypalArray = [];
 
 // defines the styling variables
 let MainContainer = {};
@@ -40,27 +39,26 @@ let EventTicketSection = {};
 let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
-// stores payment receipt data received from PayPal
-let transactionInfo = {};
-
-const Checkout = props => {
+const CustomerInfo = props => {
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
+  const [modalStatus, setModalStatus] = useState("none");
 
   // defines contact information to be sent to server
   const [contactInformation, setContactInformation] = useState({
-    firstName: "",
-    lastName: "",
-    email: ""
+    guestFirstname: "",
+    guestLastname: "",
+    guestEmail: ""
   });
 
   // defines all view control variables
   const [showConnectionStatus, setShowConnectionStatus] = useState(false);
   const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
-  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(
-    false
-  );
+  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(false);
+
+  // stores payment receipt data received from PayPal
+  const [transactionInfo, setTransactionInfo] = useState({});
 
   // defines single or double pane view control variables
   const [showDoublePane, setShowDoublePane] = useState(false);
@@ -104,7 +102,7 @@ const Checkout = props => {
   });
 
   // transaction status variables
-  const [paypalStatus, setPaypalStatus] = useState(false);
+  //const [paypalStatus, setPaypalStatus] = useState(false);
   const [freeTicketStatus, setFreeTicketStatus] = useState(false);
   const [orderStatus, setOrderStatus] = useState(false);
 
@@ -117,13 +115,10 @@ const Checkout = props => {
         eventDetails = tempCart.eventDetails;
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
-        if("guestInfo" in tempCart) {
-          customerInformation = tempCart.guestInfo;
-        } else {
-          //window.location.href = "/info";
-        }
-        setPaypalArray();
-        console.log("Paypal Array: ", paypalArray);
+
+        
+
+
         console.log("orderTotals: ", orderTotals);
         console.log("ticketInfo: ", ticketInfo);
       }
@@ -135,7 +130,7 @@ const Checkout = props => {
     onlyShowPaymentDetails();
   }, []);
 
-  window.onresize = function(event) {
+  window.onresize = function() {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
@@ -155,41 +150,6 @@ const Checkout = props => {
     setIsRestyling(false);
   };
 
-  // sets the PayPal "purchase_units.items" value populated from "ticketInfo"
-  const setPaypalArray = () => {
-    paypalArray = [];
-    ticketInfo.forEach(item => {
-      if (item.ticketsSelected > 0) {
-        let newElement;
-        newElement = {
-          name: `${eventDetails.eventTitle}: ${item.ticketName}`,
-          sku: item.ticketID,
-          unit_amount: {
-            currency_code: orderTotals.currencyAbv,
-            value: item.ticketPrice.toString()
-          },
-          quantity: item.ticketsSelected.toString()
-        };
-        paypalArray.push(newElement);
-      }
-    });
-  };
-
-  // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
-  const purchaseConfirmHandler = () => {
-    eventDetails = {};
-    ticketInfo = {};
-    orderTotals = {};
-    eventLogo = "";
-    let event = JSON.parse(localStorage.getItem("eventNum"));
-    localStorage.removeItem(`cart_${event}`);
-    localStorage.removeItem(`image_${event}`);
-  };
-
-  // **********
-  // THIS SECTION NEEDS WORK
-  // called by <PaypalButton> on a successful transaction
-
   // determines whether or not to display the purchase amount
   const totalAmount = show => {
     if (!showLoadingSpinner && !show && orderTotals.ticketsPurchased > 0) {
@@ -199,9 +159,6 @@ const Checkout = props => {
     }
   };
 
-  // ********************************
-  // ********************************
-  // ********************************
   // determines whether or not to display the cart and arrow
   const cartLink = show => {
     if (!showLoadingSpinner && !show) {
@@ -234,9 +191,9 @@ const Checkout = props => {
     orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
   } else if (!showLoadingSpinner && orderTotals.finalPurchaseAmount <= 0) {
     orderSummary = (
-      <div className={styles.EmptyOrderSummary}>
+      <div className={classes.EmptyOrderSummary}>
         <FontAwesomeIcon
-          className={styles.faShoppingCart}
+          className={classes.faShoppingCart}
           icon={faShoppingCart}
         />
       </div>
@@ -245,35 +202,14 @@ const Checkout = props => {
     orderSummary = null;
   }
 
-  // **********
-  // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
-  // "showError" WAS USED TO HANDLE NOT RECEIVING BRAINTREE CLIENT TOKEN
-  // displays "error" if one exists
-  const showError = error => (
-    <div style={{ display: error ? "" : "none" }}>
-      <span style={{ color: "red" }}>{error}</span>
-    </div>
-  );
-
-
-  // **********
-  // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
-  // POTENTIALLY NEED TO ADD BACK THE "onBLur" IN <div>
-  // displays the "PayPalButton" or an "empty cart" error message
-  const showPayPal = (
-    // loads PayPal Smart buttons if order exists
-      <div>
-      </div>
-  );
-
   // determines what "contact information" has been filled out by the ticket buyer
   const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   let detailsMinimal = () => {
-    if(contactInformation.firstName
-      && contactInformation.lastName
-      && contactInformation.email
-      && regsuper.test(contactInformation.email)) {
+    if(contactInformation.guestFirstname
+      && contactInformation.guestLastname
+      && contactInformation.guestEmail
+      && regsuper.test(contactInformation.guestEmail)) {
       return true
     } else {
       return false
@@ -285,8 +221,20 @@ const Checkout = props => {
     tempInformation[event.target.name] = event.target.value;
     setContactInformation(tempInformation);
     console.log(contactInformation);
-    console.log("regsuper.test(contactInformation.email): ", regsuper.test(contactInformation.email))
+    console.log("regsuper.test(contactInformation.guestEmail): ", regsuper.test(contactInformation.guestEmail))
   }
+  
+  // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
+  const purchaseConfirmHandler = () => {
+    eventDetails = {};
+    ticketInfo = {};
+    orderTotals = {};
+    eventLogo = "";
+    let event = JSON.parse(localStorage.getItem("eventNum"));
+    localStorage.removeItem(`cart_${event}`);
+    localStorage.removeItem(`image_${event}`);
+    localStorage.removeItem(`eventNum`);
+  };
 
   
   const handleErrors = response => {
@@ -302,7 +250,7 @@ const Checkout = props => {
     console.log("freeTicketStatus inside 'freeTicketHandler': ", freeTicketStatus);
 
     console.log("transactionInfo: ",transactionInfo)
-    transactionInfo = {
+    setTransactionInfo({
       eventTitle: eventDetails.eventTitle,//
       eventType: eventDetails.eventType,//
       venue: eventDetails.locationVenueName,//
@@ -320,21 +268,20 @@ const Checkout = props => {
       endDateTime: eventDetails.endDateTime,//
       timeZone: eventDetails.timeZone,
       email: contactInformation.email,
-      firstName: contactInformation.firstName,
-      lastName: contactInformation.lastName,
+      name: `${contactInformation.guestFirstname} ${contactInformation.guestLastname}`,
       numTickets: orderTotals.ticketsPurchased,
       fullAmount: orderTotals.fullPurchaseAmount,
       discount: orderTotals.discountAmount,
       totalAmount: orderTotals.finalPurchaseAmount,
       tickets: ticketInfo,
       organizerEmail: eventDetails.organizerEmail,
-    };
+    });
     console.log("Inside freeTicketHandler");
     let order = {orderDetails: {guestInfo: {}}};
     let ticketArray = [];
-    order.orderDetails.guestInfo.guestFirstname = contactInformation.firstName;
-    order.orderDetails.guestInfo.guestLastname = contactInformation.lastName;
-    order.orderDetails.guestInfo.guestEmail = contactInformation.email;
+    order.orderDetails.guestInfo.guestFirstname = contactInformation.guestFirstname;
+    order.orderDetails.guestInfo.guestLastname = contactInformation.guestLastname;
+    order.orderDetails.guestInfo.guestEmail = contactInformation.guestEmail;
     order.eventNum = eventDetails.eventNum;
     console.log("order: ", order)
     console.log("ticketInfo: ", ticketInfo)
@@ -381,73 +328,76 @@ const Checkout = props => {
     })
   }
 
-  const freePayment = (
+  const guestForm = (
     <div>
       <div style={{display: "grid", gridGap: "4%", gridTemplateColumns: "48% 48%"}}>
-        <div className="form-group">
-          <br></br>
-          <label styles={{ fontSize: "16px" }}>
-            First Name<span style={{ color: "red" }}>*</span>
+        <div style={{paddingBottom: "20px", height: "85px"}}>
+          <label style={{fontSize: "15px"}}>
+            First Name{" "}<span style={{ color: "red" }}>*</span>
           </label>
           <input
             type="text"
-            name="firstName"
-            className="form-control"
-              onChange={changeField}
+            name="guestFirstname"
+            value={contactInformation.guestFirstname}
+            onChange={changeField}
+            className={classes.InputBox}
           />
         </div>
 
-        <div className="form-group">
-          <br></br>
-          <label styles={{ fontSize: "16px" }}>
-            Last Name<span style={{ color: "red" }}>*</span>
+        <div style={{paddingBottom: "20px", height: "85px"}}>
+          <label style={{fontSize: "15px"}}>
+            Last Name{" "}<span style={{ color: "red" }}>*</span>
           </label>
           <input
             type="text"
-            name="lastName"
-            className="form-control"
-              onChange={changeField}
+            name="guestLastname"
+            value={contactInformation.guestLastname}
+            onChange={changeField}
+            className={classes.InputBox}
           />
         </div>
       </div>
-      <div className="form-group">
-        <label>Email Address<span style={{ color: "red" }}>*</span></label>
+
+      <div style={{paddingBottom: "20px", height: "85px"}}>
+        <label style={{fontSize: "15px"}}>
+          Email Address{" "}<span style={{ color: "red" }}>*</span>
+        </label>
         <input
-          type="email"
-          name="email"
-          className="form-control"
+          type="text"
+          name="guestEmail"
+          value={contactInformation.guestEmail}
           onChange={changeField}
+          className={classes.InputBoxLarge}
         />
       </div>
 
-      <div>{(contactInformation.email && !regsuper.test(contactInformation.email))
+      <div>{(contactInformation.guestEmail && !regsuper.test(contactInformation.guestEmail))
         ? <span style={{ color: "red", padding: "5px"}}>A valid email address is required</span>
         : null
       }</div>
     </div>
   )
 
-  // **********
+
+
+
+
+
+
+
+
+
+
+
+
   // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
   const showSuccess = () => {
-    if (paypalStatus && orderStatus) {
+    if (freeTicketStatus && orderStatus) {
       return (
-        <OrderConfirmTT
+        <OrderConfirm
           transactionInfo={transactionInfo}
-        ></OrderConfirmTT>
-      );
-    } else if (paypalStatus && !orderStatus) {
-      return (
-        <OrderConfirmTF
-          transactionInfo={transactionInfo}
-        ></OrderConfirmTF>
-      );
-    //} else if (freeTicketStatus) {
-    } else if (freeTicketStatus && orderStatus) {
-      return (
-        <FreeConfirmTT
-          transactionInfo={transactionInfo}
-        ></FreeConfirmTT>
+          serverResponse={true}
+        ></OrderConfirm>
       )
     } else if (freeTicketStatus && !orderStatus) {
       return (
@@ -455,8 +405,8 @@ const Checkout = props => {
       )
     }  else {
       return (
-        <Aux>
-          <span className={styles.SubSectionHeader}>Order Rejection</span>
+        <Fragment>
+          <span className={classes.SubSectionHeader}>Order Rejection</span>
           <br></br>
           <br></br>
           <div>
@@ -464,7 +414,7 @@ const Checkout = props => {
               WE NEED TO DECIDE ON AN ERROR MESSAGE!!!
             </span>
           </div>
-        </Aux>
+        </Fragment>
       );
     }
   };
@@ -476,15 +426,15 @@ const Checkout = props => {
         <button
           onClick={freeTicketHandler}
           disabled={false}
-          className={styles.ButtonGreen}
+          className={classes.ButtonGreen}
         >
-          <span style={{ color: "white" }}>Submit</span>
+          SUBMIT ORDER
         </button>
       );
     } else {
       return (
-        <button disabled={true} className={styles.ButtonGrey}>
-          Submit
+        <button disabled={true} className={classes.ButtonGreenOpac}>
+          SUBMIT ORDER
         </button>
       );
     }
@@ -497,7 +447,7 @@ const Checkout = props => {
       <div>
         <div>
           <img
-            className={styles.Image}
+            className={classes.Image}
             src={eventLogo}
             alt="Event Logo Coming Soon!!!"
           />
@@ -507,21 +457,20 @@ const Checkout = props => {
     );
   } else {
     orderPane = (
-      <Aux>
+      <Fragment>
         <div>
           <div style={OrderSummarySectionAlt}>{orderSummary}</div>
         </div>
-        <div className={styles.EventFooter}>
-          <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
-          <div className={styles.TotalAmount}>
+        <div className={classes.EventFooter}>
+          <div className={classes.CartLink}>{cartLink(showDoublePane)}</div>
+          <div className={classes.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
           <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
         </div>
-      </Aux>
+      </Fragment>
     );
   }
-
 
   // variables that define rendered items
   let connectionStatus = null;
@@ -529,27 +478,24 @@ const Checkout = props => {
   let paymentPane = null;
   let purchaseConfirmation = null;
 
-  // ***************
-  // THIS NEEDS WORK, DECIDE IF ONLY ERRORS FROM PAYPAL ARE CAUGHT HERE
-  // HOW ARE WE GOING TO HANDLE ERROR IF SERVER DOES NOT RECEIVE THE ORDER
   // CONTROLS "connectionStatus" VIEW
   if (showConnectionStatus && transactionStatus.message === null) {
     connectionStatus = (
-      <Aux>
-        <div className={styles.BlankCanvas}>
+      <Fragment>
+        <div className={classes.BlankCanvas}>
           <h4>Connection error, please try back later.</h4>
           <br></br>
         </div>
-      </Aux>
+      </Fragment>
     );
   } else if (showConnectionStatus && transactionStatus.message !== null) {
     connectionStatus = (
-      <Aux>
-        <div className={styles.BlankCanvas}>
-          <span className={styles.SubSectionHeader}>Order Status</span>
+      <Fragment>
+        <div className={classes.BlankCanvas}>
+          <span className={classes.SubSectionHeader}>Order Status</span>
           <h5>There was a problem with your order</h5>
         </div>
-      </Aux>
+      </Fragment>
     );
   } else {
     connectionStatus = null;
@@ -558,7 +504,7 @@ const Checkout = props => {
   // defines and sets "loadingSpinner" view status
   if (showLoadingSpinner) {
     loadingSpinner = (
-      <div className={styles.Spinner}>
+      <div className={classes.Spinner}>
         <Spinner></Spinner>;
       </div>
     );
@@ -570,7 +516,7 @@ const Checkout = props => {
   if (showPaymentDetails) {
     let dateRange;
     if (dateFormat(eventDetails.startDateTime, "m d yy", true) === dateFormat(eventDetails.endDateTime, "m d yy", true)) {
-      dateRange = <Aux>{dateFormat(
+      dateRange = <Fragment>{dateFormat(
         eventDetails.startDateTime,
         "ddd, mmm d, yyyy - h:MM TT",
         true
@@ -578,9 +524,9 @@ const Checkout = props => {
         eventDetails.endDateTime,
         "shortTime",
         true
-      )}</Aux>
+      )}</Fragment>
     } else {
-      dateRange = <Aux>{dateFormat(
+      dateRange = <Fragment>{dateFormat(
         eventDetails.startDateTime,
         "ddd, mmm d, yyyy - h:MM TT",
         true
@@ -588,50 +534,65 @@ const Checkout = props => {
         eventDetails.endDateTime,
         "ddd, mmm d, yyyy - h:MM TT",
         true
-      )}</Aux>
+      )}</Fragment>
     }
 
     paymentPane = (
-      <Aux>
-        <div className={styles.MainItemLeft}>
-          <div className={styles.EventHeader}>
-            <div className={styles.EventTitle}>
+      <Fragment>
+        <div className={classes.MainItemLeft}>
+          <div className={classes.EventHeader}>
+            <div className={classes.EventTitle}>
                 {eventDetails.eventTitle}
             </div>
-            <div className={styles.EventDate}>
+            <div className={classes.EventDate}>
               {dateRange}
             </div>
           </div>
 
-          <Aux>
-            <div style={EventTicketSection}>
-              <span className={styles.TicketType}>Information (Free tickets)</span>
-              <br></br>
-              <span className={styles.TicketTypeSmall}>
-                Provide the following to receive your free tickets
-              </span>
-              <br></br>
-              <br></br>
-              {freePayment}
+          <div style={EventTicketSection}>
+            <div className={classes.TicketType}>Contact Information (FREE)</div>
+            <br></br>
+            <div className={classes.TicketTypeSmall}>
+              Continue as Guest or{" "}
+              <button
+                style={{
+                  color: "blue",
+                  border: "none",
+                  backgroundColor: "white",
+                  cursor: "pointer",
+                  display: "inline-block",
+                  outline: "none",
+                  textAlign: "left",
+                  paddingLeft: "0px",
+                  fontWeight: "600"
+                }}
+                
+                onClick={() => setModalStatus("signin")}
+              >
+                Sign In
+              </button>
             </div>
-            <div className={styles.EventFooter}>
-              <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
-              <div className={styles.TotalAmount}>
-                {totalAmount(showDoublePane)}
-              </div>
-              <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
+            <br></br>
+            <br></br>
+            {guestForm}
+          </div>
+          <div className={classes.EventFooter}>
+            <div className={classes.CartLink}>{cartLink(showDoublePane)}</div>
+            <div className={classes.TotalAmount}>
+              {totalAmount(showDoublePane)}
             </div>
-          </Aux>
+            <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
+          </div>
 
         </div>
-      </Aux>
+      </Fragment>
     );
   }
 
   // defines and sets "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   if (showPurchaseConfirmation) {
     purchaseConfirmation = (
-      <div className={styles.BlankCanvas}>
+      <div className={classes.BlankCanvas}>
         <div style={{ paddingTop: "20px" }}>{showSuccess()}</div>
       </div>
     );
@@ -644,24 +605,18 @@ const Checkout = props => {
   if (showPaymentDetails) {
     if (showDoublePane) {
       mainDisplay = (
-        <Aux>
-          <div style={MainGrid}>
-            {paymentPane}
-            {orderPane}
-          </div>
-        </Aux>
+        <div style={MainGrid}>
+          {paymentPane}
+          {orderPane}
+        </div>
       );
     } else if (!showOrderSummaryOnly) {
       mainDisplay = (
-        <Aux>
-          <div style={MainGrid}>{paymentPane}</div>
-        </Aux>
+        <div style={MainGrid}>{paymentPane}</div>
       );
     } else {
       mainDisplay = (
-        <Aux>
-          <div style={MainGrid}>{orderPane}</div>
-        </Aux>
+        <div style={MainGrid}>{orderPane}</div>
       );
     }
   } else {
@@ -669,14 +624,16 @@ const Checkout = props => {
   }
 
   return (
-    <Aux>
-      <div style={MainContainer}>
-        {loadingSpinner}
-        {connectionStatus}
-        {mainDisplay}
-        {purchaseConfirmation}
-      </div>
-    </Aux>
+    <div style={MainContainer}>
+      {loadingSpinner}
+      <SignInModal
+        show={modalStatus === "signin"}
+        closeModal={() => setModalStatus("none")}
+      />
+      {connectionStatus}
+      {mainDisplay}
+      {purchaseConfirmation}
+    </div>
   );
 };
-export default Checkout;
+export default CustomerInfo;

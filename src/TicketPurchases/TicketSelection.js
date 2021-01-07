@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { NavLink } from "react-router-dom";
-import dateFormat from "dateformat";
 import queryString from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -34,7 +33,7 @@ import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 import CartLink from "./CartLink";
 import OrderSummary from "./OrderSummary";
-import { FreeConfirmTT } from "./Components/OrderConfirms";
+import { OrderConfirm } from "./Components/OrderConfirms";
 
 import TicketItem from "./TicketItem";
 import styles from "./TicketSelection.module.css";
@@ -107,21 +106,19 @@ const TicketSelection = () => {
   };
 
   // stores payment receipt data received from PayPal
-  let transactionInfo = {};
+  const [transactionInfo, setTransactionInfo] = useState({});
 
   let customerInformation = "";
 
   // defines contact information to be sent to server
   const [contactInformation, setContactInformation] = useState({
     name: "",
-    lastName: "",
     email: "",
     sessionToken: "",
     userId: ""
   });
 
   useEffect(() => {
-    
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       console.log("tempUser: ", tempUser)
@@ -181,11 +178,7 @@ const TicketSelection = () => {
             customerInformation = cart.guestInfo
             console.log("customerInformation: ", customerInformation)
           }
-          //NEED TO REFACTOR THESE THREE LINES
 
-          //let event = JSON.parse(localStorage.getItem("eventNum"));
-          //localStorage.removeItem(`cart_${event}`);
-          //localStorage.removeItem(`image_${event}`);
         } else {
           console.log("ticketInfo: ", loadTicketInfo(res));
           console.log("res: ", res);
@@ -228,7 +221,6 @@ const TicketSelection = () => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
-  
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
     if (!response.ok) {
@@ -241,9 +233,7 @@ const TicketSelection = () => {
     setFreeTicketStatus(true);
     console.log("freeTicketStatus inside 'freeTicketHandler': ", freeTicketStatus);
 
-    console.log("contactInformation: ", contactInformation)
-
-    transactionInfo = {
+    setTransactionInfo({
       eventTitle: eventDetails.eventTitle,//
       eventType: eventDetails.eventType,//
       venue: eventDetails.locationVenueName,//
@@ -261,8 +251,7 @@ const TicketSelection = () => {
       endDateTime: eventDetails.endDateTime,//
       timeZone: eventDetails.timeZone,
       email: contactInformation.email,
-      firstName: contactInformation.name,
-      lastName: contactInformation.name,
+      name: contactInformation.name,
       
       numTickets: orderTotals.ticketsPurchased,
       fullAmount: orderTotals.fullPurchaseAmount,
@@ -271,15 +260,12 @@ const TicketSelection = () => {
       tickets: ticketInfo,
       
       organizerEmail: eventDetails.organizerEmail,
-    };
+    });
     console.log("transactionInfo: ",transactionInfo)
     console.log("Inside freeTicketHandler");
     let order = {};
     let ticketArray = [];
     
-    //order.orderDetails.guestInfo.guestFirstname = contactInformation.firstName;
-    //order.orderDetails.guestInfo.guestLastname = contactInformation.lastName;
-    //order.orderDetails.guestInfo.guestEmail = contactInformation.email;
     order.eventNum = eventDetails.eventNum;
     console.log("order: ", order)
     
@@ -323,26 +309,26 @@ const TicketSelection = () => {
         //console.log("Order status: ", orderStatus);
         onlyShowPurchaseConfirmation();
         setDisplay("confirmation")
-        //purchaseConfirmHandler();
+        purchaseConfirmHandler();
     })
     .catch ((error)=>{
         console.log("freeTicketHandler() error.message: ", error.message);
         onlyShowPurchaseConfirmation();
         setDisplay("confirmation")
-        //purchaseConfirmHandler();
+        purchaseConfirmHandler();
     })
   }
 
-  
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
     eventDetails = {};
-    ticketInfo = {};
-    orderTotals = {};
+    setTicketInfo([]);
+    setOrderTotals([]);
     eventLogo = "";
     let event = JSON.parse(localStorage.getItem("eventNum"));
     localStorage.removeItem(`cart_${event}`);
     localStorage.removeItem(`image_${event}`);
+    localStorage.removeItem(`eventNum`);
   };
 
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
@@ -646,9 +632,9 @@ const TicketSelection = () => {
     if (signedIn === true) {
       window.location.href = "/checkout";
     } else if (orderTotals.finalPurchaseAmount === 0) {
-      window.location.href = "/freeticket";
+      window.location.href = "/infofree";
     } else {
-      window.location.href = "/info";
+      window.location.href = "/infopaid";
     }
   };
 
@@ -659,6 +645,7 @@ const TicketSelection = () => {
     console.log("session token: ", contactInformation.sessionToken)
     if (!isLoadingEvent &&
       orderTotals.finalPurchaseAmount === 0 &&
+      orderTotals.ticketsPurchased > 0 &&
       contactInformation.sessionToken !== ""
     ) {
       return (
@@ -667,7 +654,7 @@ const TicketSelection = () => {
           disabled={false}
           className={styles.ButtonGreen}
         >
-          <span style={{ color: "white" }}>SUBMIT ORDER</span>
+          SUBMIT ORDER
         </button>
       );
     } else if (!isLoadingEvent &&
@@ -679,7 +666,7 @@ const TicketSelection = () => {
           disabled={false}
           className={styles.ButtonGreen}
         >
-          <span style={{ color: "white" }}>CHECKOUT</span>
+          PROCEED TO CHECKOUT
         </button>
       );
     } else if (!isLoadingEvent) {
@@ -688,7 +675,7 @@ const TicketSelection = () => {
           disabled={true}
           className={styles.ButtonGreenOpac}
         >
-          CHECKOUT
+          PROCEED TO CHECKOUT
         </button>
       );
     } else return null;
@@ -809,15 +796,14 @@ const TicketSelection = () => {
     }
   };
 
-  
-
     // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
     const showSuccess = () => {
       if (orderStatus) {
         return (
-          <FreeConfirmTT
+          <OrderConfirm
             transactionInfo={transactionInfo}
-          ></FreeConfirmTT>
+            serverResponse={true}
+          ></OrderConfirm>
         )
       } else if (!orderStatus) {
         return (
@@ -839,7 +825,6 @@ const TicketSelection = () => {
       }
     };
 
-  
   const purchaseConfirmation = () => {
     if (display === "confirmation") {
       return (
