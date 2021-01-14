@@ -495,7 +495,7 @@ const Home = () => {
           color: "white"
         }}
         >
-          Mike Salvi, HaHaForHire
+          Mike Salvi, HahaForHire
         </div>
         <br></br>
         
@@ -513,7 +513,7 @@ const Home = () => {
               paddingRight: "20px"
             }}
           >
-            "OpenSeatDirect really helped when one of my events was unfortunately cancelled. Since I controlled the cash from ticket sales, I was able to quickly issue my ticket buyers a refund. This would not have happened with other ticketing systems. Priceless!"
+            "I like that I'm in control. When one of my events was unfortunately cancelled. Since I controlled the cash from ticket sales, I was able to quickly issue my ticket buyers a refund. This would not have happened with other ticketing systems. Priceless!"
           </div>
         ) : (
           <div
@@ -527,7 +527,7 @@ const Home = () => {
               color: "white"
             }}
           >
-            "OpenSeatDirect really helped when one of my events was unfortunately cancelled. Since I controlled the cash from ticket sales, I was able to quickly issue my ticket buyers a refund. This would not have happened with other ticketing systems. Priceless!"
+            "I like that I'm in control. When one of my events was unfortunately cancelled. Since I controlled the cash from ticket sales, I was able to quickly issue my ticket buyers a refund. This would not have happened with other ticketing systems. Priceless!"
           </div>
         )
         }

@@ -256,3 +256,47 @@ column-gap: 5px;*/
   overflow-y: auto;
   box-sizing: border-box;
 }
+
+
+.ButtonGreen {
+  height: 30px;
+  width: 120px;
+  background-color: #008F00;
+  color: #fff;
+  border: 1px solid black;
+  border-radius: 0px;
+  font-size: 12px;
+}
+.ButtonGreen:hover {
+  background-color: #006600;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+}
+.ButtonGreen:active {
+  background-color: #fff;
+  color: #008F00;
+  border: 2px solid #008F00;
+  font-weight: 600;
+}
+.ButtonRed {
+  height: 30px;
+  width: 120px;
+  background-color: #B80000;
+  color: #fff;
+  border: 1px solid black;
+  border-radius: 0px;
+  font-size: 12px;
+}
+.ButtonRed:hover {
+  background-color: #8F0000;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+}
+.ButtonRed:active {
+  background-color: #fff;
+  color: #B80000;
+  border: 2px solid #B80000;
+  font-weight: 600;
+}

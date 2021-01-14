@@ -1032,53 +1032,26 @@ const CreateEvent = (props) => {
 const buttonDisplay = (
   <Fragment>
     <div>
-      <Button
-        style={{
-          backgroundColor: 'white',
-          border: "1.5px solid #B80000",
-          borderRadius: "0px",
-          color: "#000",
-          fontSize: "12px",
-          fontWeight: 400,
-          width: "120px",
-          height: "30px",
-          margin: "auto",
-          textAlign: "center",
-          padding: "0px"
-        }}
-        content="SAVE AS DRAFT"
+      <button
+        className={classes.ButtonRed}
         onClick={() => {
-          // ***** NEED TO INCLUDE
           let tempDescription = {...eventDescription };
           tempDescription.isDraft = true;
           setEventDescription(tempDescription);
           saveEvent("saved");
         }}
-      />
+      >SAVE AS DRAFT</button>
     </div>
     <div>
-      <Button
-        style={{
-          backgroundColor: '#fff',
-          border: "1.5px solid #008F00",
-          borderRadius: "0px",
-          color: "#000",
-          fontSize: "12px",
-          fontWeight: 400,
-          width: "120px",
-          height: "30px",
-          margin: "auto",
-          textAlign: "center",
-          padding: "0px",
-        }}
-        content="GO LIVE NOW"
+      <button
+        className={classes.ButtonGreen}
         onClick={() => {
           let tempDescription = {...eventDescription };
           tempDescription.isDraft = false;
           setEventDescription(tempDescription);
           saveEvent("live");
         }}
-      />
+      >GO LIVE NOW</button>
     </div>
     <div>
       <Button

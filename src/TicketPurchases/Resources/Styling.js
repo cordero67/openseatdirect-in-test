@@ -1,3 +1,4 @@
+// THIS COMPONENT HAS BEEN REFACTORED
 export const MainContainerStyling = (inWidth, inHeight) => {
   let MainContainer = {};
 
@@ -37,6 +38,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
   return MainContainer;
 };
 
+// THIS COMPONENT HAS BEEN REFACTORED
 export const MainGridStyling = (inWidth, inHeight) => {
   let MainGrid;
 
@@ -140,15 +142,17 @@ export const MainGridStyling = (inWidth, inHeight) => {
   return MainGrid;
 };
 
+// THIS COMPONENT HAS BEEN REFACTORED
 export const EventTicketSectionStyling = (inWidth, inHeight) => {
   let EventTicketSection;
+
   if (inWidth < 480) {
     // width < 480px, height does not matter
     EventTicketSection = {
       backgroundColor: `#fff`,
       height: `calc(${inHeight}px - 140px)`,
       paddingTop: `30px`,
-      paddingLeft: `15px`,
+      paddingLeft: `10px`,
       paddingRight: `10px`,
       textAlign: `left`,
       overflowY: `auto`
@@ -164,56 +168,6 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
       textAlign: `left`,
       overflowY: `auto`
     };
-  } else if (inWidth < 790) {
-    // width < 790px, NEED TO CHECK HEIGHT
-    if (inHeight < 720) {
-      // height < 720px
-      EventTicketSection = {
-        backgroundColor: `#fff`,
-        height: `calc(${inHeight}px - 140px)`,
-        paddingTop: `30px`,
-        paddingLeft: `50px`,
-        paddingRight: `50px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    } else {
-      // height >= 720px
-      EventTicketSection = {
-        backgroundColor: `#fff`,
-        height: `580px`,
-        paddingTop: `30px`,
-        paddingLeft: `50px`,
-        paddingRight: `50px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    }
-  } else if (inWidth < 1140) {
-    // width < 1140px, NEED TO CHECK HEIGHT
-    if (inHeight < 720) {
-      // height < 720px
-      EventTicketSection = {
-        backgroundColor: `#fff`,
-        height: `calc(${inHeight}px - 140px)`,
-        paddingTop: `30px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    } else {
-      // height >= 720px
-      EventTicketSection = {
-        backgroundColor: `#fff`,
-        height: `580px`,
-        paddingTop: `30px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        textAlign: `left`,
-        overflowY: `auto`
-      };
-    }
   } else {
     // width >= 1140px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
@@ -222,8 +176,8 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
-        paddingLeft: `50px`,
-        paddingRight: `50px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
         textAlign: `left`,
         overflowY: `auto`
       };
@@ -233,8 +187,8 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         backgroundColor: `#fff`,
         height: `580px`,
         paddingTop: `30px`,
-        paddingLeft: `50px`,
-        paddingRight: `50px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
         textAlign: `left`,
         overflowY: `auto`
       };
@@ -246,12 +200,11 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
 
 export const OrderSummarySectionStyling = (inWidth, inHeight) => {
   let OrderSummarySection;
-
   if (inWidth < 660) {
     // width < 660px, height does not matter
     OrderSummarySection = {
       backgroundColor: `#E7E7E7`,
-      fontSize: `0.875rem`,
+      fontSize: `14px`,
       height: `calc(${inHeight}px - 160px)`,
       paddingTop: `20px`,
       paddingLeft: `25px`,
@@ -264,7 +217,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
       // height < 720px
       OrderSummarySection = {
         backgroundColor: `#E7E7E7`,
-        fontSize: `0.875rem`,
+        fontSize: `14px`,
         height: `calc(${inHeight}px - 160px)`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
@@ -275,7 +228,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
       // height >= 720px
       OrderSummarySection = {
         backgroundColor: `#E7E7E7`,
-        fontSize: `0.875rem`,
+        fontSize: `14px`,
         height: `560px`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
@@ -289,7 +242,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
       // height < 720px
       OrderSummarySection = {
         backgroundColor: `#E7E7E7`,
-        fontSize: `0.875rem`,
+        fontSize: `14px`,
         height: `calc(${inHeight}px - 180px)`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
@@ -300,7 +253,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
       // height >= 720px
       OrderSummarySection = {
         backgroundColor: `#E7E7E7`,
-        fontSize: `0.875rem`,
+        fontSize: `14px`,
         height: `540px`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
@@ -313,8 +266,6 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
   return OrderSummarySection;
 };
 
-// Refactored to here
-
 export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
   let OrderSummarySectionAlt;
 
@@ -322,7 +273,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
     // width < 660px, height does not matter
     OrderSummarySectionAlt = {
       backgroundColor: `#E7E7E7`,
-      fontSize: `0.875rem`,
+      fontSize: `14px`,
       height: `calc(${inHeight}px - 80px)`,
       paddingTop: `20px`,
       paddingLeft: `25px`,
@@ -335,7 +286,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
       // height < 720px
       OrderSummarySectionAlt = {
         backgroundColor: `#E7E7E7`,
-        fontSize: `0.875rem`,
+        fontSize: `15px`,
         height: `calc(${inHeight}px - 80px)`,
         paddingTop: `20px`,
         paddingLeft: `25px`,
@@ -346,7 +297,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
       // height >= 720px
       OrderSummarySectionAlt = {
         backgroundColor: `#E7E7E7`,
-        fontSize: `0.875rem`,
+        fontSize: `15px`,
         height: `640px`,
         paddingTop: `20px`,
         paddingLeft: `25px`,

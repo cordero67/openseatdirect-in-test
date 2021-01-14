@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-import styles from "./Order.module.css";
+import classes from "./OrderSummary.module.css";
 
 const OrderSummary = props => {
   let purchaseTotal = 0;
@@ -22,7 +22,6 @@ const OrderSummary = props => {
       <div style={{ fontWeight: "600" }}>Order Summary</div>
       <br></br>
       {props.ticketOrder.map(item => {
-        
         let fixedDiscountTotal;
         let fixedAdjPriceTotal;
         let fixedPriceTotal;
@@ -38,7 +37,7 @@ const OrderSummary = props => {
 
         return item.ticketsSelected > 0 ? (
           <Fragment key={item.ticketID}>
-            <div className={styles.RightGrid}>
+            <div className={classes.RightGrid}>
               <div style={{ fontWeight: "400" }}>
                 {item.ticketsSelected} X {item.ticketName}
               </div>
@@ -49,11 +48,9 @@ const OrderSummary = props => {
                   }
                 </div>
             </div>
-
             {item.ticketPriceFunction.form === "promo" && (item.adjustedTicketPrice !== item.ticketPrice) ? 
-              <div className={styles.RightGrid}>
+              <div className={classes.RightGrid}>
                 <div style={{ fontWeight: "400", color: "#4BBA00"}}>less Discount
-                  
                 </div>
                 <div style={{ textAlign: "right", color: "#4BBA00" }}>-
                   {item.ticketCurrency}{fixedDiscountTotal}
@@ -61,14 +58,13 @@ const OrderSummary = props => {
               </div> :
               null
             }
-
             <br></br>   
           </Fragment>
         ) : null;
       })}
 
       <hr style={{ border: "1px solid#B2B2B2", marginTop: "0"}} />
-      <div className={styles.RightGrid}>
+      <div className={classes.RightGrid}>
         <div style={{ fontWeight: "600" }}>Total</div>
         <div style={{ textAlign: "right", fontWeight: "600" }}>
          {props.ticketCurrency}{fixedPurchaseTotal}

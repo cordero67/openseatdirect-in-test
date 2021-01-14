@@ -26,13 +26,13 @@ import {
   EventTicketSectionStyling,
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling,
-} from "./Styling";
+} from "./Resources/Styling";
 import Spinner from "../components/UI/Spinner/Spinner";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
 import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 import CartLink from "./CartLink";
-import OrderSummary from "./OrderSummary";
+import OrderSummary from "./Components/OrderSummary";
 import { OrderConfirm } from "./Components/OrderConfirms";
 
 import TicketItem from "./TicketItem";
@@ -234,21 +234,21 @@ const TicketSelection = () => {
     console.log("freeTicketStatus inside 'freeTicketHandler': ", freeTicketStatus);
 
     setTransactionInfo({
-      eventTitle: eventDetails.eventTitle,//
-      eventType: eventDetails.eventType,//
-      venue: eventDetails.locationVenueName,//
-      address1: eventDetails.locationAddress1,//
-      address2: eventDetails.locationAddress2,//
-      city: eventDetails.locationCity,//
-      state: eventDetails.locationState,//
-      zipPostalCode: eventDetails.locationZipPostalCode,//
-      countryCode: eventDetails.locationCountryCode,//
-      locationNote: eventDetails.locationNote,//
-      webinarLink: eventDetails.webinarLink,//
-      onlineInformation: eventDetails.onlineInformation,//
-      tbaInformation: eventDetails.tbaInformation,//
-      startDateTime: eventDetails.startDateTime,//
-      endDateTime: eventDetails.endDateTime,//
+      eventTitle: eventDetails.eventTitle,
+      eventType: eventDetails.eventType,
+      venue: eventDetails.locationVenueName,
+      address1: eventDetails.locationAddress1,
+      address2: eventDetails.locationAddress2,
+      city: eventDetails.locationCity,
+      state: eventDetails.locationState,
+      zipPostalCode: eventDetails.locationZipPostalCode,
+      countryCode: eventDetails.locationCountryCode,
+      locationNote: eventDetails.locationNote,
+      webinarLink: eventDetails.webinarLink,
+      onlineInformation: eventDetails.onlineInformation,
+      tbaInformation: eventDetails.tbaInformation,
+      startDateTime: eventDetails.startDateTime,
+      endDateTime: eventDetails.endDateTime,
       timeZone: eventDetails.timeZone,
       email: contactInformation.email,
       name: contactInformation.name,
@@ -305,7 +305,7 @@ const TicketSelection = () => {
         return response.json()})
     .then ((data)=>{
         console.log ("fetch return got back data:", data);
-        //setOrderStatus(true);
+        setOrderStatus(true);
         //console.log("Order status: ", orderStatus);
         onlyShowPurchaseConfirmation();
         setDisplay("confirmation")
@@ -802,7 +802,7 @@ const TicketSelection = () => {
         return (
           <OrderConfirm
             transactionInfo={transactionInfo}
-            serverResponse={true}
+            orderStatus={true}
           ></OrderConfirm>
         )
       } else if (!orderStatus) {
@@ -837,7 +837,7 @@ const TicketSelection = () => {
       }
     }
 
-  
+  // THIS FUNCTION HAS BEEN REFACTORED 1/8/21
   // defines and sets "loadingSpinner" view status
   const spinner = () => {
     if (display === "spinner") {
@@ -852,14 +852,13 @@ const TicketSelection = () => {
   }
 
   return (
-    <Fragment>
-      <div style={MainContainer}>
-        {spinner()}
-        {mainDisplay()}
-        {purchaseConfirmation()}
-      </div>
-    </Fragment>
+    <div style={MainContainer}>
+      {spinner()}
+      {mainDisplay()}
+      {purchaseConfirmation()}
+    </div>
   );
+
 };
 
 export default TicketSelection;

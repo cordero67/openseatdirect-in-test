@@ -5,13 +5,14 @@ import { bogox, twofer } from "./pricingFunctions";
 export const loadEventDetails = event => {
   let tempGatewayURL;
   // sets the checkout page url
-  // NEED TO REMOVE THIS LINE AFTER FIX
+  // NEED TO REMOVE THIS LINE ONCE ADDITIONAL GATEWAYS ADDED
   if (true) {
-    // NEED TO UNCOMMENT THIS LINE AFTER FIX
+  // NEED TO ADD THIS LINE ONCE ADDITIONAL GATEWAYS ADDED
   //if (event.accountId.paymentGatewayType === "PayPalExpress") {
     tempGatewayURL = "/checkout_pp";
-  } else if (event.accountId.paymentGatewayType === "Braintree") {
-    tempGatewayURL = "/checkout_bt";
+  // NEED TO ADD THESE LINES ONCE ADDITIONAL GATEWAYS ADDED
+  // } else if (event.accountId.paymentGatewayType === "Braintree") {
+  //   tempGatewayURL = "/checkout_bt";
   } else {
     tempGatewayURL = "/"
   }

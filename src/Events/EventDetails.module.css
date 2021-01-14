@@ -100,16 +100,16 @@
   border: 1px solid black;
 }
 .ButtonGreen:hover {
-  background-color: #fff;
-  color: #008F00;
-  border: 2px solid #008F00;
-  font-weight: 600;
-}
-.ButtonGreen:active {
   background-color: #006600;
   color: #fff;
   border: 1px solid black;
   font-weight: 500;
+}
+.ButtonGreen:active {
+  background-color: #fff;
+  color: #008F00;
+  border: 2px solid #008F00;
+  font-weight: 600;
 }
 
 .ButtonGreenOpac {

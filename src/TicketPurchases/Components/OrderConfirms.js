@@ -1,11 +1,13 @@
 import React, { Fragment } from "react";
 import dateFormat from "dateformat";
 
-import classes from "./Components.module.css";
+import classes from "./OrderConfirms.module.css";
 
 export const OrderConfirm = props => {
+  console.log("props: ", props)
   const response = () => {
-    if (props.serverResponse) {
+    if (props.orderStatus) {
+      console.log("OSD success");
       return (
         <div style={{paddingBottom: "20px"}}>
           <div style={{paddingBottom: "20px"}}>
@@ -20,6 +22,7 @@ export const OrderConfirm = props => {
         </div>
       )
     } else {
+      console.log("OSD failure");
       return (
         <div style={{paddingBottom: "20px"}}>
           <div style={{paddingBottom: "20px"}}>

@@ -14,12 +14,12 @@ import {
   EventTicketSectionStyling,
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling
-} from "./Styling";
+} from "./Resources/Styling";
 import { paymentOnSuccess } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLink";
-import OrderSummary from "./OrderSummary";
+import OrderSummary from "./Components/OrderSummary";
 import { OrderConfirm } from "./Components/OrderConfirms";
 import styles from "./Order.module.css";
 
@@ -53,9 +53,8 @@ const Checkout = props => {
   const [showConnectionStatus, setShowConnectionStatus] = useState(false);
   const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
-  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(
-    false
-  );
+  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(false);
+  const [showBlankScreen, setShowBlankScreen] = useState(false);
 
   // defines single or double pane view control variables
   const [showDoublePane, setShowDoublePane] = useState(false);
@@ -127,10 +126,14 @@ const Checkout = props => {
         console.log("Paypal Array: ", paypalArray);
         console.log("orderTotals: ", orderTotals);
         console.log("ticketInfo: ", ticketInfo);
+      } else {
+        window.location.href = "/events";
       }
       if (localStorage.getItem(`image_${event}`)) {
         eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
       }
+    } else {
+      window.location.href = "/events";
     }
     stylingUpdate(window.innerWidth, window.innerHeight);
     onlyShowPaymentDetails();
@@ -330,8 +333,10 @@ const Checkout = props => {
     // loads PayPal Smart buttons if order exists
       <div>
         <PayPalButton
-          onButtonReady={() => {}}
+          onButtonReady={() => {
+            console.log("inside onButtonReady")}}
           createOrder={(data, actions) => {
+            console.log("inside createOrder")
             return actions.order.create({
               purchase_units: [
                 {
@@ -362,6 +367,7 @@ const Checkout = props => {
             console.log("onCancel 'data': ", data);
           }}
           onSuccess={(details, data) => {
+            console.log("inside onSuccess")
             payPalPurchase(details);
           }}
           onError = {(err) => {
@@ -406,14 +412,14 @@ const Checkout = props => {
       return (
         <OrderConfirm
           transactionInfo={transactionInfo}
-          serverResponse={true}
+          orderStatus={true}
         ></OrderConfirm>
       );
     } else if (paypalStatus && !orderStatus) {
       return (
         <OrderConfirm
           transactionInfo={transactionInfo}
-          serverResponse={false}
+          orderStatus={true}
         ></OrderConfirm>
       );
     } else {
@@ -453,7 +459,7 @@ const Checkout = props => {
         <div>
           <div style={OrderSummarySectionAlt}>{orderSummary}</div>
         </div>
-        <div className={styles.EventFooter}>
+        <div className={styles.EventFooterMod}>
           <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
           <div className={styles.TotalAmount}>
             {totalAmount(showDoublePane)}
@@ -575,6 +581,19 @@ const Checkout = props => {
     );
   } else {
     purchaseConfirmation = null;
+  }
+  
+  
+  let blankScreen = null;
+  // defines and sets "purchaseConfirmation" contents: contolled by "transactionStatus.success"
+  if (true) {
+    blankScreen = (
+      <div className={styles.BlankCanvas}>
+        <div style={{ paddingTop: "20px" }}>BLANK</div>
+      </div>
+    );
+  } else {
+    blankScreen = null;
   }
 
   // defines which of "paymentPane" and/or "orderPane" items to display
