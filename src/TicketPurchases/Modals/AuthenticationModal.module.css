@@ -31,7 +31,7 @@
 }
 .Header {
   display: grid;
-  grid-template-columns: 90% 10%;
+  grid-template-columns: 95% 5%;
   column-gap: "0px";
   font-size: 24px;
   font-weight: 600;
@@ -79,21 +79,21 @@
   border: 1px solid black;
   border-radius: 0px;
   color: #fff;
-  background-color: #B80000;
+  background-color: #008F00;
   width: 340px;
   height: 40px;
   font-size: 14px;
 }
 .CancelButton:hover {
-  background-color: #8F0000;
+  background-color: #006600;
   color: #fff;
   border: 1px solid black;
   font-weight: 500;
 }
 .CancelButton:active {
   background-color: #fff;
-  color: #B80000;
-  border: 2px solid #B80000;
+  color: #008F00;
+  border: 2px solid #008F00;
   font-weight: 600;
 }
 .BlueText {

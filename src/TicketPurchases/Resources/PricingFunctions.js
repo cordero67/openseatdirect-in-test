@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
 import dateFormat from "dateformat";
-import Aux from "../hoc/Auxiliary/Auxiliary";
 
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 export const bogox = (i,u,n,g,d) => {
     // returns price of ith  purchased via Buy (n) Get (g) at d % off
     // i = ith item assuming you bought items 1 to i 
@@ -15,6 +15,7 @@ export const bogox = (i,u,n,g,d) => {
     return (result);
 }
 
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 export const twoferCapped = (i,u,n,tp ) => {
     // returns price of ith item in Buy (n) for (p) with a cap where
     // capped means cost of buying fewer items never exceeds cost of buying more items
@@ -26,32 +27,27 @@ export const twoferCapped = (i,u,n,tp ) => {
     return (Math.min((i*u),result));
 }
 
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 export const twofer = (i,u,n,tp ) => {
     let result = (Math.floor(i/n)*tp) + (i%n)*u;
     return (Math.min((i*u),result));
 }
 
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // NEED TO ADDRESS THE TIMEZONE VALUE
 export const DateRange = props => {
     if (dateFormat(props.start, "m d yy", true) === dateFormat(props.end, "m d yy", true)) {
-        return (<Aux>{dateFormat(
-        props.start,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-        )} to {dateFormat(
-        props.end,
-        "shortTime",
-        true
-        )}</Aux>)
+        return (
+            <Fragment>
+                {dateFormat(props.start, "ddd, mmm d, yyyy - h:MM TT", true)} to{" "}
+                {dateFormat(props.end, "shortTime", true)}
+            </Fragment>)
     } else {
-        return (<Aux>{dateFormat(
-        props.start,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-        )} to {dateFormat(
-        props.end,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-        )}</Aux>)
+        return (
+            <Fragment>
+                {dateFormat(props.start, "ddd, mmm d, yyyy - h:MM TT", true)} to{" "}
+                {dateFormat(props.end, "ddd, mmm d, yyyy - h:MM TT", true)}
+            </Fragment>
+        )
     }
 }

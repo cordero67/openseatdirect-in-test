@@ -13,6 +13,7 @@ import {
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling
 } from "./Resources/Styling";
+import { DateRange } from "./Resources/PricingFunctions";
 import Spinner from "../components/UI/Spinner/Spinner";
 import GuestForm from "./Components/GuestForm";
 import CartLink from "./CartLink";
@@ -38,10 +39,10 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const CustomerInfo = props => {
-  // ***DO I NEED THIS defines panel displayed on main page
+  // defines panel displayed on main page
   const [display, setDisplay] = useState("spinner"); //main, spinner
 
-  // defines modal display mode
+  // defines 'authenticationModal' display status
   const [modalStatus, setModalStatus] = useState(false);
 
   // defines single or double pane view control variables
@@ -74,19 +75,11 @@ const CustomerInfo = props => {
 
 
 
-  // defines all view control variables
-  const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
-  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
-
-
-
-
-
-
-
   useEffect(() => {
     // downloads "order" information and "image" from "localStorage" and
-    if (localStorage.getItem("eventNum")) {
+    if (
+      typeof window !== "undefined" && localStorage.getItem("eventNum")
+    ) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
         let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
@@ -360,20 +353,6 @@ const CustomerInfo = props => {
 
   const mainDisplay = () => {
     if (display === "main") {
-      let dateRange;
-      if (dateFormat(eventDetails.startDateTime, "m d yy", true) === dateFormat(eventDetails.endDateTime, "m d yy", true)) {
-        dateRange =
-          <Fragment>
-            {dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy - h:MM TT", true)} to
-            {dateFormat(eventDetails.endDateTime, "shortTime", true)}
-          </Fragment>
-      } else {
-        dateRange =
-          <Fragment>
-            {dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy - h:MM TT", true)} to
-            {dateFormat(eventDetails.endDateTime, "ddd, mmm d, yyyy - h:MM TT", true)}
-          </Fragment>
-      }
 
     // determines whether or not to display the cart and arrow
     const cartLink = show => {
@@ -408,7 +387,10 @@ const CustomerInfo = props => {
               {eventDetails.eventTitle}
           </div>
           <div className={classes.EventDate}>
-            {dateRange}
+              <DateRange
+                start={eventDetails.startDateTime}
+                end={eventDetails.endDateTime}
+              />
           </div>
         </div>
 

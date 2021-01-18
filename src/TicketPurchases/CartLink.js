@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import Aux from "../hoc/Auxiliary/Auxiliary";
-import styles from "./Order.module.css";
+import styles from "./Cartlink.module.css";
 
 const CartLink = props => {
   // determines whether or not to display the number of tickets purchased

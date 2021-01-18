@@ -9,19 +9,19 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import Backdrop from "./Backdrop";
 import classes from "./AuthenticationModal.module.css";
 
-import { Button } from "semantic-ui-react";
-
 const Authentication = (props) => {
   const [values, setValues] = useState({
     name: "",
     email: "",
-    confirmCode: "",
     password: "",
+    temporary: "",
+    reissued: false,
+    confirmation: "",
+    resent: false,
     username: "",
     resetToken: "",
     sessionToken: "",
-    userId: "",
-    resent: false
+    userId: ""
   });
 
   // transaction status variable
@@ -30,9 +30,9 @@ const Authentication = (props) => {
     error: false
   });
 
-  const [modalSetting, setModalSetting] = useState("signin") // signin, signup, confirmation, password, username, error
+  const [modalSetting, setModalSetting] = useState("signin") // signin, forgot, temporary, signup, confirmation, password, username, error
 
-  const { name, email, confirmCode, password, username, resetToken, sessionToken, userId, resent } = values;
+  const { name, email, password, temporary, reissued, confirmation, resent, username, resetToken, sessionToken, userId } = values;
 
   const { message, error } = submissionStatus;
 
@@ -53,7 +53,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/signin_email`;
+    let url = `${API}/auth/signin_email`;
     let information = {
       email: email,
       password: password
@@ -85,6 +85,124 @@ const Authentication = (props) => {
   }
 
   // LOOKS GOOD
+  const submitForgot = () => {
+    setSubmissionStatus({
+      message: "",
+      error: false
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/send_access_code2`;
+    let information = {
+      email: email
+    }
+    let fetchBody ={
+      method: "POST",
+      headers: myHeaders,
+      body:JSON.stringify (information),
+    };
+    console.log("fetching with: ", url, fetchBody);
+    console.log("Information: ", information)
+    fetch(url, fetchBody )
+    .then(handleErrors)
+    .then ((response)=>{
+      console.log ("then response: ", response);
+      return response.json()})
+    .then ((data)=>{
+      console.log ("fetch return got back data:", data);
+      handleForgot(data)
+    })
+    .catch ((error)=>{
+      console.log("freeTicketHandler() error.message: ", error.message);
+      setSubmissionStatus({
+        message: "Server is down, please try later",
+        error: true
+      });
+      setModalSetting("error")
+    })
+  }
+
+  // LOOKS GOOD
+  const submitTemporary = () => {
+    setSubmissionStatus({
+      message: "",
+      error: false
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/confirm_access_code2`;
+    let information = {
+      email: email,
+      confirm_code: temporary,
+    }
+    let fetchBody ={
+      method: "POST",
+      headers: myHeaders,
+      body:JSON.stringify (information),
+    };
+    console.log("fetching with: ", url, fetchBody);
+    console.log("Information: ", information)
+    fetch(url, fetchBody )
+    .then(handleErrors)
+    .then ((response)=>{
+      console.log ("then response: ", response);
+      return response.json()})
+    .then ((data)=>{
+      console.log ("fetch return got back data:", data);
+      handleTemporary(data)
+    })
+    .catch ((error)=>{
+      console.log("freeTicketHandler() error.message: ", error.message);
+      setSubmissionStatus({
+        message: "Server is down, please try later",
+        error: true
+      });
+      setModalSetting("error")
+    })
+  }
+
+  // LOOKS GOOD
+  const submitReissue = () => {
+    setSubmissionStatus({
+      message: "",
+      error: false
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/send_access_code2`;
+    let information = {
+      email: email
+    }
+    let fetchBody ={
+      method: "POST",
+      headers: myHeaders,
+      body:JSON.stringify (information),
+    };
+    console.log("fetching with: ", url, fetchBody);
+    console.log("Information: ", information)
+    fetch(url, fetchBody )
+    .then(handleErrors)
+    .then ((response)=>{
+      console.log ("then response: ", response);
+      return response.json()})
+    .then ((data)=>{
+      console.log ("fetch return got back data:", data);
+      handleReissue(data)
+    })
+    .catch ((error)=>{
+      console.log("freeTicketHandler() error.message: ", error.message);
+      setSubmissionStatus({
+        message: "Server is down, please try later",
+        error: true
+      });
+      setModalSetting("error")
+    })
+  }
+
+  // LOOKS GOOD
   const submitSignUp = () => {
     setSubmissionStatus({
       message: "",
@@ -93,7 +211,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/signup1_email`;
+    let url = `${API}/auth/signup1_email`;
     let information = {
       email: email
     }
@@ -132,10 +250,10 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/signup2_confirm`;
+    let url = `${API}/auth/signup2_confirm`;
     let information = {
       email: email,
-      confirm_code: confirmCode
+      confirm_code: confirmation
     }
     let fetchBody ={
       method: "POST",
@@ -172,7 +290,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/signup3_password`;
+    let url = `${API}/auth/signup3_password`;
     let information = {
       email: email,
       resetPasswordToken: resetToken,
@@ -214,7 +332,7 @@ const Authentication = (props) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
-    let url = `${API}/update_username/${userId}`;
+    let url = `${API}/auth/update_username/${userId}`;
     let information = {
       email: email,
       username: username
@@ -255,7 +373,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/resend_confirm_code`;
+    let url = `${API}/auth/resend_confirm_code`;
     let information = {
       email: email
     }
@@ -292,16 +410,100 @@ const Authentication = (props) => {
       setValues({
         name: "",
         email: "",
-        confirmCode: "",
         password: "",
+        temporary: "",
+        reissued: false,
+        confirmation: "",
+        resent: false,
         username: "",
         resetToken: "",
         sessionToken: "",
-        userId: "",
-        resent: false
+        userId: ""
       });
       console.log("SUCCESS")
       props.submitOrder();
+    } else {
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
+    }
+  }
+
+  // LOOKS GOOD
+  const handleForgot = (data) => {
+    if (data.status) {
+      setValues({
+        name: "",
+        email: data.user.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        confirmation: "",
+        resent: false,
+        username: "",
+        resetToken: "",
+        sessionToken: "",
+        userId: ""
+      });
+      console.log("SUCCESS")
+      setModalSetting("temporary")
+    } else {
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
+    }
+  }
+
+  // LOOKS GOOD
+  const handleTemporary = (data) => {
+    if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data));
+      setValues({
+        name: "",
+        email: "",
+        password: "",
+        temporary: "",
+        reissued: false,
+        confirmation: "",
+        resent: false,
+        username: "",
+        resetToken: "",
+        sessionToken: "",
+        userId: ""
+      });
+      console.log("SUCCESS")
+      props.submitOrder();
+    } else {
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
+    }
+  }
+
+  // LOOKS GOOD
+  const handleReissue = (data) => {
+    if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data));
+      setValues({
+        name: "",
+        email: data.user.email,
+        password: "",
+        temporary: "",
+        reissued: true,
+        confirmation: "",
+        resent: false,
+        username: "",
+        resetToken: "",
+        sessionToken: "",
+        userId: ""
+      });
+      console.log("SUCCESS")
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -317,22 +519,24 @@ const Authentication = (props) => {
       setValues({
         name: "",
         email: data.user.email,
-        confirmCode: "",
         password: "",
+        temporary: "",
+        reissued: false,
+        confirmation: "",
+        resent: false,
         username: data.user.username,
         resetToken: "",
         sessionToken: "",
-        userId: "",
-        resent: false
+        userId: ""
       });
       console.log("SUCCESS")
       setModalSetting("confirmation")
     } else {
-        setSubmissionStatus({
-          message: data.error,
-          error: true
-        });
-        console.log("ERROR: ", data.error)
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
     }
   }
 
@@ -342,22 +546,24 @@ const Authentication = (props) => {
       setValues({
         name: "",
         email: data.user.email,
-        confirmCode: "",
         password: "",
+        temporary: "",
+        reissued: false,
+        confirmation: "",
+        resent: false,
         username: data.user.username,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
-        userId: "",
-        resent: false        
+        userId: ""
       });
       console.log("SUCCESS")
       setModalSetting("password")
     } else {
-        setSubmissionStatus({
-          message: data.error,
-          error: true
-        });
-        console.log("ERROR: ", data.error)
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
     }
   }
 
@@ -368,22 +574,24 @@ const Authentication = (props) => {
       setValues({
         name: "",
         email: data.user.email,
-        confirmCode: "",
         password: "",
+        temporary: "",
+        reissued: false,
+        confirmation: "",
+        resent: false,
         username: data.user.username,
         resetToken: "",
         sessionToken: data.token,
-        userId: data.user._id,
-        resent: false
+        userId: data.user._id
       });
       console.log("SUCCESS")
       setModalSetting("username")
     } else {
-        setSubmissionStatus({
-          message: data.error,
-          error: true
-        });
-        console.log("ERROR: ", data.error)
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
     }
   }
 
@@ -396,24 +604,43 @@ const Authentication = (props) => {
       localStorage.setItem("user", JSON.stringify(tempUser));
       setValues({
         name: "",
-        email: data.user.email,
-        confirmCode: "",
+        email: "",
         password: "",
-        username: data.user.username,
+        temporary: "",
+        reissued: false,
+        confirmation: "",
+        resent: false,
+        username: "",
         resetToken: "",
-        sessionToken: data.token,
-        userId: data.user._id,
-        resent: false
+        sessionToken: "",
+        userId: ""
       });
       console.log("SUCCESS")
       props.submitOrder();
     } else {
-        setSubmissionStatus({
-          message: data.error,
-          error: true
-        });
-        console.log("ERROR: ", data.error)
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
     }
+  }
+
+  // LOOKS GOOD
+  const resetValues = () => {
+    setValues({
+      name: "",
+      email: "",
+      password: "",
+      temporary: "",
+      reissued: false,
+      confirmation: "",
+      resent: false,
+      username: "",
+      resetToken: "",
+      sessionToken: "",
+      userId: ""
+    })
   }
 
   // LOOKS GOOD
@@ -423,21 +650,23 @@ const Authentication = (props) => {
       setValues({
         name: "",
         email: data.user.email,
-        confirmCode: "",
         password: "",
-        username: "",
+        temporary: "",
+        reissued: false,
+        confirmation: "",
+        resent: true,
+        username: data.user.username,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
-        userId: "",
-        resent: true
+        userId: ""
       });
       console.log("SUCCESS")
     } else {
-        setSubmissionStatus({
-          message: data.error,
-          error: true
-        });
-        console.log("ERROR: ", data.error)
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
     }
   }
 
@@ -455,11 +684,31 @@ const Authentication = (props) => {
       return (
         <div style={{color: "red", fontSize: "14px", paddingBottom: "20px"}}>{message}</div>
       )
-    } else if (modalSetting === "signin" || modalSetting === "signup") {  
+    } else if (modalSetting === "signin" || modalSetting === "forgot"|| modalSetting === "signup" || modalSetting === "password") {  
       return (
         <div style={{fontSize: "16px", paddingBottom: "20px"}}>Please provide the following:</div>
       )
-    } else if (modalSetting === "confirmation" && !resent) {  
+    } else if (modalSetting === "temporary" && !reissued) {
+      console.log("modalSetting === 'temporary' && !reissued")
+      console.log("values: ", values)
+      return (
+        <div style={{fontSize: "16px", paddingBottom: "20px"}}>
+          Temporary password sent to your email,
+          <br></br>
+          please enter it below:
+        </div>
+      )
+    } else if (modalSetting === "temporary" && reissued) {
+      console.log("modalSetting === 'temporary' && reissued")
+      console.log("values: ", values)
+      return (
+        <div style={{fontSize: "16px", paddingBottom: "20px"}}>
+          Temporary password resent to your email,
+          <br></br>
+          please enter it below:
+        </div>
+      )
+    } else if (modalSetting === "confirmation" && !resent) {
       return (
         <div style={{fontSize: "16px", paddingBottom: "20px"}}>Enter the 6-digit code sent to your email:</div>
       )
@@ -468,28 +717,19 @@ const Authentication = (props) => {
         <div style={{fontSize: "16px", paddingBottom: "20px"}}>
           A new 6-digit code was sent to your email,
           <br></br>
-          please enter it below:</div>
+          please enter it below:
+        </div>
       )
     } else if (modalSetting === "username") {
       return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>Default username provided. Submit a new username if desired:</div>
+        <div style={{fontSize: "16px", paddingBottom: "20px"}}>
+          Default username provided below.
+          <br></br>
+          Submit a new username if desired:
+        </div>
       )
     }
   };
-
-  //NEED A BETTER TEST
-  //without "!data.message" it places the data object into local storage with every keystroke
-  //this then generates an error in navigation component when it is looking for "role"
-  //if (typeof window !== "undefined" && data.status && !hasError1 && !data.message) {
-  if (typeof window !== "undefined" && false) {
-    //localStorage.setItem("user", JSON.stringify(data));
-    if (!props.zeroCart) {
-      props.closeModal();
-      return <Redirect to="/checkout" />;
-    } else {
-      //props.closeModal();
-    }
-  }
 
   // LOOKS GOOD
   const signInForm = (
@@ -529,6 +769,56 @@ const Authentication = (props) => {
   );
 
   // LOOKS GOOD
+  const forgotForm = (
+    <Fragment>
+      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
+        <label style={{fontSize: "15px"}}>E-mail Address</label>
+        <input
+          className={classes.InputBox}
+          type="email"
+          name="email"
+          onChange={handleChange}
+          value={email}
+        />
+      </div>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.SubmitButton}
+          onClick={() => {
+            submitForgot()
+        }}>
+          SUBMIT YOUR EMAIL
+        </button>
+      </div>
+    </Fragment>
+  );
+
+  // LOOKS GOOD
+  const temporaryForm = (
+    <Fragment>
+      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
+        <label style={{fontSize: "15px"}}>Temporary Password</label>
+        <input
+          className={classes.InputBox}
+          type="text"
+          name="temporary"
+          onChange={handleChange}
+          value={temporary}
+        />
+      </div>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.SubmitButton}
+          onClick={() => {
+            submitTemporary();
+        }}>
+          SUBMIT TEMPORARY PASSWORD
+        </button>
+      </div>
+    </Fragment>
+  );
+
+  // LOOKS GOOD
   const signUpForm = (
     <Fragment>
       <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
@@ -561,9 +851,9 @@ const Authentication = (props) => {
         <input
           className={classes.InputBox}
           type="text"
-          name="confirmCode"
+          name="confirmation"
           onChange={handleChange}
-          value={confirmCode}
+          value={confirmation}
         />
       </div>
       <div style={{paddingTop: "10px"}}>
@@ -650,7 +940,6 @@ const Authentication = (props) => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            console.log("clicked submit button")
             closeModal()
         }}>
           CONTINUE
@@ -662,17 +951,54 @@ const Authentication = (props) => {
   // LOOKS GOOD
   const alternateSignInInputs = (
     <div className={classes.Alternates}>
-      <div style={{fontWeight: "600", color: "blue"}}>
-        Forgot password?
+      <div style={{textAlign: "left"}}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            resetValues();
+            setModalSetting("forgot");
+          }}
+        >
+          Forgot password?
+        </button>
       </div>
       <div style={{textAlign: "right"}}>
         <button
           className={classes.BlueText}
           onClick={() => {
+            resetValues();
             setModalSetting("signup")
           }}
         >
           Create account
+        </button>
+      </div>
+    </div>
+  )
+
+  // LOOKS GOOD
+  const alternateTemporaryInputs = (
+    <div className={classes.Alternates}>
+      <div style={{textAlign: "left"}}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            console.log("clicked resend button")
+            submitReissue();
+          }}
+        >
+          Resend password
+        </button>
+      </div>
+      <div style={{textAlign: "right"}}>
+        Back to{" "}
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            setModalSetting("signin")
+          }}
+        >
+          Sign In
         </button>
       </div>
     </div>
@@ -714,20 +1040,11 @@ const Authentication = (props) => {
 
   // LOOKS GOOD
   const closeModal = () => {
-    setValues({
-      name: "",
-      email: "",
-      confirmCode: "",
-      password: "",
-      username: "",
-      resetToken: ""
-    });
+    resetValues();
     setSubmissionStatus({
       message: "",
       error: false
     });
-
-
     setModalSetting("signin");
     props.closeModal()
   }
@@ -755,6 +1072,68 @@ const Authentication = (props) => {
             {showError()}
             {signInForm}
             {alternateSignInInputs}
+          </div>
+        </div>
+      )
+    } else {
+      return null
+    }
+  }
+
+  // LOOKS GOOD
+  const forgotDisplay = () => {
+    if (modalSetting === "forgot") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>Need a temporary password?</div>
+            <div style={{textAlign: "right"}}>
+              <FontAwesomeIcon
+                size="1x"
+                color="black"
+                cursor = "pointer"
+                onClick={() => {
+                  closeModal()
+                }}
+                icon={faTimes}
+              />
+            </div>
+          </div>
+          <div>
+            {showError()}
+            {forgotForm}
+            {alternateSignUpInputs}
+          </div>
+        </div>
+      )
+    } else {
+      return null
+    }
+  }
+
+  // LOOKS GOOD
+  const temporaryDisplay = () => {
+    if (modalSetting === "temporary") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>Enter temporary password</div>
+            <div style={{textAlign: "right"}}>
+              <FontAwesomeIcon
+                size="1x"
+                color="black"
+                cursor = "pointer"
+                onClick={() => {
+                  closeModal()
+                }}
+                icon={faTimes}
+              />
+            </div>
+          </div>
+          <div>
+            {showError()}
+            {temporaryForm}
+            {alternateTemporaryInputs}
           </div>
         </div>
       )
@@ -914,6 +1293,7 @@ const Authentication = (props) => {
     }
   }
 
+  // LOOKS GOOD
   return (
     <Fragment>
       <Backdrop show={props.show} clicked={props.modalClosed}></Backdrop>
@@ -926,6 +1306,8 @@ const Authentication = (props) => {
         className={classes.Modal}
       >
         {signInDisplay()}
+        {forgotDisplay()}
+        {temporaryDisplay()}
         {signUpDisplay()}
         {confirmationDisplay()}
         {passwordDisplay()}
@@ -937,9 +1319,3 @@ const Authentication = (props) => {
 };
 
 export default Authentication;
-
-/*
-  <Link to="/passwordrecovery" style={{fontWeight: "600", color: "blue"}}>
-    Forgot password?
-  </Link>
-*/

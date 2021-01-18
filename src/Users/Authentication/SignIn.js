@@ -16,8 +16,8 @@ const SignIn = () => {
 
   let  myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-
-  const url1 = `${API}/signin`;
+  
+  const url1 = `${API}/auth/signin_email`;
   const method1 = "POST";
   const body1  = null;
   const initialData1 ={status: true, message:"hi first time"};

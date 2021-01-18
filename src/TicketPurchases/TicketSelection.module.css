@@ -1,4 +1,3 @@
-/* ".BlankCanvas" HAS BEEN REFACTORED 1/8/21 */
 .EventHeader {
     text-align: center;
     padding-top: 5px;
@@ -8,17 +7,16 @@
     border-bottom: 1px solid lightgrey;
 }
 .EventTitle {
-    font-size: 1.0rem;
+    font-size: 14px;
     font-weight: 600;
 }
 .EventDate {
-    font-size: 0.8rem;
+    font-size: 12px;
     font-weight: 400;
 }
 .EventDescription {
     font-weight: 400;
-    padding-bottom: 5px;
-    font-size: 0.875rem
+    font-size: 14px;
 }
 .EventFooter {
     display: grid;
@@ -72,19 +70,19 @@
     background-color: #008F00;
     color: #fff;
     border: 1px solid black;
-  }
-  .ButtonGreen:hover {
+}
+.ButtonGreen:hover {
     background-color: #006600;
     color: #fff;
     border: 1px solid black;
     font-weight: 500;
-  }
-  .ButtonGreen:active {
+}
+.ButtonGreen:active {
     background-color: #fff;
     color: #008F00;
     border: 2px solid #008F00;
     font-weight: 600;
-  }
+}
 .ButtonGreenOpac {
     height: 40px;
     width: 200px;
@@ -94,40 +92,12 @@
     font-weight: 400;
     border: 1px solid grey;
 }
-.ButtonRed {
-    height: 44px;
-    width: 127px;
-    background-color: red;
-    color: white;
-    font-weight: 600;
-    border: 1px solid grey;
-    border-radius: 8px;
-}
-.ButtonGrey {
-    height: 44px;
-    width: 127px;
-    background-color: #e7e7e7;
-    color: black;
-    font-variant-east-asian: 600;
-    border: 1px solid grey;
-}
 .faShoppingCart {
-    font-size: 1.5rem;
+    font-size: 30px;
     vertical-align: center;
 }
 .faShoppingCart:hover {
     border-color: transparent;
-}
-.cartBadge {
-    border-radius: 50%;
-    vertical-align: super;
-    font-size: 16px;
-    text-align: center;
-    padding-left: 10px;
-    padding-right: 10px;
-    color: white;
-    font-style: italic;
-    background: red;
 }
 .PromoGrid {
     height: 48px;
@@ -210,18 +180,17 @@
 
 @media (min-width: 480px) {
     .EventTitle {
-        font-size: 1.125rem;
+        font-size: 16px;
         font-weight: 600;
     }
     .EventDate {
-        font-size: 0.9rem;
+        font-size: 14px;
         font-weight: 400;
     }
     .EventFooter {
         padding-left: 25px;
         padding-right: 25px;
     }
-
     .BlankCanvas {
         padding-left: 25px;
         padding-right: 25px;
@@ -240,7 +209,6 @@
     .PromoGrid {
         grid-template-columns: auto 77px;
     }
-
     .BlankCanvas {
         width: 1080px;
     }

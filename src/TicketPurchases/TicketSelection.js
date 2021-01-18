@@ -18,8 +18,7 @@ import {
   clearPromoDetails,
   clearTicketInfo,
   clearOrderTotals,
-} from "./TicketSelectionFunctions";
-import { DateRange } from "./pricingFunctions";
+} from "./Resources/TicketSelectionFunctions";
 import {
   MainContainerStyling,
   MainGridStyling,
@@ -27,16 +26,18 @@ import {
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling,
 } from "./Resources/Styling";
+import { DateRange } from "./Resources/PricingFunctions";
 import Spinner from "../components/UI/Spinner/Spinner";
-
-import DefaultLogo from "../assets/Get_Your_Tickets.png";
-import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 import CartLink from "./CartLink";
 import OrderSummary from "./Components/OrderSummary";
 import { OrderConfirm } from "./Components/OrderConfirms";
+import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
 
-import TicketItem from "./TicketItem";
-import styles from "./TicketSelection.module.css";
+import DefaultLogo from "../assets/Get_Your_Tickets.png";
+import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
+
+import TicketItem from "./Components/TicketItem";
+import classes from "./TicketSelection.module.css";
 
 let eventDetails; // defines an event's NON ticket type specific information
 let eventLogo = ""; // defines an event's image
@@ -48,24 +49,20 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const TicketSelection = () => {
+  // defines panel displayed on main page
+  const [display, setDisplay] = useState("spinner"); //main, spinner, confirmation, connection
+
   const [showDoublePane, setShowDoublePane] = useState(false);
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
-
-  const [display, setDisplay] = useState("spinner"); // spinner, connection, main, confirmation
-
-  const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
-  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
-  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(false);
+  
+  // defines styling variables
+  const [isRestyling, setIsRestyling] = useState(false);
 
   // Defines data loading control variables
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
   const [isSuccessfull, setIsSuccessfull] = useState(true);
   
   const [orderStatus, setOrderStatus] = useState(true);
-  const [freeTicketStatus, setFreeTicketStatus] = useState(false);
-  
-  // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
 
   // NEED TO REFACTOR THIS CONTROL VARIABLE
   // defines an event's specific ticket type promo codes
@@ -79,36 +76,15 @@ const TicketSelection = () => {
     lastInvalidPromoCode: "",
     eventPromoCodes: [],
   });
-  // NEED TO REFACTOR THIS CONTROL VARIABLE
 
-  // tracks ticket order ticket specific information
+  // tracks specific ticket information in ticket order
   const [ticketInfo, setTicketInfo] = useState([]);
 
-  // tracks ticket order general information
+  // tracks general information in ticket order
   const [orderTotals, setOrderTotals] = useState([]);
-
-  const onlyShowLoadingSpinner = () => {
-    setShowLoadingSpinner(true);
-    setShowPaymentDetails(false);
-    setShowPurchaseConfirmation(false);
-  };
-
-  const onlyShowPaymentDetails = () => {
-    setShowLoadingSpinner(false);
-    setShowPaymentDetails(true);
-    setShowPurchaseConfirmation(false);
-  };
-
-  const onlyShowPurchaseConfirmation = () => {
-    setShowLoadingSpinner(false);
-    setShowPaymentDetails(false);
-    setShowPurchaseConfirmation(true);
-  };
 
   // stores payment receipt data received from PayPal
   const [transactionInfo, setTransactionInfo] = useState({});
-
-  let customerInformation = "";
 
   // defines contact information to be sent to server
   const [contactInformation, setContactInformation] = useState({
@@ -130,28 +106,6 @@ const TicketSelection = () => {
       });
     }
 
-    eventData(queryString.parse(window.location.search).eventID);
-    // determines a one or two pane display based on initial window width
-    stylingUpdate(window.innerWidth, window.innerHeight);
-  }, []);
-
-  const stylingUpdate = (inWidth, inHeight) => {
-    setIsRestyling(true);
-    // based on window width, displays one or two panes
-    if (inWidth < 790) {
-      setShowDoublePane(false);
-    } else {
-      setShowDoublePane(true);
-    }
-    // sets styling parameters
-    MainContainer = MainContainerStyling(inWidth, inHeight);
-    MainGrid = MainGridStyling(inWidth, inHeight);
-    EventTicketSection = EventTicketSectionStyling(inWidth, inHeight);
-    OrderSummarySection = OrderSummarySectionStyling(inWidth, inHeight);
-    OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
-    setIsRestyling(false);
-  };
-
   // receives Event Data from server and populates several control variables
   const eventData = (eventID) => {
     getEventData(eventID)
@@ -167,31 +121,20 @@ const TicketSelection = () => {
           let cart = JSON.parse(
             localStorage.getItem(`cart_${eventDetails.eventNum}`)
           );
-
           console.log("cart: ", cart)
 
-          //NEED TO REFACTOR THESE THREE LINES
           setTicketInfo(cart.ticketInfo);
           setPromoCodeDetails(cart.promoCodeDetails);
           setOrderTotals(cart.orderTotals);
-          if ("guestInfo" in cart) {
-            customerInformation = cart.guestInfo
-            console.log("customerInformation: ", customerInformation)
-          }
-
         } else {
           console.log("ticketInfo: ", loadTicketInfo(res));
           console.log("res: ", res);
-
           setTicketInfo(loadTicketInfo(res));
-
           setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
           setOrderTotals(loadOrderTotals(res));
-
         }
-        onlyShowPaymentDetails();
         setDisplay("main")
-        // CURRENTLY ASKS FOR IMAGE SEPARATELY< IS THIS WHAT WE WANT TO DO?
+
         // only asks for image if event has been successfully imported
         getEventImage(eventID)
           .then((res) => {
@@ -205,6 +148,7 @@ const TicketSelection = () => {
           });
       })
       .catch((err) => {
+        // NEED TO REFACTOR THIS ENTIRE ".catch" BLOCK
         // NEED TO ADDRESS THESE SITUATIONS
         console.log("Inside the catch, err: ", err);
         if (err === "Error: Error: 400") {
@@ -216,9 +160,51 @@ const TicketSelection = () => {
       });
   };
 
-  // determines width and height of window upon resizing by user
-  window.onresize = function (event) {
-    stylingUpdate(window.innerWidth, window.innerHeight);
+  eventData(queryString.parse(window.location.search).eventID);
+      stylingUpdate(window.innerWidth, window.innerHeight);
+    }, []);
+
+    const stylingUpdate = (inWidth, inHeight) => {
+      setIsRestyling(true);
+      // based on window width, displays one or two panes
+      if (inWidth < 790) {
+        setShowDoublePane(false);
+      } else {
+        setShowDoublePane(true);
+      }
+      // sets styling parameters
+      MainContainer = MainContainerStyling(inWidth, inHeight);
+      MainGrid = MainGridStyling(inWidth, inHeight);
+      EventTicketSection = EventTicketSectionStyling(inWidth, inHeight);
+      OrderSummarySection = OrderSummarySectionStyling(inWidth, inHeight);
+      OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
+      setIsRestyling(false);
+    };
+
+    // determines width and height of window upon resizing by user
+    window.onresize = function (event) {
+      stylingUpdate(window.innerWidth, window.innerHeight);
+    };
+
+  // toggles between "order pane" views
+  const switchShowOrderSummary = (event) => {
+    if (showOrderSummaryOnly) {
+      setShowOrderSummaryOnly(false);
+    } else {
+      setShowOrderSummaryOnly(true);
+    }
+  };
+
+  // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
+  const purchaseConfirmHandler = () => {
+    eventDetails = {};
+    setTicketInfo([]);
+    setOrderTotals([]);
+    eventLogo = "";
+    let event = JSON.parse(localStorage.getItem("eventNum"));
+    localStorage.removeItem(`cart_${event}`);
+    localStorage.removeItem(`image_${event}`);
+    localStorage.removeItem(`eventNum`);
   };
 
   const handleErrors = response => {
@@ -230,65 +216,31 @@ const TicketSelection = () => {
   };
 
   const freeTicketHandler = () => {
-    setFreeTicketStatus(true);
-    console.log("freeTicketStatus inside 'freeTicketHandler': ", freeTicketStatus);
-
-    setTransactionInfo({
-      eventTitle: eventDetails.eventTitle,
-      eventType: eventDetails.eventType,
-      venue: eventDetails.locationVenueName,
-      address1: eventDetails.locationAddress1,
-      address2: eventDetails.locationAddress2,
-      city: eventDetails.locationCity,
-      state: eventDetails.locationState,
-      zipPostalCode: eventDetails.locationZipPostalCode,
-      countryCode: eventDetails.locationCountryCode,
-      locationNote: eventDetails.locationNote,
-      webinarLink: eventDetails.webinarLink,
-      onlineInformation: eventDetails.onlineInformation,
-      tbaInformation: eventDetails.tbaInformation,
-      startDateTime: eventDetails.startDateTime,
-      endDateTime: eventDetails.endDateTime,
-      timeZone: eventDetails.timeZone,
-      email: contactInformation.email,
-      name: contactInformation.name,
-      
-      numTickets: orderTotals.ticketsPurchased,
-      fullAmount: orderTotals.fullPurchaseAmount,
-      discount: orderTotals.discountAmount,
-      totalAmount: orderTotals.finalPurchaseAmount,
-      tickets: ticketInfo,
-      
-      organizerEmail: eventDetails.organizerEmail,
-    });
-    console.log("transactionInfo: ",transactionInfo)
     console.log("Inside freeTicketHandler");
+    let email = contactInformation.email;
+    let name = contactInformation.name;
+
+    setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
+
     let order = {};
     let ticketArray = [];
-    
+
     order.eventNum = eventDetails.eventNum;
-    console.log("order: ", order)
-    
-    console.log("ticketInfo: ", ticketInfo)
-    
     ticketInfo.map((item, index) => {
       console.log("item #", index)
       if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
         let tempObject = {};
         tempObject.ticketID = item.ticketID;
         tempObject.ticketsSelected = item.ticketsSelected;
-        console.log("zero ticket #", index);
         ticketArray.push(tempObject);
       }
     });
-    console.log("zero tickets:", ticketArray);
     order.tickets = ticketArray;
-    console.log("orderobject: ", order)
-    
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${contactInformation.sessionToken}`);
+    console.log("contactInformation: ", contactInformation)
 
     let url = `${API}/free/signedFreeTickets/${contactInformation.userId}`
     let fetcharg ={
@@ -306,30 +258,16 @@ const TicketSelection = () => {
     .then ((data)=>{
         console.log ("fetch return got back data:", data);
         setOrderStatus(true);
-        //console.log("Order status: ", orderStatus);
-        onlyShowPurchaseConfirmation();
         setDisplay("confirmation")
-        purchaseConfirmHandler();
     })
     .catch ((error)=>{
         console.log("freeTicketHandler() error.message: ", error.message);
-        onlyShowPurchaseConfirmation();
-        setDisplay("confirmation")
-        purchaseConfirmHandler();
+        setDisplay("connection")
     })
+    .finally(() => {
+      purchaseConfirmHandler();
+    });
   }
-
-  // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
-  const purchaseConfirmHandler = () => {
-    eventDetails = {};
-    setTicketInfo([]);
-    setOrderTotals([]);
-    eventLogo = "";
-    let event = JSON.parse(localStorage.getItem("eventNum"));
-    localStorage.removeItem(`cart_${event}`);
-    localStorage.removeItem(`image_${event}`);
-    localStorage.removeItem(`eventNum`);
-  };
 
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
   const updateOrderTotals = (promoCode) => {
@@ -370,11 +308,11 @@ const TicketSelection = () => {
               );
             }}
           >
-            <div className={[styles.PromoGrid, styles.Red].join(" ")}>
+            <div className={[classes.PromoGrid, classes.Red].join(" ")}>
               <input
                 type="text"
                 id="input box"
-                className={styles.PromoCodeInputBoxRed}
+                className={classes.PromoCodeInputBoxRed}
                 value={promoCodeDetails.inputtedPromoValue}
                 onChange={(event) => {
                   let tempobject = { ...promoCodeDetails };
@@ -384,7 +322,7 @@ const TicketSelection = () => {
                 }}
               ></input>
               <button
-                className={styles.PromoCodeButtonRed}
+                className={classes.PromoCodeButtonRed}
                 onClick={() => {
                   let temp = { ...promoCodeDetails };
                   temp.inputtedPromoValue = "";
@@ -414,12 +352,12 @@ const TicketSelection = () => {
               );
             }}
           >
-            <div className={[styles.PromoGrid, styles.Blue].join(" ")}>
+            <div className={[classes.PromoGrid, classes.Blue].join(" ")}>
               <input
                 type="text"
                 id="input box"
                 placeholder="Enter Promo Code"
-                className={styles.PromoCodeInputBoxBlack}
+                className={classes.PromoCodeInputBoxBlack}
                 value={promoCodeDetails.inputtedPromoValue}
                 onChange={(event) => {
                   let tempDetails = { ...promoCodeDetails };
@@ -429,7 +367,7 @@ const TicketSelection = () => {
                 }}
               ></input>
               <button
-                className={styles.PromoCodeButtonBlue}
+                className={classes.PromoCodeButtonBlue}
                 disabled={!promoCodeDetails.inputtedPromoValue}
               >
                 Apply
@@ -453,9 +391,8 @@ const TicketSelection = () => {
     } else if (promoCodeDetails.applied) {
       return (
         <Fragment>
-          <div className={styles.AppliedPromoCode}>
+          <div className={classes.AppliedPromoCode}>
             <FontAwesomeIcon
-              className={styles.faCheckCircle}
               icon={faCheckCircle}
             />{" "}
             Code{" "}
@@ -464,7 +401,7 @@ const TicketSelection = () => {
             </span>
             applied.{" "}
             <span
-              className={styles.RemovePromoCode}
+              className={classes.RemovePromoCode}
               onClick={() => {
                 clearPromoCodes();
               }}
@@ -486,7 +423,7 @@ const TicketSelection = () => {
       return (
         <Fragment>
           <div
-            className={styles.EnterPromoCode}
+            className={classes.EnterPromoCode}
             onClick={() => {
               let tempPromoCodeDetails;
               tempPromoCodeDetails = { ...promoCodeDetails };
@@ -508,89 +445,51 @@ const TicketSelection = () => {
     updateOrderTotals();
   };
 
-  // creates event header with date/time range
-  const eventHeader = () => {
-    if (!isLoadingEvent) {
+  // creates checkout button to proceed to checkout page
+  const checkoutButton = () => {
+    console.log("orderTotals.ticketsPurchased: ", orderTotals.ticketsPurchased)
+    console.log("eventDetails.forSale: ", eventDetails.forSale)
+    console.log("session token: ", contactInformation.sessionToken)
+    if (!isLoadingEvent &&
+      orderTotals.finalPurchaseAmount === 0 &&
+      orderTotals.ticketsPurchased > 0 &&
+      contactInformation.sessionToken !== ""
+    ) {
       return (
-        <Fragment>
-          <div className={styles.EventTitle}>{eventDetails.eventTitle}</div>
-          <div className={styles.EventDate}>
-            <DateRange
-              start={eventDetails.startDateTime}
-              end={eventDetails.endDateTime}
-            />
-          </div>
-        </Fragment>
+        <button
+          onClick={freeTicketHandler}
+          disabled={false}
+          className={classes.ButtonGreen}
+        >
+          SUBMIT ORDER
+        </button>
       );
-    } else {
-      return null;
-    }
-  };
-
-  // creates list of ticket types and ticket selection functionality
-  const ticketItems = () => {
-    if (!isLoadingEvent) {
+    } else if (!isLoadingEvent &&
+      orderTotals.ticketsPurchased > 0
+    ) {
       return (
-        <div>
-          {ticketInfo.map((ticket, index) => {
-            return (
-              <div key={index}>
-                <TicketItem
-                  name={ticket}
-                  key={ticket.ticketID}
-                  onChange={(event) => {
-                    updateTicketsSelected(event, ticket);
-                  }}
-                ></TicketItem>
-              </div>
-            );
-          })}
-        </div>
+        <button
+          onClick={storeOrder}
+          disabled={false}
+          className={classes.ButtonGreen}
+        >
+          PROCEED TO CHECKOUT
+        </button>
       );
-    } else {
-      return null;
-    }
-  };
-
-  // determines whether or not to display the purchase amount
-  const totalAmount = (show) => {
-    if (!isLoadingEvent && !show && orderTotals.ticketsPurchased > 0) {
+    } else if (!isLoadingEvent) {
       return (
-        <div>
-          {orderTotals.currencySym}
-          {orderTotals.finalPurchaseAmount}
-        </div>
+        <button
+          disabled={true}
+          className={classes.ButtonGreenOpac}
+        >
+          PROCEED TO CHECKOUT
+        </button>
       );
     } else return null;
-  };
-
-  // determines whether or not to display the cart and arrow
-  // "showDoublePane" must be false
-  const cartLink = (show) => {
-    if (!isLoadingEvent && !show) {
-      return (
-        <CartLink
-          onClick={switchShowOrderSummary}
-          showStatus={showOrderSummaryOnly}
-          orderTotals={orderTotals}
-          isLoading={isLoadingEvent}
-          showDoublePane={showDoublePane}
-        />
-      );
-    } else return null;
-  };
-
-  // toggles between "order pane" views
-  const switchShowOrderSummary = (event) => {
-    if (showOrderSummaryOnly) {
-      setShowOrderSummaryOnly(false);
-    } else {
-      setShowOrderSummaryOnly(true);
-    }
   };
 
   // stores "orderTotals" and "eventLogo" in "localStorage"
-  const purchaseTicketHandler = (event) => {
+  const storeOrder = (event) => {
 
     console.log("eventDetails.gatewayURL: ", eventDetails.gatewayURL);
     console.log("orderTotals: ", orderTotals.finalPurchaseAmount);
@@ -601,6 +500,8 @@ const TicketSelection = () => {
       localStorage.setItem(`image_${eventDetails.eventNum}`, JSON.stringify(eventLogo));
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
 
+      // if the "cart" exists then send "guestInfo"
+      // if "guestInfo" does not exit this field will not be stored in localStorage
       if (localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
         let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
         console.log("cart: ", cart)
@@ -638,63 +539,118 @@ const TicketSelection = () => {
     }
   };
 
-  // creates checkout button to proceed to checkout page
-  const checkoutButton = () => {
-    console.log("orderTotals.ticketsPurchased: ", orderTotals.ticketsPurchased)
-    console.log("eventDetails.forSale: ", eventDetails.forSale)
-    console.log("session token: ", contactInformation.sessionToken)
-    if (!isLoadingEvent &&
-      orderTotals.finalPurchaseAmount === 0 &&
-      orderTotals.ticketsPurchased > 0 &&
-      contactInformation.sessionToken !== ""
-    ) {
+  // defines and sets "loadingSpinner" view status
+  const loadingSpinner = () => {
+    if (display === "spinner") {
       return (
-        <button
-          onClick={freeTicketHandler}
-          disabled={false}
-          className={styles.ButtonGreen}
-        >
-          SUBMIT ORDER
-        </button>
+        <div className={classes.BlankCanvas}>
+          <Spinner></Spinner>
+        </div>
+      )
+    } else {
+      return null
+    }
+  }
+
+  // defines and sets "connectionStatus" view status
+  const connectionStatus = () => {
+    if (display === "connection") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div>There is a problem with OSD Server in processing your tickets. Please try again later.</div>
+        </div>
+      )
+    } else {
+      return <div>connect</div>;
+    }
+  }
+
+  // creates event header with date/time range
+  const eventHeader = () => {
+    if (display === "main") {
+      return (
+        <Fragment>
+          <div className={classes.EventTitle}>{eventDetails.eventTitle}</div>
+          <div className={classes.EventDate}>
+            <DateRange
+              start={eventDetails.startDateTime}
+              end={eventDetails.endDateTime}
+            />
+          </div>
+        </Fragment>
       );
-    } else if (!isLoadingEvent &&
-      orderTotals.ticketsPurchased > 0
-    ) {
+    } else {
+      return null;
+    }
+  };
+
+  // creates list of ticket types and ticket selection functionality
+  const ticketItems = () => {
+    if (display === "main") {
       return (
-        <button
-          onClick={purchaseTicketHandler}
-          disabled={false}
-          className={styles.ButtonGreen}
-        >
-          PROCEED TO CHECKOUT
-        </button>
+        <div>
+          {ticketInfo.map((ticket, index) => {
+            return (
+              <div key={index}>
+                <TicketItem
+                  name={ticket}
+                  key={ticket.ticketID}
+                  onChange={(event) => {
+                    updateTicketsSelected(event, ticket);
+                  }}
+                ></TicketItem>
+              </div>
+            );
+          })}
+        </div>
       );
-    } else if (!isLoadingEvent) {
+    } else {
+      return null;
+    }
+  };
+
+  // determines whether or not to display the purchase amount
+  const totalAmount = (show) => {
+    if (display === "main" && !show && orderTotals.ticketsPurchased > 0) {
       return (
-        <button
-          disabled={true}
-          className={styles.ButtonGreenOpac}
-        >
-          PROCEED TO CHECKOUT
-        </button>
+        <div>
+          {orderTotals.currencySym}
+          {orderTotals.finalPurchaseAmount}
+        </div>
+      );
+    } else return null;
+  };
+
+  // determines whether or not to display the cart and arrow
+  // "showDoublePane" must be false
+  const cartLink = (show) => {
+    if (display === "main" && !show) {
+      return (
+        <CartLink
+          onClick={switchShowOrderSummary}
+          showStatus={showOrderSummaryOnly}
+          orderTotals={orderTotals}
+          isLoading={isLoadingEvent}
+          showDoublePane={showDoublePane}
+        />
       );
     } else return null;
   };
 
   // creates order summary section
   const orderSummary = () => {
-    if (!isLoadingEvent && orderTotals.ticketsPurchased > 0) {
+    if (display === "main" && orderTotals.ticketsPurchased > 0) {
       return (
         <OrderSummary
           ticketOrder={ticketInfo}
           ticketCurrency={orderTotals.currencySym}
         />
       );
-    } else if (!isLoadingEvent && orderTotals.ticketsPurchased <= 0) {
+    } else if (display === "main" && orderTotals.ticketsPurchased <= 0) {
       return (
-        <div className={styles.EmptyOrderSummary}>
+        <div className={classes.EmptyOrderSummary}>
           <FontAwesomeIcon
-            className={styles.faShoppingCart}
+            className={classes.faShoppingCart}
             icon={faShoppingCart}
           />
         </div>
@@ -711,7 +667,7 @@ const TicketSelection = () => {
         <div>
           <div>
             <img
-              className={styles.Image}
+              className={classes.Image}
               src={eventLogo}
               alt="Event Logo Coming Soon!!!"
             />
@@ -725,9 +681,9 @@ const TicketSelection = () => {
           <div>
             <div style={OrderSummarySectionAlt}>{orderSummary()}</div>
           </div>
-          <div className={styles.EventFooter}>
-            <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
-            <div className={styles.TotalAmount}>
+          <div className={classes.EventFooter}>
+            <div className={classes.CartLink}>{cartLink(showDoublePane)}</div>
+            <div className={classes.TotalAmount}>
               {totalAmount(showDoublePane)}
             </div>
             <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
@@ -740,26 +696,25 @@ const TicketSelection = () => {
   // creates ticket pane with promo form and ticket sections
   const ticketPane = () => {
     return (
-      <div className={styles.MainItemLeft}>
-        <div className={styles.EventHeader}>{eventHeader()}</div>
+      <div className={classes.MainItemLeft}>
+        <div className={classes.EventHeader}>{eventHeader()}</div>
         <div style={EventTicketSection}>
           {promoOption()}
           {ticketItems()}
-          <div className={styles.EventDescription}>
+          <div className={classes.EventDescription}>
             Powered by{" "}
-            <NavLink to="/" exact>
+            <NavLink to="/events" exact>
               <img
-                className={styles.ImageBox}
+                className={classes.ImageBox}
                 src={OSDLogo}
                 alt="OpenSeatDirect Logo"
               />
             </NavLink>
           </div>
-          <br></br>
         </div>
-        <div className={styles.EventFooter}>
-          <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
-          <div className={styles.TotalAmount}>
+        <div className={classes.EventFooter}>
+          <div className={classes.CartLink}>{cartLink(showDoublePane)}</div>
+          <div className={classes.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
           <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
@@ -771,6 +726,7 @@ const TicketSelection = () => {
   // defines main display with ticket and order panes
   const mainDisplay = () => {
     if (display === "main") {
+
       if (showDoublePane && isSuccessfull) {
         return (
           <div style={MainGrid}>
@@ -784,10 +740,8 @@ const TicketSelection = () => {
         return <div style={MainGrid}>{orderPane()}</div>;
       } else {
         return (
-          <div className={styles.BlankCanvas}>
-            <h5>
-              <span style={{ color: "red" }}>This event does not exist.</span>
-            </h5>
+          <div className={classes.BlankCanvas}>
+            <div style={{ color: "red" }}>This event does not exist.</div>
           </div>
         );
       }
@@ -796,40 +750,16 @@ const TicketSelection = () => {
     }
   };
 
-    // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
-    const showSuccess = () => {
-      if (orderStatus) {
-        return (
-          <OrderConfirm
-            transactionInfo={transactionInfo}
-            orderStatus={true}
-          ></OrderConfirm>
-        )
-      } else if (!orderStatus) {
-        return (
-          <div>Problem with OSD Server in processing your tickets</div>
-        )
-      }  else {
-        return (
-          <Fragment>
-            <span className={styles.SubSectionHeader}>Order Rejection</span>
-            <br></br>
-            <br></br>
-            <div>
-              <span style={{ color: "red" }}>
-                WE NEED TO DECIDE ON AN ERROR MESSAGE!!!
-              </span>
-            </div>
-          </Fragment>
-        );
-      }
-    };
-
   const purchaseConfirmation = () => {
     if (display === "confirmation") {
       return (
-        <div className={styles.BlankCanvas}>
-          <div style={{ paddingTop: "20px" }}>{showSuccess()}</div>
+        <div className={classes.BlankCanvas}>
+          <div style={{ paddingTop: "20px" }}>
+            <OrderConfirm
+              transactionInfo={transactionInfo}
+              orderStatus={true}
+            ></OrderConfirm>
+          </div>
         </div>
       )
     } else {
@@ -837,25 +767,12 @@ const TicketSelection = () => {
       }
     }
 
-  // THIS FUNCTION HAS BEEN REFACTORED 1/8/21
-  // defines and sets "loadingSpinner" view status
-  const spinner = () => {
-    if (display === "spinner") {
-      return (
-        <div className={styles.BlankCanvas}>
-          <Spinner></Spinner>
-        </div>
-      )
-    } else {
-      return null
-    }
-  }
-
   return (
     <div style={MainContainer}>
-      {spinner()}
+      {loadingSpinner()}
       {mainDisplay()}
       {purchaseConfirmation()}
+      {connectionStatus()}
     </div>
   );
 

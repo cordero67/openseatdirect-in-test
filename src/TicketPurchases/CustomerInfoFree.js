@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
 import dateFormat from "dateformat";
 
-import { API } from "../config.js";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+
+import { API } from "../config.js";
 
 import {
   MainContainerStyling,
@@ -13,13 +13,14 @@ import {
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling
 } from "./Resources/Styling";
+import { DateRange } from "./Resources/PricingFunctions";
 import Spinner from "../components/UI/Spinner/Spinner";
 import GuestForm from "./Components/GuestForm";
 import CartLink from "./CartLink";
 import OrderSummary from "./Components/OrderSummary";
 import AuthenticationModal from "./Modals/AuthenticationModal";
 import { OrderConfirm } from "./Components/OrderConfirms";
-import { loadTransactionInfo } from "./Resources/TicketSelection";
+import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
 import classes from "./CustomerInfo.module.css";
 
 // defines the variables that accept the "cart_" data from "localStorage"
@@ -41,7 +42,7 @@ const CustomerInfo = props => {
   // defines panel displayed on main page
   const [display, setDisplay] = useState("spinner"); //main, spinner, confirmation, connection
 
-  // defines modal display mode
+  // defines 'authenticationModal' display status
   const [modalStatus, setModalStatus] = useState(false);
 
   // defines single or double pane view control variables
@@ -57,16 +58,6 @@ const CustomerInfo = props => {
     guestLastname: "",
     guestEmail: ""
   });
-
-  // transaction status variable
-  const [transactionStatus, setTransactionStatus] = useState({
-    message: null,
-    error: "",
-    connection: true
-  });
-
-  // defines if ticket buyer is a user or guest
-  const [freeTicketStatus, setFreeTicketStatus] = useState(false);
 
   // transaction variables for display on confirmation page
   const [transactionInfo, setTransactionInfo] = useState({});
@@ -86,7 +77,9 @@ const CustomerInfo = props => {
 
   useEffect(() => {
     // downloads "order" information and "image" from "localStorage" and
-    if (localStorage.getItem("eventNum")) {
+    if (
+      typeof window !== "undefined" && localStorage.getItem("eventNum")
+    ) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
         let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
@@ -182,7 +175,6 @@ const CustomerInfo = props => {
 
   const freeTicketHandler = (user) => {
     if (!user) {
-      console.log("transactionInfo: ",transactionInfo)
       console.log("Inside freeTicketHandler");
 
       let email = guestInformation.guestEmail;
@@ -360,21 +352,6 @@ const CustomerInfo = props => {
 
   const mainDisplay = () => {
     if (display === "main") {
-      let dateRange;
-      if (dateFormat(eventDetails.startDateTime, "m d yy", true) === dateFormat(eventDetails.endDateTime, "m d yy", true)) {
-        dateRange =
-          <Fragment>
-            {dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy - h:MM TT", true)} to
-            {dateFormat(eventDetails.endDateTime, "shortTime", true)}
-          </Fragment>
-      } else {
-        dateRange =
-          <Fragment>
-            {dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy - h:MM TT", true)} to
-            {dateFormat(eventDetails.endDateTime, "ddd, mmm d, yyyy - h:MM TT", true)}
-          </Fragment>
-      }
-
       // determines whether or not to display the cart and arrow
       const cartLink = show => {
         if (!show) {
@@ -408,7 +385,10 @@ const CustomerInfo = props => {
                 {eventDetails.eventTitle}
             </div>
             <div className={classes.EventDate}>
-              {dateRange}
+              <DateRange
+                start={eventDetails.startDateTime}
+                end={eventDetails.endDateTime}
+              />
             </div>
           </div>
 

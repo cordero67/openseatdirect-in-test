@@ -1,6 +1,6 @@
-import { bogox, twofer } from "./pricingFunctions";
+import { bogox, twofer } from "./PricingFunctions";
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // initial definition of "eventDetails"
 export const loadEventDetails = event => {
   let tempGatewayURL;
@@ -17,9 +17,6 @@ export const loadEventDetails = event => {
     tempGatewayURL = "/"
   }
 
-  console.log("event.isDarft: ",event.isDraft)
-  // defines the entire "eventDetails" variable
-
   let ticketStatus;
   ticketStatus = false;
   let d = Date.parse(event.startDateTime) + 86400;
@@ -29,83 +26,68 @@ export const loadEventDetails = event => {
   }
 
   let tempEventDetails = {
-    eventNum: event.eventNum,//
-    eventTitle: event.eventTitle,//
-    eventType: event.eventType,//
-    isDraft: event.isDraft,//
-    organizer: "", // Need to add this field to "Event" object from server
-    organizerEmail: event.accountId.accountEmail,//
+    eventNum: event.eventNum,
+    eventTitle: event.eventTitle,
+    eventType: event.eventType,
+    isDraft: event.isDraft,
+    organizer: "",
+    organizerEmail: event.accountId.accountEmail,
     gateway: event.accountId.paymentGatewayType,
     gatewayClientID: event.accountId.paypalExpress_client_id,
     gatewayURL: tempGatewayURL,
-    startDateTime: event.startDateTime,//
-    endDateTime: event.endDateTime,//
-    timeZone: event.timeZone,//
-    eventUrl: event.eventUrl,//
-    locationVenueName: event.locationVenueName,//
-    locationAddress1: event.locationAddress1,//
-    locationAddress2: event.locationAddress2,//
-    locationCity: event.locationCity,//
-    locationState: event.locationState,//
-    locationZipPostalCode: event.locationZipPostalCode,//
-    locationCountryCode: event.locationCountryCode,//
-    locationNote: event.locationNote,//
-    tbaInformation: event.tbaInformation,//
-    webinarLink: event.webinarLink,//
-    onlineInformation: event.onlineInformation,//
+    startDateTime: event.startDateTime,
+    endDateTime: event.endDateTime,
+    timeZone: event.timeZone,
+    eventUrl: event.eventUrl,
+    locationVenueName: event.locationVenueName,
+    locationAddress1: event.locationAddress1,
+    locationAddress2: event.locationAddress2,
+    locationCity: event.locationCity,
+    locationState: event.locationState,
+    locationZipPostalCode: event.locationZipPostalCode,
+    locationCountryCode: event.locationCountryCode,
+    locationNote: event.locationNote,
+    tbaInformation: event.tbaInformation,
+    webinarLink: event.webinarLink,
+    onlineInformation: event.onlineInformation,
     forSale: ticketStatus, 
   };
   console.log("INITIAL 'eventDetails': ", tempEventDetails)
   return tempEventDetails
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE
-// STILL NEED TO CORRECT THE CURRENCY DATA (MORE CURRENCIES TO ADD) AND usePriceFunction(true/false) ISSUE
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// STILL NEED TO CORRECT THE usePriceFunction(true/false) ISSUE
 // initial definition of "ticketInfo"
 export const loadTicketInfo = event => {
-  console.log("Inside 'loadTicketInfo': ", event);
   let tempTicketArray = [];
   
-  //console.log("event.tickets: ",event.tickets)
   event.tickets.forEach((item, index) => {
-    console.log("tickets array index",index);
-    //console.log("item.ticketType: ", item.ticketType)
     let tempCurrency = "$";
     if (item.Currency === "JPY") {
       tempCurrency = "¥";
     }
-    console.log("past currency");
     
     let priceFunction = {};
     let pricingCode = "";
-    //if (item.priceFunction && item.priceFunction.form && item.usePriceFunction) {
-    if (item.priceFunction && item.priceFunction.form) {
-      if (item.priceFunction.form === "promo" && item.priceFunction.args && item.priceFunction.args.promocodes) {
+    if ("priceFunction" in item && "form" in item.priceFunction) {
+      if (item.priceFunction.form === "promo" && "args" in item.priceFunction && "promocodes" in item.priceFunction.args) {
         // make all promo codes upper case
         let newPromoCodes = [];
-        console.log("item.priceFunction.args: ", item.priceFunction.args)
         item.priceFunction.args.promocodes.forEach(argArray => {
           let tempElement;
-          let tempAmount = argArray.amount;
-          console.log("tempAmount: ", tempAmount);
-          //let adjAmount = tempAmount.toFixed(2);
-          //console.log("adjAmount: ", adjAmount);
           tempElement = {
             name: argArray.name.toUpperCase(),
             amount: parseFloat(argArray.amount).toFixed(2),
-            //amount: tempAmount.toFixed(2),
             percent: argArray.percent
           }
           newPromoCodes.push(tempElement)
-          console.log("tempElement: ", tempElement)
-        }
-        )
-        console.log("newPromoCodes: ", newPromoCodes)
+        })
         priceFunction = {
           form: "promo",
           args: newPromoCodes,
         };
-      } else if (item.priceFunction.form === "twofer" && item.priceFunction.args) {
+      } else if (item.priceFunction.form === "twofer" && "args" in item.priceFunction) {
         let tempArgs = {
           buy: parseInt(item.priceFunction.args.buy),
           for: item.priceFunction.args.for
@@ -115,8 +97,7 @@ export const loadTicketInfo = event => {
           args: tempArgs
         };
         pricingCode = "twofer";
-        console.log("Just loaded a twofer")
-      } else if (item.priceFunction.form === "bogo" && item.priceFunction.args) {
+      } else if (item.priceFunction.form === "bogo" && "args" in item.priceFunction) {
         let tempArgs = {
           buy: parseInt(item.priceFunction.args.buy),
           get: parseInt(item.priceFunction.args.get),
@@ -131,10 +112,10 @@ export const loadTicketInfo = event => {
     }
     let minOrder = "";
     let maxOrder = "";
-    if (item.maxTicketsAllowedPerOrder) {
+    if ("maxTicketsAllowedPerOrder" in item) {
       maxOrder = item.maxTicketsAllowedPerOrder;
     }
-    if (item.minTicketsAllowedPerOrder) {
+    if ("minTicketsAllowedPerOrder" in item) {
       minOrder = item.minTicketsAllowedPerOrder;
     }
     const tempTicketItem = {
@@ -157,20 +138,14 @@ export const loadTicketInfo = event => {
   return tempTicketArray;
 }
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE
-// STILL NEED TO CORRECT usePriceFunction ISSUE
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// STILL NEED TO CORRECT THE usePriceFunction(true/false) ISSUE
 // initial definition of "promoCodeDetails"
 export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   let tempCodesArray = [];
-  console.log("res: ", res)
   res.tickets.forEach((tktType, index) => {
-    console.log("ticket: ", index)
-    console.log("tktType: ", tktType)
-    console.log("tktType.priceFunction: ", tktType.priceFunction)
-    console.log("tktType.usePriceFunction: ", tktType.usePriceFunction)
 
     if ("priceFunction" in tktType && tktType.priceFunction.form === "promo") {
-      console.log("There is a promo code at position: ", index)
       tktType.priceFunction.args.promocodes.forEach(tktPromo => {
         if (!tempCodesArray.includes(tktPromo.name.toUpperCase())) {
           tempCodesArray.push(tktPromo.name.toUpperCase());
@@ -181,7 +156,6 @@ export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   })
 
   let tempCodeDetail = { ...promoCodeDetails };
-  console.log("tempCodesArray: ", tempCodesArray)
   tempCodeDetail.eventPromoCodes = tempCodesArray;
   if (tempCodesArray.length > 0) {
     tempCodeDetail.available = true;
@@ -191,13 +165,13 @@ export const loadPromoCodeDetails = (res, promoCodeDetails) => {
 
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // i.e. IS NOT CAPABLE OF HANDLING MULTIPLE CURRENCIES
 // initial definition of "orderTotals"
 export const loadOrderTotals = event => {
   let tempCurrencySym = "$";
   let tempCurrencyAbv = "USD";
-  if (event.baseCurrency && event.baseCurrency === "JPY") {
+  if ("baseCurrency" in event && event.baseCurrency === "JPY") {
     tempCurrencySym = "¥";
     tempCurrencyAbv = "JPY";
   }
@@ -215,10 +189,9 @@ export const loadOrderTotals = event => {
   return tempOrderTotals;
 }
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE/ I THINK!!!
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates 'orderTotals" from either a promo code or ticket amount change
 export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
-  console.log("ticketInfo: ", ticketInfo)
   let tempTicketsPurchased = 0;
   let tempFullAmount = 0;
   let tempFinalAmount = 0;
@@ -241,7 +214,43 @@ export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
   return tempOrderTotals;
 }
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE/ I THINK!!!
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// updates "ticketInfo" after a change in tickets selected
+export const changeTicketInfo = (event, ticketType, ticketInfo) => {
+  let tempTicketInfo = [...ticketInfo];
+  tempTicketInfo.forEach(item => {
+    // finds a ticketID match
+    if (item.ticketID === ticketType.ticketID) {
+      item.ticketsSelected = parseInt(event.target.value);
+      if (item.ticketPriceFunction.form === "bogo") {
+        let totalPurchase = bogox(
+          event.target.value,
+          item.ticketPrice,
+          item.ticketPriceFunction.args.buy,
+          item.ticketPriceFunction.args.get,
+          item.ticketPriceFunction.args.discount/100
+        );
+        {event.target.value > 0 ?
+          item.adjustedTicketPrice = totalPurchase/event.target.value
+          : item.adjustedTicketPrice = item.ticketPrice};
+      } else if (item.ticketPriceFunction.form === "twofer") {
+        let totalPurchase = twofer(
+          event.target.value,
+          item.ticketPrice,
+          item.ticketPriceFunction.args.buy,
+          (item.ticketPriceFunction.args.for)
+        );
+        {event.target.value > 0 ?
+          item.adjustedTicketPrice = totalPurchase/event.target.value
+          : item.adjustedTicketPrice = item.ticketPrice};
+      }
+    }
+  });
+  console.log("UPDATED 'ticketInfo': ", tempTicketInfo)
+  return(tempTicketInfo);
+};
+
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "promoCodeDetails" with valid promo code instance
 export const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
   let tempPromoCodeDetails = { ...promoCodeDetails };
@@ -254,12 +263,12 @@ export const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
   return tempPromoCodeDetails;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE/ I THINK!!!
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "ticketInfo" based on changes to promo code
 export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
   let tempTicketInfo = [...ticketInfo];
   // checks if ticket type has the code and then extracts and applies the discount amount
-  tempTicketInfo.forEach((item, index) => {
+  tempTicketInfo.forEach(item => {
     if (item.ticketPriceFunction.form === "promo") {
       item.ticketPriceFunction.args.forEach(element => {
         if (element.name === inputtedPromoCode) {
@@ -278,7 +287,7 @@ export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
   return tempTicketInfo;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE/ I THINK!!!
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "promoCodeDetails" with removed promo code
 export const clearPromoDetails = (promoCodeDetails) => {
   let tempPromoCodeDetails;
@@ -293,7 +302,7 @@ export const clearPromoDetails = (promoCodeDetails) => {
   return tempPromoCodeDetails;
 }
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "ticketInfo" with removed promo code
 export const clearTicketInfo = (ticketInfo) => {
   let tempTicketInfo;
@@ -308,7 +317,7 @@ export const clearTicketInfo = (ticketInfo) => {
   return tempTicketInfo;
 }
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE/ I THINK!!!
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "orderTotals" with removed promo code
 export const clearOrderTotals = (ticketInfo, orderTotals) => {
   let tempTicketInfo;
@@ -329,40 +338,34 @@ export const clearOrderTotals = (ticketInfo, orderTotals) => {
   return tempOrderTotals;
 }
 
-// THIS FUNCTION HAS BEEN REFACTORED TO WORK WITH THE NEW TicketSelection PAGE/ I THINK!!!
-// updates "ticketInfo" after a change in tickets selected
-export const changeTicketInfo = (event, ticketType, ticketInfo) => {
-  let tempTicketInfo = [...ticketInfo];
-  tempTicketInfo.forEach(item => {
-    // finds a ticketID match
-    if (item.ticketID === ticketType.ticketID) {
-      item.ticketsSelected = parseInt(event.target.value);
-      if (item.ticketPriceFunction.form === "bogo") {
-        let totalPurchase = bogox(
-          event.target.value,
-          item.ticketPrice,
-          item.ticketPriceFunction.args.buy,
-          item.ticketPriceFunction.args.get,
-          item.ticketPriceFunction.args.discount/100
-        );
-        console.log("totalPurchase: ", totalPurchase)
-        {event.target.value > 0 ?
-          item.adjustedTicketPrice = totalPurchase/event.target.value
-          : item.adjustedTicketPrice = item.ticketPrice};
-      } else if (item.ticketPriceFunction.form === "twofer") {
-        let totalPurchase = twofer(
-          event.target.value,
-          item.ticketPrice,
-          item.ticketPriceFunction.args.buy,
-          (item.ticketPriceFunction.args.for)
-        );
-        console.log("totalPurchase: ", totalPurchase)
-        {event.target.value > 0 ?
-          item.adjustedTicketPrice = totalPurchase/event.target.value
-          : item.adjustedTicketPrice = item.ticketPrice};
-      }
-    }
-  });
-  console.log("UPDATED 'ticketInfo': ", tempTicketInfo)
-  return(tempTicketInfo);
-};
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+export const loadTransactionInfo = (eventDetails, orderTotals, ticketInfo, email, name) => {
+  let TransactionInfo = {
+      eventTitle: eventDetails.eventTitle,
+      eventType: eventDetails.eventType,
+      venue: eventDetails.locationVenueName,
+      address1: eventDetails.locationAddress1,
+      address2: eventDetails.locationAddress2,
+      city: eventDetails.locationCity,
+      state: eventDetails.locationState,
+      zipPostalCode: eventDetails.locationZipPostalCode,
+      countryCode: eventDetails.locationCountryCode,
+      locationNote: eventDetails.locationNote,
+      webinarLink: eventDetails.webinarLink,
+      onlineInformation: eventDetails.onlineInformation,
+      tbaInformation: eventDetails.tbaInformation,
+      startDateTime: eventDetails.startDateTime,
+      endDateTime: eventDetails.endDateTime,
+      timeZone: eventDetails.timeZone,
+      email: email,
+      name: name,
+      numTickets: orderTotals.ticketsPurchased,
+      fullAmount: orderTotals.fullPurchaseAmount,
+      discount: orderTotals.discountAmount,
+      totalAmount: orderTotals.finalPurchaseAmount,
+      tickets: ticketInfo,
+      organizerEmail: eventDetails.organizerEmail
+  }
+
+  return TransactionInfo
+}

@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from "react";
-import dateFormat from "dateformat";
+import React, { useState, useEffect, Fragment } from "react";
 
 import { PayPalButton } from "react-paypal-button-v2";
-
-import { API } from "../config.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
@@ -15,19 +12,19 @@ import {
   OrderSummarySectionStyling,
   OrderSummarySectionAltStyling
 } from "./Resources/Styling";
+import { DateRange } from "./Resources/PricingFunctions";
 import { paymentOnSuccess } from "./apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
-import Aux from "../hoc/Auxiliary/Auxiliary";
 import CartLink from "./CartLink";
 import OrderSummary from "./Components/OrderSummary";
 import { OrderConfirm } from "./Components/OrderConfirms";
-import styles from "./Order.module.css";
+import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
+import classes from "./Checkout.module.css";
 
 // defines the variables that accept the "cart_" data from "localStorage"
 let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
-let customerInformation = {};
 
 // defines an event's image
 let eventLogo = "";
@@ -42,31 +39,31 @@ let EventTicketSection = {};
 let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
-// stores payment receipt data received from PayPal
-let transactionInfo = {};
-
 const Checkout = props => {
-  // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
-
-  // defines all view control variables
-  const [showConnectionStatus, setShowConnectionStatus] = useState(false);
-  const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
-  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
-  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(false);
-  const [showBlankScreen, setShowBlankScreen] = useState(false);
+  // defines panel displayed on main page
+  const [display, setDisplay] = useState("spinner"); //main, spinner, confirmation, connection
 
   // defines single or double pane view control variables
   const [showDoublePane, setShowDoublePane] = useState(false);
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
 
-  // control variables viewing functions, assures only one is "true" at a single point in time
-  const onlyShowConnectionStatus = () => {
-    setShowConnectionStatus(true);
-    setShowLoadingSpinner(false);
-    setShowPaymentDetails(false);
-    setShowPurchaseConfirmation(false);
-  };
+  // defines styling variables
+  const [isRestyling, setIsRestyling] = useState(false);
+
+
+  const [customerInformation, setCustomerInformation] = useState({});
+
+
+
+  // transaction variables for display on confirmation page
+  const [transactionInfo, setTransactionInfo] = useState({});
+
+  // THIS MUST GO
+  // defines all view control variables
+  const [showConnectionStatus, setShowConnectionStatus] = useState(false);
+  const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
+  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(false);
 
   const onlyShowLoadingSpinner = () => {
     setShowConnectionStatus(false);
@@ -103,7 +100,9 @@ const Checkout = props => {
 
   useEffect(() => {
     // downloads "order" information and "image" from "localStorage" and
-    if (localStorage.getItem("eventNum")) {
+    if (
+      typeof window !== "undefined" && localStorage.getItem("eventNum")
+    ) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
         let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
@@ -111,19 +110,15 @@ const Checkout = props => {
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
         if("guestInfo" in tempCart) {
-          customerInformation = tempCart.guestInfo;
-          console.log("customerInformation: ", customerInformation)
+          setCustomerInformation(tempCart.guestInfo);
         } else if (localStorage.getItem("user") !== null) {
           let tempUser = JSON.parse(localStorage.getItem("user"));
-          console.log("tempUser: ", tempUser);
-          customerInformation = {
+          setCustomerInformation({
             sessionToken: tempUser.token,
             userId: tempUser.user._id
-          };
-          console.log("customerInformation: ", customerInformation);
+          });
         }
         setPaypalArray();
-        console.log("Paypal Array: ", paypalArray);
         console.log("orderTotals: ", orderTotals);
         console.log("ticketInfo: ", ticketInfo);
       } else {
@@ -136,7 +131,9 @@ const Checkout = props => {
       window.location.href = "/events";
     }
     stylingUpdate(window.innerWidth, window.innerHeight);
+    // NEED TO DELETE THIS LINE
     onlyShowPaymentDetails();
+    setDisplay("main")
   }, []);
 
   window.onresize = function(event) {
@@ -157,6 +154,15 @@ const Checkout = props => {
     OrderSummarySection = OrderSummarySectionStyling(inWidth, inHeight);
     OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
     setIsRestyling(false);
+  };
+
+  // toggles between "order pane" views
+  const switchShowOrderSummary = event => {
+    if (showOrderSummaryOnly) {
+      setShowOrderSummaryOnly(false);
+    } else {
+      setShowOrderSummaryOnly(true);
+    }
   };
 
   // sets the PayPal "purchase_units.items" value populated from "ticketInfo"
@@ -191,46 +197,32 @@ const Checkout = props => {
     localStorage.removeItem(`eventNum`);
   };
 
-  // THIS SECTION NEEDS WORK
   // called by <PaypalButton> on a successful transaction
   const payPalPurchase = details => {
-      details.purchase_units[0].items = paypalArray;
+    details.purchase_units[0].items = paypalArray;
     
-   const paymentData = details
+    const paymentData = details
 
     setPaypalStatus(true);
     console.log("paypalStatus inside 'payPalPurchase': ", paypalStatus);
 
-    transactionInfo = {
-      eventTitle: eventDetails.eventTitle,//
-      eventType: eventDetails.eventType,//
-      venue: eventDetails.locationVenueName,//
-      address1: eventDetails.locationAddress1,//
-      address2: eventDetails.locationAddress2,//
-      city: eventDetails.locationCity,//
-      state: eventDetails.locationState,//
-      zipPostalCode: eventDetails.locationZipPostalCode,//
-      countryCode: eventDetails.locationCountryCode,//
-      locationNote: eventDetails.locationNote,//
-      webinarLink: eventDetails.webinarLink,//
-      onlineInformation: eventDetails.onlineInformation,//
-      tbaInformation: eventDetails.tbaInformation,//
-      startDateTime: eventDetails.startDateTime,//
-      endDateTime: eventDetails.endDateTime,//
-      timeZone: eventDetails.timeZone,
-      paypalEmail: details.payer.email_address,
-      name: `${details.payer.name.given_name} ${details.payer.name.surname}`,
-      numTickets: orderTotals.ticketsPurchased,
-      fullAmount: orderTotals.fullPurchaseAmount,
-      discount: orderTotals.discountAmount,
-      totalAmount: orderTotals.finalPurchaseAmount,
-      tickets: ticketInfo,
-      organizerEmail: eventDetails.organizerEmail,
-    };
+    let email;
+    let name;
 
-    console.log("transactionInfo: ",transactionInfo)
+    if ("sessionToken" in customerInformation) {
+      email = details.payer.email_address;
+      name = `${details.payer.name.given_name} ${details.payer.name.surname}`;
+    } else {
+      console.log("customerInformation: ", customerInformation)
+      email = customerInformation.guestEmail;
+      name = `${customerInformation.guestFirstname} ${customerInformation.guestLastname}`;
+    }
 
+    setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
+    
+    // NEED TO DELETE THIS LINE
     onlyShowLoadingSpinner();
+    setDisplay("spinner");
     console.log("On Success 'details' object: ", details);
     // sends PayPal order object to the server
     paymentOnSuccess(paymentData, customerInformation)
@@ -248,73 +240,56 @@ const Checkout = props => {
         console.log("paymentOnSuccess() error.message: ", error.message);
         setOrderStatus(false);})
       .finally(() => {
+        // NEED TO DELETE THIS LINE
         onlyShowPurchaseConfirmation();
+        setDisplay("confirmation");
         purchaseConfirmHandler();
       })
   };
 
-  // determines whether or not to display the purchase amount
-  const totalAmount = show => {
-    if (!showLoadingSpinner && !show && orderTotals.ticketsPurchased > 0) {
-      return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
-    } else {
-      return null;
-    }
-  };
-
-  // ********************************
-  // determines whether or not to display the cart and arrow
-  const cartLink = show => {
-    if (!showLoadingSpinner && !show) {
+  // defines and sets "loadingSpinner" view status
+  const loadingSpinner = () => {
+    if (display === "spinner") {
       return (
-        <CartLink
-          onClick={switchShowOrderSummary}
-          showStatus={showOrderSummaryOnly}
-          isLoading={showLoadingSpinner}
-          orderTotals={orderTotals}
-          showDoublePane={showDoublePane}
-        />
+        <div className={classes.Spinner}>
+          <Spinner></Spinner>;
+        </div>
       );
     } else {
       return null;
     }
-  };
-
-  // toggles between "order pane" views
-  const switchShowOrderSummary = event => {
-    if (showOrderSummaryOnly) {
-      setShowOrderSummaryOnly(false);
-    } else {
-      setShowOrderSummaryOnly(true);
-    }
-  };
-
-  // defines and sets "orderSummary" which is displayed in right panel
-  let orderSummary;
-  if (!showLoadingSpinner && orderTotals.ticketsPurchased > 0) {
-    orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
-  } else if (!showLoadingSpinner && orderTotals.finalPurchaseAmount <= 0) {
-    orderSummary = (
-      <div className={styles.EmptyOrderSummary}>
-        <FontAwesomeIcon
-          className={styles.faShoppingCart}
-          icon={faShoppingCart}
-        />
-      </div>
-    );
-  } else {
-    orderSummary = null;
   }
 
-  // **********
-  // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
-  // "showError" WAS USED TO HANDLE NOT RECEIVING BRAINTREE CLIENT TOKEN
-  // displays "error" if one exists
-  const showError = error => (
-    <div style={{ display: error ? "" : "none" }}>
-      <span style={{ color: "red" }}>{error}</span>
-    </div>
-  );
+  // CONTROLS "connectionStatus" VIEW
+  const connectionStatus = () => {
+    if (display === "connection") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div>There is a problem with OSD Server in processing your tickets. Please try again later.</div>
+        </div>
+      )
+    } else {
+      return null;
+    }
+  }
+
+  // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
+  const purchaseConfirmation = () => {
+    if (display === "confirmation") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div style={{ paddingTop: "20px" }}>
+            <OrderConfirm
+              transactionInfo={transactionInfo}
+              orderStatus={orderStatus}>
+            </OrderConfirm>
+          </div>
+        </div>
+      )
+    } else {
+      return null;
+    }
+  }
 
   const appliedCode = () => {
     if (orderTotals.promoCodeApplied) {
@@ -324,316 +299,215 @@ const Checkout = props => {
     }
   }
 
-
-  // **********
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // POTENTIALLY NEED TO ADD BACK THE "onBLur" IN <div>
   // displays the "PayPalButton" or an "empty cart" error message
   const showPayPal = (
     // loads PayPal Smart buttons if order exists
-      <div>
-        <PayPalButton
-          onButtonReady={() => {
-            console.log("inside onButtonReady")}}
-          createOrder={(data, actions) => {
-            console.log("inside createOrder")
-            return actions.order.create({
-              purchase_units: [
-                {
-                  reference_id: appliedCode(),
-                  description: eventDetails.eventTitle,
-                  payment_descriptor: eventDetails.eventNum,
-                  amount: {
-                    currency_code: orderTotals.currencyAbv,
-                    value: orderTotals.finalPurchaseAmount.toString(),
+    <div>
+      <PayPalButton
+        onButtonReady={() => {
+          console.log("inside onButtonReady")}}
+        createOrder={(data, actions) => {
+          console.log("inside createOrder")
+          return actions.order.create({
+            purchase_units: [
+              {
+                reference_id: appliedCode(),
+                description: eventDetails.eventTitle,
+                payment_descriptor: eventDetails.eventNum,
+                amount: {
+                  currency_code: orderTotals.currencyAbv,
+                  value: orderTotals.finalPurchaseAmount.toString(),
 
-                    breakdown: {
-                      item_total: {
-                        currency_code: orderTotals.currencyAbv,
-                        value: orderTotals.fullPurchaseAmount.toString()
-                      },
-                      discount: {
-                        currency_code: orderTotals.currencyAbv,
-                        value: orderTotals.discountAmount.toString()
-                      }
+                  breakdown: {
+                    item_total: {
+                      currency_code: orderTotals.currencyAbv,
+                      value: orderTotals.fullPurchaseAmount.toString()
+                    },
+                    discount: {
+                      currency_code: orderTotals.currencyAbv,
+                      value: orderTotals.discountAmount.toString()
                     }
-                  },
-                  items: paypalArray
-                }
-              ]
-            });
-          }}
-          onCancel={data => {
-            console.log("onCancel 'data': ", data);
-          }}
-          onSuccess={(details, data) => {
-            console.log("inside onSuccess")
-            payPalPurchase(details);
-          }}
-          onError = {(err) => {
-            console.log("error occurs: ", err);
-            setTransactionStatus({
-              ...transactionStatus,
-              paypalSuccess: false,
-              error: err
-            });
-            onlyShowPurchaseConfirmation();
-          }}
-          options={{
-            clientId: eventDetails.gatewayClientID,
-            currency: orderTotals.currencyAbv
-          }}
-          catchError={err => {
-            console.log("catchError 'err': ", err);
-            setTransactionStatus({
-              ...transactionStatus,
-              paypalSuccess: false,
-              error: err
-            });
-            onlyShowPurchaseConfirmation();
-          }}
-        />
-      </div>
+                  }
+                },
+                items: paypalArray
+              }
+            ]
+          });
+        }}
+        onCancel={data => {
+          console.log("onCancel 'data': ", data);
+        }}
+        onSuccess={(details, data) => {
+          console.log("inside onSuccess")
+          payPalPurchase(details);
+        }}
+        onError = {(err) => {
+          console.log("error occurs: ", err);
+          setTransactionStatus({
+            ...transactionStatus,
+            paypalSuccess: false,
+            error: err
+          });
+          onlyShowPurchaseConfirmation();
+        }}
+        options={{
+          clientId: eventDetails.gatewayClientID,
+          currency: orderTotals.currencyAbv
+        }}
+        catchError={err => {
+          console.log("catchError 'err': ", err);
+          setTransactionStatus({
+            ...transactionStatus,
+            paypalSuccess: false,
+            error: err
+          });
+          onlyShowPurchaseConfirmation();
+        }}
+      />
+    </div>
   );
+  
+  const mainDisplay = () => {
+    if (display === "main") {
+      // determines whether or not to display the cart and arrow
+      const cartLink = show => {
+        if (!show) {
+          return (
+            <CartLink
+              onClick={switchShowOrderSummary}
+              showStatus={showOrderSummaryOnly}
+              isLoading={showLoadingSpinner}
+              orderTotals={orderTotals}
+              showDoublePane={showDoublePane}
+            />
+          );
+        } else {
+          return null;
+        }
+      };
 
-  // determines what "contact information" has been filled out by the ticket buyer
-  const handleErrors = response => {
-    console.log ("inside handleErrors ", response);
-    if (!response.ok) {
-        throw Error(response.status);
-    }
-    return response;
-  };
+      // determines whether or not to display the purchase amount
+      const totalAmount = show => {
+        if (!show && orderTotals.ticketsPurchased > 0) {
+          return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
+        } else {
+          return null;
+        }
+      };
 
-  // **********
-  // THIS IS THE INFORMATION SHOWN UPON A SUCCESSFULL TRANSACTION.
-  const showSuccess = () => {
-    if (paypalStatus && orderStatus) {
-      return (
-        <OrderConfirm
-          transactionInfo={transactionInfo}
-          orderStatus={true}
-        ></OrderConfirm>
+      let paymentPane = (
+        <Fragment>
+          <div className={classes.MainItemLeft}>
+            <div className={classes.EventHeader}>
+              <div className={classes.EventTitle}>
+                  {eventDetails.eventTitle}
+              </div>
+              <div className={classes.EventDate}>
+                <DateRange
+                  start={eventDetails.startDateTime}
+                  end={eventDetails.endDateTime}
+                />
+              </div>
+            </div>
+            <div style={EventTicketSection}>
+              <span className={classes.TicketType}>Payment Information</span>
+              <br></br>
+              <span className={classes.TicketTypeSmall}>
+                Select a Payment Method
+              </span>
+              <br></br>
+              <br></br>
+              {showPayPal}
+            </div>
+            <div className={classes.EventFooterMod}>
+              <div className={classes.CartLink}>{cartLink(showDoublePane)}</div>
+              <div className={classes.TotalAmount}>
+                {totalAmount(showDoublePane)}
+              </div>
+            </div>
+          </div>
+        </Fragment>
       );
-    } else if (paypalStatus && !orderStatus) {
-      return (
-        <OrderConfirm
-          transactionInfo={transactionInfo}
-          orderStatus={true}
-        ></OrderConfirm>
-      );
-    } else {
-      return (
-        <Aux>
-          <span className={styles.SubSectionHeader}>Order Rejection</span>
-          <br></br>
-          <br></br>
+
+      // defines and sets "orderSummary" which is displayed in right panel
+      let orderSummary;
+      if (orderTotals.ticketsPurchased > 0) {
+        orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
+      } else if (orderTotals.finalPurchaseAmount <= 0) {
+        orderSummary = (
+          <div className={classes.EmptyOrderSummary}>
+            <FontAwesomeIcon
+              className={classes.faShoppingCart}
+              icon={faShoppingCart}
+            />
+          </div>
+        );
+      } else {
+        orderSummary = null;
+      }
+
+      // defines and sets "orderPane" which is the right panel
+      let orderPane;
+      if (showDoublePane) {
+        orderPane = (
           <div>
-            <span style={{ color: "red" }}>
-              WE NEED TO DECIDE ON AN ERROR MESSAGE!!!
-            </span>
-          </div>
-        </Aux>
-      );
-    }
-  };
-
-  // defines and sets "orderPane" which is the right panel
-  let orderPane;
-  if (showDoublePane) {
-    orderPane = (
-      <div>
-        <div>
-          <img
-            className={styles.Image}
-            src={eventLogo}
-            alt="Event Logo Coming Soon!!!"
-          />
-        </div>
-        <div style={OrderSummarySection}>{orderSummary}</div>
-      </div>
-    );
-  } else {
-    orderPane = (
-      <Aux>
-        <div>
-          <div style={OrderSummarySectionAlt}>{orderSummary}</div>
-        </div>
-        <div className={styles.EventFooterMod}>
-          <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
-          <div className={styles.TotalAmount}>
-            {totalAmount(showDoublePane)}
-          </div>
-        </div>
-      </Aux>
-    );
-  }
-
-
-  // variables that define rendered items
-  let connectionStatus = null;
-  let loadingSpinner = null;
-  let paymentPane = null;
-  let purchaseConfirmation = null;
-
-  // ***************
-  // THIS NEEDS WORK, DECIDE IF ONLY ERRORS FROM PAYPAL ARE CAUGHT HERE
-  // HOW ARE WE GOING TO HANDLE ERROR IF SERVER DOES NOT RECEIVE THE ORDER
-  // CONTROLS "connectionStatus" VIEW
-  if (showConnectionStatus && transactionStatus.message === null) {
-    connectionStatus = (
-      <Aux>
-        <div className={styles.BlankCanvas}>
-          <h4>Connection error, please try back later.</h4>
-          <br></br>
-        </div>
-      </Aux>
-    );
-  } else if (showConnectionStatus && transactionStatus.message !== null) {
-    connectionStatus = (
-      <Aux>
-        <div className={styles.BlankCanvas}>
-          <span className={styles.SubSectionHeader}>Order Status</span>
-          <h5>There was a problem with your order</h5>
-        </div>
-      </Aux>
-    );
-  } else {
-    connectionStatus = null;
-  }
-
-  // defines and sets "loadingSpinner" view status
-  if (showLoadingSpinner) {
-    loadingSpinner = (
-      <div className={styles.Spinner}>
-        <Spinner></Spinner>;
-      </div>
-    );
-  } else {
-    loadingSpinner = null;
-  }
-
-  // defines and sets "paymentPane" view status
-  if (showPaymentDetails) {
-    let dateRange;
-    if (dateFormat(eventDetails.startDateTime, "m d yy", true) === dateFormat(eventDetails.endDateTime, "m d yy", true)) {
-      dateRange = <Aux>{dateFormat(
-        eventDetails.startDateTime,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-      )} to {dateFormat(
-        eventDetails.endDateTime,
-        "shortTime",
-        true
-      )}</Aux>
-    } else {
-      dateRange = <Aux>{dateFormat(
-        eventDetails.startDateTime,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-      )} to {dateFormat(
-        eventDetails.endDateTime,
-        "ddd, mmm d, yyyy - h:MM TT",
-        true
-      )}</Aux>
-    }
-
-    paymentPane = (
-      <Aux>
-        <div className={styles.MainItemLeft}>
-          <div className={styles.EventHeader}>
-            <div className={styles.EventTitle}>
-                {eventDetails.eventTitle}
+            <div>
+              <img
+                className={classes.Image}
+                src={eventLogo}
+                alt="Event Logo Coming Soon!!!"
+              />
             </div>
-            <div className={styles.EventDate}>
-              {dateRange}
-            </div>
+            <div style={OrderSummarySection}>{orderSummary}</div>
           </div>
-            <Aux>
-              <div style={EventTicketSection}>
-                <span className={styles.TicketType}>Payment Information</span>
-                <br></br>
-                <span className={styles.TicketTypeSmall}>
-                  Select a Payment Method
-                </span>
-                <br></br>
-                <br></br>
-                {showPayPal}
+        );
+      } else {
+        orderPane = (
+          <Fragment>
+            <div>
+              <div style={OrderSummarySectionAlt}>{orderSummary}</div>
+            </div>
+            <div className={classes.EventFooterMod}>
+              <div className={classes.CartLink}>{cartLink(showDoublePane)}</div>
+              <div className={classes.TotalAmount}>
+                {totalAmount(showDoublePane)}
               </div>
-              <div className={styles.EventFooterMod}>
-                <div className={styles.CartLink}>{cartLink(showDoublePane)}</div>
-                <div className={styles.TotalAmount}>
-                  {totalAmount(showDoublePane)}
-                </div>
-              </div>
-            </Aux>
-        </div>
-      </Aux>
-    );
-  }
+            </div>
+          </Fragment>
+        );
+      }
 
-  // defines and sets "purchaseConfirmation" contents: contolled by "transactionStatus.success"
-  if (showPurchaseConfirmation) {
-    purchaseConfirmation = (
-      <div className={styles.BlankCanvas}>
-        <div style={{ paddingTop: "20px" }}>{showSuccess()}</div>
-      </div>
-    );
-  } else {
-    purchaseConfirmation = null;
-  }
-  
-  
-  let blankScreen = null;
-  // defines and sets "purchaseConfirmation" contents: contolled by "transactionStatus.success"
-  if (true) {
-    blankScreen = (
-      <div className={styles.BlankCanvas}>
-        <div style={{ paddingTop: "20px" }}>BLANK</div>
-      </div>
-    );
-  } else {
-    blankScreen = null;
-  }
-
-  // defines which of "paymentPane" and/or "orderPane" items to display
-  let mainDisplay = null;
-  if (showPaymentDetails) {
-    if (showDoublePane) {
-      mainDisplay = (
-        <Aux>
+      if (showDoublePane) {
+        return (
           <div style={MainGrid}>
             {paymentPane}
             {orderPane}
           </div>
-        </Aux>
-      );
-    } else if (!showOrderSummaryOnly) {
-      mainDisplay = (
-        <Aux>
+        );
+      } else if (!showOrderSummaryOnly) {
+        return (
           <div style={MainGrid}>{paymentPane}</div>
-        </Aux>
-      );
-    } else {
-      mainDisplay = (
-        <Aux>
+        );
+      } else {
+        return (
           <div style={MainGrid}>{orderPane}</div>
-        </Aux>
-      );
+        );
+      }
+
+    } else {
+      return null;
     }
-  } else {
-    mainDisplay = null;
   }
 
   return (
-    <Aux>
-      <div style={MainContainer}>
-        {loadingSpinner}
-        {connectionStatus}
-        {mainDisplay}
-        {purchaseConfirmation}
-      </div>
-    </Aux>
+    <div style={MainContainer}>
+      {loadingSpinner()}
+      {mainDisplay()}
+      {purchaseConfirmation()}
+      {connectionStatus()}
+    </div>
   );
 };
 export default Checkout;

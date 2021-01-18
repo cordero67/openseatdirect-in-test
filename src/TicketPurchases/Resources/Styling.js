@@ -1,4 +1,4 @@
-// THIS COMPONENT HAS BEEN REFACTORED
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 export const MainContainerStyling = (inWidth, inHeight) => {
   let MainContainer = {};
 
@@ -38,7 +38,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
   return MainContainer;
 };
 
-// THIS COMPONENT HAS BEEN REFACTORED
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 export const MainGridStyling = (inWidth, inHeight) => {
   let MainGrid;
 
@@ -142,7 +142,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
   return MainGrid;
 };
 
-// THIS COMPONENT HAS BEEN REFACTORED
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 export const EventTicketSectionStyling = (inWidth, inHeight) => {
   let EventTicketSection;
 
@@ -198,6 +198,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
   return EventTicketSection;
 };
 
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 export const OrderSummarySectionStyling = (inWidth, inHeight) => {
   let OrderSummarySection;
   if (inWidth < 660) {
@@ -266,6 +267,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
   return OrderSummarySection;
 };
 
+// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
   let OrderSummarySectionAlt;
 

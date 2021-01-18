@@ -1,6 +1,5 @@
-import React from "react";
+import React, { Fragment } from "react";
 
-import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./TicketItem.module.css";
 
 const TicketItem = (props) => {
@@ -34,7 +33,7 @@ const TicketItem = (props) => {
 
     if (props.name.ticketsAvailable < 1) {
       options = (
-        <Aux>
+        <Fragment>
           <div className={styles.LeftGrid}>
             <div style={{ color: "grey" }}>
               <div className={styles.TicketType}>
@@ -67,7 +66,7 @@ const TicketItem = (props) => {
             </span>
           </div>
           <hr style={{ border: "1px solid#F2F2F2" }} />
-        </Aux>
+        </Fragment>
       );
       return options;
     } else {
@@ -83,7 +82,7 @@ const TicketItem = (props) => {
         ticketsAvailableArray.push(i);
       }
       options = (
-        <Aux>
+        <Fragment>
           <div className={styles.LeftGrid}>
             <div>
               <div className={styles.TicketType}>{props.name.ticketName}</div>
@@ -123,13 +122,13 @@ const TicketItem = (props) => {
             {props.name.ticketDescription}
           </div>
           <hr style={{ border: "1px solid#F2F2F2" }} />
-        </Aux>
+        </Fragment>
       );
       return options;
     }
   };
 
-  return <Aux>{ticketTypeDisplay()}</Aux>;
+  return <Fragment>{ticketTypeDisplay()}</Fragment>;
 };
 
 export default TicketItem;
