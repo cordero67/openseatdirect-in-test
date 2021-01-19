@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,7 +7,6 @@ import {
   faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
 
-import Aux from "../hoc/Auxiliary/Auxiliary";
 import styles from "./Cartlink.module.css";
 
 const CartLink = props => {
@@ -17,13 +16,13 @@ const CartLink = props => {
   const ticketAmount = show => {
     if (!props.isLoading && !show && props.orderTotals.ticketsPurchased > 0) {
       return (
-        <Aux>
+        <Fragment>
           <span
             onClick={props.onClick}
             className={styles.cartBadge}>
             {props.orderTotals.ticketsPurchased}
           </span>
-        </Aux>
+        </Fragment>
       );
     } else {
         console.log("going to null")

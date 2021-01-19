@@ -13,9 +13,9 @@ import {
   OrderSummarySectionAltStyling
 } from "./Resources/Styling";
 import { DateRange } from "./Resources/PricingFunctions";
-import { paymentOnSuccess } from "./apiCore";
+import { paymentOnSuccess } from "./Resources/apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
-import CartLink from "./CartLink";
+import CartLink from "./Components/CartLink";
 import OrderSummary from "./Components/OrderSummary";
 import { OrderConfirm } from "./Components/OrderConfirms";
 import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";

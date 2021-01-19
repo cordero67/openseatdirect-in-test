@@ -16,7 +16,7 @@ import {
 import { DateRange } from "./Resources/PricingFunctions";
 import Spinner from "../components/UI/Spinner/Spinner";
 import GuestForm from "./Components/GuestForm";
-import CartLink from "./CartLink";
+import CartLink from "./Components/CartLink";
 import OrderSummary from "./Components/OrderSummary";
 import AuthenticationModal from "./Modals/AuthenticationModal";
 

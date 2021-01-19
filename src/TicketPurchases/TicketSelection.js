@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { API } from "../config.js";
-import { getEventData, getEventImage } from "./apiCore";
+import { getEventData, getEventImage } from "./Resources/apiCore";
 import {
   loadEventDetails,
   loadTicketInfo,
@@ -28,7 +28,7 @@ import {
 } from "./Resources/Styling";
 import { DateRange } from "./Resources/PricingFunctions";
 import Spinner from "../components/UI/Spinner/Spinner";
-import CartLink from "./CartLink";
+import CartLink from "./Components/CartLink";
 import OrderSummary from "./Components/OrderSummary";
 import { OrderConfirm } from "./Components/OrderConfirms";
 import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";

@@ -1,4 +1,4 @@
-import { API } from "../config";
+import { API } from "../../config";
 import { each, isObject } from "underscore";
 
 const handleErrors = response => {

@@ -11,8 +11,7 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEdit,
-  faTicketAlternative
+  faEdit
 } from "@fortawesome/free-solid-svg-icons";
  
 import classes from "./VendorAccountOLD.module.css";

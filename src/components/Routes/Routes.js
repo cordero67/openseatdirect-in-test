@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
@@ -15,6 +15,7 @@ import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import SignIn from "../../Users/Authentication/SignIn";
+import Authentication from "../../Users/Authentication/Authentication";
 import SignUp from "../../Users/Authentication/SignUp";
 import Slider from "../HomePage/Slider";
 import PasswordRecovery from "../../Users/Authentication/PasswordRecovery";
@@ -41,24 +42,16 @@ const Routes = () => {
     setShowSideDrawer(!showSideDrawer);
   };
 
-
-  console.log("Inside Routes");
-  console.log("Inside Routes");
-
   const [isResizing, setIsResizing] = useState(false);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
-  console.log("screenSize Routes: ", screenSize);
   
   const stylingUpdate = (inWidth) => {
-      console.log("stylingUpdate in Routes")
       setIsResizing(true);
       setScreenSize(inWidth);
       setIsResizing(false);
-      console.log("screenSize in Routes: ", screenSize)
   };
 
   window.onresize = function(event) {
-    console.log("resized in Routes")
     stylingUpdate(window.innerWidth);
   };
 
@@ -91,6 +84,23 @@ const Routes = () => {
       />
 
       <Route
+        path="/auth"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <Authentication />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
         path="/signin"
         exact
         render={(routeProps) => (
@@ -106,6 +116,7 @@ const Routes = () => {
           </React.Fragment>
         )}
       />
+
 
       <Route
         path="/signup"
