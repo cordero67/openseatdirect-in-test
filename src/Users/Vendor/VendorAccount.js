@@ -8,7 +8,6 @@ import IssueTickets from "./IssueTickets";
 import EditEvent from "../../EventCreation/EditEvent";
 import Orders from "./Orders";
 import CreateEvent from "../../EventCreation/CreateEvent";
-import Profile from "../ComponentPages/Profile";
 import Account from "./Account";
 import MyTickets from "../ComponentPages/MyTickets";
 
@@ -107,13 +106,13 @@ const MainDisplay = () => {
       return (
         <CreateEvent/>
       )
-    } else if (paneView === "profile") {
-      return (
-        <Profile/>
-      )
     } else if (paneView === "account") {
       return (
         <Account/>
+      )
+    } else if (paneView === "myTickets") {
+      return (
+        <MyTickets/>
       )
     } else {
       return null;

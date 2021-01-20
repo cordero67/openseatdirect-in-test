@@ -477,7 +477,7 @@ const Home = () => {
         </div>
         <div className={classes.VideoSection}>
             <YouTube videoId="gbR_440hyEM" opts={opts} onReady={_onReady} />
-          </div>
+        </div>
 
       </div>
     )
@@ -503,7 +503,7 @@ const Home = () => {
           <div
             style={{
               margin: "auto",
-              width: "auto",
+              width: "100vw",
               fontSize: "20px",
               fontWeight: "400",
               lineHeight: "36px",
@@ -1103,6 +1103,7 @@ const Home = () => {
       <div className={classes.MainContainer}>
         {isResizing ? null : (
           <div>
+          {topImage()}
             <div className={classes.TextContainer}>
               <div className={classes.DescriptionText}>
                 {marketingPhrase()}
@@ -1112,14 +1113,6 @@ const Home = () => {
                 {marketingPoints()}
               </div>
 
-              
-
-              <div
-                className={classes.SectionContainer}
-                style={{paddingBottom: "60px"}}
-              >
-                {videoSection()}
-              </div>
 
               <div
                 className={classes.SectionContainer}

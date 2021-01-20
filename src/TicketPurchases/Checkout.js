@@ -50,10 +50,7 @@ const Checkout = props => {
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
 
-
   const [customerInformation, setCustomerInformation] = useState({});
-
-
 
   // transaction variables for display on confirmation page
   const [transactionInfo, setTransactionInfo] = useState({});

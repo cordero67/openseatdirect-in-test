@@ -19,6 +19,7 @@ const Authentication = (props) => {
     confirmation: "",
     resent: false,
     username: "",
+    vendorIntent: false,
     resetToken: "",
     sessionToken: "",
     userId: ""
@@ -32,7 +33,7 @@ const Authentication = (props) => {
 
   const [modalSetting, setModalSetting] = useState("signin") // signin, forgot, temporary, signup, confirmation, password, username, error
 
-  const { name, email, password, temporary, reissued, confirmation, resent, username, resetToken, sessionToken, userId } = values;
+  const { name, email, password, temporary, reissued, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
 
   const { message, error } = submissionStatus;
 
@@ -213,7 +214,8 @@ const Authentication = (props) => {
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup1_email`;
     let information = {
-      email: email
+      email: email,
+      vendorIntent: false
     }
     let fetchBody ={
       method: "POST",
@@ -253,7 +255,8 @@ const Authentication = (props) => {
     let url = `${API}/auth/signup2_confirm`;
     let information = {
       email: email,
-      confirm_code: confirmation
+      confirm_code: confirmation,
+      vendorIntent: false
     }
     let fetchBody ={
       method: "POST",
@@ -294,7 +297,8 @@ const Authentication = (props) => {
     let information = {
       email: email,
       resetPasswordToken: resetToken,
-      password: password
+      password: password,
+      vendorIntent: false
     }
     let fetchBody ={
       method: "POST",
@@ -416,6 +420,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -443,6 +448,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -471,12 +477,14 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
       });
       console.log("SUCCESS")
       props.submitOrder();
+
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -499,6 +507,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -525,6 +534,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: data.user.username,
+        vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -552,6 +562,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: data.user.username,
+        vendorIntent: data.user.vendorIntent,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
         userId: ""
@@ -580,6 +591,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: data.user.username,
+        vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: data.token,
         userId: data.user._id
@@ -611,12 +623,14 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
       });
       console.log("SUCCESS")
       props.submitOrder();
+
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -637,6 +651,7 @@ const Authentication = (props) => {
       confirmation: "",
       resent: false,
       username: "",
+      vendorIntent: false,
       resetToken: "",
       sessionToken: "",
       userId: ""
@@ -656,6 +671,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: true,
         username: data.user.username,
+        vendorIntent: false,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
         userId: ""
@@ -940,6 +956,7 @@ const Authentication = (props) => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
+
             closeModal()
         }}>
           CONTINUE
@@ -1028,7 +1045,6 @@ const Authentication = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            console.log("clicked resend button")
             submitResend();
           }}
         >

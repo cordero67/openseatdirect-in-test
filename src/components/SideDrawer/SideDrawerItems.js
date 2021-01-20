@@ -125,8 +125,8 @@ const SideDrawerItems = (props) => {
       {!isAuthenticated() && (
         <li>
           <NavLink
-            to="/signin"
-            style={isActive(props.currentPage, "/signin")}
+            to="/auth"
+            style={isActive(props.currentPage, "/auth")}
             onClick={() => {
               props.clicked()
             }}

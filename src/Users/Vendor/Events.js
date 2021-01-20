@@ -111,8 +111,8 @@ const Events = (props) => {
         // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
     }
 
-    const switchTab = (event, item) => {
-        console.log("Event name: ", event.target.name)
+    const switchTab = (name, item) => {
+        console.log("Event name: ", name)
         setIsLoading(true);
         if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
             localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
@@ -121,12 +121,12 @@ const Events = (props) => {
                 let storedEvents = JSON.parse(localStorage.getItem("events"));
                 let storedOrders = JSON.parse(localStorage.getItem("orders"));
 
-                if (event.target.name === "analytics") {
+                if (name === "analytics") {
                     setShowWarningModal({
                         status: true,
                         type: "analytics"
                     });
-                } else if (event.target.name === "orders") {
+                } else if (name === "orders") {
                     //check if there are any orders for this event
                     let ordersExist = false;
                     storedOrders.forEach((order) => {
@@ -148,7 +148,7 @@ const Events = (props) => {
                         });
                     }
 
-                } else if (event.target.name === "tickets") {
+                } else if (name === "tickets") {
                     //check if there are any orders for this event
                     let ticketsExist = false;
                     storedEvents.forEach((event) => {
@@ -275,106 +275,92 @@ const Events = (props) => {
                                 </div>
                                 <button
                                     style={{
-                                        fontSize: "16px",
-                                        textAlign: "left",
+                                        textAlign: "center",
                                         color: "blue",
                                         fontWeight: "600",
-                                        width: "50px",
-                                        paddingLeft: "25px",
+                                        width: "80px",
+                                        paddingLeft: "5px",
                                         border: "none",
                                         backgroundColor: "white",
                                         cursor: "pointer",
                                         display: "inlineBlock",
-                                        outline: "none",
+                                        outline: "none"
                                     }}
                                 >
-                                    <img
-                                        src={Analytics}
-                                        color="blue"
-                                        alt="OpenSeatDirect Logo"
-                                        style={{width: "100%"}}
-                                        cursor="pointer"
+                                    <ion-icon
+                                        size="large"
                                         name="analytics"
-                                        onClick={(event) => {
-                                            switchTab(event, item);
+                                        onClick={() => {
+                                            switchTab("analytics", item);
                                         }}
-                                    />
+                                    ></ion-icon>
                                 </button>
                                 <button
                                     style={{
-                                        fontSize: "16px",
-                                        textAlign: "left",
+                                        textAlign: "center",
                                         color: "blue",
                                         fontWeight: "600",
-                                        width: "60px",
-                                        paddingLeft: "30px",
+                                        width: "80px",
+                                        paddingLeft: "5px",
                                         border: "none",
                                         backgroundColor: "white",
                                         cursor: "pointer",
                                         display: "inlineBlock",
-                                        outline: "none",
+                                        outline: "none"
                                     }}
                                 >
-                                    <img
-                                        src={Receipt}
-                                        color="blue"
-                                        alt="OpenSeatDirect Logo"
-                                        style={{width: "80%"}}
-                                        cursor="pointer"
-                                        name="orders"
-                                        onClick={(event) => {
-                                            switchTab(event, item);
+                                    <ion-icon
+                                        size="large"
+                                        name="receipt-outline"
+                                        onClick={() => {
+                                            switchTab("orders", item);
                                         }}
-                                    />
+                                    ></ion-icon>
                                 </button>
                                 <button
                                     style={{
-                                        fontSize: "16px",
-                                        textAlign: "left",
+                                        textAlign: "center",
                                         color: "blue",
                                         fontWeight: "600",
-                                        width: "50px",
-                                        paddingLeft: "25px",
+                                        width: "80px",
+                                        paddingLeft: "5px",
                                         border: "none",
                                         backgroundColor: "white",
                                         cursor: "pointer",
                                         display: "inlineBlock",
-                                        outline: "none",
+                                        outline: "none"
                                     }}
                                 >
-                                    <img
-                                        src={Ticket}
-                                        color="blue"
-                                        alt="OpenSeatDirect Logo"
-                                        style={{width: "140%"}}
-                                        cursor="pointer"
-                                        name="tickets"
-                                        onClick={(event) => {
-                                            switchTab(event, item);
+                                    <ion-icon
+                                        size="large"
+                                        name="ticket-outline"
+                                        onClick={() => {
+                                            switchTab("tickets", item);
                                         }}
-                                    />
+                                    ></ion-icon>
                                 </button>
                                 <div
                                     style={{
-                                        color: "blue",
-                                        width: "60px",
-                                        fontSize: "22px",
                                         textAlign: "center",
-                                        position: "relative",
-                                        paddingTop: "10px",
-                                        paddingLeft: "30px"
+                                        color: "blue",
+                                        fontWeight: "600",
+                                        width: "80px",
+                                        paddingLeft: "5px",
+                                        border: "none",
+                                        backgroundColor: "white",
+                                        cursor: "pointer",
+                                        display: "inlineBlock",
+                                        outline: "none"
                                     }}
                                 >
-                                    <FontAwesomeIcon
-                                        color="blue"
-                                        size="sm"
-                                        cursor="pointer"
+                                    <ion-icon
+                                        size="large"
+                                        name="create-outline"
                                         onClick={() => {
                                             setEventNum(item);
                                             props.editEvent();
                                         }}
-                                        icon={faEdit}
-                                    />
+                                    ></ion-icon>
                                 </div>
                             </div>
                         );

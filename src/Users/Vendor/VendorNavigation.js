@@ -87,19 +87,6 @@ const VendorNavigation = (props) => {
           <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "myTickets" ? "#e0e0e0" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="myTickets"
-              onClick={props.clicked}>
-              My Tickets
-            </button>
-          </li>
-
-          <li>
-          <button
-              className={classes.NavigationButton}
-              style={{
                 backgroundColor: props.pane === "orders" ? "#e0e0e0" : "#b8b8b8",
                 outline: "none"
               }}
@@ -121,19 +108,6 @@ const VendorNavigation = (props) => {
               Create Event
             </button>
           </li>
-          
-          <li>
-            <button
-              className={classes.NavigationButton}
-              style={{
-                backgroundColor: props.pane === "profile" ? "#e0e0e0" : "#b8b8b8",
-                outline: "none"
-              }}
-              name="profile"
-              onClick={props.clicked}>
-              Profile
-            </button>
-          </li>
 
           <li>
             <button
@@ -144,9 +118,23 @@ const VendorNavigation = (props) => {
               }}
               name="account"
               onClick={props.clicked}>
-              Account
+              Account Settings
             </button>
           </li>
+
+          <li>
+          <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "myTickets" ? "#e0e0e0" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="myTickets"
+              onClick={props.clicked}>
+              My Tickets
+            </button>
+          </li>
+
         </div>
       </ul>
     </Fragment>

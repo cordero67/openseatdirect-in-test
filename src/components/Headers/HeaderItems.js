@@ -32,10 +32,6 @@ const NavigationItems = (props) => {
 
     const getStatus= () =>{ 
       let tempData = JSON.parse(localStorage.getItem("user"));
-      //console.log("tempData: ", tempData)
-      //console.log("tempData.user: ", tempData.user)
-      //console.log("tempData.user.accountId: ", tempData.user.accountId)
-      //console.log("tempData.user.accountId.status: ", tempData.user.accountId.status)
       if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
         return tempData.user.accountId.status}
       else {
@@ -65,8 +61,8 @@ const NavigationItems = (props) => {
             {!isAuthenticated() && 
                 <li>
                     <NavLink
-                        to="/signin"
-                        style={isActive(props.currentPage, "/signin")}
+                        to="/auth"
+                        style={isActive(props.currentPage, "/auth")}
                     >SIGN IN
                     </NavLink>
                 </li>

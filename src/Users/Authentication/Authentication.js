@@ -3,6 +3,10 @@ import { Redirect } from "react-router-dom";
 
 import { API } from "../../config";
 
+
+
+
+
 import classes from "./AuthenticationNEW.module.css";
 
 const Authentication = () => {
@@ -15,6 +19,7 @@ const Authentication = () => {
     confirmation: "",
     resent: false,
     username: "",
+    vendorIntent: false,
     resetToken: "",
     sessionToken: "",
     userId: ""
@@ -28,7 +33,7 @@ const Authentication = () => {
 
   const [modalSetting, setModalSetting] = useState("signin") // signin, forgot, temporary, signup, confirmation, password, username, error
 
-  const { name, email, password, temporary, reissued, confirmation, resent, username, resetToken, sessionToken, userId } = values;
+  const { name, email, password, temporary, reissued, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
 
   const { message, error } = submissionStatus;
 
@@ -209,7 +214,8 @@ const Authentication = () => {
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup1_email`;
     let information = {
-      email: email
+      email: email,
+      vendorIntent: vendorIntent
     }
     let fetchBody ={
       method: "POST",
@@ -249,7 +255,8 @@ const Authentication = () => {
     let url = `${API}/auth/signup2_confirm`;
     let information = {
       email: email,
-      confirm_code: confirmation
+      confirm_code: confirmation,
+      vendorIntent: vendorIntent
     }
     let fetchBody ={
       method: "POST",
@@ -290,7 +297,8 @@ const Authentication = () => {
     let information = {
       email: email,
       resetPasswordToken: resetToken,
-      password: password
+      password: password,
+      vendorIntent: vendorIntent
     }
     let fetchBody ={
       method: "POST",
@@ -418,7 +426,7 @@ const Authentication = () => {
       });
       console.log("SUCCESS")
       console.log("about to finalize signin")
-      //props.submitOrder();
+      redirectUser();
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -440,6 +448,7 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -468,13 +477,14 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
       });
       console.log("SUCCESS")
       console.log("about to finalize temp signin")
-      //props.submitOrder();
+      redirectUser();
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -497,6 +507,7 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -523,6 +534,7 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: data.user.username,
+        vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -550,6 +562,7 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: data.user.username,
+        vendorIntent: data.user.vendorIntent,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
         userId: ""
@@ -578,6 +591,7 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: data.user.username,
+        vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: data.token,
         userId: data.user._id
@@ -609,13 +623,14 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
       });
       console.log("SUCCESS")
       console.log("about to finalize username signup")
-      //props.submitOrder();
+      redirectUser();
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -636,6 +651,7 @@ const Authentication = () => {
       confirmation: "",
       resent: false,
       username: "",
+      vendorIntent: false,
       resetToken: "",
       sessionToken: "",
       userId: ""
@@ -655,6 +671,7 @@ const Authentication = () => {
         confirmation: "",
         resent: true,
         username: data.user.username,
+        vendorIntent: false,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
         userId: ""
@@ -676,6 +693,43 @@ const Authentication = () => {
       [event.target.name]: event.target.value
     });
   };
+
+  
+  const changeIntent = () => {
+    setValues({
+      ...values,
+      ["vendorIntent"]: !vendorIntent
+    });
+  }
+
+
+  
+  const getStatus= (user) => { 
+    if ('accountId' in user && 'status' in user.accountId ) {
+        return user.accountId.status
+    } else {
+        return 0;
+    } 
+  }
+
+  const redirectUser = () => {
+    console.log("Redirect user");
+    if (typeof window !== "undefined" && localStorage.getItem("user") !== null) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {  
+        window.location.href = "/vendor";
+      } else if (
+        getStatus(tempUser.user) === 4 ||
+        getStatus(tempUser.user) === 5 ||
+        getStatus(tempUser.user) === 6 ||
+        ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
+      ) {
+        window.location.href = "/personal";
+      } else {
+        window.location.href = "/events";
+      }
+    }
+  }
 
   // LOOKS GOOD
   const showError = () => {
@@ -820,6 +874,25 @@ const Authentication = () => {
   // LOOKS GOOD
   const signUpForm = (
     <Fragment>
+      <div style={{paddingBottom: "20px", width: "340px", height: "60px"}}>
+        <div className={classes.InputCheckbox}>
+          <input
+            type="checkbox"
+            id="vendorIntent"
+            name="vendorIntent"
+            value={false}
+            onChange={() => {
+              console.log("Changed checkbox")
+              changeIntent()
+            }}
+          />
+          <span></span>
+          <label style={{paddingLeft: "10px"}}  for="vendorIntent">
+            {" "}Sign Up to also <span style={{color: "#008F00", fontWeight: "600"}}>Create Events</span>
+          </label>
+        </div>
+      </div>
+
       <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
         <label style={{fontSize: "15px"}}>E-mail Address</label>
         <input
@@ -921,7 +994,7 @@ const Authentication = () => {
           className={classes.CancelButton}
           onClick={() => {
             console.log("about to finalize skip username signup")
-            //props.submitOrder();
+            redirectUser();
         }}>
           CHANGE IT LATER
         </button>
@@ -1055,6 +1128,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Welcome back</div>
+
+
+
+
+
+
+
+
+
+
+
           </div>
           <div>
             {showError()}
@@ -1075,6 +1159,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Need a temporary password?</div>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
           </div>
           <div>
             {showError()}
@@ -1095,6 +1190,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter temporary password</div>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
           </div>
           <div>
             {showError()}
@@ -1115,6 +1221,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Tell us about yourself</div>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
           </div>
           <div>
             {showError()}
@@ -1135,6 +1252,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
           </div>
           <div>
             {showError()}
@@ -1155,6 +1283,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Create your password</div>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
           </div>
           <div>
             {showError()}
@@ -1174,6 +1313,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Change your username</div>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
           </div>
           <div>
             {showError()}
@@ -1193,6 +1343,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>System Error</div>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
           </div>
           <div>
             {errorForm}
@@ -1208,6 +1369,14 @@ const Authentication = () => {
   return (
     <div className={classes.MainContainer}>
       <div className={classes.Modal}>
+
+
+
+
+
+
+
+
         {signInDisplay()}
         {forgotDisplay()}
         {temporaryDisplay()}
