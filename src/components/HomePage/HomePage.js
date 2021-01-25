@@ -258,7 +258,7 @@ const Home = () => {
                 lineHeight: "72px",
                 textAlign: "center"
               }}>
-              DIY ticketing
+              Events
               <br></br>
               made easy
             </div>
@@ -306,7 +306,7 @@ const Home = () => {
                 fontWeight: "400",
                 lineHeight: "66px",
                 textAlign: "center"}}>
-              DIY ticketing
+              Events
               <br></br>
               made easy
             </div>
@@ -354,7 +354,7 @@ const Home = () => {
                 fontWeight: "400",
                 lineHeight: "50px",
                 textAlign: "center"}}>
-              DIY ticketing
+              Events
               <br></br>
               made easy
             </div>
@@ -402,7 +402,7 @@ const Home = () => {
                 fontWeight: "400",
                 lineHeight: "50px",
                 textAlign: "center"}}>
-              DIY ticketing
+              Events
               <br></br>
               made easy
             </div>
@@ -456,6 +456,7 @@ const Home = () => {
               What is
               <br></br>
               <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span>
+              <span style={{fontWeight: "600"}}>?</span>
             </div>
             <div
               style={{
@@ -464,11 +465,11 @@ const Home = () => {
                 lineHeight: "26px",
                 paddingTop: "20px"
               }}>
-                       A subscription-based DIY alternative
-              <br></br>solution that eliminates traditional
-              <br></br>ticketing middlemen allowing you to
-              <br></br>interact directly with your fans and
-              <br></br>control the entire ticketing process.
+                      A DIY alternative solution that allows
+              <br></br>event creators and promoters stuck with
+              <br></br>money-grabbing ticket platforms to
+              <br></br>get cash deposits at the time of sale
+              <br></br>and eliminate customer fees.
               <br></br>
             </div>
           </Fragment>
@@ -479,6 +480,7 @@ const Home = () => {
             <br></br>
             <div style={{fontSize: "30px", fontWeight: "400", lineHeight: "38px", paddingBottom: "10px"}}>
               What is{" "}<span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span>
+              <span style={{fontWeight: "600"}}>?</span>
             </div>
             <div
               style={{
@@ -487,12 +489,11 @@ const Home = () => {
                 lineHeight: "26px",
                 paddingTop: "20px"
               }}>
-              
-                       A subscription-based DIY alternative solution that
-              <br></br>eliminates traditional ticketing middlemen
-              <br></br>allowing you to interact directly with your fans and
-              <br></br>control the entire ticketing process.
-              <br></br>
+                      A DIY alternative solution that allows
+              <br></br>event creators and promoters stuck with
+              <br></br>money-grabbing ticket platforms to
+              <br></br>get cash deposits at the time of sale
+              <br></br>and eliminate customer fees.
             </div>
           </Fragment>
         ) 

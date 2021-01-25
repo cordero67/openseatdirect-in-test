@@ -956,7 +956,6 @@ const Authentication = (props) => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
-
             closeModal()
         }}>
           CONTINUE
@@ -1076,6 +1075,7 @@ const Authentication = (props) => {
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black", paddingBottom: "5px"}}
                 name="close-outline"
+                cursor="pointer"
                 onClick={() => {
                   closeModal()
                 }}
@@ -1105,6 +1105,7 @@ const Authentication = (props) => {
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black"}}
                 name="close-outline"
+                cursor="pointer"
                 onClick={() => {
                   closeModal()
                 }}
@@ -1134,6 +1135,7 @@ const Authentication = (props) => {
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black"}}
                 name="close-outline"
+                cursor="pointer"
                 onClick={() => {
                   closeModal()
                 }}
@@ -1163,6 +1165,7 @@ const Authentication = (props) => {
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black", paddingBottom: "5px"}}
                 name="close-outline"
+                cursor="pointer"
                 onClick={() => {
                   closeModal()
                 }}
@@ -1192,6 +1195,7 @@ const Authentication = (props) => {
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black"}}
                 name="close-outline"
+                cursor="pointer"
                 onClick={() => {
                   closeModal()
                 }}
@@ -1221,6 +1225,7 @@ const Authentication = (props) => {
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black"}}
                 name="close-outline"
+                cursor="pointer"
                 onClick={() => {
                   closeModal()
                 }}
@@ -1249,6 +1254,7 @@ const Authentication = (props) => {
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black"}}
                 name="close-outline"
+                cursor="pointer"
                 onClick={() => {
                   closeModal()
                 }}
@@ -1277,6 +1283,7 @@ const Authentication = (props) => {
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black"}}
                 name="close-outline"
+                cursor="pointer"
                 onClick={() => {
                   closeModal()
                 }}
