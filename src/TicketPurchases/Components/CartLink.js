@@ -14,7 +14,7 @@ const CartLink = props => {
   // "showDoublePane" must be false and "orderTotals.ticketsPurchased" must be > 0
 
   const ticketAmount = show => {
-    if (!props.isLoading && !show && props.orderTotals.ticketsPurchased > 0) {
+    if (props.orderTotals.ticketsPurchased > 0) {
       return (
         <Fragment>
           <span

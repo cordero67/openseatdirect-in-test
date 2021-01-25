@@ -2,6 +2,8 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
 import YouTube from "react-youtube";
 
+import AuthenticationModal from "../../TicketPurchases/Modals/AuthenticationModal";
+
 import { useOurApi } from "./apiUsers";
 import { API } from "../../config";
 
@@ -21,11 +23,8 @@ import DJGirlShort from "../../assets/DJGirlShort.png"
 
 //import DemoCarousel from "./DemoCarousel.js";
 
-import CashNow from "../../assets/CashNow.jpg";
 import CashInHand from "../../assets/CashInHand.png";
-import NoFees from "../../assets/NoFees.png";
 import ZeroFee from "../../assets/ZeroFee.png";
-import SingleLocation from "../../assets/SingleLocation.png";
 import OSDImage from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png"
 import Documents from "../../assets/Documents.png"
 
@@ -38,6 +37,8 @@ const Home = () => {
   const [isResizing, setIsResizing] = useState(false);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  const [modalStatus, setModalStatus] = useState(false);
 
   const [values, setValues] = useState({
     name: "",
@@ -206,6 +207,35 @@ const Home = () => {
     }
     */
 
+    
+  const getStatus= (user) => { 
+    if ('accountId' in user && 'status' in user.accountId ) {
+        return user.accountId.status
+    } else {
+        return 0;
+    } 
+  }
+
+   const redirectUser = () => {
+    console.log("Redirect user");
+    if (typeof window !== "undefined" && localStorage.getItem("user") !== null) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {  
+        window.location.href = "/vendor";
+      } else if (
+        getStatus(tempUser.user) === 4 ||
+        getStatus(tempUser.user) === 5 ||
+        getStatus(tempUser.user) === 6 ||
+        ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
+      ) {
+        window.location.href = "/personal";
+      } else {
+        window.location.href = "/events";
+      }
+    }
+  }
+
+
   const signUpRef = React.useRef();
   //const videosRef = React.useRef();
 
@@ -259,7 +289,7 @@ const Home = () => {
               }}
               onClick={() => {
                 console.log("Clicking button");
-                scrollToSignUp()
+                setModalStatus(true)
               }}
             >
               SIGN UP NOW
@@ -307,7 +337,7 @@ const Home = () => {
               }}
               onClick={() => {
                 console.log("Clicking button");
-                scrollToSignUp()
+                setModalStatus(true)
               }}
             >
               SIGN UP NOW
@@ -355,7 +385,7 @@ const Home = () => {
               }}
               onClick={() => {
                 console.log("Clicking button");
-                scrollToSignUp()
+                setModalStatus(true)
               }}
             >
               SIGN UP NOW
@@ -403,7 +433,7 @@ const Home = () => {
               }}
               onClick={() => {
                 console.log("Clicking button");
-                scrollToSignUp()
+                setModalStatus(true)
               }}
             >
               SIGN UP NOW
@@ -874,125 +904,6 @@ const Home = () => {
       }
     }
 
-    const showError = () => {
-      if (hasError) {
-        return (
-          <div style={{fontSize: "14px", color: "red"}}> {sysmessage}</div>
-        )
-      } else if (data.status) {
-        return (
-          null
-        )
-      } else {
-        return (
-          <div style={{fontSize: "14px", color: "red"}}> {data.error}</div>
-        )
-      }
-    };
-
-    const showSuccess = (
-      <div>
-        <div>To complete the sign-up process, please click the link in the message sent to your e-mail inbox:</div>
-        <br></br>
-        <div style={{color: "blue"}}>{values.email}.</div>
-        <br></br>
-        <div>Please check your spam/junk folder if you do not see our message in your main inbox.</div>
-        <div>For "gmail" accounts, please check your "All Mail" folder.</div>
-        <br></br>
-        <div>Go to <Link to="/signin" style={{color: "blue"}}>Signin</Link></div>
-      </div>
-    );
-
-    const signUpForm = (
-      <Aux>
-        <div style={{paddingBottom: "20px"}}>
-          <label style={{width: "340px", fontSize: "15px", color: "black"}}>
-            Full Name{" "}<span style={{color: "red"}}>*</span>
-          </label>
-          <input
-            type="text"
-            name="name"
-            className={classes.InputBox}
-            onChange={handleChange}
-            value={name}
-          />
-        </div>
-  
-        <div style={{paddingBottom: "20px"}}>
-          <label style={{width: "340px", fontSize: "15px", color: "black"}}>
-            E-mail Addresss{" "}<span style={{color: "red"}}>*</span>
-          </label>
-          <input
-            type="email"
-            name="email"
-            className={classes.InputBox}
-            onChange={handleChange}
-            value={email}
-          />
-        </div>
-  
-        <div style={{paddingBottom: "20px"}}>
-          <label style={{width: "340px", fontSize: "15px", color: "black"}}>
-            Password{" "}<span style={{color: "red"}}>*</span>
-          </label>
-          <input
-            type="text"
-            name="password"
-            className={classes.InputBox}
-            onChange={handleChange}
-            value={password}
-            placeholder="Min 8 characters, must include one number"
-          />
-        </div>
-  
-        <div style={{paddingTop: "20px"}}>
-          <button
-            onClick={() => {
-              console.log("clicked button",{
-                name: values.name,
-                email: values.email,
-                password: values.password,
-              });
-              setBody({
-                name: values.name,
-                email: values.email,
-                password: values.password,
-                vendorIntent: true
-              })
-            }}
-              className={classes.SubmitButton}
-              >
-            CREATE YOUR ACCOUNT
-          </button>
-        </div>
-      </Aux>
-    );
-
-    const signupDisplay = () => {
-      //NEED A BETTER TEST
-      //without "data.message !== "hi first time it places the data object into local storage with every keystroke
-      //this then generates an error in navigation component when it is looking for "role"
-      if (data.status && data.message !== "hi first time") {
-        return (
-          <Aux>
-            {showSuccess}
-          </Aux>
-        )
-      } else {
-        return (
-          <div>
-            <div className={classes.DescriptionText}>
-              {signUpText()}
-            </div>
-            <div className={classes.SignUpForm}>
-              {showError()}
-              {signUpForm}
-            </div>
-          </div>
-        )
-      }
-    }
-
     let appointmentText = () => {
       if (screenSize >= 1050) {
         return (
@@ -1033,7 +944,10 @@ const Home = () => {
         <br></br>
         <button
           className={classes.SubmitButton}
-          href="https://calendly.com/dahday/openseatdirect-connect?back=1&month=2020-10">
+          onClick={() => {
+            window.location.href = "https://calendly.com/dahday/openseatdirect-connect?back=1&month=2020-10";
+          }}
+          >
           SCHEDULE AN APPOINTMENT
         </button>
       </Fragment>
@@ -1125,9 +1039,21 @@ const Home = () => {
                 className={classes.SectionContainer}
                 style={{backgroundColor: "white"}}
               >
-                {signupDisplay()}
-              </div>
+                <div className={classes.DescriptionText}>
+                  {signUpText()}
+                </div>
+                <br></br>
+                <button
+                  className={classes.SubmitButton}
+                  onClick={() => {
+                    console.log("Clicking button");
+                    setModalStatus(true)
+                  }}
+                >
+                  SIGN UP NOW
+                </button>
 
+              </div>
               <div
                 className={classes.SectionContainer}
                 style={{backgroundColor: "white"}}
@@ -1137,6 +1063,16 @@ const Home = () => {
             </div>
           </div>
         )}
+        <AuthenticationModal
+          show={modalStatus}
+          zeroCart={false}
+          start={"signup"}
+          vendorIntent={true}
+          closeModal={() => setModalStatus(false)}
+          submit={() => {
+            redirectUser()
+          }}
+        />
       </div>
     )
 }
@@ -1255,9 +1191,6 @@ export default Home;
         <br></br>
         <br></br>
       </div>
-
-
-
 
       <div
       className={classes.SectionContainer}

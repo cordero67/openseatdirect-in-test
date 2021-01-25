@@ -1,0 +1,86 @@
+.DisplayPanel {
+  background-color: white;
+  font-size: 15px;
+  width: 1030px;
+  height: calc(100vh - 227px);
+  margin-top: 110px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  overflow-y: auto;
+}
+.DisplayPanelTitle {
+  position: fixed;
+  top: 60px;
+  width: 1030px;
+  background-color: white;
+  border-bottom: 1px solid grey;
+  height: 50px;
+  padding-left: 15px;
+  padding-top: 15px;
+  font-size: 26px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+.Events {
+  text-align: center;
+  display: grid;
+  column-gap: 5px;
+  grid-template-columns: 60px 500px 80px 80px 80px 80px 80px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+  padding-right: 30px;
+  box-sizing: border-box;
+}
+.EventsHeader {
+  z-index: 200;
+  display: grid;
+  position: fixed;
+  top: 110px;
+  column-gap: 5px;
+  background-color: #e7e7e7;
+  border-bottom: 1px solid lightgrey;
+  width: 1030px;
+  height: 60px;
+  grid-template-columns: 60px 500px 80px 80px 80px 80px 80px;
+  font-size: 15px;
+  font-weight: 600;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  padding-right: 30px;
+  box-sizing: border-box;
+}
+.EventTitle {
+  font-size: 16px;
+  text-align: left;
+  font-weight: 600;
+}
+.EventButton {
+  text-align: center;
+  color: blue;
+  font-weight: 600;
+  width: 80px;
+  padding-left: 5px;
+  border: 1px solid white;
+  background-color: white;
+  cursor: pointer;
+  outline: 1px solid white;
+}
+.EventButton:focus {
+  border: 1px solid white;
+  outline: 1px solid white;
+}
+.ConnectionText {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  padding-top: 30px;
+}
+.NoEventsText {
+  width: 1030px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  padding-top: 20px;
+}

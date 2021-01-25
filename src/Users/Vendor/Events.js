@@ -1,30 +1,18 @@
 import React, { useEffect, useState, Fragment } from "react";
 
 import { API } from "../../config";
-import Analytics from "../../assets/analytics.png";
-import Receipt from "../../assets/receipt.png";
-import ReceiptBlue from "../../assets/receiptBlue.png";
-import Ticket from "../../assets/ticket.png";
-import TicketBlue from "../../assets/ticketBlue.png";
 import WarningModal from "./Modals/WarningModal";
 import Spinner from "../../components/UI/Spinner/Spinner";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEdit
-} from "@fortawesome/free-solid-svg-icons";
  
-import classes from "./VendorAccountOLD.module.css";
-import { compareValues, getDates } from "./VendorFunctions";
-import { Button } from "semantic-ui-react";
+import classes from "./Events.module.css";
+import { compareValues, getDates } from "./Resources/VendorFunctions";
 
 const Events = (props) => {
+    const [display, setDisplay] = useState("spinner"); //main, spinner, connection
 
     const [eventDescriptions, setEventDescriptions] = useState();//
-    const [isLoading, setIsLoading] = useState(false);//
-    const [isSuccessfull, setIsSuccessfull] = useState(false);//
 
-    const [showWarningModal, setShowWarningModal] = useState({
+    const [warningModal, setWarningModal] = useState({
         status: false,
         type: ""
     });
@@ -41,19 +29,15 @@ const Events = (props) => {
         let tempUser = JSON.parse(localStorage.getItem("user"));
         let vendorToken = tempUser.token;
         let vendorId = tempUser.user._id;
-        console.log("Got user");
 
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("Authorization", "Bearer " + vendorToken);
-    
         let requestOptions = {
             method: "GET",
             headers: myHeaders,
             redirect: "follow",
         };
-
-        // retrieves event information
         let fetchstr =  `${API}/event/alluser/${vendorId}`;
 
         fetch(fetchstr, requestOptions)
@@ -62,58 +46,44 @@ const Events = (props) => {
         .then((result) => {
             localStorage.setItem("events", result);
             let js = JSON.parse(result);
-            console.log("eventDescriptions unordered: ", js);
             js.sort(compareValues("startDateTime", "asc"));
-            console.log("eventDescriptions ordered: ", js);
             setEventDescriptions(js);
-            setIsSuccessfull(true);
-            setIsLoading(false);
+                fetchstr = `${API}/order/${vendorId}`;
+                fetch(fetchstr, requestOptions)
+                .then(handleErrors)
+                .then((response) => response.text())
+                .then((result) => {
+                    localStorage.setItem("orders", result);
+                    setDisplay("main");
+                })
             return js;
         })
         .catch((error) => {
             console.log("error", error);
-            setIsSuccessfull(false);
-            setIsLoading(false);
-        });
-
-        // retrieves order information
-        fetchstr = `${API}/order/${vendorId}`;
-
-        fetch(fetchstr, requestOptions)
-        .then(handleErrors)
-        .then((response) => response.text())
-        .then((result) => {
-            localStorage.setItem("orders", result);
-        })
-        .catch((error) => {
-            console.log("error in order information retrieval", error);
+            setDisplay("connection");
         });
     }
-    
+
     useEffect(() => {
-        setIsLoading(true);
         if (
             typeof window !== "undefined" &&
             localStorage.getItem(`user`) !== null
         ) {
             loadServerData();
-
         } else {
-            window.location.href = "/signin";
+            window.location.href = "/auth";
         }
-
     }, []);
-    
+
     const setEventNum = (item) => {
         if (typeof window !== "undefined") {
-        localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
+            localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
+        } else {
+            window.location.href = "/auth";
         }
-        // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
     }
 
     const switchTab = (name, item) => {
-        console.log("Event name: ", name)
-        setIsLoading(true);
         if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
             localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
 
@@ -122,7 +92,7 @@ const Events = (props) => {
                 let storedOrders = JSON.parse(localStorage.getItem("orders"));
 
                 if (name === "analytics") {
-                    setShowWarningModal({
+                    setWarningModal({
                         status: true,
                         type: "analytics"
                     });
@@ -134,20 +104,15 @@ const Events = (props) => {
                             ordersExist = true;
                         }
                     })
-                    
                     if (ordersExist) {
                         // switch to the historical orders tab
-                        console.log("there are orders for this event");
                         props.ticketSales();
-    
                     } else {
-                        console.log("there are NO orders for this event");
-                        setShowWarningModal({
+                        setWarningModal({
                             status: true,
                             type: "orders"
                         });
                     }
-
                 } else if (name === "tickets") {
                     //check if there are any orders for this event
                     let ticketsExist = false;
@@ -157,114 +122,64 @@ const Events = (props) => {
                             ticketsExist = true;
                         }
                     })
-                    
                     if (ticketsExist) {
                         // switch to the historical orders tab
-                        console.log("there are tickets for this event");
                         props.issueTickets();
                     } else {
-                        console.log("there are NO tickets for this event");
-                        setShowWarningModal({
+                        setWarningModal({
                             status: true,
                             type: "tickets"
                         });
                     }
                 }
-
             } else {
-                console.log("had to reload server data")
                 loadServerData();
-                // data issue, please resubmit selection
             }
-            
         } else {
-        window.location.href = "/signin";
+            window.location.href = "/auth";
         }
-
-        setIsLoading(false);
     }
 
-    const warningModal = (
+    const warningModalDisplay = (
         <Fragment>
             <WarningModal
-                show={showWarningModal.status}
-                type={showWarningModal.type}
+                show={warningModal.status}
+                type={warningModal.type}
                 close={() => {
-                    setShowWarningModal({
+                    setWarningModal({
                         status: false,
                         type: ""
                     });
                 }}
-            ></WarningModal>
+            />
         </Fragment>
     )
 
     const mainDisplay = () => {
-        if (isLoading) {
-            return (
-                <Fragment>
-                    <div style={{paddingTop: "120px"}}>
-                        <Spinner/>
-                    </div>
-                </Fragment>
-            );
-        } else if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
-            console.log("eventDescriptions.length: ", eventDescriptions.length)
+        if (display === "main" && eventDescriptions.length !== 0) {
             return (
                 <div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
                     {eventDescriptions.map((item, index) => {
                         let shortMonth, dayDate, longDateTime;
                         [shortMonth, dayDate, longDateTime] = getDates(item.startDateTime);
-                        console.log("Event number: ", item.eventNum)
-
                         return (
-                            <div key={index} 
-                                style={{
-                                    textAlign: "center",
-                                    display: "grid",
-                                    columnGap: "5px",
-                                    gridTemplateColumns: "60px 500px 80px 80px 80px 80px 80px",
-                                    paddingTop: "15px",
-                                    paddingBottom: "5px",
-                                    paddingLeft: "20px",
-                                    paddingRight: "30px"
-                                    }}>
+                            <div
+                                key={index}
+                                className={classes.Events}
+                            >
                                 <div style={{ textAlign: "center"}}>
-                                    <span
-                                        style={{
-                                        fontSize: "12px",
-                                        fontWeight: "400",
-                                        color: "red",
-                                        }}
-                                    >
+                                    <div style={{fontSize: "12px", fontWeight: "400", color: "red"}}>
                                         {shortMonth}
-                                    </span>
-                                    <br></br>
-                                    <span style={{ fontSize: "18px", color: "black", fontWeight: "600" }}>
+                                    </div>
+                                    <div style={{ fontSize: "18px", color: "black", fontWeight: "600" }}>
                                         {dayDate}
-                                    </span>
+                                    </div>
                                 </div>
                                 <div style={{textAlign: "left"}}>
-                                    <div
-                                        style={{
-                                            fontSize: "16px",
-                                            textAlign: "left",
-                                            fontWeight: "600",
-                                            paddingLeft: "0px",
-                                        }}
-                                    >
+                                    <div className={classes.EventTitle}>
                                     {item.eventTitle}
                                     </div>
-                                    <div
-                                        style={{
-                                            fontSize: "13px",
-                                            textAlign: "left",
-                                            fontWeight: "500" 
-                                        }}
-                                    >
+                                    <div style={{fontSize: "13px", textAlign: "left", fontWeight: "500" }}>
                                     {longDateTime}
                                     </div>
                                 </div>
@@ -273,175 +188,126 @@ const Events = (props) => {
                                         <span style={{color: "#B80000"}}>DRAFT</span> :
                                         <span style={{color: "#008F00"}}>LIVE</span>}
                                 </div>
-                                <button
-                                    style={{
-                                        textAlign: "center",
-                                        color: "blue",
-                                        fontWeight: "600",
-                                        width: "80px",
-                                        paddingLeft: "5px",
-                                        border: "none",
-                                        backgroundColor: "white",
-                                        cursor: "pointer",
-                                        display: "inlineBlock",
-                                        outline: "none"
-                                    }}
-                                >
+                                <button className={classes.EventButton}>
                                     <ion-icon
-                                        size="large"
+                                        style={{fontSize: "28px", color: "blue"}}
                                         name="analytics"
                                         onClick={() => {
                                             switchTab("analytics", item);
                                         }}
-                                    ></ion-icon>
+                                    />
                                 </button>
-                                <button
-                                    style={{
-                                        textAlign: "center",
-                                        color: "blue",
-                                        fontWeight: "600",
-                                        width: "80px",
-                                        paddingLeft: "5px",
-                                        border: "none",
-                                        backgroundColor: "white",
-                                        cursor: "pointer",
-                                        display: "inlineBlock",
-                                        outline: "none"
-                                    }}
-                                >
+                                <button className={classes.EventButton}>
                                     <ion-icon
-                                        size="large"
+                                        style={{fontSize: "24px", color: "blue"}}
                                         name="receipt-outline"
                                         onClick={() => {
                                             switchTab("orders", item);
                                         }}
-                                    ></ion-icon>
+                                    />
                                 </button>
-                                <button
-                                    style={{
-                                        textAlign: "center",
-                                        color: "blue",
-                                        fontWeight: "600",
-                                        width: "80px",
-                                        paddingLeft: "5px",
-                                        border: "none",
-                                        backgroundColor: "white",
-                                        cursor: "pointer",
-                                        display: "inlineBlock",
-                                        outline: "none"
-                                    }}
-                                >
+                                <button className={classes.EventButton}>
                                     <ion-icon
-                                        size="large"
+                                        style={{fontSize: "26px", color: "blue"}}
                                         name="ticket-outline"
                                         onClick={() => {
                                             switchTab("tickets", item);
                                         }}
-                                    ></ion-icon>
+                                    />
                                 </button>
-                                <div
-                                    style={{
-                                        textAlign: "center",
-                                        color: "blue",
-                                        fontWeight: "600",
-                                        width: "80px",
-                                        paddingLeft: "5px",
-                                        border: "none",
-                                        backgroundColor: "white",
-                                        cursor: "pointer",
-                                        display: "inlineBlock",
-                                        outline: "none"
-                                    }}
-                                >
+                                <button className={classes.EventButton}>
                                     <ion-icon
-                                        size="large"
+                                        style={{fontSize: "26px", color: "blue"}}
                                         name="create-outline"
                                         onClick={() => {
                                             setEventNum(item);
                                             props.editEvent();
                                         }}
-                                    ></ion-icon>
-                                </div>
+                                    />
+                                </button>
                             </div>
                         );
                     })}
                 </div>
             )
-        } else if (!isLoading && isSuccessfull) {
-            console.log("eventDescriptions.length: zero: ", eventDescriptions.length);
-            console.log("zero events");
+        } else if (display === "main") {
             return (
-                <div style={{ textAlign: "center", fontSize: "20px" }}>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>You currently have no events.
+                <div className={classes.NoEventsText}>
+                    You currently have no events.
                 </div>
             )
         } else {
+            return null
+        }
+    }
+
+    const tabTitle = (
+        <div className={classes.DisplayPanelTitle}>
+            My Events
+        </div>
+    )
+
+    const displayHeader = (
+        <div className={classes.EventsHeader}>
+            <div style={{ textAlign: "center" }}>Date</div>
+            <div>Event</div>
+            <div style={{ textAlign: "center" }}>
+                <div>Event</div>
+                <div>Status</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+                <div>Sales</div>
+                <div>Analytics</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+                <div>Past</div>
+                <div>Orders</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+                <div>Issue</div>
+                <div>Tickets</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+                <div>Edit</div>
+                <div>Event</div>
+            </div>
+        </div>
+    )
+
+    // defines and sets "loadingSpinner" view status
+    const loadingSpinner = () => {
+        if (display === "spinner") {
+        return (
+            <div style={{paddingTop: "60px"}}>
+                <Spinner/>
+            </div>
+        )
+        } else {
+            return null
+        }
+    }
+
+    // defines and sets "connectionStatus" view status
+    const connectionStatus = () => {
+        if (display === "connection") {
             return (
-                <div className={classes.SystemDownMessage}>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div className={classes.SummaryHeader}>
-                        System error please reload/refresh this page.
-                    </div>
-                    
-                    <br></br>
-                    <div style={{textAlign: "center"}}>
-                        <Button className={classes.EventsButton}
-                            style={{
-                                backgroundColor: "white",
-                                border: "1px solid blue",
-                                color: "blue",
-                                padding: "0px"
-                            }}
-                            content="Reload Page"
-                            onClick={() => {
-                                window.location.reload();
-                                return false;
-                            }}
-                        />
-                    </div>
+                <div className={classes.ConnectionText}>
+                    There is a problem with OSD Server in retrieving your events. Please try again later.
                 </div>
             )
-        }
+        } else return null;
     }
 
     return (
         <div>
-            <div className={classes.DisplayPanelTitle}>
-                My Events
-            </div>
-            <div className={classes.DisplayPanel2}>
-                <div className={classes.MainDisplayHeader2}>
-                    <div style={{ textAlign: "center" }}>Date</div>
-                    <div className={classes.Expand}>Event</div>
-                    <div style={{ textAlign: "center" }}>
-                        <div>Event</div>
-                        <div>Status</div>
-                    </div>
-                    <div style={{ textAlign: "center" }}>
-                        <div>Sales</div>
-                        <div>Analytics</div>
-                    </div>
-                    <div style={{ textAlign: "center" }}>
-                        <div>Past</div>
-                        <div>Orders</div>
-                    </div>
-                    <div style={{ textAlign: "center" }}>
-                        <div>Issue</div>
-                        <div>Tickets</div>
-                     </div>
-                    <div style={{ textAlign: "center" }}>
-                        <div>Edit</div>
-                        <div>Event</div>
-                    </div>
-                </div>
+            {tabTitle}
+            {displayHeader}
+            <div className={classes.DisplayPanel}>
+                {loadingSpinner()}
                 {mainDisplay()}
-                {warningModal}
+                {connectionStatus()}
             </div>
+            {warningModalDisplay}
         </div>
     )
 }

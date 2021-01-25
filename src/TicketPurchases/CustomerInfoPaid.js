@@ -500,8 +500,10 @@ const CustomerInfo = props => {
       <AuthenticationModal
         show={modalStatus}
         zeroCart={false}
+        start={"signin"}
+        vendorIntent={false}
         closeModal={() => setModalStatus(false)}
-        submitOrder={() => {
+        submit={() => {
           console.log("Inside submitOrder");
           window.location.href = "/checkout";
         }}

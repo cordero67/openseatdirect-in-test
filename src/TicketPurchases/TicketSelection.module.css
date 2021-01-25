@@ -17,6 +17,7 @@
 .EventDescription {
     font-weight: 400;
     font-size: 14px;
+    padding-bottom: 10px;
 }
 .EventFooter {
     display: grid;

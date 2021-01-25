@@ -19,7 +19,7 @@ const Authentication = (props) => {
     confirmation: "",
     resent: false,
     username: "",
-    vendorIntent: false,
+    vendorIntent: props.vendorIntent,
     resetToken: "",
     sessionToken: "",
     userId: ""
@@ -31,7 +31,7 @@ const Authentication = (props) => {
     error: false
   });
 
-  const [modalSetting, setModalSetting] = useState("signin") // signin, forgot, temporary, signup, confirmation, password, username, error
+  const [modalSetting, setModalSetting] = useState(props.start) // signin, forgot, temporary, signup, confirmation, password, username, error
 
   const { name, email, password, temporary, reissued, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
 
@@ -215,7 +215,7 @@ const Authentication = (props) => {
     let url = `${API}/auth/signup1_email`;
     let information = {
       email: email,
-      vendorIntent: false
+      vendorIntent: props.vendorIntent
     }
     let fetchBody ={
       method: "POST",
@@ -256,7 +256,7 @@ const Authentication = (props) => {
     let information = {
       email: email,
       confirm_code: confirmation,
-      vendorIntent: false
+      vendorIntent: props.vendorIntent
     }
     let fetchBody ={
       method: "POST",
@@ -298,7 +298,7 @@ const Authentication = (props) => {
       email: email,
       resetPasswordToken: resetToken,
       password: password,
-      vendorIntent: false
+      vendorIntent: props.vendorIntent
     }
     let fetchBody ={
       method: "POST",
@@ -420,13 +420,13 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: false,
+        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: ""
       });
       console.log("SUCCESS")
-      props.submitOrder();
+      props.submit();
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -448,7 +448,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: false,
+        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -477,13 +477,13 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: false,
+        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: ""
       });
       console.log("SUCCESS")
-      props.submitOrder();
+      props.submit();
 
     } else {
       setSubmissionStatus({
@@ -507,7 +507,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: false,
+        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -623,13 +623,13 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: false,
+        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: ""
       });
       console.log("SUCCESS")
-      props.submitOrder();
+      props.submit();
 
     } else {
       setSubmissionStatus({
@@ -651,7 +651,7 @@ const Authentication = (props) => {
       confirmation: "",
       resent: false,
       username: "",
-      vendorIntent: false,
+      vendorIntent: props.vendorIntent,
       resetToken: "",
       sessionToken: "",
       userId: ""
@@ -671,7 +671,7 @@ const Authentication = (props) => {
         confirmation: "",
         resent: true,
         username: data.user.username,
-        vendorIntent: false,
+        vendorIntent: props.vendorIntent,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
         userId: ""
@@ -938,7 +938,7 @@ const Authentication = (props) => {
           className={classes.CancelButton}
           onClick={() => {
             console.log("clicked skip button")
-            props.submitOrder();
+            props.submit();
         }}>
           CHANGE IT LATER
         </button>
@@ -1061,7 +1061,7 @@ const Authentication = (props) => {
       message: "",
       error: false
     });
-    setModalSetting("signin");
+    setModalSetting(props.start);
     props.closeModal()
   }
 
@@ -1073,14 +1073,12 @@ const Authentication = (props) => {
           <div className={classes.Header}>
             <div>Welcome back</div>
             <div style={{textAlign: "right"}}>
-              <FontAwesomeIcon
-                size="1x"
-                color="black"
-                cursor = "pointer"
+              <ion-icon
+                style={{fontWeight: "600", fontSize: "28px", color: "black", paddingBottom: "5px"}}
+                name="close-outline"
                 onClick={() => {
                   closeModal()
                 }}
-                icon={faTimes}
               />
             </div>
           </div>
@@ -1104,14 +1102,12 @@ const Authentication = (props) => {
           <div className={classes.Header}>
             <div>Need a temporary password?</div>
             <div style={{textAlign: "right"}}>
-              <FontAwesomeIcon
-                size="1x"
-                color="black"
-                cursor = "pointer"
+              <ion-icon
+                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                name="close-outline"
                 onClick={() => {
                   closeModal()
                 }}
-                icon={faTimes}
               />
             </div>
           </div>
@@ -1135,14 +1131,12 @@ const Authentication = (props) => {
           <div className={classes.Header}>
             <div>Enter temporary password</div>
             <div style={{textAlign: "right"}}>
-              <FontAwesomeIcon
-                size="1x"
-                color="black"
-                cursor = "pointer"
+              <ion-icon
+                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                name="close-outline"
                 onClick={() => {
                   closeModal()
                 }}
-                icon={faTimes}
               />
             </div>
           </div>
@@ -1166,21 +1160,19 @@ const Authentication = (props) => {
           <div className={classes.Header}>
             <div>Tell us about yourself</div>
             <div style={{textAlign: "right"}}>
-              <FontAwesomeIcon
-                size="1x"
-                color="black"
-                cursor = "pointer"
+              <ion-icon
+                style={{fontWeight: "600", fontSize: "28px", color: "black", paddingBottom: "5px"}}
+                name="close-outline"
                 onClick={() => {
                   closeModal()
                 }}
-                icon={faTimes}
               />
             </div>
           </div>
           <div>
             {showError()}
             {signUpForm}
-            {alternateSignUpInputs}
+            {props.start === "signin" ? alternateSignUpInputs : null}
           </div>
         </div>
       )
@@ -1197,14 +1189,12 @@ const Authentication = (props) => {
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
             <div style={{textAlign: "right"}}>
-              <FontAwesomeIcon
-                size="1x"
-                color="black"
-                cursor = "pointer"
+              <ion-icon
+                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                name="close-outline"
                 onClick={() => {
                   closeModal()
                 }}
-                icon={faTimes}
               />
             </div>
           </div>
@@ -1228,14 +1218,12 @@ const Authentication = (props) => {
           <div className={classes.Header}>
             <div>Create your password</div>
             <div style={{textAlign: "right"}}>
-              <FontAwesomeIcon
-                size="1x"
-                color="black"
-                cursor = "pointer"
+              <ion-icon
+                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                name="close-outline"
                 onClick={() => {
                   closeModal()
                 }}
-                icon={faTimes}
               />
             </div>
           </div>
@@ -1258,14 +1246,12 @@ const Authentication = (props) => {
           <div className={classes.Header}>
             <div>Change your username</div>
             <div style={{textAlign: "right"}}>
-              <FontAwesomeIcon
-                size="1x"
-                color="black"
-                cursor = "pointer"
+              <ion-icon
+                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                name="close-outline"
                 onClick={() => {
                   closeModal()
                 }}
-                icon={faTimes}
               />
             </div>
           </div>
@@ -1288,14 +1274,12 @@ const Authentication = (props) => {
           <div className={classes.Header}>
             <div>System Error</div>
             <div style={{textAlign: "right"}}>
-              <FontAwesomeIcon
-                size="1x"
-                color="black"
-                cursor = "pointer"
+              <ion-icon
+                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                name="close-outline"
                 onClick={() => {
                   closeModal()
                 }}
-                icon={faTimes}
               />
             </div>
           </div>

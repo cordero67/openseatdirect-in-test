@@ -1,17 +1,13 @@
 .DisplayPanel {
   background-color: white;
-  font-size: 15px;
+  font-size: 14px;
   width: 1030px;
-  height: calc(100vh - 117px);
-  padding-top: 0px;
-  padding-left: 0px;
-  padding-right: 0px;
-  box-sizing: border-box;
+  height: calc(100vh - 247px);
+  margin-top: 130px;
   scrollbar-width: thin;
   overflow-y: auto;
 }
-
-.DashboardHeader {
+.DisplayPanelTitle {
   position: fixed;
   background-color: #e7e7e7;
   border-bottom: 1px solid lightgrey;
@@ -24,40 +20,23 @@
   padding-bottom: 15px;
   padding-left: 15px;
   padding-right: 30px;
+  box-sizing: border-box;
 }
-
-.OrdersHeader {
-  display: grid;
-  grid-template-columns: 170px 180px 310px 70px 100px 90px;
-  column-gap: 10px;
-  border-bottom: 1px solid black;
-  width: 970px;
-  height: 40px;
-  font-size: 15px;
-  font-weight: 600;
-  padding-top: 10px;
-  padding-bottom: 15px;
+.DisplayHeader {
+  position: fixed;
+  top: 130px;
 }
-
 .Orders {
   text-align: center;
   display: grid;
   column-gap: 10px;
   grid-template-columns: 170px 180px 310px 70px 100px 90px;
   font-weight: 500;
-  padding-top: 15px;
-  padding-bottom: 5px;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
 }
-
-.Tickets {
-  text-align: center;
-  display: grid;
-  grid-template-columns: 200px 80px 80px 70px 80px;
-  column-gap: 10px;
-  font-weight: 500;
-  font-size: 14px;
-}
-
 .SwitchButton {
   font-size: 14px;
   text-align: left;
@@ -69,18 +48,22 @@
   cursor: pointer;
   display: inline-block;
   outline: none;
+  box-sizing: border-box;
 }
-
-.NoButton {
-  color: blue;
-  border: none;
-  background-color: white;
-  cursor: pointer;
-  display: inline-block;
-  outline: none;
+.OrdersHeader {
+  display: grid;
+  grid-template-columns: 170px 180px 310px 70px 100px 90px;
+  column-gap: 10px;
+  border-bottom: 1px solid black;
+  width: 1030px;
+  height: 40px;
+  font-size: 15px;
   font-weight: 600;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 15px;
+  box-sizing: border-box;
 }
-
 .SortButton {
   font-weight: 600;
   padding-right: 0px;
@@ -91,4 +74,13 @@
   cursor: pointer;
   display: inline-block;
   outline: none;
+  box-sizing: border-box;
+}
+.NoTicketsText {
+  width: 1030px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  padding-top: 20px;
+  box-sizing: border-box;
 }

@@ -52,16 +52,16 @@ const TicketSelection = () => {
   // defines panel displayed on main page
   const [display, setDisplay] = useState("spinner"); //main, spinner, confirmation, connection
 
+  // defines single or double panel display on main page
   const [showDoublePane, setShowDoublePane] = useState(false);
+
+  // defines panel display for a single panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
   
   // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false);
-
-  // Defines data loading control variables
-  const [isLoadingEvent, setIsLoadingEvent] = useState(true);
-  const [isSuccessfull, setIsSuccessfull] = useState(true);
   
+  // defines if PayPal order was validated by server
   const [orderStatus, setOrderStatus] = useState(true);
 
   // NEED TO REFACTOR THIS CONTROL VARIABLE
@@ -133,7 +133,6 @@ const TicketSelection = () => {
           setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
           setOrderTotals(loadOrderTotals(res));
         }
-        setDisplay("main")
 
         // only asks for image if event has been successfully imported
         getEventImage(eventID)
@@ -144,19 +143,11 @@ const TicketSelection = () => {
             eventLogo = DefaultLogo;
           })
           .finally(() => {
-            setIsLoadingEvent(false);
+            setDisplay("main")
           });
       })
       .catch((err) => {
-        // NEED TO REFACTOR THIS ENTIRE ".catch" BLOCK
-        // NEED TO ADDRESS THESE SITUATIONS
-        console.log("Inside the catch, err: ", err);
-        if (err === "Error: Error: 400") {
-        }
-        if (err === undefined) {
-        }
-        setIsSuccessfull(false);
-        setIsLoadingEvent(false);
+        setDisplay("connection")
       });
   };
 
@@ -257,7 +248,7 @@ const TicketSelection = () => {
         return response.json()})
     .then ((data)=>{
         console.log ("fetch return got back data:", data);
-        setOrderStatus(true);
+        setOrderStatus(data.status);
         setDisplay("confirmation")
     })
     .catch ((error)=>{
@@ -291,9 +282,9 @@ const TicketSelection = () => {
 
   // updates "promoCodeDetails", "ticketInfo" and "orderTotals" based on promo code removal
   const clearPromoCodes = () => {
-    setPromoCodeDetails(clearPromoDetails(promoCodeDetails)); // I THINK THIS IS CORRECT!!!
-    setTicketInfo(clearTicketInfo(ticketInfo)); // I THINK THIS IS CORRECT!!!
-    setOrderTotals(clearOrderTotals(ticketInfo, orderTotals)); // I THINK THIS IS CORRECT!!!
+    setPromoCodeDetails(clearPromoDetails(promoCodeDetails));
+    setTicketInfo(clearTicketInfo(ticketInfo));
+    setOrderTotals(clearOrderTotals(ticketInfo, orderTotals));
   };
 
   const inputPromoCode = () => {
@@ -450,7 +441,7 @@ const TicketSelection = () => {
     console.log("orderTotals.ticketsPurchased: ", orderTotals.ticketsPurchased)
     console.log("eventDetails.forSale: ", eventDetails.forSale)
     console.log("session token: ", contactInformation.sessionToken)
-    if (!isLoadingEvent &&
+    if (
       orderTotals.finalPurchaseAmount === 0 &&
       orderTotals.ticketsPurchased > 0 &&
       contactInformation.sessionToken !== ""
@@ -464,9 +455,7 @@ const TicketSelection = () => {
           SUBMIT ORDER
         </button>
       );
-    } else if (!isLoadingEvent &&
-      orderTotals.ticketsPurchased > 0
-    ) {
+    } else if (orderTotals.ticketsPurchased > 0) {
       return (
         <button
           onClick={storeOrder}
@@ -476,7 +465,7 @@ const TicketSelection = () => {
           PROCEED TO CHECKOUT
         </button>
       );
-    } else if (!isLoadingEvent) {
+    } else {
       return (
         <button
           disabled={true}
@@ -485,7 +474,7 @@ const TicketSelection = () => {
           PROCEED TO CHECKOUT
         </button>
       );
-    } else return null;
+    }
   };
 
   // stores "orderTotals" and "eventLogo" in "localStorage"
@@ -560,9 +549,7 @@ const TicketSelection = () => {
           <div>There is a problem with OSD Server in processing your tickets. Please try again later.</div>
         </div>
       )
-    } else {
-      return <div>connect</div>;
-    }
+    } else return null;
   }
 
   // creates event header with date/time range
@@ -630,7 +617,6 @@ const TicketSelection = () => {
           onClick={switchShowOrderSummary}
           showStatus={showOrderSummaryOnly}
           orderTotals={orderTotals}
-          isLoading={isLoadingEvent}
           showDoublePane={showDoublePane}
         />
       );
@@ -727,23 +713,17 @@ const TicketSelection = () => {
   const mainDisplay = () => {
     if (display === "main") {
 
-      if (showDoublePane && isSuccessfull) {
+      if (showDoublePane) {
         return (
           <div style={MainGrid}>
             {ticketPane()}
             {orderPane()}
           </div>
         );
-      } else if (!showOrderSummaryOnly && isSuccessfull) {
+      } else if (!showOrderSummaryOnly) {
         return <div style={MainGrid}>{ticketPane()}</div>;
-      } else if (isSuccessfull) {
-        return <div style={MainGrid}>{orderPane()}</div>;
       } else {
-        return (
-          <div className={classes.BlankCanvas}>
-            <div style={{ color: "red" }}>This event does not exist.</div>
-          </div>
-        );
+        return <div style={MainGrid}>{orderPane()}</div>;
       }
     } else {
       return null
@@ -757,7 +737,7 @@ const TicketSelection = () => {
           <div style={{ paddingTop: "20px" }}>
             <OrderConfirm
               transactionInfo={transactionInfo}
-              orderStatus={true}
+              orderStatus={orderStatus}
             ></OrderConfirm>
           </div>
         </div>

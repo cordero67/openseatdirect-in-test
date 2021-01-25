@@ -1,22 +1,42 @@
 .Modal {
-    position: fixed;
-    z-index: 700;
-    background-color: white;
-    width: 90%;
-    border: 1px solid #ccc;
-    box-shadow: 1px 1px 1px black;
-    padding: 16px;
-    left: 15%;
-    top: 10%;
-    text-align: center;
-    box-sizing: border-box;
-    transition: all 0.3s ease-out;
-  }
+  position: fixed;
+  z-index: 700;
+  background-color: white;
+  width: 90%;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px black;
+  padding: 16px;
+  left: 15%;
+  top: 10%;
+  text-align: center;
+  box-sizing: border-box;
+  transition: all 0.3s ease-out;
+}
   
-  @media (min-width: 540px) {
-    .Modal {
-      width: 500px;
-      padding: 30px;
-      left: calc(50% - 270px);
-    }
-  }  
+.ButtonBlue {
+  height: 40px;
+  width: 127px;
+  background-color: #0000CC;
+  color: #fff;
+  border: 1px solid black;
+}
+.ButtonBlue:hover {
+  background-color: #000066;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+}
+.ButtonBlue:active {
+  background-color: #fff;
+  color: #0000CC;
+  border: 2px solid #0000CC;
+  font-weight: 600;
+}
+
+@media (min-width: 540px) {
+  .Modal {
+    width: 500px;
+    padding: 30px;
+    left: calc(50% - 270px);
+  }
+}

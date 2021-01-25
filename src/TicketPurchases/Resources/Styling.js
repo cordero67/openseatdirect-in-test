@@ -155,6 +155,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
       paddingLeft: `10px`,
       paddingRight: `10px`,
       textAlign: `left`,
+      scrollbarWidth: `10px`,
       overflowY: `auto`
     };
   } else if (inWidth < 660) {
@@ -166,6 +167,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
       paddingLeft: `25px`,
       paddingRight: `25px`,
       textAlign: `left`,
+      scrollbarWidth: `10px`,
       overflowY: `auto`
     };
   } else {
@@ -179,6 +181,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         paddingLeft: `25px`,
         paddingRight: `25px`,
         textAlign: `left`,
+        scrollbarWidth: `10px`,
         overflowY: `auto`
       };
     } else {
@@ -190,6 +193,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         paddingLeft: `25px`,
         paddingRight: `25px`,
         textAlign: `left`,
+        scrollbarWidth: `10px`,
         overflowY: `auto`
       };
     }

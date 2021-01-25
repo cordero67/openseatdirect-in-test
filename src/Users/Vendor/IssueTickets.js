@@ -147,7 +147,7 @@ const ManualOrderEntry = (props) => {
       }
         
     } else {
-      window.location.href = "/signin";
+      window.location.href = "/auth";
     }
 
     setIsLoading(false);
@@ -721,7 +721,14 @@ const ManualOrderEntry = (props) => {
   
   const mainDisplay = () => {
     return (
-      <div style={{paddingTop: "80px", paddingLeft: "30px"}}>
+      <div
+        style={{
+          height: "calc(100vh - 117px)",
+          scrollbarWidth: "thin",
+          overflowY: "auto",
+          paddingTop: "80px",
+          paddingLeft: "30px"
+        }}>
         <div style={{fontWeight: "600", fontSize: "18px"}}>Issue Tickets</div>
         {orderDisplay()}
         {orderModalDisplay()}
@@ -747,8 +754,10 @@ const ManualOrderEntry = (props) => {
   
   return (
     <div>
-      {tabTitle}
-      {mainDisplay()}
+      <div>
+        {tabTitle}
+        {mainDisplay()}
+      </div>
     </div>
   )
 }

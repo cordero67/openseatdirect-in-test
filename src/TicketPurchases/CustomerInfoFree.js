@@ -498,9 +498,10 @@ const CustomerInfo = props => {
       <AuthenticationModal
         show={modalStatus}
         zeroCart={false}
+        start={"signin"}
+        vendorIntent={false}
         closeModal={() => setModalStatus(false)}
-        submitOrder={() => {
-      
+        submit={() => {
           freeTicketHandler(true)
         }}
       />

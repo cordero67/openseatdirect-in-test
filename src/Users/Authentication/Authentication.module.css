@@ -4,7 +4,6 @@
   background-color: #fff;
   min-height: calc(100vh - 60px);
   width: 100vw;
-  z-index: 100;
   padding-top: 60px;
   padding-left: 0px;
   padding-right: 0px;
@@ -18,7 +17,6 @@
     background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
     min-height: calc(100vh - 60px);
     width: 100vw;
-    z-index: 100;
     padding-top: 120px;
     padding-left: 0px;
     padding-right: 0px;
@@ -44,7 +42,6 @@
     background-color: white;
     margin: auto;
     width: 500px;
-    z-index: 100;
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left: calc(50% - 170px);
@@ -59,7 +56,6 @@
     background-color: white;
     margin: auto;
     width: 500px;
-    z-index: 100;
     padding-top: 30px;
     padding-bottom: 30px;
     padding-left: 80px;

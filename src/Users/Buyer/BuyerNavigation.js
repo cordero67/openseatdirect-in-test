@@ -102,21 +102,7 @@ const BuyerNavigation = (props) => {
               Create Events
             </button>
           </li>
-
-          <li 
-          >
-            <NavLink
-            className={classes.NavigationButton}
-              to="/signin"
-              style={{color: "#000",
-              fontWeight: "500"}}
-              onClick={() => {
-                signout(() => {
-                })
-              }}
-            >Sign Out
-            </NavLink>
-          </li>
+          
         </div>
       </ul>
     </Fragment>

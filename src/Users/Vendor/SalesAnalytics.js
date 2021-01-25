@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
-
-import classes from "./VendorAccountOLD.module.css";
+import classes from "./VendorAccount.module.css";
 
 const SalesAnalytics = (props) => {
 

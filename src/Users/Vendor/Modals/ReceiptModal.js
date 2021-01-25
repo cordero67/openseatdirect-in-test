@@ -1,14 +1,15 @@
 import React, { Fragment } from "react";
 
-import { getStartDate } from "../VendorFunctions";
+import { getStartDate } from "../Resources/VendorFunctions";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
-import classes from "./OrderModal.module.css";
-
-import { Button } from "semantic-ui-react";
+import classes from "./ReceiptModal.module.css";
 
 const OrderModal = (props) => {
+  
+  console.log("selected order: ", props)
 
   let allTotal = 0;
+  let payPalExpressTotal = 0;
   let cashTotal = 0;
   let cashAppTotal = 0;
   let venmoTotal = 0;
@@ -17,63 +18,72 @@ const OrderModal = (props) => {
   let ethereumTotal = 0;
   let otherTotal = 0;
 
-  
   let longDateTime;
-  [longDateTime] = getStartDate(props.dateTime);
-  console.log("longDateTime: ", longDateTime)
+  [longDateTime] = getStartDate(props.details.startDateTime);
 
-  const modalTitle = () => {
-    if (props.status === "review") {
-      return <Fragment>Review and submit order</Fragment>
-    } else if (props.status === "confirmation") {
-      return <Fragment>Order confirmed and tickets issued</Fragment>
-    } else if (props.status === "error") {
-      return (
-        <div>
-          <div style={{paddingBottom: "10px"}}>
-            Your order was not successful
-          </div>
-          <div style={{paddingBottom: "10px"}}>
-            Please check the order information and resubmit
-          </div>
-        </div>
-      )
-    }
-  }
+  let shortDateTime;
+  [shortDateTime] = getStartDate(props.details.order_createdAt);
 
+  // LOOKS GOOD: 1/21/21
   const modalButtons = () => {
     return (
-      <Fragment>
-        <button
-          style={{
-            border: "1px solid black",
-            backgroundColor: "#B80000",
-            color: "#fff",
-            fontSize: "14px",
-            width: "240px",
-            height: "40px",
-            fontWeight: "500"
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "150px 150px 150px",
+          gridGap: "30px",
+          width: "630px",
+          textAlign: "center",
+          paddingLeft: "60px"
+        }}
+      >
+        <button className={classes.ButtonRed}
+          onClick={() => {
+            props.loadPrevious()
           }}
-          onClick={props.close}
         >
-          CLOSE WINDOW
+          LOAD PREVIOUS
         </button>
-      </Fragment>
+        <button className={classes.ButtonGreen}
+          onClick={() => {
+            props.loadNext()
+          }}
+        >
+          LOAD NEXT
+        </button>
+        <button className={classes.ButtonGrey}
+          onClick={() => {
+            props.close()
+          }}
+        >
+          CLOSE
+        </button>
+      </div>
     )
   }
 
   const ticketsList = () => {
     return (
-      props.details.tickets.map((ticket, index) => {
+      props.details.order_ticketItems.map((ticket, index) => {
         console.log("ticket: ", ticket);
 
         let adjustedTicketName;
-        let num = 30;
+        let num = 40;
 
         if (ticket.ticketName.length <= num) {
           adjustedTicketName = ticket.ticketName;
         } else {
           adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
+        }
+
+        let adjustedPaymentMethod;
+
+        if ("manualPaymentMethod" in  ticket && parseFloat(ticket.unit_price).toFixed(2) !== "0.00") {
+          adjustedPaymentMethod = ticket.manualPaymentMethod;
+        } else if ("manualPaymentMethod" in  ticket) {
+          adjustedPaymentMethod = "comp"
+        } else {
+          adjustedPaymentMethod = "PayPal Express"
         }
 
         return (
@@ -89,13 +99,10 @@ const OrderModal = (props) => {
               }}
             >
               <div style={{textAlign: "left"}}>{adjustedTicketName}</div>
-              <div style={{textAlign: "center"}}>{ticket.numTickets}</div>
-              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.chargedPrice).toFixed(2)}</div>
-              {parseFloat(ticket.chargedPrice).toFixed(2) !== "0.00" ?
-                <div style={{textAlign: "left", paddingLeft: "20px"}}>{ticket.paymentType}</div> :
-                <div style={{textAlign: "left", paddingLeft: "20px"}}>comp</div>
-              }
-              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
+              <div style={{textAlign: "center"}}>{ticket.numTix}</div>
+              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.unit_price).toFixed(2)}</div>
+              <div style={{textAlign: "left", paddingLeft: "10px"}}>{adjustedPaymentMethod}</div>
+              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.item_total_price).toFixed(2)}</div>
             </div>
           </Fragment>
         )
@@ -105,22 +112,36 @@ const OrderModal = (props) => {
 
   const paymentTypeTotals = () => {
     console.log("tickets: ", props.details.tickets)
-    props.details.tickets.forEach((ticket, index) => {
-      allTotal += ticket.subTotal;
-      if (ticket.paymentType === "cash" && ticket.subTotal !== 0) {
-        cashTotal += ticket.subTotal;
-      } else if(ticket.paymentType === "CashApp")  {
-        cashAppTotal += ticket.subTotal;
-      } else if(ticket.paymentType === "Venmo")  {
-        venmoTotal += ticket.subTotal;
-      } else if(ticket.paymentType === "Paypal")  {
-        paypalTotal += ticket.subTotal;
-      } else if(ticket.paymentType === "Bitcoin")  {
-        bitcoinTotal += ticket.subTotal;
-      } else if(ticket.paymentType === "Ethereum")  {
-        ethereumTotal += ticket.subTotal;
+
+    props.details.order_ticketItems.forEach((ticket, index) => {
+
+      let adjustedPaymentMethod;
+  
+      if ("manualPaymentMethod" in  ticket && parseFloat(ticket.unit_price).toFixed(2) !== "0.00") {
+        adjustedPaymentMethod = ticket.manualPaymentMethod;
+      } else if ("manualPaymentMethod" in  ticket) {
+        adjustedPaymentMethod = "comp"
       } else {
-        otherTotal += ticket.subTotal;
+        adjustedPaymentMethod = "PayPal Express"
+      }
+
+      allTotal += ticket.item_total_price;
+      if (adjustedPaymentMethod === "cash" && ticket.subTotal !== 0) {
+        cashTotal += ticket.item_total_price;
+      } else if(adjustedPaymentMethod === "CashApp")  {
+        cashAppTotal += ticket.item_total_price;
+      } else if(adjustedPaymentMethod === "Venmo")  {
+        venmoTotal += ticket.item_total_price;
+      } else if(adjustedPaymentMethod === "Paypal")  {
+        paypalTotal += ticket.item_total_price;
+      } else if(adjustedPaymentMethod === "Bitcoin")  {
+        bitcoinTotal += ticket.item_total_price;
+      } else if(adjustedPaymentMethod === "Ethereum")  {
+        ethereumTotal += ticket.item_total_price;
+      } else if(adjustedPaymentMethod === "PayPal Express")  {
+        payPalExpressTotal += ticket.item_total_price;
+      } else {
+        otherTotal += ticket.item_total_price;
       }
     })
 
@@ -131,7 +152,7 @@ const OrderModal = (props) => {
 
     if (parseInt(allTotal) === 0) {
       console.log("equal to 0")
-      allTotalBorder=classes.SubTotal
+      allTotalBorder = classes.SubTotal
     }
     /*
     if (allTotal === "0") {
@@ -156,8 +177,15 @@ const OrderModal = (props) => {
       <div
         style={{
           marginRight: "8px",
-          marginLeft: "440px"
+          marginLeft: "400px"
         }}>
+        {payPalExpressTotal > 0 ?
+          <div className={classes.SubTotal}>
+            <div style={{textAlign: "right"}}>PayPal Express Total:</div>
+            <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(payPalExpressTotal).toFixed(2)}</div>
+          </div> :
+          null
+        }
         {cashTotal > 0 ?
           <div className={classes.SubTotal}>
             <div style={{textAlign: "right"}}>cash Total:</div>
@@ -167,7 +195,7 @@ const OrderModal = (props) => {
         }
         {cashAppTotal > 0 ?
           <div className={classes.SubTotal}>
-            <div style={{textAlign: "right"}}>cashApp Total:</div>
+            <div style={{textAlign: "right"}}>CashApp Total:</div>
             <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(cashAppTotal).toFixed(2)}</div>
           </div> :
           null
@@ -218,7 +246,7 @@ const OrderModal = (props) => {
 
   return (
     <Fragment>
-      <Backdrop show={true} clicked={props.modalClosed}></Backdrop>
+      <Backdrop show={props.show}></Backdrop>
       <div
         style={{
           transform: props.show ? "translateY(0)" : "translateY(-100vh)",
@@ -229,28 +257,19 @@ const OrderModal = (props) => {
         <br></br>
         <div
           style={{
-            fontSize: "28px",
-          }}
-        >
-          {modalTitle()}
-        </div>
-        <br></br>
-        <br></br>
-        <div
-          style={{
             fontWeight: "600",
             fontSize: "18px",
             textAlign: "left"
           }}
         >
-          {props.title}
+          {props.details.eventTitle}
         </div>
         
         <div
           style={{
             fontSize: "16px",
             textAlign: "left",
-            fontWeight: "500",
+            fontWeight: "400",
             paddingTop: "5px"
           }}
         >
@@ -260,7 +279,7 @@ const OrderModal = (props) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "80px 400px",
+            gridTemplateColumns: "90px 400px",
             fontSize: "16px",
             textAlign: "left",
             paddingBottom: "10px"
@@ -268,7 +287,30 @@ const OrderModal = (props) => {
         >
           <div style={{fontWeight: "600"}}>Recipient:</div>
           <div>
-            {props.details.recipient.firstName}{" "}{props.details.recipient.lastName}
+            {props.details.order_firstName}{", "}{props.details.order_lastName}
+          </div>
+        </div>
+        <div
+          style={{
+            fontSize: "16px",
+            textAlign: "left",
+            paddingLeft: "90px",
+            paddingBottom: "10px"
+          }}>
+          {props.details.order_email}
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "90px 400px",
+            fontSize: "16px",
+            textAlign: "left",
+            paddingBottom: "10px"
+          }}
+        >
+          <div style={{fontWeight: "600"}}>Order Date:</div>
+          <div>
+            {shortDateTime}
           </div>
         </div>
         <div
@@ -278,16 +320,7 @@ const OrderModal = (props) => {
             paddingLeft: "80px",
             paddingBottom: "10px"
           }}>
-          {props.details.recipient.email}
-        </div>
-        <div
-          style={{
-            fontSize: "16px",
-            textAlign: "left",
-            paddingLeft: "80px",
-            paddingBottom: "10px"
-          }}>
-          {props.details.recipient.message}
+          {/*props.details.recipient.message*/}
         </div>
         <br></br>
 
@@ -305,7 +338,7 @@ const OrderModal = (props) => {
           <div style={{textAlign: "left"}}>Ticket Type</div>
           <div style={{textAlign: "center"}}># Tickets</div>
           <div style={{textAlign: "center"}}>Price</div>
-          <div style={{paddingLeft: "10px"}}>Payment Type</div>
+          <div style={{textAlign: "left", paddingLeft: "10px"}}>Payment Type</div>
           <div style={{textAlign: "center"}}>Total</div>
         </div>
 
@@ -323,7 +356,6 @@ const OrderModal = (props) => {
 
         {modalButtons()}
 
-        <br></br>
         <br></br>
       </div>
     </Fragment>

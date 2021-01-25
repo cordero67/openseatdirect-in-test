@@ -12,6 +12,27 @@
   height: calc(100vw * (440/650));
 }
 
+.BlankCanvas {
+  background-color: white;
+  margin: auto;
+  width: auto;
+  height: auto;
+  z-index: 100;
+  padding-left: 0px;
+  padding-left: 0px;
+  text-align: left;
+  overflow-y: auto;
+}
+
+
+
+@media (min-width: 500px) {
+  .BlankCanvas {
+    padding-left: calc(50% - 170px);
+    padding-left: calc(50% - 170px);
+  }
+}
+
 @media (min-width: 650px) {
   .TopContainerLarge {
     color: #fff;
@@ -178,7 +199,7 @@
 
 @media (min-width: 450px) {
   .SubmitButton {
-    width: 340px;
+    width: 300px;
   }
 }
 

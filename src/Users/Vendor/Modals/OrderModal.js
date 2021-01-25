@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-import { getStartDate } from "../VendorFunctions";
+import { getStartDate } from "../Resources/VendorFunctions";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./OrderModal.module.css";
 

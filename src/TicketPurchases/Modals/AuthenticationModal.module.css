@@ -29,7 +29,7 @@
 }
 .Header {
   display: grid;
-  grid-template-columns: 95% 5%;
+  grid-template-columns: 90% 10%;
   column-gap: "0px";
   font-size: 24px;
   font-weight: 600;

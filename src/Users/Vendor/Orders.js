@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
  
 import classes from "./VendorAccountOLD.module.css";
-import { compareValues, getDate } from "./VendorFunctions";
+import { compareValues, getDate } from "./Resources/VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 
 

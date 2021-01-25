@@ -5,14 +5,8 @@ import { Nav } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-//<i class="far fa-window-close"></i>
-
-import logo from '../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png';
-//import logo from '../../assets/OpenSeatDirect/Black_and_White_TransparentBackground_1024.png';
-
 import SideDrawerItems from './SideDrawerItems';
 import Backdrop from '../UI/Backdrop/Backdrop';
-import Logo from '../Logo/Logo';
 import classes from './SideDrawer.module.css';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 
@@ -47,5 +41,3 @@ const SideDrawer = ( { history, open, closed }) => {
 };
 
 export default withRouter(SideDrawer);
-
-//<Logo source={logo} placement="side"/>
