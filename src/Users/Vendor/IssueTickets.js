@@ -2,14 +2,17 @@ import React, { useEffect, useState, Fragment } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { Button } from "semantic-ui-react";
 
 import { API } from "../../config";
 import OrderModal from "./Modals/OrderModal";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 import classes from "./IssueTickets.module.css";
 
-const ManualOrderEntry = (props) => {
+const IssueTickets = (props) => {
+  const [display, setDisplay] = useState("spinner"); //main, spinner, connection
+  const [modalView, setModalView] = useState("none");
+  
   const [selectedEventDetails, setSelectedEventDetails] = useState({}); //event details of a single selected event
   const [ticketDetails, setTicketDetails] = useState([]); //ticket details of a single selected event
   const [order, setOrder] = useState({
@@ -22,10 +25,7 @@ const ManualOrderEntry = (props) => {
     tickets: []
   }); //manual generated ticket order
 
-  const [orderView, setOrderView] = useState("complete"); // complete, noTickets, or noEventSelected
-  const [modalView, setModalView] = useState("hide");
-  const [isLoading, setIsLoading] = useState(false);
-
+  // THESE LOOK GOOD: 1/29/21
   const [recipientFirstNameWarning, setRecipientFirstNameWarning] = useState(false);
   const [recipientLastNameWarning, setRecipientLastNameWarning] = useState(false);
   const [recipientEmailWarning, setRecipientEmailWarning] = useState(false);
@@ -33,6 +33,7 @@ const ManualOrderEntry = (props) => {
 
   const paymentTypes = ["cash", "CashApp", "Venmo", "Paypal", "Bitcoin", "Ethereum", "other"]
 
+  // LOOKS GOOD: 1/26/21
   const loadEventData = (eventNum) => {
     let tempEvents = JSON.parse(localStorage.getItem("events"));
 
@@ -84,6 +85,7 @@ const ManualOrderEntry = (props) => {
     })
   }
   
+  // LOOKS GOOD: 1/26/21
   const newTicket = (ticket) => {
     let ticketKey = Math.floor(Math.random() * 1000000000000000);
     let addedTicket = {};
@@ -100,47 +102,26 @@ const ManualOrderEntry = (props) => {
     addedTicket.subTotal = parseFloat(addedTicket.numTickets) * parseFloat(addedTicket.chargedPrice);
     addedTicket.priceInput = "ticket";
     addedTicket.paymentType = "cash";
-    console.log("addedTicket: ", addedTicket);
     return addedTicket;
   }
   
+  // LOOKS GOOD: 1/26/21
   useEffect(() => {
-    setIsLoading(true);
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
-
-      if (localStorage.getItem(`events`) !== null) {
+      if (
+        localStorage.getItem(`events`) !== null &&
+        localStorage.getItem(`eventNum`) !== null
+      
+        ) {
         let storedEvents = JSON.parse(localStorage.getItem("events"));
 
-        if (storedEvents.length > 0) {
-          
-          if (localStorage.getItem(`eventNum`) !== null) {
-            let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
-            let eventExists = false;
-            storedEvents.forEach((event, index) => {
-              if (event.eventNum === storedEventNum) {
-                loadEventData(storedEventNum);
-                eventExists = true;
+        let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
 
-                if ("tickets" in event && event.tickets.length > 0) {
-                  setOrderView("complete");
-
-                } else {
-                  setOrderView("noTickets");
-                }
-              }
-            })
-
-            if (!eventExists) {
-              props.clicked("events")
-            }
-
-          } else {
-            setOrderView("noEventSelected");
+        storedEvents.forEach(event => {
+          if (event.eventNum === storedEventNum) {
+            loadEventData(storedEventNum);
           }
-
-        } else {
-          props.clicked("events")
-        }
+        })
 
       } else {
         props.clicked("events")
@@ -149,65 +130,10 @@ const ManualOrderEntry = (props) => {
     } else {
       window.location.href = "/auth";
     }
-
-    setIsLoading(false);
+    setDisplay("main");
   }, []);
-
-  const orderDisplay = () => {
-    if (orderView === "complete") {
-      return (
-        <div>
-          {recipientDisplay()}
-          {ticketCart()}
-        </div>
-      )
-    } else if (orderView === "noEventSelected") {
-      return (
-        <div style={{fontSize: "16px", paddingLeft: "20px"}}>
-          <div  style={{paddingTop: "20px"}}>
-            You must first
-            <button
-              className={classes.NoButton}
-              onClick={() => {props.clicked("events")}}
-            >
-            {" "}select{" "}
-            </button>
-            an event
-          </div>
-        </div>
-      )
-    } else if (orderView === "noTickets") {
-      return (
-        <div  style={{fontSize: "16px", paddingLeft: "20px"}}>
-          <div  style={{paddingTop: "20px"}}>There are no tickets associated with this event.</div>
-          <div  style={{paddingTop: "20px"}}>
-            Either
-            <button
-              className={classes.NoButton}
-              onClick={editEvent}
-            >
-            {" "}edit{" "}
-            </button>
-            this event to include tickets.
-          </div>
-          <div  style={{paddingTop: "20px"}}
-            >Or,
-            <button
-              className={classes.NoButton}
-              onClick={() => {props.clicked("events")}}
-            >
-            {" "}select{" "}
-            </button>
-            a different event.
-          </div>
-        </div>
-      )
-    }
-    else {
-      return null;
-    }
-  }
   
+  // LOOKS GOOD: 1/29/21
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
     if (!response.ok) {
@@ -253,7 +179,6 @@ const ManualOrderEntry = (props) => {
     };
     console.log("fetching with: ", url, fetcharg);
     
-    // NEED TO EDIT START
     fetch(url, fetcharg )
     .then(handleErrors)
     .then ((response)=>{
@@ -268,8 +193,8 @@ const ManualOrderEntry = (props) => {
         setModalView("error")
     })
   }
-  // NEED TO EDIT END
 
+  // LOOKS GOOD: 1/26/21
   const addNewTicket = () => {
     if (ticketDetails.length > 0) {
       let addedTicket = newTicket(ticketDetails[0])
@@ -281,6 +206,7 @@ const ManualOrderEntry = (props) => {
     }
   }
   
+  // I THINK THIS LOOKS GOOD: 1/27/21
   const changeTicket = (event, key) => {
     let tempOrder = {...order};
     let tempTickets = [...tempOrder.tickets];
@@ -319,11 +245,10 @@ const ManualOrderEntry = (props) => {
           ticket.compTicket = !ticket.compTicket
           if (!ticket.compTicket) {
             ticket.chargedPrice = parseFloat(ticket.faceValue).toFixed(2);
-            ticket.paymentType = "cash";
           } else {
             ticket.chargedPrice = parseFloat(0).toFixed(2);
-            ticket.paymentType = "cash";
           }
+          ticket.paymentType = "cash";
           ticket.chargedPriceWarning = "";
           ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
 
@@ -337,7 +262,7 @@ const ManualOrderEntry = (props) => {
             ticket.chargedPriceWarning = "Not a valid number";
             ticket.subTotal = "NaN"
 
-          } else if (priceRegex.test(ticket.chargedPrice)){
+          } else if (priceRegex.test(ticket.chargedPrice)) {
             ticket.chargedPriceWarning = ""
             ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
 
@@ -356,6 +281,7 @@ const ManualOrderEntry = (props) => {
     setOrder(tempOrder);
   }
   
+  // I THINK THIS LOOKS GOOD: 1/27/21
   const deleteTickets = (key) => {
     if (order.tickets.length === 1) {
       console.log("Only 1 ticket in order")
@@ -376,13 +302,46 @@ const ManualOrderEntry = (props) => {
     }
   };
 
-  const editEvent = () => {
-    let eventNum = JSON.parse(localStorage.getItem("eventNum"));
-    window.location.href = `/eventedit/?eventID=${eventNum}`;
+  // LOOK GOOD: 1/27/21
+  const validOrder = () => {
+    let invalid = true;
+    let ticketWarnings = false;
+    order.tickets.forEach((ticket) => {
+      if (ticket.chargedPriceWarning) {
+        ticketWarnings = true
+      }
+    })
+    if(order.tickets.length > 0 && order.recipient.completed === true && !ticketWarnings) {
+      invalid = false;
+    }
+    return invalid;
   }
 
+  // LOOKS GOOD: 1/27/21
+  const controlButtons = (
+    <Fragment>
+      <div className={classes.TicketCartButtons}>
+        <div style={{width: "320px", textAlign: "right"}}>
+          <button
+            className={classes.ButtonGreen}
+            onClick={addNewTicket}
+          >ADDITIONAL TICKET</button>
+        </div>
+        <div style={{width: "320px"}}>
+          <button className={!validOrder() ? classes.ButtonBlue : classes.ButtonBlueOpac}
+            disabled={validOrder()}
+            onClick={() => {setModalView("review")}}
+          >PREVIEW ORDER</button>
+        </div>
+      </div>
+      <div className={classes.ValidOrder}>
+        {validOrder() ? "complete fields identified above" : null}
+      </div>
+    </Fragment>
+  )
+
   const ticketCart = () => {
-    if (!isLoading && ticketDetails.length > 0) {
+    if (display === "main" && ticketDetails.length > 0) {
       return (
         <div className={classes.CartDisplay}>
           <div style={{fontSize: "16px", fontWeight: "600", paddingBottom: "15px"}}>Ticket Cart</div>
@@ -431,7 +390,7 @@ const ManualOrderEntry = (props) => {
                         {ticket.maxTicketsAvailable.map(number => {return <option>{number}</option>})}
                       </select>
                     </div>
-                    <div style={{paddingTop: "2.5px", paddingLeft: "12px"}}>
+                    <div style={{fontSize: "12px", paddingTop: "5px", paddingLeft: "12px"}}>
                       <input
                         type="checkbox"
                         id=""
@@ -465,8 +424,8 @@ const ManualOrderEntry = (props) => {
                         {paymentTypes.map((type, index) => {return <option>{type}</option>})}
                       </select>
                     </div>
-                    <div style={{paddingRight: "10px", textAlign: "right", fontWeight: "400"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
-                    <div style={{textAlign: "center"}}>
+                    <div style={{paddingTop: "4px", fontSize: "16px", paddingRight: "10px", textAlign: "right", fontWeight: "400"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
+                    <div style={{textAlign: "center", paddingTop: "4px"}}>
                       <FontAwesomeIcon
                         color="blue"
                         cursor="pointer"
@@ -482,49 +441,14 @@ const ManualOrderEntry = (props) => {
               )
             })}
           </div>
-          <div className={classes.TicketCartButtons}>
-            <div style={{width: "320px", textAlign: "right"}}>
-              <Button
-                className={classes.RegularButton}
-                style={{fontWeight: "600", paddingTop: "8px"}}
-                icon="plus square outline"
-                basic
-                color="green"
-                content="Additional Ticket"
-                onClick={addNewTicket}
-              />
-            </div>
-            <div style={{width: "320px"}}>
-              <Button
-                style={{backgroundColor: "#fff", border: "1px solid blue", color: "blue", fontWeight: "600", height: "30px", paddingTop: "7px"}}
-                disabled={validOrder()}
-                icon="edit"
-                content="Preview Order"
-                onClick={() => {setModalView("review")}}
-              />
-            </div>
-          </div>
-          <div className={classes.ValidOrder}>
-            {validOrder() ? "complete fields identified above" : null}
-          </div>
+          {controlButtons}
       </div>)
     } else {
       return null;
     }
   }
-
-  const validOrder = () => {
-    let invalid = true;
-    let ticketWarnings = false;
-    order.tickets.forEach((ticket) => {
-      if (ticket.chargedPriceWarning) {ticketWarnings = true}
-    })
-    if(order.tickets.length > 0 && order.recipient.completed === true && !ticketWarnings) {
-      invalid = false;
-    }
-    return invalid;
-  }
   
+  // LOOKS GOOD: 1/27/21
   const updateRecipient = (event) => {
     const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let tempOrder = {...order};
@@ -542,6 +466,7 @@ const ManualOrderEntry = (props) => {
     setOrder(tempOrder)
   }
   
+  // LOOKS GOOD: 1/27/21
   const displayMessage = (limit, variable) => {
     if (variable && variable.length >= limit) {
       return (
@@ -570,27 +495,14 @@ const ManualOrderEntry = (props) => {
     }
   };
   
+  // LOOKS GOOD: 1/27/21
   const recipientDisplay = () => {
-    let firstNameBox;
-    let lastNameBox;
     let emailBox;
     let emailWarning;
 
     const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     
-    if (order.recipient.firstName === "") {
-      firstNameBox = classes.FirstNameBoxWarning;
-    } else {
-      firstNameBox = classes.FirstNameBox;
-    }
-    
-    if (order.recipient.lastName === "") {
-      lastNameBox = classes.LastNameBoxWarning;
-    } else {
-      lastNameBox = classes.LastNameBox;
-    }
-    
-    if (order.recipient.email === "" || !regsuper.test(order.recipient.email)) {
+    if (order.recipient.email !== "" && !regsuper.test(order.recipient.email)) {
       emailBox = classes.EmailBoxWarning;
     } else {
       emailBox = classes.EmailBox;
@@ -619,7 +531,7 @@ const ManualOrderEntry = (props) => {
               <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
                 First Name<span style={{color: "red"}}>*</span>
               </label>
-              <input className={firstNameBox}
+              <input className={classes.FirstNameBox}
                 type="text"
                 name="firstName"
                 placeholder="Limit 32 characters"
@@ -629,13 +541,16 @@ const ManualOrderEntry = (props) => {
                 onBlur={() => setRecipientFirstNameWarning(false)}
                 onChange={updateRecipient}
               />
-              {recipientFirstNameWarning ? displayMessage(64, order.recipient.firstName) : null}
+              {recipientFirstNameWarning ?
+                displayMessage(64, order.recipient.firstName) :
+                null
+              }
             </div>
             <div>
               <label style={{fontSize: "15px", margin: "0px", paddingBottom: "5px"}}>
                 Last Name<span style={{color: "red"}}>*</span>
               </label>
-              <input className={lastNameBox}
+              <input className={classes.LastNameBox}
                 type="text"
                 name="lastName"
                 placeholder="Limit 32 characters"
@@ -670,7 +585,7 @@ const ManualOrderEntry = (props) => {
               Message <span style={{fontStyle: "italic"}}>(internal use only)</span>
             </label>
             <input
-              className={classes.InputBox}
+              className={classes.MessageBox}
               type="text"
               name="message"
               value={order.recipient.message}
@@ -687,60 +602,70 @@ const ManualOrderEntry = (props) => {
     } else return null
   }
   
+  // LOOKS GOOD: 1/27/21
   const orderModalDisplay = () => {
     if (modalView === "review" || modalView === "confirmation" || modalView === "error") {
       return (
-        <Fragment>
-          <OrderModal
-            show={true}
-            status={modalView}
-            title={selectedEventDetails.eventTitle}
-            dateTime={selectedEventDetails.startDateTime}
-            details={order}
-            edit={() => {setModalView("hide")}}
-            close={() => {
-              let tempOrder={...order};
-              tempOrder.recipient={
-                firstName: "",
-                lastName: "",
-                email: "",
-                message: ""
-              };
-              tempOrder.tickets=[newTicket(ticketDetails[0])];
-              setOrder(tempOrder);
-              setModalView("hide");
-            }}
-            submit={submitOrder}
-          ></OrderModal>
-        </Fragment>
+        <OrderModal
+          show={true}
+          status={modalView}
+          title={selectedEventDetails.eventTitle}
+          dateTime={selectedEventDetails.startDateTime}
+          details={order}
+          edit={() => {setModalView("none")}}
+          close={() => {
+            let tempOrder={...order};
+            tempOrder.recipient={
+              firstName: "",
+              lastName: "",
+              email: "",
+              message: ""
+            };
+            tempOrder.tickets=[newTicket(ticketDetails[0])];
+            setOrder(tempOrder);
+            setModalView("none");
+          }}
+          submit={submitOrder}
+        />
       )
     } else {
       return null;
     }
   }
   
+  // LOOKS GOOD: 1/26/21
   const mainDisplay = () => {
-    return (
-      <div
-        style={{
-          height: "calc(100vh - 117px)",
-          scrollbarWidth: "thin",
-          overflowY: "auto",
-          paddingTop: "80px",
-          paddingLeft: "30px"
-        }}>
-        <div style={{fontWeight: "600", fontSize: "18px"}}>Issue Tickets</div>
-        {orderDisplay()}
-        {orderModalDisplay()}
-      </div>
-    )
+    if (display === "main") {
+      return (
+        <div style={{paddingTop: "20px", paddingLeft: "30px"}}>
+          <div style={{fontWeight: "600", fontSize: "18px"}}>Issue Tickets</div>
+          {recipientDisplay()}
+          {ticketCart()}
+          {orderModalDisplay()}
+        </div>
+      )
+    } else return null;
+  }
+
+  // LOOKS GOOD: 1/26/21
+  const loadingSpinner = () => {
+      if (display === "spinner") {
+      return (
+        <div style={{paddingTop: "60px"}}>
+          <Spinner/>
+        </div>
+      )
+      } else {
+          return null
+      }
   }
   
+  // LOOKS GOOD: 1/26/21
   const tabTitle = (
-    <div className={classes.DashboardHeader}>
-      {(!isLoading && "eventTitle" in selectedEventDetails) ?
+    <div className={classes.DisplayPanelTitle}>
+      {(display !== "spinner" && "eventTitle" in selectedEventDetails) ?
       <div style={{fontSize: "26px", fontWeight: "600"}}>{selectedEventDetails.eventTitle}</div> :
-      <div><br></br></div>}
+      <div>{null}</div>}
       <div style={{paddingTop: "5px"}}>
       <button
         className={classes.SwitchButton}
@@ -754,12 +679,13 @@ const ManualOrderEntry = (props) => {
   
   return (
     <div>
-      <div>
-        {tabTitle}
+      {tabTitle}
+      <div className={classes.DisplayPanel}>
+        {loadingSpinner()}
         {mainDisplay()}
       </div>
     </div>
   )
 }
 
-export default ManualOrderEntry;
+export default IssueTickets;

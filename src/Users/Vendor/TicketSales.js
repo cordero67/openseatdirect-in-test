@@ -11,20 +11,16 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 
 const TicketSales = (props) => {
   const [display, setDisplay] = useState("spinner"); //main, spinner
-  const [selectedEventTitle, setSelectedEventTitle] = useState(""); //event details of a single selected event
+  const [modalView, setModalView] = useState(false);
 
   const [eventOrders, setEventOrders] = useState([]);
+  const [selectedEventTitle, setSelectedEventTitle] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState({})
 
-
-  // LOOKS GOOD: 1/21/21
   const [sortParameters, setSortParameters] = useState(
     {label: "order_createdAt", direction: "asc"}
   );
 
-  const [selectedOrder, setSelectedOrder] = useState({})
-  const [modalView, setModalView] = useState(false);
-
-  // LOOKS GOOD: 1/21/21
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
       if (
@@ -36,7 +32,7 @@ const TicketSales = (props) => {
         let storedOrders = JSON.parse(localStorage.getItem("orders"));
         let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
 
-        storedEvents.forEach((event, index) => {
+        storedEvents.forEach(event => {
           if (event.eventNum === storedEventNum) {
             loadEventTitle(storedEventNum)
           }
@@ -51,7 +47,7 @@ const TicketSales = (props) => {
           }
         })
         setEventOrders(tempEventOrders)
-          
+        
       } else {
         props.clicked("events")
       }
@@ -61,7 +57,6 @@ const TicketSales = (props) => {
     setDisplay("main")
   }, []);
 
-  // LOOKS GOOD: 1/21/21
   const loadEventTitle = (eventNum) => {
     let tempEvents = JSON.parse(localStorage.getItem("events"));
     tempEvents.forEach((event, index) => {
@@ -71,7 +66,6 @@ const TicketSales = (props) => {
     })
   }
 
-  // LOOKS GOOD: 1/21/21
   const compareValues = (key, order) => {
     return function innerSort(a, b) {
       if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
@@ -94,7 +88,6 @@ const TicketSales = (props) => {
     };
   }
 
-  // LOOKS GOOD: 1/21/21
   const updateValues = (newLabel) => {
     let newDirection;
     if (newLabel !== sortParameters.label) {
@@ -113,11 +106,10 @@ const TicketSales = (props) => {
     )
   }
 
-  // LOOKS GOOD: 1/21/21
   const mainDisplay = () => {
     if (display === "main" && eventOrders.length > 0) {
       return (
-        <div>
+        <Fragment>
           {eventOrders.map((item, index) => {
             let shortDateTime;
             [shortDateTime] = getDate(item);
@@ -138,7 +130,6 @@ const TicketSales = (props) => {
                     cursor="pointer"
                     onClick={() => {
                       setSelectedOrder(item)
-                      console.log("selected order: ", item)
                       setModalView(true)
                     }}
                     icon={faReceipt}
@@ -147,7 +138,7 @@ const TicketSales = (props) => {
               </div>
             );
           })}
-        </div>
+        </Fragment>
       )
     } else if (display === "main") {
       return (
@@ -158,7 +149,6 @@ const TicketSales = (props) => {
     } else return null
   }
 
-  // LOOKS GOOD: 1/21/21
   const loadPreviousOrder = () => {
     let newPosition;
     eventOrders.map((order, index) => {
@@ -173,7 +163,6 @@ const TicketSales = (props) => {
     setSelectedOrder(eventOrders[newPosition]);
   }
 
-  // LOOKS GOOD: 1/21/21
   const loadNextOrder = () => {
     let newPosition;
     eventOrders.map((order, index) => {
@@ -188,7 +177,6 @@ const TicketSales = (props) => {
     setSelectedOrder(eventOrders[newPosition]);
   }
 
-  // LOOKS GOOD: 1/21/21
   const receiptModalDisplay = () => {
     if (modalView) {
       return (
@@ -205,7 +193,6 @@ const TicketSales = (props) => {
     } else return null;
   }
 
-  // LOOKS GOOD: 1/21/21
   const tabTitle = (
     <div className={classes.DisplayPanelTitle}>
       {(display === "main" && selectedEventTitle !== "") ?
@@ -223,7 +210,6 @@ const TicketSales = (props) => {
     </div>
   )
 
-  // LOOKS GOOD: 1/21/21
   const displayHeader = (
     <div className={classes.DisplayHeader}>
       <div style={{fontWeight: "600", fontSize: "18px", paddingLeft: "30px"}}>Ticket Orders</div>
@@ -252,7 +238,6 @@ const TicketSales = (props) => {
           >
             First{" "}
           </button>
-          {" "}Name
         </div>
         <div>
           <button 
@@ -286,7 +271,6 @@ const TicketSales = (props) => {
     </div>
   )
 
-  // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
       if (display === "spinner") {
       return (

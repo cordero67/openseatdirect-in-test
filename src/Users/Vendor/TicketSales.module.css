@@ -1,11 +1,11 @@
 .DisplayPanel {
   background-color: white;
-  font-size: 14px;
   width: 1030px;
-  height: calc(100vh - 247px);
-  margin-top: 130px;
+  height: calc(100vh - 242px);
+  margin-top: 125px;
   scrollbar-width: thin;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 .DisplayPanelTitle {
   position: fixed;
@@ -22,21 +22,6 @@
   padding-right: 30px;
   box-sizing: border-box;
 }
-.DisplayHeader {
-  position: fixed;
-  top: 130px;
-}
-.Orders {
-  text-align: center;
-  display: grid;
-  column-gap: 10px;
-  grid-template-columns: 170px 180px 310px 70px 100px 90px;
-  font-weight: 500;
-  padding-top: 10px;
-  padding-left: 30px;
-  padding-bottom: 10px;
-  box-sizing: border-box;
-}
 .SwitchButton {
   font-size: 14px;
   text-align: left;
@@ -50,18 +35,33 @@
   outline: none;
   box-sizing: border-box;
 }
+.DisplayHeader {
+  position: fixed;
+  top: 130px;
+}
 .OrdersHeader {
   display: grid;
   grid-template-columns: 170px 180px 310px 70px 100px 90px;
   column-gap: 10px;
   border-bottom: 1px solid black;
   width: 1030px;
-  height: 40px;
+  height: 35px;
   font-size: 15px;
   font-weight: 600;
   padding-top: 10px;
   padding-left: 30px;
-  padding-bottom: 15px;
+  padding-bottom: 0px;
+  box-sizing: border-box;
+}
+.Orders {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns: 170px 180px 310px 70px 100px 90px;
+  text-align: center;
+  font-weight: 500;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 10px;
   box-sizing: border-box;
 }
 .SortButton {

@@ -19,7 +19,6 @@ import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./Components/AdditionalSettings";
 
 import classes from "./VendorDashboard.module.css";
-import { Button } from "semantic-ui-react";
 
 // holds sign-in information
 let vendorInfo = {};
@@ -1054,25 +1053,12 @@ const buttonDisplay = (
       >GO LIVE NOW</button>
     </div>
     <div>
-      <Button
-        style={{
-        backgroundColor: 'white',
-        border: "1.5px solid black",
-        borderRadius: "0px",
-        color: "black",
-        fontSize: "12px",
-        fontWeight: 400,
-        width: "120px",
-        height: "30px",
-        margin: "auto",
-        textAlign: "center",
-        padding: "0px",
-        }}
-        content="CANCEL CREATE"
+      <button
+        className={classes.ButtonGrey}
         onClick={() => {
           window.location.href = `/vendor`
         }}
-      />
+      >CANCEL CREATE</button>
     </div>
   </Fragment>
 );

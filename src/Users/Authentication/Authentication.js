@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Redirect } from "react-router-dom";
 
 import { API } from "../../config";
@@ -36,6 +36,34 @@ const Authentication = () => {
   const { name, email, password, temporary, reissued, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
 
   const { message, error } = submissionStatus;
+
+  const getStatus= (user) => { 
+    if ('accountId' in user && 'status' in user.accountId ) {
+        return user.accountId.status
+    } else {
+        return 0;
+    } 
+  }
+  
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+    let tempUser = JSON.parse(localStorage.getItem("user"));
+      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
+        window.location.href = "/vendor";
+      } else if (
+        getStatus(tempUser.user) === 4 ||
+        getStatus(tempUser.user) === 5 ||
+        getStatus(tempUser.user) === 6 ||
+        ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
+      ) {
+        console.log("user 4, 5 or 6 and vendorIntent true");
+        window.location.href = "/personal";
+      } else {
+        console.log("user 4, 5 or 6 and vendorIntent false");
+        window.location.href = "/events";
+      }
+    }
+  }, []);
 
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
@@ -702,16 +730,6 @@ const Authentication = () => {
     });
   }
 
-
-  
-  const getStatus= (user) => { 
-    if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status
-    } else {
-        return 0;
-    } 
-  }
-
   const redirectUser = () => {
     console.log("Redirect user");
     if (typeof window !== "undefined" && localStorage.getItem("user") !== null) {
@@ -909,7 +927,7 @@ const Authentication = () => {
           onClick={() => {
             submitSignUp()
         }}>
-          CREATE YOUR ACCOUNT
+          SUBMIT YOUR EMAIL
         </button>
       </div>
     </Fragment>
@@ -957,7 +975,6 @@ const Authentication = () => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            console.log("clicked submit button")
             submitPassword();
         }}>
           REGISTER YOUR PASSWORD
@@ -983,7 +1000,6 @@ const Authentication = () => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            console.log("clicked submit button")
             submitUsername();
         }}>
           CHANGE YOUR USERNAME
@@ -993,7 +1009,6 @@ const Authentication = () => {
         <button
           className={classes.CancelButton}
           onClick={() => {
-            console.log("about to finalize skip username signup")
             redirectUser();
         }}>
           CHANGE IT LATER
@@ -1013,7 +1028,6 @@ const Authentication = () => {
           className={classes.SubmitButton}
           onClick={() => {
             return <Redirect to="/events" />;
-            closeModal()
         }}>
           CONTINUE
         </button>
@@ -1056,7 +1070,6 @@ const Authentication = () => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            console.log("clicked resend button")
             submitReissue();
           }}
         >

@@ -9,17 +9,16 @@ import { compareValues, getDates } from "./Resources/VendorFunctions";
 
 const Events = (props) => {
     const [display, setDisplay] = useState("spinner"); //main, spinner, connection
-
-    const [eventDescriptions, setEventDescriptions] = useState();//
-
     const [warningModal, setWarningModal] = useState({
         status: false,
         type: ""
     });
 
+    const [eventDescriptions, setEventDescriptions] = useState();//
+
     const handleErrors = response => {
-        console.log("Inside 'apiCore' 'handleErrors()'", response);
         if (!response.ok) {
+            console.log("error in 'handleErrors()'");
             throw Error(response.status);
         }
         return response;
@@ -97,7 +96,6 @@ const Events = (props) => {
                         type: "analytics"
                     });
                 } else if (name === "orders") {
-                    //check if there are any orders for this event
                     let ordersExist = false;
                     storedOrders.forEach((order) => {
                         if (order.eventNum === item.eventNum) {
@@ -105,7 +103,6 @@ const Events = (props) => {
                         }
                     })
                     if (ordersExist) {
-                        // switch to the historical orders tab
                         props.ticketSales();
                     } else {
                         setWarningModal({
@@ -114,7 +111,6 @@ const Events = (props) => {
                         });
                     }
                 } else if (name === "tickets") {
-                    //check if there are any orders for this event
                     let ticketsExist = false;
                     storedEvents.forEach((event) => {
                         if (event.eventNum === item.eventNum &&
@@ -123,7 +119,6 @@ const Events = (props) => {
                         }
                     })
                     if (ticketsExist) {
-                        // switch to the historical orders tab
                         props.issueTickets();
                     } else {
                         setWarningModal({
@@ -177,10 +172,10 @@ const Events = (props) => {
                                 </div>
                                 <div style={{textAlign: "left"}}>
                                     <div className={classes.EventTitle}>
-                                    {item.eventTitle}
+                                        {item.eventTitle}
                                     </div>
                                     <div style={{fontSize: "13px", textAlign: "left", fontWeight: "500" }}>
-                                    {longDateTime}
+                                        {longDateTime}
                                     </div>
                                 </div>
                                 <div style={{fontSize: "16px", fontWeight: "500", paddingTop: "12px"}}>
@@ -249,32 +244,31 @@ const Events = (props) => {
 
     const displayHeader = (
         <div className={classes.EventsHeader}>
-            <div style={{ textAlign: "center" }}>Date</div>
+            <div style={{textAlign: "center"}}>Date</div>
             <div>Event</div>
-            <div style={{ textAlign: "center" }}>
+            <div style={{textAlign: "center"}}>
                 <div>Event</div>
                 <div>Status</div>
             </div>
-            <div style={{ textAlign: "center" }}>
+            <div style={{textAlign: "center"}}>
                 <div>Sales</div>
                 <div>Analytics</div>
             </div>
-            <div style={{ textAlign: "center" }}>
+            <div style={{textAlign: "center"}}>
                 <div>Past</div>
                 <div>Orders</div>
             </div>
-            <div style={{ textAlign: "center" }}>
+            <div style={{textAlign: "center"}}>
                 <div>Issue</div>
                 <div>Tickets</div>
             </div>
-            <div style={{ textAlign: "center" }}>
+            <div style={{textAlign: "center"}}>
                 <div>Edit</div>
                 <div>Event</div>
             </div>
         </div>
     )
 
-    // defines and sets "loadingSpinner" view status
     const loadingSpinner = () => {
         if (display === "spinner") {
         return (
@@ -287,7 +281,6 @@ const Events = (props) => {
         }
     }
 
-    // defines and sets "connectionStatus" view status
     const connectionStatus = () => {
         if (display === "connection") {
             return (

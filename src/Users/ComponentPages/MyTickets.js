@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import classes from "../Vendor/VendorAccountOLD.module.css";
+import classes from "./MyTickets.module.css";
 
 const MyTickets = (props) => {
     return (

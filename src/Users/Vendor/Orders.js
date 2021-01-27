@@ -10,7 +10,7 @@ import {
   faEdit
 } from "@fortawesome/free-solid-svg-icons";
  
-import classes from "./VendorAccountOLD.module.css";
+import classes from "./Orders.module.css";
 import { compareValues, getDate } from "./Resources/VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 

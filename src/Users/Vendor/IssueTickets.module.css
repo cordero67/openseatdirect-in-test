@@ -1,23 +1,15 @@
-/*
-  scrollbar-width: thin;
-  overflow-y: auto;
-  */
-
 .DisplayPanel {
   background-color: white;
-  font-size: 15px;
   width: 1030px;
-  height: calc(100vh - 117px);
-  padding-top: 0px;
-  padding-left: 0px;
-  padding-right: 0px;
+  height: calc(100vh - 177px);
+  margin-top: 60px;
   box-sizing: border-box;
   scrollbar-width: thin;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
-.DashboardHeader {
-  z-index: 200;
+.DisplayPanelTitle {
   position: fixed;
   background-color: #e7e7e7;
   border-bottom: 1px solid lightgrey;
@@ -30,6 +22,7 @@
   padding-bottom: 15px;
   padding-left: 15px;
   padding-right: 30px;
+  box-sizing: border-box;
 }
 
 .RecipientDisplay {
@@ -46,45 +39,39 @@
 }
 
 .FirstNameBox {
-  height: 40px;
+  background-color: #EFF3FA;
   width: 325px;
-  border: 0.5px solid grey;
-  padding-left: 10px
-}
-
-.FirstNameBoxWarning {
   height: 40px;
-  width: 325px;
-  border: 1px solid red;
-  padding-left: 10px
+  border: 1px solid #8DADD4;
+  padding-left: 10px;
+  font-size: 14px;
 }
 
 .LastNameBox {
-  height: 40px;
+  background-color: #EFF3FA;
   width: 325px;
-  border: 0.5px solid grey;
-  padding-left: 10px
-}
-
-.LastNameBoxWarning {
   height: 40px;
-  width: 325px;
-  border: 1px solid red;
-  padding-left: 10px
+  border: 1px solid #8DADD4;
+  padding-left: 10px;
+  font-size: 14px;
 }
 
 .EmailBox {
-  height: 40px;
+  background-color: #EFF3FA;
   width: 660px;
-  border: 0.5px solid grey;
-  padding-left: 10px
+  height: 40px;
+  border: 1px solid #8DADD4;
+  padding-left: 10px;
+  font-size: 14px;
 }
 
 .EmailBoxWarning {
-  height: 40px;
+  background-color: #EFF3FA;
   width: 660px;
+  height: 40px;
   border: 1px solid red;
-  padding-left: 10px
+  padding-left: 10px;
+  font-size: 14px;
 }
 
 .WarningText {
@@ -94,10 +81,12 @@
   padding-bottom: 5px;
 }
 
-.InputBox {
-  height: 40px;
+.MessageBox {
+  background-color: #EFF3FA;
   width: 660px;
-  border: 0.5px solid grey;
+  height: 40px;
+  border: 1px solid #8DADD4;
+  font-size: 14px;
   padding-left: 10px
 }
 
@@ -119,7 +108,7 @@
 
 .TicketCart {
   display: grid;
-  grid-template-columns: 260px 80px 45px 70px 110px 70px 40px;
+  grid-template-columns: 260px 80px 45px 70px 110px 70px 20px;
   grid-gap: 10px;
   width: 680px;
   font-weight: 600;
@@ -127,14 +116,15 @@
 
 .TicketNameSelect {
   width: 260px;
-  height: 25px;
+  height: 30px;
   font-size: 15px;
-  border: 0.5px solid grey
+  border: 0.5px solid grey;
+  padding-left: 5px;
 }
 
 .TicketNumberSelect {
   width: 80px;
-  height: 25px;
+  height: 30px;
   font-size: 15px;
   padding-left: 5px;
   text-align: right;
@@ -144,6 +134,7 @@
 .Checkbox {
   outline: 0.5px solid lightgrey;
   border-radius: 0px;
+  font-size: 20px;
   width: 20px;
   height: 20px;
 }
@@ -151,12 +142,13 @@
 .PaymentTypeSelect {
   border: 0.5px solid grey;
   width: 110px;
-  height: 25px;
+  height: 30px;
   font-size: 15px;
+  padding-left: 5px;
 }
 
 .PriceBox {
-  height: 25px;
+  height: 30px;
   width: 70px;
   border: 0.5px solid grey;
   padding-right: 7px;
@@ -165,7 +157,7 @@
 }
 
 .PriceBoxWarning {
-  height: 25px;
+  height: 40px;
   width: 70px;
   border: 1px solid red;
   padding-right: 7px;
@@ -202,12 +194,55 @@
   padding-left: 360px;
 }
 
-.RegularButton {
-  font-size: 15px;
-  width: 170px;
-  height: 30px;
-  margin: auto;
-  text-align: center;
+.ButtonGreen {
+  height: 40px;
+  width: 180px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:hover {
+  background-color: #007A00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonBlue {
+  height: 40px;
+  width: 180px;
+  background-color: #0000F5;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlue:hover {
+  background-color: #0000CC;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlue:active {
+  background-color: #0000A3;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlueOpac {
+  height: 40px;
+  width: 180px;
+  background-color: #0000F5;
+  opacity: 0.5;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
 }
 
 .NoButton {

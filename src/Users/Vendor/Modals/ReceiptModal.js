@@ -30,14 +30,14 @@ const OrderModal = (props) => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "150px 150px 150px",
-          gridGap: "30px",
+          gridTemplateColumns: "160px 160px 160px",
+          gridGap: "40px",
           width: "630px",
           textAlign: "center",
-          paddingLeft: "60px"
+          paddingLeft: "35px"
         }}
       >
-        <button className={classes.ButtonRed}
+        <button className={classes.ButtonBlue}
           onClick={() => {
             props.loadPrevious()
           }}
@@ -320,7 +320,7 @@ const OrderModal = (props) => {
             paddingLeft: "80px",
             paddingBottom: "10px"
           }}>
-          {/*props.details.recipient.message*/}
+          {/*"message" in props.details.recipient ? props.details.recipient.message : null*/}
         </div>
         <br></br>
 

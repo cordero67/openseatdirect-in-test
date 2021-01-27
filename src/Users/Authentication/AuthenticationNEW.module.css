@@ -25,7 +25,7 @@
 
 .Modal {
   position: fixed;
-  background-color: white;
+  background-color: #fff;
   width: 100%;
   padding-top: 16px;
   padding-bottom: 16px;
@@ -41,7 +41,7 @@
   -o-transition: all 0.6s ease-out;
 }
 .BlankCanvas {
-  background-color: white;
+  background-color: #fff;
   margin: auto;
   width: auto;
   height: auto;
@@ -86,46 +86,36 @@
   padding-left: 10px;
 }
 .SubmitButton {
-  border: 1px solid black;
-  border-radius: 0px;
-  color: #fff;
   background-color: #2F5596;
+  color: #fff;
   width: 100%;
   height: 40px;
   font-size: 14px;
 }
 .SubmitButton:hover {
   background-color: #1D355D;
-  color: #fff;
-  border: 1px solid black;
-  font-weight: 500;
+  border: 1px solid #000;
 }
 .SubmitButton:active {
-  background-color: #fff;
-  color: #2F5596;
-  border: 2px solid #2F5596;
-  font-weight: 600;
+  background-color: #14233E;
+  border: 1px solid #000;
 }
 .CancelButton {
-  border: 1px solid black;
+  border: 1px solid #000;
   border-radius: 0px;
   color: #fff;
-  background-color: #008F00;
+  background-color: #999999;
   width: 340px;
   height: 40px;
   font-size: 14px;
 }
 .CancelButton:hover {
-  background-color: #006600;
-  color: #fff;
-  border: 1px solid black;
-  font-weight: 500;
+  background-color: #858585;
+  border: 1px solid #000;
 }
 .CancelButton:active {
-  background-color: #fff;
-  color: #008F00;
-  border: 2px solid #008F00;
-  font-weight: 600;
+  background-color: #707070;
+  border: 1px solid #000;
 }
 .BlueText {
   font-size: 14px;

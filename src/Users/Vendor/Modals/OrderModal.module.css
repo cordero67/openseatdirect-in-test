@@ -46,6 +46,69 @@
   margin-left: 440p;
 }
 
+.ButtonRed {
+  height: 40px;
+  width: 180px;
+  background-color: #CC0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRed:hover {
+  background-color: #A30000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRed:active {
+  background-color: #7A0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonGreen {
+  height: 40px;
+  width: 180px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:hover {
+  background-color: #007A00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonGrey {
+  height: 40px;
+  width: 150px;
+  background-color: #999999;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
 @media (min-width: 740px) {
   .Modal {
     width: 700px;

@@ -4,9 +4,9 @@
   width: 1030px;
   height: calc(100vh - 227px);
   margin-top: 110px;
-  box-sizing: border-box;
   scrollbar-width: thin;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 .DisplayPanelTitle {
   position: fixed;

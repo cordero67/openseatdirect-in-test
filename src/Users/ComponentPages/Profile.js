@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import classes from "../Vendor/VendorAccountOLD.module.css";
+import classes from "./Profile.module.css";
 
 const Profile = (props) => {
 

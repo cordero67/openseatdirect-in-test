@@ -34,102 +34,87 @@ import { BrowserRouter } from "react-router-dom";
 
 /*
 
-.ButtonRed {
-  height: 40px;
-  width: 127px;
-  background-color: #B80000;
-  color: #fff;
-  border: 1px solid black;
-  outline: none;
-}
-.ButtonRed:hover {
-  background-color: #8F0000;
-  color: #fff;
-  border: 1px solid black;
-  font-weight: 500;
-  outline: none;
-}
-.ButtonRed:active {
-  background-color: #fff;
-  color: #B80000;
-  border: 2px solid #B80000;
-  font-weight: 600;
-  outline: none;
-}
 .ButtonBlue {
   height: 40px;
-  width: 127px;
-  background-color: #0000CC;
+  width: 150px;
+  background-color: #0000F5;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonBlue:hover {
-  background-color: #000066;
+  background-color: #0000CC;
   color: #fff;
   border: 1px solid black;
-  font-weight: 500;
   outline: none;
 }
 .ButtonBlue:active {
-  background-color: #fff;
-  color: #0000CC;
-  border: 2px solid #0000CC;
-  font-weight: 600;
+  background-color: #0000A3;
+  color: #fff;
+  border: 1px solid black;
   outline: none;
 }
+
 .ButtonGreen {
   height: 40px;
-  width: 127px;
-  background-color: #008F00;
+  width: 150px;
+  background-color: #00A300;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonGreen:hover {
-  background-color: #006600;
+  background-color: #007A00;
   color: #fff;
   border: 1px solid black;
-  font-weight: 500;
   outline: none;
 }
 .ButtonGreen:active {
-  background-color: #fff;
-  color: #008F00;
-  border: 2px solid #008F00;
-  font-weight: 600;
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
   outline: none;
 }
-.ButtonGreenOpac {
+
+.ButtonRed {
   height: 40px;
-  width: 200px;
-  background-color: #008F00;
-  opacity: 0.3;
-  color: white;
-  font-weight: 400;
-  border: 1px solid grey;
+  width: 150px;
+  background-color: #CC0000;
+  color: #fff;
+  border: 1px solid black;
   outline: none;
 }
+.ButtonRed:hover {
+  background-color: #A30000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRed:active {
+  background-color: #7A0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
 .ButtonGrey {
   height: 40px;
   width: 150px;
-  background-color: #fff;
+  background-color: #999999;
   color: black;
   border: 1px solid black;
   outline: none;
 }
 .ButtonGrey:hover {
-  background-color: grey;
+  background-color: #858585;
   color: white;
   border: 1px solid black;
-  font-weight: 500;
   outline: none;
 }
 .ButtonGrey:active {
-  background-color: lightgray;
+  background-color: #707070;
   color: black;
-  border: 2px solid black;
-  font-weight: 600;
+  border: 1px solid black;
   outline: none;
 }
 .SubmitButton {

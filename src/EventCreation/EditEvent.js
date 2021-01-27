@@ -1044,73 +1044,34 @@ const EventEdit = (props) => {
     return (
       <Fragment>
         <div>
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1.5px solid #B80000",
-              borderRadius: "0px",
-              color: "black",
-              fontSize: "12px",
-              fontWeight: "400",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content={draftStatus}
+          <button
+            className={classes.ButtonRed}
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = true;
               setEventDescription(tempDescription);
               saveEvent("saved");
             }}
-          />
+          >{draftStatus}</button>
         </div>
         <div>
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1.5px solid #008F00",
-              borderRadius: "0px",
-              color: "black",
-              fontSize: "12px",
-              fontWeight: "400",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content={liveStatus}
+          <button
+            className={classes.ButtonGreen}
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = false;
               setEventDescription(tempDescription);
               saveEvent("live");
             }}
-          />
+          >{liveStatus}</button>
         </div>
         <div>
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1.5px solid black",
-              borderRadius: "0px",
-              color: "black",
-              fontSize: "12px",
-              fontWeight: "400",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="CANCEL EDIT"
+          <button
+            className={classes.ButtonGrey}
             onClick={() => {
               window.location.href = `/vendor`
             }}
-          />
+          >CANCEL EDIT</button>
         </div>
       </Fragment>
     )

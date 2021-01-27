@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 
-import classes from "./VendorAccountOLD.module.css";
+import classes from "./Account.module.css";
 
 const Profile = (props) => {
 

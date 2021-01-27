@@ -455,7 +455,7 @@ const Home = () => {
             <div style={{fontSize: "28px", fontWeight: "400", lineHeight: "38px", paddingBottom: "10px"}}>
               What is
               <br></br>
-              <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span>
+              <span style={{fontWeight: "600", color: "#2F5596"}}>OPEN SEAT DIRECT</span>
               <span style={{fontWeight: "600"}}>?</span>
             </div>
             <div
@@ -479,7 +479,8 @@ const Home = () => {
           <Fragment>
             <br></br>
             <div style={{fontSize: "30px", fontWeight: "400", lineHeight: "38px", paddingBottom: "10px"}}>
-              What is{" "}<span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span>
+              
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPEN SEAT DIRECT</span>
               <span style={{fontWeight: "600"}}>?</span>
             </div>
             <div
@@ -1064,16 +1065,19 @@ const Home = () => {
             </div>
           </div>
         )}
-        <AuthenticationModal
-          show={modalStatus}
-          zeroCart={false}
-          start={"signup"}
-          vendorIntent={true}
-          closeModal={() => setModalStatus(false)}
-          submit={() => {
-            redirectUser()
-          }}
-        />
+        {modalStatus ?
+          <AuthenticationModal
+            show={modalStatus}
+            zeroCart={false}
+            start={"signup"}
+            vendorIntent={true}
+            closeModal={() => setModalStatus(false)}
+            submit={() => {
+              redirectUser()
+            }}
+          /> :
+          null
+        }
       </div>
     )
 }
