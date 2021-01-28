@@ -38,37 +38,20 @@ const TicketModal = (props) => {
           Are you sure you want to delete the {props.details.ticketName} ticket?
         </div>
         <br></br>
-
-        <Button
+        <div
           style={{
-            marginTop: "5px",
-            marginRight: "10px",
-            width: "110px",
-            height: "30px",
-            textAlign: "center",
-            paddingTop: "7px",
-          }}
-          content="Cancel"
-          basic
-          icon="cancel"
-          color="green"
-          onClick={props.closeModal}
-        />
-        <Button
-          style={{
-            marginTop: "5px",
-            marginLeft: "10px",
-            width: "110px",
-            height: "30px",
-            textAlign: "center",
-            paddingTop: "7px",
-          }}
-          content="Delete"
-          basic
-          color="red"
-          onClick={props.deleteTicket}
-        />
-
+            display: "grid",
+            gridGap: "40px",
+            gridTemplateColumns: "150px 150px",
+            paddingLeft: "114px"
+          }}>
+          <button className={classes.ButtonGrey}
+            onClick={props.closeModal}
+          >CANCEL DELETE</button>
+          <button className={classes.ButtonRed}
+            onClick={props.deleteTicket}
+          >DELETE TICKET</button>
+        </div>
         <br></br>
       </div>
     </Aux>

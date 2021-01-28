@@ -13,6 +13,27 @@
   transition: all 0.3s ease-out;
 }
 
+.ButtonGrey {
+  height: 40px;
+  width: 150px;
+  background-color: #999999;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
 @media (min-width: 700px) {
   .Modal {
     width: 700px;

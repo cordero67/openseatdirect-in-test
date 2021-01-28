@@ -35,21 +35,9 @@ const SavedModal = (props) => {
             paddingTop: "5px",
           }}
         >
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid blue",
-              color: "blue",
-              fontSize: "12px",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Continue"
+          <button className={classes.ButtonGrey}
             onClick={props.toDashboard}
-          />
+          >CONTINUE</button>
         </div>
       </div>
     )
@@ -63,22 +51,10 @@ const SavedModal = (props) => {
             paddingTop: "5px",
           }}
         >
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid green",
-              color: "green",
-              fontSize: "12px",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Continue"
-            onClick={props.toDashboard}
-          />
-        </div>
+        <button className={classes.ButtonGrey}
+          onClick={props.toDashboard}
+        >CONTINUE</button>
+      </div>
       </div>
     )
   } if (props.details.status === "error" || props.details.status === "failure") {
@@ -91,22 +67,10 @@ const SavedModal = (props) => {
             paddingTop: "5px",
           }}
         >
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid red",
-              color: "red",
-              fontSize: "12px",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Continue"
-            onClick={props.editEvent}
-          />
-        </div>
+        <button className={classes.ButtonGrey}
+          onClick={props.toDashboard}
+        >CONTINUE</button>
+      </div>
       </div>
     ) 
   }

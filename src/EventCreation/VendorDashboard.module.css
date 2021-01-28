@@ -1,6 +1,6 @@
 .EventPanelTitle {
   display: grid;
-  grid-template-columns: 200px 390px 120px 120px 120px;
+  grid-template-columns: 200px 400px 120px 120px 120px;
   column-gap: 10px;
   position: fixed;
   width: 1030px;

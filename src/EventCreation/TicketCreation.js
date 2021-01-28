@@ -412,22 +412,9 @@ const TicketCreation = (props) => {
                   fontWeight: 600,
                 }}
               >
-              <Button
-                style={{
-                  backgroundColor: 'white',
-                  border: "1px solid black",
-                  borderRadius: "0px",
-                  color: "#008F00",
-                  fontSize: "12px",
-                  width: "120px",
-                  height: "30px",
-                  margin: "auto",
-                  textAlign: "center",
-                  padding: "0px",
-                }}
-                content="Add a Ticket"
+              <button className={classes.ButtonGreen}
                 onClick={props.createNewTicketHandler}
-              />
+              >ADD A TICKET</button>
               </div>
           </div>
         </Aux>

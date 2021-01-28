@@ -85,17 +85,19 @@
   background-color: #fff;
   /*background-color: #C2D9FF;*/
   z-index: 200;
+  position: fixed;
+  top: 120px;
   padding-top: 15px;
   padding-right: 0px;
   padding-left: 0px;
   padding-bottom: 5px;
   box-sizing: border-box;
-  width: 1000px;
+  width: 1030px;
 }
 
 .GridTitle {
   display: grid;
-  grid-template-columns: 200px 390px 120px 120px 120px;
+  grid-template-columns: 200px 410px 120px 120px 120px;
   column-gap: 10px;
   box-sizing: border-box;
   height: 30px;
