@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 
 import { useOurApi } from "./apiUsers";
 import { API } from "../../config";
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
-
-import classes from "../User.module.css";
+import classes from "./Authentication.module.css";
 
 const PasswordRecovery = () => {
   const [values, setValues] = useState({
@@ -19,7 +17,6 @@ const PasswordRecovery = () => {
   myHeaders.append("Content-Type", "application/json");
 
   const url1 = `${API}/forgot`;
-  //CAN'T THIS BE USED IN LINE 31
   const method1 = "POST";
   const body1  = null;
   const initialData1 ={status: true, message:"hi first time"};
@@ -38,72 +35,65 @@ const PasswordRecovery = () => {
   const showError = () => {
     if (hasError) {
       return (
-        <div style={{color: "red"}}> {sysmessage}</div>
+        <div style={{color: "red", paddingBottom: "20px"}}>{sysmessage}</div>
       )
     } else if (data.status) {
       return (
-        <div>Please enter your email on file:</div>
+        <div style={{fontSize: "16px", paddingBottom: "20px"}}>Please enter your email on file:</div>
       )
     } else {
       return (
-        <div style={{color: "red"}}> {data.error}</div>
+        <div style={{color: "red", paddingBottom: "20px"}}> {data.error}</div>
       )
     }
   };
 
   const showSuccess = (
-    <div>
-      <div>
-        If there is an account associated with
-      </div>
-      <br></br>
-      <div style={{color: "blue"}}>{values.email}</div>
-      <br></br>
-      <div>
-        you will receive a message with a password reset link.
-      </div>
-      <br></br>
-      <div>Back to <Link to="/signin" style={{color: "blue"}}>Signin</Link></div>
+    <div style={{paddingBottom: "20px", width: "340px"}}>
+      <div style={{lineHeight: "20px", paddingBottom: "20px"}}>If there is an account associated with</div>
+      <div style={{color: "blue", paddingBottom: "20px"}}>{values.email}</div>
+      <div style={{lineHeight: "20px", paddingBottom: "20px"}}>you will receive a message with a password reset link.</div>
+      <div>Back to <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>Signin</Link></div>
     </div>
   );
 
   const recoverForm = (
-    <Aux>
-      <div className="form-group">
-        <br></br>
-        <label styles={{ fontSize: "16px" }}>
-          E-mail Address
-        </label>
+    <Fragment>
+      <div style={{paddingBottom: "20px", width: "340px", height: "85px"}}>
+        <label styles={{ fontSize: "15px" }}>E-mail Address</label>
         <input
+          className={classes.InputBox}
           type="email"
           name="email"
-          className="form-control"
           onChange={handleChange}
           value={email}
         />
       </div>
-      <button onClick={() => {
-        console.log("clicked button",{
-          email: values.email
-        });
-        setBody({
-          email: values.email
-        })
-      }}
-      className="btn btn-primary">
-        Submit
-      </button>
-    </Aux>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.SubmitButton}
+          onClick={() => {
+            console.log("clicked button",{
+              email: values.email
+            });
+            setBody({
+              email: values.email
+            })
+        }}>
+          SUBMIT YOUR REQUEST
+        </button>
+      </div>
+    </Fragment>
   );
   
   const alternateInputs = (
-    <div>
-        <div className={classes.Section}>
-            Back to{" "}
-            <Link to="/signin" style={{ color: "blue" }}>
-            Sign In.
-            </Link>
-        </div>
+    <div className={classes.Alternates}>
+      <div>
+        Back to{" "}
+        <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>
+          Sign In
+        </Link>
+      </div>
     </div>
   );
 
@@ -113,32 +103,27 @@ const PasswordRecovery = () => {
     //this then generates an error in navigation component when it is looking for "role"
     if (data.status && data.message !== "hi first time") {
       return (
-        <Aux>
+        <Fragment>
           {showSuccess}
-        </Aux>
+        </Fragment>
       )
     } else {
       return (
-        <div>
-          <div>
+        <Fragment>
             {showError()}
             {recoverForm}
-          </div>
-          <br></br>
           {alternateInputs}
-        </div>
+        </Fragment>
       )
     }
   }
 
   return (
     <div className={classes.MainContainer}>
-      <div className={classes.BlankCanvas} style={{height: "340px"}}>
-        <br></br>
+      <div className={classes.BlankCanvas} style={{height: "335px"}}>
         <div className={classes.Header}>
           Password Reset Request
         </div>
-        <br></br>
         <div className={classes.Section}>
           {mainDisplay()}
         </div>

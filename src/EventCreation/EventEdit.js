@@ -2737,26 +2737,15 @@ const loadEventInfo = (eventTix) => {
     if (eventDescription.isDraft) {
       return (
         <Aux>
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid red",
-              color: "red",
-              fontSize: "12px",
-              width: "90px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Update Draft"
+          <button
+            className={classes.ButtonRed}
             onClick={() => {
               let tempDescription = {...eventDescription };
               tempDescription.isDraft = true;
               setEventDescription(tempDescription);
               saveEvent("saved");
             }}
-          />
+          >UPDATE DRAFT</button>
           <Button
             style={{
               backgroundColor: 'white',
@@ -2782,19 +2771,8 @@ const loadEventInfo = (eventTix) => {
     } else {
       return (
         <Aux>
-          
-              <Button
-                style={{
-                  backgroundColor: 'white',
-                  border: "1px solid red",
-                  color: "red",
-                  fontSize: "12px",
-                  width: "90px",
-                  height: "30px",
-                  margin: "auto",
-                  textAlign: "center",
-                  padding: "0px",
-                }}
+          <button
+            className={classes.ButtonRed}
                 content="Save as Draft"
                 onClick={() => {
                   let tempDescription = {...eventDescription };
@@ -2802,7 +2780,7 @@ const loadEventInfo = (eventTix) => {
                   setEventDescription(tempDescription);
                   saveEvent("saved");
                 }}
-              />
+              >SAVE AS DRAFT</button>
           <Button
             style={{
               backgroundColor: 'white',

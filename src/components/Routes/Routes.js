@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
-import LandingPage from "../HomePage/HomePage";
+import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
@@ -10,15 +10,14 @@ import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
 import EventDeletion from "../../EventCreation/DeleteEvent";
 import ContactUs from "../ContactUs/ContactUs";
-import CheckoutBT from "../../TicketPurchases/Checkout_bt";
+import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
+import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import SignIn from "../../Users/Authentication/SignIn";
-import SignUp from "../../Users/Authentication/SignUp";
-import PasswordRecovery from "../../Users/Authentication/PasswordRecovery";
-import PasswordReset from "../../Users/Authentication/PasswordReset";
+import Authentication from "../../Users/Authentication/Authentication";
+import Slider from "../HomePage/Slider";
 import PrivateRoute from "./PrivateRoute";
-import BuyerDashboard from "../../Users/Buyer/BuyerDashboard";
+import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
 
@@ -39,24 +38,16 @@ const Routes = () => {
     setShowSideDrawer(!showSideDrawer);
   };
 
-
-  console.log("Inside Routes");
-  console.log("Inside Routes");
-
   const [isResizing, setIsResizing] = useState(false);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
-  console.log("screenSize Routes: ", screenSize);
   
   const stylingUpdate = (inWidth) => {
-      console.log("stylingUpdate in Routes")
       setIsResizing(true);
       setScreenSize(inWidth);
       setIsResizing(false);
-      console.log("screenSize in Routes: ", screenSize)
   };
 
   window.onresize = function(event) {
-    console.log("resized in Routes")
     stylingUpdate(window.innerWidth);
   };
 
@@ -73,13 +64,23 @@ const Routes = () => {
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <LandingPage />
+            <Main />
           </React.Fragment>
         )}
       />
 
       <Route
-        path="/signin"
+        path="/slider"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Slider />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/auth"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -89,65 +90,14 @@ const Routes = () => {
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <SignIn />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/signup"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <SignUp />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/passwordrecovery"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PasswordRecovery />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/passwordreset"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <PasswordReset />
+            <Authentication />
             <Footer></Footer>
           </React.Fragment>
         )}
       />
 
     <Route
-      path="/buyerdashboard"
+      path="/personal"
       exact
       render={(routeProps) => (
         <React.Fragment>
@@ -157,7 +107,7 @@ const Routes = () => {
             clicked={toggleSideDrawer}
           />
           <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-          <BuyerDashboard />
+          <BuyerAccount />
           <Footer></Footer>
         </React.Fragment>
       )}
@@ -172,7 +122,7 @@ const Routes = () => {
     />
 
     <Route
-      path="/vendoraccount"
+      path="/vendor"
       exact
       render={(routeProps) => (
         <React.Fragment>
@@ -291,14 +241,25 @@ const Routes = () => {
       />
 
       <Route
-        path="/checkout_bt"
+        path="/infopaid"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <CheckoutBT />
+            <CustomerInfoPaid />
           </React.Fragment>
         )}
       />
+
+      <Route
+        path="/infofree"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <CustomerInfoFree />
+          </React.Fragment>
+        )}
+      />
+
       <Route
         path="/checkout"
         exact

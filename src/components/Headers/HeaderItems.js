@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 
 import { isAuthenticated } from '../../Users/apiUsers';
 
-import Aux from '../../hoc/Auxiliary/Auxiliary';
 import classes from './HeaderItems.module.css';
 
 // determines if current menu item, i.e. "<NavLink>" is the active link
@@ -20,7 +19,6 @@ const isActive = (page, path) => {
 const NavigationItems = (props) => {
 
     const [isResizing, setIsResizing] = useState(false);
-    //const [screenSize, setScreenSize] = useState(window.innerWidth);
     const [screenSize, setScreenSize] = useState(500);
     console.log("screenSize: ", screenSize)
     
@@ -32,6 +30,24 @@ const NavigationItems = (props) => {
         console.log("screenSize in Header: ", screenSize)
     };
 
+    const getStatus= () =>{ 
+      let tempData = JSON.parse(localStorage.getItem("user"));
+      if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
+        return tempData.user.accountId.status}
+      else {
+        console.log("returns 0")
+        return 0;
+      } 
+    }
+
+    let userPath;
+
+    if (isAuthenticated() && (getStatus() !== 7 && getStatus() !== 8)) {
+        userPath = "/personal"
+    } else if(isAuthenticated()) {
+        userPath = "/vendor"
+    }
+
     return (
         <ul className={classes.HeaderItems}>
             <li>
@@ -42,38 +58,35 @@ const NavigationItems = (props) => {
                 </NavLink>
             </li>
 
-            {screenSize === 400 ? (
-            <li>
-                <NavLink
-                    to="/eventspast"
-                    style={isActive(props.currentPage, "/eventspast")}
-                >PAST EVENTS
-                </NavLink>
-            </li>)
-
-            : null}
-
             {!isAuthenticated() && 
                 <li>
                     <NavLink
-                        to="/signin"
-                        style={isActive(props.currentPage, "/signin")}
+                        to="/auth"
+                        style={isActive(props.currentPage, "/auth")}
                     >SIGN IN
                     </NavLink>
                 </li>
             }
 
-            {isAuthenticated() && 
+            {userPath === "/vendor" && 
                 <li>
                     <NavLink
-                        to="/signin"
-                        onClick={props.signOut}
-                        style={{color: "#000"}}
-                    >SIGN OUT
+                        to="/vendor"
+                        style={isActive(props.currentPage, "/vendor")}
+                    >MY ACCOUNT
                     </NavLink>
                 </li>
             }
 
+            {userPath === "/personal" && 
+                <li>
+                    <NavLink
+                        to="/personal"
+                        style={isActive(props.currentPage, "/personal")}
+                    >MY ACCOUNT
+                    </NavLink>
+                </li>
+            }
 
         </ul>
     )

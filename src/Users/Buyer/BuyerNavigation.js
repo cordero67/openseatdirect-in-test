@@ -1,29 +1,49 @@
-import React, { Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
-import classes from "./BuyerDashboard.module.css";
+import classes from "./BuyerAccount.module.css";
 
 import { signout } from '../apiUsers';
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+
 const BuyerNavigation = (props) => {
 
-  console.log("props: ", props);
+  const [buyerInfo, setBuyerInfo] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      let tempBuyerInfo = {};
+      tempBuyerInfo.name = tempUser.user.name
+      setBuyerInfo(tempBuyerInfo);
+    } else {
+      window.location.href = "/signin";
+    }
+    setIsLoading(false);
+  }, []);
   
   return (
     <Fragment>
-
       <div className={classes.NavigationTitle}>
-          {props.buyerInfo.name ?
+          {!isLoading ?
             <span
               style={{
                 display: "inline-block",
                 verticalAlign: "middle",
                 lineHeight: "normal",
               }}>
-              {props.buyerInfo.name}
+              {buyerInfo.name}
             </span> :
-            "Dashboard"}
+            null}
       </div>
 
       <div className={classes.DashboardTitle}>
@@ -33,12 +53,30 @@ const BuyerNavigation = (props) => {
             verticalAlign: "middle",
             lineHeight: "normal",
           }}>
-          MY DASHBOARD
+          <FontAwesomeIcon
+            color="white"
+            cursor="pointer"
+            icon={faHome}
+          />{" "}My Account
         </span>
       </div>
 
       <ul className={classes.NavigationBar}>
+
         <div className={classes.NavigationItems}>
+          <li>
+            <button
+              className={classes.NavigationButton}
+              style={{
+                backgroundColor: props.pane === "myTickets" ? "#fff" : "#b8b8b8",
+                outline: "none"
+              }}
+              name="myTickets"
+              onClick={props.clicked}>
+              My Tickets
+            </button>
+          </li>
+
           <li>
             <button
               className={classes.NavigationButton}
@@ -48,7 +86,7 @@ const BuyerNavigation = (props) => {
               }}
               name="profile"
               onClick={props.clicked}>
-              PROFILE
+              Profile
             </button>
           </li>
 
@@ -61,24 +99,10 @@ const BuyerNavigation = (props) => {
               }}
               name="onboarding"
               onClick={props.clicked}>
-              BECOME A VENDOR
+              Create Events
             </button>
           </li>
-
-          <li 
-          >
-            <NavLink
-            className={classes.NavigationButton}
-              to="/signin"
-              style={{color: "#000",
-              fontWeight: "500"}}
-              onClick={() => {
-                signout(() => {
-                })
-              }}
-            >SIGN OUT
-            </NavLink>
-          </li>
+          
         </div>
       </ul>
     </Fragment>

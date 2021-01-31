@@ -1,288 +1,306 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 
 import { API } from "../../config";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronUp,
-  faChevronDown,
-  faEdit
-} from "@fortawesome/free-solid-svg-icons";
+import WarningModal from "./Modals/WarningModal";
+import Spinner from "../../components/UI/Spinner/Spinner";
  
-import classes from "./VendorAccountOLD.module.css";
-import { compareValues, getDates } from "./VendorFunctions";
-import { Button, Popup } from "semantic-ui-react";
-
-
-let vendorInfo = {};
+import classes from "./Events.module.css";
+import { compareValues, getDates } from "./Resources/VendorFunctions";
 
 const Events = (props) => {
+    const [display, setDisplay] = useState("spinner"); //main, spinner, connection
+    const [warningModal, setWarningModal] = useState({
+        status: false,
+        type: ""
+    });
 
     const [eventDescriptions, setEventDescriptions] = useState();//
-    const [ticketDisplay, setTicketDisplay] = useState();
-    const [isLoading, setIsLoading] = useState(false);//
-    const [isSuccessfull, setIsSuccessfull] = useState(false);//
 
     const handleErrors = response => {
-        console.log("Inside 'apiCore' 'handleErrors()'", response);
         if (!response.ok) {
+            console.log("error in 'handleErrors()'");
             throw Error(response.status);
         }
         return response;
     };
 
-    // intilializes the show property of each ticket type to "false"
-    const initializeDisplays = (events) => {
-        let tempObject = {};
-        events.forEach((item, index) => {
-        tempObject[item.eventNum] = false;
+    const loadServerData = () => {
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        let vendorToken = tempUser.token;
+        let vendorId = tempUser.user._id;
+
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer " + vendorToken);
+        let requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow",
+        };
+        let fetchstr =  `${API}/event/alluser/${vendorId}`;
+
+        fetch(fetchstr, requestOptions)
+        .then(handleErrors)
+        .then((response) => response.text())
+        .then((result) => {
+            localStorage.setItem("events", result);
+            let js = JSON.parse(result);
+            js.sort(compareValues("startDateTime", "asc"));
+            setEventDescriptions(js);
+                fetchstr = `${API}/order/${vendorId}`;
+                fetch(fetchstr, requestOptions)
+                .then(handleErrors)
+                .then((response) => response.text())
+                .then((result) => {
+                    localStorage.setItem("orders", result);
+                    setDisplay("main");
+                })
+            return js;
         })
-        setTicketDisplay(tempObject);
+        .catch((error) => {
+            console.log("error", error);
+            setDisplay("connection");
+        });
     }
-    
+
     useEffect(() => {
-        setIsLoading(true);
         if (
             typeof window !== "undefined" &&
             localStorage.getItem(`user`) !== null
         ) {
-            let tempUser = JSON.parse(localStorage.getItem("user"));
-            vendorInfo.token = tempUser.token;
-            vendorInfo.id = tempUser.user._id;
-            console.log("Got user");
+            loadServerData();
         } else {
-            window.location.href = "/signin";
+            window.location.href = "/auth";
         }
-    
-        if (
-            typeof window !== "undefined" &&
-            localStorage.getItem(`events`) !== null
-        ) {
-            console.log("events exist");
-            let tempEvents = JSON.parse(localStorage.getItem("events"));
-            setEventDescriptions(tempEvents);
-            setIsSuccessfull(true);
-            setIsLoading(false);
-        } else {
-            console.log("events do not exist");
-            let myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Authorization", "Bearer " + vendorInfo.token);
-        
-            let requestOptions = {
-              method: "GET",
-              headers: myHeaders,
-              redirect: "follow",
-            };
-    
-            let fetchstr =  `${API}/event/alluser/${vendorInfo.id}`;
-    
-            fetch(fetchstr, requestOptions)
-            .then(handleErrors)
-            .then((response) => response.text())
-            .then((result) => {
-                localStorage.setItem("events", result);
-                let js = JSON.parse(result);
-                console.log("eventDescriptions unordered: ", js);
-                js.sort(compareValues("startDateTime", "asc"));
-                console.log("eventDescriptions ordered: ", js);
-                setEventDescriptions(js);
-                setIsSuccessfull(true);
-                setIsLoading(false);
-                return js;
-            })
-            .catch((error) => {
-                console.log("error", error);
-                setIsSuccessfull(false);
-                setIsLoading(false);
-            });
-        }
-
     }, []);
-  
-    const editEvent = (item) => {
+
+    const setEventNum = (item) => {
         if (typeof window !== "undefined") {
-        console.log("JSON.stringify(item): ", JSON.stringify(item));
-        localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
-        window.location.href = `/eventedit/?eventID=${item.eventNum}`;
+            localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
+        } else {
+            window.location.href = "/auth";
         }
-        // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
     }
-  
-    const eventDetail = (item) => {
-        if (typeof window !== "undefined") {
-        //console.log("JSON.stringify(item): ", JSON.stringify(item));
-        localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
-        //window.location.href = `/eventedit/?eventID=${item.eventNum}`;
+
+    const switchTab = (name, item) => {
+        if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+            localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
+
+            if (localStorage.getItem(`orders`) !== null && localStorage.getItem(`events`) !== null) {
+                let storedEvents = JSON.parse(localStorage.getItem("events"));
+                let storedOrders = JSON.parse(localStorage.getItem("orders"));
+
+                if (name === "analytics") {
+                    setWarningModal({
+                        status: true,
+                        type: "analytics"
+                    });
+                } else if (name === "orders") {
+                    let ordersExist = false;
+                    storedOrders.forEach((order) => {
+                        if (order.eventNum === item.eventNum) {
+                            ordersExist = true;
+                        }
+                    })
+                    if (ordersExist) {
+                        props.ticketSales();
+                    } else {
+                        setWarningModal({
+                            status: true,
+                            type: "orders"
+                        });
+                    }
+                } else if (name === "tickets") {
+                    let ticketsExist = false;
+                    storedEvents.forEach((event) => {
+                        if (event.eventNum === item.eventNum &&
+                            "tickets" in event && event.tickets.length > 0) {
+                            ticketsExist = true;
+                        }
+                    })
+                    if (ticketsExist) {
+                        props.issueTickets();
+                    } else {
+                        setWarningModal({
+                            status: true,
+                            type: "tickets"
+                        });
+                    }
+                }
+            } else {
+                loadServerData();
+            }
+        } else {
+            window.location.href = "/auth";
         }
-        // NEED TO DETERMINE WHAT HAPPENS IF THERE IS NO WINDOW
     }
+
+    const warningModalDisplay = (
+        <Fragment>
+            <WarningModal
+                show={warningModal.status}
+                type={warningModal.type}
+                close={() => {
+                    setWarningModal({
+                        status: false,
+                        type: ""
+                    });
+                }}
+            />
+        </Fragment>
+    )
 
     const mainDisplay = () => {
-        if (!isLoading && isSuccessfull && eventDescriptions.length !== 0) {
-            console.log("eventDescriptions.length: ", eventDescriptions.length)
+        if (display === "main" && eventDescriptions.length !== 0) {
             return (
                 <div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
                     {eventDescriptions.map((item, index) => {
                         let shortMonth, dayDate, longDateTime;
                         [shortMonth, dayDate, longDateTime] = getDates(item.startDateTime);
-
                         return (
-                            <div key={index} 
-                                style={{
-                                    textAlign: "center",
-                                    display: "grid",
-                                    columnGap: "10px",
-                                    gridTemplateColumns: "60px 20px 640px 100px 80px",
-                                    paddingLeft: "20px",
-                                    paddingRight: "30px"
-                                    }}>
+                            <div
+                                key={index}
+                                className={classes.Events}
+                            >
                                 <div style={{ textAlign: "center"}}>
-                                    <span
-                                        style={{
-                                        fontSize: "12px",
-                                        fontWeight: "400",
-                                        color: "red",
-                                        }}
-                                    >
+                                    <div style={{fontSize: "12px", fontWeight: "400", color: "red"}}>
                                         {shortMonth}
-                                    </span>
-                                    <br></br>
-                                    <span style={{ fontSize: "18px", color: "black", fontWeight: "600" }}>
+                                    </div>
+                                    <div style={{ fontSize: "18px", color: "black", fontWeight: "600" }}>
                                         {dayDate}
-                                    </span>
-                                </div>
-                                <div style={{ fontSize: "12px", textAlign: "center" }}>
-                                
-                                    <FontAwesomeIcon
-                                    color="black"
-                                    size="sm"
-                                    cursor="pointer"
-                                    onClick={() => {
-                                        //let tempDisplay = {...ticketDisplay};
-                                        //tempDisplay[item.eventNum] = false;
-                                        //setTicketDisplay(tempDisplay);
-                                    }}
-                                    icon={faChevronDown}
-                                    />
-                                
-                                </div>
-                                <div style={{textAlign: "left" }}>
-                                    <button
-                                        style={{
-                                            fontSize: "16px",
-                                            textAlign: "left",
-                                            color: "blue",
-                                            fontWeight: "600",
-                                            paddingLeft: "0px",
-                                            border: "none",
-                                            backgroundColor: "white",
-                                            cursor: "pointer",
-                                            display: "inlineBlock",
-                                            outline: "none",
-                                        }}
-                                        onClick={() => {
-                                            eventDetail(item);
-                                            props.clicked()}}
-                                    >
-                                        {item.eventTitle}
-                                    </button>
-                                    <div
-                                        style={{
-                                            fontSize: "13px",
-                                            textAlign: "left",
-                                            fontWeight: "600" 
-                                        }}
-                                    >
-                                    {longDateTime}
                                     </div>
                                 </div>
-                                <div style={{fontSize: "16px", fontWeight: "600"}}>{item.isDraft ? <span style={{color: "red"}}>Draft</span> : <span style={{color: "green"}}>Live</span>}</div>
-                                <div
-                                style={{
-                                    fontSize: "12px",
-                                    textAlign: "center",
-                                    position: "relative"
-                                }}
-                                >
-                                    <FontAwesomeIcon
-                                        style={{ zIndex: "100" }}
-                                        color="blue"
-                                        size="lg"
-                                        cursor="pointer"
-                                        onClick={() => editEvent(item)}
-                                        icon={faEdit}
-                                    />
+                                <div style={{textAlign: "left"}}>
+                                    <div className={classes.EventTitle}>
+                                        {item.eventTitle}
+                                    </div>
+                                    <div style={{fontSize: "13px", textAlign: "left", fontWeight: "500" }}>
+                                        {longDateTime}
+                                    </div>
                                 </div>
-                                <br></br>
+                                <div style={{fontSize: "16px", fontWeight: "500", paddingTop: "12px"}}>
+                                    {item.isDraft ?
+                                        <span style={{color: "#B80000"}}>DRAFT</span> :
+                                        <span style={{color: "#008F00"}}>LIVE</span>}
+                                </div>
+                                <button className={classes.EventButton}>
+                                    <ion-icon
+                                        style={{fontSize: "28px", color: "blue"}}
+                                        name="analytics"
+                                        onClick={() => {
+                                            switchTab("analytics", item);
+                                        }}
+                                    />
+                                </button>
+                                <button className={classes.EventButton}>
+                                    <ion-icon
+                                        style={{fontSize: "24px", color: "blue"}}
+                                        name="receipt-outline"
+                                        onClick={() => {
+                                            switchTab("orders", item);
+                                        }}
+                                    />
+                                </button>
+                                <button className={classes.EventButton}>
+                                    <ion-icon
+                                        style={{fontSize: "26px", color: "blue"}}
+                                        name="ticket-outline"
+                                        onClick={() => {
+                                            switchTab("tickets", item);
+                                        }}
+                                    />
+                                </button>
+                                <button className={classes.EventButton}>
+                                    <ion-icon
+                                        style={{fontSize: "26px", color: "blue"}}
+                                        name="create-outline"
+                                        onClick={() => {
+                                            setEventNum(item);
+                                            props.editEvent();
+                                        }}
+                                    />
+                                </button>
                             </div>
                         );
                     })}
                 </div>
             )
-        } else if (!isLoading && isSuccessfull) {
-            console.log("eventDescriptions.length: zero: ", eventDescriptions.length);
-            console.log("zero events");
+        } else if (display === "main") {
             return (
-                <div style={{ textAlign: "center", fontSize: "20px" }}>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>You currently have no events.
-                </div>
-            )
-        } else if (!isLoading && !isSuccessfull) {
-            return (
-                <div className={classes.SystemDownMessage}>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <div className={classes.SummaryHeader}>
-                        System error please reload/refresh this page.
-                    </div>
-                    
-                    <br></br>
-                    <div style={{textAlign: "center"}}>
-                        <Button className={classes.EventsButton}
-                            style={{
-                                backgroundColor: "white",
-                                border: "1px solid blue",
-                                color: "blue",
-                                padding: "0px"
-                            }}
-                            content="Reload Page"
-                            onClick={() => {
-                                window.location.reload();
-                                return false;
-                            }}
-                        />
-                    </div>
+                <div className={classes.NoEventsText}>
+                    You currently have no events.
                 </div>
             )
         } else {
-            return null;
+            return null
         }
+    }
+
+    const tabTitle = (
+        <div className={classes.DisplayPanelTitle}>
+            My Events
+        </div>
+    )
+
+    const displayHeader = (
+        <div className={classes.EventsHeader}>
+            <div style={{textAlign: "center"}}>Date</div>
+            <div>Event</div>
+            <div style={{textAlign: "center"}}>
+                <div>Event</div>
+                <div>Status</div>
+            </div>
+            <div style={{textAlign: "center"}}>
+                <div>Sales</div>
+                <div>Analytics</div>
+            </div>
+            <div style={{textAlign: "center"}}>
+                <div>Past</div>
+                <div>Orders</div>
+            </div>
+            <div style={{textAlign: "center"}}>
+                <div>Issue</div>
+                <div>Tickets</div>
+            </div>
+            <div style={{textAlign: "center"}}>
+                <div>Edit</div>
+                <div>Event</div>
+            </div>
+        </div>
+    )
+
+    const loadingSpinner = () => {
+        if (display === "spinner") {
+        return (
+            <div style={{paddingTop: "60px"}}>
+                <Spinner/>
+            </div>
+        )
+        } else {
+            return null
+        }
+    }
+
+    const connectionStatus = () => {
+        if (display === "connection") {
+            return (
+                <div className={classes.ConnectionText}>
+                    There is a problem with OSD Server in retrieving your events. Please try again later.
+                </div>
+            )
+        } else return null;
     }
 
     return (
         <div>
-            <div className={classes.DisplayPanelTitle}>
-                MY EVENTS
-            </div>
-            
-            <div className={classes.DisplayPanel2}>
-                <div className={classes.MainDisplayHeader}>
-                    <div style={{ textAlign: "center" }}>Date</div>
-                    <div></div>
-                    <div className={classes.Expand}>Event</div>
-                    <div style={{ textAlign: "center" }}>Status</div>
-                    <div style={{ textAlign: "center" }}>Edit</div>
-                </div>
+            {tabTitle}
+            {displayHeader}
+            <div className={classes.DisplayPanel}>
+                {loadingSpinner()}
                 {mainDisplay()}
+                {connectionStatus()}
             </div>
+            {warningModalDisplay}
         </div>
     )
 }

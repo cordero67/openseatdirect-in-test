@@ -1,0 +1,10 @@
+.RightGrid {
+    display: grid;
+    grid-template-columns: auto 80px;
+}
+
+@media (min-width: 1140px) {
+    .RightGrid {
+        grid-template-columns: 230px 80px;
+    }
+}

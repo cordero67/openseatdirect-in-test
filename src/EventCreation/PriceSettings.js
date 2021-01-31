@@ -16,7 +16,7 @@ const PriceSettings = (props) => {
         props.ticket.minWarning = false;
     } else {
         props.ticket.minWarning = !orderRegex.test(props.ticket.minTicketsAllowedPerOrder);
-      console.log("ticket.minWarning: ",props.ticket.minWarning)
+        console.log("ticket.minWarning: ",props.ticket.minWarning)
     }
 
     if(!props.ticket.maxTicketsAllowedPerOrder) {

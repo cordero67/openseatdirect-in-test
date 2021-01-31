@@ -33,7 +33,7 @@ const Footer = (props) => {
         <div>
           <Logo source={logo} placement="footer"/>
         </div>
-        <div className={styles.CopyRight}>Copyright &copy; 2019 OpenSeatDirect LLC | All Rights Reserved</div>
+        <div className={styles.CopyRight}>Copyright &copy; 2021 OpenSeatDirect LLC | All Rights Reserved</div>
       </div>
     )
   } else {
@@ -43,7 +43,7 @@ const Footer = (props) => {
           <Logo source={logo} placement="footer"/>
         </div>
         <div  className={styles.CopyRight}>
-          <div>Copyright &copy; 2019 OpenSeatDirect LLC</div>
+          <div>Copyright &copy; 2020 OpenSeatDirect LLC</div>
           <div>All Rights Reserved</div>
         </div>
       </div>

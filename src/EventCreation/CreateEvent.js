@@ -1,67 +1,73 @@
 //CODE MARKED HAS BEEN CHECKED VERSUS ORIGINAL
 //EXCEPT FOR SMALL STYLING SECTION LABELED BELOW
-//EXCEPT FOR <EventDetails/>, <TicketCreation/>, <AdditionalSettings/>,  SECTIONS NOT LABELED BELOW
+//EXCEPT FOR <TicketCreation/>, <AdditionalSettings/>,  SECTIONS NOT LABELED BELOW
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
 
 import dateFnsFormat from 'date-fns/format';
 
 import { API } from "../config";
 
+
+
+
+
+
 import SavedModal from "./Modals/SavedModal";
-import EventDetails from "./EventDetails";
+import EventDetails from "./Components/EventDetails";
 import TicketCreation from "./TicketCreation";
-import AdditionalSettings from "./AdditionalSettings";
+import AdditionalSettings from "./Components/AdditionalSettings";
 
 import classes from "./VendorDashboard.module.css";
-import { Button } from "semantic-ui-react";
-import Aux from "../hoc/Auxiliary/Auxiliary";
 
-// START STRAIGHT COPY FROM ORIGINAL
 // holds sign-in information
 let vendorInfo = {};
-// END STRAIGHT COPY FROM ORIGINAL
 
 const CreateEvent = (props) => {
     const [eventTitleOmission, setEventTitleOmission] = useState(false);
     const [pageErrors, setPageErrors] = useState(false);
 
+
+
+
     // stores all Event Description values
     const [eventDescription, setEventDescription] = useState({
-        eventTitle: "",
-        isDraft: true,
-        eventType: "live",
-        webinarLink: "",
-        onlineInformation: "",
-        tbaInformation: "",
-        locationVenueName: "",
-        locationAddress1: "",
-        locationAddress2: "",
-        locationCity: "",
-        locationState: "",
-        locationZipPostalCode: "",
-        locationCountryCode: "US",
-        locationNote: "",
-        startDate: new Date(new Date().toDateString()),
-        startTime: "19:00:00",
-        endDate: new Date(new Date().toDateString()),
-        endTime: "20:00:00",
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        photo: "",
-        shortDescription: "",
-        longDescription: "",
-        eventCategory: "",
-        facebookLink: "",
-        twitterLink: "",
-        linkedinLink: "",
-        instagramLink: "",
-        vanityLink: "",
-        refundPolicy: "noRefunds",
+      
+      eventTitle: "",
+      isDraft: true,
+      eventType: "live",
+      webinarLink: "",
+      onlineInformation: "",
+      tbaInformation: "",
+      locationVenueName: "",
+      locationAddress1: "",
+      locationAddress2: "",
+      locationCity: "",
+      locationState: "",
+      locationZipPostalCode: "",
+      locationCountryCode: "US",
+      locationNote: "",
+      startDate: new Date(new Date().toDateString()),
+      startTime: "19:00:00",
+      endDate: new Date(new Date().toDateString()),
+      endTime: "20:00:00",
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      photo: "",
+      photoChanged: false,// NOT USED IN CREATEEVENT
+      shortDescription: "",
+      longDescription: "",
+      eventCategory: "",
+      facebookLink: "",
+      twitterLink: "",
+      linkedinLink: "",
+      instagramLink: "",
+      vanityLink: "",
+      refundPolicy: "noRefunds",
     });
 
     // stores all Ticket Details values
     const [ticketDetails, setTicketDetails] = useState([
-        {
+      {
         key: "1",
         sort: "",
         _id: "",
@@ -87,8 +93,11 @@ const CreateEvent = (props) => {
         promoCodeWarning: "",
         functionArgs: {},
         viewModal: false
-        },
+      }
     ]);
+
+
+
 
     const [eventStatus, setEventStatus] = useState({
       status: "", // "saved", "live", "error", "failure"
@@ -98,22 +107,86 @@ const CreateEvent = (props) => {
       failureMessage: "System error please try again.",
     });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     useEffect(() => {
         // checks if 'user' exists in local storage
         if (
-        typeof window !== "undefined" &&  
-        localStorage.getItem(`user`) !== null
+          typeof window !== "undefined" &&  
+          localStorage.getItem(`user`) !== null
         ) {
-        // loads sign-in data
-        let tempUser = JSON.parse(localStorage.getItem("user"));
-        vendorInfo.token = tempUser.token;
-        vendorInfo.id = tempUser.user._id;
+          // loads sign-in data
+          let tempUser = JSON.parse(localStorage.getItem("user"));
+          vendorInfo.token = tempUser.token;
+          vendorInfo.id = tempUser.user._id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         } else {
-        window.location.href = "/signin";
+          window.location.href = "/signin";
         }
     }, []);
 
-    // START STRAIGHT COPY FROM ORIGINAL
+
     const saveEvent = async (newStatus) => {
       console.log("eventDescription: ", eventDescription)
       console.log("eventStatus: ", eventStatus)
@@ -123,14 +196,14 @@ const CreateEvent = (props) => {
       setEventTitleOmission(false);
 
       if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
+        typeof window !== "undefined" &&
+        localStorage.getItem(`user`) !== null
       ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      vendorInfo.token = tempUser.token;
-      vendorInfo.id = tempUser.user._id;
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        vendorInfo.token = tempUser.token;
+        vendorInfo.id = tempUser.user._id;
       } else {
-      window.location.href = "/signin";
+        window.location.href = "/signin";
       }
 
       let tempStatus = { ...eventStatus };
@@ -139,68 +212,68 @@ const CreateEvent = (props) => {
       console.log("ticketDetails: ", ticketDetails)
 
       ticketDetails.forEach((ticket, index) => {
-          if(ticket.nameWarning) {
-              console.log("Name Warning, ticket : ", index)
-              setPageErrors(true);
-              tempPageErrors = true;
+        if (ticket.nameWarning) {
+          console.log("Name Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if (ticket.quantityWarning) {
+          console.log("Quantity Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if (ticket.priceWarning) {
+          console.log("Price Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if (ticket.reqWarning) {
+          console.log("Required Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if (ticket.minWarning) {
+          console.log("Min Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if (ticket.maxWarning) {
+          console.log("Min Warning, ticket : ", index)
+          setPageErrors(true);
+          tempPageErrors = true;
+        }
+        if (ticket.functionArgs) {
+          if(ticket.functionArgs.reqWarning) {
+            console.log("Req Warning, ticket : ", index)
+            setPageErrors(true);
+            tempPageErrors = true;
           }
-          if(ticket.quantityWarning) {
-              console.log("Quantity Warning, ticket : ", index)
-              setPageErrors(true);
-              tempPageErrors = true;
+          if (ticket.functionArgs.buyWarning) {
+            console.log("Buy Warning, ticket : ", index)
+            setPageErrors(true);
+            tempPageErrors = true;
           }
-          if(ticket.priceWarning) {
-              console.log("Price Warning, ticket : ", index)
-              setPageErrors(true);
-              tempPageErrors = true;
+          if (ticket.functionArgs.getWarning) {
+            console.log("Get Warning, ticket : ", index)
+            setPageErrors(true);
+            tempPageErrors = true;
           }
-          if(ticket.reqWarning) {
-              console.log("Required Warning, ticket : ", index)
-              setPageErrors(true);
-              tempPageErrors = true;
+          if (ticket.functionArgs.discountWarning) {
+            console.log("Discount Warning, ticket : ", index)
+            setPageErrors(true);
+            tempPageErrors = true;
           }
-          if(ticket.minWarning) {
-              console.log("Min Warning, ticket : ", index)
-              setPageErrors(true);
-              tempPageErrors = true;
+          if (ticket.functionArgs.forWarning) {
+            console.log("For Warning, ticket : ", index)
+            setPageErrors(true);
+            tempPageErrors = true;
           }
-          if(ticket.maxWarning) {
-              console.log("Min Warning, ticket : ", index)
-              setPageErrors(true);
-              tempPageErrors = true;
+          if (ticket.functionArgs.maxForWarning) {
+            console.log("MaxFor Warning, ticket : ", index)
+            setPageErrors(true);
+            tempPageErrors = true;
           }
-          if (ticket.functionArgs) {
-              if(ticket.functionArgs.reqWarning) {
-                  console.log("Req Warning, ticket : ", index)
-                  setPageErrors(true);
-                  tempPageErrors = true;
-              }
-              if(ticket.functionArgs.buyWarning) {
-                  console.log("Buy Warning, ticket : ", index)
-                  setPageErrors(true);
-                  tempPageErrors = true;
-              }
-              if(ticket.functionArgs.getWarning) {
-                  console.log("Get Warning, ticket : ", index)
-                  setPageErrors(true);
-                  tempPageErrors = true;
-              }
-              if(ticket.functionArgs.discountWarning) {
-                  console.log("Discount Warning, ticket : ", index)
-                  setPageErrors(true);
-                  tempPageErrors = true;
-              }
-              if(ticket.functionArgs.forWarning) {
-                  console.log("For Warning, ticket : ", index)
-                  setPageErrors(true);
-                  tempPageErrors = true;
-              }
-              if (ticket.functionArgs.maxForWarning) {
-                  console.log("MaxFor Warning, ticket : ", index)
-                  setPageErrors(true);
-                  tempPageErrors = true;
-              }
-          }
+        }
       })
 
       if (!eventDescription.eventTitle) {
@@ -300,10 +373,13 @@ const CreateEvent = (props) => {
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      //formData.append("photo", tempDescription.photo);
+
+
+
+
+
 
       // eliminate empty ticket types
-      let tempTicketDetailsArray = [];
       let tempTicketDetails = [...ticketDetails];
 
       let ticketDetailsFields = [
@@ -317,56 +393,11 @@ const CreateEvent = (props) => {
       ];
 
       tempTicketDetails.forEach((ticket, index) => {
-          console.log("Inside elimate cade")
-          console.log("ticket.eventName: ", ticket.ticketName)
-          console.log("ticket.remainingQuantity: ", ticket.remainingQuantity)
-          console.log("ticket.currentTicketPrice: ", ticket.currentTicketPrice) 
-          if(('ticketName' in  ticket)  &&  ticket.ticketName.length && ticket.ticketName.length > 0 &&
-              ('remainingQuantity' in ticket) && ticket.remainingQuantity >0 &&
-              ('currentTicketPrice' in ticket) && ticket.currentTicketPrice >= 0) {
+          if (('ticketName' in  ticket)  &&  ticket.ticketName.length && ticket.ticketName.length > 0 &&
+            ('remainingQuantity' in ticket) && ticket.remainingQuantity >0 &&
+            ('currentTicketPrice' in ticket) && ticket.currentTicketPrice >= 0) {
       
-              console.log("We have a full ticket, index: ", index)          
-/*
-      if(tempTicketDetailsArray.length === 0) {
-          setTicketDetails([
-          {
-              key: "1",
-              sort: "",
-              _id: "",
-              ticketName: "",
-              nameWarning: false,
-              remainingQuantity: "",
-              quantityWarning: false,
-              currentTicketPrice: "",
-              priceWarning: false,
-              reqWarning: false,
-              currency: "",
-              settings: false,
-              ticketDescription: "",
-              minTicketsAllowedPerOrder: "",
-              minWarning: false,
-              maxTicketsAllowedPerOrder: "",
-              maxWarning: false,
-              priceFeature: "none",
-              promoCodes: [
-              { key: "1", name: "", amount: "", percent: false },
-              ],
-              promoCodeNames: [],
-              promoCodeWarning: "",
-              functionArgs: {},
-              viewModal: false
-          }],
-          )
-      } else {
-          setTicketDetails(tempTicketDetailsArray);
-      }
-*/
-
-              
-      // saves every field in the "tickets" array
-
-          //console.log("adding ticket ", index);
-        formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
+          formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
 
           if (ticket.currency) {
               formData.append(
@@ -503,19 +534,10 @@ const CreateEvent = (props) => {
       });
       }
   }
-  // END STRAIGHT COPY FROM ORIGINAL
 
-  // START STRAIGHT COPY FROM ORIGINAL
   const handleErrors = (response) => {
-    console.log("inside handleErrors")
-    console.log("response: ", response)
     if (!response.ok) {
-      console.log("bad response");
-      console.log("response: ", response.ok);
       throw Error(response.status);
-    } else {
-      console.log("good response");
-      console.log("response: ", response.ok);
     }
     return response;
   };
@@ -524,7 +546,7 @@ const CreateEvent = (props) => {
   const savedModal = () => {
     if (eventStatus.status === "failure" || eventStatus.status === "error") {
       return (
-        <Aux>
+        <Fragment>
           <SavedModal
             show={true}
             details={eventStatus}
@@ -534,22 +556,22 @@ const CreateEvent = (props) => {
               setEventStatus(tempStatus);
             }}
           ></SavedModal>
-        </Aux>
+        </Fragment>
       );
     } else if (
       eventStatus.status === "saved" ||
       eventStatus.status === "live"
     ) {
       return (
-        <Aux>
+        <Fragment>
           <SavedModal
             show={true}
             details={eventStatus}
             toDashboard={() => {
-              window.location.href = `/vendoraccount`;
+              window.location.href = `/vendor`;
             }}
           ></SavedModal>
-        </Aux>
+        </Fragment>
       );
     } else return null;
   };
@@ -579,6 +601,7 @@ const CreateEvent = (props) => {
   };
 
     // EVENT DESCRIPTION HANDLERS
+
     const changeEventDescription = (event) => {
         let tempDescription = { ...eventDescription };
         tempDescription[event.target.name] = event.target.value;
@@ -592,6 +615,7 @@ const CreateEvent = (props) => {
         setEventDescription(tempDescription);
         console.log("Event Description: ", tempDescription);
     };
+
 
     const changeEventDate = (day, fieldName) => {
         console.log("day from Date selector: ", day);
@@ -616,12 +640,13 @@ const CreateEvent = (props) => {
         console.log("tempDescription: ", tempDescription);
     };
 
+    
     const changeEventDescriptionRadio = (event, value, name) => {
       let tempDescription = { ...eventDescription };
       tempDescription[name] = value.value;
       setEventDescription(tempDescription);
-      console.log("Event Description: ", tempDescription);
     };
+
 
     const changeLongDescription = (editorContent) => {
       let tempDescription = { ...eventDescription };
@@ -630,6 +655,7 @@ const CreateEvent = (props) => {
     };
 
   // TICKET DETAILS HANDLERS
+
     const changeTicketDetail = (event, id) => {
       let tempDetails = [...ticketDetails];
       tempDetails.forEach((item) => {
@@ -640,6 +666,7 @@ const CreateEvent = (props) => {
       setTicketDetails(tempDetails);
       console.log("Ticket Details: ", tempDetails);
     };
+
 
     const switchTicketSettings = (event, key) => {
       let tempDetails = [...ticketDetails];
@@ -652,6 +679,7 @@ const CreateEvent = (props) => {
       console.log("Ticket Details: ", tempDetails);
     };
 
+
     const changeArgument = (event, key) => {
       let tempDetails = [...ticketDetails];
       tempDetails.forEach((item) => {
@@ -662,6 +690,7 @@ const CreateEvent = (props) => {
       setTicketDetails(tempDetails);
       console.log("Ticket Details: ", tempDetails);
     };
+
 
     const changePriceFeature = (event, value, key) => {
       let tempDetails = [...ticketDetails];
@@ -686,6 +715,7 @@ const CreateEvent = (props) => {
       setTicketDetails(tempDetails);
       console.log("Ticket Details: ", ticketDetails);
     };
+
 
     const createNewTicketHandler = () => {
       let newTicketKey = Math.floor(Math.random() * 1000000000000000);
@@ -720,6 +750,7 @@ const CreateEvent = (props) => {
       setTicketDetails(tempDetails);
     };
 
+    
     const deleteTicket = (id) => {
         if (ticketDetails.length === 1) {
         setTicketDetails([
@@ -763,6 +794,7 @@ const CreateEvent = (props) => {
         }
     };
 
+
     const deletePromoCode = (event, ticket, promoKey) => {
       if (ticket.promoCodes.length === 1) {
         // delete all promoCode info and set back to default in this specific ticket
@@ -793,6 +825,7 @@ const CreateEvent = (props) => {
       }
     };
 
+
     const switchPriceFeature = (event, key) => {
       let tempDetails = [...ticketDetails];
       tempDetails.forEach((item) => {
@@ -807,6 +840,7 @@ const CreateEvent = (props) => {
       setTicketDetails(tempDetails);
       console.log("Ticket Details: ", tempDetails);
     };
+
 
     const addPromoCode = (event, key) => {
       let newPromoKey = Math.floor(Math.random() * 1000000000000000);
@@ -826,6 +860,7 @@ const CreateEvent = (props) => {
       console.log("Ticket Details: ", tempDetails);
     };
 
+
     const changePromoCodesName = (event, ticketKey, promoKey) => {
       let tempDetails = [...ticketDetails];
       tempDetails.forEach((item) => {
@@ -842,6 +877,7 @@ const CreateEvent = (props) => {
       setTicketDetails(tempDetails);
       console.log("Ticket Details: ", tempDetails);
     };
+
 
     const changePromoCodesPercent = (event, ticketKey, promoKey) => {
       let tempDetails = [...ticketDetails];
@@ -861,6 +897,7 @@ const CreateEvent = (props) => {
       console.log("Ticket Details: ", tempDetails);
     };
 
+
     const changePromoCodesAmount = (event, ticketKey, promoKey) => {
       let tempDetails = [...ticketDetails];
       tempDetails.forEach((item) => {
@@ -879,25 +916,29 @@ const CreateEvent = (props) => {
       console.log("Ticket Details: ", tempDetails);
     };
 
+
     const subTitleDisplay = () => {
       if (pageErrors || eventTitleOmission) {
         return (
-            <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "12px", color: "red"}}>
+            <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "14px", color: "red"}}>
               Please correct input errors identified below.
             </div>
         )
       } else {
         return (
-            <div style={{ textAlign: "left" }}>
-            </div>
+          <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "14px", color: "red"}}>
+          </div>
         )
       }
     }
 
+
     const [dragging, setDragging] = useState(false);
+
 
     const dragItem = useRef();
     const dragNode = useRef();
+
     
     const handleDragStart = (event, index) => {
       dragItem.current = index;
@@ -908,6 +949,7 @@ const CreateEvent = (props) => {
       }, 0);
     };
     
+
     const handleDragEnd = () => {
       dragNode.current.removeEventListener("dragend", handleDragEnd);
       setDragging(false);
@@ -915,6 +957,7 @@ const CreateEvent = (props) => {
       dragNode.current = null;
     };
     
+
     const handleDragEnter = (event, index) => {
     
       if (index !== dragItem.current) {
@@ -932,11 +975,6 @@ const CreateEvent = (props) => {
     };
 
 //END CODE REPLICATION CHECK
-
-
-
-
-
     const changeEventField = (value, field) => {
         let tempDescription = { ...eventDescription };
         tempDescription[field] = value;
@@ -944,6 +982,7 @@ const CreateEvent = (props) => {
         setEventDescription(tempDescription);
     };
 
+    
     const changeEventCategory = (value) => {
         let tempDescription = { ...eventDescription };
         tempDescription.eventCategory = value;
@@ -957,88 +996,99 @@ const CreateEvent = (props) => {
         tempDescription.photo = image;
         setEventDescription(tempDescription);
     }
-
-
-
-
 //START CODE REPLICATION CHECK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const buttonDisplay = (
+  <Fragment>
+    <div>
+      <button
+        className={classes.ButtonRed}
+        onClick={() => {
+          let tempDescription = {...eventDescription };
+          tempDescription.isDraft = true;
+          setEventDescription(tempDescription);
+          saveEvent("saved");
+        }}
+      >SAVE AS DRAFT</button>
+    </div>
+    <div>
+      <button
+        className={classes.ButtonGreen}
+        onClick={() => {
+          let tempDescription = {...eventDescription };
+          tempDescription.isDraft = false;
+          setEventDescription(tempDescription);
+          saveEvent("live");
+        }}
+      >GO LIVE NOW</button>
+    </div>
+    <div>
+      <button
+        className={classes.ButtonGrey}
+        onClick={() => {
+          window.location.href = `/vendor`
+        }}
+      >CANCEL CREATE</button>
+    </div>
+  </Fragment>
+);
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <div>
       <div className={classes.EventPanelTitle}>
-        <div style={{paddingTop: "5px"}}>CREATE EVENT</div>
+        <div style={{paddingTop: "5px"}}>Create Event</div>
         {subTitleDisplay()}
-        <div></div>
-        <div>
-          <Button
-              style={{
-              backgroundColor: 'white',
-              border: "1px solid red",
-              color: "red",
-              fontSize: "12px",
-              width: "90px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px"
-              }}
-              content="Save as Draft"
-              onClick={() => {
-                // ***** NEED TO INCLUDE
-                let tempDescription = {...eventDescription };
-                tempDescription.isDraft = true;
-                setEventDescription(tempDescription);
-                saveEvent("saved");
-              }}
-          />
-        </div>
-        <div>
-          <Button
-            style={{
-              backgroundColor: 'white',
-              border: "1px solid #228B22",
-              color: "#228B22",
-              fontSize: "12px",
-              width: "90px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px",
-            }}
-            content="Go Live Now"
-            onClick={() => {
-              let tempDescription = {...eventDescription };
-              tempDescription.isDraft = false;
-              setEventDescription(tempDescription);
-              saveEvent("live");
-            }}
-          />
-        </div>
-        <div>
-          <Button
-            style={{
-            backgroundColor: 'white',
-            border: "1px solid black",
-            color: "black",
-            fontSize: "12px",
-            width: "90px",
-            height: "30px",
-            margin: "auto",
-            textAlign: "center",
-            padding: "0px",
-            }}
-            content="Cancel Create"
-            onClick={() => {
-              window.location.href = `/events`
-            }}
-          />
-        </div>
+        {buttonDisplay}
       </div>
       <div className={classes.DisplayPanel}>
         {savedModal()}
         <EventDetails
           event={eventDescription}
           titleOmission={eventTitleOmission}
+          eventImage={"new"}
+          photoData={""}
           change={changeEventDescription}
           radioChange={changeEventDescriptionRadio}
           changeDate={changeEventDate}
@@ -1054,12 +1104,11 @@ const CreateEvent = (props) => {
         <TicketCreation
           tickets={ticketDetails}
           radioChange={changeEventDescriptionRadio}
-          changeTicket={changeTicketDetail}// ??? Dupe
+          changeTicket={changeTicketDetail}
           changeSettings={switchTicketSettings}
           showModal={activateShowModal}
           deactivateModal={deactivateShowModal}
           delete={deleteTicket}
-          ticketChange={changeTicketDetail}// ??? Dupe
           switchSettings={switchTicketSettings}
           changeFeature={changePriceFeature}
           switchPriceFeature={switchPriceFeature}

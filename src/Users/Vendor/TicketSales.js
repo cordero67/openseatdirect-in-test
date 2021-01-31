@@ -1,18 +1,61 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 
-import { getDate } from "./VendorFunctions";
+import { getDate } from "./Resources/VendorFunctions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faReceipt } from "@fortawesome/free-solid-svg-icons";
 
 import classes from "./TicketSales.module.css";
+import ReceiptModal from "./Modals/ReceiptModal";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 const TicketSales = (props) => {
-  const [selectedEventTitle, setSelectedEventTitle] = useState(""); //event details of a single selected event
+  const [display, setDisplay] = useState("spinner"); //main, spinner
+  const [modalView, setModalView] = useState(false);
 
   const [eventOrders, setEventOrders] = useState([]);
-  const [ordersView, setOrdersView] = useState("complete"); // complete, noOrders, or noEventSelected
-  const [isLoading, setIsLoading] = useState(false); //
+  const [selectedEventTitle, setSelectedEventTitle] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState({})
+
+  const [sortParameters, setSortParameters] = useState(
+    {label: "order_createdAt", direction: "asc"}
+  );
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+      if (
+        localStorage.getItem(`orders`) !== null &&
+        localStorage.getItem(`events`) !== null &&
+        localStorage.getItem(`eventNum`) !== null
+        ) {
+        let storedEvents = JSON.parse(localStorage.getItem("events"));
+        let storedOrders = JSON.parse(localStorage.getItem("orders"));
+        let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
+
+        storedEvents.forEach(event => {
+          if (event.eventNum === storedEventNum) {
+            loadEventTitle(storedEventNum)
+          }
+        })
+
+        let tempEventOrders = [];
+        storedOrders.forEach((order) => {
+          if (order.eventNum === storedEventNum) {
+            order.key = Math.floor(Math.random() * 1000000000000000);
+            order.view = false;
+            tempEventOrders.push(order);
+          }
+        })
+        setEventOrders(tempEventOrders)
+        
+      } else {
+        props.clicked("events")
+      }
+    } else {
+      window.location.href = "/auth";
+    }
+    setDisplay("main")
+  }, []);
 
   const loadEventTitle = (eventNum) => {
     let tempEvents = JSON.parse(localStorage.getItem("events"));
@@ -22,59 +65,6 @@ const TicketSales = (props) => {
       }
     })
   }
-
-  useEffect(() => {
-    setIsLoading(true);
-    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
-
-      if (localStorage.getItem(`orders`) !== null && localStorage.getItem(`events`) !== null) {
-        let storedEvents = JSON.parse(localStorage.getItem("events"));
-        let storedOrders = JSON.parse(localStorage.getItem("orders"));
-          
-        if (localStorage.getItem(`eventNum`) !== null) {
-          let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
-          storedEvents.forEach((event, index) => {
-            if (event.eventNum === storedEventNum) {
-              loadEventTitle(storedEventNum)
-            }
-          })
-
-          let ordersExist = false;
-          let tempEventOrders = [];
-          storedOrders.forEach((order) => {
-            if (order.eventNum === storedEventNum) {
-              order.key = Math.floor(Math.random() * 1000000000000000);
-              order.view = false;
-              tempEventOrders.push(order)
-              ordersExist = true;
-            }
-          })
-          
-          if (ordersExist) {
-            setEventOrders(tempEventOrders)
-            setOrdersView("complete");
-          } else {
-            setOrdersView("noOrders");
-          }
-
-        } else {
-          setOrdersView("noEventSelected");
-        }
-
-      } else {
-        props.clicked("events")
-      }
-        
-    } else {
-      window.location.href = "/signin";
-    }
-
-    setIsLoading(false);
-  }, []);
-
-  const [sortParameters, setSortParameters] = useState(
-    {label: "order_createdAt", direction: "asc"}
-  );
 
   const compareValues = (key, order) => {
     return function innerSort(a, b) {
@@ -116,198 +106,192 @@ const TicketSales = (props) => {
     )
   }
 
-  const switchView = (item) => {
-    let tempEventOrders = [...eventOrders]
-    tempEventOrders.forEach(order => {
-      if (item.key === order.key) {
-        order.view = !order.view;
-      }
-    })
-    setEventOrders(tempEventOrders);
-  }
-
-  const orders = () => {
-    if (eventOrders.length > 0) {
+  const mainDisplay = () => {
+    if (display === "main" && eventOrders.length > 0) {
       return (
-        <div>
-          <div className={classes.OrdersHeader}>
-            <div>
-              <button 
-                className={classes.SortButton}
-                name="order_createdAt"
-                onClick={(e) => {updateValues(e.target.name)}}
-              >
-                Order Date
-              </button>
-            </div>
-            <div>
-              <button 
-                className={classes.SortButton}
-                name="order_firstName"
-                onClick={(e) => {updateValues(e.target.name)}}
-              >
-                First
-              </button>
-            </div>
-            <div>
-              <button 
-                className={classes.SortButton}
-                name="order_lastName"
-                onClick={(e) => {updateValues(e.target.name)}}
-              >
-                Last
-              </button>
-            </div>
-            <div>
-              <button 
-                className={classes.SortButton}
-                name="order_email"
-                onClick={(e) => {updateValues(e.target.name)}}
-              >
-                Customer Email
-              </button>
-            </div>
-            <div style={{ textAlign: "center" }}>
-              <button 
-                className={classes.SortButton}
-                name="order_numTickets"
-                onClick={(e) => {updateValues(e.target.name)}}
-              >
-                # Tickets
-              </button>
-            </div>
-            <div style={{ textAlign: "center" }}>
-              <button 
-                className={classes.SortButton}
-                name="order_totalAmount"
-                onClick={(e) => {updateValues(e.target.name)}}
-              >
-                Total
-              </button>
-            </div>
-          </div>
+        <Fragment>
           {eventOrders.map((item, index) => {
             let shortDateTime;
             [shortDateTime] = getDate(item);
-
             return (
-              <div>
-                <div className={classes.Orders}>
-                  <div style={{ fontSize: "12px", textAlign: "center" }}>
-                  </div>
-                  <div style={{textAlign: "left"}}>{shortDateTime}</div>
-                  <div style={{textAlign: "left"}}>{item.order_firstName}</div>
-                  <div style={{textAlign: "left"}}>{item.order_lastName}</div>
-                  <div style={{textAlign: "left"}}>{item.order_email}</div>
-                  <div>{item.order_numTickets}</div>
-                  <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount.toFixed(2)}</div>
+              <div
+                key={index}
+                className={classes.Orders}
+              >
+                <div style={{textAlign: "left"}}>{shortDateTime}</div>
+                <div style={{textAlign: "left"}}>{item.order_lastName},{" "}{item.order_firstName}</div>
+                <div style={{textAlign: "left"}}>{item.order_email}</div>
+                <div>{item.order_numTickets}</div>
+                <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount.toFixed(2)}</div>
+                <div style={{ fontSize: "22px", textAlign: "center" }}>          
+                  <FontAwesomeIcon
+                    color="blue"
+                    size="sm"
+                    cursor="pointer"
+                    onClick={() => {
+                      setSelectedOrder(item)
+                      setModalView(true)
+                    }}
+                    icon={faReceipt}
+                  />
                 </div>
-                {item.view ?
-                  <div>
-                    {item.order_ticketItems.map((ticket, index) => {
-                      let paymentMethod;
-                      if ("order_gateway" in item) {
-                        paymentMethod = item.order_gateway;
-                      } else if (ticket.item_total_price.toFixed(2) !== "0.00") {
-                        paymentMethod = ticket.manualPaymentMethod;
-                      } else {
-                        paymentMethod = "comp";
-                      }
-                      return (
-                        <div className={classes.Tickets}>
-                          <div style={{textAlign: "right"}}>{ticket.numTix}</div>
-                          <div></div>
-                          <div style={{textAlign: "left"}}>{"@ "}{ticket.unit_price.toFixed(2)}{": "}{ticket.ticketName}</div>
-                          <div style={{textAlign: "right"}}>{ticket.item_total_price.toFixed(2)}</div>
-                          <div style={{textAlign: "left"}}>{": "}{paymentMethod}</div>
-                        </div>
-                      )
-                    })}
-                  </div> :
-                  null
-                }
               </div>
             );
           })}
+        </Fragment>
+      )
+    } else if (display === "main") {
+      return (
+        <div className={classes.NoTicketsText}>
+          There are no past orders associated with this event.
         </div>
       )
     } else return null
   }
 
-  const ordersDisplay = () => {
-    if (ordersView === "complete") {
-      return (
-        <div>
-          {orders()}
-        </div>
-      )
-    } else if (ordersView === "noEventSelected") {
-      return (
-        <div style={{fontSize: "16px", paddingLeft: "20px"}}>
-          <div  style={{paddingTop: "20px"}}>
-            You must first
-            <button
-              className={classes.NoButton}
-              onClick={() => {props.clicked("events")}}
-            >
-            {" "}select{" "}
-            </button>
-            an event
-          </div>
-        </div>
-      )
-    } else if (ordersView === "noOrders") {
-      return (
-        <div  style={{fontSize: "16px", paddingLeft: "20px"}}>
-          <div  style={{paddingTop: "20px"}}>There are no orders associated with this event.</div>
-          <div  style={{paddingTop: "20px"}}
-            >Please
-            <button
-              className={classes.NoButton}
-              onClick={() => {props.clicked("events")}}
-            >
-            {" "}select{" "}
-            </button>
-            a different event.
-          </div>
-        </div>
-      )
-    }
-    else {
-      return null;
-    }
+  const loadPreviousOrder = () => {
+    let newPosition;
+    eventOrders.map((order, index) => {
+      if (order.key === selectedOrder.key) {
+        if (index === 0) {
+          newPosition = eventOrders.length - 1;
+        } else {
+          newPosition = index - 1;
+        }
+      }
+    })
+    setSelectedOrder(eventOrders[newPosition]);
   }
 
-  const mainDisplay = () => {
-    return (
-      <div style={{paddingTop: "80px", paddingLeft: "30px"}}>
-        <div style={{fontWeight: "600", fontSize: "18px"}}>Ticket Orders</div>
-        {ordersDisplay()}
-      </div>
-    )
+  const loadNextOrder = () => {
+    let newPosition;
+    eventOrders.map((order, index) => {
+      if (order.key === selectedOrder.key) {
+        if (index === (eventOrders.length - 1)) {
+          newPosition = 0;
+        } else {
+          newPosition = index + 1;
+        }
+      }
+    })
+    setSelectedOrder(eventOrders[newPosition]);
+  }
+
+  const receiptModalDisplay = () => {
+    if (modalView) {
+      return (
+        <Fragment>
+          <ReceiptModal
+            show={modalView}
+            details={selectedOrder}
+            close={() => {setModalView(false)}}
+            loadNext={() => {loadNextOrder()}}
+            loadPrevious={() => {loadPreviousOrder()}}
+          />
+        </Fragment>
+      )
+    } else return null;
   }
 
   const tabTitle = (
-    <div className={classes.DashboardHeader}>
-      {(!isLoading && selectedEventTitle !== "") ?
-      <div style={{fontSize: "26px", fontWeight: "600"}}>{selectedEventTitle}</div>
-      :
-      <div><br></br></div>}
+    <div className={classes.DisplayPanelTitle}>
+      {(display === "main" && selectedEventTitle !== "") ?
+        <div style={{fontSize: "26px", fontWeight: "600"}}>{selectedEventTitle}</div>:
+        <div>{null}</div>
+      }
       <div style={{paddingTop: "5px"}}>
-      <button
-        className={classes.SwitchButton}
-        onClick={() => {props.clicked("events")}}
-      >
-        Switch Event
-      </button>
+        <button
+          className={classes.SwitchButton}
+          onClick={() => {props.clicked("events")}}
+        >
+          Switch Event
+        </button>
       </div>
     </div>
   )
 
+  const displayHeader = (
+    <div className={classes.DisplayHeader}>
+      <div style={{fontWeight: "600", fontSize: "18px", paddingLeft: "30px"}}>Ticket Orders</div>
+      <div className={classes.OrdersHeader}>
+        <div>
+          <button 
+            className={classes.SortButton}
+            name="order_createdAt"
+            onClick={(e) => {updateValues(e.target.name)}}
+          >
+            Order Date
+          </button>
+        </div>
+        <div>
+          <button 
+            className={classes.SortButton}
+            name="order_lastName"
+            onClick={(e) => {updateValues(e.target.name)}}
+          >
+            Last{" "}
+          </button>,{" "}
+          <button 
+            className={classes.SortButton}
+            name="order_firstName"
+            onClick={(e) => {updateValues(e.target.name)}}
+          >
+            First{" "}
+          </button>
+        </div>
+        <div>
+          <button 
+            className={classes.SortButton}
+            name="order_email"
+            onClick={(e) => {updateValues(e.target.name)}}
+          >
+            Customer Email
+          </button>
+        </div>
+        <div style={{textAlign: "center"}}>
+          <button 
+            className={classes.SortButton}
+            name="order_numTickets"
+            onClick={(e) => {updateValues(e.target.name)}}
+          >
+            Tickets
+          </button>
+        </div>
+        <div style={{textAlign: "center"}}>
+          <button 
+            className={classes.SortButton}
+            name="order_totalAmount"
+            onClick={(e) => {updateValues(e.target.name)}}
+          >
+            Total
+          </button>
+        </div>
+        <div style={{textAlign: "center"}}>Receipt</div>
+      </div>
+    </div>
+  )
+
+  const loadingSpinner = () => {
+      if (display === "spinner") {
+      return (
+        <div style={{paddingTop: "60px"}}>
+          <Spinner/>
+        </div>
+      )
+      } else {
+          return null
+      }
+  }
+
   return (
-    <div className={classes.DisplayPanel}>
+    <div>
       {tabTitle}
-      {mainDisplay()}
+      {displayHeader}
+      <div className={classes.DisplayPanel}>
+        {loadingSpinner()}
+        {mainDisplay()}
+      </div>
+      {receiptModalDisplay()}
     </div>
   )
 }

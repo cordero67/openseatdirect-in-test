@@ -1,10 +1,8 @@
 import React, { Fragment } from "react";
 
-import { getStartDate } from "../VendorFunctions";
+import { getStartDate } from "../Resources/VendorFunctions";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./OrderModal.module.css";
-
-import { Button } from "semantic-ui-react";
 
 const OrderModal = (props) => {
 
@@ -44,83 +42,42 @@ const OrderModal = (props) => {
   const modalButtons = () => {
     if (props.status === "review") {
       return (
-        <Fragment>
-          <Button
-            style={{
-              marginTop: "5px",
-              marginRight: "10px",
-              width: "120px",
-              height: "30px",
-              fontWeight: "600",
-              textAlign: "center",
-              paddingTop: "7px",
-            }}
-            content="Edit"
-            basic
-            color="red"
-            icon="edit"
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "180px 180px",
+            gridGap: "40px",
+            width: "630px",
+            fontWeight: "600",
+            paddingLeft: "115px"
+          }}
+        >
+          <button className={classes.ButtonRed}
             onClick={props.edit}
-          />
-          <Button
-            style={{
-              marginTop: "5px",
-              marginLeft: "10px",
-              width: "120px",
-              height: "30px",
-              fontWeight: "600",
-              textAlign: "center",
-              paddingTop: "7px",
-            }}
-            content=" Submit"
-            basic
-            color="green"
-            icon="external alternate"
+          >
+            EDIT ORDER
+          </button>
+          <button className={classes.ButtonGreen}
             onClick={props.submit}
-          />
-        </Fragment>
+          >
+            SUBMIT ORDER
+          </button>
+        </div>
       )
     } else if (props.status === "confirmation") {
       return (
         <Fragment>
-          <Button
-            style={{
-              backgroundColor: "#fff",
-              border: "1px solid blue",
-              color: "blue",
-              fontSize: "15px",
-              fontWeight: "600",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px"
-            }}
-            content=" Continue"
-            icon="arrow alternate circle right outline"
+          <button className={classes.ButtonGrey}
             onClick={props.close}
-          />
+          >CONTINUE</button>
         </Fragment>
       )
     } else if (props.status === "error") {
       return (
         <Fragment>
-          <Button
-            style={{
-              backgroundColor: "#fff",
-              border: "1px solid blue",
-              color: "blue",
-              fontSize: "15px",
-              fontWeight: "600",
-              width: "120px",
-              height: "30px",
-              margin: "auto",
-              textAlign: "center",
-              padding: "0px"
-            }}
-            content=" Continue"
-            icon="angle right"
+          <button className={classes.ButtonGrey}
             onClick={props.close}
-          />
+          >CONTINUE</button>
         </Fragment>
       )
     }
@@ -132,7 +89,7 @@ const OrderModal = (props) => {
         console.log("ticket: ", ticket);
 
         let adjustedTicketName;
-        let num = 30;
+        let num = 40;
 
         if (ticket.ticketName.length <= num) {
           adjustedTicketName = ticket.ticketName;
@@ -231,7 +188,7 @@ const OrderModal = (props) => {
         }
         {cashAppTotal > 0 ?
           <div className={classes.SubTotal}>
-            <div style={{textAlign: "right"}}>cashApp Total:</div>
+            <div style={{textAlign: "right"}}>CashApp Total:</div>
             <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(cashAppTotal).toFixed(2)}</div>
           </div> :
           null
@@ -344,15 +301,28 @@ const OrderModal = (props) => {
           }}>
           {props.details.recipient.email}
         </div>
-        <div
-          style={{
-            fontSize: "16px",
-            textAlign: "left",
-            paddingLeft: "80px",
-            paddingBottom: "10px"
-          }}>
-          {props.details.recipient.message}
-        </div>
+        {props.details.recipient.message !== "" ?
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "80px 400px",
+              fontSize: "16px",
+              textAlign: "left",
+              paddingBottom: "10px"
+            }}
+          >
+            <div style={{fontWeight: "600"}}>Message:</div>
+            <div
+              style={{
+                fontSize: "16px",
+                textAlign: "left",
+                paddingBottom: "10px"
+              }}>
+              {props.details.recipient.message}
+            </div>
+          </div> :
+          null
+        }
         <br></br>
 
         <div

@@ -1,59 +1,37 @@
-import React, { useState} from "react";
+import React, { useState, Fragment } from "react";
 import { Redirect, Link } from "react-router-dom";
 
 import { useOurApi } from "./apiUsers";
-import { API, SUBSCRIPTION_PROMO_CODE } from "../../config";
-import Spinner from "../../components/UI/Spinner/SpinnerNew";
+import { API } from "../../config";
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
-
-import classes from "../User.module.css";
+import classes from "./Authentication.module.css";
 
 const SignIn = () => {
-  console.log("SUBSCRIPTION_PROMO_CODE: ", SUBSCRIPTION_PROMO_CODE);
-  console.log("API: ", API);
-
   const [values, setValues] = useState({
     email: "",
     password: ""
   });
+
   const { email, password } = values;
 
   let  myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-
-  const url1 = `${API}/signin`;
+  
+  const url1 = `${API}/auth/signin_email`;
   const method1 = "POST";
   const body1  = null;
   const initialData1 ={status: true, message:"hi first time"};
 
-  const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method1, url1,myHeaders,body1, initialData1);
+  const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method1, url1, myHeaders, body1, initialData1);
 
   const sysmessage = networkError ? "NetworkError...please check your connectivity": "SYSTEM ERROR - please try again";
 
-  const getStatus= (user) =>{ 
+  const getStatus= (user) => { 
     if ('accountId' in user && 'status' in user.accountId ) {
         return user.accountId.status
     } else {
         return 0;
     } 
-  }
-
-  //NEED A BETTER TEST
-  //without "!data.message" it places the data object into local storage with every keystroke
-  //this then generates an error in navigation component when it is looking for "role"
-  if (typeof window !== "undefined" && data.status && !hasError && !data.message) {
-    // places "data" return object into local storage
-    console.log("data: ", data)
-    localStorage.setItem("user", JSON.stringify(data));
-    let tempData = JSON.parse(localStorage.getItem("user"));
-    console.log("tempData: ", tempData)
-    // determines dashboard based on user's role
-    if (getStatus(tempData.user) === 7 || getStatus(tempData.user) === 8) {
-      return <Redirect to="/vendoraccount" />;
-    } else {
-      return <Redirect to="/buyerdashboard" />;
-    }
   }
 
   const handleChange = (event) => {
@@ -63,83 +41,106 @@ const SignIn = () => {
     });
   };
 
+  const showError = () => {
+    if (hasError) {
+      return (
+        <div style={{color: "red", paddingBottom: "20px"}}> {sysmessage}</div>
+      )
+    } else if (data.status) {
+      return (
+        <div style={{fontSize: "16px", paddingBottom: "20px"}}>Please provide the following information:</div>
+      )
+    } else {
+      return (
+        <div style={{color: "red", paddingBottom: "20px"}}>{data.error}</div>
+      )
+    }
+  };
+
+  //NEED A BETTER TEST
+  //without "!data.message" it places the data object into local storage with every keystroke
+  //this then generates an error in navigation component when it is looking for "role"
+  if (typeof window !== "undefined" && data.status && !hasError && !data.message) {
+    localStorage.setItem("user", JSON.stringify(data));
+    let tempUser = JSON.parse(localStorage.getItem("user"));
+    if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
+      return <Redirect to="/vendor" />;
+    } else if (
+      getStatus(tempUser.user) === 4 ||
+      getStatus(tempUser.user) === 5 ||
+      getStatus(tempUser.user) === 6 ||
+      ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
+    ) {
+      return <Redirect to="/personal" />;
+    } else {
+      return <Redirect to="/events" />;
+    }
+  }
+
   const signInForm = (
-    <div>
-      <div className="form-group">
-        <br></br>
-        <label styles={{ fontSize: "16px" }}>
-          Email Address
-        </label>
+    <Fragment>
+      <div style={{paddingBottom: "20px", width: "340px", height: "85px"}}>
+        <label style={{fontSize: "15px"}}>E-mail Address</label>
         <input
+          className={classes.InputBox}
           type="email"
           name="email"
-          className="form-control"
           onChange={handleChange}
           value={email}
         />
       </div>
 
-      <div className="form-group">
-        <label>Password</label>
+      <div style={{paddingBottom: "20px", width: "340px", height: "85px"}}>
+        <label style={{fontSize: "15px"}}>Password</label>
         <input
+          className={classes.InputBox}
           type="password"
           name="password"
-          className="form-control"
           onChange={handleChange}
           value={password}
         />
       </div>
-
-      <button onClick={() => {
-        console.log("clicked button",{
-          email: values.email,
-          password: values.password,
-        });
-        setBody({
-          email: values.email,
-          password: values.password,
-        })
-      }}
-      className="btn btn-primary">
-        Submit
-      </button>
-    </div>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.SubmitButton}
+          onClick={() => {
+            console.log("clicked button",{
+            email: values.email,
+            password: values.password,
+          });
+          setBody({
+            email: values.email,
+            password: values.password,
+          })
+        }}>
+          SIGN IN TO YOUR ACCOUNT
+        </button>
+      </div>
+    </Fragment>
   );
   
   const alternateInputs = (
-    <div>
-      <div className={classes.Section}>
-        Forgot your{" "}
-        <Link to="/passwordrecovery" style={{ color: "blue" }}>
-          password.
-        </Link>
-      </div>
-      <div className={classes.Section}>
-        Don't have an account, go to{" "}
-        <Link to="/signup" style={{ color: "blue" }}>
-          Sign Up.
-        </Link>
-      </div>
+    <div className={classes.Alternates}>
+      <Link to="/passwordrecovery" style={{fontWeight: "600", color: "blue"}}>
+        Forgot password?
+      </Link>
+      <Link to="/signup" style={{fontWeight: "600", color: "blue", textAlign: "right"}}>
+        Create account
+      </Link>
     </div>
   )
 
   return (
     <div className={classes.MainContainer}>
-      <div className={classes.BlankCanvas} style={{height: "450px"}}>
-        <br></br>
+      <div className={classes.BlankCanvas} style={{height: "420px"}}>
         <div className={classes.Header}>
-          Welcome back!
+          Welcome back
         </div>
-        <br></br>
         <div>
-          {hasError ?
-            <div style={{color: "red"}}> {sysmessage}</div> :
-            data.status ? <div>Please sign in:</div> : <div style={{color: "red"}}> {data.error}</div>
-          }
+          {showError()}
           {signInForm}
+          {alternateInputs}
         </div>
-        <br></br>
-        {alternateInputs}
       </div>
     </div>
   );

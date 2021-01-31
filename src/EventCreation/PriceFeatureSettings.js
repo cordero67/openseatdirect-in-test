@@ -233,7 +233,7 @@ const priceFeatureSettings = (props) => {
         // determines if a required field warning is required
         if ((props.ticket.functionArgs.buy === "" && props.ticket.functionArgs.get === "") ||
           (props.ticket.functionArgs.buy !== "" && props.ticket.functionArgs.get !== "")) {
-              props.ticket.functionArgs.reqWarning = false;
+            props.ticket.functionArgs.reqWarning = false;
           console.log("props.ticket.functionArgs.reqWarning: ", props.ticket.functionArgs.reqWarning)
         } else {
           props.ticket.functionArgs.reqWarning = true;
@@ -385,7 +385,7 @@ const priceFeatureSettings = (props) => {
         // determines if a required field warning is required
         if ((props.ticket.functionArgs.buy === "" && props.ticket.functionArgs.get === "" && props.ticket.functionArgs.discount === "") ||
           (props.ticket.functionArgs.buy !== "" && props.ticket.functionArgs.get !== "" && props.ticket.functionArgs.discount !== "")) {
-              props.ticket.functionArgs.reqWarning = false;
+          props.ticket.functionArgs.reqWarning = false;
           console.log("props.ticket.functionArgs.reqWarning: ", props.ticket.functionArgs.reqWarning)
         } else {
           props.ticket.functionArgs.reqWarning = true;

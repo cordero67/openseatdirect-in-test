@@ -418,3 +418,25 @@
   color: #C2C2C2;
   opacity: 1;
 }
+
+.ButtonGreen {
+  height: 30px;
+  width: 120px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 12px;
+}
+.ButtonGreen:hover {
+  background-color: #007A00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}

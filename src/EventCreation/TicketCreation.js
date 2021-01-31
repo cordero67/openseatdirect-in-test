@@ -322,7 +322,7 @@ const TicketCreation = (props) => {
               {item.settings ?
                 <PriceSettings
                   ticket={item}
-                  changeTicket={props.ticketChange}
+                  changeTicket={props.changeTicket}
                   switchSettings={props.switchSettings}
                   changeFeature={props.changeFeature}
                   switchPriceFeature={props.switchPriceFeature}
@@ -412,13 +412,9 @@ const TicketCreation = (props) => {
                   fontWeight: 600,
                 }}
               >
-              <Button
-                style={{fontSize: "12px"}}
-                content="Add a Ticket"
-                icon="add circle"
-                color="green"
+              <button className={classes.ButtonGreen}
                 onClick={props.createNewTicketHandler}
-              />
+              >ADD A TICKET</button>
               </div>
           </div>
         </Aux>

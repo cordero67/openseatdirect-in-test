@@ -4,7 +4,9 @@ import { NavLink } from "react-router-dom";
 import { isAuthenticated } from "../../Users/apiUsers";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus, faChevronUp, faChevronDown, } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown, } from "@fortawesome/free-solid-svg-icons";
+
+import { signout } from './apiSideDrawer';
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./SideDrawerItems.module.css";
@@ -14,18 +16,14 @@ import classes from "./SideDrawerItems.module.css";
 // "path" represents the path defined in the respective "<NavLink>"
 const isActive = (page, path) => {
   if (page === path) {
-    return { color: "#007BFF" };
+    return { color: "white" };
   } else {
-    return { color: "#000" };
+    return { color: "#0B1423" };
   }
 };
 
 const getStatus= () =>{ 
   let tempData = JSON.parse(localStorage.getItem("user"));
-  //console.log("tempData: ", tempData)
-  //console.log("tempData.user: ", tempData.user)
-  //console.log("tempData.user.accountId: ", tempData.user.accountId)
-  //console.log("tempData.user.accountId.status: ", tempData.user.accountId.status)
   if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
     return tempData.user.accountId.status}
   else {
@@ -51,7 +49,7 @@ const SideDrawerItems = (props) => {
           style={isActive(props.currentPage, "/events")}
           onClick={props.clicked}
         >
-          EVENTS
+          Events
         </NavLink>
       </li>
 
@@ -61,18 +59,18 @@ const SideDrawerItems = (props) => {
           style={isActive(props.currentPage, "/eventspast")}
           onClick={props.clicked}
         >
-          PAST EVENTS
+          Past Events
         </NavLink>
       </li>
 
       {isAuthenticated() && (getStatus() === 7 || getStatus() === 8) ? (
         <li>
           <NavLink
-            to="/vendoraccount"
-            style={isActive(props.currentPage, "/vendoraccount")}
+            to="/vendor"
+            style={isActive(props.currentPage, "/vendor")}
             onClick={props.clicked}
           >
-            MY ACCOUNT
+            My Account
           </NavLink>
         </li>
       ) : null}
@@ -80,84 +78,60 @@ const SideDrawerItems = (props) => {
       {isAuthenticated() && (getStatus() !== 7 && getStatus() !== 8) ? (
         <li>
           <NavLink
-            to="/buyerdashboard"
-            style={isActive(props.currentPage, "/buyerdashboard")}
+            to="/personal"
+            style={isActive(props.currentPage, "/personal")}
             onClick={props.clicked}
           >
-            DASHBOARD
+            My Account
           </NavLink>
         </li>
       ) : null}
 
+      
       <li>
-        <div className={classes.Title}>
-          <div>OPENSEATDIRECT</div>
-          {showSubItems ? (
-            <FontAwesomeIcon
-              cursor="pointer"
-              color="red"
-              onClick={() => changeShowItems(false)}
-              icon={faChevronUp}
-            />
-          ) : (
-            <FontAwesomeIcon
-              cursor="pointer"
-              color="green"
-              onClick={() => changeShowItems(true)}
-              icon={faChevronDown}
-            />
-          )}
-        </div>
+        <NavLink
+          to="/"
+          style={isActive(props.currentPage, "/")}
+          onClick={props.clicked}
+          exact
+        >
+          Home
+        </NavLink>
+      </li>
+      
+      <li>
+        <NavLink
+          to="/video"
+          style={isActive(props.currentPage, "/video")}
+          onClick={props.clicked}
+          exact
+        >
+          About
+        </NavLink>
       </li>
 
-      <div>
-        {showSubItems ? (
-          <Aux>
-            <div
-              style={{
-                borderBottom: "1px solid lightgrey",
-                paddingLeft: "20px",
-              }}
-            >
-              <li style={{ borderBottom: "1px solid lightgrey" }}>
-                <NavLink
-                  to="/"
-                  style={isActive(props.currentPage, "/")}
-                  onClick={props.clicked}
-                  exact
-                >
-                  HOME
-                </NavLink>
-              </li>
-              <li style={{ borderBottom: "1px solid lightgrey" }}>
-                <NavLink
-                  to="/video"
-                  style={isActive(props.currentPage, "/video")}
-                  onClick={props.clicked}
-                  exact
-                >
-                  ABOUT US
-                </NavLink>
-              </li>
-              <li style={{ borderBottom: "0px" }}>
-                <NavLink
-                  to="/contactus"
-                  style={isActive(props.currentPage, "/contactus")}
-                  onClick={props.clicked}
-                  exact
-                >
-                  CONTACT US
-                </NavLink>
-              </li>
-            </div>
-          </Aux>
-        ) : null}
-      </div>
+      <li>
+        <NavLink
+          to="/contactus"
+          style={isActive(props.currentPage, "/contactus")}
+          onClick={props.clicked}
+          exact
+        >
+          Contact
+        </NavLink>
+      </li>
+
 
       {!isAuthenticated() && (
         <li>
-          <NavLink to="/signin" style={isActive(props.currentPage, "/signin")}>
-            SIGN IN
+          <NavLink
+            to="/auth"
+            style={isActive(props.currentPage, "/auth")}
+            onClick={() => {
+              props.clicked()
+            }}
+          >
+            Sign In
           </NavLink>
         </li>
       )}
@@ -165,11 +139,15 @@ const SideDrawerItems = (props) => {
       {isAuthenticated() && (
         <li>
           <NavLink
-            to="/signin"
-            onClick={props.signOut}
-            style={{ color: "#000" }}
+            to="/events"
+            style={{ color: "#0B1423" }}
+            onClick={() => {
+              props.clicked();
+              signout(() => {
+              })
+            }}
           >
-            SIGN OUT
+            Sign Out
           </NavLink>
         </li>
       )}
@@ -178,27 +156,3 @@ const SideDrawerItems = (props) => {
 };
 
 export default SideDrawerItems;
-
-
-/*
-      <li>
-        <NavLink
-          to="/eventcreation"
-          style={isActive(props.currentPage, "/eventcreation")}
-          onClick={props.clicked}
-        >
-          EVENT CREATION
-        </NavLink>
-      </li>
-
-      
-     <li>
-     <NavLink
-       to="/events"
-       style={isActive(props.currentPage, "/events")}
-       onClick={props.clicked}
-     >
-       EVENTS
-     </NavLink>
-   </li>
-      */

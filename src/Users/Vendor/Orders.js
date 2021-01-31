@@ -10,8 +10,8 @@ import {
   faEdit
 } from "@fortawesome/free-solid-svg-icons";
  
-import classes from "./VendorAccountOLD.module.css";
-import { compareValues, getDate } from "./VendorFunctions";
+import classes from "./Orders.module.css";
+import { compareValues, getDate } from "./Resources/VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";
 
 
@@ -203,7 +203,7 @@ const Orders = (props) => {
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>
-                ORDERS
+                Past Orders
             </div>
             
             <div className={classes.DisplayPanel2}>

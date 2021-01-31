@@ -1,7 +1,7 @@
 .EventPanelTitle {
   display: grid;
-  grid-template-columns: 200px 390px 95px 95px 95px 95px;
-  column-gap: 5px;
+  grid-template-columns: 200px 400px 120px 120px 120px;
+  column-gap: 10px;
   position: fixed;
   width: 1030px;
   background-color: white;
@@ -255,4 +255,72 @@ column-gap: 5px;*/
   text-align: left;
   overflow-y: auto;
   box-sizing: border-box;
+}
+
+
+.ButtonGreen {
+  height: 30px;
+  width: 120px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 12px;
+}
+.ButtonGreen:hover {
+  background-color: #007A00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonRed {
+  height: 30px;
+  width: 120px;
+  background-color: #CC0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 12px;
+}
+.ButtonRed:hover {
+  background-color: #A30000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRed:active {
+  background-color: #7A0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+
+.ButtonGrey {
+  height: 30px;
+  width: 120px;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+  font-size: 12px;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: white;
+  border: 1px solid black;
+  outline: none;
 }

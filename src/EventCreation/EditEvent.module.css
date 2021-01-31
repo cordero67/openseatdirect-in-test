@@ -80,14 +80,16 @@
 }
 
 .GridTitlePanel {
-  position: fixed;
-  top: 120px;
   left: calc((100vw - 860px)/2);
   border-bottom: 1px solid grey;
   background-color: #fff;
   /*background-color: #C2D9FF;*/
   z-index: 200;
-  padding: 15px;
+  position: fixed;
+  top: 120px;
+  padding-top: 15px;
+  padding-right: 0px;
+  padding-left: 0px;
   padding-bottom: 5px;
   box-sizing: border-box;
   width: 1030px;
@@ -95,8 +97,8 @@
 
 .GridTitle {
   display: grid;
-  grid-template-columns: 300px 395px 95px 95px 95px;
-  column-gap: 5px;
+  grid-template-columns: 200px 410px 120px 120px 120px;
+  column-gap: 10px;
   box-sizing: border-box;
   height: 30px;
   font-weight: 600;
@@ -465,4 +467,72 @@
   color: #E0E0E0;
   color: #C2C2C2;
   opacity: 1;
+}
+
+
+.ButtonGreen {
+  height: 30px;
+  width: 120px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 12px;
+}
+.ButtonGreen:hover {
+  background-color: #007A00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonRed {
+  height: 30px;
+  width: 120px;
+  background-color: #CC0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 12px;
+}
+.ButtonRed:hover {
+  background-color: #A30000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRed:active {
+  background-color: #7A0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+
+.ButtonGrey {
+  height: 30px;
+  width: 120px;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+  font-size: 12px;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: white;
+  border: 1px solid black;
+  outline: none;
 }

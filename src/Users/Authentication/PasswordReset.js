@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useOurApi } from "./apiUsers";
 import { API } from "../../config";
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
-
-import classes from "../User.module.css";
+import classes from "./Authentication.module.css";
 
 const PasswordReset = () => {
   const [values, setValues] = useState({
@@ -16,14 +14,11 @@ const PasswordReset = () => {
     newpassword: ""
   });
 
-  // destructors the "values" object
   const { token, email, newpassword } = values;
 
   useEffect(() => {
     let tokenNum = (queryString.parse(window.location.search).token);
     let emailAddress = (queryString.parse(window.location.search).email);
-    console.log("TokenNum: ", tokenNum);
-    console.log("Email address: ", emailAddress);
     setValues({
       ...values,
       token: tokenNum,
@@ -46,7 +41,6 @@ const PasswordReset = () => {
   const sysmessage = networkError ? "NetworkError...please check your connectivity" : "SYSTEM ERROR - please try again";
 
   const handleChange = (event) => {
-    console.log("event.target.name: ", event.target.name)
     setValues({
       ...values,
       [event.target.name]: event.target.value,
@@ -56,70 +50,71 @@ const PasswordReset = () => {
   const showError = () => {
     if (hasError) {
       return (
-        <div style={{color: "red"}}> {sysmessage}</div>
+        <div style={{color: "red", paddingBottom: "20px"}}> {sysmessage}</div>
       )
     } else if (data.status) {
       return (
-        <div>Please enter your new password:</div>
+        <div style={{fontSize: "16px", paddingBottom: "20px"}}>Please enter your new password:</div>
       )
     } else {
       return (
-        <div style={{color: "red"}}> {data.error}</div>
+        <div style={{color: "red", paddingBottom: "20px"}}> {data.error}</div>
       )
     }
   };
 
   const showSuccess = (
-    <div
-      className="alert alert-info"
-    >
-      Your password has been reset. Please go to
-        <Link to="/signin">Signin</Link>.
+    <div style={{paddingBottom: "20px", width: "340px"}}>
+      <div style={{lineHeight: "20px", paddingBottom: "20px"}}>Your password has been reset.</div>
+      <div>Back to <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>Signin</Link></div>
     </div>
   );
 
   const passwordForm = (
-    <Aux>
-      <div className="form-group">
+    <Fragment>
+      <div style={{paddingBottom: "20px", width: "340px", height: "60px"}}>
         <input
+          className={classes.InputBox}
           type="text"
           name="newpassword"
           placeholder="Minimum 8 characters: alphanumeric"
-          className="form-control"
           onChange={handleChange}
           value={newpassword}
         />
       </div>
-
-      <button onClick={() => {
-        console.log("clicked button",{
-          token: values.token,
-          email: values.email,
-          newpassword: values.newpassword,
-        });
-        setBody({
-          token: values.token,
-          email: values.email,
-          newpassword: values.newpassword,
-        })
-      }}
-      className="btn btn-primary">
-        Submit
-      </button>
-      <br></br>
-    </Aux>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.SubmitButton}
+          onClick={() => {
+            console.log("clicked button",{
+              token: values.token,
+              email: values.email,
+              newpassword: values.newpassword
+            });
+            setBody({
+              token: values.token,
+              email: values.email,
+              newpassword: values.newpassword
+            })
+        }}>
+          SUBMIT YOUR NEW PASSWORD
+        </button>
+      </div>
+    </Fragment>
   );
   
   const alternateInputs = (
-    <div>
-      <div className={classes.Section}>
+    <Fragment>
+      <div className={classes.Alternates}>
         Still remember your original password.
-        <br></br>Go back to{" "}
-        <Link to="/signin" style={{ color: "blue" }}>
+      </div>
+      <div className={classes.Section}>
+        Go back to{" "}
+        <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>
           Sign In.
         </Link>
       </div>
-    </div>
+    </Fragment>
   );
 
   const mainDisplay = () => {
@@ -128,9 +123,9 @@ const PasswordReset = () => {
     //this then generates an error in navigation component when it is looking for "role"
     if (data.status && data.message !== "hi first time") {
       return (
-        <Aux>
+        <Fragment>
           {showSuccess}
-        </Aux>
+        </Fragment>
       )
     } else {
       return (
@@ -139,7 +134,6 @@ const PasswordReset = () => {
             {showError()}
             {passwordForm}
           </div>
-          <br></br>
           {alternateInputs}
         </div>
       )
@@ -148,14 +142,11 @@ const PasswordReset = () => {
 
   return (
     <div className={classes.MainContainer}>
-      <div className={classes.BlankCanvas} style={{height: "490px"}}>
-        <br></br>
+      <div className={classes.BlankCanvas} style={{height: "330px"}}>
         <div className={classes.Header}>
-          Come Aboard!
+          Reset Password
         </div>
-        <br></br>
         <div className={classes.Section}>
-          <br></br>
           {mainDisplay()}
         </div>
       </div>

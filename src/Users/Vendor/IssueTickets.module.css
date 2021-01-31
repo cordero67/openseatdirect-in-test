@@ -1,0 +1,279 @@
+.DisplayPanel {
+  background-color: white;
+  width: 1030px;
+  height: calc(100vh - 177px);
+  margin-top: 60px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.DisplayPanelTitle {
+  position: fixed;
+  background-color: #e7e7e7;
+  border-bottom: 1px solid lightgrey;
+  width: 1030px;
+  height: 60px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+  padding-right: 30px;
+  box-sizing: border-box;
+}
+
+.RecipientDisplay {
+  width: 690px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.NameGrid {
+  display: grid;
+  grid-template-columns: 325px 325px;
+  grid-gap: 10px;
+  padding-bottom: 10px;
+}
+
+.FirstNameBox {
+  background-color: #EFF3FA;
+  width: 325px;
+  height: 40px;
+  border: 1px solid #8DADD4;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+.LastNameBox {
+  background-color: #EFF3FA;
+  width: 325px;
+  height: 40px;
+  border: 1px solid #8DADD4;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+.EmailBox {
+  background-color: #EFF3FA;
+  width: 660px;
+  height: 40px;
+  border: 1px solid #8DADD4;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+.EmailBoxWarning {
+  background-color: #EFF3FA;
+  width: 660px;
+  height: 40px;
+  border: 1px solid red;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+.WarningText {
+  color: red;
+  font-size: 12px;
+  padding-left: 10px;
+  padding-bottom: 5px;
+}
+
+.MessageBox {
+  background-color: #EFF3FA;
+  width: 660px;
+  height: 40px;
+  border: 1px solid #8DADD4;
+  font-size: 14px;
+  padding-left: 10px
+}
+
+.CartDisplay {
+  width: 690px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.TicketHeaders {
+  display: grid;
+  grid-template-columns: 260px 80px 45px 70px 110px 70px;
+  grid-gap: 10px;
+  width: 680px;
+  border-bottom: 1px solid black;
+  font-weight: 600;
+  padding-bottom: 10px;
+}
+
+.TicketCart {
+  display: grid;
+  grid-template-columns: 260px 80px 45px 70px 110px 70px 20px;
+  grid-gap: 10px;
+  width: 680px;
+  font-weight: 600;
+}
+
+.TicketNameSelect {
+  width: 260px;
+  height: 30px;
+  font-size: 15px;
+  border: 0.5px solid grey;
+  padding-left: 5px;
+}
+
+.TicketNumberSelect {
+  width: 80px;
+  height: 30px;
+  font-size: 15px;
+  padding-left: 5px;
+  text-align: right;
+  border: 0.5px solid grey;
+}
+
+.Checkbox {
+  outline: 0.5px solid lightgrey;
+  border-radius: 0px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.PaymentTypeSelect {
+  border: 0.5px solid grey;
+  width: 110px;
+  height: 30px;
+  font-size: 15px;
+  padding-left: 5px;
+}
+
+.PriceBox {
+  height: 30px;
+  width: 70px;
+  border: 0.5px solid grey;
+  padding-right: 7px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.PriceBoxWarning {
+  height: 40px;
+  width: 70px;
+  border: 1px solid red;
+  padding-right: 7px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.ChargedPriceWarning {
+  padding-left: 415px;
+  padding-bottom: 10px;
+  color: red;
+  font-size: 12px;
+}
+
+.WarningBlack {
+  padding-left: 10px;
+  height: 14px;
+  color: black;
+  font-size: 12px;
+}
+
+.WarningRed {
+  padding-left: 10px;
+  height: 14px;
+  color: red;
+  font-size: 12px;
+}
+
+.ValidOrder {
+  color: red;
+  font-size: 12px;
+  font-weight: 400;
+  padding-top: 5px;
+  padding-left: 360px;
+}
+
+.ButtonGreen {
+  height: 40px;
+  width: 180px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:hover {
+  background-color: #007A00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonBlue {
+  height: 40px;
+  width: 180px;
+  background-color: #0000F5;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlue:hover {
+  background-color: #0000CC;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlue:active {
+  background-color: #0000A3;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlueOpac {
+  height: 40px;
+  width: 180px;
+  background-color: #0000F5;
+  opacity: 0.5;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.NoButton {
+  color: blue;
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+  font-weight: 600;
+}
+
+.TicketCartButtons {
+  display: grid;
+  grid-template-columns: 320px 320px;
+  grid-gap: 40px;
+  width: 680px;
+  font-weight: 400;
+  padding-top: 20px;
+  padding-bottom: 0px;
+}
+
+.SwitchButton {
+  font-size: 14px;
+  text-align: left;
+  font-weight: 400;
+  padding-left: 0px;
+  color: blue;
+  border: none;
+  background-color: #E7E7E7;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
