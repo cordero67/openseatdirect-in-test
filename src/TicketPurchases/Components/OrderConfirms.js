@@ -109,7 +109,7 @@ export const OrderConfirm = props => {
       <div className={classes.SectionHeader}>Order Confirmation</div>
       <div className={classes.Body}>
         <div style={{paddingBottom: "20px"}}>
-          Thank you {props.transactionInfo.name}, your order was received and is in
+          Thank you, your order was received and is in
           process.
         </div>
         <div style={{textDecoration: "underline", fontWeight: "600"}}>
@@ -155,7 +155,7 @@ export const OrderConfirmationFF = props => {
       <br></br>
       <div className={classes.Body}>
         <div>
-          Thank you {props.transactionInfo.name}, your order was received and processed.
+          Thank you, your order was received and processed.
           <br></br>
           <br></br>
           <div style={{ paddingLeft: "30px" }}>

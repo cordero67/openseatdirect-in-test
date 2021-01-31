@@ -204,18 +204,6 @@ const Checkout = props => {
     console.log("paypalStatus inside 'payPalPurchase': ", paypalStatus);
 
     let email;
-    let name;
-
-    if ("sessionToken" in customerInformation) {
-      email = details.payer.email_address;
-      name = `${details.payer.name.given_name} ${details.payer.name.surname}`;
-    } else {
-      console.log("customerInformation: ", customerInformation)
-      email = customerInformation.guestEmail;
-      name = `${customerInformation.guestFirstname} ${customerInformation.guestLastname}`;
-    }
-
-    setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
     
     // NEED TO DELETE THIS LINE
     onlyShowLoadingSpinner();
@@ -226,6 +214,8 @@ const Checkout = props => {
       .then(response => {
         console.log("order received");
         console.log("response: ", response);
+        email = response.data.toemail;
+        setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email));
         if (response.status) {
           setOrderStatus(true);
           console.log("Order status: ", orderStatus);
