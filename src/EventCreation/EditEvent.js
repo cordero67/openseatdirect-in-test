@@ -921,13 +921,29 @@ const EventEdit = (props) => {
   const subTitleDisplay = () => {
     if (pageErrors || eventTitleOmission) {
       return (
-        <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "14px", color: "red"}}>
-          Please correct input errors identified below.
+        <div style={{display: "grid", gridTemplateColumns: "200px 600px"}}>
+          <div style={{paddingTop: "5px"}}>
+            <button
+              className={classes.SwitchButton}
+              onClick={() => {props.clicked("events")}}
+            >
+              Switch Event
+            </button>
+          </div>
+          <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "14px", color: "red"}}>
+            Please correct input errors identified below.
+          </div>
         </div>
       )
     } else {
       return (
-        <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "14px", color: "red"}}>
+        <div style={{paddingTop: "5px"}}>
+          <button
+            className={classes.SwitchButton}
+            onClick={() => {props.clicked("events")}}
+          >
+            Switch Event
+          </button>
         </div>
       )
     }
@@ -1097,12 +1113,12 @@ const EventEdit = (props) => {
         <div
           style={{
             backgroundColor: "white",
-            height: "calc(100vh - 233px)",
+            height: "calc(100vh - 193px)",
             scrollbarWidth: "thin",
             overflowY: "auto",
             fontSize: "15px",
             width: "1030px",
-            marginTop: "116px",
+            marginTop: "76px",
             paddingTop: "10px",
             paddingBotton: "15px",
             paddingLeft: "20px",
@@ -1178,7 +1194,6 @@ const EventEdit = (props) => {
 
   return (
     <div>
-      {tabTitle}
       {displayHeader}
       {mainDisplay()}
       {savedModal()}

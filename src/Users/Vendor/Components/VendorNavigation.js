@@ -29,9 +29,6 @@ const VendorNavigation = (props) => {
   
   return (
     <Fragment>
-      <div className={classes.NavigationTitle}>
-        {!isLoading ? buyerInfo.name : null}
-      </div>
 
       <div className={classes.DashboardTitle}>
         <FontAwesomeIcon
@@ -109,6 +106,11 @@ const VendorNavigation = (props) => {
 export default VendorNavigation;
 
 /*
+
+      <div className={classes.NavigationTitle}>
+        {!isLoading ? null : null}
+      </div>
+
   <li>
     <button
       className={(props.pane === "orders") ?

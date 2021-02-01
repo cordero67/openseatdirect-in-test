@@ -453,9 +453,8 @@ const Home = () => {
           <Fragment>
             <br></br>
             <div style={{fontSize: "28px", fontWeight: "400", lineHeight: "38px", paddingBottom: "10px"}}>
-              What is
-              <br></br>
-              <span style={{fontWeight: "600", color: "#2F5596"}}>OPEN SEAT DIRECT</span>
+              What is{" "}
+              <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span>
               <span style={{fontWeight: "600"}}>?</span>
             </div>
             <div
@@ -479,8 +478,8 @@ const Home = () => {
           <Fragment>
             <br></br>
             <div style={{fontSize: "30px", fontWeight: "400", lineHeight: "38px", paddingBottom: "10px"}}>
-              
-            <span style={{fontWeight: "600", color: "#2F5596"}}>OPEN SEAT DIRECT</span>
+            What is{" "}
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span>
               <span style={{fontWeight: "600"}}>?</span>
             </div>
             <div
@@ -606,9 +605,9 @@ const Home = () => {
             >
               Don't wait until after the
               <br></br>
-              event passes. Get paid on
+              event passes. IMMEDIATELY
               <br></br>
-              tickets you sell right away.
+              get paid on tickets you sell.
               <br></br>
               <br></br>
               <br></br>
@@ -766,9 +765,9 @@ const Home = () => {
                 <div>
                   Don't wait until after the
                   <br></br>
-                  event passes. Get paid on
+                  event passes. IMMEDIATELY
                   <br></br>
-                  tickets you sell right away.
+                  get paid on tickets you sell.
                 </div>
                 <div>
                   We're not kidding.
@@ -850,9 +849,9 @@ const Home = () => {
                 <div>
                   Don't wait until after the
                   <br></br>
-                  event passes. Get paid on
+                  event passes. IMMEDIATELY
                   <br></br>
-                  tickets you sell right away.
+                  get paid on tickets you sell.
                 </div>
                 <div>
                   We're not kidding.
@@ -1008,7 +1007,7 @@ const Home = () => {
               {tagLines()}
             </div>
             <div>
-              <img style={{maxWidth: "100%", position: "absolute"}} src={DJGirlShort}/>
+              <img style={{maxWidth: "100%", height: "auto", position: "absolute"}} src={DJGirlShort}/>
             </div>
           </div>
         )
@@ -1019,7 +1018,7 @@ const Home = () => {
       <div className={classes.MainContainer}>
         {isResizing ? null : (
           <div>
-          {topImage()}
+            {topImage()}
             <div className={classes.TextContainer}>
               <div className={classes.DescriptionText}>
                 {marketingPhrase()}
@@ -1062,6 +1061,27 @@ const Home = () => {
               >
                 {appointmentDisplay}
               </div>
+            </div>
+            <div
+              className={classes.SectionContainer}
+              style={{backgroundColor: "#0B1423"}}
+            >
+              <div className={classes.Header}>
+                <a>
+                  <FontAwesomeIcon className={classes.faFacebook} icon={faFacebook} />
+                </a>
+                <a href="https://www.youtube.com/channel/UCTC0aLCktp-DoI_FSmp_b4w/videos">
+                  <FontAwesomeIcon className={classes.faYoutube} icon={faYoutube} />
+                </a>
+                <a href="https://twitter.com/openseatdirect">
+                  <FontAwesomeIcon className={classes.faTwitter} icon={faTwitter} />
+                </a>
+                <a href="https://www.instagram.com/openseatdirect/">
+                  <FontAwesomeIcon className={classes.faInstagram} icon={faInstagram} />
+                </a>
+              </div>
+              <br></br>
+              <div className={classes.CopyRight} style={{color: "white"}}>Copyright &copy; 2021 OpenSeatDirect LLC | All Rights Reserved</div>
             </div>
           </div>
         )}
@@ -1198,8 +1218,8 @@ export default Home;
       </div>
 
       <div
-      className={classes.SectionContainer}
-      style={{backgroundColor: "#0B1423"}}
+        className={classes.SectionContainer}
+        style={{backgroundColor: "#0B1423"}}
       >
         <div className={classes.Header}>
           <a>
