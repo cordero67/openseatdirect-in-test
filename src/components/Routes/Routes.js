@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { Route } from "react-router-dom";
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
 import EventEdit from "../../EventCreation/EventEdit";
@@ -52,7 +51,7 @@ const Routes = () => {
   };
 
   return (
-    <Aux>
+    <Fragment>
       <Route
         path="/"
         exact
@@ -295,7 +294,7 @@ const Routes = () => {
         )}
       />
 
-    </Aux>
+    </Fragment>
   );
 };
 

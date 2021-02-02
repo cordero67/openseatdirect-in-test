@@ -27,6 +27,7 @@ import CashInHand from "../../assets/CashInHand.png";
 import ZeroFee from "../../assets/ZeroFee.png";
 import OSDImage from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png"
 import Documents from "../../assets/Documents.png"
+import DataLock from "../../assets/DataLock.png"
 
 import HaHaForHire from "../../assets/HaHaForHireComedyNight.png"
 
@@ -256,25 +257,12 @@ const Home = () => {
                 fontSize: "58px",
                 fontWeight: "400",
                 lineHeight: "72px",
-                textAlign: "center"
+                textAlign: "center",
+                paddingBottom: "25px"
               }}>
               Events
               <br></br>
               made easy
-            </div>
-            <div
-              style={{
-                fontFamily: "Roboto",
-                fontSize: "22px",
-                fontWeight: "400",
-                lineHeight: "30px",
-                textAlign: "center",
-                paddingTop: "5px",
-                paddingBottom: "20px"
-                }}>
-              Batteries included
-              <br></br>
-              No middleman required
             </div>
             <button
               style={{
@@ -305,24 +293,12 @@ const Home = () => {
                 fontSize: "52px",
                 fontWeight: "400",
                 lineHeight: "66px",
-                textAlign: "center"}}>
+                textAlign: "center",
+                paddingBottom: "25px"
+              }}>
               Events
               <br></br>
               made easy
-            </div>
-            <div
-              style={{
-                fontFamily: "Roboto",
-                fontSize: "18px",
-                fontWeight: "400",
-                lineHeight: "26px",
-                textAlign: "center",
-                paddingTop: "5px",
-                paddingBottom: "15px"
-              }}>
-              Batteries included
-              <br></br>
-              No middleman required
             </div>
             <button
               style={{
@@ -353,24 +329,12 @@ const Home = () => {
                 fontSize: "48px",
                 fontWeight: "400",
                 lineHeight: "50px",
-                textAlign: "center"}}>
+                textAlign: "center",
+                paddingBottom: "25px"
+              }}>
               Events
               <br></br>
               made easy
-            </div>
-            <div
-              style={{
-                fontFamily: "Roboto",
-                fontSize: "16px",
-                fontWeight: "400",
-                lineHeight: "24px",
-                textAlign: "center",
-                paddingTop: "5px",
-                paddingBottom: "15px"
-              }}>
-              Batteries included
-              <br></br>
-              No middleman required
             </div>
             <button
               style={{
@@ -401,24 +365,12 @@ const Home = () => {
                 fontSize: "48px",
                 fontWeight: "400",
                 lineHeight: "50px",
-                textAlign: "center"}}>
+                textAlign: "center",
+                paddingBottom: "25px"
+              }}>
               Events
               <br></br>
               made easy
-            </div>
-            <div
-              style={{
-                fontFamily: "Roboto, Helvetica, sans-serif",
-                fontSize: "16px",
-                fontWeight: "400",
-                lineHeight: "24px",
-                textAlign: "center",
-                paddingTop: "5px",
-                paddingBottom: "15px"
-              }}>
-              Batteries included
-              <br></br>
-              No middleman required
             </div>
             <button
               style={{
@@ -665,9 +617,9 @@ const Home = () => {
             </div>
 
             <img
-                  src={Documents}
+                  src={DataLock}
                   alt="OpenSeatDirect Logo"
-                  style={{width: "140px"}}
+                  style={{width: "150px", paddingLeft: "10px"}}
               />
 
             <div
@@ -747,9 +699,9 @@ const Home = () => {
               />
               <div></div>
               <img
-                  src={Documents}
+                  src={DataLock}
                   alt="OpenSeatDirect Logo"
-                  style={{width: "70%"}}
+                  style={{width: "85%"}}
               />
             </div>
             <div
@@ -831,9 +783,9 @@ const Home = () => {
               />
               <div></div>
               <img
-                  src={Documents}
+                  src={DataLock}
                   alt="OpenSeatDirect Logo"
-                  style={{width: "70%"}}
+                  style={{width: "85%"}}
               />
             </div>
             <div

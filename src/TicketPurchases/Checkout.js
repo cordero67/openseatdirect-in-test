@@ -355,6 +355,13 @@ const Checkout = props => {
       />
     </div>
   );
+
+  const calculateTimeLeft = () => {
+
+    let year = new Date().getFullYear();
+    return year;
+
+  };
   
   const mainDisplay = () => {
     if (display === "main") {
@@ -400,6 +407,8 @@ const Checkout = props => {
             </div>
             <div style={EventTicketSection}>
               <span className={classes.TicketType}>Payment Information</span>
+              <br></br>
+              Time remaining
               <br></br>
               <span className={classes.TicketTypeSmall}>
                 Select a Payment Method
