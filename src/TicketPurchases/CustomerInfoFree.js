@@ -237,13 +237,13 @@ const CustomerInfo = props => {
       .then((data)=>{
         console.log ("fetch return got back data:", data);
         setOrderStatus(data.status);
-        //setDisplay("confirmation");
+        setDisplay("confirmation");
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
-        //setDisplay("connection")
+        setDisplay("connection")
       })
-      .finally(() => {/*purchaseConfirmHandler();*/});
+      .finally(() => {purchaseConfirmHandler()});
     }
     else {
       let tempUser = JSON.parse(localStorage.getItem("user"));
@@ -317,15 +317,15 @@ const CustomerInfo = props => {
       .then ((data)=>{
         console.log ("fetch return got back data:", data);
         setOrderStatus(data.status);
-        //setDisplay("confirmation");
+        setDisplay("confirmation");
       })
       .catch ((error)=>{
         console.log("freeTicketHandler() error.message: ", error.message);
-        //setDisplay("connection")
+        setDisplay("connection")
       })
       .finally(() => {
-        //purchaseConfirmHandler();
-        //setModalStatus(false)
+        purchaseConfirmHandler();
+        setModalStatus(false);
       });
     }
   }

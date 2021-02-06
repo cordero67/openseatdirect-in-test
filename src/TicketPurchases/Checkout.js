@@ -221,6 +221,7 @@ const Checkout = props => {
       isFree = false;
     }
 
+    let email = "bob";
     let url;
     let order = {};
     let myHeaders = new Headers();
@@ -238,6 +239,7 @@ const Checkout = props => {
         paymentGatewayId: details.id, // not required if “isFree === true”
       };
       myHeaders.append("Authorization", `Bearer ${customerInformation.sessionToken}`);
+      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email));
     } else {
       console.log("user is NOT signed in");
       url = `${API}/tixorder/unsigned_placeorder`
@@ -250,7 +252,31 @@ const Checkout = props => {
         guestLastname: customerInformation.guestLastname,
         guestEmail: customerInformation.guestEmail,
       };
+      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email));
     }
+
+
+/*
+
+
+    let email;
+    email = response.data.toemail;
+    setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email));
+    if (response.status) {
+      setOrderStatus(true);
+      console.log("Order status: ", orderStatus);
+    } else {
+      throw Error();
+    }
+  })
+  .catch(error => {
+    console.log("paymentOnSuccess() error.message: ", error.message);
+    setOrderStatus(false);})
+  .finally(() => {
+    onlyShowPurchaseConfirmation();
+    setDisplay("confirmation");
+    purchaseConfirmHandler();
+    */
 
     console.log("order: ", order)
 
@@ -270,12 +296,12 @@ const Checkout = props => {
     .then ((data)=>{
         console.log ("fetch return got back data:", data);
         //storeOrderNEW(data.data.osdOrderId);
-        //setOrderStatus(data.status);
-        //setDisplay("confirmation")
+        setOrderStatus(data.status);
+        setDisplay("confirmation")
     })
     .catch ((error)=>{
-        console.log("freeTicketHandler() error.message: ", error.message);
-        //setDisplay("connection")
+        console.log("paymentOnSuccess() error.message: ", error.message);
+        setDisplay("connection")
     })
     .finally(() => {
       purchaseConfirmHandler();
