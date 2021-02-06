@@ -118,7 +118,8 @@ const Checkout = props => {
           console.log("tempUser: ", tempUser)
           setCustomerInformation({
             sessionToken: tempUser.token,
-            userId: tempUser.user._id
+            userId: tempUser.user._id,
+            email: tempUser.user.email
           });
         }
         setPaypalArray();
@@ -239,7 +240,7 @@ const Checkout = props => {
         paymentGatewayId: details.id, // not required if “isFree === true”
       };
       myHeaders.append("Authorization", `Bearer ${customerInformation.sessionToken}`);
-      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email));
+      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, customerInformation.email));
     } else {
       console.log("user is NOT signed in");
       url = `${API}/tixorder/unsigned_placeorder`
@@ -252,7 +253,7 @@ const Checkout = props => {
         guestLastname: customerInformation.guestLastname,
         guestEmail: customerInformation.guestEmail,
       };
-      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email));
+      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, customerInformation.guestEmail));
     }
 
 
