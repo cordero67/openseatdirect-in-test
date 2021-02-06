@@ -3,8 +3,6 @@ import React, { Fragment } from "react";
 import styles from "./TicketItem.module.css";
 
 const TicketItem = (props) => {
-  console.log("Ticket price: ", props.name.ticketPrice);
-  console.log("Adjusted ticket price: ", props.name.adjustedTicketPrice);
   const ticketTypeDisplay = () => {
     let options;
     let ticketsAvailableArray = [];

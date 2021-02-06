@@ -95,6 +95,7 @@ export const expressPaymentOnSuccess = paymentTicketData => {
 
 // PayPal Smart button fetch api
 export const paymentOnSuccess = (paypalOrderDetails, customerInformation) => {
+  console.log("paypalOrderDetails: ", paypalOrderDetails)
   if ("sessionToken" in customerInformation) {
     console.log("User is logged in")
     let orderDetails = {
@@ -153,6 +154,43 @@ export const paymentOnSuccess = (paypalOrderDetails, customerInformation) => {
   }
 };
 
+/*
+// PayPal Smart button fetch api
+export const paymentOnSuccessNEW = (paypalOrderDetails, customerInformation) => {
+
+    console.log("User is NOT logged in")
+    let orderDetails = {
+      orderDetails: {
+        osdOrderId: "T5Q-WCDN-ZCE",
+        totalAmount: 105, // or 0
+        isFree: false, // or true
+        paymentGatewayId: paypalOrderDetails.id,
+        guestFirstName: customerInformation.guestFirstname,
+        guestLastName: customerInformation.guestLastname,
+        guestEmail: customerInformation.guestEmail,
+      }
+    }
+    return (
+      fetch(`${API}/paypal/guestPayment`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderDetails)
+      })
+        .then(handleErrors)
+        .then(response => {
+          return response.json();
+        })
+        // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
+        .catch(err => {
+          console.log("fetch API/paypal/guestPayment): ERROR THROWN", err);
+          throw Error(err);
+        })
+    );
+};
+*/
 
 // BrainTree fetch api
 export const processExpressPayment = paymentTicketData => {

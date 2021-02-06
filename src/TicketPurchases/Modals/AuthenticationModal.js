@@ -729,17 +729,15 @@ const Authentication = (props) => {
         <div style={{color: "red", fontSize: "14px", paddingBottom: "20px"}}>{message}</div>
       )
     } else if (modalSetting === "signin" || modalSetting === "forgot"|| modalSetting === "signup" || modalSetting === "password") {  
-      return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>Please provide the following:</div>
-      )
+      return null
     } else if (modalSetting === "temporary" && !reissued) {
       console.log("modalSetting === 'temporary' && !reissued")
       console.log("values: ", values)
       return (
         <div style={{fontSize: "16px", paddingBottom: "20px"}}>
-          Temporary password sent to your email,
+          Enter the 6-digit code sent to:
           <br></br>
-          please enter it below:
+          {email}
         </div>
       )
     } else if (modalSetting === "temporary" && reissued) {
@@ -747,9 +745,7 @@ const Authentication = (props) => {
       console.log("values: ", values)
       return (
         <div style={{fontSize: "16px", paddingBottom: "20px"}}>
-          Temporary password resent to your email,
-          <br></br>
-          please enter it below:
+          Confirmation code resent to your email.
         </div>
       )
     } else if (modalSetting === "confirmation" && !resent) {
@@ -841,7 +837,7 @@ const Authentication = (props) => {
   const temporaryForm = (
     <Fragment>
       <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>Temporary Password</label>
+        <label style={{fontSize: "15px"}}>Confirmation Code</label>
         <input
           className={classes.InputBox}
           type="text"
@@ -856,7 +852,7 @@ const Authentication = (props) => {
           onClick={() => {
             submitTemporary();
         }}>
-          SUBMIT TEMPORARY PASSWORD
+          SUBMIT CONFIRMATION CODE
         </button>
       </div>
     </Fragment>
@@ -1031,7 +1027,7 @@ const Authentication = (props) => {
             submitReissue();
           }}
         >
-          Resend password
+          Resend code
         </button>
       </div>
       <div style={{textAlign: "right"}}>
@@ -1128,7 +1124,7 @@ const Authentication = (props) => {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            <div>Need a temporary password?</div>
+            <div>Trouble logging in?</div>
             <div style={{textAlign: "right"}}>
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black"}}
@@ -1158,7 +1154,7 @@ const Authentication = (props) => {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            <div>Enter temporary password</div>
+            <div>Enter confirmation code</div>
             <div style={{textAlign: "right"}}>
               <ion-icon
                 style={{fontWeight: "600", fontSize: "28px", color: "black"}}

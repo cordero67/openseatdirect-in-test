@@ -27,6 +27,8 @@ import classes from "./CustomerInfo.module.css";
 let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
+let osdOrderId;
+let orderExpiration;
 
 // defines an event's image
 let eventLogo = "";
@@ -86,6 +88,8 @@ const CustomerInfo = props => {
         eventDetails = tempCart.eventDetails;
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
+        osdOrderId = tempCart.osdOrderId;
+        orderExpiration = tempCart.orderExpiration;
         if('guestInfo' in tempCart) {
           setGuestInformation(tempCart.guestInfo);
           console.log("guestInfo: ", tempCart.guestInfo)
@@ -175,13 +179,11 @@ const CustomerInfo = props => {
 
   const freeTicketHandler = (user) => {
     if (!user) {
-      console.log("Inside freeTicketHandler");
-
       let email = guestInformation.guestEmail;
       let name = `${guestInformation.guestFirstname} ${guestInformation.guestLastname}`;
-
       setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
 
+      /*
       let order = {orderDetails: {guestInfo: {}}};
       let ticketArray = [];
       order.orderDetails.guestInfo.guestFirstname = guestInformation.guestFirstname;
@@ -198,45 +200,59 @@ const CustomerInfo = props => {
         }
       });
       order.tickets = ticketArray;
+      */
+
+      let isFree = true;
+
+      if (orderTotals.finalPurchaseAmount > 0) {
+        isFree = false;
+      }
+
+      let orderNEW = {
+        osdOrderId: osdOrderId,
+        totalAmount: orderTotals.finalPurchaseAmount,
+        isFree: isFree, // or true
+        guestFirstname: guestInformation.guestFirstname,
+        guestLastname: guestInformation.guestLastname,
+        guestEmail: guestInformation.guestEmail,
+      };
+
+      console.log("orderNEW: ", orderNEW)
 
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
-      let url = `${API}/free/freeTickets`;
+      //let url = `${API}/free/freeTickets`;
+      let url = `${API}/tixorder/unsigned_placeorder`
       let fetcharg ={
         method: "POST",
         headers: myHeaders,
-        body: JSON.stringify(order),
+        body: JSON.stringify(orderNEW),
       };
       console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", order)
+      console.log("Free ticket order: ", orderNEW)
       fetch(url, fetcharg )
       .then(handleErrors)
-      .then ((response)=>{
-        console.log ("then response: ", response);
-        return response.json()})
-      .then ((data)=>{
+      .then((response) => {return response.json()})
+      .then((data)=>{
         console.log ("fetch return got back data:", data);
         setOrderStatus(data.status);
-        setDisplay("confirmation");
+        //setDisplay("confirmation");
       })
-      .catch ((error)=>{
+      .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
-        setDisplay("connection")
+        //setDisplay("connection")
       })
-      .finally(() => {
-        purchaseConfirmHandler();
-      });
+      .finally(() => {/*purchaseConfirmHandler();*/});
     }
     else {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       console.log("transactionInfo: ",transactionInfo)
-      console.log("Inside freeTicketHandler");
     
       let email = tempUser.user.email;
       let name = tempUser.user.name;
-
       setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
+
 
       let order = {};
       let ticketArray = [];
@@ -251,19 +267,48 @@ const CustomerInfo = props => {
       });
       order.tickets = ticketArray;
 
+
+      let userPromo = "";
+      let tickets = [];
+      ticketInfo.map(item => {
+        if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+          let tempObject = {};
+          tempObject.ticketID = item.ticketID;
+          tempObject.ticketsSelected = item.ticketsSelected;
+          tickets.push(tempObject);
+          if (
+            item.ticketsSelected > 0 &&
+            "form" in item.ticketPriceFunction &&
+            item.ticketPriceFunction.form === "promo" &&
+            item.adjustedTicketPrice !== item.ticketPrice
+          ) {
+            userPromo = item.ticketPriceFunction.args[0].name;
+          }
+        }
+      });
+      
+      let orderNEW = {
+        eventNum: eventDetails.eventNum,
+        totalAmount: 0,
+        isFree:  true,
+        userPromo: userPromo,
+        tickets: tickets
+      }
+
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
-
-      let url = `${API}/free/signedFreeTickets/${tempUser.user._id}`
+  
+      //let url = `${API}/free/signedFreeTickets/${tempUser.user._id}`
+      let url = `${API}/tixorder/signed_expressorder/${tempUser.user._id}`
       let fetcharg ={
           method: "POST",
           headers: myHeaders,
-          body:JSON.stringify (order),
+          body:JSON.stringify (orderNEW),
       };
 
       console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", order)
+      console.log("Free ticket order: ", orderNEW)
       fetch(url, fetcharg )
       .then(handleErrors)
       .then ((response)=>{
@@ -272,15 +317,15 @@ const CustomerInfo = props => {
       .then ((data)=>{
         console.log ("fetch return got back data:", data);
         setOrderStatus(data.status);
-        setDisplay("confirmation");
+        //setDisplay("confirmation");
       })
       .catch ((error)=>{
         console.log("freeTicketHandler() error.message: ", error.message);
-        setDisplay("connection")
+        //setDisplay("connection")
       })
       .finally(() => {
-        purchaseConfirmHandler();
-        setModalStatus(false)
+        //purchaseConfirmHandler();
+        //setModalStatus(false)
       });
     }
   }
@@ -314,9 +359,7 @@ const CustomerInfo = props => {
           <Spinner></Spinner>;
         </div>
       );
-    } else {
-      return null;
-    }
+    } else return null;
   }
 
   // CONTROLS "connectionStatus" VIEW
@@ -327,9 +370,7 @@ const CustomerInfo = props => {
           <div>There is a problem with OSD Server in processing your tickets. Please try again later.</div>
         </div>
       )
-    } else {
-      return null;
-    }
+    } else return null;
   }
 
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
@@ -345,8 +386,58 @@ const CustomerInfo = props => {
           </div>
         </div>
       )
+    } else return null;
+  }
+
+  const calculateTimeLeft = () => {
+    let timeElapsed = new Date(orderExpiration) - new Date();
+    let elapsedTime = {
+      days: Math.floor(timeElapsed / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((timeElapsed / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((timeElapsed / 1000 / 60) % 60),
+      seconds: Math.floor((timeElapsed / 1000) % 60)
+    };
+    return elapsedTime;
+
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  // every 1000 milliseconds === 1 second the timer function runs
+  // when it runs it runs the "timeLeft" hook
+  // this causes the page to refresh which updates the time expired numbers
+  // these numbers are fed by the "calculateTimeLeft()" function  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+  });
+
+  const timeRemaining = () => {
+    if (+new Date(orderExpiration) >= +new Date()) {
+      let twoDigitSec;
+      if (calculateTimeLeft().seconds < 10) {
+        twoDigitSec = "0" + calculateTimeLeft().seconds
+      } else {
+        twoDigitSec = calculateTimeLeft().seconds
+      }
+  
+      return (
+        <div style={{fontSize: "16px", textAlign: "center", paddingBottom: "10px"}}>
+          Ticket reservation expires in{" "}{calculateTimeLeft().minutes}:{twoDigitSec}
+        </div>
+      )
     } else {
-      return null;
+      let event = JSON.parse(localStorage.getItem("eventNum"));
+      localStorage.removeItem(`cart_${event}`);
+      localStorage.removeItem(`image_${event}`);
+      localStorage.removeItem(`eventNum`);
+      window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+      return (
+        <div style={{fontSize: "16px", textAlign: "center", paddingBottom: "10px"}}>
+          Ticket reservation has expired.
+        </div>
+      )
     }
   }
 
@@ -364,18 +455,14 @@ const CustomerInfo = props => {
               showDoublePane={showDoublePane}
             />
           );
-        } else {
-          return null;
-        }
+        } else return null;
       };
 
       // determines whether or not to display the purchase amount
       const totalAmount = show => {
         if (!show && orderTotals.ticketsPurchased > 0) {
           return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
-        } else {
-          return null;
-        }
+        } else return null;
       };
 
       let paymentPane = (
@@ -393,7 +480,8 @@ const CustomerInfo = props => {
           </div>
 
           <div style={EventTicketSection}>
-            <div className={classes.TicketType}>Contact Information (FREE)</div>
+          {timeRemaining()}
+            <div className={classes.TicketType}>Contact Information</div>
             <div style={{paddingBottom: "20px"}}>
               Continue as Guest or{" "}
               <button
@@ -509,3 +597,114 @@ const CustomerInfo = props => {
   );
 };
 export default CustomerInfo;
+
+/*
+
+
+  const freeTicketHandler = (user) => {
+    if (!user) {
+      console.log("Inside freeTicketHandler");
+
+      let email = guestInformation.guestEmail;
+      let name = `${guestInformation.guestFirstname} ${guestInformation.guestLastname}`;
+
+      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
+
+      let order = {orderDetails: {guestInfo: {}}};
+      let ticketArray = [];
+      order.orderDetails.guestInfo.guestFirstname = guestInformation.guestFirstname;
+      order.orderDetails.guestInfo.guestLastname = guestInformation.guestLastname;
+      order.orderDetails.guestInfo.guestEmail = guestInformation.guestEmail;
+      order.eventNum = eventDetails.eventNum;
+      ticketInfo.map((item, index) => {
+        console.log("item #", index)
+        if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+          let tempObject = {};
+          tempObject.ticketID = item.ticketID;
+          tempObject.ticketsSelected = item.ticketsSelected;
+          ticketArray.push(tempObject);
+        }
+      });
+      order.tickets = ticketArray;
+
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      let url = `${API}/free/freeTickets`;
+      let fetcharg ={
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(order),
+      };
+      console.log("fetching with: ", url, fetcharg);
+      console.log("Free ticket order: ", order)
+      fetch(url, fetcharg )
+      .then(handleErrors)
+      .then((response) => {return response.json()})
+      .then((data)=>{
+        console.log ("fetch return got back data:", data);
+        setOrderStatus(data.status);
+        setDisplay("confirmation");
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setDisplay("connection")
+      })
+      .finally(() => {purchaseConfirmHandler();});
+    }
+    else {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      console.log("transactionInfo: ",transactionInfo)
+    
+      let email = tempUser.user.email;
+      let name = tempUser.user.name;
+
+      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
+
+      let order = {};
+      let ticketArray = [];
+      order.eventNum = eventDetails.eventNum;
+      ticketInfo.map((item, index) => {
+        if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+          let tempObject = {};
+          tempObject.ticketID = item.ticketID;
+          tempObject.ticketsSelected = item.ticketsSelected;
+          ticketArray.push(tempObject);
+        }
+      });
+      order.tickets = ticketArray;
+
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
+
+      let url = `${API}/free/signedFreeTickets/${tempUser.user._id}`
+      let fetcharg ={
+          method: "POST",
+          headers: myHeaders,
+          body:JSON.stringify (order),
+      };
+
+      console.log("fetching with: ", url, fetcharg);
+      console.log("Free ticket order: ", order)
+      fetch(url, fetcharg )
+      .then(handleErrors)
+      .then ((response)=>{
+        console.log ("then response: ", response);
+        return response.json()})
+      .then ((data)=>{
+        console.log ("fetch return got back data:", data);
+        setOrderStatus(data.status);
+        setDisplay("confirmation");
+      })
+      .catch ((error)=>{
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setDisplay("connection")
+      })
+      .finally(() => {
+        purchaseConfirmHandler();
+        setModalStatus(false)
+      });
+    }
+  }
+  */

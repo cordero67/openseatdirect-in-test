@@ -24,10 +24,7 @@ const CartLink = props => {
           </span>
         </Fragment>
       );
-    } else {
-        console.log("going to null")
-        return null;
-      }
+    } else return null;
   };
 
   return (

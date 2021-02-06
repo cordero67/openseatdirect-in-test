@@ -4,10 +4,10 @@ import dateFormat from "dateformat";
 import classes from "./OrderConfirms.module.css";
 
 export const OrderConfirm = props => {
-  console.log("props: ", props)
+  //console.log("props: ", props)
   const response = () => {
     if (props.orderStatus) {
-      console.log("OSD success");
+      //console.log("OSD success");
       return (
         <div style={{paddingBottom: "20px"}}>
           <div style={{paddingBottom: "20px"}}>

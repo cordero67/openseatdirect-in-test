@@ -29,10 +29,10 @@
   font-size: 14px;
   text-align: left;
   font-weight: 400;
-  padding-left: 0px;
+  padding-left: 15px;
   color: blue;
   border: none;
-  background-color: #E7E7E7;
+  background-color: #fff;
   cursor: pointer;
   display: inline-block;
   outline: none;
@@ -40,7 +40,6 @@
 
 
 .DashboardHeader {
-  /*z-index: 200;*/
   position: fixed;
   background-color: #e7e7e7;
   border-bottom: 1px solid lightgrey;
@@ -80,19 +79,17 @@
 }
 
 .GridTitlePanel {
-  left: calc((100vw - 860px)/2);
-  border-bottom: 1px solid grey;
-  background-color: #fff;
-  /*background-color: #C2D9FF;*/
-  z-index: 200;
   position: fixed;
-  top: 120px;
+  background-color: #fff;
+  border-bottom: 1px solid grey;
+  width: 1030px;
+  z-index: 200;
+  top: 60px;
   padding-top: 15px;
   padding-right: 0px;
   padding-left: 0px;
   padding-bottom: 5px;
   box-sizing: border-box;
-  width: 1030px;
 }
 
 .GridTitle {

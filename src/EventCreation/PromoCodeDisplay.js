@@ -20,7 +20,7 @@ const PromoCodeDisplay = (props) => {
           } else if (item.percent === true) {
             finalPrice = (
                 props.ticket.currentTicketPrice *
-              (1 - item.amount / 100)
+              (1 - (item.amount / 100))
             ).toFixed(2);
           }
 
