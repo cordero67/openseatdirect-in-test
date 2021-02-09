@@ -62,7 +62,6 @@ export const loadEventDetails = event => {
 // initial definition of "ticketInfo"
 export const loadTicketInfo = event => {
   let tempTicketArray = [];
-  
   event.tickets.forEach((item, index) => {
     let tempCurrency = "$";
     if (item.Currency === "JPY") {

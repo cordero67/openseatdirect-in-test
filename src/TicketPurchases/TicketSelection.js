@@ -1,8 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import queryString from "query-string";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingCart, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { API } from "../config.js";
 import { getEventData, getEventImage } from "./Resources/apiCore";
@@ -60,8 +58,8 @@ const TicketSelection = () => {
   });
   const [ticketInfo, setTicketInfo] = useState([]); // ticket order specific ticket information
   const [orderTotals, setOrderTotals] = useState([]); // ticket order general info
-  const [transactionInfo, setTransactionInfo] = useState({}); // PayPal payment receipt data
-  const [contactInformation, setContactInformation] = useState({ // defines contact information sent to server
+  const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
+  const [customerInformation, setCustomerInformation] = useState({ // defines contact information sent to server
     name: "",
     email: "",
     sessionToken: "",
@@ -71,48 +69,50 @@ const TicketSelection = () => {
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      setContactInformation({
+      setCustomerInformation({
         name: tempUser.user.name,
         email: tempUser.user.email,
         sessionToken: tempUser.token,
         userId: tempUser.user._id
       });
     }
-
-    // receives Event Data from server and populates several control variables
-    const eventData = (eventID) => {
-      getEventData(eventID)
-        .then((res) => {
-          console.log("EVENT DATA OBJECT from Server: ", res);
-          eventDetails = loadEventDetails(res);
-          // checks if an order exists in local storage
-          if (
-            typeof window !== "undefined" &&
-            localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
-          ) {
-            let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
-            setTicketInfo(cart.ticketInfo);
-            setPromoCodeDetails(cart.promoCodeDetails);
-            setOrderTotals(cart.orderTotals);
-          } else {
-            console.log("ticketInfo: ", loadTicketInfo(res));
-            setTicketInfo(loadTicketInfo(res));
-            setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
-            setOrderTotals(loadOrderTotals(res));
-          }
-          // asks for image if event is successfully imported
-          getEventImage(eventID)
-            .then((res) => {eventLogo = res;})
-            .catch((err) => {eventLogo = DefaultLogo;})
-            .finally(() => {setDisplay("main")});
-        })
-        .catch((err) => {setDisplay("connection")}
-      );
-    };
-
     eventData(queryString.parse(window.location.search).eventID);
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
+  // LOOKS GOOD
+  // receives Event Data from server and populates several control variables
+  const eventData = (eventID) => {
+    getEventData(eventID)
+      .then((res) => {
+        console.log("EVENT DATA OBJECT from Server: ", res);
+        eventDetails = loadEventDetails(res);
+        // checks if an order exists in local storage
+        if (
+          typeof window !== "undefined" &&
+          localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
+        ) {
+          let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+          setTicketInfo(cart.ticketInfo);
+          setPromoCodeDetails(cart.promoCodeDetails);
+          setOrderTotals(cart.orderTotals);
+        } else {
+          console.log("ticketInfo: ", loadTicketInfo(res));
+          if(res.tickets.length === 0) {
+            window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+          }
+          setTicketInfo(loadTicketInfo(res));
+          setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
+          setOrderTotals(loadOrderTotals(res));
+        }
+        // asks for image if event is successfully imported
+        getEventImage(eventID)
+          .then((res) => {eventLogo = res;})
+          .catch((err) => {eventLogo = DefaultLogo;})
+          .finally(() => {setDisplay("main")});
+      })
+      .catch((err) => {setDisplay("connection")}
+    );
+  };
   // LOOKS GOOD
   const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
@@ -160,8 +160,8 @@ const TicketSelection = () => {
   };
   // LOOKS GOOD
   const freeTicketHandler = () => {
-    let email = contactInformation.email;
-    let name = contactInformation.name;
+    let email = customerInformation.email;
+    let name = customerInformation.name;
     setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
 
     let userPromo = "";
@@ -183,7 +183,7 @@ const TicketSelection = () => {
         }
       }
     });
-    
+
     let order = {
       eventNum: eventDetails.eventNum,
       totalAmount: 0,
@@ -194,9 +194,9 @@ const TicketSelection = () => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${contactInformation.sessionToken}`);
+    myHeaders.append("Authorization", `Bearer ${customerInformation.sessionToken}`);
 
-    let url = `${API}/tixorder/signed_expressorder/${contactInformation.userId}`
+    let url = `${API}/tixorder/signed_expressorder/${customerInformation.userId}`
     let fetcharg ={
         method: "POST",
         headers: myHeaders,
@@ -204,6 +204,7 @@ const TicketSelection = () => {
     };
     console.log("fetching with: ", url, fetcharg);
     console.log("Free ticket order: ", order)
+    setDisplay("spinner")
     fetch(url, fetcharg )
     .then(handleErrors)
     .then((response) => {return response.json()})
@@ -340,8 +341,9 @@ const TicketSelection = () => {
     } else if (promoCodeDetails.applied) {
       return (
         <div className={classes.AppliedPromoCode}>
-          <FontAwesomeIcon
-            icon={faCheckCircle}
+          <ion-icon
+            style={{marginTop: "5px", fontSize: "16px", color: "black"}}
+            name="checkmark-circle-outline"
           />{" "}
           Code{" "}
           <span style={{ fontWeight: "600" }}>
@@ -395,7 +397,7 @@ const TicketSelection = () => {
     if (
       orderTotals.finalPurchaseAmount === 0 &&
       orderTotals.ticketsPurchased > 0 &&
-      contactInformation.sessionToken !== ""
+      customerInformation.sessionToken !== ""
     ) {
       return (
         <button
@@ -407,7 +409,7 @@ const TicketSelection = () => {
       );
     } else if (
       orderTotals.finalPurchaseAmount > 0 &&
-      contactInformation.sessionToken !== ""
+      customerInformation.sessionToken !== ""
     ) {
       return (
         <button
@@ -438,7 +440,6 @@ const TicketSelection = () => {
     }
   };
   // LOOKS GOOD
-  // NEED TO INCLUDE ERROR HANDLING IN .catch
   const reserveOrder = (signed) => {
     let totalAmount = orderTotals.finalPurchaseAmount;
     let isFree = true;
@@ -477,8 +478,8 @@ const TicketSelection = () => {
     let url;
 
     if (signed) {
-      url = `${API}/tixorder/signed_reserveorder/${contactInformation.userId}`;
-      myHeaders.append("Authorization", `Bearer ${contactInformation.sessionToken}`);
+      url = `${API}/tixorder/signed_reserveorder/${customerInformation.userId}`;
+      myHeaders.append("Authorization", `Bearer ${customerInformation.sessionToken}`);
     } else {
       url = `${API}/tixorder/unsigned_reserveorder`;
     }
@@ -490,7 +491,7 @@ const TicketSelection = () => {
     };
     console.log("fetching with: ", url, fetcharg);
     console.log("Free ticket order: ", order)
-
+    setDisplay("spinner")
     fetch(url, fetcharg )
     .then(handleErrors)
     .then((response) => {return response.json()})
@@ -500,6 +501,7 @@ const TicketSelection = () => {
     })
     .catch((error) => {
       console.log("reserveOrder() error.message: ", error.message);
+      setDisplay("connection")
     });
   }
   // LOOKS GOOD
@@ -562,11 +564,22 @@ const TicketSelection = () => {
   }
   // LOOKS GOOD
   // defines and sets "connectionStatus" view status
-  const connectionStatus = () => {
+  const connectionStatus = (condition) => {
     if (display === "connection") {
       return (
         <div className={classes.BlankCanvas}>
-          <div>There is a problem with OSD Server in processing your tickets. Please try again later.</div>
+          <div>System error.
+            <br></br>Please try again later.</div>
+          <div style={{paddingTop: "20px"}}>
+            <button
+              className={classes.ButtonGrey}
+              onClick={() => {
+                window.location.href = `/events`;
+              }}
+            >
+              CONTINUE
+            </button>
+          </div>
         </div>
       )
     } else return null;
@@ -650,9 +663,9 @@ const TicketSelection = () => {
     } else if (display === "main" && orderTotals.ticketsPurchased <= 0) {
       return (
         <div className={classes.EmptyOrderSummary}>
-          <FontAwesomeIcon
-            className={classes.faShoppingCart}
-            icon={faShoppingCart}
+          <ion-icon
+            style={{fontSize: "36px", color: "grey"}}
+            name="cart-outline"
           />
         </div>
       );

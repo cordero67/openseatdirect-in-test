@@ -129,7 +129,7 @@ const Authentication = (props) => {
     let fetchBody ={
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body:JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
     console.log("Information: ", information)

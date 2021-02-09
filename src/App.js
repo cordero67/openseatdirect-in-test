@@ -101,9 +101,10 @@ import { BrowserRouter } from "react-router-dom";
   height: 40px;
   width: 150px;
   background-color: #999999;
-  color: black;
+  color: white;
   border: 1px solid black;
   outline: none;
+  font-size: 16px;
 }
 .ButtonGrey:hover {
   background-color: #858585;
@@ -113,7 +114,7 @@ import { BrowserRouter } from "react-router-dom";
 }
 .ButtonGrey:active {
   background-color: #707070;
-  color: black;
+  color: white;
   border: 1px solid black;
   outline: none;
 }
