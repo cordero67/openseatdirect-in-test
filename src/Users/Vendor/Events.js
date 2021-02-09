@@ -285,7 +285,7 @@ const Events = (props) => {
         if (display === "connection") {
             return (
                 <div className={classes.ConnectionText}>
-                    There is a problem with OSD Server in retrieving your events. Please try again later.
+                    There is a problem with the OSD Server in retrieving your events. Please try again later.
                 </div>
             )
         } else return null;

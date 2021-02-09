@@ -5,7 +5,7 @@ import { API } from "../../config";
 import classes from "./MyTickets.module.css";
 
 const MyTickets = () => {
-    const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
+    const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, connection
 
     const [orders,setOrders] = useState([]);
     const [events,setEvents] = useState([]);
@@ -48,6 +48,8 @@ const MyTickets = () => {
             createEventArray(js)
         })
         .catch((error) => {
+            // need to handle this error
+            setDisplay("connection")
             console.log("error", error);
         });
 
@@ -180,13 +182,30 @@ const MyTickets = () => {
     } else return null
   };
 
+
+  // LOOKS GOOD
+  // defines and sets "connectionStatus" view status
+  const connectionStatus = (condition) => {
+    if (display === "connection") {
+      return (
+        <div className={classes.BlankCanvas}>
+            <div className={classes.ConnectionText}>
+                <br></br>
+                There is a problem with the OSD Server in retrieving your tickets. Please try again later.
+            </div>
+        </div>
+      )
+    } else return null;
+  }
+
     return (
         <div>
-        <div className={classes.DisplayPanelTitle}>
-            My Tickets
-        </div>
+            <div className={classes.DisplayPanelTitle}>
+                My Tickets
+            </div>
             {loadingSpinner()}
             {mainDisplay()}
+            {connectionStatus()}
         </div>
     )
 }

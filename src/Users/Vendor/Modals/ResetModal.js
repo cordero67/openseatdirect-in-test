@@ -7,13 +7,20 @@ import classes from "./ResetModal.module.css";
 
 const Reset = (props) => {
 
+
+// "/auth/change_password/:userId" change_password
+
+// "/auth/confirm_password_reset_code3/:userId" confirm_password_reset_code3)
+
+// "/auth/resend_password_code3/:userId" resend_password_code3)
+
+// "/auth/create_new_password/:userId" create_new_password)
+
+
   const [values, setValues] = useState({
-  //password: "",
-    //temporary: "",
-    //reissued: false,
+    password: "",
     confirmation: "",
     resent: false,
-    //username: "",
     resetToken: "",
     sessionToken: "",
     userId: ""
@@ -24,12 +31,11 @@ const Reset = (props) => {
     message: "",
     error: false
   });
-
-  const [modalSetting, setModalSetting] = useState("confirmation") // confirmation, password, error
-  const { name, email, password, temporary, reissued, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
-
   const { message, error } = submissionStatus;
 
+  const [modalSetting, setModalSetting] = useState("confirmation") // confirmation, password, error
+  const { password, confirmation, resent, resetToken, sessionToken, userId } = values;
+  // LOOKS GOOD
   const getStatus= (user) => { 
     if ('accountId' in user && 'status' in user.accountId ) {
         return user.accountId.status
@@ -37,21 +43,19 @@ const Reset = (props) => {
         return 0;
     } 
   }
-  
+  // LOOKS GOOD
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       let tempValues = {...values}
       tempValues.sessionToken = tempUser.token;
       tempValues.userId = tempUser.user._id;
-      console.log("tempUser: ", tempUser)
-      console.log("tempValues: ", tempValues)
       setValues(tempValues);
     } else {
       window.location.href = "/auth";
     }
   }, []);
-
+  // LOOKS GOOD
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
     if (!response.ok) {
@@ -59,7 +63,6 @@ const Reset = (props) => {
     }
     return response;
   };
-
   // LOOKS GOOD
   const submitConfirmation = () => {
     console.log("values: ", values)
@@ -85,7 +88,6 @@ const Reset = (props) => {
     fetch(url, fetchBody )
     .then(handleErrors)
     .then((response) => {
-      console.log ("then response: ", response);
       return response.json()})
     .then((data) => {
       console.log ("fetch return got back data:", data);
@@ -100,7 +102,6 @@ const Reset = (props) => {
       setModalSetting("error")
     })
   }
-
   // LOOKS GOOD
   const submitPassword = () => {
     console.log("values: ", values)
@@ -114,7 +115,6 @@ const Reset = (props) => {
     myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
     let url = `${API}/auth/create_new_password/${values.userId}`;
     let information = {
-      email: email,
       resetPasswordToken: resetToken,
       password: password,
     }
@@ -144,9 +144,9 @@ const Reset = (props) => {
       setModalSetting("error")
     })
   }
-
   // LOOKS GOOD
   const submitResend = () => {
+    console.log("values: ", values)
     setSubmissionStatus({
       message: "",
       error: false
@@ -154,17 +154,14 @@ const Reset = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/resend_confirm_code`;
-    let information = {
-      email: email
-    }
+    myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
+    let url = `${API}/auth/resend_password_code3/${values.userId}`;
     let fetchBody ={
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      redirect: "follow",
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
     fetch(url, fetchBody )
     .then(handleErrors)
     .then ((response)=>{
@@ -183,7 +180,6 @@ const Reset = (props) => {
       setModalSetting("error")
     })
   }
-
   // LOOKS GOOD
   const handleConfirmation = (data) => {
     if (data.status) {
@@ -200,28 +196,11 @@ const Reset = (props) => {
       console.log("ERROR: ", data.error)
     }
   }
-
   // LOOKS GOOD
   const handlePassword = (data) => {
     if (data.status) {
-      //localStorage.setItem("user", JSON.stringify(data));
-      setValues({
-        name: "",
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        confirmation: "",
-        resent: false,
-        //username: data.user.username,
-        //vendorIntent: data.user.vendorIntent,
-        resetToken: "",
-        sessionToken: data.token,
-        userId: data.user._id
-      });
       console.log("SUCCESS")
-      // need to close modal
-      setModalSetting("username")
+      closeModal()
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -231,42 +210,23 @@ const Reset = (props) => {
     }
   }
 
-  // LOOKS GOOD
   const resetValues = () => {
     setValues({
-      name: "",
-      email: "",
       password: "",
       temporary: "",
-      reissued: false,
       confirmation: "",
       resent: false,
-      username: "",
-      //vendorIntent: props.vendorIntent,
       resetToken: "",
       sessionToken: "",
-      userId: ""
     })
   }
-
   // LOOKS GOOD
   const handleResend = (data) => {
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
-      setValues({
-        name: "",
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        confirmation: "",
-        resent: true,
-        username: data.user.username,
-        //vendorIntent: props.vendorIntent,
-        resetToken: data.user.resetPasswordToken,
-        sessionToken: "",
-        userId: ""
-      });
+      let tempValues = {...values};
+      tempValues.confirmation = "";
+      tempValues.resent = true;
+      setValues(tempValues);
       console.log("SUCCESS")
     } else {
       setSubmissionStatus({
@@ -276,7 +236,6 @@ const Reset = (props) => {
       console.log("ERROR: ", data.error)
     }
   }
-
   // LOOKS GOOD
   const handleChange = (event) => {
     setValues({
@@ -284,7 +243,6 @@ const Reset = (props) => {
       [event.target.name]: event.target.value
     });
   };
-
   // LOOKS GOOD
   const showError = () => {
     if (error) {
@@ -308,7 +266,6 @@ const Reset = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const confirmationForm = (
     <Fragment>
       <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
@@ -333,7 +290,6 @@ const Reset = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const passwordForm = (
     <Fragment>
       <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
@@ -359,7 +315,6 @@ const Reset = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const errorForm = (
     <Fragment>
       <div style={{fontSize: "16px", color: "red", paddingBottom: "20px", width: "340px", height: "40px"}}>
@@ -377,7 +332,6 @@ const Reset = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const alternateConfirmationInputs = (
     <div className={classes.Alternates}>
       <div style={{textAlign: "left"}}>
@@ -392,7 +346,6 @@ const Reset = (props) => {
       </div>
     </div>
   )
-
   // LOOKS GOOD
   const closeModal = () => {
     resetValues();
@@ -404,7 +357,6 @@ const Reset = (props) => {
     props.closeModal()
   }
 
-  // LOOKS GOOD
   const confirmationDisplay = () => {
     if (modalSetting === "confirmation") {
       return (
@@ -434,7 +386,6 @@ const Reset = (props) => {
     }
   }
 
-  // LOOKS GOOD
   const passwordDisplay = () => {
     if (modalSetting === "password") {
       return (
@@ -463,7 +414,6 @@ const Reset = (props) => {
     }
   }
 
-  // LOOKS GOOD
   const errorDisplay = () => {
     if (modalSetting === "error") {
       return (
@@ -491,10 +441,6 @@ const Reset = (props) => {
     }
   }
 
-  // confirmation, password, error
-  // signin, forgot, temporary, signup, username
-
-  // LOOKS GOOD
   return (
     <Fragment>
       <Backdrop show={props.show} clicked={props.modalClosed}></Backdrop>
