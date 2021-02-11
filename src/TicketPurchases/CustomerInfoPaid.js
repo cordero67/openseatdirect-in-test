@@ -56,9 +56,9 @@ const CustomerInfo = props => {
 
   // defines contact information to be sent to server
   const [guestInformation, setGuestInformation] = useState({
-    guestFirstname: "",
-    guestLastname: "",
-    guestEmail: ""
+    firstname: "",
+    lastname: "",
+    email: ""
   });
 
 
@@ -141,10 +141,10 @@ const CustomerInfo = props => {
   const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   
   let detailsMinimal = () => {
-    if(guestInformation.guestFirstname
-      && guestInformation.guestLastname
-      && guestInformation.guestEmail
-      && regsuper.test(guestInformation.guestEmail)) {
+    if(guestInformation.firstname
+      && guestInformation.lastname
+      && guestInformation.email
+      && regsuper.test(guestInformation.email)) {
       return true
     } else {
       return false

@@ -6,6 +6,7 @@ import Backdrop from "./Backdrop";
 import classes from "./ResetModal.module.css";
 
 const Reset = (props) => {
+  console.log("props: ", props)
 
 
 // "/auth/change_password/:userId" change_password
@@ -145,6 +146,44 @@ const Reset = (props) => {
     })
   }
   // LOOKS GOOD
+  const submitExpired = () => {
+    console.log("values: ", values)
+    setSubmissionStatus({
+      message: "",
+      error: false
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
+    let url = `${API}/auth/change_password/${values.userId}`
+    let fetchBody ={
+        method: "POST",
+        headers: myHeaders
+    };
+    console.log("url: ", url)
+    console.log("fetcharg: ", fetchBody)
+
+    fetch(url, fetchBody )
+    .then(handleErrors)
+    .then ((response)=>{
+      console.log ("then response: ", response);
+      return response.json()})
+    .then ((data)=>{
+      console.log ("fetch return got back data:", data);
+      handleExpired(data)
+    })
+    .catch ((error)=>{
+      console.log("freeTicketHandler() error.message: ", error.message);
+      setSubmissionStatus({
+        message: "Server is down, please try later",
+        error: true
+      });
+      setModalSetting("error")
+    })
+  }
+
+  // LOOKS GOOD
   const submitResend = () => {
     console.log("values: ", values)
     setSubmissionStatus({
@@ -180,6 +219,7 @@ const Reset = (props) => {
       setModalSetting("error")
     })
   }
+  /*
   // LOOKS GOOD
   const handleConfirmation = (data) => {
     if (data.status) {
@@ -196,11 +236,15 @@ const Reset = (props) => {
       console.log("ERROR: ", data.error)
     }
   }
-  // LOOKS GOOD
-  const handlePassword = (data) => {
+*/
+
+  const handleConfirmation = (data) => {
     if (data.status) {
+      let tempValues = {...values};
+      tempValues.resetToken = data.user.resetPasswordToken;
+      setValues(tempValues);
       console.log("SUCCESS")
-      closeModal()
+      setModalSetting("password")
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -210,15 +254,48 @@ const Reset = (props) => {
     }
   }
 
+  // LOOKS GOOD
+  const handlePassword = (data) => {
+    if (data.status) {
+      console.log("SUCCESS")
+      closeModal()
+    } else {
+      if (data.code === 202){
+        console.log("Status 202 Error")
+        setModalSetting("expired")
+      } else {
+        setSubmissionStatus({
+          message: data.error,
+          error: true
+        });
+        console.log("ERROR: ", data.error)
+      }
+    }
+  }
+  const handleExpired = (data) => {
+    if (data.status) {
+      resetValues();
+      console.log("SUCCESS");
+      setModalSetting("confirmation");
+    } else {
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
+    }
+  }
+  // LOOKS GOOD
   const resetValues = () => {
-    setValues({
+    let tempValues = {
       password: "",
-      temporary: "",
       confirmation: "",
       resent: false,
       resetToken: "",
-      sessionToken: "",
-    })
+      sessionToken: values.sessionToken,
+      userId: values.userId
+    };
+    setValues(tempValues)
   }
   // LOOKS GOOD
   const handleResend = (data) => {
@@ -280,7 +357,7 @@ const Reset = (props) => {
       </div>
       <div style={{paddingTop: "10px"}}>
         <button
-          className={classes.SubmitButton}
+          className={classes.OSDBlueButton}
           onClick={() => {
             submitConfirmation();
         }}>
@@ -304,12 +381,40 @@ const Reset = (props) => {
       </div>
       <div style={{paddingTop: "10px"}}>
         <button
-          className={classes.SubmitButton}
+          className={classes.OSDBlueButton}
           onClick={() => {
             console.log("clicked submit button")
             submitPassword();
         }}>
           REGISTER YOUR PASSWORD
+        </button>
+      </div>
+    </Fragment>
+  );
+
+  const expiredForm = (
+    <Fragment>
+      <div style={{width: "100%", paddingBottom: "10px", fontSize: "16px"}}>
+        Would you still like to set your password?
+      </div>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.OSDBlueButton}
+          onClick={() => {
+            console.log("clicked yes button");
+            submitExpired();
+        }}>
+          YES RESEND CODE
+        </button>
+      </div>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            console.log("clicked no button")
+            closeModal();
+        }}>
+          NOT AT THIS TIME
         </button>
       </div>
     </Fragment>
@@ -357,6 +462,19 @@ const Reset = (props) => {
     props.closeModal()
   }
 
+  
+  // LOOKS GOOD BUT REVIEW LOGIC
+  const calculateTimeLeft = () => {
+    let timeElapsed = new Date(props.passwordTimer) - new Date();
+    let elapsedTime = {
+      days: Math.floor(timeElapsed / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((timeElapsed / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((timeElapsed / 1000 / 60) % 60),
+      seconds: Math.floor((timeElapsed / 1000) % 60)
+    };
+    return elapsedTime;
+  };
+
   const confirmationDisplay = () => {
     if (modalSetting === "confirmation") {
       return (
@@ -381,10 +499,11 @@ const Reset = (props) => {
           </div>
         </div>
       )
-    } else {
-      return null
-    }
+    } else return null
   }
+
+  //const timer = new Date((props.passwordTimer))
+  //<div>PasswordTimer {Date(props.passwordTimer)}</div>
 
   const passwordDisplay = () => {
     if (modalSetting === "password") {
@@ -409,9 +528,23 @@ const Reset = (props) => {
           </div>
         </div>
       )
-    } else {
-      return null
-    }
+    } else return null
+  }
+
+  const expiredDisplay = () => {
+    if (modalSetting === "expired") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>Time expired</div>
+          </div>
+          <div>
+            {showError()}
+            {expiredForm}
+          </div>
+        </div>
+      )
+    } else return null
   }
 
   const errorDisplay = () => {
@@ -436,9 +569,7 @@ const Reset = (props) => {
           </div>
         </div>
       )
-    } else {
-      return null
-    }
+    } else return null
   }
 
   return (
@@ -454,6 +585,7 @@ const Reset = (props) => {
       >
         {confirmationDisplay()}
         {passwordDisplay()}
+        {expiredDisplay()}
         {errorDisplay()}
       </div>
     </Fragment>

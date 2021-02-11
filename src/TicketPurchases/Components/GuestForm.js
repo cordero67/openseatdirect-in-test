@@ -14,8 +14,8 @@ const GuestForm = props => {
           </label>
           <input
             type="text"
-            name="guestFirstname"
-            value={props.guestInformation.guestFirstname}
+            name="firstname"
+            value={props.guestInformation.firstname}
             onChange={props.changeField}
             className={classes.InputBox}
           />
@@ -27,8 +27,8 @@ const GuestForm = props => {
           </label>
           <input
             type="text"
-            name="guestLastname"
-            value={props.guestInformation.guestLastname}
+            name="lastname"
+            value={props.guestInformation.lastname}
             onChange={props.changeField}
             className={classes.InputBox}
           />
@@ -41,14 +41,14 @@ const GuestForm = props => {
         </label>
         <input
           type="text"
-          name="guestEmail"
-          value={props.guestInformation.guestEmail}
+          name="email"
+          value={props.guestInformation.email}
           onChange={props.changeField}
           className={classes.InputBoxLarge}
         />
       </div>
 
-      <div>{(props.guestInformation.guestEmail && !regsuper.test(props.guestInformation.guestEmail))
+      <div>{(props.guestInformation.email && !regsuper.test(props.guestInformation.email))
         ? <span style={{ color: "red", padding: "5px"}}>A valid email address is required</span>
         : null
       }</div>

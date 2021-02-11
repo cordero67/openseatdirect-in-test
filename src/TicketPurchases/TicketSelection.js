@@ -198,9 +198,9 @@ const TicketSelection = () => {
 
     let url = `${API}/tixorder/signed_expressorder/${customerInformation.userId}`
     let fetcharg ={
-        method: "POST",
-        headers: myHeaders,
-        body:JSON.stringify (order),
+      method: "POST",
+      headers: myHeaders,
+      body:JSON.stringify (order),
     };
     console.log("fetching with: ", url, fetcharg);
     console.log("Free ticket order: ", order)
@@ -525,7 +525,7 @@ const TicketSelection = () => {
             orderTotals: orderTotals,
             guestInfo: cart.guestInfo,
             osdOrderId: orderId,
-            orderExpiration: new Date(+new Date() + (200.5 * 60000))
+            orderExpiration: new Date(+new Date() + (0.5 * 60000))
           }))
       } else {
         localStorage.setItem(
@@ -536,7 +536,7 @@ const TicketSelection = () => {
             ticketInfo: ticketInfo,
             orderTotals: orderTotals,
             osdOrderId: orderId,
-            orderExpiration: new Date(+new Date() + (200.5 * 60000))
+            orderExpiration: new Date(+new Date() + (0.5 * 60000))
           })
         )
       }

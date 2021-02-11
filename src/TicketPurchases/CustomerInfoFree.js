@@ -23,17 +23,15 @@ import { OrderConfirm } from "./Components/OrderConfirms";
 import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
 import classes from "./CustomerInfo.module.css";
 
-// defines the variables that accept the "cart_" data from "localStorage"
+// defines the variables contained in the "cart_" data from "localStorage"
 let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
 let osdOrderId;
 let orderExpiration;
 
-// defines an event's image
 let eventLogo = "";
 
-// defines the styling variables
 let MainContainer = {};
 let MainGrid = {};
 let EventTicketSection = {};
@@ -41,47 +39,27 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const CustomerInfo = props => {
-  // defines panel displayed on main page
-  const [display, setDisplay] = useState("spinner"); //main, spinner, confirmation, connection
+  const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, connection
 
-  // defines 'authenticationModal' display status
-  const [modalStatus, setModalStatus] = useState(false);
+  const [modalStatus, setModalStatus] = useState(false); // defines 'authenticationModal' display status
 
-  // defines single or double pane view control variables
-  const [showDoublePane, setShowDoublePane] = useState(false);
-  const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
+  const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
+  const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
 
-  // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
+  const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
 
-  // defines contact information to be sent to server
-  const [guestInformation, setGuestInformation] = useState({
-    guestFirstname: "",
-    guestLastname: "",
-    guestEmail: ""
+  const [guestInformation, setGuestInformation] = useState({ // defines guest information sent to server
+    firstname: "",
+    lastname: "",
+    email: ""
   });
 
-  // transaction variables for display on confirmation page
-  const [transactionInfo, setTransactionInfo] = useState({});
+  const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
 
-  // defines if order was successful
-  const [orderStatus, setOrderStatus] = useState(false)
-
-
-
-
-
-
-
-
-
-
-
+  const [orderStatus, setOrderStatus] = useState(false); // defines if order was successful
+  // LOOKS GOOD
   useEffect(() => {
-    // downloads "order" information and "image" from "localStorage" and
-    if (
-      typeof window !== "undefined" && localStorage.getItem("eventNum")
-    ) {
+    if (typeof window !== "undefined" && localStorage.getItem("eventNum")) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
         let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
@@ -90,12 +68,9 @@ const CustomerInfo = props => {
         orderTotals = tempCart.orderTotals;
         osdOrderId = tempCart.osdOrderId;
         orderExpiration = tempCart.orderExpiration;
-        if('guestInfo' in tempCart) {
+        if ('guestInfo' in tempCart) {
           setGuestInformation(tempCart.guestInfo);
-          console.log("guestInfo: ", tempCart.guestInfo)
         }
-        console.log("orderTotals: ", orderTotals);
-        console.log("ticketInfo: ", ticketInfo);
       } else {
         window.location.href = "/events";
       }
@@ -103,16 +78,16 @@ const CustomerInfo = props => {
         eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
       }
     } else {
-        window.location.href = "/events";
+      window.location.href = "/events";
     }
     stylingUpdate(window.innerWidth, window.innerHeight);
     setDisplay("main")
   }, []);
-
+  // LOOKS GOOD
   window.onresize = () => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
-
+  // LOOKS GOOD
   const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
     if (inWidth < 790) {
@@ -127,7 +102,7 @@ const CustomerInfo = props => {
     OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
     setIsRestyling(false);
   };
-
+  // LOOKS GOOD
   // toggles between "order pane" views
   const switchShowOrderSummary = event => {
     if (showOrderSummaryOnly) {
@@ -136,27 +111,27 @@ const CustomerInfo = props => {
       setShowOrderSummaryOnly(true);
     }
   };
-
+  // LOOKS GOOD
   // determines what "contact information" has been filled out by the ticket buyer
   const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+  // LOOKS GOOD
   let detailsMinimal = () => {
-    if(guestInformation.guestFirstname
-      && guestInformation.guestLastname
-      && guestInformation.guestEmail
-      && regsuper.test(guestInformation.guestEmail)) {
+    if(guestInformation.firstname
+      && guestInformation.lastname
+      && guestInformation.email
+      && regsuper.test(guestInformation.email)) {
       return true
     } else {
       return false
     }
   }
-
+  // LOOKS GOOD
   const changeField = (event) => {
     let tempInformation = {...guestInformation};
     tempInformation[event.target.name] = event.target.value;
     setGuestInformation(tempInformation);
   }
-  
+  // LOOKS GOOD
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
     eventDetails = {};
@@ -168,7 +143,7 @@ const CustomerInfo = props => {
     localStorage.removeItem(`image_${event}`);
     localStorage.removeItem(`eventNum`);
   };
-  
+  // LOOKS GOOD
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
     if (!response.ok) {
@@ -179,28 +154,9 @@ const CustomerInfo = props => {
 
   const freeTicketHandler = (user) => {
     if (!user) {
-      let email = guestInformation.guestEmail;
-      let name = `${guestInformation.guestFirstname} ${guestInformation.guestLastname}`;
+      let email = guestInformation.email;
+      let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
       setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
-
-      /*
-      let order = {orderDetails: {guestInfo: {}}};
-      let ticketArray = [];
-      order.orderDetails.guestInfo.guestFirstname = guestInformation.guestFirstname;
-      order.orderDetails.guestInfo.guestLastname = guestInformation.guestLastname;
-      order.orderDetails.guestInfo.guestEmail = guestInformation.guestEmail;
-      order.eventNum = eventDetails.eventNum;
-      ticketInfo.map((item, index) => {
-        console.log("item #", index)
-        if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-          let tempObject = {};
-          tempObject.ticketID = item.ticketID;
-          tempObject.ticketsSelected = item.ticketsSelected;
-          ticketArray.push(tempObject);
-        }
-      });
-      order.tickets = ticketArray;
-      */
 
       let isFree = true;
 
@@ -208,29 +164,26 @@ const CustomerInfo = props => {
         isFree = false;
       }
 
-      let orderNEW = {
+      let order = {
         osdOrderId: osdOrderId,
         totalAmount: orderTotals.finalPurchaseAmount,
-        isFree: isFree, // or true
-        guestFirstname: guestInformation.guestFirstname,
-        guestLastname: guestInformation.guestLastname,
-        guestEmail: guestInformation.guestEmail,
+        isFree: isFree,
+        guestFirstname: guestInformation.firstname,
+        guestLastname: guestInformation.lastname,
+        guestEmail: guestInformation.email,
       };
-
-      console.log("orderNEW: ", orderNEW)
 
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
-      //let url = `${API}/free/freeTickets`;
       let url = `${API}/tixorder/unsigned_placeorder`
       let fetcharg ={
         method: "POST",
         headers: myHeaders,
-        body: JSON.stringify(orderNEW),
+        body: JSON.stringify(order),
       };
       console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", orderNEW)
+      console.log("Free ticket order: ", order)
       fetch(url, fetcharg )
       .then(handleErrors)
       .then((response) => {return response.json()})
@@ -247,12 +200,9 @@ const CustomerInfo = props => {
     }
     else {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("transactionInfo: ",transactionInfo)
-    
       let email = tempUser.user.email;
       let name = tempUser.user.name;
       setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
-
 
       let order = {};
       let ticketArray = [];
@@ -287,7 +237,7 @@ const CustomerInfo = props => {
         }
       });
       
-      let orderNEW = {
+      order = {
         eventNum: eventDetails.eventNum,
         totalAmount: 0,
         isFree:  true,
@@ -304,11 +254,11 @@ const CustomerInfo = props => {
       let fetcharg ={
           method: "POST",
           headers: myHeaders,
-          body:JSON.stringify (orderNEW),
+          body:JSON.stringify (order),
       };
 
       console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", orderNEW)
+      console.log("Free ticket order: ", order)
       fetch(url, fetcharg )
       .then(handleErrors)
       .then ((response)=>{
@@ -572,9 +522,7 @@ const CustomerInfo = props => {
         );
       }
 
-    } else {
-      return null;
-    }
+    } else return null;
   }
 
   return (
@@ -589,122 +537,9 @@ const CustomerInfo = props => {
         start={"signin"}
         vendorIntent={false}
         closeModal={() => setModalStatus(false)}
-        submit={() => {
-          freeTicketHandler(true)
-        }}
+        submit={() => freeTicketHandler(true)}
       />
     </div>
   );
 };
 export default CustomerInfo;
-
-/*
-
-
-  const freeTicketHandler = (user) => {
-    if (!user) {
-      console.log("Inside freeTicketHandler");
-
-      let email = guestInformation.guestEmail;
-      let name = `${guestInformation.guestFirstname} ${guestInformation.guestLastname}`;
-
-      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
-
-      let order = {orderDetails: {guestInfo: {}}};
-      let ticketArray = [];
-      order.orderDetails.guestInfo.guestFirstname = guestInformation.guestFirstname;
-      order.orderDetails.guestInfo.guestLastname = guestInformation.guestLastname;
-      order.orderDetails.guestInfo.guestEmail = guestInformation.guestEmail;
-      order.eventNum = eventDetails.eventNum;
-      ticketInfo.map((item, index) => {
-        console.log("item #", index)
-        if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-          let tempObject = {};
-          tempObject.ticketID = item.ticketID;
-          tempObject.ticketsSelected = item.ticketsSelected;
-          ticketArray.push(tempObject);
-        }
-      });
-      order.tickets = ticketArray;
-
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      let url = `${API}/free/freeTickets`;
-      let fetcharg ={
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(order),
-      };
-      console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", order)
-      fetch(url, fetcharg )
-      .then(handleErrors)
-      .then((response) => {return response.json()})
-      .then((data)=>{
-        console.log ("fetch return got back data:", data);
-        setOrderStatus(data.status);
-        setDisplay("confirmation");
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setDisplay("connection")
-      })
-      .finally(() => {purchaseConfirmHandler();});
-    }
-    else {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("transactionInfo: ",transactionInfo)
-    
-      let email = tempUser.user.email;
-      let name = tempUser.user.name;
-
-      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
-
-      let order = {};
-      let ticketArray = [];
-      order.eventNum = eventDetails.eventNum;
-      ticketInfo.map((item, index) => {
-        if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-          let tempObject = {};
-          tempObject.ticketID = item.ticketID;
-          tempObject.ticketsSelected = item.ticketsSelected;
-          ticketArray.push(tempObject);
-        }
-      });
-      order.tickets = ticketArray;
-
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
-
-      let url = `${API}/free/signedFreeTickets/${tempUser.user._id}`
-      let fetcharg ={
-          method: "POST",
-          headers: myHeaders,
-          body:JSON.stringify (order),
-      };
-
-      console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", order)
-      fetch(url, fetcharg )
-      .then(handleErrors)
-      .then ((response)=>{
-        console.log ("then response: ", response);
-        return response.json()})
-      .then ((data)=>{
-        console.log ("fetch return got back data:", data);
-        setOrderStatus(data.status);
-        setDisplay("confirmation");
-      })
-      .catch ((error)=>{
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setDisplay("connection")
-      })
-      .finally(() => {
-        purchaseConfirmHandler();
-        setModalStatus(false)
-      });
-    }
-  }
-  */
