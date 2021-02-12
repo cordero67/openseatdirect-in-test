@@ -16,7 +16,7 @@ import { Button } from 'semantic-ui-react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 
-const imageMaxSize = 3000000 // bytes
+const IMAGE_MAX_SIZE = 5000000 // bytes
 //const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 
 // see https://github.com/jshttp/mime-db
@@ -76,13 +76,13 @@ class ImgDropAndCrop extends Component {
             };
             const currentFileType = currentFile.type;
             const currentFileSize = currentFile.size;
-            if(currentFileSize > imageMaxSize) {
-                let showmax = (imageMaxSize/1000).toLocaleString('en');
+            if(currentFileSize > IMAGE_MAX_SIZE) {
+                let showmax = (IMAGE_MAX_SIZE/1000).toLocaleString('en');
                 alert("This file is not allowed. File size cannot exceed " + showmax + " Kbytes ");
                 return false
             }
             if (!acceptedFileTypesArray.includes(currentFileType)){
-                let showmax = (imageMaxSize/1000).toLocaleString('en');
+                let showmax = (IMAGE_MAX_SIZE/1000).toLocaleString('en');
                 alert("File must be an image file with size no greater than " + showmax + " Kbytes ");
                 return false
             }
@@ -198,7 +198,7 @@ class ImgDropAndCrop extends Component {
             const imageBlob = await new Promise((resolve) => canvasRef.toBlob(resolve, "image/png"));
 //            this.setState({newimageData64: tempImage});  
             this.setState({newimageData64: tempImage});  
-            this.props.change(imageBlob);  // sends imageBlob to parent using change prop
+            this.props.change({imageBlob:imageBlob, imgSrc:imgSrc});  // sends imageBlob to parent using change prop
         }
 
         this.setState({isCropping: false});
@@ -281,6 +281,7 @@ class ImgDropAndCrop extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState){
         //lifecycle function to update child state with props set by parent
+        console.log ("getDerivedStateFromProps: nextProps= ", nextProps, " ,prevState= ",prevState);
         if (prevState.imgSrcLoaded){ // disable getDerivedStateFromProps after image is loaded once. 
             return null;            // we don't need this function in EventCreation, we need it in EventEdit
         }
@@ -391,7 +392,7 @@ class ImgDropAndCrop extends Component {
                             onDrop={this.handleOnDrop}
                             accept={acceptedFileTypes}
                             multiple={false} 
-                            maxSize={imageMaxSize} noKeyboard>
+                            maxSize={IMAGE_MAX_SIZE} noKeyboard>
                             {({getRootProps, getInputProps,acceptedFiles}) => (
                                 <div 
                                     style={{margin: "0px",

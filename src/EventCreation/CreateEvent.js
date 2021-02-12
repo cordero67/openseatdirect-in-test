@@ -499,39 +499,111 @@ const CreateEvent = (props) => {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", authstring);
 
-      let apiurl;
-      apiurl = `${API}/eventix/${userid}`;
+      let apiurl = `${API}/eventix/${userid}`;
+      let imgurl = `${API}/eventix/imgpost/${userid}`;
 
-      fetch(apiurl, {
-          method: "POST",
-          headers: myHeaders,
-          body: formData,
-          redirect: "follow",
-      })
-      .then(handleErrors)
-      .then((response) => {
-          console.log("response in create", response);
-          return response.json();
-      })
-      .then((res) => {
-          console.log("Event was saved/went live");
-          console.log("res: ", res);
-          if (!res.status){
-            if (res.message ){
-              tempStatus.status = "error";
-              } else {
-              tempStatus.status = "failure";
+      let hasPhoto = tempDescription.photo ? true: false;
+
+      console.log ("event hasPhoto=", hasPhoto);
+      console.log ("formData=",formData);
+
+      if (hasPhoto) {
+                // if image is found they fetch image to cdn then fetch to OSD server
+          fetch(imgurl, {
+              method: "POST",
+              headers: myHeaders,
+              body: formData,
+              redirect: "follow",
+          })
+          .then(handleErrors)
+          .then((response) => {
+              console.log("response in create", response);
+              return response.json();
+          })
+          .then((res) => {
+            if (res.status){
+              console.log(">>>>>>Image was saved" , res);
+                let photoUrl1 = res.data.photoUrl1;
+                formData.append("photoUrl1", photoUrl1);
+                return fetch(apiurl, {
+                  method: "POST",
+                  headers: myHeaders,
+                  body: formData,
+                  redirect: "follow",
+                });
+            } else {
+              throw new Error("imgfail");
             }
-          };
-          setEventStatus(tempStatus);
-          return res;
-      })
-      .catch((err) => {
-          console.log("Inside the .catch")
-          console.log("**ERROR THROWN", err);
-          tempStatus.status = "failure";
-          setEventStatus(tempStatus);
-      });
+          })
+          .then(handleErrors)
+          .then((response) => {
+              console.log("response in create", response);
+              return response.json();
+          })
+          .then((res) => {
+              console.log("Event was saved/went live");
+              console.log("res: ", res);
+              if (!res.status){
+                if (res.message ){
+                  tempStatus.status = "error";
+                  } else {
+                  tempStatus.status = "failure";
+                }
+              };
+              setEventStatus(tempStatus);
+              return res;
+          })
+          .catch((err) => {
+              console.log("Inside the .catch")
+              console.log("**ERROR THROWN", err);
+              if (err.message ==='imgfail'){
+                console.log ("save cdn image failed");
+                tempStatus.status = "error"; 
+              } else{
+                tempStatus.status = "failure";
+              };
+              setEventStatus(tempStatus);
+          })
+
+
+      } else {
+
+
+          fetch(apiurl, {
+              method: "POST",
+              headers: myHeaders,
+              body: formData,
+              redirect: "follow",
+          })
+          .then(handleErrors)
+          .then((response) => {
+              console.log("response in create", response);
+              return response.json();
+          })
+          .then((res) => {
+              console.log("Event was saved/went live");
+              console.log("res: ", res);
+              if (!res.status){
+                if (res.message ){
+                  tempStatus.status = "error";
+                  } else {
+                  tempStatus.status = "failure";
+                }
+              };
+              setEventStatus(tempStatus);
+              return res;
+          })
+          .catch((err) => {
+              console.log("Inside the .catch")
+              console.log("**ERROR THROWN", err);
+              tempStatus.status = "failure";
+              setEventStatus(tempStatus);
+          });
+
+
+      };
+
+
       }
   }
 

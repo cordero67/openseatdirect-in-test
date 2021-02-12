@@ -2431,6 +2431,7 @@ const EventCreation = () => {
       imagein={{isLoaded:true}}
       change={(image) => {
         let tempDescription = { ...eventDescription };
+        console.log ("saving original image");
         tempDescription.photo = image;
         setEventDescription(tempDescription);
   
@@ -3369,36 +3370,3 @@ const EventCreation = () => {
 };
 
 export default EventCreation;
-
-/*
-        <div
-          style={{
-            height: "30px",
-            fontSize: "15px",
-            backgroundColor: "#E7E7E7",
-            borderTop: "1px solid lightgrey",
-            boxSizing: "borderBox",
-          }}
-        >
-          <div
-            style={{
-              padding: "10px 10px 0px 25px",
-              boxSizing: "borderBox",
-              fontWeight: 600,
-            }}
-          >
-            Currency
-          </div>
-        </div>
-        
-
-        <div className={classes.InputBox}>
-          <CurrencySelector
-            current={ticket.currency === "" ? "default" : ticket.currency}
-            name="currency"
-            change={(event) => {
-              changeTicketDetail(event, ticket.key);
-            }}
-          />
-        </div>
-        */
