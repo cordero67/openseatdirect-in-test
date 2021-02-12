@@ -6,17 +6,6 @@ import Backdrop from "./Backdrop";
 import classes from "./ResetModal.module.css";
 
 const Reset = (props) => {
-  console.log("props: ", props)
-
-
-// "/auth/change_password/:userId" change_password
-
-// "/auth/confirm_password_reset_code3/:userId" confirm_password_reset_code3)
-
-// "/auth/resend_password_code3/:userId" resend_password_code3)
-
-// "/auth/create_new_password/:userId" create_new_password)
-
 
   const [values, setValues] = useState({
     password: "",
@@ -44,6 +33,7 @@ const Reset = (props) => {
         return 0;
     } 
   }
+
   // LOOKS GOOD
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
@@ -219,24 +209,6 @@ const Reset = (props) => {
       setModalSetting("error")
     })
   }
-  /*
-  // LOOKS GOOD
-  const handleConfirmation = (data) => {
-    if (data.status) {
-      let tempValues = {...values};
-      tempValues.resetToken = data.user.resetPasswordToken;
-      setValues(tempValues);
-      console.log("SUCCESS")
-      setModalSetting("password")
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true
-      });
-      console.log("ERROR: ", data.error)
-    }
-  }
-*/
 
   const handleConfirmation = (data) => {
     if (data.status) {
@@ -411,7 +383,6 @@ const Reset = (props) => {
         <button
           className={classes.ButtonGrey}
           onClick={() => {
-            console.log("clicked no button")
             closeModal();
         }}>
           NOT AT THIS TIME
@@ -462,19 +433,6 @@ const Reset = (props) => {
     props.closeModal()
   }
 
-  
-  // LOOKS GOOD BUT REVIEW LOGIC
-  const calculateTimeLeft = () => {
-    let timeElapsed = new Date(props.passwordTimer) - new Date();
-    let elapsedTime = {
-      days: Math.floor(timeElapsed / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((timeElapsed / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((timeElapsed / 1000 / 60) % 60),
-      seconds: Math.floor((timeElapsed / 1000) % 60)
-    };
-    return elapsedTime;
-  };
-
   const confirmationDisplay = () => {
     if (modalSetting === "confirmation") {
       return (
@@ -501,9 +459,6 @@ const Reset = (props) => {
       )
     } else return null
   }
-
-  //const timer = new Date((props.passwordTimer))
-  //<div>PasswordTimer {Date(props.passwordTimer)}</div>
 
   const passwordDisplay = () => {
     if (modalSetting === "password") {

@@ -3,7 +3,6 @@ import { Route } from "react-router-dom";
 
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
-import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
 import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
@@ -183,23 +182,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDeletion />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/eventedit"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventEdit />
             <Footer></Footer>
           </React.Fragment>
         )}

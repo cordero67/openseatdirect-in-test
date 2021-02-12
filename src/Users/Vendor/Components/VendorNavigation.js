@@ -104,22 +104,3 @@ const VendorNavigation = (props) => {
 };
 
 export default VendorNavigation;
-
-/*
-
-      <div className={classes.NavigationTitle}>
-        {!isLoading ? null : null}
-      </div>
-
-  <li>
-    <button
-      className={(props.pane === "orders") ?
-        classes.NavigationButtonActive :
-        classes.NavigationButton
-      }
-      name="orders"
-      onClick={props.clicked}>
-      Past Orders
-    </button>
-  </li>
-*/

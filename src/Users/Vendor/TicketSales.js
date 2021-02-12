@@ -122,7 +122,7 @@ const TicketSales = (props) => {
                 <div style={{textAlign: "left"}}>{item.order_lastName},{" "}{item.order_firstName}</div>
                 <div style={{textAlign: "left"}}>{item.order_email}</div>
                 <div>{item.order_numTickets}</div>
-                <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount.toFixed(2)}</div>
+                <div style={{textAlign: "right", paddingRight: "20px"}}></div>
                 <div style={{ fontSize: "22px", textAlign: "center" }}>          
                   <FontAwesomeIcon
                     color="blue"

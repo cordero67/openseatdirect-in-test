@@ -83,19 +83,19 @@ const Account = (props) => {
   return (
     <div>
       <div className={classes.DisplayPanelTitle}>
-          ACCOUNT SETTINGS
+        ACCOUNT SETTINGS
       </div>
       <div className={classes.DisplayPanel}>
-          <div>Name:{" "}{isLoading ? null : userInfo.name}</div>
-          <br></br>
-          <div>E-mail:{" "}{isLoading ? null : userInfo.email}</div>
-          <br></br>
-          <button
-            onClick={() => {
-              requestChange();
-            }}>
-            Change Password
-          </button>
+        <div>Name:{" "}{isLoading ? null : userInfo.name}</div>
+        <br></br>
+        <div>E-mail:{" "}{isLoading ? null : userInfo.email}</div>
+        <br></br>
+        <button
+          onClick={() => {
+            requestChange();
+          }}>
+          Change Password
+        </button>
       </div>
 
       <ResetModal
