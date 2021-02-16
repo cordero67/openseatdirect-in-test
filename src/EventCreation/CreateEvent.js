@@ -11,7 +11,7 @@ import { API } from "../config";
 
 
 
-
+import {base64DatatoBlob} from "./ImgDropAndCrop/ResuableUtils";
 
 import SavedModal from "./Modals/SavedModal";
 import EventDetails from "./Components/EventDetails";
@@ -53,6 +53,12 @@ const CreateEvent = (props) => {
       endTime: "20:00:00",
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       photo: "",
+      imgSrc:"",
+      imgSrcExt:"",
+      imgPctX:"",
+      imgPctY:"",
+      imgPctH:"",
+      imgPctW:"",
       photoChanged: false,// NOT USED IN CREATEEVENT
       shortDescription: "",
       longDescription: "",
@@ -353,7 +359,7 @@ const CreateEvent = (props) => {
       // does not send empty fields to server
       eventDescriptionFields.forEach((field) => {
           if (tempDescription[field] !== '') {
-          console.log("eventDescription[field]: ", tempDescription[field] )
+          console.log("eventDescription[",field,"]: ", tempDescription[field] )
           formData.append(`${field}`, tempDescription[field]);
           }
       });
@@ -502,12 +508,22 @@ const CreateEvent = (props) => {
       let apiurl = `${API}/eventix/${userid}`;
       let imgurl = `${API}/eventix/imgpost/${userid}`;
 
-      let hasPhoto = tempDescription.photo ? true: false;
+      let hasImgSrc = tempDescription.imgSrc ? true: false;
 
-      console.log ("event hasPhoto=", hasPhoto);
-      console.log ("formData=",formData);
+//      console.log ("event hasPhotoSrc=", hasImgSrc);
 
-      if (hasPhoto) {
+      if (hasImgSrc) {
+          console.log ("hasImgSrc=true");
+
+          let imgblob = base64DatatoBlob (tempDescription.imgSrc);  // big uncropped image 
+          formData.append("imgSrc",    imgblob);
+//          formData.append("imgSrc",    tempDescription.imgSrc);
+          formData.append("imgSrcExt", tempDescription.imgSrcExt);
+          formData.append("imgPctX", tempDescription.imgPctX);
+          formData.append("imgPctY", tempDescription.imgPctY);
+          formData.append("imgPctW", tempDescription.imgPctW);
+          formData.append("imgPctH", tempDescription.imgPctH);
+
                 // if image is found they fetch image to cdn then fetch to OSD server
           fetch(imgurl, {
               method: "POST",
@@ -517,7 +533,7 @@ const CreateEvent = (props) => {
           })
           .then(handleErrors)
           .then((response) => {
-              console.log("response in create", response);
+              console.log("response in imgpost", response);
               return response.json();
           })
           .then((res) => {
@@ -599,11 +615,7 @@ const CreateEvent = (props) => {
               tempStatus.status = "failure";
               setEventStatus(tempStatus);
           });
-
-
-      };
-
-
+      };  
       }
   }
 
@@ -1065,7 +1077,14 @@ const CreateEvent = (props) => {
 
     const changeEventImage = (image) => {
         let tempDescription = { ...eventDescription };
-        tempDescription.photo = image;
+        tempDescription.photo     = image.imageBlob;
+        tempDescription.imgSrc  = image.imgSrc;
+        tempDescription.imgSrcExt = image.imgSrcExt;
+        tempDescription.imgPctX = image.pctX;
+        tempDescription.imgPctY = image.pctY;
+        tempDescription.imgPctH = image.pctH;
+        tempDescription.imgPctW = image.pctW;
+
         setEventDescription(tempDescription);
     }
 //START CODE REPLICATION CHECK

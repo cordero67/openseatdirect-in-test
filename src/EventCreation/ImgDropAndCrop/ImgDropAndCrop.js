@@ -188,7 +188,7 @@ class ImgDropAndCrop extends Component {
 
     handleCreateCroppedImage = async (event) => {
         event.preventDefault()
-        const {imgSrc,percentCrop} = this.state;
+        const {imgSrc,imgSrcExt,percentCrop} = this.state;
         const canvasRef = this.imagePreviewCanvasRef.current;
         if (canvasRef && imgSrc) { 
             const {imgSrcExt} =  this.state;
@@ -198,7 +198,13 @@ class ImgDropAndCrop extends Component {
             const imageBlob = await new Promise((resolve) => canvasRef.toBlob(resolve, "image/png"));
 //            this.setState({newimageData64: tempImage});  
             this.setState({newimageData64: tempImage});  
-            this.props.change({imageBlob:imageBlob, imgSrc:imgSrc});  // sends imageBlob to parent using change prop
+ //           this.props.change(imageBlob);  // sends imageBlob to parent using change prop
+//              send originl source image and coordinates of the crop, coordinates aer integers as % of total width/height
+            this.props.change({imageBlob:imageBlob, 
+                            imgSrc:imgSrc,          imgSrcExt:imgSrcExt,
+                            pctX:percentCrop.x,     pctY: percentCrop.y,
+                            pctH:percentCrop.height,pctW:percentCrop.width
+            });  // sends imageBlob to parent using change prop
         }
 
         this.setState({isCropping: false});
