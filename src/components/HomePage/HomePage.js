@@ -18,10 +18,7 @@ import {
 
 import { Button } from "react-bootstrap";
 import HaHaForHireLights from "../../assets/HaHaForHireLights.png"
-import AfroGirlShort from "../../assets/AfroGirlShort.jpg"
 import AfroGirl from "../../assets/AfroGirl.jpg"
-import DJGirl from "../../assets/DJGirl.png"
-import DJGirlShort from "../../assets/DJGirlShort.png"
 
 //import DemoCarousel from "./DemoCarousel.js";
 
@@ -951,7 +948,7 @@ const Home = () => {
               {tagLines()}
             </div>
             <div>
-              <img style={{maxWidth: "1200px", position: "absolute"}} src={AfroGirlShort}/>
+              <img style={{maxWidth: "1200px", position: "absolute"}} src={AfroGirl}/>
             </div>
           </div>
         )
@@ -965,7 +962,7 @@ const Home = () => {
               {tagLines()}
             </div>
             <div>
-              <img style={{maxWidth: "100%", position: "absolute"}} src={AfroGirlShort}/>
+              <img style={{maxWidth: "100%", position: "absolute"}} src={AfroGirl}/>
             </div>
           </div>
         )
@@ -979,7 +976,7 @@ const Home = () => {
               {tagLines()}
             </div>
             <div>
-              <img style={{height: "440px", position: "absolute"}} src={AfroGirlShort}/>
+              <img style={{height: "440px", position: "absolute"}} src={AfroGirl}/>
             </div>
           </div>
         )
@@ -993,7 +990,7 @@ const Home = () => {
               {tagLines()}
             </div>
             <div>
-              <img style={{maxWidth: "100%", position: "absolute"}} src={AfroGirlShort}/>
+              <img style={{maxWidth: "100%", position: "absolute"}} src={AfroGirl}/>
             </div>
           </div>
         )
