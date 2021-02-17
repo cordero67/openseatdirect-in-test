@@ -18,6 +18,8 @@ import {
 
 import { Button } from "react-bootstrap";
 import HaHaForHireLights from "../../assets/HaHaForHireLights.png"
+import AfroGirlShort from "../../assets/AfroGirlShort.jpg"
+import AfroGirl from "../../assets/AfroGirl.jpg"
 import DJGirl from "../../assets/DJGirl.png"
 import DJGirlShort from "../../assets/DJGirlShort.png"
 
@@ -355,10 +357,10 @@ const Home = () => {
               SIGN UP NOW
             </button>
           </div>
-        ) 
-      } else {
+        )
+      } else if (screenSize >= 450 && screenSize < 650) {
         return (
-          <div style={{paddingLeft: "calc(50vw - 134px)", paddingTop: "10px"}}>
+          <div style={{paddingLeft: "calc(50vw - 97px)", paddingTop: "10px"}}>
             <div
               style={{
                 fontFamily: "Roboto, Helvetica, sans-serif",
@@ -392,11 +394,44 @@ const Home = () => {
             </button>
           </div>
         ) 
+      } else {
+        return (
+          <div style={{paddingLeft: "calc(50vw - 97px)", paddingTop: "0px"}}>
+            <div
+              style={{
+                fontFamily: "Roboto, Helvetica, sans-serif",
+                fontSize: "40px",
+                fontWeight: "400",
+                lineHeight: "42px",
+                textAlign: "center",
+                paddingBottom: "25px"
+              }}>
+              Events
+              <br></br>
+              made easy
+            </div>
+            <button
+              style={{
+                fontFamily: "Roboto, Helvetica, sans-serif",
+                border: "1px solid white",
+                backgroundColor: "Transparent",
+                color: "white",
+                fontSize: "11px",
+                fontWeight: "400",
+                width: "140px",
+                height: "32px"
+              }}
+              onClick={() => {
+                console.log("Clicking button");
+                setModalStatus(true)
+              }}
+            >
+              SIGN UP NOW
+            </button>
+          </div>
+        )
       }
     }
-
-
-
 
     let marketingPhrase = () => {
       if (screenSize <= 500) {
@@ -496,7 +531,7 @@ const Home = () => {
               paddingRight: "20px"
             }}
           >
-            "I like that I'm in control. When one of my events was unfortunately cancelled. Since I controlled the cash from ticket sales, I was able to quickly issue my ticket buyers a refund. This would not have happened with other ticketing systems. Priceless!"
+            "I like that I'm in control. Since I controlled the cash from ticket sales, I was able to quickly issue my ticket buyers a refund when one of my events was unfortunately cancelled. This would not have happened with other ticketing systems. Priceless!"
           </div>
         ) : (
           <div
@@ -510,8 +545,7 @@ const Home = () => {
               color: "white"
             }}
           >
-            "I like that I'm in control. When one of my events was unfortunately cancelled. Since I controlled the cash from ticket sales, I was able to quickly issue my ticket buyers a refund. This would not have happened with other ticketing systems. Priceless!"
-          </div>
+            "I like that I'm in control. Since I controlled the cash from ticket sales, I was able to quickly issue my ticket buyers a refund when one of my events was unfortunately cancelled. This would not have happened with other ticketing systems. Priceless!"          </div>
         )
         }
 
@@ -917,7 +951,7 @@ const Home = () => {
               {tagLines()}
             </div>
             <div>
-              <img style={{maxWidth: "1200px", position: "absolute"}} src={DJGirl}/>
+              <img style={{maxWidth: "1200px", position: "absolute"}} src={AfroGirlShort}/>
             </div>
           </div>
         )
@@ -931,7 +965,7 @@ const Home = () => {
               {tagLines()}
             </div>
             <div>
-              <img style={{maxWidth: "100%", position: "absolute"}} src={DJGirl}/>
+              <img style={{maxWidth: "100%", position: "absolute"}} src={AfroGirlShort}/>
             </div>
           </div>
         )
@@ -945,7 +979,7 @@ const Home = () => {
               {tagLines()}
             </div>
             <div>
-              <img style={{height: "440px", position: "absolute"}} src={DJGirl}/>
+              <img style={{height: "440px", position: "absolute"}} src={AfroGirlShort}/>
             </div>
           </div>
         )
@@ -959,7 +993,7 @@ const Home = () => {
               {tagLines()}
             </div>
             <div>
-              <img style={{maxWidth: "100%", height: "auto", position: "absolute"}} src={DJGirlShort}/>
+              <img style={{maxWidth: "100%", position: "absolute"}} src={AfroGirlShort}/>
             </div>
           </div>
         )

@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./WarningModal.module.css";
 
-const OrderModal = (props) => {
+const WarningModal = (props) => {
 
   const modalContent = () => {
     if (props.type === "orders") {
@@ -65,4 +65,4 @@ const OrderModal = (props) => {
   );
 };
 
-export default OrderModal;
+export default WarningModal;

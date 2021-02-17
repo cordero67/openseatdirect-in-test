@@ -68,7 +68,7 @@ const SavedModal = (props) => {
           }}
         >
         <button className={classes.ButtonGrey}
-          onClick={props.toDashboard}
+          onClick={props.closeModal}
         >CONTINUE</button>
       </div>
       </div>

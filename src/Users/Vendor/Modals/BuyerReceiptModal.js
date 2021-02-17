@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import { getStartDate } from "../Resources/VendorFunctions";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
-import classes from "./ReceiptModal.module.css";
+import classes from "./BuyerReceiptModal.module.css";
 
 const ReceiptModal = (props) => {
   
@@ -61,7 +61,7 @@ const ReceiptModal = (props) => {
       </div>
     )
   }
-
+  /*
   const ticketsList = () => {
     return (
       props.details.order_ticketItems.map((ticket, index) => {
@@ -110,7 +110,8 @@ const ReceiptModal = (props) => {
       })
     )
   }
-
+  */
+ /*
   const paymentTypeTotals = () => {
     console.log("tickets: ", props.details.tickets)
 
@@ -145,7 +146,7 @@ const ReceiptModal = (props) => {
         otherTotal += ticket.item_total_price;
       }
     })
-
+  
     let allTotalBorder = classes.Total;
 
     console.log("allTotal: ", allTotal)
@@ -235,7 +236,7 @@ const ReceiptModal = (props) => {
       </Fragment>
     )
   }
-
+*/
   return (
     <Fragment>
       <Backdrop show={props.show}></Backdrop>
@@ -341,9 +342,9 @@ const ReceiptModal = (props) => {
             paddingBottom: "10px"
             }}
           >
-          {ticketsList()}
+          {/*ticketsList()*/}
         </div>
-        <div>{paymentTypeTotals()}</div>
+        <div>{/*paymentTypeTotals()*/}</div>
         <br></br>
 
         {modalButtons()}

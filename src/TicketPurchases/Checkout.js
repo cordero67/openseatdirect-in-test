@@ -208,9 +208,9 @@ const Checkout = props => {
         totalAmount: details.purchase_units[0].amount.value, // or 0
         isFree: isFree, // or true
         paymentGatewayId: details.id, // not required if “isFree === true”
-        guestFirstname: customerInformation.guestFirstname,
-        guestLastname: customerInformation.guestLastname,
-        guestEmail: customerInformation.guestEmail,
+        guestFirstname: customerInformation.firstname,
+        guestLastname: customerInformation.lastname,
+        guestEmail: customerInformation.email,
       };
       setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, customerInformation.guestEmail));
     }

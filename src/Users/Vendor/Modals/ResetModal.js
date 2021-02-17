@@ -529,7 +529,7 @@ const Reset = (props) => {
 
   return (
     <Fragment>
-      <Backdrop show={props.show} clicked={props.modalClosed}></Backdrop>
+      <Backdrop show={props.show} clicked={null}></Backdrop>
       <div
         style={{
           transform: props.show ? "translateY(0)" : "translateY(-100vh)",

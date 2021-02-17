@@ -17,13 +17,15 @@ const IssueTickets = (props) => {
   const [ticketDetails, setTicketDetails] = useState([]); //ticket details of a single selected event
   const [order, setOrder] = useState({
     recipient: {
-      firstName: "",
-      lastName: "",
+      firstname: "",
+      lastname: "",
       email: "",
       message: ""
     },
     tickets: []
   }); //manual generated ticket order
+
+  const [customerInformation, setCustomerInformation] = useState({});
 
   // THESE LOOK GOOD: 1/29/21
   const [recipientFirstNameWarning, setRecipientFirstNameWarning] = useState(false);
@@ -99,7 +101,7 @@ const IssueTickets = (props) => {
     addedTicket.chargedPrice = parseFloat(ticket.ticketPrice).toFixed(2);
     addedTicket.chargedPriceWarning = "";
     addedTicket.compTicket = false;
-    addedTicket.subTotal = parseFloat(addedTicket.numTickets) * parseFloat(addedTicket.chargedPrice);
+    addedTicket.subtotal = parseFloat(addedTicket.numTickets) * parseFloat(addedTicket.chargedPrice);
     addedTicket.priceInput = "ticket";
     addedTicket.paymentType = "cash";
     return addedTicket;
@@ -111,11 +113,19 @@ const IssueTickets = (props) => {
       if (
         localStorage.getItem(`events`) !== null &&
         localStorage.getItem(`eventNum`) !== null
-      
-        ) {
+      ) {
         let storedEvents = JSON.parse(localStorage.getItem("events"));
 
         let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
+
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+          setCustomerInformation({
+            sessionToken: tempUser.token,
+            userId: tempUser.user._id
+        });
+
+
+
 
         storedEvents.forEach(event => {
           if (event.eventNum === storedEventNum) {
@@ -142,16 +152,17 @@ const IssueTickets = (props) => {
     return response;
   };
 
-  const submitOrder = () => {
+  const submitOrder = (allTotal) => {
+    console.log("allTotal: ", allTotal)
     let newOrder = {};
     let ticketArray = [];
-    newOrder.firstName = order.recipient.firstName;
-    newOrder.lastName = order.recipient.lastName;
+    newOrder.firstname = order.recipient.firstname;
+    newOrder.lastname = order.recipient.lastname;
     newOrder.email = order.recipient.email;
     newOrder.message = order.recipient.message;
     newOrder.eventNum = selectedEventDetails.eventNum;
     
-    order.tickets.forEach((ticket, index) => {
+    order.tickets.forEach(ticket => {
       let tempObject = {};
       tempObject.key = ticket.key;
       tempObject.ticketID = ticket.ticketId;
@@ -167,26 +178,29 @@ const IssueTickets = (props) => {
       ticketArray.push(tempObject);
     });
     
+    newOrder.totalAmount = allTotal;
     newOrder.tickets = ticketArray;
+    console.log("newOrder: ", newOrder)
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${customerInformation.sessionToken}`);
 
-    let url = `${API}/free/manualTickets`;
+    let url = `${API}/tixorder/manual_order/${customerInformation.userId}`;
     let fetcharg ={
-        method: "POST",
-        headers: myHeaders,
-        body:JSON.stringify (newOrder),
+      method: "POST",
+      headers: myHeaders,
+      body:JSON.stringify (newOrder),
     };
     console.log("fetching with: ", url, fetcharg);
     
     fetch(url, fetcharg )
     .then(handleErrors)
     .then ((response)=>{
-        console.log ("then response: ", response);
-        return response.json()})
+      console.log ("then response: ", response);
+      return response.json()})
     .then ((data)=>{
-        console.log ("fetch return got back data:", data);
-        setModalView("confirmation")
+      console.log ("fetch return got back data:", data);
+      setModalView("confirmation")
     })
     .catch ((error)=>{
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -233,13 +247,13 @@ const IssueTickets = (props) => {
               }
               ticket.chargedPriceWarning = "";
               ticket.paymentType = "cash";
-              ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+              ticket.subtotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
             }
           })
 
         } else if (event.target.name === "numTickets") {
           ticket.numTickets = event.target.value;
-          ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+          ticket.subtotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
 
         } else if (event.target.name === "compTicket") {
           ticket.compTicket = !ticket.compTicket
@@ -250,25 +264,25 @@ const IssueTickets = (props) => {
           }
           ticket.paymentType = "cash";
           ticket.chargedPriceWarning = "";
-          ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+          ticket.subtotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
 
         } else if (event.target.name === "chargedPrice") {
           ticket.chargedPrice = event.target.value;
           if (ticket.chargedPrice === "") {
             ticket.chargedPriceWarning = ""
-            ticket.subTotal = parseFloat(0).toFixed(2);
+            ticket.subtotal = parseFloat(0).toFixed(2);
 
           } else if (isNaN(ticket.chargedPrice)) {
             ticket.chargedPriceWarning = "Not a valid number";
-            ticket.subTotal = "NaN"
+            ticket.subtotal = "NaN"
 
           } else if (priceRegex.test(ticket.chargedPrice)) {
             ticket.chargedPriceWarning = ""
-            ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+            ticket.subtotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
 
           } else {
             ticket.chargedPriceWarning = "Not a valid price"
-            ticket.subTotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
+            ticket.subtotal = parseFloat(ticket.numTickets) * parseFloat(ticket.chargedPrice);
           }
 
         } else if (event.target.name === "paymentType") {
@@ -375,7 +389,7 @@ const IssueTickets = (props) => {
                           changeTicket(event, ticket.key)
                         }}
                       >
-                        {ticketDetails.map(ticket2 => {return (<option>{ticket2.ticketName}</option>)})}
+                        {ticketDetails.map((ticket2, index) => {return (<option key={index}>{ticket2.ticketName}</option>)})}
                       </select>
                     </div>
                     <div>
@@ -424,7 +438,7 @@ const IssueTickets = (props) => {
                         {paymentTypes.map((type, index) => {return <option>{type}</option>})}
                       </select>
                     </div>
-                    <div style={{paddingTop: "4px", fontSize: "16px", paddingRight: "10px", textAlign: "right", fontWeight: "400"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
+                    <div style={{paddingTop: "4px", fontSize: "16px", paddingRight: "10px", textAlign: "right", fontWeight: "400"}}>{parseFloat(ticket.subtotal).toFixed(2)}</div>
                     <div style={{textAlign: "center", paddingTop: "4px"}}>
                       <FontAwesomeIcon
                         color="blue"
@@ -455,7 +469,7 @@ const IssueTickets = (props) => {
     let tempRecipient = {...tempOrder.recipient};
 
     tempRecipient[event.target.name] = event.target.value;
-    if (tempRecipient.firstName === "" || tempRecipient.lastName === "" ||
+    if (tempRecipient.firstname === "" || tempRecipient.lastname === "" ||
       tempRecipient.email === "" || !regsuper.test(tempRecipient.email)
     ) {
       tempRecipient.completed = false;
@@ -533,16 +547,16 @@ const IssueTickets = (props) => {
               </label>
               <input className={classes.FirstNameBox}
                 type="text"
-                name="firstName"
+                name="firstname"
                 placeholder="Limit 32 characters"
-                value={order.recipient.firstName}
+                value={order.recipient.firstname}
                 maxLength="64"
                 onFocus={() => setRecipientFirstNameWarning(true)}
                 onBlur={() => setRecipientFirstNameWarning(false)}
                 onChange={updateRecipient}
               />
               {recipientFirstNameWarning ?
-                displayMessage(64, order.recipient.firstName) :
+                displayMessage(64, order.recipient.firstname) :
                 null
               }
             </div>
@@ -552,15 +566,15 @@ const IssueTickets = (props) => {
               </label>
               <input className={classes.LastNameBox}
                 type="text"
-                name="lastName"
+                name="lastname"
                 placeholder="Limit 32 characters"
-                value={order.recipient.lastName}
+                value={order.recipient.lastname}
                 maxLength="64"
                 onFocus={() => setRecipientLastNameWarning(true)}
                 onBlur={() => setRecipientLastNameWarning(false)}
                 onChange={updateRecipient}
               />
-              {recipientLastNameWarning ? displayMessage(64, order.recipient.lastName) : null}
+              {recipientLastNameWarning ? displayMessage(64, order.recipient.lastname) : null}
             </div>
           </div>
           <div style={{width: "660px", paddingBottom: "10px"}}>
@@ -616,8 +630,8 @@ const IssueTickets = (props) => {
           close={() => {
             let tempOrder={...order};
             tempOrder.recipient={
-              firstName: "",
-              lastName: "",
+              firstname: "",
+              lastname: "",
               email: "",
               message: ""
             };

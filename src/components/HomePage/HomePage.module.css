@@ -9,8 +9,11 @@
   color: #fff;
   background-color: #0B1423;
   font-family: Helvetica, sans-serif;
-  height: calc(100vw * (440/650));
+  /*height: calc(100vw * (440/650));*/
+  height: calc(100vw/2 - 8px);
 }
+
+
 
 .BlankCanvas {
   background-color: white;

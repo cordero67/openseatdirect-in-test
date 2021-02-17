@@ -22,7 +22,8 @@ const Account = (props) => {
         let tempUser = JSON.parse(localStorage.getItem("user"));
         let tempUserInfo = {
           email: tempUser.user.email,
-          name: tempUser.user.name,
+          firstname: tempUser.user.firstname,
+          lastname: tempUser.user.lastname,
           id: tempUser.user._id,
           token: tempUser.token
         }
@@ -60,14 +61,6 @@ const Account = (props) => {
     .then((response) => {return response.json()})
     .then((data) => {
       console.log ("fetch return got back data:", data);
-      //setOrderStatus(data.status);
-      //setDisplay("confirmation");
-      
-      localStorage.setItem(
-        `passwordTimer`,
-        //JSON.stringify(new Date(+new Date() + (2000 * 60000)))
-        JSON.stringify(new Date())
-      )
 
       setModalStatus(true);
     })
@@ -86,7 +79,9 @@ const Account = (props) => {
         ACCOUNT SETTINGS
       </div>
       <div className={classes.DisplayPanel}>
-        <div>Name:{" "}{isLoading ? null : userInfo.name}</div>
+        <div>First Name:{" "}{isLoading ? null : userInfo.firstname}</div>
+        <br></br>
+        <div>Last Name:{" "}{isLoading ? null : userInfo.lastname}</div>
         <br></br>
         <div>E-mail:{" "}{isLoading ? null : userInfo.email}</div>
         <br></br>
@@ -101,13 +96,8 @@ const Account = (props) => {
       <ResetModal
         show={modalStatus}
         start={"confirmation"}
-        passwordTimer={new Date()}
-        vendorIntent={false}
         closeModal={() => {
           setModalStatus(false)
-        }}
-        submit={() => {
-          //freeTicketHandler(true)
         }}
       />
 

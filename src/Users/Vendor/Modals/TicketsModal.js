@@ -2,9 +2,9 @@ import React, { Fragment } from "react";
 
 import { getStartDate } from "../Resources/VendorFunctions";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
-import classes from "./ReceiptModal.module.css";
+import classes from "./TicketsModal.module.css";
 
-const ReceiptModal = (props) => {
+const TicketsModal = (props) => {
   
   console.log("selected order: ", props)
 
@@ -42,14 +42,14 @@ const ReceiptModal = (props) => {
             props.loadPrevious()
           }}
         >
-          LOAD PREVIOUS
+          PREVIOUS EVENT
         </button>
         <button className={classes.ButtonGreen}
           onClick={() => {
             props.loadNext()
           }}
         >
-          LOAD NEXT
+          NEXT EVENT
         </button>
         <button className={classes.ButtonGrey}
           onClick={() => {
@@ -61,7 +61,7 @@ const ReceiptModal = (props) => {
       </div>
     )
   }
-
+  /*
   const ticketsList = () => {
     return (
       props.details.order_ticketItems.map((ticket, index) => {
@@ -92,7 +92,7 @@ const ReceiptModal = (props) => {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "260px 80px 70px 110px 70px",
+                gridTemplateColumns: "260px 80px 70px",
                 gridGap: "10px",
                 width: "630px",
                 height: "28px",
@@ -101,8 +101,6 @@ const ReceiptModal = (props) => {
             >
               <div style={{textAlign: "left"}}>{adjustedTicketName}</div>
               <div style={{textAlign: "center"}}>{ticket.qty}</div>
-              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.unit_price).toFixed(2)}</div>
-              <div style={{textAlign: "left", paddingLeft: "10px"}}>{adjustedPaymentMethod}</div>
               <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.item_total_price).toFixed(2)}</div>
             </div>
           </Fragment>
@@ -110,7 +108,8 @@ const ReceiptModal = (props) => {
       })
     )
   }
-
+  */
+ /*
   const paymentTypeTotals = () => {
     console.log("tickets: ", props.details.tickets)
 
@@ -145,7 +144,7 @@ const ReceiptModal = (props) => {
         otherTotal += ticket.item_total_price;
       }
     })
-
+  
     let allTotalBorder = classes.Total;
 
     console.log("allTotal: ", allTotal)
@@ -235,7 +234,7 @@ const ReceiptModal = (props) => {
       </Fragment>
     )
   }
-
+*/
   return (
     <Fragment>
       <Backdrop show={props.show}></Backdrop>
@@ -267,44 +266,6 @@ const ReceiptModal = (props) => {
         >
           {longDateTime}
         </div>
-        <br></br>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "90px 400px",
-            fontSize: "16px",
-            textAlign: "left",
-            paddingBottom: "10px"
-          }}
-        >
-          <div style={{fontWeight: "600"}}>Recipient:</div>
-          <div>
-            {props.details.order_firstName}{", "}{props.details.order_lastName}
-          </div>
-        </div>
-        <div
-          style={{
-            fontSize: "16px",
-            textAlign: "left",
-            paddingLeft: "90px",
-            paddingBottom: "10px"
-          }}>
-          {props.details.order_email}
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "90px 400px",
-            fontSize: "16px",
-            textAlign: "left",
-            paddingBottom: "10px"
-          }}
-        >
-          <div style={{fontWeight: "600"}}>Order Date:</div>
-          <div>
-            {shortDateTime}
-          </div>
-        </div>
         <div
           style={{
             fontSize: "16px",
@@ -319,7 +280,7 @@ const ReceiptModal = (props) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "260px 80px 70px 110px 70px",
+            gridTemplateColumns: "260px 80px 70px",
             gridGap: "10px",
             width: "630px",
             borderBottom: "1px solid black",
@@ -329,8 +290,6 @@ const ReceiptModal = (props) => {
         >
           <div style={{textAlign: "left"}}>Ticket Type</div>
           <div style={{textAlign: "center"}}># Tickets</div>
-          <div style={{textAlign: "center"}}>Price</div>
-          <div style={{textAlign: "left", paddingLeft: "10px"}}>Payment Type</div>
           <div style={{textAlign: "center"}}>Total</div>
         </div>
 
@@ -341,9 +300,9 @@ const ReceiptModal = (props) => {
             paddingBottom: "10px"
             }}
           >
-          {ticketsList()}
+          {/*ticketsList()*/}
         </div>
-        <div>{paymentTypeTotals()}</div>
+        <div>{/*paymentTypeTotals()*/}</div>
         <br></br>
 
         {modalButtons()}
@@ -354,4 +313,4 @@ const ReceiptModal = (props) => {
   );
 };
 
-export default ReceiptModal;
+export default TicketsModal;

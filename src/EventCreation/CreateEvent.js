@@ -549,7 +549,10 @@ const CreateEvent = (props) => {
           <SavedModal
             show={true}
             details={eventStatus}
-            editEvent={() => {
+            toDashboard={() => {
+              window.location.href = `/vendor`;
+            }}
+            closeModal={() => {
               let tempStatus = { ...eventStatus };
               tempStatus.status = "";
               setEventStatus(tempStatus);

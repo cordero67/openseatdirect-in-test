@@ -5,6 +5,7 @@ import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./OrderModal.module.css";
 
 const OrderModal = (props) => {
+  console.log("props: ", props)
 
   let allTotal = 0;
   let cashTotal = 0;
@@ -15,7 +16,6 @@ const OrderModal = (props) => {
   let ethereumTotal = 0;
   let otherTotal = 0;
 
-  
   let longDateTime;
   [longDateTime] = getStartDate(props.dateTime);
   console.log("longDateTime: ", longDateTime)
@@ -58,7 +58,7 @@ const OrderModal = (props) => {
             EDIT ORDER
           </button>
           <button className={classes.ButtonGreen}
-            onClick={props.submit}
+            onClick={() => props.submit(allTotal)}
           >
             SUBMIT ORDER
           </button>
@@ -98,7 +98,8 @@ const OrderModal = (props) => {
         }
 
         return (
-          <Fragment>
+          <Fragment
+          key={index}>
             <div
               style={{
                 display: "grid",
@@ -116,7 +117,7 @@ const OrderModal = (props) => {
                 <div style={{textAlign: "left", paddingLeft: "20px"}}>{ticket.paymentType}</div> :
                 <div style={{textAlign: "left", paddingLeft: "20px"}}>comp</div>
               }
-              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.subTotal).toFixed(2)}</div>
+              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.subtotal).toFixed(2)}</div>
             </div>
           </Fragment>
         )
@@ -127,21 +128,27 @@ const OrderModal = (props) => {
   const paymentTypeTotals = () => {
     console.log("tickets: ", props.details.tickets)
     props.details.tickets.forEach((ticket, index) => {
-      allTotal += ticket.subTotal;
-      if (ticket.paymentType === "cash" && ticket.subTotal !== 0) {
-        cashTotal += ticket.subTotal;
+      allTotal += ticket.subtotal;
+      if (ticket.paymentType === "cash" && ticket.subtotal !== 0) {
+        console.log("cash ticket.subtotal: ", ticket.subtotal)
+        cashTotal += ticket.subtotal;
       } else if(ticket.paymentType === "CashApp")  {
-        cashAppTotal += ticket.subTotal;
+        console.log("Cashapp ticket.subtotal: ", ticket.subtotal)
+        cashAppTotal += ticket.subtotal;
       } else if(ticket.paymentType === "Venmo")  {
-        venmoTotal += ticket.subTotal;
+        console.log("Venmo ticket.subtotal: ", ticket.subtotal)
+        venmoTotal += ticket.subtotal;
       } else if(ticket.paymentType === "Paypal")  {
-        paypalTotal += ticket.subTotal;
+        console.log("Paypal ticket.subtotal: ", ticket.subtotal)
+        paypalTotal += ticket.subtotal;
       } else if(ticket.paymentType === "Bitcoin")  {
-        bitcoinTotal += ticket.subTotal;
+        console.log("Bitcoin ticket.subtotal: ", ticket.subtotal)
+        bitcoinTotal += ticket.subtotal;
       } else if(ticket.paymentType === "Ethereum")  {
-        ethereumTotal += ticket.subTotal;
+        console.log("Ethereum ticket.subtotal: ", ticket.subtotal)
+        ethereumTotal += ticket.subtotal;
       } else {
-        otherTotal += ticket.subTotal;
+        otherTotal += ticket.subtotal;
       }
     })
 
@@ -289,7 +296,7 @@ const OrderModal = (props) => {
         >
           <div style={{fontWeight: "600"}}>Recipient:</div>
           <div>
-            {props.details.recipient.firstName}{" "}{props.details.recipient.lastName}
+            {props.details.recipient.firstname}{" "}{props.details.recipient.lastname}
           </div>
         </div>
         <div

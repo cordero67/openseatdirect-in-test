@@ -40,6 +40,114 @@
   box-sizing: border-box;
 }
 
+.DisplayView {
+  position: fixed;
+  top: 110px;
+  width: 1030px;
+  background-color: white;
+  /*border-bottom: 1px solid grey;*/
+  height: 30px;
+  padding-left: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.DisplayButton {
+  background-color: #fff;
+  border-bottom: 1px solid grey;
+  border: none;
+  outline: none;
+  height: 30px;
+  text-align: center;
+}
+
+
+
+.ButtonGrey {
+  height: auto;
+  border-radius: 0px;
+  background-color: #999999;
+  color: white;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+}
+.ButtonGrey:hover {
+  border: none;
+  outline: none;
+}
+.ButtonGrey:active {
+  border: none;
+  outline: none;
+}
+.ButtonGrey:focus {
+  border: none;
+  outline: none;
+}
+.ButtonClear {
+  height: auto;
+  border-radius: 0px;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+}
+.ButtonClear:hover {
+  background-color: #EBEBEB;
+  color: #000;
+  border: none;
+  outline: none;
+}
+.ButtonClear:active {
+  background-color: #CCCCCC;
+  color: #000;
+  border: none;
+  outline: none;
+}
+.ButtonClear:focus {
+  border: none;
+  outline: none;
+}
+
+
+.EventButton {
+  text-align: center;
+  color: blue;
+  font-weight: 600;
+  width: 80px;
+  padding-left: 5px;
+  border: 1px solid white;
+  background-color: white;
+  cursor: pointer;
+  outline: 1px solid white;
+}
+.EventButton:focus {
+  border: 1px solid white;
+  outline: 1px solid white;
+}
+
+
+.DisplayButtonActive {
+  background-color: blue;
+  color: white;
+  border: none;
+  outline: none;
+  width: 200px;
+  height: 30px;
+  font-weight: 500;
+  text-align: center;
+}
+
 .EventPanelTitle {
   display: grid;
   grid-template-columns: 200px 390px 95px 95px 95px 95px;
@@ -57,14 +165,12 @@
   box-sizing: border-box;
 }
 
-
 .DisplayPanel {
   background-color: white;
   font-size: 15px;
   width: 1030px;
-  height: calc(100vh - 167px);
-  margin-top: 50px;
-  padding-top: 10px;
+  height: calc(100vh - 227px);
+  margin-top: 110px;
   padding-bottom: 15px;
   padding-left: 20px;
   padding-right: 20px;
@@ -96,21 +202,6 @@
   margin-top: 66px;
   width: 930px;
   border: 1px solid grey;
-}
-
-.DisplayPanel {
-  background-color: white;
-  font-size: 15px;
-  width: 1030px;
-  height: calc(100vh - 167px);
-  margin-top: 50px;
-  padding-top: 10px;
-  padding-bottom: 15px;
-  padding-left: 20px;
-  padding-right: 20px;
-  box-sizing: border-box;
-  scrollbar-width: thin;
-  overflow-y: auto;
 }
 
 .NavigationTitle {

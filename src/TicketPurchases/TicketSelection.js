@@ -525,7 +525,7 @@ const TicketSelection = () => {
             orderTotals: orderTotals,
             guestInfo: cart.guestInfo,
             osdOrderId: orderId,
-            orderExpiration: new Date(+new Date() + (0.5 * 60000))
+            orderExpiration: new Date(+new Date() + (7 * 60000))
           }))
       } else {
         localStorage.setItem(
@@ -536,7 +536,7 @@ const TicketSelection = () => {
             ticketInfo: ticketInfo,
             orderTotals: orderTotals,
             osdOrderId: orderId,
-            orderExpiration: new Date(+new Date() + (0.5 * 60000))
+            orderExpiration: new Date(+new Date() + (7 * 60000))
           })
         )
       }

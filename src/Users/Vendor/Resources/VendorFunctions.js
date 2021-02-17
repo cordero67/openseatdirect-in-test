@@ -100,7 +100,7 @@
     return [tempMonthAbbr, tempDate, tempLongDateTime]
   }
 
-export const getStartDate = (item) => {
+export const getLongStartDate = (item) => {
 
     let tempDateTime;//NEED
     let tempMonthAbbr;
@@ -150,6 +150,51 @@ export const getStartDate = (item) => {
 
     return [tempLongDateTime]
   }
+
+  export const getStartDate = (item) => {
+  
+      let tempDateTime;//NEED
+      let tempMonthAbbr;
+      let tempMonthNames;//NEED
+      let tempDate;//NEED
+      let tempDay;//NEED
+      let tempYear;//NEED
+      let tempAmPm;//NEED
+      let tempHours;//NEED
+      let tempMinutes;//NEED
+      let tempLongDateTime;//NEED
+  
+      tempDateTime = new Date(item);//NEED
+      tempDateTime.setMinutes( tempDateTime.getMinutes() + tempDateTime.getTimezoneOffset() );//NEED
+  
+      tempMonthAbbr = monthAbbr[tempDateTime.getMonth()];
+      tempMonthNames = monthNames[tempDateTime.getMonth()];//NEED
+      tempDate = tempDateTime.getDate();//NEED
+      tempDay = weekDays[tempDateTime.getDay()];//NEED
+      tempYear = tempDateTime.getFullYear();//NEED
+      //NEED
+      if (tempDateTime.getHours() === 0) {
+        tempHours = 12;
+        tempAmPm = "AM";
+      } else if (tempDateTime.getHours() < 12) {
+        tempHours = tempDateTime.getHours();
+        tempAmPm = "AM";
+      } else {
+        tempHours = tempDateTime.getHours() - 12;
+        tempAmPm = "PM";
+      }
+  
+      if (tempDateTime.getMinutes() > 9) {
+        tempMinutes = tempDateTime.getMinutes();
+      } else {
+        tempMinutes = "0" + tempDateTime.getMinutes();
+      }
+  //NEED
+  
+      tempLongDateTime = `${tempMonthNames} ${tempDate}\, ${tempYear}`;
+
+      return [tempLongDateTime]
+    }
 
 
   export const getDate = (item) => {
