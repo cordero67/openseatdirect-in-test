@@ -2,7 +2,7 @@ import React, { useState, Fragment } from "react";
 
 import QRCode from "qrcode.react"
 
-import { getStartDate } from "../Resources/VendorFunctions";
+import { getLongStartDate } from "../Resources/VendorFunctions";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./QRCodesModal.module.css";
 
@@ -14,14 +14,14 @@ const ReceiptModal = (props) => {
   const [ticketIndex, setTicketIndex] = useState(0);
 
   let longDateTime;
-  [longDateTime] = getStartDate(props.details.startDateTime);
+  [longDateTime] = getLongStartDate(props.details.startDateTime);
 
   // LOOKS GOOD: 1/21/21
   const modalButtons = () => {
     return (
       <div
         style={{
-          width: "380px",
+          width: "330px",
           textAlign: "center"
         }}
       >
@@ -71,6 +71,7 @@ const ReceiptModal = (props) => {
         <br></br>
         <div
           style={{
+            width: "330px",
             fontWeight: "600",
             fontSize: "18px",
             textAlign: "center"
@@ -80,6 +81,7 @@ const ReceiptModal = (props) => {
         </div>
         <div
           style={{
+            width: "330px",
             fontSize: "16px",
             textAlign: "center",
             fontWeight: "400",
@@ -92,9 +94,8 @@ const ReceiptModal = (props) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "42px 276px 42px",
-            gridGap: "10px",
-            width: "380px",
+            gridTemplateColumns: "42px 246px 42px",
+            width: "330px",
             height: "220px",
             paddingTop: "10px"
           }}
@@ -104,8 +105,7 @@ const ReceiptModal = (props) => {
               paddingTop: "80px",
               fontSize: "42px",
               border: "none",
-              color: "lightgrey",
-              textAlign: "center"
+              color: "lightgrey"
             }}
             name="chevron-back-outline"
             onClick={() => {
@@ -128,8 +128,7 @@ const ReceiptModal = (props) => {
               paddingTop: "80px",
               fontSize: "42px",
               border: "none",
-              color: "lightgrey",
-              textAlign: "left"
+              color: "lightgrey"
             }}
             name="chevron-forward-outline"
             onClick={() => {

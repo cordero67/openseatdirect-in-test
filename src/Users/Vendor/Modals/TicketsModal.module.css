@@ -111,9 +111,9 @@
 
 @media (min-width: 740px) {
   .Modal {
-    width: 700px;
-    padding-left: 30px;
-    padding-right: 30px;
+    width: 560px;
+    padding-left: 15px;
+    padding-right: 15px;
     left: calc(50% - 350px);
   }
 }

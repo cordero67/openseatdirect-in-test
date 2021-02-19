@@ -2,11 +2,11 @@
   position: fixed;
   z-index: 700;
   background-color: white;
-  width: 90%;
+  width: 330;
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px black;
-  padding: 16px;
-  left: 15%;
+  padding: 16px 15px 16px 15px;
+  left: calc(50% - 181px);
   top: 10%;
   text-align: center;
   box-sizing: border-box;
@@ -140,9 +140,9 @@
 
 @media (min-width: 740px) {
   .Modal {
-    width: 440px;
-    padding-left: 30px;
-    padding-right: 30px;
-    left: calc(50% - 350px);
+    width: 360px;
+    padding-left: 15px;
+    padding-right: 15px;
+    left: calc(50% - 180px);
   }
 }

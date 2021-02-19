@@ -24,11 +24,35 @@
   border: none;
   outline: none;
 }
+.PromoCodeButtonRed:hover {
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonRed:focus {
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonRed:active {
+  border: none;
+  outline: none;
+}
 .PromoCodeButtonBlue {
   font-size: 14px;
   text-align: center;
   color: blue;
   background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonBlue:hover {
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonBlue:focus {
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonBlue:active {
   border: none;
   outline: none;
 }
@@ -453,4 +477,26 @@
   height: 30px;
   margin: auto;
   text-align: center;
+}
+
+.ButtonGreen {
+  height: 40px;
+  width: 424px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 14px;
+}
+.ButtonGreen:hover {
+  background-color: #007A00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
 }

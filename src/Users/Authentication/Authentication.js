@@ -1026,7 +1026,7 @@ const Authentication = () => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            return <Redirect to="/events" />;
+          window.location.href = "/events";
         }}>
           CONTINUE
         </button>

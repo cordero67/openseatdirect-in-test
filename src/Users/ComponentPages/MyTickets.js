@@ -238,7 +238,7 @@ const MyTickets = () => {
                                         <button
                                             style={{backgroundColor: "#fff", border: "none", outline: "none", padding: "0"}}
                                             onClick={() => {
-                                                //setModalItem(order);
+                                                setModalItem(event);
                                                 setModalView("tickets");
                                                 //switchTab("orders", item);
                                             }}
@@ -318,7 +318,7 @@ const MyTickets = () => {
                                             <button
                                                 style={{backgroundColor: "#fff", border: "none", outline: "none", padding: "0"}}
                                                 onClick={() => {
-                                                    //setModalItem(order);
+                                                    setModalItem(event);
                                                     setModalView("tickets");
                                                     //switchTab("orders", item);
                                                 }}

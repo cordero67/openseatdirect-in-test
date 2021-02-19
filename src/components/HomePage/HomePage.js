@@ -16,24 +16,15 @@ import {
   faTwitter
 } from "@fortawesome/free-brands-svg-icons";
 
-import { Button } from "react-bootstrap";
-import HaHaForHireLights from "../../assets/HaHaForHireLights.png"
-import AfroGirlShort from "../../assets/AfroGirlShort.jpg"
-import AfroGirl from "../../assets/AfroGirl.jpg"
-import DJGirl from "../../assets/DJGirl.png"
-import DJGirlShort from "../../assets/DJGirlShort.png"
+import AfroGirlShort from "../../assets/KobeShort.jpg"
 
 //import DemoCarousel from "./DemoCarousel.js";
 
 import CashInHand from "../../assets/CashInHand.png";
 import ZeroFee from "../../assets/ZeroFee.png";
 import OSDImage from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png"
-import Documents from "../../assets/Documents.png"
 import DataLock from "../../assets/DataLock.png"
 
-import HaHaForHire from "../../assets/HaHaForHireComedyNight.png"
-
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./HomePage.module.css";
 
 const Home = () => {
@@ -441,7 +432,8 @@ const Home = () => {
             <br></br>
             <div style={{fontSize: "28px", fontWeight: "400", lineHeight: "38px", paddingBottom: "10px"}}>
               What is{" "}
-              <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span>
+              <br></br>
+              <span style={{fontWeight: "600", color: "#2F5596"}}>OPEN SEAT DIRECT</span>
               <span style={{fontWeight: "600"}}>?</span>
             </div>
             <div
@@ -466,7 +458,7 @@ const Home = () => {
             <br></br>
             <div style={{fontSize: "30px", fontWeight: "400", lineHeight: "38px", paddingBottom: "10px"}}>
             What is{" "}
-            <span style={{fontWeight: "600", color: "#2F5596"}}>OPENSEATDIRECT</span>
+            <span style={{fontWeight: "600", color: "#2F5596"}}>OPEN SEAT DIRECT</span>
               <span style={{fontWeight: "600"}}>?</span>
             </div>
             <div
@@ -651,10 +643,10 @@ const Home = () => {
             </div>
 
             <img
-                  src={DataLock}
-                  alt="OpenSeatDirect Logo"
-                  style={{width: "150px", paddingLeft: "10px"}}
-              />
+              src={DataLock}
+              alt="OpenSeatDirect Logo"
+              style={{width: "150px", paddingLeft: "10px"}}
+            />
 
             <div
               style={{
@@ -684,9 +676,6 @@ const Home = () => {
               <div></div>
               <div></div>
             </div>
-
-
-
           </Fragment>
         )
       } else if (screenSize > 800 && screenSize <= 900) {
@@ -1067,7 +1056,7 @@ const Home = () => {
                 </a>
               </div>
               <br></br>
-              <div className={classes.CopyRight} style={{color: "white"}}>Copyright &copy; 2021 OpenSeatDirect LLC | All Rights Reserved</div>
+              <div className={classes.CopyRight} style={{color: "white"}}>Copyright &copy; 2021 Open Seat Direct LLC | All Rights Reserved</div>
             </div>
           </div>
         )}
