@@ -6,26 +6,6 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import classes from "./VendorNavigation.module.css";
 
 const VendorNavigation = (props) => {
-
-  const [buyerInfo, setBuyerInfo] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      let tempBuyerInfo = {};
-      tempBuyerInfo.name = tempUser.user.accountId.accountName
-      setBuyerInfo(tempBuyerInfo);
-    } else {
-      window.location.href = "/auth";
-    }
-    setIsLoading(false);
-  }, []);
   
   return (
     <Fragment>

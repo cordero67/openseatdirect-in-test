@@ -19,7 +19,6 @@ import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./Components/AdditionalSettings";
 
 import classes from "./EditEvent.module.css";
-import { Button } from "semantic-ui-react";
 
 // holds sign-in information
 let vendorInfo = {};
