@@ -153,7 +153,7 @@ const EventEdit = () => {
 
       const uint8 = new Uint8Array(resPhotoData.data.data);
       const len =  uint8.byteLength;
-      if (len == 0){ // no photo data
+      if (len === 0){ // no photo data
               setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
               return;
       };
