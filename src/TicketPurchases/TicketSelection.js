@@ -233,7 +233,8 @@ const TicketSelection = () => {
     myHeaders.append("Authorization", `Bearer ${contactInformation.sessionToken}`);
     console.log("contactInformation: ", contactInformation)
 
-    let url = `${API}/free/signedFreeTickets/${contactInformation.userId}`
+    //let url = `${API}/free/signedFreeTickets/${contactInformation.userId}`
+    let url = `${API}/tixorder/signed_expressorder/${customerInformation.userId}`
     let fetcharg ={
         method: "POST",
         headers: myHeaders,
