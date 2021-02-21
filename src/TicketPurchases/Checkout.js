@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 
+import { API } from "../config.js";
 import { PayPalButton } from "react-paypal-button-v2";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +14,6 @@ import {
   OrderSummarySectionAltStyling
 } from "./Resources/Styling";
 import { DateRange } from "./Resources/PricingFunctions";
-import { paymentOnSuccess } from "./Resources/apiCore";
 import Spinner from "../components/UI/Spinner/Spinner";
 import CartLink from "./Components/CartLink";
 import OrderSummary from "./Components/OrderSummary";
@@ -25,6 +25,8 @@ import classes from "./Checkout.module.css";
 let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
+let osdOrderId;
+let orderExpiration;
 
 // defines an event's image
 let eventLogo = "";
@@ -40,63 +42,26 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const Checkout = props => {
-  // defines panel displayed on main page
-  const [display, setDisplay] = useState("spinner"); //main, spinner, confirmation, connection
+  const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
 
-  // defines single or double pane view control variables
-  const [showDoublePane, setShowDoublePane] = useState(false);
-  const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
+  const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
+  const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
 
-  // defines styling variables
-  const [isRestyling, setIsRestyling] = useState(false);
+  const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
 
   const [customerInformation, setCustomerInformation] = useState({});
 
-  // transaction variables for display on confirmation page
-  const [transactionInfo, setTransactionInfo] = useState({});
+  const [transactionInfo, setTransactionInfo] = useState({}); // defines transaction variables for display on confirmation page
 
-  // THIS MUST GO
-  // defines all view control variables
-  const [showConnectionStatus, setShowConnectionStatus] = useState(false);
-  const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
-  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
-  const [showPurchaseConfirmation, setShowPurchaseConfirmation] = useState(false);
-
-  const onlyShowLoadingSpinner = () => {
-    setShowConnectionStatus(false);
-    setShowLoadingSpinner(true);
-    setShowPaymentDetails(false);
-    setShowPurchaseConfirmation(false);
-  };
-
-  const onlyShowPaymentDetails = () => {
-    setShowConnectionStatus(false);
-    setShowLoadingSpinner(false);
-    setShowPaymentDetails(true);
-    setShowPurchaseConfirmation(false);
-  };
-
-  const onlyShowPurchaseConfirmation = () => {
-    setShowConnectionStatus(false);
-    setShowLoadingSpinner(false);
-    setShowPaymentDetails(false);
-    setShowPurchaseConfirmation(true);
-  };
-
-  // THIS REPLACED "braintreeData" INTERFACE VARIABLE
-  // transaction status variable
-  const [transactionStatus, setTransactionStatus] = useState({
+  const [transactionStatus, setTransactionStatus] = useState({ // defines status of paypal order
     message: null,
     error: "",
-    connection: true
+    //connection: true
   });
 
-  // transaction status variables
-  const [paypalStatus, setPaypalStatus] = useState(false);
-  const [orderStatus, setOrderStatus] = useState(false);
-
+  const [orderStatus, setOrderStatus] = useState(false); // defines status of order sent to server
+  // LOOKS GOOD
   useEffect(() => {
-    // downloads "order" information and "image" from "localStorage" and
     if (
       typeof window !== "undefined" && localStorage.getItem("eventNum")
     ) {
@@ -106,13 +71,16 @@ const Checkout = props => {
         eventDetails = tempCart.eventDetails;
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
+        osdOrderId = tempCart.osdOrderId;
+        orderExpiration = tempCart.orderExpiration;
         if("guestInfo" in tempCart) {
           setCustomerInformation(tempCart.guestInfo);
         } else if (localStorage.getItem("user") !== null) {
           let tempUser = JSON.parse(localStorage.getItem("user"));
           setCustomerInformation({
             sessionToken: tempUser.token,
-            userId: tempUser.user._id
+            userId: tempUser.user._id,
+            email: tempUser.user.email
           });
         }
         setPaypalArray();
@@ -128,15 +96,13 @@ const Checkout = props => {
       window.location.href = "/events";
     }
     stylingUpdate(window.innerWidth, window.innerHeight);
-    // NEED TO DELETE THIS LINE
-    onlyShowPaymentDetails();
     setDisplay("main")
   }, []);
-
+  // LOOKS GOOD
   window.onresize = function(event) {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
-
+  // LOOKS GOOD
   const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
     if (inWidth < 790) {
@@ -152,7 +118,7 @@ const Checkout = props => {
     OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
     setIsRestyling(false);
   };
-
+  // LOOKS GOOD
   // toggles between "order pane" views
   const switchShowOrderSummary = event => {
     if (showOrderSummaryOnly) {
@@ -161,7 +127,7 @@ const Checkout = props => {
       setShowOrderSummaryOnly(true);
     }
   };
-
+  // LOOKS GOOD
   // sets the PayPal "purchase_units.items" value populated from "ticketInfo"
   const setPaypalArray = () => {
     paypalArray = [];
@@ -180,8 +146,9 @@ const Checkout = props => {
         paypalArray.push(newElement);
       }
     });
+    console.log("paypalArray: ", paypalArray)
   };
-
+  // LOOKS GOOD
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
     eventDetails = {};
@@ -193,47 +160,92 @@ const Checkout = props => {
     localStorage.removeItem(`image_${event}`);
     localStorage.removeItem(`eventNum`);
   };
-
-  // called by <PaypalButton> on a successful transaction
-  const payPalPurchase = details => {
-    details.purchase_units[0].items = paypalArray;
-    
-    const paymentData = details
-
-    setPaypalStatus(true);
-    console.log("paypalStatus inside 'payPalPurchase': ", paypalStatus);
-
-    let email;
-    
-    // NEED TO DELETE THIS LINE
-    onlyShowLoadingSpinner();
-    setDisplay("spinner");
-    console.log("On Success 'details' object: ", details);
-    // sends PayPal order object to the server
-    paymentOnSuccess(paymentData, customerInformation)
-      .then(response => {
-        console.log("order received");
-        console.log("response: ", response);
-        email = response.data.toemail;
-        setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email));
-        if (response.status) {
-          setOrderStatus(true);
-          console.log("Order status: ", orderStatus);
-        } else {
-          throw Error();
-        }
-      })
-      .catch(error => {
-        console.log("paymentOnSuccess() error.message: ", error.message);
-        setOrderStatus(false);})
-      .finally(() => {
-        // NEED TO DELETE THIS LINE
-        onlyShowPurchaseConfirmation();
-        setDisplay("confirmation");
-        purchaseConfirmHandler();
-      })
+  // LOOKS GOOD
+  const handleErrors = response => {
+    console.log ("inside handleErrors ", response);
+    if (!response.ok) {
+        throw Error(response.status);
+    }
+    return response;
   };
 
+  // delivers paypal transaction information to the server
+  const payPalPurchase = (details) => {
+    console.log("Paypal details: ", details)
+    console.log("refernce_id: ", details.purchase_units[0].reference_id)
+    console.log("total amount: ", details.purchase_units[0].amount.value)
+    console.log("Paypal id: ", details.id)
+
+    let isFree = true;
+
+    if (details.purchase_units[0].amount.value > 0) {
+      isFree = false;
+    }
+
+    let url;
+    let order = {};
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (typeof window !== "undefined" && localStorage.getItem("user") !== null) {
+      console.log("user is signed in");
+      console.log("customerInformation: ", customerInformation)
+      url = `${API}/tixorder/signed_placeorder/${customerInformation.userId}`
+      console.log("url: ", url)
+      order = {
+        osdOrderId: details.purchase_units[0].reference_id,
+        totalAmount: details.purchase_units[0].amount.value, // or 0
+        isFree: isFree, // or true
+        paymentGatewayId: details.id, // not required if “isFree === true”
+      };
+      myHeaders.append("Authorization", `Bearer ${customerInformation.sessionToken}`);
+      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, customerInformation.email));
+    } else {
+      console.log("user is NOT signed in");
+      url = `${API}/tixorder/unsigned_placeorder`
+      order = {
+        osdOrderId: details.purchase_units[0].reference_id,
+        totalAmount: details.purchase_units[0].amount.value, // or 0
+        isFree: isFree, // or true
+        paymentGatewayId: details.id, // not required if “isFree === true”
+        guestFirstname: customerInformation.firstname,
+        guestLastname: customerInformation.lastname,
+        guestEmail: customerInformation.email,
+      };
+      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, customerInformation.guestEmail));
+    }
+
+    console.log("order: ", order)
+
+    let fetcharg ={
+        method: "POST",
+        headers: myHeaders,
+        body:JSON.stringify (order),
+    };
+    console.log("fetching with: ", url, fetcharg);
+    console.log("Free ticket order: ", order)
+
+    fetch(url, fetcharg )
+    .then(handleErrors)
+    .then ((response)=>{
+        console.log ("then response: ", response);
+        return response.json()})
+    .then ((data)=>{
+        console.log ("fetch return got back data:", data);
+        setOrderStatus(data.status);
+        setDisplay("confirmation")
+    })
+    .catch ((error)=>{
+        console.log("paymentOnSuccess() error.message: ", error.message);
+        setOrderStatus(false);
+        setDisplay("confirmation")
+    })
+    .finally(() => {
+      purchaseConfirmHandler();
+    });
+
+  }
+  // LOOKS GOOD
   // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
     if (display === "spinner") {
@@ -247,19 +259,23 @@ const Checkout = props => {
     }
   }
 
-  // CONTROLS "connectionStatus" VIEW
-  const connectionStatus = () => {
-    if (display === "connection") {
+  // CONTROLS "paypalStatus" VIEW
+  const paypalStatus = () => {
+    if (display === "paypal") {
       return (
         <div className={classes.BlankCanvas}>
-          <div>There is a problem with OSD Server in processing your tickets. Please try again later.</div>
+          <div>
+            PayPal cannot process you order at this time.
+            <br></br>
+            Please try again later.
+          </div>
         </div>
       )
     } else {
       return null;
     }
   }
-
+  // LOOKS GOOD
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   const purchaseConfirmation = () => {
     if (display === "confirmation") {
@@ -268,26 +284,15 @@ const Checkout = props => {
           <div style={{ paddingTop: "20px" }}>
             <OrderConfirm
               transactionInfo={transactionInfo}
-              orderStatus={orderStatus}>
-            </OrderConfirm>
+              orderStatus={orderStatus}
+            />
           </div>
         </div>
       )
-    } else {
-      return null;
-    }
-  }
-
-  const appliedCode = () => {
-    if (orderTotals.promoCodeApplied) {
-      return `${eventDetails.eventNum}: ${orderTotals.promoCodeApplied}`;
-    } else {
-      return `${eventDetails.eventNum}: NO CODE`;
-    }
+    } else return null
   }
 
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
-  // POTENTIALLY NEED TO ADD BACK THE "onBLur" IN <div>
   // displays the "PayPalButton" or an "empty cart" error message
   const showPayPal = (
     // loads PayPal Smart buttons if order exists
@@ -300,9 +305,9 @@ const Checkout = props => {
           return actions.order.create({
             purchase_units: [
               {
-                reference_id: appliedCode(),
-                description: eventDetails.eventTitle,
-                payment_descriptor: eventDetails.eventNum,
+                reference_id: osdOrderId,
+                //description: eventDetails.eventTitle,
+                //payment_descriptor: eventDetails.eventNum,
                 amount: {
                   currency_code: orderTotals.currencyAbv,
                   value: orderTotals.finalPurchaseAmount.toString(),
@@ -327,7 +332,8 @@ const Checkout = props => {
           console.log("onCancel 'data': ", data);
         }}
         onSuccess={(details, data) => {
-          console.log("inside onSuccess")
+          console.log("inside onSuccess, paypal details: ", details)
+          //payPalPurchaseOLD(details);
           payPalPurchase(details);
         }}
         onError = {(err) => {
@@ -337,7 +343,8 @@ const Checkout = props => {
             paypalSuccess: false,
             error: err
           });
-          onlyShowPurchaseConfirmation();
+          //onlyShowPurchaseConfirmation();
+          setDisplay("paypal")
         }}
         options={{
           clientId: eventDetails.gatewayClientID,
@@ -350,46 +357,91 @@ const Checkout = props => {
             paypalSuccess: false,
             error: err
           });
-          onlyShowPurchaseConfirmation();
+          //onlyShowPurchaseConfirmation();
+          setDisplay("paypal")
         }}
       />
     </div>
   );
-
+  // LOOKS GOOD BUT REVIEW LOGIC
   const calculateTimeLeft = () => {
+    let timeElapsed = new Date(orderExpiration) - new Date();
+    let elapsedTime = {
+      days: Math.floor(timeElapsed / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((timeElapsed / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((timeElapsed / 1000 / 60) % 60),
+      seconds: Math.floor((timeElapsed / 1000) % 60)
+    };
+    return elapsedTime;
+  };
+  // LOOKS GOOD BUT REVIEW LOGIC
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
-    let year = new Date().getFullYear();
-    return year;
+  // every 1000 milliseconds === 1 second the timer function runs
+  // when it runs it runs the "timeLeft" hook
+  // this causes the page to refresh which updates the time expired numbers
+  // these numbers are fed by the "calculateTimeLeft()" function  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+  });
+  // LOOKS GOOD BUT REVIEW LOGIC
+  const timeRemaining = () => {
+    if (+new Date(orderExpiration) >= +new Date()) {
+      let twoDigitSec;
+      if (calculateTimeLeft().seconds < 10) {
+        twoDigitSec = "0" + calculateTimeLeft().seconds
+      } else {
+        twoDigitSec = calculateTimeLeft().seconds
+      }
 
+      return (
+        <div style={{fontSize: "16px", textAlign: "center"}}>
+          Ticket reservation expires in{" "}{calculateTimeLeft().minutes}:{twoDigitSec}
+        </div>
+      )
+    } else {
+      let event = JSON.parse(localStorage.getItem("eventNum"));
+      localStorage.removeItem(`cart_${event}`);
+      localStorage.removeItem(`image_${event}`);
+      localStorage.removeItem(`eventNum`);
+      window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+    }
+  }
+  // LOOKS GOOD
+  // determines whether or not to display the purchase amount
+  const totalAmount = show => {
+    if (!show && orderTotals.ticketsPurchased > 0) {
+      return (
+        <div>
+          {orderTotals.currencySym}
+          {orderTotals.finalPurchaseAmount}
+        </div>
+      )
+    } else return null;
+  };
+  // LOOKS GOOD
+  // determines whether or not to display cart and arrow
+  const cartLink = show => {
+    if (!show) {
+      return (
+        <CartLink
+          onClick={switchShowOrderSummary}
+          showStatus={showOrderSummaryOnly}
+          isLoading={display === "spinner"}
+          orderTotals={orderTotals}
+          showDoublePane={showDoublePane}
+        />
+      );
+    } else {
+      return null;
+    }
   };
   
+
   const mainDisplay = () => {
     if (display === "main") {
-      // determines whether or not to display the cart and arrow
-      const cartLink = show => {
-        if (!show) {
-          return (
-            <CartLink
-              onClick={switchShowOrderSummary}
-              showStatus={showOrderSummaryOnly}
-              isLoading={showLoadingSpinner}
-              orderTotals={orderTotals}
-              showDoublePane={showDoublePane}
-            />
-          );
-        } else {
-          return null;
-        }
-      };
-
-      // determines whether or not to display the purchase amount
-      const totalAmount = show => {
-        if (!show && orderTotals.ticketsPurchased > 0) {
-          return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
-        } else {
-          return null;
-        }
-      };
 
       let paymentPane = (
         <Fragment>
@@ -406,9 +458,9 @@ const Checkout = props => {
               </div>
             </div>
             <div style={EventTicketSection}>
-              <span className={classes.TicketType}>Payment Information</span>
+              {timeRemaining()}
               <br></br>
-              Time remaining
+              <span className={classes.TicketType}>Payment Information</span>
               <br></br>
               <span className={classes.TicketTypeSmall}>
                 Select a Payment Method
@@ -492,9 +544,7 @@ const Checkout = props => {
         );
       }
 
-    } else {
-      return null;
-    }
+    } else return null
   }
 
   return (
@@ -502,7 +552,7 @@ const Checkout = props => {
       {loadingSpinner()}
       {mainDisplay()}
       {purchaseConfirmation()}
-      {connectionStatus()}
+      {paypalStatus()}
     </div>
   );
 };

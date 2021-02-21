@@ -1,0 +1,148 @@
+.Modal {
+  position: fixed;
+  z-index: 700;
+  background-color: white;
+  width: 330;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px black;
+  padding: 16px 15px 16px 15px;
+  left: calc(50% - 181px);
+  top: 10%;
+  text-align: center;
+  box-sizing: border-box;
+  transition: all 0.3s ease-out;
+}
+
+.Minimal {
+  display: grid;
+  grid-template-columns: 110px 70px;
+  grid-gap: 10px;
+  border-top: allTotalBorder;
+  font-weight: 600;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-right: 8px;
+  margin-left: 440p;
+}
+
+
+.EventButton {
+  text-align: center;
+  color: blue;
+  font-weight: 600;
+  width: 80px;
+  padding-left: 5px;
+  border: 1px solid white;
+  background-color: white;
+  cursor: pointer;
+  outline: 1px solid white;
+}
+.EventButton:focus {
+  border: 1px solid white;
+  outline: 1px solid white;
+}
+
+.EventArrow {
+  padding-top: 80px;
+  font-size: 42px;
+  border: none;
+  color: lightgrey;
+  text-align: center;
+}
+.EventArrow:hover {
+  color: black;
+}
+
+
+.SubTotal {
+  display: grid;
+  grid-template-columns: 150px 70px;
+  grid-gap: 10px;
+  font-weight: 600;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-left: 400p;
+}
+
+.Total {
+  display: grid;
+  grid-template-columns: 150px 70px;
+  grid-gap: 10px;
+  border-top: 1px solid black;
+  font-weight: 600;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-left: 400p;
+}
+
+.ButtonGrey {
+  height: 40px;
+  width: 160px;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonGreen {
+  height: 40px;
+  width: 160px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:hover {
+  background-color: #007A00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonBlue {
+  height: 40px;
+  width: 160px;
+  background-color: #0000F5;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlue:hover {
+  background-color: #0000CC;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlue:active {
+  background-color: #0000A3;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+@media (min-width: 740px) {
+  .Modal {
+    width: 360px;
+    padding-left: 15px;
+    padding-right: 15px;
+    left: calc(50% - 180px);
+  }
+}

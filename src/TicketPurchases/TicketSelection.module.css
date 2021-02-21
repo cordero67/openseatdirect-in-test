@@ -53,7 +53,7 @@
     color: grey;
     position: relative;
     float: left;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
@@ -65,36 +65,63 @@
     background-color: #f9f9f9;
     border-right: 1px solid lightgrey;
 }
+
+
+  
+.ButtonGrey {
+    height: 40px;
+    width: 150px;
+    background-color: #999999;
+    color: white;
+    border: 1px solid black;
+    outline: none;
+    font-size: 16px;
+  }
+  .ButtonGrey:hover {
+    background-color: #858585;
+    color: white;
+    border: 1px solid black;
+    outline: none;
+  }
+  .ButtonGrey:active {
+    background-color: #707070;
+    color: white;
+    border: 1px solid black;
+    outline: none;
+  }
+
+
 .ButtonGreen {
     height: 40px;
     width: 200px;
-    background-color: #008F00;
+    background-color: #00A300;
     color: #fff;
     border: 1px solid black;
+    outline: none;
 }
 .ButtonGreen:hover {
-    background-color: #006600;
+    background-color: #007A00;
     color: #fff;
     border: 1px solid black;
-    font-weight: 500;
+    outline: none;
 }
 .ButtonGreen:active {
-    background-color: #fff;
-    color: #008F00;
-    border: 2px solid #008F00;
-    font-weight: 600;
+    background-color: #005200;
+    color: #fff;
+    border: 1px solid black;
+    outline: none;
 }
 .ButtonGreenOpac {
     height: 40px;
     width: 200px;
-    background-color: #008F00;
+    background-color: #00A300;
     opacity: 0.3;
-    color: white;
-    font-weight: 400;
-    border: 1px solid grey;
+    color: #fff;
+    border: 1px solid black;
+    outline: none;
 }
 .faShoppingCart {
-    font-size: 30px;
+    font-size: 90px;
     vertical-align: center;
 }
 .faShoppingCart:hover {
@@ -114,6 +141,7 @@
 .EnterPromoCode {
     color: blue;
     width: 140px;
+    padding-bottom: 10px;
 }
 .EnterPromoCode:hover {
     font-weight: 600;
@@ -123,8 +151,11 @@
 .AppliedPromoCode {
     background-color: #EFF8E9;
     padding-top: 5px;
+    padding-bottom: 5px;
     padding-left: 5px;
-    height: 30px;
+    margin-bottom: 10px;
+    height: 40px;
+    vertical-align: center;
 }
 .RemovePromoCode {
     color: blue;
@@ -168,13 +199,14 @@
 }
 .BlankCanvas {
     background-color: #fff;
+    font-size: 20px;
+    line-height: 28px;
+    color: red;
     margin: auto;
     vertical-align: center;
     height: 100vh;
-    padding-top: 30px;
-    padding-left: 15px;
-    padding-right: 15px;
-    text-align: left;
+    padding-top: 80px;
+    text-align: center;
     overflow-y: auto;
     box-sizing: border-box;
 }

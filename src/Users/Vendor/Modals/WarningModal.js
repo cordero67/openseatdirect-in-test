@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./WarningModal.module.css";
 
-const OrderModal = (props) => {
+const WarningModal = (props) => {
 
   const modalContent = () => {
     if (props.type === "orders") {
@@ -33,16 +33,8 @@ const OrderModal = (props) => {
 
   const modalButtons = (
     <button
+      className={classes.ButtonGrey}
       onClick={props.close}
-      style={{
-        border: "1px solid #0000CC",
-        backgroundColor: "#fff",
-        color: "black",
-        fontSize: "14px",
-        width: "150px",
-        height: "40px",
-        fontWeight: "500"
-      }}
     >
       CONTINUE
     </button>
@@ -65,4 +57,4 @@ const OrderModal = (props) => {
   );
 };
 
-export default OrderModal;
+export default WarningModal;

@@ -91,31 +91,32 @@
 }
 
 
+
 .ButtonGreen {
   height: 40px;
   width: calc(100% - 20px);
-  background-color: #008F00;
+  background-color: #00A300;
   color: #fff;
-  font-weight: 500;
   border: 1px solid black;
+  outline: none;
 }
 .ButtonGreen:hover {
-  background-color: #006600;
+  background-color: #007A00;
   color: #fff;
   border: 1px solid black;
-  font-weight: 500;
+  outline: none;
 }
 .ButtonGreen:active {
-  background-color: #fff;
-  color: #008F00;
-  border: 2px solid #008F00;
-  font-weight: 600;
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
 }
 
 .ButtonGreenOpac {
   height: 40px;
   width: calc(100% - 20px);
-  background-color: #008F00;
+  background-color: #00A300;
   opacity: 0.3;
   color: white;
   font-weight: 500;

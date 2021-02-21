@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import { getStartDate } from "../Resources/VendorFunctions";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
-import classes from "./ReceiptModal.module.css";
+import classes from "./BuyerReceiptModal.module.css";
 
 const ReceiptModal = (props) => {
   
@@ -42,14 +42,14 @@ const ReceiptModal = (props) => {
             props.loadPrevious()
           }}
         >
-          PREVIOUS ORDER
+          LOAD PREVIOUS
         </button>
         <button className={classes.ButtonGreen}
           onClick={() => {
             props.loadNext()
           }}
         >
-          NEXT ORDER
+          LOAD NEXT
         </button>
         <button className={classes.ButtonGrey}
           onClick={() => {
@@ -61,24 +61,34 @@ const ReceiptModal = (props) => {
       </div>
     )
   }
-
+  /*
   const ticketsList = () => {
     return (
       props.details.order_ticketItems.map((ticket, index) => {
         console.log("ticket: ", ticket);
 
+        let adjustedTicketName;
+        let num = 40;
+
+        //if (ticket.ticketName.length <= num) {
+          if (true) {
+          adjustedTicketName = ticket.ticketName;
+        } else {
+          adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
+        }
+
         let adjustedPaymentMethod;
 
-        if ("manualPaymentMethod" in ticket && parseFloat(ticket.unit_price).toFixed(2) !== "0.00") {
+        if ("manualPaymentMethod" in  ticket && parseFloat(ticket.unit_price).toFixed(2) !== "0.00") {
           adjustedPaymentMethod = ticket.manualPaymentMethod;
-        } else if ("manualPaymentMethod" in ticket) {
+        } else if ("manualPaymentMethod" in  ticket) {
           adjustedPaymentMethod = "comp"
         } else {
           adjustedPaymentMethod = "PayPal Express"
         }
 
         return (
-          <Fragment key={index}>
+          <Fragment>
             <div
               style={{
                 display: "grid",
@@ -89,7 +99,7 @@ const ReceiptModal = (props) => {
                 paddingTop: "10px"
               }}
             >
-              <div style={{textAlign: "left"}}>{ticket.ticketName}</div>
+              <div style={{textAlign: "left"}}>{adjustedTicketName}</div>
               <div style={{textAlign: "center"}}>{ticket.qty}</div>
               <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.unit_price).toFixed(2)}</div>
               <div style={{textAlign: "left", paddingLeft: "10px"}}>{adjustedPaymentMethod}</div>
@@ -100,12 +110,12 @@ const ReceiptModal = (props) => {
       })
     )
   }
-
+  */
+ /*
   const paymentTypeTotals = () => {
     console.log("tickets: ", props.details.tickets)
 
     props.details.order_ticketItems.forEach((ticket, index) => {
-      console.log("TICKET: ", ticket)
 
       let adjustedPaymentMethod;
   
@@ -136,7 +146,7 @@ const ReceiptModal = (props) => {
         otherTotal += ticket.item_total_price;
       }
     })
-
+  
     let allTotalBorder = classes.Total;
 
     console.log("allTotal: ", allTotal)
@@ -226,7 +236,7 @@ const ReceiptModal = (props) => {
       </Fragment>
     )
   }
-
+*/
   return (
     <Fragment>
       <Backdrop show={props.show}></Backdrop>
@@ -332,9 +342,9 @@ const ReceiptModal = (props) => {
             paddingBottom: "10px"
             }}
           >
-          {ticketsList()}
+          {/*ticketsList()*/}
         </div>
-        <div>{paymentTypeTotals()}</div>
+        <div>{/*paymentTypeTotals()*/}</div>
         <br></br>
 
         {modalButtons()}

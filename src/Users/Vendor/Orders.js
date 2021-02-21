@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import { API } from "../../config";
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,27 +15,6 @@ import { Button, Popup } from "semantic-ui-react";
 
 
 let vendorInfo = {};
-
-let ordersArray = [
-    {
-        event: "OSD Launch Party",
-        firstName: "Robert",
-        lastName: "Montgomery",
-        email: "robertmontgomery@openseatdirect.com",
-        orderDate: "Sep 19, 2020",
-        tickets: 4,
-        amount: 24.50
-    },
-    {
-        event: "Hoboken Sack Race",
-        firstName: "Michael",
-        lastName: "Trautman",
-        email: "sally@ailf.com",
-        orderDate: "Sep 19, 2020",
-        tickets: "2",
-        amount: "45.00"
-    }
-]
 
 const Orders = (props) => {
 

@@ -8,7 +8,6 @@ import RadioForm from './RadioForm';
 
 import classes from './EventCreation.module.css';
 
-
 const TicketType = (props) => {
 
     //const additionalSettings = ticket => {

@@ -12,7 +12,6 @@ import { API } from "../config";
 
 
 
-
 import SavedModal from "./Modals/SavedModal";
 import EventDetails from "./Components/EventDetails";
 import TicketCreation from "./TicketCreation";
@@ -550,7 +549,10 @@ const CreateEvent = (props) => {
           <SavedModal
             show={true}
             details={eventStatus}
-            editEvent={() => {
+            toDashboard={() => {
+              window.location.href = `/vendor`;
+            }}
+            closeModal={() => {
               let tempStatus = { ...eventStatus };
               tempStatus.status = "";
               setEventStatus(tempStatus);

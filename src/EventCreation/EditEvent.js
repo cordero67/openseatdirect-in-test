@@ -19,7 +19,6 @@ import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./Components/AdditionalSettings";
 
 import classes from "./EditEvent.module.css";
-import { Button } from "semantic-ui-react";
 
 // holds sign-in information
 let vendorInfo = {};
@@ -463,9 +462,15 @@ const EventEdit = (props) => {
               formData.append(
                 `tickets[${index}][priceFunction][args][promocodes][${number}][name]`, item.name
               );
-              formData.append(
-                `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`, item.amount
-              );
+              if (item.percent) {
+                formData.append(
+                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`, item.amount/100
+                );
+              } else {
+                formData.append(
+                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`, item.amount
+                );
+              }
               formData.append(
                 `tickets[${index}][priceFunction][args][promocodes][${number}][percent]`, item.percent
               );

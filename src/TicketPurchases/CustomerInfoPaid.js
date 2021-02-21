@@ -27,6 +27,8 @@ import classes from "./CustomerInfo.module.css";
 let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
+let osdOrderId;
+let orderExpiration;
 
 // defines an event's image
 let eventLogo = "";
@@ -54,9 +56,9 @@ const CustomerInfo = props => {
 
   // defines contact information to be sent to server
   const [guestInformation, setGuestInformation] = useState({
-    guestFirstname: "",
-    guestLastname: "",
-    guestEmail: ""
+    firstname: "",
+    lastname: "",
+    email: ""
   });
 
 
@@ -86,6 +88,8 @@ const CustomerInfo = props => {
         eventDetails = tempCart.eventDetails;
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
+        osdOrderId = tempCart.osdOrderId;
+        orderExpiration = tempCart.orderExpiration;
         if('guestInfo' in tempCart) {
           setGuestInformation(tempCart.guestInfo);
           console.log("guestInfo: ", tempCart.guestInfo)
@@ -137,10 +141,10 @@ const CustomerInfo = props => {
   const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   
   let detailsMinimal = () => {
-    if(guestInformation.guestFirstname
-      && guestInformation.guestLastname
-      && guestInformation.guestEmail
-      && regsuper.test(guestInformation.guestEmail)) {
+    if(guestInformation.firstname
+      && guestInformation.lastname
+      && guestInformation.email
+      && regsuper.test(guestInformation.email)) {
       return true
     } else {
       return false
@@ -324,6 +328,7 @@ const CustomerInfo = props => {
   const loadCustomerInfo = () => {
     if (typeof window !== "undefined" && localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
       let user = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+      console.log("user: ", user)
       user.guestInfo = guestInformation;
       localStorage.setItem(
         `cart_${eventDetails.eventNum}`,
@@ -351,6 +356,62 @@ const CustomerInfo = props => {
 
 
 
+
+  const calculateTimeLeft = () => {
+    let timeElapsed = new Date(orderExpiration) - new Date();
+
+    let elapsedTime = {
+      days: Math.floor(timeElapsed / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((timeElapsed / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((timeElapsed / 1000 / 60) % 60),
+      seconds: Math.floor((timeElapsed / 1000) % 60)
+    };
+
+    return elapsedTime;
+
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  // every 1000 milliseconds === 1 second the timer function runs
+  // when it runs it runs the "timeLeft" hook
+  // this causes the page to refresh which updates the time expired numbers
+  // these numbers are fed by the "calculateTimeLeft()" function  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+  });
+
+  const timeRemaining = () => {
+    if (+new Date(orderExpiration) >= +new Date()) {
+      let twoDigitSec;
+      if (calculateTimeLeft().seconds < 10) {
+        twoDigitSec = "0" + calculateTimeLeft().seconds
+      } else {
+        twoDigitSec = calculateTimeLeft().seconds
+      }
+  
+      return (
+        <div style={{fontSize: "16px", textAlign: "center", paddingBottom: "10px"}}>
+          Ticket reservation expires in{" "}{calculateTimeLeft().minutes}:{twoDigitSec}
+        </div>
+      )
+    } else {
+      let event = JSON.parse(localStorage.getItem("eventNum"));
+      localStorage.removeItem(`cart_${event}`);
+      localStorage.removeItem(`image_${event}`);
+      localStorage.removeItem(`eventNum`);
+      window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+
+      return (
+        <div style={{fontSize: "16px", textAlign: "center", paddingBottom: "10px"}}>
+          Ticket reservation has expired.
+        </div>
+      )
+    }
+  }
+
   const mainDisplay = () => {
     if (display === "main") {
 
@@ -366,12 +427,10 @@ const CustomerInfo = props => {
             showDoublePane={showDoublePane}
           />
         );
-      } else {
-        return null;
-      }
+      } else return null;
     };
 
-  // determines whether or not to display the purchase amount
+    // determines whether or not to display the purchase amount
     const totalAmount = show => {
       if (!show && orderTotals.ticketsPurchased > 0) {
         return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
@@ -395,7 +454,8 @@ const CustomerInfo = props => {
         </div>
 
         <div style={EventTicketSection}>
-          <div className={classes.TicketType}>Contact Information (PAID)</div>
+          {timeRemaining()}
+          <div className={classes.TicketType}>Contact Information</div>
           <div style={{paddingBottom: "20px"}}>
             Continue as Guest or{" "}
             <button

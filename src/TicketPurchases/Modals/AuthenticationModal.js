@@ -1,10 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Redirect, Link } from "react-router-dom";
 
 import { API } from "../../config";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import Backdrop from "./Backdrop";
 import classes from "./AuthenticationModal.module.css";
@@ -39,9 +35,9 @@ const Authentication = (props) => {
 
   const getStatus= (user) => { 
     if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status
+      return user.accountId.status
     } else {
-        return 0;
+      return 0;
     } 
   }
   
@@ -129,7 +125,7 @@ const Authentication = (props) => {
     let fetchBody ={
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body:JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
     console.log("Information: ", information)
@@ -343,6 +339,48 @@ const Authentication = (props) => {
     .then ((data)=>{
       console.log ("fetch return got back data:", data);
       handlePassword(data)
+    })
+    .catch ((error)=>{
+      console.log("freeTicketHandler() error.message: ", error.message);
+      setSubmissionStatus({
+        message: "Server is down, please try later",
+        error: true
+      });
+      setModalSetting("error")
+    })
+  }
+  // LOOKS GOOD
+  const submitExpired = () => {
+    console.log("values: ", values)
+    setSubmissionStatus({
+      message: "",
+      error: false
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/signup1_email`;
+    let information = {
+      email: email,
+      vendorIntent: props.vendorIntent
+    }
+    let fetchBody ={
+      method: "POST",
+      headers: myHeaders,
+      body:JSON.stringify (information),
+    };
+    console.log("url: ", url)
+    console.log("fetcharg: ", fetchBody)
+
+    fetch(url, fetchBody )
+    .then(handleErrors)
+    .then ((response)=>{
+      console.log ("then response: ", response);
+      return response.json()})
+    .then ((data)=>{
+      console.log ("fetch return got back data:", data);
+      console.log("ALL GOOD")
+      handleExpired(data)
     })
     .catch ((error)=>{
       console.log("freeTicketHandler() error.message: ", error.message);
@@ -627,6 +665,24 @@ const Authentication = (props) => {
       console.log("SUCCESS")
       setModalSetting("username")
     } else {
+      if (data.code === 202){
+        console.log("Status 202 Error")
+        setModalSetting("expired")
+      } else {
+        setSubmissionStatus({
+          message: data.error,
+          error: true
+        });
+        console.log("ERROR: ", data.error)
+      }
+    }
+  }
+  const handleExpired = (data) => {
+    if (data.status) {
+      //resetValues();
+      console.log("SUCCESS");
+      setModalSetting("confirmation");
+    } else {
       setSubmissionStatus({
         message: data.error,
         error: true
@@ -658,7 +714,6 @@ const Authentication = (props) => {
       });
       console.log("SUCCESS")
       props.submit();
-
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -970,6 +1025,32 @@ const Authentication = (props) => {
     </Fragment>
   );
 
+  const expiredForm = (
+    <Fragment>
+      <div style={{width: "100%", paddingBottom: "10px", fontSize: "16px"}}>
+        Would you still like to set your password?
+      </div>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.OSDBlueButton}
+          onClick={() => {
+            submitExpired();
+        }}>
+          YES RESEND CODE
+        </button>
+      </div>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            closeModal();
+        }}>
+          NOT AT THIS TIME
+        </button>
+      </div>
+    </Fragment>
+  );
+
   // LOOKS GOOD
   const errorForm = (
     <Fragment>
@@ -1203,9 +1284,7 @@ const Authentication = (props) => {
           </div>
         </div>
       )
-    } else {
-      return null
-    }
+    } else return null
   }
 
   // LOOKS GOOD
@@ -1265,6 +1344,22 @@ const Authentication = (props) => {
     } else {
       return null
     }
+  }
+
+  const expiredDisplay = () => {
+    if (modalSetting === "expired") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>Time expired</div>
+          </div>
+          <div>
+            {showError()}
+            {expiredForm}
+          </div>
+        </div>
+      )
+    } else return null
   }
 
   // LOOKS GOOD
@@ -1342,6 +1437,7 @@ const Authentication = (props) => {
         {signUpDisplay()}
         {confirmationDisplay()}
         {passwordDisplay()}
+        {expiredDisplay()}
         {usernameDisplay()}
         {errorDisplay()}
       </div>

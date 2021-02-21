@@ -17,7 +17,7 @@ let eventDetails;
 // defines an event's image
 let eventLogo;
 
-const EventDetail = props => {
+const EventDetail = () => {
   // defines data loading control variables
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
   const [isSuccessfull, setIsSuccessfull] = useState(true);
@@ -261,29 +261,46 @@ const EventDetail = props => {
     }
   };
 
+  const ticketButton = () => {
+    console.log("eventDetails.tickets")
+    if(eventDetails.tickets.length >= 0 && eventDetails.tickets.length > 0) {
+      return (
+        <div className={styles.ButtonContainer}>
+          <button 
+            onClick={ticketsHandler}
+            className={styles.ButtonGreen}
+          >
+            FIND TICKETS
+          </button>
+        </div>
+      )
+    } else {
+      return (
+        <div className={styles.ButtonContainer}>
+          <button 
+            disabled={true}
+            className={styles.ButtonGreenOpac}
+          >
+            FIND TICKETS
+          </button>
+        </div>
+      )
+    }
+  }
+
   const ticketDisplay = () => {
     if (!showLargerDoublePane) {
       return (
         <div className={styles.TicketGrid}>
           <div className={styles.PriceRange}>{ticketPriceRange()}</div>
-          <div className={styles.ButtonContainer}>
-            <button 
-              onClick={ticketsHandler}
-              className={styles.ButtonGreen}
-              >FIND TICKETS</button>
-          </div>
+          {ticketButton()}
         </div>
       )
     } else {
       return (
         <div className={styles.TicketGrid}>
           <div className={styles.PriceRange}>{ticketPriceRange()}</div>
-          <div className={styles.ButtonContainer}>
-            <button
-              onClick={ticketsHandler}
-              className={styles.ButtonGreen}
-            >FIND TICKETS</button>
-          </div>
+          {ticketButton()}
         </div>
       )
     }

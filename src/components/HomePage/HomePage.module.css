@@ -3,17 +3,13 @@
   padding-top: 60px;
 }
 
-
-
 .TopContainerLarge {
   color: #fff;
-  background-color: #0B1423;
+  background-color: #000;
   font-family: Helvetica, sans-serif;
   /*height: calc(100vw * (440/650));*/
   height: calc(100vw/2 - 8px);
 }
-
-
 
 .BlankCanvas {
   background-color: white;
@@ -39,7 +35,7 @@
 @media (min-width: 650px) {
   .TopContainerLarge {
     color: #fff;
-    background-color: #0B1423;
+    background-color: #000;
     font-family: Helvetica, sans-serif;
     height: 440px;
   }
@@ -48,7 +44,7 @@
 @media (min-width: 900px) {
   .TopContainerLarge {
     color: #fff;
-    background-color: #0B1423;
+    background-color: #000;
     font-family: Helvetica, sans-serif;
     height: calc(100vw/2 - 8px);
   }
@@ -57,7 +53,7 @@
 @media (min-width: 1200px) {
   .TopContainerLarge {
     color: #fff;
-    background-color: #0B1423;
+    background-color: #000;
     font-family: Helvetica, sans-serif;
     height: 600px;
     padding-left: calc(50vw - 605px);

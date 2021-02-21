@@ -109,17 +109,20 @@ export const loadEventInfo = (eventTix) => {
             tempPromoCodes = tix.priceFunction.args.promocodes;  
             tempPromoCodes.map((promo, index) => {
               let tempPercent;
+              let tempAmount;
               if ("percent" in promo && promo.percent === "true") {
                 tempPercent = true;
+                tempAmount = promo.amount * 100;
                 console.log("percent is true");
               } else {
                 tempPercent = false;
+                tempAmount = promo.amount;
                 console.log("percent is false");
               }
               let element = {
                 key: index,
                 name: promo.name,
-                amount: promo.amount,
+                amount: tempAmount,
                 percent: tempPercent,
               };
               tempPromoCodesArray.push(element);

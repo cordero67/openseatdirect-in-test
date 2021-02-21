@@ -11,7 +11,7 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 
 const TicketSales = (props) => {
   const [display, setDisplay] = useState("spinner"); //main, spinner
-  const [modalView, setModalView] = useState(false);
+  const [modalView, setModalView] = useState(false) // defines appearance of ReceiptModal
 
   const [eventOrders, setEventOrders] = useState([]);
   const [selectedEventTitle, setSelectedEventTitle] = useState("");
@@ -27,7 +27,7 @@ const TicketSales = (props) => {
         localStorage.getItem(`orders`) !== null &&
         localStorage.getItem(`events`) !== null &&
         localStorage.getItem(`eventNum`) !== null
-        ) {
+      ) {
         let storedEvents = JSON.parse(localStorage.getItem("events"));
         let storedOrders = JSON.parse(localStorage.getItem("orders"));
         let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
@@ -121,19 +121,20 @@ const TicketSales = (props) => {
                 <div style={{textAlign: "left"}}>{shortDateTime}</div>
                 <div style={{textAlign: "left"}}>{item.order_lastName},{" "}{item.order_firstName}</div>
                 <div style={{textAlign: "left"}}>{item.order_email}</div>
-                <div>{item.order_numTickets}</div>
-                <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount.toFixed(2)}</div>
-                <div style={{ fontSize: "22px", textAlign: "center" }}>          
-                  <FontAwesomeIcon
-                    color="blue"
-                    size="sm"
-                    cursor="pointer"
+                <div>{item.order_qrTickets.length}</div>
+                <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount}</div>
+                <div style={{ fontSize: "22px", textAlign: "center" }}>
+                  
+                <button className={classes.EventButton}>
+                  <ion-icon
+                    style={{fontSize: "24px", color: "blue"}}
+                    name="receipt-outline"
                     onClick={() => {
-                      setSelectedOrder(item)
-                      setModalView(true)
+                      setSelectedOrder(item);
+                      setModalView(true);
                     }}
-                    icon={faReceipt}
                   />
+                </button>
                 </div>
               </div>
             );
@@ -251,7 +252,7 @@ const TicketSales = (props) => {
         <div style={{textAlign: "center"}}>
           <button 
             className={classes.SortButton}
-            name="order_numTickets"
+            name="order_qty"
             onClick={(e) => {updateValues(e.target.name)}}
           >
             Tickets

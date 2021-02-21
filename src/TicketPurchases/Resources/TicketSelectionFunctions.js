@@ -49,6 +49,7 @@ export const loadEventDetails = event => {
     locationNote: event.locationNote,
     tbaInformation: event.tbaInformation,
     webinarLink: event.webinarLink,
+    vanityLink: event.vanityLink,
     onlineInformation: event.onlineInformation,
     forSale: ticketStatus, 
   };
@@ -61,7 +62,6 @@ export const loadEventDetails = event => {
 // initial definition of "ticketInfo"
 export const loadTicketInfo = event => {
   let tempTicketArray = [];
-  
   event.tickets.forEach((item, index) => {
     let tempCurrency = "$";
     if (item.Currency === "JPY") {
@@ -266,6 +266,7 @@ export const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "ticketInfo" based on changes to promo code
 export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
+  console.log("inside amendTicket")
   let tempTicketInfo = [...ticketInfo];
   // checks if ticket type has the code and then extracts and applies the discount amount
   tempTicketInfo.forEach(item => {
@@ -276,7 +277,7 @@ export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
             item.adjustedTicketPrice = item.ticketPrice - element.amount;
             item.ticketPricingCodeApplied = inputtedPromoCode;
           } else {
-            item.adjustedTicketPrice = parseFloat((item.ticketPrice * (1 - element.amount/100)).toFixed(2));
+            item.adjustedTicketPrice = parseFloat((item.ticketPrice * (1 - (element.amount))).toFixed(2));
           }
           item.ticketPricingCodeApplied = inputtedPromoCode;
         }
