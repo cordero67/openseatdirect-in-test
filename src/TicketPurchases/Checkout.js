@@ -269,6 +269,7 @@ const Checkout = props => {
             <br></br>
             Please try again later.
           </div>
+          <button>Continue</button>
         </div>
       )
     } else {

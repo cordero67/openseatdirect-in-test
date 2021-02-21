@@ -28,7 +28,7 @@ const Onboarding = (props) => {
         accountEmail: "",
         accountPhone: "",
         accountUrl: "",
-        ticketPlan: "",
+        ticketPlan: "tbd",
         inputError: "",
         paypal_plan_id: "P-38K11886GW041664JL5JHRNA", // default value is production quarterly plan
         paypal_plan_id_full: "",
@@ -658,6 +658,86 @@ const Onboarding = (props) => {
         )
     }
 
+    const ticketPageButton = () => {
+        console.log("eventDetails.tickets")
+        if (ticketPlan === "free") {
+          return (
+            <button
+                className={classes.ButtonGreen}
+                onClick={() => {
+                    let url=  `${API}/account/${props.userid}`;
+                    let fetcharg ={
+                        method: "PATCH",
+                        headers: myHeaders,
+                        body:JSON.stringify({
+                            ticketPlan: ticketPlan
+                        }),
+                    };
+                    console.log("fetching with: ", url, fetcharg);
+                    fetch(url, fetcharg )
+                    .then(handleErrors)
+                    .then ((response)=>{
+                        console.log ("then response: ", response);
+                        return response.json()})
+                    .then ((data)=>{
+                        console.log ("fetch return got back data on Free ticket:", data);
+                
+                        let tempData = JSON.parse(localStorage.getItem("user"));
+                        console.log("tempData: ", tempData)
+                        tempData.user.accountId = data.result;
+                        localStorage.setItem("user", JSON.stringify(tempData));
+
+                        if (data.status){
+                            switch (data.result.status){
+                                case(4): 
+                                case(5):    setPageView("ticket"); break;
+                                case(6):    setPageView("payment");break;
+                                case(7):    setPageView("completed");break;
+                                case(8):    setPageView("completed");break;
+                                case(0):
+                                default:    setPageView("summary");
+                            }
+                        } else {
+                                // this is a frieldly error
+                                let errmsg = "There was a error. please retry";
+                                if (data.message){
+                                        errmsg = data.message;
+                                };
+                        };
+                    })
+                    .catch ((err)=>{
+                        setPreFetchView(pageView);
+                        console.log (err);
+                        setPageView("error");
+                    });
+                }}
+            >
+                SUBMIT YOUR TICKET PLAN SELECTION
+            </button>
+          )
+        } else if (ticketPlan === "basicPaidQuarter") {
+            return (
+                <button
+                    className={classes.ButtonGreen}
+                    onClick={() => {
+                        setPageView("payment");
+                    }}
+                >
+                    SUBMIT YOUR TICKET PLAN SELECTION
+                </button>
+            )
+        } else {
+            return (
+                <button
+                    className={classes.ButtonGreenOpac}
+                >
+                    SUBMIT YOUR TICKET PLAN SELECTION
+                </button>
+
+            )
+        }
+    }
+
     const ticketPage =()=>{
         return (
             <div className={classes.DisplayPanel}>
@@ -691,62 +771,7 @@ const Onboarding = (props) => {
                         <br></br>
                         <br></br>
                         <div style={{textAlign: "center", width: "420px", height: "85px", paddingLeft: "1px"}}>
-                            <button className={classes.ButtonGreen}
-                                disabled={ticketPlan === "tbd"}
-                                onClick={() => {
-                                    if (ticketPlan === "free") {
-                                        let url=  `${API}/account/${props.userid}`;
-                                        let fetcharg ={
-                                            method: "PATCH",
-                                            headers: myHeaders,
-                                            body:JSON.stringify({
-                                                ticketPlan: ticketPlan
-                                            }),
-                                        };
-                                        console.log("fetching with: ", url, fetcharg);
-                                        fetch(url, fetcharg )
-                                        .then(handleErrors)
-                                        .then ((response)=>{
-                                            console.log ("then response: ", response);
-                                            return response.json()})
-                                        .then ((data)=>{
-                                            console.log ("fetch return got back data on Free ticket:", data);
-                                    
-                                            let tempData = JSON.parse(localStorage.getItem("user"));
-                                            console.log("tempData: ", tempData)
-                                            tempData.user.accountId = data.result;
-                                            localStorage.setItem("user", JSON.stringify(tempData));
-
-                                            if (data.status){
-                                                switch (data.result.status){
-                                                    case(4): 
-                                                    case(5):    setPageView("ticket"); break;
-                                                    case(6):    setPageView("payment");break;
-                                                    case(7):    setPageView("completed");break;
-                                                    case(8):    setPageView("completed");break;
-                                                    case(0):
-                                                    default:    setPageView("summary");
-                                                }
-                                            } else {
-                                                    // this is a frieldly error
-                                                    let errmsg = "There was a error. please retry";
-                                                    if (data.message){
-                                                            errmsg = data.message;
-                                                    };
-                                            };
-                                        })
-                                        .catch ((err)=>{
-                                            setPreFetchView(pageView);
-                                            console.log (err);
-                                            setPageView("error");
-                                        });
-                                    } else {
-                                        setPageView("payment");
-                                    }
-                                }}
-                            >
-                                SUBMIT YOUR TICKET PLAN SELECTION
-                            </button>
+                            {ticketPageButton()}
                         </div>
                     </div>
                 </div>

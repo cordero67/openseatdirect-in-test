@@ -500,3 +500,15 @@
   border: 1px solid black;
   outline: none;
 }
+
+
+.ButtonGreenOpac {
+  height: 40px;
+  width: 424px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 14px;
+  opacity: 0.3;
+}
