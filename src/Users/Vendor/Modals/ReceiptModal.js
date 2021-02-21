@@ -42,14 +42,14 @@ const ReceiptModal = (props) => {
             props.loadPrevious()
           }}
         >
-          LOAD PREVIOUS
+          PREVIOUS ORDER
         </button>
         <button className={classes.ButtonGreen}
           onClick={() => {
             props.loadNext()
           }}
         >
-          LOAD NEXT
+          NEXT ORDER
         </button>
         <button className={classes.ButtonGrey}
           onClick={() => {
@@ -67,28 +67,18 @@ const ReceiptModal = (props) => {
       props.details.order_ticketItems.map((ticket, index) => {
         console.log("ticket: ", ticket);
 
-        let adjustedTicketName;
-        let num = 40;
-
-        //if (ticket.ticketName.length <= num) {
-          if (true) {
-          adjustedTicketName = ticket.ticketName;
-        } else {
-          adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
-        }
-
         let adjustedPaymentMethod;
 
-        if ("manualPaymentMethod" in  ticket && parseFloat(ticket.unit_price).toFixed(2) !== "0.00") {
+        if ("manualPaymentMethod" in ticket && parseFloat(ticket.unit_price).toFixed(2) !== "0.00") {
           adjustedPaymentMethod = ticket.manualPaymentMethod;
-        } else if ("manualPaymentMethod" in  ticket) {
+        } else if ("manualPaymentMethod" in ticket) {
           adjustedPaymentMethod = "comp"
         } else {
           adjustedPaymentMethod = "PayPal Express"
         }
 
         return (
-          <Fragment>
+          <Fragment key={index}>
             <div
               style={{
                 display: "grid",
@@ -99,7 +89,7 @@ const ReceiptModal = (props) => {
                 paddingTop: "10px"
               }}
             >
-              <div style={{textAlign: "left"}}>{adjustedTicketName}</div>
+              <div style={{textAlign: "left"}}>{ticket.ticketName}</div>
               <div style={{textAlign: "center"}}>{ticket.qty}</div>
               <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.unit_price).toFixed(2)}</div>
               <div style={{textAlign: "left", paddingLeft: "10px"}}>{adjustedPaymentMethod}</div>
@@ -115,6 +105,7 @@ const ReceiptModal = (props) => {
     console.log("tickets: ", props.details.tickets)
 
     props.details.order_ticketItems.forEach((ticket, index) => {
+      console.log("TICKET: ", ticket)
 
       let adjustedPaymentMethod;
   

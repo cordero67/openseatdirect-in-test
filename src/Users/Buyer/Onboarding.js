@@ -123,10 +123,10 @@ const Onboarding = (props) => {
                 name: "$50 annually: discounted",
                 id: "P-0CX6745565737532ML5JHRNQ"
             },
-            // NEEDS TO BE UPDATED
+            // THIS HAS BEEN UPDATED
             yearFreeDiscount: {
                 name: "$70 annually (first year free)",
-                id: "P-0CX6745565737532ML5JHRNQ"
+                id: "P-63K58503XA985310EMAYZN3Y"
             },
             // OSD Production Client ID
             clientId: "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k"
@@ -1341,6 +1341,7 @@ const Onboarding = (props) => {
             return <Spinner />;
         }
     }
+
     return (
         <div>
             <div className={classes.DisplayPanelTitle}>

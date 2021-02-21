@@ -33,7 +33,7 @@ const BuyerAccount = () => {
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       console.log("tempUser: ", tempUser)
-      if ("askAgain" in tempUser.user && tempUser.user.askAgain === true) {
+      if ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true) {
         setPaneView("onboarding")
       }
       if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {

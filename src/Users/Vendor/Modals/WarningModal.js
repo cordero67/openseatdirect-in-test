@@ -33,16 +33,8 @@ const WarningModal = (props) => {
 
   const modalButtons = (
     <button
+      className={classes.ButtonGrey}
       onClick={props.close}
-      style={{
-        border: "1px solid #0000CC",
-        backgroundColor: "#fff",
-        color: "black",
-        fontSize: "14px",
-        width: "150px",
-        height: "40px",
-        fontWeight: "500"
-      }}
     >
       CONTINUE
     </button>

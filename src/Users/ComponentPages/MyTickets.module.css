@@ -354,13 +354,15 @@
 }
 
 .BlankCanvas {
-  background-color: #E7E7E7;
-  margin: auto;
-  width: 500px;
-  padding-top: 30px;
+  background-color: #fff;
+  margin: 0px;
+  width: 1030px;
+  padding-top: 100px;
   padding-left: 80px;
   padding-right: 80px;
-  text-align: left;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -584,28 +586,4 @@
   width: 660px;
   border: 0.5px solid grey;
   padding-left: 10px
-}
-
-/*
-.SystemDownMessage {
-  z-index: 200;
-  position: fixed;
-  top: 195px;
-  text-align: center;
-  background-color: #fff;
-  color: red;
-  height: calc(100vh - 255px);
-  width: 1030px;
-  font-size: 20px;
-  font-weight: 400;
-  padding-top: 40px;
-}
-*/
-
-
-.ConnectionText {
-  text-align: center;
-  font-size: 16px;
-  font-weight: 600;
-  padding-top: 30px;
 }

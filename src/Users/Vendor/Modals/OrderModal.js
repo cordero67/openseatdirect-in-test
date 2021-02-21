@@ -87,7 +87,7 @@ const OrderModal = (props) => {
     return (
       props.details.tickets.map((ticket, index) => {
         console.log("ticket: ", ticket);
-
+        /*
         let adjustedTicketName;
         let num = 40;
 
@@ -96,7 +96,7 @@ const OrderModal = (props) => {
         } else {
           adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
         }
-
+        */
         return (
           <Fragment
           key={index}>
@@ -106,11 +106,11 @@ const OrderModal = (props) => {
                 gridTemplateColumns: "260px 80px 70px 110px 70px",
                 gridGap: "10px",
                 width: "630px",
-                height: "28px",
+                height: "auto",
                 paddingTop: "10px"
               }}
             >
-              <div style={{textAlign: "left"}}>{adjustedTicketName}</div>
+              <div style={{textAlign: "left"}}>{ticket.ticketName}</div>
               <div style={{textAlign: "center"}}>{ticket.numTickets}</div>
               <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.chargedPrice).toFixed(2)}</div>
               {parseFloat(ticket.chargedPrice).toFixed(2) !== "0.00" ?

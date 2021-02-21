@@ -76,7 +76,7 @@ const Account = (props) => {
   return (
     <div>
       <div className={classes.DisplayPanelTitle}>
-        ACCOUNT SETTINGS
+        Account Settings
       </div>
       <div className={classes.DisplayPanel}>
         <div>First Name:{" "}{isLoading ? null : userInfo.firstname}</div>

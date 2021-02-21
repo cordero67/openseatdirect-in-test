@@ -121,8 +121,8 @@ const TicketSales = (props) => {
                 <div style={{textAlign: "left"}}>{shortDateTime}</div>
                 <div style={{textAlign: "left"}}>{item.order_lastName},{" "}{item.order_firstName}</div>
                 <div style={{textAlign: "left"}}>{item.order_email}</div>
-                <div>{item.order_qty}</div>
-                <div style={{textAlign: "right", paddingRight: "20px"}}>{item.totalReserveAmount}</div>
+                <div>{item.order_qrTickets.length}</div>
+                <div style={{textAlign: "right", paddingRight: "20px"}}>{item.order_totalAmount}</div>
                 <div style={{ fontSize: "22px", textAlign: "center" }}>
                   
                 <button className={classes.EventButton}>

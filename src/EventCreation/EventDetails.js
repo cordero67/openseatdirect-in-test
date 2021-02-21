@@ -186,14 +186,14 @@ const EventDetails = (props) => {
                     <div className={classes.InputBoxTight}>
                         <input
                             className={classes.InputBoxContent}
-                            style={{ width: "600px" }}
+                            style={{ width: "600px", color: "#FF5F5C" }}
                             onFocus={() => setEventLocationWarning(true)}
                             onBlur={() => setEventLocationWarning(false)}
                             type="text"
                             id="locationVenueName"
                             maxLength="140"
                             name="locationVenueName"
-                            placeholder="Venue Name: limit 140 characters"
+                            placeholder="Venue Name: limit 140 characterss"
                             value={props.event.locationVenueName}
                             onChange={(event) => {
                                 props.change(event);

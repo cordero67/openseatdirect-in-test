@@ -339,122 +339,119 @@ const MyTickets = () => {
 
   // LOOKS GOOD
   // defines main display with ticket and order panes
-  const mainDisplay = () => {
-    if (display === "orders") {
-        return (
-            
-            <Fragment>
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "140px 80px 500px 60px 70px 80px",
-                        gridGap: "10px",
-                        position: "fixed",
-                        top: "140px",
-                        height: "30px",
-                        width: "1030px",
-                        backgroundColor: "#e7e7e7",
-                        borderTop: "1px solid lightgrey",
-                        borderBottom: "1px solid lightgrey",
-                        fontWeight: "600",
-                        verticalAlign: "center",
-                        paddingTop: "5px",
-                        paddingLeft: "20px",
-                        paddingRight: "20px"
-                    }}
-                >
-                    <div>Order Date</div>
-                    <div>Image</div>
-                    <div>Event</div>
-                    <div style={{textAlign: "center"}}>Tickets</div>
-                    <div style={{textAlign: "center"}}>Total</div>
-                    <div style={{textAlign: "center"}}>Receipt</div>
-                </div>
-                <div className={classes.DisplayPanel}>
-                    {orderItems()}
-                </div>
-            </Fragment>
-        )
-    } else if (display === "future") {
-        return (
-            <Fragment>
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "60px 80px 500px 60px 80px",
-                        gridGap: "10px",
-                        position: "fixed",
-                        top: "140px",
-                        height: "30px",
-                        width: "1030px",
-                        backgroundColor: "#e7e7e7",
-                        borderTop: "1px solid lightgrey",
-                        borderBottom: "1px solid lightgrey",
-                        fontWeight: "600",
-                        verticalAlign: "center",
-                        paddingTop: "5px",
-                        paddingLeft: "20px",
-                        paddingRight: "20px"
-                    }}
-                >
-                    <div style={{textAlign: "center"}}>Date</div>
-                    <div>Image</div>
-                    <div>Event</div>
-                    <div style={{textAlign: "center"}}>Tickets</div>
-                    <div style={{textAlign: "center"}}>Checkin</div>
-                </div>
-                <div className={classes.DisplayPanel}>
-                    {futureEventItems()}
-                </div>
-            </Fragment>
-        )
-    } else if (display === "past") {
-        return (
-            <Fragment>
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "60px 80px 500px 60px",
-                        gridGap: "10px",
-                        position: "fixed",
-                        top: "140px",
-                        height: "30px",
-                        width: "1030px",
-                        backgroundColor: "#e7e7e7",
-                        borderTop: "1px solid lightgrey",
-                        borderBottom: "1px solid lightgrey",
-                        fontWeight: "600",
-                        verticalAlign: "center",
-                        paddingTop: "5px",
-                        paddingLeft: "20px",
-                        paddingRight: "20px"
-                    }}
-                >
-                    <div style={{textAlign: "center"}}>Date</div>
-                    <div>Image</div>
-                    <div>Event</div>
-                    <div style={{textAlign: "center"}}>Tickets</div>
-                </div>
-                <div className={classes.DisplayPanel}>
-                    {pastEventItems()}
-                </div>
-            </Fragment>
-        )
-    } else return null
-  };
+    const mainDisplay = () => {
+        if (display === "orders") {
+            return (
+                
+                <Fragment>
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "140px 80px 500px 60px 70px 80px",
+                            gridGap: "10px",
+                            position: "fixed",
+                            top: "140px",
+                            height: "30px",
+                            width: "1030px",
+                            backgroundColor: "#e7e7e7",
+                            borderTop: "1px solid lightgrey",
+                            borderBottom: "1px solid lightgrey",
+                            fontWeight: "600",
+                            verticalAlign: "center",
+                            paddingTop: "5px",
+                            paddingLeft: "20px",
+                            paddingRight: "20px"
+                        }}
+                    >
+                        <div>Order Date</div>
+                        <div>Image</div>
+                        <div>Event</div>
+                        <div style={{textAlign: "center"}}>Tickets</div>
+                        <div style={{textAlign: "center"}}>Total</div>
+                        <div style={{textAlign: "center"}}>Receipt</div>
+                    </div>
+                    <div className={classes.DisplayPanel}>
+                        {orderItems()}
+                    </div>
+                </Fragment>
+            )
+        } else if (display === "future") {
+            return (
+                <Fragment>
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "60px 80px 500px 60px 80px",
+                            gridGap: "10px",
+                            position: "fixed",
+                            top: "140px",
+                            height: "30px",
+                            width: "1030px",
+                            backgroundColor: "#e7e7e7",
+                            borderTop: "1px solid lightgrey",
+                            borderBottom: "1px solid lightgrey",
+                            fontWeight: "600",
+                            verticalAlign: "center",
+                            paddingTop: "5px",
+                            paddingLeft: "20px",
+                            paddingRight: "20px"
+                        }}
+                    >
+                        <div style={{textAlign: "center"}}>Date</div>
+                        <div>Image</div>
+                        <div>Event</div>
+                        <div style={{textAlign: "center"}}>Tickets</div>
+                        <div style={{textAlign: "center"}}>Checkin</div>
+                    </div>
+                    <div className={classes.DisplayPanel}>
+                        {futureEventItems()}
+                    </div>
+                </Fragment>
+            )
+        } else if (display === "past") {
+            return (
+                <Fragment>
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "60px 80px 500px 60px",
+                            gridGap: "10px",
+                            position: "fixed",
+                            top: "140px",
+                            height: "30px",
+                            width: "1030px",
+                            backgroundColor: "#e7e7e7",
+                            borderTop: "1px solid lightgrey",
+                            borderBottom: "1px solid lightgrey",
+                            fontWeight: "600",
+                            verticalAlign: "center",
+                            paddingTop: "5px",
+                            paddingLeft: "20px",
+                            paddingRight: "20px"
+                        }}
+                    >
+                        <div style={{textAlign: "center"}}>Date</div>
+                        <div>Image</div>
+                        <div>Event</div>
+                        <div style={{textAlign: "center"}}>Tickets</div>
+                    </div>
+                    <div className={classes.DisplayPanel}>
+                        {pastEventItems()}
+                    </div>
+                </Fragment>
+            )
+        } else return null
+    };
 
     // LOOKS GOOD
     // defines and sets "connectionStatus" view status
     const connectionStatus = (condition) => {
         if (display === "connection") {
-        return (
-            <div className={classes.BlankCanvas}>
-                <div className={classes.ConnectionText}>
-                    <br></br>
-                    There is a problem with the OSD Server in retrieving your tickets. Please try again later.
+            return (
+                <div className={classes.BlankCanvas}>
+                    There is a problem retrieving your tickets. Please try again later.
                 </div>
-            </div>
-        )
+            )
         } else return null;
     }
 
