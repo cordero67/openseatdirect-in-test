@@ -752,7 +752,10 @@ const TicketSelection = () => {
   const purchaseConfirmation = () => {
     if (display === "confirmation") {
       return (
-        <div className={classes.BlankCanvas}>
+        <div
+          className={classes.BlankCanvas}
+          style={{textAlign: "left", color: "black"}}
+        >
           <div style={{ paddingTop: "20px" }}>
             <OrderConfirm
               transactionInfo={transactionInfo}

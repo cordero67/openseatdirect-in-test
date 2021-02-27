@@ -552,18 +552,17 @@ const MyTickets = () => {
                 Upcoming Events
             </button>
             <button
-                className={ordersButton()}
-                onClick={() => setDisplay("orders")}
-            >
-                Order History
-            </button>
-            <button
                 className={pastButton()}
                 onClick={() => setDisplay("past")}
             >
                 Past Events
             </button>
-
+            <button
+                className={ordersButton()}
+                onClick={() => setDisplay("orders")}
+            >
+                Order History
+            </button>
         </div>
     )
 

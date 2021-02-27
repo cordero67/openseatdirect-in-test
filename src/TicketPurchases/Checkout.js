@@ -269,6 +269,7 @@ const Checkout = props => {
             <br></br>
             Please try again later.
           </div>
+          <button>Continue</button>
         </div>
       )
     } else {
@@ -300,7 +301,7 @@ const Checkout = props => {
       <PayPalButton
         onButtonReady={() => {
           console.log("inside onButtonReady")}}
-        createOrder={(data, actions) => {
+          createOrder={(data, actions) => {
           console.log("inside createOrder")
           return actions.order.create({
             purchase_units: [

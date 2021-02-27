@@ -33,7 +33,18 @@ const Footer = (props) => {
         <div>
           <Logo source={logo} placement="footer"/>
         </div>
-        <div className={styles.CopyRight}>Copyright &copy; 2021 OpenSeatDirect LLC | All Rights Reserved</div>
+        <div className={styles.CopyRight}>
+          <div>
+            Copyright &copy; 2021 OpenSeatDirect LLC | All Rights Reserved
+          </div>
+          <div>
+            <button className={styles.Button}>
+              Privacy Policy
+            </button> | <button className={styles.Button}>
+              Terms and Conditions
+            </button>
+          </div>
+        </div>
       </div>
     )
   } else {
@@ -43,8 +54,8 @@ const Footer = (props) => {
           <Logo source={logo} placement="footer"/>
         </div>
         <div  className={styles.CopyRight}>
-          <div>Copyright &copy; 2020 OpenSeatDirect LLC</div>
-          <div>All Rights Reserved</div>
+          <div>Copyright &copy; 2020 OpenSeatDirect LLC | All Rights Reserved</div>
+          <div>Privacy Policy | Terms and Conditions</div>
         </div>
       </div>
     )}

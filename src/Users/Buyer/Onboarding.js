@@ -28,7 +28,7 @@ const Onboarding = (props) => {
         accountEmail: "",
         accountPhone: "",
         accountUrl: "",
-        ticketPlan: "",
+        ticketPlan: "tbd",
         inputError: "",
         paypal_plan_id: "P-38K11886GW041664JL5JHRNA", // default value is production quarterly plan
         paypal_plan_id_full: "",
@@ -483,6 +483,7 @@ const Onboarding = (props) => {
                 <div
                     style={{
                         paddingTop: "40px",
+                        paddingBottom: "20px", 
                         paddingLeft: "80px",
                         fontSize: "22px",
                         fontWeight: "600"
@@ -490,12 +491,9 @@ const Onboarding = (props) => {
                     >Step 1: Basic Information about your Organization
                 </div>
                 <div className={classes.VendorCanvas}>
-                    <div style={{fontSize: "16px", paddingTop: "20px", paddingBottom: "20px" }}>
-                        Please provide us with the following pieces of information:
-                    </div>
-                    <div style={{paddingBottom: "20px", width: "420px", height: "85px"}}>
+                    <div style={{paddingTop: "10px", paddingBottom: "20px", width: "420px", height: "85px"}}>
                         <label style={{width: "420px", fontSize: "15px"}}>
-                            Company Name<span style={{color: "red"}}>*</span>
+                            Organization Name<span style={{color: "red"}}>*</span>
                         </label>
                         <input
                             onFocus={() => {
@@ -518,7 +516,7 @@ const Onboarding = (props) => {
 
                     <div style={{paddingBottom: "20px", width: "420px", height: "85px"}}>
                         <label style={{width: "420px", fontSize: "15px"}}>
-                            Company E-mail Address
+                            Organization E-mail Address
                         </label>
                         <input
                             onFocus={() => {
@@ -541,7 +539,7 @@ const Onboarding = (props) => {
 
                     <div style={{paddingBottom: "20px", width: "420px", height: "85px"}}>
                         <label style={{width: "420px", fontSize: "15px"}}>
-                            Company Phone or Cell Number
+                            Organization Phone or Cell Number
                         </label>
                         <input
                             onFocus={() => {
@@ -564,7 +562,7 @@ const Onboarding = (props) => {
 
                     <div style={{paddingBottom: "20px", width: "420px", height: "85px"}}>
                         <label style={{width: "420px", fontSize: "15px"}}>
-                            Company Website
+                            Organization Website
                         </label>
                         <input
                             onFocus={() => {
@@ -648,7 +646,7 @@ const Onboarding = (props) => {
                                 })
                             }}
                         >
-                            SUBMIT YOUR COMPANY INFORMATION
+                            SUBMIT YOUR ORGANIZATION INFORMATION
                         </button>
                     </div>
                 </div>
@@ -658,6 +656,86 @@ const Onboarding = (props) => {
         )
     }
 
+    const ticketPageButton = () => {
+        console.log("eventDetails.tickets")
+        if (ticketPlan === "free") {
+          return (
+            <button
+                className={classes.ButtonGreen}
+                onClick={() => {
+                    let url=  `${API}/account/${props.userid}`;
+                    let fetcharg ={
+                        method: "PATCH",
+                        headers: myHeaders,
+                        body:JSON.stringify({
+                            ticketPlan: ticketPlan
+                        }),
+                    };
+                    console.log("fetching with: ", url, fetcharg);
+                    fetch(url, fetcharg )
+                    .then(handleErrors)
+                    .then ((response)=>{
+                        console.log ("then response: ", response);
+                        return response.json()})
+                    .then ((data)=>{
+                        console.log ("fetch return got back data on Free ticket:", data);
+                
+                        let tempData = JSON.parse(localStorage.getItem("user"));
+                        console.log("tempData: ", tempData)
+                        tempData.user.accountId = data.result;
+                        localStorage.setItem("user", JSON.stringify(tempData));
+
+                        if (data.status){
+                            switch (data.result.status){
+                                case(4): 
+                                case(5):    setPageView("ticket"); break;
+                                case(6):    setPageView("payment");break;
+                                case(7):    setPageView("completed");break;
+                                case(8):    setPageView("completed");break;
+                                case(0):
+                                default:    setPageView("summary");
+                            }
+                        } else {
+                                // this is a frieldly error
+                                let errmsg = "There was a error. please retry";
+                                if (data.message){
+                                        errmsg = data.message;
+                                };
+                        };
+                    })
+                    .catch ((err)=>{
+                        setPreFetchView(pageView);
+                        console.log (err);
+                        setPageView("error");
+                    });
+                }}
+            >
+                SUBMIT YOUR TICKET PLAN SELECTION
+            </button>
+          )
+        } else if (ticketPlan === "basicPaidQuarter") {
+            return (
+                <button
+                    className={classes.ButtonGreen}
+                    onClick={() => {
+                        setPageView("payment");
+                    }}
+                >
+                    SUBMIT YOUR TICKET PLAN SELECTION
+                </button>
+            )
+        } else {
+            return (
+                <button
+                    className={classes.ButtonGreenOpac}
+                >
+                    SUBMIT YOUR TICKET PLAN SELECTION
+                </button>
+
+            )
+        }
+    }
+
     const ticketPage =()=>{
         return (
             <div className={classes.DisplayPanel}>
@@ -665,6 +743,7 @@ const Onboarding = (props) => {
                     <div
                         style={{
                             paddingTop: "40px",
+                            paddingBottom: "30px",
                             paddingLeft: "80px",
                             fontSize: "22px",
                             fontWeight: "600"
@@ -672,81 +751,18 @@ const Onboarding = (props) => {
                         >Step 2: Select a Ticket Plan
                     </div>
                     <div  className={classes.PaymentCanvas}>
-                        <div
-                            style={{
-                                fontSize: "16px",
-                                paddingTop: "20px",
-                                paddingBottom: "20px"
-                            }}>
-                            Choose between our two ticket plans:
-                        </div>
-                            <RadioForm
-                                details={ticketPlans}
-                                group="eventTypeGroup"
-                                current={ticketPlan}
-                                change={(event, value) =>
-                                    radioChange(event, value, "ticketPlan")
-                                }
-                            />
+                        <RadioForm
+                            details={ticketPlans}
+                            group="eventTypeGroup"
+                            current={ticketPlan}
+                            change={(event, value) =>
+                                radioChange(event, value, "ticketPlan")
+                            }
+                        />
                         <br></br>
                         <br></br>
                         <div style={{textAlign: "center", width: "420px", height: "85px", paddingLeft: "1px"}}>
-                            <button className={classes.ButtonGreen}
-                                disabled={ticketPlan === "tbd"}
-                                onClick={() => {
-                                    if (ticketPlan === "free") {
-                                        let url=  `${API}/account/${props.userid}`;
-                                        let fetcharg ={
-                                            method: "PATCH",
-                                            headers: myHeaders,
-                                            body:JSON.stringify({
-                                                ticketPlan: ticketPlan
-                                            }),
-                                        };
-                                        console.log("fetching with: ", url, fetcharg);
-                                        fetch(url, fetcharg )
-                                        .then(handleErrors)
-                                        .then ((response)=>{
-                                            console.log ("then response: ", response);
-                                            return response.json()})
-                                        .then ((data)=>{
-                                            console.log ("fetch return got back data on Free ticket:", data);
-                                    
-                                            let tempData = JSON.parse(localStorage.getItem("user"));
-                                            console.log("tempData: ", tempData)
-                                            tempData.user.accountId = data.result;
-                                            localStorage.setItem("user", JSON.stringify(tempData));
-
-                                            if (data.status){
-                                                switch (data.result.status){
-                                                    case(4): 
-                                                    case(5):    setPageView("ticket"); break;
-                                                    case(6):    setPageView("payment");break;
-                                                    case(7):    setPageView("completed");break;
-                                                    case(8):    setPageView("completed");break;
-                                                    case(0):
-                                                    default:    setPageView("summary");
-                                                }
-                                            } else {
-                                                    // this is a frieldly error
-                                                    let errmsg = "There was a error. please retry";
-                                                    if (data.message){
-                                                            errmsg = data.message;
-                                                    };
-                                            };
-                                        })
-                                        .catch ((err)=>{
-                                            setPreFetchView(pageView);
-                                            console.log (err);
-                                            setPageView("error");
-                                        });
-                                    } else {
-                                        setPageView("payment");
-                                    }
-                                }}
-                            >
-                                SUBMIT YOUR TICKET PLAN SELECTION
-                            </button>
+                            {ticketPageButton()}
                         </div>
                     </div>
                 </div>
@@ -961,21 +977,13 @@ const Onboarding = (props) => {
                         >Step 2: Select a Subscription Plan
                     </div>
                     <div className={classes.PaymentCanvas}>
-                    <div style={{fontSize: "16px", paddingTop: "20px", paddingBottom: "20px"}}>Choose a plan and submit your payment to PayPal:</div>
+                    <div style={{fontSize: "16px", paddingTop: "30px", paddingBottom: "20px"}}>Choose a plan and submit your payment to PayPal:</div>
                         {promoOption()}
                         {paymentPanel()}
                     </div>
                     <div style={{textAlign: "center", paddingTop: "10px"}}>
                         <button
-                            style={{
-                                border: "1px solid #000",
-                                backgroundColor: "#2F5596",
-                                color: "#fff",
-                                fontSize: "14px",
-                                width: "424px",
-                                height: "40px",
-                                fontWeight: "500"
-                            }}
+                            className={classes.ButtonGrey}
                             onClick={() => {
                                 setPageView("ticket");
                                 console.log("pageView: ", pageView)
@@ -1005,20 +1013,15 @@ const Onboarding = (props) => {
                     </div>
                     <br></br>
                     <div style={{fontSize: "16px", paddingLeft: "80px", paddingTop: "20px", paddingBottom: "40px" }}>Thank you, your payment was successfully received by PayPal.</div>
-                    <div style={{textAlign: "center", paddingTop: "40px"}}>
-                        <Button className={classes.OrganizationButton}
-                            style={{
-                                backgroundColor: 'white',
-                                border: "1px solid blue",
-                                color: "blue",
-                                padding: "0px",
-                            }}
-                            content="Continue"
+                    <div style={{textAlign: "center", paddingTop: "20px"}}>
+                        <button className={classes.ButtonGrey}
                             onClick={() => {
                                 updatePageView();
                                 console.log("pageView: ", pageView)
                             }}
-                        />
+                        >
+                            CONTINUE
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1102,8 +1105,8 @@ const Onboarding = (props) => {
                         </button>
                     </div>
 
-                    <div style={{paddingBottom: "20px", width: "670px", height: "85px"}}>
-                        <label style={{width: "670px", fontSize: "15px"}}>
+                    <div style={{paddingBottom: "20px", width: "700px", height: "85px"}}>
+                        <label style={{width: "700px", fontSize: "15px"}}>
                             Paypal Client ID{" "}<span style={{color: "red"}}>*{" "}</span>
                             <Popup
                                 position="right center"
@@ -1126,7 +1129,7 @@ const Onboarding = (props) => {
                                 border: "1px solid #8DADD4",
                                 borderRadius: "0px",
                                 backgroundColor: "#EFF3FA",
-                                width: "670px",
+                                width: "700px",
                                 height: "40px",
                                 paddingLeft: "10px"
                             }}
@@ -1137,7 +1140,7 @@ const Onboarding = (props) => {
                         />
                     </div>
                     <div>
-                        <label style={{width: "670px", fontSize: "15px"}}>
+                        <label style={{width: "700px", fontSize: "15px"}}>
                             Paypal Secret{" "}<span style={{color: "red"}}>*{" "}</span>
                         <Popup
                             position="right center"
@@ -1160,7 +1163,7 @@ const Onboarding = (props) => {
                                 border: "1px solid #8DADD4",
                                 borderRadius: "0px",
                                 backgroundColor: "#EFF3FA",
-                                width: "670px",
+                                width: "700px",
                                 height: "40px",
                                 paddingLeft: "10px"
                             }}
@@ -1172,15 +1175,8 @@ const Onboarding = (props) => {
                     </div>
                     <div style={{textAlign: "center", paddingTop: "40px"}}>
                         <button
-                            style={{
-                                border: "1px solid #000",
-                                backgroundColor: "#008F00",
-                                color: "#fff",
-                                fontSize: "14px",
-                                width: "670px",
-                                height: "40px",
-                                fontWeight: "500"
-                            }}
+                            className={classes.ButtonGreen}
+                            style={{width: "700px"}}
                             disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
                             onClick={() => {
                                 let url = `${API}/account/${props.userid}`;

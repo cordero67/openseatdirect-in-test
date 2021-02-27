@@ -486,7 +486,7 @@
   color: #fff;
   border: 1px solid black;
   outline: none;
-  font-size: 14px;
+  font-size: 16px;
 }
 .ButtonGreen:hover {
   background-color: #007A00;
@@ -497,6 +497,41 @@
 .ButtonGreen:active {
   background-color: #005200;
   color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+
+.ButtonGreenOpac {
+  height: 40px;
+  width: 424px;
+  background-color: #00A300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 16px;
+  opacity: 0.3;
+}
+
+
+.ButtonGrey {
+  height: 40px;
+  width: 424px;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+  font-size: 16px;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: white;
   border: 1px solid black;
   outline: none;
 }
