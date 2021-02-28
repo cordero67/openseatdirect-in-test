@@ -3,6 +3,8 @@ import { Redirect, Fragment, Link } from "react-router-dom";
 
 import { API } from "../../config";
 
+import queryString from "query-string";
+
 import BuyerNavigation from "./BuyerNavigation";
 import Profile from "../ComponentPages/Profile";
 import MyTickets from "../ComponentPages/MyTickets";
@@ -34,6 +36,15 @@ const BuyerAccount = () => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       console.log("tempUser: ", tempUser)
       if ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true) {
+        setPaneView("onboarding")
+      }
+      if (
+        queryString.parse(window.location.search).tracking_id !== undefined &&
+        queryString.parse(window.location.search).permissionsGranted !== undefined &&
+        queryString.parse(window.location.search).isEmailConfirmed !== undefined &&
+        queryString.parse(window.location.search).error !== undefined
+        
+      ) {
         setPaneView("onboarding")
       }
       if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {

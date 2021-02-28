@@ -26,7 +26,6 @@ const EventDetail = () => {
 
   useEffect(() => {
     eventData(queryString.parse(window.location.search).eventID);
-    console.log("window.location.search: ", window.location.search);
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
 

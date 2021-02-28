@@ -8,7 +8,7 @@ import { Button, Popup } from "semantic-ui-react";
 
 import { PayPalButton } from "react-paypal-button-v2";
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
+import queryString from "query-string";
 
 import RadioForm from "./RadioForm";
 
@@ -205,6 +205,28 @@ const Onboarding = (props) => {
         } else {
             window.location.href = "/auth";
         }
+
+        if (
+            queryString.parse(window.location.search).tracking_id !== undefined &&
+            queryString.parse(window.location.search).permissionsGranted !== undefined &&
+            queryString.parse(window.location.search).isEmailConfirmed !== undefined &&
+            queryString.parse(window.location.search).error !== undefined
+            
+        ) {
+            console.log("There are a values")
+            console.log("tracking_id: ", queryString.parse(window.location.search).tracking_id);
+            console.log("permissionsGranted: ", queryString.parse(window.location.search).permissionsGranted);
+            console.log("isEmailConfirmed: ", queryString.parse(window.location.search).isEmailConfirmed);
+            console.log("error: ", queryString.parse(window.location.search).error);
+            
+            setPageView("completed")
+        } else {
+            console.log("Value(s) are missing")
+        }
+        console.log("window.location.search: ", window.location.search);
+
+
+
         setLoading(false);
     }, []);
 
@@ -285,7 +307,7 @@ const Onboarding = (props) => {
         if (promoCodeDetails.appliedPromoCode === "CASHNOW") {
             console.log("PayPal info")
             return (
-                <Aux>
+                <Fragment>
                     <RadioForm
                         details={shownPlans()}
                         group="eventTypeGroup"
@@ -297,12 +319,12 @@ const Onboarding = (props) => {
                     />
                     <br></br>
                     {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
-                </Aux>
+                </Fragment>
             )
         } else if (promoCodeDetails.appliedPromoCode === "MADEEASY") {
             console.log("PayPal info")
             return (
-                <Aux>
+                <Fragment>
                     <RadioForm
                         details={shownPlans()}
                         group="eventTypeGroup"
@@ -314,12 +336,12 @@ const Onboarding = (props) => {
                     />
                     <br></br>
                     {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
-                </Aux>
+                </Fragment>
             )
         } else {
             console.log("Values info: ", values)
             return (
-                <Aux>
+                <Fragment>
                     <RadioForm
                         details={shownPlans()}
                         group="eventTypeGroup"
@@ -331,7 +353,7 @@ const Onboarding = (props) => {
                     />
                     <br></br>
                     {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
-                </Aux>
+                </Fragment>
             )
         }
     }
@@ -812,7 +834,7 @@ const Onboarding = (props) => {
     const inputPromoCode = () => {
         if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
         return (
-            <Aux>
+            <Fragment>
                 <div className={[classes.PromoGrid, classes.Red].join(" ")}>
                 <input
                     type="text"
@@ -847,11 +869,11 @@ const Onboarding = (props) => {
                     ? promoCodeDetails.errorMessage
                     : null}
                 </div>
-            </Aux>
+            </Fragment>
         );
         } else {
         return (
-            <Aux>
+            <Fragment>
                 <div className={[classes.PromoGrid, classes.Blue].join(" ")}>
                 <input
                     type="text"
@@ -885,7 +907,7 @@ const Onboarding = (props) => {
                 ? promoCodeDetails.errorMessage
                 : null}
             </div>
-            </Aux>
+            </Fragment>
         );
         }
     };
