@@ -5,7 +5,7 @@ import logo from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackgroun
 
 import styles from "./Footer.module.css";
 
-const Footer = (props) => {
+const Footer = () => {
   const [showLargeFooter, setShowLargeFooter] = useState(false);
 
   const stylingUpdate = (inWidth) => {
@@ -38,7 +38,14 @@ const Footer = (props) => {
             Copyright &copy; 2021 OpenSeatDirect LLC | All Rights Reserved
           </div>
           <div>
-            <button className={styles.Button}>
+          <a data-paypal-button="true"  href="https://www.sandbox.paypal.com/partnerexp/appEntry?referralToken=ZDM4NzE5ODMtYmI3NS00YTc5LWJkZGQtN2Q3NTQ5M2ZjMjdjMG0yd0N4a1BLaE94TGpTdnkyaWRFamZtK2dxb012SUI4Q2hlcGdHT2Zhdz12Mg==&displayMode=minibrowser" target="PPFrame">Sign up for PayPal</a>
+            <button
+              className={styles.Button}
+              onClick={() => {
+                window.location.href = `https://www.sandbox.paypal.com/partnerexp/appEntry?referralToken=M2IxMmY5MWEtNDFhYi00MTBkLTllNzgtZjJhM2EwNDJlMmRjODBJUWluVnJYK3ZiUXRRWE1WMS9DUXBUcFVQYXlUZ01sdU1zTDN6K0tVND12Mg==&displayMode=minibrowser`;
+              }}
+              
+              >
               Privacy Policy
             </button> | <button className={styles.Button}>
               Terms and Conditions

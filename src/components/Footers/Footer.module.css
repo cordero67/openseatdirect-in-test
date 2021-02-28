@@ -20,8 +20,6 @@
   font-size: 10px;
   font-weight: 600;
 }
-
-
 .Button {
   font-size: 10px;
   font-weight: 600;
@@ -40,12 +38,11 @@
     grid-template-columns: 90px auto;
   }
   .Button {
-    font-size: 14px;
+    font-size: 12px;
   }
   .CopyRight {
-    padding-top: 10px;
-    padding-right: 8px;
-    font-size: 14px;
+    padding-top: 8px;
+    font-size: 12px;
   }
 }
 
@@ -53,11 +50,5 @@
   .Footer {
     display: grid;
     grid-template-columns: 110px auto;
-  }
-  .Button {
-    font-size: 16px;
-  }
-  .CopyRight {
-    font-size: 16px;
   }
 }

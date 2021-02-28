@@ -52,7 +52,7 @@ const Onboarding = (props) => {
         eventPromoCodes: [SUBSCRIPTION_PROMO_CODE_1, SUBSCRIPTION_PROMO_CODE_2]
     });
 
-    // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
+    // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch, tempPaypal
     const [pageView, setPageView] = useState("summary")
     const [preFetchView, setPreFetchView] = useState("")
     const [loading, setLoading ] = useState("false")
@@ -141,7 +141,8 @@ const Onboarding = (props) => {
         } else if (getStatus() === 5) {
             setPageView("ticket")
         } else if (getStatus() === 6) {
-            setPageView("paypal")
+            //setPageView("paypal")
+            setPageView("tempPaypal")
         } else if (getStatus() === 7 || getStatus() === 8) {
             setPageView("completed")
         };
@@ -202,7 +203,7 @@ const Onboarding = (props) => {
             updateValues();
             updatePageView();
         } else {
-            window.location.href = "/signin";
+            window.location.href = "/auth";
         }
         setLoading(false);
     }, []);
@@ -1240,6 +1241,95 @@ const Onboarding = (props) => {
         )
     }
 
+    
+    const tempPaypalPage =()=>{
+        return (
+            <div className={classes.DisplayPanel}>
+                <div>
+                    <div
+                        style={{
+                            paddingTop: "40px",
+                            paddingLeft: "80px",
+                            fontSize: "22px",
+                            fontWeight: "600"
+                        }}
+                        >Step 2: Link Your Paypal Merchant Account 
+                    </div>
+
+                    <div  className={classes.PaypalCanvas}>
+                        <div style={{textAlign: "center", paddingTop: "40px"}}>
+                            <button
+                                className={classes.ButtonGreen}
+                                style={{width: "700px"}}
+                                //disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
+
+                                //https://www.bondirectly.com/api/paypal/onboard1/%7BuserId%7D
+                                onClick={() => {
+                                    let url = `${API}/paypal/onboard1/${props.userid}`;
+                                    let fetcharg ={
+                                        method: "POST",
+                                        headers: myHeaders,
+                                        body:JSON.stringify({
+                                            useSandbox: PAYPAL_USE_SANDBOX,
+                                            paymentGatewayType: "PayPalExpress",
+                                            paypalExpress_client_id: paypalExpress_client_id,
+                                            paypalExpress_client_secret: paypalExpress_client_secret
+                                        }),
+                                    };
+                                    console.log("fetching with: ", url, fetcharg);
+                                    fetch(url, fetcharg )
+                                    .then(handleErrors)
+                                    .then ((response)=>{
+                                        console.log ("then response: ", response);
+                                        return response.json()})
+                                    .then ((data)=>{
+                                        console.log ("fetch return got back data on PayPal:", data);
+                                        
+                                        let tempData = JSON.parse(localStorage.getItem("user"));
+                                        console.log("tempData: ", tempData)
+                                        console.log("data.data.customer_redirect_url: ", data.data.customer_redirect_url)
+                                        
+                                        window.location.href = data.data.customer_redirect_url;
+                                        /*
+                                        tempData.user.accountId = data.result;
+                                        localStorage.setItem("user", JSON.stringify(tempData));
+
+                                        if (data.status){
+                                            switch (data.result.status){
+                                                case(4): 
+                                                case(5):    setPageView("ticket"); break;
+                                                case(6):    setPageView("payment");break;
+                                                case(7):    setPageView("completed");break;
+                                                case(8):    setPageView("completed");break;
+                                                case(0):
+                                                default:    setPageView("summary");
+                                            }
+                                        } else {
+                                                // this is a frieldly error
+                                                let errmsg = "unable to validate ClientId and secret at this time";
+                                                if (data.message){
+                                                    errmsg = data.message;
+                                                };
+                                                window.alert (errmsg);
+                                        };
+                                        */
+                                    })
+                                    .catch ((err)=>{
+                                        //setPreFetchView(pageView);
+                                        console.log (err);
+                                        //setPageView("error");
+                                    });
+                                }}
+                            >
+                                LINK YOUR PAYPAL MERCHANT ACCOUNT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     const completedPage =()=>{
                 return (
                     <div className={classes.DisplayPanel}>
@@ -1328,6 +1418,7 @@ const Onboarding = (props) => {
                 case ("receipt"):   return receiptPage();
                 case ("receiptErrorPage"):   return receiptErrorPage();
                 case("paypal"):     return paypalPage();
+                case("tempPaypal"): return tempPaypalPage();
                 case("completed"):  return completedPage();
                 case("error"):      return errorPage();
                 default:            return summaryPage();
