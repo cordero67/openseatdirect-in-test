@@ -148,6 +148,28 @@ const Onboarding = (props) => {
         };
     }
 
+    const handleErrors = response => {
+        console.log ("inside handleErrors ", response);
+        if (!response.ok) {
+            throw Error(response.status);
+        }
+        return response;
+    };
+
+    // api static variables
+    let  myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    const authstring = `Bearer ${props.token}`;
+    console.log("authstring: ", authstring)
+    myHeaders.append("Authorization", authstring);
+
+    const handleChange = (event) => {
+        setValues({
+        ...values,
+        [event.target.name]: event.target.value
+        });
+    }
+
     // edit so that it is driven by the "status" value
     // only used by useEffect to populate the "values" object
     const updateValues = () => {
@@ -219,6 +241,55 @@ const Onboarding = (props) => {
             console.log("isEmailConfirmed: ", queryString.parse(window.location.search).isEmailConfirmed);
             console.log("error: ", queryString.parse(window.location.search).error);
             
+            let url=  `${API}/user/${props.userid}`;
+            let fetcharg ={
+                method: "GET",
+                headers: myHeaders
+            };
+            console.log("About to fetch");
+            console.log("fetching with: ", url, fetcharg);
+            console.log("fetching with: ", url);
+            console.log("fetching with: ", fetcharg);
+            fetch(url, fetcharg )
+            .then(handleErrors)
+            .then ((response)=>{
+                console.log ("then response: ", response);
+                return response.json()})
+            .then ((data)=>{
+                console.log ("fetch return got back data on Free ticket:", data);
+        
+                //let tempData = JSON.parse(localStorage.getItem("user"));
+                //console.log("tempData: ", tempData)
+                //tempData.user.accountId = data.result;
+                //localStorage.setItem("user", JSON.stringify(tempData));
+                /*
+                if (data.status){
+                    switch (data.result.status){
+                        case(4): 
+                        case(5):    setPageView("ticket"); break;
+                        case(6):    setPageView("payment");break;
+                        case(7):    setPageView("completed");break;
+                        case(8):    setPageView("completed");break;
+                        case(0):
+                        default:    setPageView("summary");
+                    }
+                } else {
+                        // this is a frieldly error
+                        let errmsg = "There was a error. please retry";
+                        if (data.message){
+                                errmsg = data.message;
+                        };
+                };
+                */
+            })
+            .catch ((err)=>{
+                //setPreFetchView(pageView);
+                console.log (err);
+                //setPageView("error");
+            });
+
+
+            
             setPageView("completed")
         } else {
             console.log("Value(s) are missing")
@@ -229,20 +300,6 @@ const Onboarding = (props) => {
 
         setLoading(false);
     }, []);
-
-    // api static variables
-    let  myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    const authstring = `Bearer ${props.token}`;
-    console.log("authstring: ", authstring)
-    myHeaders.append("Authorization", authstring);
-
-    const handleChange = (event) => {
-        setValues({
-        ...values,
-        [event.target.name]: event.target.value
-        });
-    }
 
     const radioChange = (event, value, name) => {
         let tempValues = { ...values };
@@ -357,14 +414,6 @@ const Onboarding = (props) => {
             )
         }
     }
-
-    const handleErrors = response => {
-        console.log ("inside handleErrors ", response);
-        if (!response.ok) {
-            throw Error(response.status);
-        }
-        return response;
-    };
 
     // THIS LOOKS GOOD
     // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
