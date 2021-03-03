@@ -43,7 +43,6 @@ const BuyerAccount = () => {
         queryString.parse(window.location.search).permissionsGranted !== undefined &&
         queryString.parse(window.location.search).isEmailConfirmed !== undefined &&
         queryString.parse(window.location.search).error !== undefined
-        
       ) {
         setPaneView("onboarding")
       }

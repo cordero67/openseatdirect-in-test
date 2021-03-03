@@ -60,15 +60,85 @@ const Onboarding = (props) => {
     //const [isDisabled, setIsDisabled] = useState(true)
     const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypal_plan_id, paypal_plan_id_full, paypal_plan_id_discount, paypal_plan_id_year_free, paypalExpress_client_id, paypalExpress_client_secret } = values;
 
-    const getStatus= () =>{ 
+
+    /*
+    if ((!hasPaid) && (!hasLinkIds) ) return 4;
+    if ((!hasPaid) &&   hasLinkIds ) return 5;
+    if (hasPaid && (!   hasLinkIds) ) return 6;
+    if (hasPaid &&      hasLinkIds ) return 8;
+    return 4;
+    */
+
+
+    const getStatus= () => {
         let tempData = JSON.parse(localStorage.getItem("user"));
+        if ('user' in tempData && 'accountId' in tempData.user) {  
+            let tempAccountId = tempData.user.accountId;
+            console.log ('in calc status tempAccountId =', tempAccountId);
+
+            let hasLinkIds = false;
+            let hasPaid = false;
+            if (tempAccountId.ticketPlan === 'free') {
+                return 7;
+            };
+            if (tempAccountId.ticketPlan === 'comp') {
+                hasPaid = true;
+            };
+            if (
+                'paymentGatewayType' in tempAccountId &&
+                tempAccountId.paymentGatewayType === "PayPalExpress" &&
+                'useSandBox' in tempAccountId &&
+                'paypalExpress_client_id' in tempAccountId &&
+                'string' === typeof tempAccountId.paypalExpress_client_id &&
+                'useSandbox' in tempAccountId &&
+                'boolean' === typeof tempAccountId.useSandbox
+            ) {
+                hasLinkIds = true;
+            };
+            if (
+                'paymentGatewayType' in tempAccountId &&
+                tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
+                'useSandbox' in tempAccountId && 
+                'paypal_merchant_id' in tempAccountId &&
+                'string' === typeof tempAccountId.paypal_merchant_id &&
+                'useSandbox' in tempAccountId &&
+                'boolean' === typeof tempAccountId.useSandbox
+            ) {
+                hasLinkIds = true;
+            };
+            if (
+                'paypal_plan_id' in tempAccountId && 
+                'string' === typeof tempAccountId.paypal_plan_id &&
+                'accountPaymentStatus' in tempAccountId &&
+                tempAccountId.accountPaymentStatus ==='good'
+            ) {
+                hasPaid = true;
+            }
+            if (!hasPaid && !hasLinkIds) {
+                return 4;
+            }
+            if (!hasPaid && hasLinkIds) {
+                return 5;
+            }
+            if (hasPaid && !hasLinkIds) {
+                return 6;
+            }
+            if (hasPaid && hasLinkIds) {
+                return 8;
+            }
+            return 4;
+        }
+        else return 0;
+
+        /*
         console.log("tempData: ", tempData)
         if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
             console.log("tempData.data.accountId.status: ", tempData.user.accountId.status)
             return tempData.user.accountId.status
         } else {
             return 0;
-        } 
+        }
+        */
     }
     
     let subscriptions;
@@ -235,7 +305,7 @@ const Onboarding = (props) => {
             queryString.parse(window.location.search).error !== undefined
             
         ) {
-            console.log("There are a values")
+            console.log("There are values")
             console.log("tracking_id: ", queryString.parse(window.location.search).tracking_id);
             console.log("permissionsGranted: ", queryString.parse(window.location.search).permissionsGranted);
             console.log("isEmailConfirmed: ", queryString.parse(window.location.search).isEmailConfirmed);

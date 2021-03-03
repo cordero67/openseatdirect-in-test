@@ -3,9 +3,6 @@ import React, { useState, useEffect, Fragment } from "react";
 import { API } from "../config.js";
 import { PayPalButton } from "react-paypal-button-v2";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-
 import {
   MainContainerStyling,
   MainGridStyling,
@@ -28,7 +25,6 @@ let orderTotals = {};
 let osdOrderId;
 let orderExpiration;
 
-// defines an event's image
 let eventLogo = "";
 
 // defines the PayPal "purchase_units.items" value populated from "ticketOrder"
@@ -41,7 +37,7 @@ let EventTicketSection = {};
 let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
-const Checkout = props => {
+const Checkout = () => {
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
 
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
@@ -49,18 +45,16 @@ const Checkout = props => {
 
   const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
 
-  const [customerInformation, setCustomerInformation] = useState({});
-
-  const [transactionInfo, setTransactionInfo] = useState({}); // defines transaction variables for display on confirmation page
-
-  const [transactionStatus, setTransactionStatus] = useState({ // defines status of paypal order
-    message: null,
-    error: "",
-    //connection: true
-  });
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   const [orderStatus, setOrderStatus] = useState(false); // defines status of order sent to server
-  // LOOKS GOOD
+  const [customerInformation, setCustomerInformation] = useState({});
+  const [transactionInfo, setTransactionInfo] = useState({}); // defines transaction variables for display on confirmation page
+  const [transactionStatus, setTransactionStatus] = useState({ // defines status of paypal order
+    message: null,
+    error: ""
+  });
+  // REFACTORED 3/2/21
   useEffect(() => {
     if (
       typeof window !== "undefined" && localStorage.getItem("eventNum")
@@ -82,6 +76,8 @@ const Checkout = props => {
             userId: tempUser.user._id,
             email: tempUser.user.email
           });
+        } else {
+          window.location.href = `/et/${tempCart.eventDetails.vanityLink}?eventID=${tempCart.eventDetails.eventNum}`;
         }
         setPaypalArray();
         console.log("orderTotals: ", orderTotals);
@@ -98,11 +94,11 @@ const Checkout = props => {
     stylingUpdate(window.innerWidth, window.innerHeight);
     setDisplay("main")
   }, []);
-  // LOOKS GOOD
+  // REFACTORED 3/2/21
   window.onresize = function(event) {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
-  // LOOKS GOOD
+  // REFACTORED 3/2/21
   const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
     if (inWidth < 790) {
@@ -110,7 +106,6 @@ const Checkout = props => {
     } else {
       setShowDoublePane(true);
     }
-
     MainContainer = MainContainerStyling(inWidth, inHeight);
     MainGrid = MainGridStyling(inWidth, inHeight);
     EventTicketSection = EventTicketSectionStyling(inWidth, inHeight);
@@ -118,7 +113,7 @@ const Checkout = props => {
     OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
     setIsRestyling(false);
   };
-  // LOOKS GOOD
+  // REFACTORED 3/2/21
   // toggles between "order pane" views
   const switchShowOrderSummary = event => {
     if (showOrderSummaryOnly) {
@@ -127,7 +122,7 @@ const Checkout = props => {
       setShowOrderSummaryOnly(true);
     }
   };
-  // LOOKS GOOD
+  // REFACTORED 3/2/21
   // sets the PayPal "purchase_units.items" value populated from "ticketInfo"
   const setPaypalArray = () => {
     paypalArray = [];
@@ -148,7 +143,7 @@ const Checkout = props => {
     });
     console.log("paypalArray: ", paypalArray)
   };
-  // LOOKS GOOD
+  // REFACTORED 3/2/21
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
     eventDetails = {};
@@ -160,7 +155,7 @@ const Checkout = props => {
     localStorage.removeItem(`image_${event}`);
     localStorage.removeItem(`eventNum`);
   };
-  // LOOKS GOOD
+  // REFACTORED 3/2/21
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
     if (!response.ok) {
@@ -296,19 +291,14 @@ const Checkout = props => {
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // displays the "PayPalButton" or an "empty cart" error message
   const showPayPal = (
-    // loads PayPal Smart buttons if order exists
     <div>
       <PayPalButton
-        onButtonReady={() => {
-          console.log("inside onButtonReady")}}
+        onButtonReady={() => {}}
           createOrder={(data, actions) => {
-          console.log("inside createOrder")
           return actions.order.create({
             purchase_units: [
               {
                 reference_id: osdOrderId,
-                //description: eventDetails.eventTitle,
-                //payment_descriptor: eventDetails.eventNum,
                 amount: {
                   currency_code: orderTotals.currencyAbv,
                   value: orderTotals.finalPurchaseAmount.toString(),
@@ -334,7 +324,6 @@ const Checkout = props => {
         }}
         onSuccess={(details, data) => {
           console.log("inside onSuccess, paypal details: ", details)
-          //payPalPurchaseOLD(details);
           payPalPurchase(details);
         }}
         onError = {(err) => {
@@ -344,7 +333,6 @@ const Checkout = props => {
             paypalSuccess: false,
             error: err
           });
-          //onlyShowPurchaseConfirmation();
           setDisplay("paypal")
         }}
         options={{
@@ -358,7 +346,6 @@ const Checkout = props => {
             paypalSuccess: false,
             error: err
           });
-          //onlyShowPurchaseConfirmation();
           setDisplay("paypal")
         }}
       />
@@ -375,11 +362,8 @@ const Checkout = props => {
     };
     return elapsedTime;
   };
-  // LOOKS GOOD BUT REVIEW LOGIC
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
-  // every 1000 milliseconds === 1 second the timer function runs
-  // when it runs it runs the "timeLeft" hook
+  // runs the "timeLeft" hook every 1000 milliseconds === 1 second
   // this causes the page to refresh which updates the time expired numbers
   // these numbers are fed by the "calculateTimeLeft()" function  
   useEffect(() => {
@@ -387,7 +371,7 @@ const Checkout = props => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
   });
-  // LOOKS GOOD BUT REVIEW LOGIC
+  // LOOKS GOOD
   const timeRemaining = () => {
     if (+new Date(orderExpiration) >= +new Date()) {
       let twoDigitSec;
@@ -443,7 +427,6 @@ const Checkout = props => {
 
   const mainDisplay = () => {
     if (display === "main") {
-
       let paymentPane = (
         <Fragment>
           <div className={classes.MainItemLeft}>
@@ -483,13 +466,16 @@ const Checkout = props => {
       // defines and sets "orderSummary" which is displayed in right panel
       let orderSummary;
       if (orderTotals.ticketsPurchased > 0) {
-        orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
+        orderSummary = <OrderSummary
+          ticketOrder={ticketInfo}
+          ticketCurrency={orderTotals.currencySym}
+        />;
       } else if (orderTotals.finalPurchaseAmount <= 0) {
         orderSummary = (
           <div className={classes.EmptyOrderSummary}>
-            <FontAwesomeIcon
-              className={classes.faShoppingCart}
-              icon={faShoppingCart}
+            <ion-icon
+              style={{fontSize: "36px", color: "grey"}}
+              name="cart-outline"
             />
           </div>
         );
