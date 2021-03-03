@@ -3,10 +3,6 @@ import { Redirect } from "react-router-dom";
 
 import { API } from "../../config";
 
-
-
-
-
 import classes from "./AuthenticationNEW.module.css";
 
 const Authentication = () => {
@@ -37,29 +33,76 @@ const Authentication = () => {
 
   const { message, error } = submissionStatus;
 
-  const getStatus= (user) => { 
-    if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status
-    } else {
-        return 0;
-    } 
-  }
+  const getStatus= () => {
+    let tempData = JSON.parse(localStorage.getItem("user"));
+    if ('user' in tempData && 'accountId' in tempData.user) {  
+      let tempAccountId = tempData.user.accountId;
+      let hasLinkIds = false;
+      let hasPaid = false;
+      if (tempAccountId.ticketPlan === 'free') {
+        return 7;
+      };
+      if (tempAccountId.ticketPlan === 'comp') {
+        hasPaid = true;
+      };
+      if (
+        'paymentGatewayType' in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalExpress" &&
+        'paypalExpress_client_id' in tempAccountId &&
+        'string' === typeof tempAccountId.paypalExpress_client_id
+      ) {
+
+          hasLinkIds = true;
+      };
+      if (
+        'paymentGatewayType' in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
+        'paypal_merchant_id' in tempAccountId &&
+        'string' === typeof tempAccountId.paypal_merchant_id
+      ) {
+          hasLinkIds = true;
+      };
+      if (
+        'paypal_plan_id' in tempAccountId && 
+        'string' === typeof tempAccountId.paypal_plan_id &&
+        'accountPaymentStatus' in tempAccountId &&
+        tempAccountId.accountPaymentStatus ==='good'
+      ) {
+        hasPaid = true;
+      }
+      if (!hasPaid && !hasLinkIds) {
+        return 4;
+      }
+      if (!hasPaid && hasLinkIds) {
+        return 5;
+      }
+      if (hasPaid && !hasLinkIds) {
+        return 6;
+      }
+      if (hasPaid && hasLinkIds) {
+        return 8;
+      }
+      return 4;
+    }
+    else {
+      return 0;
+    }
+}
+
   
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
     let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
+      if (getStatus() === 7 || getStatus() === 8) {
         window.location.href = "/vendor";
       } else if (
-        getStatus(tempUser.user) === 4 ||
-        getStatus(tempUser.user) === 5 ||
-        getStatus(tempUser.user) === 6 ||
+        getStatus() === 4 ||
+        getStatus() === 5 ||
+        getStatus() === 6 ||
         ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
       ) {
-        console.log("user 4, 5 or 6 and vendorIntent true");
         window.location.href = "/personal";
       } else {
-        console.log("user 4, 5 or 6 and vendorIntent false");
         window.location.href = "/events";
       }
     }
@@ -734,12 +777,12 @@ const Authentication = () => {
     console.log("Redirect user");
     if (typeof window !== "undefined" && localStorage.getItem("user") !== null) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {  
+      if (getStatus() === 7 || getStatus() === 8) {
         window.location.href = "/vendor";
       } else if (
-        getStatus(tempUser.user) === 4 ||
-        getStatus(tempUser.user) === 5 ||
-        getStatus(tempUser.user) === 6 ||
+        getStatus() === 4 ||
+        getStatus() === 5 ||
+        getStatus() === 6 ||
         ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
       ) {
         window.location.href = "/personal";

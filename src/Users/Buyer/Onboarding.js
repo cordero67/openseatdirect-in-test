@@ -60,22 +60,10 @@ const Onboarding = (props) => {
     //const [isDisabled, setIsDisabled] = useState(true)
     const { accountName, accountEmail, accountPhone, accountUrl, ticketPlan, paypal_plan_id, paypal_plan_id_full, paypal_plan_id_discount, paypal_plan_id_year_free, paypalExpress_client_id, paypalExpress_client_secret } = values;
 
-
-    /*
-    if ((!hasPaid) && (!hasLinkIds) ) return 4;
-    if ((!hasPaid) &&   hasLinkIds ) return 5;
-    if (hasPaid && (!   hasLinkIds) ) return 6;
-    if (hasPaid &&      hasLinkIds ) return 8;
-    return 4;
-    */
-
-
     const getStatus= () => {
         let tempData = JSON.parse(localStorage.getItem("user"));
         if ('user' in tempData && 'accountId' in tempData.user) {  
             let tempAccountId = tempData.user.accountId;
-            console.log ('in calc status tempAccountId =', tempAccountId);
-
             let hasLinkIds = false;
             let hasPaid = false;
             if (tempAccountId.ticketPlan === 'free') {
@@ -87,22 +75,16 @@ const Onboarding = (props) => {
             if (
                 'paymentGatewayType' in tempAccountId &&
                 tempAccountId.paymentGatewayType === "PayPalExpress" &&
-                'useSandBox' in tempAccountId &&
                 'paypalExpress_client_id' in tempAccountId &&
-                'string' === typeof tempAccountId.paypalExpress_client_id &&
-                'useSandbox' in tempAccountId &&
-                'boolean' === typeof tempAccountId.useSandbox
+                'string' === typeof tempAccountId.paypalExpress_client_id
             ) {
                 hasLinkIds = true;
             };
             if (
                 'paymentGatewayType' in tempAccountId &&
                 tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
-                'useSandbox' in tempAccountId && 
                 'paypal_merchant_id' in tempAccountId &&
-                'string' === typeof tempAccountId.paypal_merchant_id &&
-                'useSandbox' in tempAccountId &&
-                'boolean' === typeof tempAccountId.useSandbox
+                'string' === typeof tempAccountId.paypal_merchant_id
             ) {
                 hasLinkIds = true;
             };
@@ -129,16 +111,6 @@ const Onboarding = (props) => {
             return 4;
         }
         else return 0;
-
-        /*
-        console.log("tempData: ", tempData)
-        if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
-            console.log("tempData.data.accountId.status: ", tempData.user.accountId.status)
-            return tempData.user.accountId.status
-        } else {
-            return 0;
-        }
-        */
     }
     
     let subscriptions;
@@ -211,7 +183,6 @@ const Onboarding = (props) => {
         } else if (getStatus() === 5) {
             setPageView("ticket")
         } else if (getStatus() === 6) {
-            //setPageView("paypal")
             setPageView("tempPaypal")
         } else if (getStatus() === 7 || getStatus() === 8) {
             setPageView("completed")
@@ -328,10 +299,10 @@ const Onboarding = (props) => {
             .then ((data)=>{
                 console.log ("fetch return got back data on Free ticket:", data);
         
-                //let tempData = JSON.parse(localStorage.getItem("user"));
-                //console.log("tempData: ", tempData)
-                //tempData.user.accountId = data.result;
-                //localStorage.setItem("user", JSON.stringify(tempData));
+                let tempData = JSON.parse(localStorage.getItem("user"));
+                console.log("tempData: ", tempData)
+                tempData.user.accountId = data.result;
+                localStorage.setItem("user", JSON.stringify(tempData));
                 /*
                 if (data.status){
                     switch (data.result.status){
@@ -357,9 +328,6 @@ const Onboarding = (props) => {
                 console.log (err);
                 //setPageView("error");
             });
-
-
-            
             setPageView("completed")
         } else {
             console.log("Value(s) are missing")
