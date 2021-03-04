@@ -301,7 +301,7 @@ const Onboarding = (props) => {
         
                 let tempData = JSON.parse(localStorage.getItem("user"));
                 console.log("tempData: ", tempData)
-                tempData.user.accountId = data.result;
+                tempData.user.accountId = data.accountId;
                 localStorage.setItem("user", JSON.stringify(tempData));
                 /*
                 if (data.status){
