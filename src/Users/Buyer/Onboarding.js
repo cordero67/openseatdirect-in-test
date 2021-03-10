@@ -289,8 +289,6 @@ const Onboarding = (props) => {
             };
             console.log("About to fetch");
             console.log("fetching with: ", url, fetcharg);
-            console.log("fetching with: ", url);
-            console.log("fetching with: ", fetcharg);
             fetch(url, fetcharg )
             .then(handleErrors)
             .then ((response)=>{
@@ -498,10 +496,8 @@ const Onboarding = (props) => {
                                     console.log("tempData: ", tempData)
                                     tempData.user.accountId = response.result;
                                     localStorage.setItem("user", JSON.stringify(tempData));
-                                    console.log("if portion of .then if-than-else")
                                     setPageView("receipt");
                                 } else {
-                                    console.log("else portion of .then if-than-else")
                                     setPageView("receiptErrorPage");
                                 }
                             }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model

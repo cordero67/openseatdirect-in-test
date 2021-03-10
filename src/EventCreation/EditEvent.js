@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useRef, useEffect, Fragment } from "react";
 
 import dateFnsFormat from 'date-fns/format';

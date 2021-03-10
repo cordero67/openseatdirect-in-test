@@ -656,6 +656,7 @@ const TicketSelection = () => {
     if (display === "main" && orderTotals.ticketsPurchased > 0) {
       return (
         <OrderSummary
+          cancel={false}
           ticketOrder={ticketInfo}
           ticketCurrency={orderTotals.currencySym}
         />

@@ -459,7 +459,13 @@ const CustomerInfo = props => {
       // defines and sets "orderSummary" which is displayed in right panel
       let orderSummary;
       if (orderTotals.ticketsPurchased > 0) {
-        orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
+        orderSummary = <OrderSummary
+          cancel={true}
+          eventNum={eventDetails.eventNum}
+          vanity={eventDetails.vanityLink}
+          ticketOrder={ticketInfo}
+          ticketCurrency={orderTotals.currencySym}
+        />;
       } else if (orderTotals.finalPurchaseAmount <= 0) {
         orderSummary = (
           <div className={classes.EmptyOrderSummary}>
