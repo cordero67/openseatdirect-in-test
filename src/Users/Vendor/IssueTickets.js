@@ -182,10 +182,12 @@ const IssueTickets = (props) => {
       tempObject.ticketName = ticket.ticketName;
       if (ticket.chargedPrice === "0.00") {
         tempObject.ticketPrice = 0;
-        tempObject.paymentMethod = "cash";
+        tempObject.payMethod = "cash";
+        tempObject.amt = 0;
       } else {
         tempObject.ticketPrice = ticket.chargedPrice;
-        tempObject.paymentMethod = ticket.paymentType;
+        tempObject.payMethod = ticket.paymentType;
+        tempObject.amt = ticket.chargedPrice * ticket.numTickets;
       }
       ticketArray.push(tempObject);
     });
@@ -200,7 +202,7 @@ const IssueTickets = (props) => {
       `Bearer ${customerInformation.sessionToken}`
     );
 
-    let url = `${API}/tixorder/manual_order/${customerInformation.userId}`;
+    let url = `${API}/tixorder/offline_order/${customerInformation.userId}`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,

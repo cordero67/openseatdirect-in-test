@@ -1,4 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
+
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+
 import { NavLink } from "react-router-dom";
 import queryString from "query-string";
 
@@ -206,8 +209,10 @@ const TicketSelection = () => {
   return (
     <div style={MainContainer}>
       {loadingSpinner()}
-      {releaseStatement()}
-      {connectionStatus()}
+      <PayPalScriptProvider options={{ "client-id": "test" }}>
+        <PayPalButtons style={{ layout: "horizontal" }} />
+      </PayPalScriptProvider>
+      ;{connectionStatus()}
     </div>
   );
 };

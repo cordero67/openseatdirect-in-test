@@ -7,6 +7,7 @@
     "@fortawesome/free-brands-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
+    "@paypal/react-paypal-js": "^5.0.0",
     "@tinymce/tinymce-react": "^3.5.0",
     "axios": "^0.21.1",
     "braintree-dropin-react": "^0.1.1",

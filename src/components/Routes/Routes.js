@@ -15,6 +15,7 @@ import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Registration from "../../TicketPurchases/Registration";
+import NewPaypal from "../../TicketPurchases/NewPaypal";
 import Authentication from "../../Users/Authentication/Authentication";
 import Slider from "../HomePage/Slider";
 import PrivateRoute from "./PrivateRoute";
@@ -316,6 +317,15 @@ const Routes = () => {
         render={(routeProps) => (
           <React.Fragment>
             <Registration />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/newpaypal/"
+        render={(routeProps) => (
+          <React.Fragment>
+            <NewPaypal />
           </React.Fragment>
         )}
       />
