@@ -210,7 +210,70 @@ const TicketSelection = () => {
     <div style={MainContainer}>
       {loadingSpinner()}
       <PayPalScriptProvider options={{ "client-id": "test" }}>
-        <PayPalButtons style={{ layout: "horizontal" }} />
+        <PayPalButtons
+          style={{ layout: "horizontal" }}
+          createOrder={(data, actions) => {
+            console.log("in createOrder w data=", data);
+            console.log("in createOrder w actions=", actions);
+            return fetch(
+              "https://www.bondirectly.com/api/tixorder/us-mpp-create-order",
+              {
+                method: "POST",
+                headers: {
+                  "content-type": "application/json",
+                },
+                body: JSON.stringify({
+                  merchant_id: "9MBSKA59BGFY6",
+                  eventNum: 59490622550,
+                  totalAmount: 19.84,
+                  isFree: false,
+                  userPromo: "WWW", // optional
+                  tickets: [
+                    {
+                      ticketID: "601d9a7a4e397b5e1815536e",
+                      ticketsSelected: 1,
+                      ticketPrice: 9.97,
+                    },
+                    {
+                      ticketID: "601b6053ae64e54705209613",
+                      ticketsSelected: 1,
+                      ticketPrice: 9.87,
+                    },
+                  ],
+                  firstname: "Peter",
+                  lastname: "Pan",
+                  email: "gual325@gmail.com",
+                }),
+              }
+            )
+              .then(function (res) {
+                return res.json();
+              })
+              .then(function (data) {
+                return data.id;
+              });
+          }}
+          onApprove={(data, actions) => {
+            console.log("in onApprove w data=", data);
+            console.log("in onApprove w actions=", actions);
+            return fetch(
+              "http://bondirectly.com/api/tixorder/us-mpp-capture-order/" +
+                data.orderID,
+              {
+                method: "POST",
+                headers: {
+                  "content-type": "application/json",
+                },
+              }
+            ).then(function (res) {
+              if (!res.ok) {
+                alert("Something went wrong");
+              } else {
+                alert("All good bitch");
+              }
+            });
+          }}
+        />
       </PayPalScriptProvider>
       ;{connectionStatus()}
     </div>
