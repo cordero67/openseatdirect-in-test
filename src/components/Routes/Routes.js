@@ -99,7 +99,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/privacypolicy"
+        path="/privacy-policy"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -116,7 +116,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/termsconditions"
+        path="/terms-and-conditions"
         exact
         render={(routeProps) => (
           <React.Fragment>

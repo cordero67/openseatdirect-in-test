@@ -257,7 +257,7 @@ const TicketSelection = () => {
             console.log("in onApprove w data=", data);
             console.log("in onApprove w actions=", actions);
             return fetch(
-              "http://bondirectly.com/api/tixorder/us-mpp-capture-order/" +
+              "https://bondirectly.com/api/tixorder/us-mpp-capture-order/" +
                 data.orderID,
               {
                 method: "POST",
@@ -272,6 +272,13 @@ const TicketSelection = () => {
                 alert("All good bitch");
               }
             });
+          }}
+          onError={(err) => {
+            console.log("Error encountered");
+            console.log("err: ", err);
+          }}
+          onCancel={() => {
+            console.log("Order cancelled");
           }}
         />
       </PayPalScriptProvider>

@@ -1,6 +1,31 @@
 .MainContainer {
   font-family: Helvetica, sans-serif;
-  padding-top: 60px;
+  font-size: 16px;
+  padding: 70px 20px 40px 20px;
+}
+
+.MainContainer h1 {
+  font-size: 34px;
+  margin: 0px;
+  padding: 25px 0px 15px 0px;
+}
+
+.MainContainer h2 {
+  font-size: 26px;
+  margin: 0px;
+  padding: 15px 0px 15px 0px;
+}
+
+.MainContainer h3 {
+  font-size: 22px;
+  margin: 0px;
+  padding: 10px 0px 10px 0px;
+}
+
+.MainContainer p {
+  line-height: 26px;
+  margin: 0px;
+  padding-bottom: 10px;
 }
 
 .TopContainerLarge {
@@ -8,7 +33,7 @@
   background-color: #000;
   font-family: Helvetica, sans-serif;
   /*height: calc(100vw * (440/650));*/
-  height: calc(100vw/2 - 8px);
+  height: calc(100vw / 2 - 8px);
 }
 
 .BlankCanvas {
@@ -22,8 +47,6 @@
   text-align: left;
   overflow-y: auto;
 }
-
-
 
 @media (min-width: 500px) {
   .BlankCanvas {
@@ -46,7 +69,7 @@
     color: #fff;
     background-color: #000;
     font-family: Helvetica, sans-serif;
-    height: calc(100vw/2 - 8px);
+    height: calc(100vw / 2 - 8px);
   }
 }
 
@@ -58,47 +81,6 @@
     height: 600px;
     padding-left: calc(50vw - 605px);
   }
-}
-
-
-
-
-
-
-
-.TextContainer {
-  color: #101C32;
-  padding-top: 20px;
-  padding-bottom: 20px
-}
-
-
-
-
-.ImageBox {
-  box-sizing: border-box;
-  width: 600px;
-}
-
-.OSDImageContainer {
-  vertical-align: middle;
-  text-align: center;
-  padding-top: 40px;
-  padding-bottom: 40px
-}
-
-.ImageContainer {
-  vertical-align: middle;
-  text-align: center;
-  padding-top: 20px;
-  padding-bottom: 20px
-}
-
-.SectionContainer {
-  width: "100%";
-  text-align: center;
-  padding-top: 20px;
-  padding-bottom: 20px;
 }
 
 .MarketingText {
@@ -114,176 +96,10 @@
   text-align: center;
 }
 
-.DescriptionText {
-  font-family: Lato;
-  font-weight: 400;
-  text-align: center;
-  padding-bottom: 10px;
-}
-
-.Grid {
-  display: grid;
-  grid-template-columns: 250px 250px 250px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  text-align: center;
-}
-
-.GridTight {
-  display: grid;
-  grid-template-columns: 250px 250px 250px;
-  column-gap: "0px";
-  padding-top: 10px;
-  padding-bottom: 10px;
-  text-align: center;
-}
-
-.ImageGrid {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.SignUpForm {
-  background-color: white;
-  margin: auto;
-  width: 100%;
-  padding-top: 20px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  font-size: 16px;
-  text-align: left;
-}
-
-@media (min-width: 450px) {
-  .SignUpForm {
-    background-color: white;
-    margin: auto;
-    width: 400px;
-    padding-top: 20px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-bottom: 20px;
-    font-size: 16px;
-    text-align: left;
-  }
-}
-
-.InputBox {
-  border: 1px solid #8DADD4;
-  border-radius: 0px;
-  background-color: #EFF3FA;
-  width: calc(100vw - 40px);
-  height: 40px;
-}
-
-@media (min-width: 450px) {
-  .InputBox {
-    width: 340px;
-  }
-}
-
-.SubmitButton {
-  border: 1px solid black;
-  background-color: #2F5596;
-  border-radius: 0px;
-  color: #fff;
-  font-size: 14px;
-  width: calc(100vw - 40px);
-  height: 40px;
-  font-weight: 500;
-}
-
-@media (min-width: 450px) {
-  .SubmitButton {
-    width: 300px;
-  }
-}
-
-.VideoSection {
-  text-align: center;
-  padding-top: 10px;
-}
-
-@media (max-width: 383px) {
-  .VideoSection {
-    text-align: center;
-    width: 310;
-    height: 174px;
-  }
-}
-
-@media (max-width: 380px) {
-  .VideoSection {
-    text-align: center;
-    width: 330;
-    height: 185px;
-  }
-}
-
-@media (max-width: 770px) {
-  .VideoSection {
-    text-align: center;
-    width: 420;
-    height: 236px;
-  }
-}
-
-@media (min-width: 770px) {
-  .VideoSection {
-    text-align: center;
-    width: 640;
-    height: 360px;
-  }
-}
-
 .Header {
   display: grid;
   grid-template-columns: 40px 40px 40px 40px;
   font-weight: 500;
   font-size: 18px;
   padding-left: calc(50vw - 80px);
-}
-
-.faFacebook {
-  color: #fff;
-  width: "50px";
-  padding-left: "10px";
-}
-
-.faFacebook:hover {
-  color: #8dadd4;
-  border-color: transparent;
-}
-
-.faYoutube {
-  color: #fff;
-  width: "50px";
-}
-
-.faYoutube:hover {
-  color: #8dadd4;
-  border-color: transparent;
-}
-
-.faTwitter {
-  color: #fff;
-  width: "50px";
-}
-
-.faTwitter:hover {
-  color: #8dadd4;
-  border-color: transparent;
-}
-
-.faInstagram {
-  color: #fff;
-  width: "50px";
-}
-
-.faInstagram:hover {
-  color: #8dadd4;
-  border-color: transparent;
 }

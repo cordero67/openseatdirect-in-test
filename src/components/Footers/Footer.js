@@ -4,6 +4,7 @@ import Logo from "../Logo/Logo";
 import logo from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 
 import styles from "./Footer.module.css";
+import { NonceProvider } from "react-select";
 
 const Footer = () => {
   const [showLargeFooter, setShowLargeFooter] = useState(false);
@@ -40,13 +41,23 @@ const Footer = () => {
           <div>
             <button
               className={styles.Button}
+              styles={{ border: "none", outline: "none" }}
               onClick={() => {
-                window.location.href = `https://www.sandbox.paypal.com/partnerexp/appEntry?referralToken=M2IxMmY5MWEtNDFhYi00MTBkLTllNzgtZjJhM2EwNDJlMmRjODBJUWluVnJYK3ZiUXRRWE1WMS9DUXBUcFVQYXlUZ01sdU1zTDN6K0tVND12Mg==&displayMode=minibrowser`;
+                window.location.href = `/privacy-policy`;
               }}
             >
               Privacy Policy
-            </button>{" "}
-            | <button className={styles.Button}>Terms and Conditions</button>
+            </button>
+            |
+            <button
+              className={styles.Button}
+              styles={{ border: "none", outline: "none" }}
+              onClick={() => {
+                window.location.href = `/terms-and-conditions`;
+              }}
+            >
+              Terms and Conditions
+            </button>
           </div>
         </div>
       </div>
@@ -61,7 +72,27 @@ const Footer = () => {
           <div>
             Copyright &copy; 2020 OpenSeatDirect LLC | All Rights Reserved
           </div>
-          <div>Privacy Policy | Terms and Conditions</div>
+          <div styles={{ border: "none", outline: "none" }}>
+            <button
+              className={styles.Button}
+              styles={{ border: "none", outline: "none" }}
+              onClick={() => {
+                window.location.href = `/privacy-policy`;
+              }}
+            >
+              Privacy Policy
+            </button>
+            |
+            <button
+              className={styles.Button}
+              styles={{ border: "none", outline: "none" }}
+              onClick={() => {
+                window.location.href = `/terms-and-conditions`;
+              }}
+            >
+              Terms and Conditions
+            </button>
+          </div>
         </div>
       </div>
     );
