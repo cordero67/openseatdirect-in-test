@@ -4,9 +4,9 @@ import { NavLink } from "react-router-dom";
 import { isAuthenticated } from "../../Users/apiUsers";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown, } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
-import { signout } from './apiSideDrawer';
+import { signout } from "./apiSideDrawer";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./SideDrawerItems.module.css";
@@ -22,16 +22,19 @@ const isActive = (page, path) => {
   }
 };
 
-const getStatus= () =>{ 
+const getStatus = () => {
   let tempData = JSON.parse(localStorage.getItem("user"));
-  if ('user' in tempData && 'accountId' in tempData.user && 'status' in tempData.user.accountId ) {
-    return tempData.user.accountId.status}
-  else {
-    console.log("returns 0")
+  if (
+    "user" in tempData &&
+    "accountId" in tempData.user &&
+    "status" in tempData.user.accountId
+  ) {
+    return tempData.user.accountId.status;
+  } else {
+    console.log("returns 0");
     return 0;
-  } 
-}
-
+  }
+};
 
 const SideDrawerItems = (props) => {
   const [showSubItems, setShowSubItems] = useState(false);
@@ -42,7 +45,6 @@ const SideDrawerItems = (props) => {
 
   return (
     <ul className={classes.SideItems}>
-
       <li>
         <NavLink
           to="/events"
@@ -75,7 +77,7 @@ const SideDrawerItems = (props) => {
         </li>
       ) : null}
 
-      {isAuthenticated() && (getStatus() !== 7 && getStatus() !== 8) ? (
+      {isAuthenticated() && getStatus() !== 7 && getStatus() !== 8 ? (
         <li>
           <NavLink
             to="/personal"
@@ -87,7 +89,6 @@ const SideDrawerItems = (props) => {
         </li>
       ) : null}
 
-      
       <li>
         <NavLink
           to="/"
@@ -98,7 +99,7 @@ const SideDrawerItems = (props) => {
           Home
         </NavLink>
       </li>
-      
+
       <li>
         <NavLink
           to="/video"
@@ -121,6 +122,27 @@ const SideDrawerItems = (props) => {
         </NavLink>
       </li>
 
+      <li>
+        <NavLink
+          to="/privacy-policy"
+          style={isActive(props.currentPage, "/privacy-policy")}
+          onClick={props.clicked}
+          exact
+        >
+          Privacy Policy
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink
+          to="/terms-and-conditions"
+          style={isActive(props.currentPage, "/terms-and-conditions")}
+          onClick={props.clicked}
+          exact
+        >
+          Terms of Service
+        </NavLink>
+      </li>
 
       {!isAuthenticated() && (
         <li>
@@ -128,7 +150,7 @@ const SideDrawerItems = (props) => {
             to="/auth"
             style={isActive(props.currentPage, "/auth")}
             onClick={() => {
-              props.clicked()
+              props.clicked();
             }}
           >
             Sign In
@@ -143,8 +165,7 @@ const SideDrawerItems = (props) => {
             style={{ color: "#0B1423" }}
             onClick={() => {
               props.clicked();
-              signout(() => {
-              })
+              signout(() => {});
             }}
           >
             Sign Out

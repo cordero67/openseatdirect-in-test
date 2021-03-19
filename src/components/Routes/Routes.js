@@ -14,6 +14,8 @@ import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
+import Registration from "../../TicketPurchases/Registration";
+import NewPaypal from "../../TicketPurchases/NewPaypal";
 import Authentication from "../../Users/Authentication/Authentication";
 import Slider from "../HomePage/Slider";
 import PrivateRoute from "./PrivateRoute";
@@ -40,14 +42,14 @@ const Routes = () => {
 
   const [isResizing, setIsResizing] = useState(false);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
-  
+
   const stylingUpdate = (inWidth) => {
-      setIsResizing(true);
-      setScreenSize(inWidth);
-      setIsResizing(false);
+    setIsResizing(true);
+    setScreenSize(inWidth);
+    setIsResizing(false);
   };
 
-  window.onresize = function(event) {
+  window.onresize = function (event) {
     stylingUpdate(window.innerWidth);
   };
 
@@ -97,7 +99,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/privacypolicy"
+        path="/privacy-policy"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -114,7 +116,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/termsconditions"
+        path="/terms-and-conditions"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -130,47 +132,45 @@ const Routes = () => {
         )}
       />
 
-    <Route
-      path="/personal"
-      exact
-      render={(routeProps) => (
-        <React.Fragment>
-          <Header
-            positioning="fixed"
-            logo={LogoC}
-            clicked={toggleSideDrawer}
-          />
-          <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-          <BuyerAccount />
-          <Footer></Footer>
-        </React.Fragment>
-      )}
-    />
+      <Route
+        path="/personal"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <BuyerAccount />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
 
-    <Route
-      path="/paypalonboarding"
-      exact
-      render={(routeProps) => (
-          <PaypalOnboarding />
-      )}
-    />
+      <Route
+        path="/paypalonboarding"
+        exact
+        render={(routeProps) => <PaypalOnboarding />}
+      />
 
-    <Route
-      path="/vendor"
-      exact
-      render={(routeProps) => (
-        <React.Fragment>
-          <Header
-            positioning="fixed"
-            logo={LogoC}
-            clicked={toggleSideDrawer}
-          />
-          <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-          <VendorAccount />
-          <Footer></Footer>
-        </React.Fragment>
-      )}
-    />
+      <Route
+        path="/vendor"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <VendorAccount />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
 
       <Route
         path="/video"
@@ -312,6 +312,23 @@ const Routes = () => {
         )}
       />
 
+      <Route
+        path="/er/"
+        render={(routeProps) => (
+          <React.Fragment>
+            <Registration />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/newpaypal/"
+        render={(routeProps) => (
+          <React.Fragment>
+            <NewPaypal />
+          </React.Fragment>
+        )}
+      />
     </Fragment>
   );
 };
