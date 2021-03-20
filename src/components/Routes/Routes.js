@@ -12,7 +12,8 @@ import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
-import Checkout from "../../TicketPurchases/Checkout";
+import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
+import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Registration from "../../TicketPurchases/Registration";
 import NewPaypal from "../../TicketPurchases/NewPaypal";
@@ -278,11 +279,21 @@ const Routes = () => {
       />
 
       <Route
-        path="/checkout"
+        path="/checkout-paypalexpress"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Checkout />
+            <CheckoutPayPalExpress />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/checkout-paypalmerchant"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <CheckoutPayPalMerchant />
           </React.Fragment>
         )}
       />

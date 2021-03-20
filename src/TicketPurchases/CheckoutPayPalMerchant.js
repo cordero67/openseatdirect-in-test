@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 
 import { API } from "../config.js";
-import { PayPalButton } from "react-paypal-button-v2";
+//import { PayPalButton } from "react-paypal-button-v2";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 import {
   MainContainerStyling,
@@ -63,7 +64,14 @@ const Checkout = () => {
         console.log("eventDetails: ", eventDetails);
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
-        osdOrderId = tempCart.osdOrderId;
+        /*
+        if (localStorage.getItem("user") === null) {
+          osdOrderId = tempCart.osdOrderId;
+        } else {
+          osdOrderId = null;
+        }
+        */
+        console.log("osdOrderId: ", osdOrderId);
         orderExpiration = tempCart.orderExpiration;
         if ("guestInfo" in tempCart) {
           setCustomerInformation(tempCart.guestInfo);
@@ -72,12 +80,14 @@ const Checkout = () => {
           setCustomerInformation({
             sessionToken: tempUser.token,
             userId: tempUser.user._id,
+            firstname: tempUser.firstname,
+            lastname: tempUser.lastname,
             email: tempUser.user.email,
           });
         } else {
           window.location.href = `/et/${tempCart.eventDetails.vanityLink}?eventID=${tempCart.eventDetails.eventNum}`;
         }
-        setPaypalArray();
+        populatePaypalArray();
         console.log("orderTotals: ", orderTotals);
         console.log("ticketInfo: ", ticketInfo);
       } else {
@@ -122,23 +132,22 @@ const Checkout = () => {
   };
 
   // sets the PayPal "purchase_units.items" value populated from "ticketInfo"
-  const setPaypalArray = () => {
+  const populatePaypalArray = () => {
     paypalArray = [];
+
     ticketInfo.forEach((item) => {
       if (item.ticketsSelected > 0) {
         let newElement;
         newElement = {
-          name: `${eventDetails.eventTitle}: ${item.ticketName}`,
-          sku: item.ticketID,
-          unit_amount: {
-            currency_code: orderTotals.currencyAbv,
-            value: item.ticketPrice.toString(),
-          },
-          quantity: item.ticketsSelected.toString(),
+          //name: `${eventDetails.eventTitle}: ${item.ticketName}`,
+          ticketID: item.ticketID,
+          ticketsSelected: item.ticketsSelected,
+          ticketPrice: item.ticketPrice,
         };
         paypalArray.push(newElement);
       }
     });
+
     console.log("paypalArray: ", paypalArray);
   };
 
@@ -174,91 +183,6 @@ const Checkout = () => {
       throw Error(response.status);
     }
     return response;
-  };
-
-  // submits paypal transaction information to the server
-  const payPalPurchase = (details) => {
-    setDisplay("spinner");
-    let isFree = true;
-
-    if (details.purchase_units[0].amount.value > 0) {
-      isFree = false;
-    }
-
-    let url;
-    let order = {};
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("user") !== null
-    ) {
-      url = `${API}/tixorder/signed_placeorder/${customerInformation.userId}`;
-      order = {
-        osdOrderId: details.purchase_units[0].reference_id,
-        totalAmount: details.purchase_units[0].amount.value,
-        isFree: isFree,
-        paymentGatewayId: details.id, // not required if “isFree === true”
-      };
-      myHeaders.append(
-        "Authorization",
-        `Bearer ${customerInformation.sessionToken}`
-      );
-      setTransactionInfo(
-        loadTransactionInfo(
-          eventDetails,
-          orderTotals,
-          ticketInfo,
-          customerInformation.email
-        )
-      );
-    } else {
-      url = `${API}/tixorder/unsigned_placeorder`;
-      order = {
-        osdOrderId: details.purchase_units[0].reference_id,
-        totalAmount: details.purchase_units[0].amount.value,
-        isFree: isFree,
-        paymentGatewayId: details.id, // not required if “isFree === true”
-        guestFirstname: customerInformation.firstname,
-        guestLastname: customerInformation.lastname,
-        guestEmail: customerInformation.email,
-      };
-      setTransactionInfo(
-        loadTransactionInfo(
-          eventDetails,
-          orderTotals,
-          ticketInfo,
-          customerInformation.guestEmail
-        )
-      );
-    }
-
-    let fetcharg = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(order),
-    };
-
-    fetch(url, fetcharg)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        setOrderStatus(data.status);
-        setDisplay("confirmation");
-      })
-      .catch((error) => {
-        console.log("paymentOnSuccess() error.message: ", error.message);
-        setOrderStatus(false);
-        setDisplay("confirmation");
-      })
-      .finally(() => {
-        purchaseConfirmHandler();
-      });
   };
 
   // defines and sets "loadingSpinner" view status
@@ -314,63 +238,119 @@ const Checkout = () => {
   // displays the "PayPalButton" or an "empty cart" error message
   const showPayPal = (
     <div>
-      <PayPalButton
-        onButtonReady={() => {}}
-        createOrder={(data, actions) => {
-          return actions.order.create({
-            purchase_units: [
-              {
-                reference_id: osdOrderId,
-                amount: {
-                  currency_code: orderTotals.currencyAbv,
-                  value: orderTotals.finalPurchaseAmount.toString(),
+      <PayPalScriptProvider options={{ "client-id": "test" }}>
+        <PayPalButtons
+          style={{ layout: "horizontal" }}
+          createOrder={(data, actions) => {
+            console.log("paypalArray: ", paypalArray);
+            console.log("in createOrder w data=", data);
+            console.log("in createOrder w actions=", actions);
+            console.log("orderTotals: ", orderTotals);
+            console.log("customerInformation: ", customerInformation);
 
-                  breakdown: {
-                    item_total: {
-                      currency_code: orderTotals.currencyAbv,
-                      value: orderTotals.fullPurchaseAmount.toString(),
-                    },
-                    discount: {
-                      currency_code: orderTotals.currencyAbv,
-                      value: orderTotals.discountAmount.toString(),
-                    },
-                  },
-                },
-                items: paypalArray,
-              },
-            ],
-          });
-        }}
-        onCancel={(data) => {
-          console.log("onCancel 'data': ", data);
-        }}
-        onSuccess={(details, data) => {
-          console.log("inside onSuccess, paypal details: ", details);
-          payPalPurchase(details);
-        }}
-        onError={(err) => {
-          console.log("error occurs: ", err);
-          setTransactionStatus({
-            ...transactionStatus,
-            paypalSuccess: false,
-            error: err,
-          });
-          setDisplay("paypal");
-        }}
-        options={{
-          clientId: eventDetails.gatewayClientID,
-          currency: orderTotals.currencyAbv,
-        }}
-        catchError={(err) => {
-          console.log("catchError 'err': ", err);
-          setTransactionStatus({
-            ...transactionStatus,
-            paypalSuccess: false,
-            error: err,
-          });
-          setDisplay("paypal");
-        }}
-      />
+            let myHeaders = new Headers();
+            let url;
+
+            myHeaders.append("Content-Type", "application/json");
+
+            if (osdOrderId === null) {
+              myHeaders.append(
+                "Authorization",
+                `Bearer ${customerInformation.sessionToken}`
+              );
+              url = `https://www.bondirectly.com/api/tixorder/sn-mpp-create-order/${customerInformation.userId}`;
+            } else {
+              url =
+                "https://www.bondirectly.com/api/tixorder/us-mpp-create-order";
+            }
+            // Display the key/value pairs
+
+            for (var pair of myHeaders.entries()) {
+              console.log(pair[0] + ", " + pair[1]);
+            }
+
+            return fetch(url, {
+              method: "POST",
+              headers: myHeaders,
+              body: JSON.stringify({
+                merchant_id: "9MBSKA59BGFY6",
+                eventNum: eventDetails.eventNum,
+                totalAmount: orderTotals.finalPurchaseAmount,
+                isFree: false,
+                userPromo: orderTotals.promoCodeApplied, // optional
+                tickets: paypalArray,
+                firstname: customerInformation.firstname,
+                lastname: customerInformation.lastname,
+                email: customerInformation.email,
+              }),
+            })
+              .then(function (res) {
+                return res.json();
+              })
+              .then(function (data) {
+                console.log("data: ", data);
+                return data.id;
+              });
+          }}
+          onApprove={(data, actions) => {
+            console.log("in onApprove w data=", data);
+            console.log("in onApprove w actions=", actions);
+
+            let myHeaders = new Headers();
+            let url;
+
+            myHeaders.append("Content-Type", "application/json");
+
+            if (osdOrderId === null) {
+              myHeaders.append(
+                "Authorization",
+                `Bearer ${customerInformation.sessionToken}`
+              );
+              url = `https://www.bondirectly.com/api/tixorder/sn-mpp-capture-order/${customerInformation.userId}`;
+            } else {
+              url = `https://bondirectly.com/api/tixorder/us-mpp-capture-order`;
+            }
+
+            return fetch(url, {
+              method: "POST",
+              headers: myHeaders,
+              body: JSON.stringify({ id: data.orderID }),
+            }).then(function (res) {
+              if (!res.ok) {
+                alert("OSD Error");
+              } else {
+                alert("All good bitch");
+                let event = JSON.parse(localStorage.getItem("eventNum"));
+                localStorage.removeItem(`cart_${event}`);
+                localStorage.removeItem(`image_${event}`);
+                localStorage.removeItem(`eventNum`);
+                window.location.href = `/events`;
+              }
+            });
+          }}
+          onCancel={() => {
+            //console.log("onCancel 'data': ", data);
+          }}
+          onError={(err) => {
+            console.log("onError 'err': ", err);
+            setTransactionStatus({
+              ...transactionStatus,
+              paypalSuccess: false,
+              error: err,
+            });
+            setDisplay("paypal");
+          }}
+          catchError={(err) => {
+            console.log("catchError 'err': ", err);
+            setTransactionStatus({
+              ...transactionStatus,
+              paypalSuccess: false,
+              error: err,
+            });
+            setDisplay("paypal");
+          }}
+        />
+      </PayPalScriptProvider>
     </div>
   );
   // LOOKS GOOD BUT REVIEW LOGIC
@@ -467,6 +447,11 @@ const Checkout = () => {
             </div>
             <div style={EventTicketSection}>
               {timeRemaining()}
+              <br></br>
+              <span style={{ fontSize: "18px", fontWeight: "600" }}>
+                PayPal Marketplace
+              </span>
+              <br></br>
               <br></br>
               <span className={classes.TicketType}>Payment Information</span>
               <br></br>

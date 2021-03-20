@@ -6,15 +6,25 @@ import { API } from "../config.js";
 import { getEventData, getEventImage } from "./Resources/apiCore";
 
 import {
-  loadEventDetails, loadTicketInfo, loadPromoCodeDetails,
-  loadOrderTotals, changeOrderTotals, changeTicketInfo,
-  amendPromoCodeDetails, amendTicketInfo, clearPromoDetails,
-  clearTicketInfo, clearOrderTotals
+  loadEventDetails,
+  loadTicketInfo,
+  loadPromoCodeDetails,
+  loadOrderTotals,
+  changeOrderTotals,
+  changeTicketInfo,
+  amendPromoCodeDetails,
+  amendTicketInfo,
+  clearPromoDetails,
+  clearTicketInfo,
+  clearOrderTotals,
 } from "./Resources/TicketSelectionFunctions";
 import { DateRange } from "./Resources/PricingFunctions";
 import {
-  MainContainerStyling, MainGridStyling, EventTicketSectionStyling,
-  OrderSummarySectionStyling, OrderSummarySectionAltStyling,
+  MainContainerStyling,
+  MainGridStyling,
+  EventTicketSectionStyling,
+  OrderSummarySectionStyling,
+  OrderSummarySectionAltStyling,
 } from "./Resources/Styling";
 import Spinner from "../components/UI/Spinner/Spinner";
 import CartLink from "./Components/CartLink";
@@ -41,12 +51,13 @@ const TicketSelection = () => {
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
-  
+
   const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
-  
+
   const [orderStatus, setOrderStatus] = useState(true); // defines if PayPal order was validated by server
 
-  const [promoCodeDetails, setPromoCodeDetails] = useState({ // defines event's specific promo codes
+  const [promoCodeDetails, setPromoCodeDetails] = useState({
+    // defines event's specific promo codes
     available: false,
     applied: false,
     input: false,
@@ -54,26 +65,30 @@ const TicketSelection = () => {
     appliedPromoCode: "",
     inputtedPromoValue: "",
     lastInvalidPromoCode: "",
-    eventPromoCodes: []
+    eventPromoCodes: [],
   });
   const [ticketInfo, setTicketInfo] = useState([]); // ticket order specific ticket information
   const [orderTotals, setOrderTotals] = useState([]); // ticket order general info
   const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
-  const [customerInformation, setCustomerInformation] = useState({ // defines contact information sent to server
+  const [customerInformation, setCustomerInformation] = useState({
+    // defines contact information sent to server
     name: "",
     email: "",
     sessionToken: "",
-    userId: ""
+    userId: "",
   });
   // LOOKS GOOD
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       setCustomerInformation({
         name: tempUser.user.name,
         email: tempUser.user.email,
         sessionToken: tempUser.token,
-        userId: tempUser.user._id
+        userId: tempUser.user._id,
       });
     }
     eventData(queryString.parse(window.location.search).eventID);
@@ -86,18 +101,23 @@ const TicketSelection = () => {
       .then((res) => {
         console.log("EVENT DATA OBJECT from Server: ", res);
         eventDetails = loadEventDetails(res);
+        eventDetails.gateway = "PayPalMarketplace";
+        //eventDetails.gateway = "PayPalExpress";
+        console.log("eventDetails: ", eventDetails);
         // checks if an order exists in local storage
         if (
           typeof window !== "undefined" &&
           localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
         ) {
-          let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+          let cart = JSON.parse(
+            localStorage.getItem(`cart_${eventDetails.eventNum}`)
+          );
           setTicketInfo(cart.ticketInfo);
           setPromoCodeDetails(cart.promoCodeDetails);
           setOrderTotals(cart.orderTotals);
         } else {
           console.log("ticketInfo: ", loadTicketInfo(res));
-          if(res.tickets.length === 0) {
+          if (res.tickets.length === 0) {
             window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
           }
           setTicketInfo(loadTicketInfo(res));
@@ -106,12 +126,19 @@ const TicketSelection = () => {
         }
         // asks for image if event is successfully imported
         getEventImage(eventID)
-          .then((res) => {eventLogo = res;})
-          .catch((err) => {eventLogo = DefaultLogo;})
-          .finally(() => {setDisplay("main")});
+          .then((res) => {
+            eventLogo = res;
+          })
+          .catch((err) => {
+            eventLogo = DefaultLogo;
+          })
+          .finally(() => {
+            setDisplay("main");
+          });
       })
-      .catch((err) => {setDisplay("connection")}
-    );
+      .catch((err) => {
+        setDisplay("connection");
+      });
   };
   // LOOKS GOOD
   const stylingUpdate = (inWidth, inHeight) => {
@@ -131,7 +158,9 @@ const TicketSelection = () => {
   };
   // LOOKS GOOD
   // determines resized width and height of window
-  window.onresize = function (event) {stylingUpdate(window.innerWidth, window.innerHeight)};
+  window.onresize = function (event) {
+    stylingUpdate(window.innerWidth, window.innerHeight);
+  };
   // LOOKS GOOD
   // toggles between "order pane" views
   const switchShowOrderSummary = (event) => {
@@ -154,21 +183,25 @@ const TicketSelection = () => {
     localStorage.removeItem(`eventNum`);
   };
   // LOOKS GOOD
-  const handleErrors = response => {
-    if (!response.ok) {throw Error(response.status)}
+  const handleErrors = (response) => {
+    if (!response.ok) {
+      throw Error(response.status);
+    }
     return response;
   };
   // LOOKS GOOD
   const freeTicketHandler = () => {
     let email = customerInformation.email;
     let name = customerInformation.name;
-    setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
+    setTransactionInfo(
+      loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
+    );
 
     let userPromo = "";
     let tickets = [];
 
-    ticketInfo.map(item => {
-      if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+    ticketInfo.map((item) => {
+      if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
         let tempObject = {};
         tempObject.ticketID = item.ticketID;
         tempObject.ticketsSelected = item.ticketsSelected;
@@ -187,38 +220,45 @@ const TicketSelection = () => {
     let order = {
       eventNum: eventDetails.eventNum,
       totalAmount: 0,
-      isFree:  true,
+      isFree: true,
       userPromo: userPromo,
-      tickets: tickets
-    }
+      tickets: tickets,
+    };
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${customerInformation.sessionToken}`);
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${customerInformation.sessionToken}`
+    );
 
-    let url = `${API}/tixorder/signed_expressorder/${customerInformation.userId}`
-    let fetcharg ={
+    let url = `${API}/tixorder/signed_expressorder/${customerInformation.userId}`;
+    let fetcharg = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (order),
+      body: JSON.stringify(order),
     };
     console.log("fetching with: ", url, fetcharg);
-    console.log("Free ticket order: ", order)
-    setDisplay("spinner")
-    fetch(url, fetcharg )
-    .then(handleErrors)
-    .then((response) => {return response.json()})
-    .then((data) => {
-      console.log ("fetch return got back data:", data);
-      setOrderStatus(data.status);
-      setDisplay("confirmation")
-    })
-    .catch((error) => {
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setDisplay("connection")
-    })
-    .finally(() => {purchaseConfirmHandler()});
-  }
+    console.log("Free ticket order: ", order);
+    setDisplay("spinner");
+    fetch(url, fetcharg)
+      .then(handleErrors)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        setOrderStatus(data.status);
+        setDisplay("confirmation");
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setDisplay("connection");
+      })
+      .finally(() => {
+        purchaseConfirmHandler();
+      });
+  };
   // LOOKS GOOD
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
   const updateOrderTotals = (promoCode) => {
@@ -229,7 +269,9 @@ const TicketSelection = () => {
   const applyPromoCodeHandler = (event, inputtedPromoCode) => {
     event.preventDefault();
     if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
-      setPromoCodeDetails(amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails));
+      setPromoCodeDetails(
+        amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails)
+      );
       setTicketInfo(amendTicketInfo(inputtedPromoCode, ticketInfo));
       updateOrderTotals(inputtedPromoCode);
     } else {
@@ -342,7 +384,7 @@ const TicketSelection = () => {
       return (
         <div className={classes.AppliedPromoCode}>
           <ion-icon
-            style={{marginTop: "5px", fontSize: "16px", color: "black"}}
+            style={{ marginTop: "5px", fontSize: "16px", color: "black" }}
             name="checkmark-circle-outline"
           />{" "}
           Code{" "}
@@ -400,10 +442,7 @@ const TicketSelection = () => {
       customerInformation.sessionToken !== ""
     ) {
       return (
-        <button
-          onClick={freeTicketHandler}
-          className={classes.ButtonGreen}
-        >
+        <button onClick={freeTicketHandler} className={classes.ButtonGreen}>
           SUBMIT ORDER
         </button>
       );
@@ -413,7 +452,13 @@ const TicketSelection = () => {
     ) {
       return (
         <button
-          onClick={() => {reserveOrder(true);}}
+          onClick={() => {
+            if (eventDetails.gateway === "PayPalExpress") {
+              reserveOrder(true);
+            } else if (eventDetails.gateway === "PayPalMarketplace") {
+              storeOrder();
+            }
+          }}
           className={classes.ButtonGreen}
         >
           PROCEED TO CHECKOUT
@@ -422,7 +467,13 @@ const TicketSelection = () => {
     } else if (orderTotals.ticketsPurchased > 0) {
       return (
         <button
-          onClick={() => {reserveOrder(false);}}
+          onClick={() => {
+            if (eventDetails.gateway === "PayPalExpress") {
+              reserveOrder(false);
+            } else if (eventDetails.gateway === "PayPalMarketplace") {
+              storeOrder();
+            }
+          }}
           className={classes.ButtonGreen}
         >
           PROCEED TO CHECKOUT
@@ -430,10 +481,7 @@ const TicketSelection = () => {
       );
     } else {
       return (
-        <button
-          disabled={true}
-          className={classes.ButtonGreenOpac}
-        >
+        <button disabled={true} className={classes.ButtonGreenOpac}>
           PROCEED TO CHECKOUT
         </button>
       );
@@ -447,7 +495,7 @@ const TicketSelection = () => {
     let tickets = [];
 
     ticketInfo.map((item, index) => {
-      if(item.ticketsSelected > 0) {
+      if (item.ticketsSelected > 0) {
         let tempObject = {};
         tempObject.ticketID = item.ticketID;
         tempObject.ticketsSelected = item.ticketsSelected;
@@ -463,15 +511,17 @@ const TicketSelection = () => {
       }
     });
 
-    if (totalAmount > 0) {isFree = false;}
+    if (totalAmount > 0) {
+      isFree = false;
+    }
 
     let order = {
       eventNum: eventDetails.eventNum,
       totalAmount: totalAmount,
       isFree: isFree,
       userPromo: userPromo,
-      tickets: tickets
-    }
+      tickets: tickets,
+    };
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -479,43 +529,55 @@ const TicketSelection = () => {
 
     if (signed) {
       url = `${API}/tixorder/signed_reserveorder/${customerInformation.userId}`;
-      myHeaders.append("Authorization", `Bearer ${customerInformation.sessionToken}`);
+      myHeaders.append(
+        "Authorization",
+        `Bearer ${customerInformation.sessionToken}`
+      );
     } else {
       url = `${API}/tixorder/unsigned_reserveorder`;
     }
 
-    let fetcharg ={
+    let fetcharg = {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify(order),
     };
+
     console.log("fetching with: ", url, fetcharg);
-    console.log("Free ticket order: ", order)
-    setDisplay("spinner")
-    fetch(url, fetcharg )
-    .then(handleErrors)
-    .then((response) => {return response.json()})
-    .then((data) => {
-      console.log ("fetch return got back data:", data);
-      storeOrder(data.data.osdOrderId);
-    })
-    .catch((error) => {
-      console.log("reserveOrder() error.message: ", error.message);
-      setDisplay("connection")
-    });
-  }
+    console.log("Free ticket order: ", order);
+    setDisplay("spinner");
+    fetch(url, fetcharg)
+      .then(handleErrors)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        storeReservedOrder(data.data.osdOrderId);
+      })
+      .catch((error) => {
+        console.log("reserveOrder() error.message: ", error.message);
+        setDisplay("connection");
+      });
+  };
   // LOOKS GOOD
   // stores order and event information into "localStorage"
-  const storeOrder = (orderId) => {
+  const storeReservedOrder = (orderId) => {
     let signedIn = false;
+    console.log("Inside 'storeReservedOrder'");
 
     if (typeof window !== "undefined") {
-      localStorage.setItem(`image_${eventDetails.eventNum}`, JSON.stringify(eventLogo));
+      localStorage.setItem(
+        `image_${eventDetails.eventNum}`,
+        JSON.stringify(eventLogo)
+      );
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
 
       // if "cart" exists resaves exisiting "guestInfo"
       if (localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
-        let cart = JSON.parse(localStorage.getItem(`cart_${eventDetails.eventNum}`));
+        let cart = JSON.parse(
+          localStorage.getItem(`cart_${eventDetails.eventNum}`)
+        );
         localStorage.setItem(
           `cart_${eventDetails.eventNum}`,
           JSON.stringify({
@@ -525,8 +587,9 @@ const TicketSelection = () => {
             orderTotals: orderTotals,
             guestInfo: cart.guestInfo,
             osdOrderId: orderId,
-            orderExpiration: new Date(+new Date() + (7 * 60000))
-          }))
+            orderExpiration: new Date(+new Date() + 7 * 60000),
+          })
+        );
       } else {
         localStorage.setItem(
           `cart_${eventDetails.eventNum}`,
@@ -536,15 +599,85 @@ const TicketSelection = () => {
             ticketInfo: ticketInfo,
             orderTotals: orderTotals,
             osdOrderId: orderId,
-            orderExpiration: new Date(+new Date() + (7 * 60000))
+            orderExpiration: new Date(+new Date() + 7 * 60000),
           })
-        )
+        );
       }
-      if (localStorage.getItem(`user`) !== null) {signedIn = true}
+      if (localStorage.getItem(`user`) !== null) {
+        signedIn = true;
+      }
     }
-    
+
     if (signedIn === true) {
-      window.location.href = "/checkout";
+      console.log("eventDetails.gateway: ", eventDetails.gateway);
+      if (eventDetails.gateway === "PayPalExpress") {
+        window.location.href = "/checkout-paypalexpress";
+      } else if (eventDetails.gateway === "PayPalMarketplace") {
+        window.location.href = "/checkout-paypalmerchant";
+      } else {
+        window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+      }
+    } else if (orderTotals.finalPurchaseAmount === 0) {
+      window.location.href = "/infofree";
+    } else {
+      window.location.href = "/infopaid";
+    }
+  };
+  // LOOKS GOOD
+  // stores order and event information into "localStorage"
+  const storeOrder = () => {
+    let signedIn = false;
+    console.log("Inside 'storeOrder'");
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        `image_${eventDetails.eventNum}`,
+        JSON.stringify(eventLogo)
+      );
+      localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
+
+      // if "cart" exists resaves exisiting "guestInfo"
+      if (localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
+        let cart = JSON.parse(
+          localStorage.getItem(`cart_${eventDetails.eventNum}`)
+        );
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals,
+            guestInfo: cart.guestInfo,
+            orderExpiration: new Date(+new Date() + 7 * 60000),
+          })
+        );
+      } else {
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals,
+            orderExpiration: new Date(+new Date() + 7 * 60000),
+          })
+        );
+      }
+      if (localStorage.getItem(`user`) !== null) {
+        signedIn = true;
+      }
+    }
+
+    if (signedIn === true) {
+      console.log("eventDetails.gateway: ", eventDetails.gateway);
+      if (eventDetails.gateway === "PayPalExpress") {
+        window.location.href = "/checkout-paypalexpress";
+      } else if (eventDetails.gateway === "PayPalMarketplace") {
+        window.location.href = "/checkout-paypalmerchant";
+      } else {
+        window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+      }
     } else if (orderTotals.finalPurchaseAmount === 0) {
       window.location.href = "/infofree";
     } else {
@@ -557,20 +690,22 @@ const TicketSelection = () => {
     if (display === "spinner") {
       return (
         <div className={classes.BlankCanvas}>
-          <Spinner/>
+          <Spinner />
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
   // LOOKS GOOD
   // defines and sets "connectionStatus" view status
   const connectionStatus = (condition) => {
     if (display === "connection") {
       return (
         <div className={classes.BlankCanvas}>
-          <div>System error.
-            <br></br>Please try again later.</div>
-          <div style={{paddingTop: "20px"}}>
+          <div>
+            System error.
+            <br></br>Please try again later.
+          </div>
+          <div style={{ paddingTop: "20px" }}>
             <button
               className={classes.ButtonGrey}
               onClick={() => {
@@ -581,9 +716,9 @@ const TicketSelection = () => {
             </button>
           </div>
         </div>
-      )
+      );
     } else return null;
-  }
+  };
   // LOOKS GOOD
   // creates event header with date/time range
   const eventHeader = () => {
@@ -599,7 +734,7 @@ const TicketSelection = () => {
           </div>
         </Fragment>
       );
-    } else return null
+    } else return null;
   };
   // LOOKS GOOD
   // creates list of ticket types and ticket selection functionality
@@ -622,7 +757,7 @@ const TicketSelection = () => {
           })}
         </div>
       );
-    } else return null
+    } else return null;
   };
   // LOOKS GOOD
   // determines whether or not to display purchase amount
@@ -665,12 +800,12 @@ const TicketSelection = () => {
       return (
         <div className={classes.EmptyOrderSummary}>
           <ion-icon
-            style={{fontSize: "36px", color: "grey"}}
+            style={{ fontSize: "36px", color: "grey" }}
             name="cart-outline"
           />
         </div>
       );
-    } else return null
+    } else return null;
   };
   // LOOKS GOOD
   // creates order pane with image and order summary sections
@@ -694,7 +829,9 @@ const TicketSelection = () => {
           </div>
           <div className={classes.EventFooter}>
             <div className={classes.CartLink}>{cartLink(showDoublePane)}</div>
-            <div className={classes.TotalAmount}>{totalAmount(showDoublePane)}</div>
+            <div className={classes.TotalAmount}>
+              {totalAmount(showDoublePane)}
+            </div>
             <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
           </div>
         </Fragment>
@@ -747,7 +884,7 @@ const TicketSelection = () => {
       } else {
         return <div style={MainGrid}>{orderPane()}</div>;
       }
-    } else return null
+    } else return null;
   };
   // LOOKS GOOD
   const purchaseConfirmation = () => {
@@ -755,7 +892,7 @@ const TicketSelection = () => {
       return (
         <div
           className={classes.BlankCanvas}
-          style={{textAlign: "left", color: "black"}}
+          style={{ textAlign: "left", color: "black" }}
         >
           <div style={{ paddingTop: "20px" }}>
             <OrderConfirm
@@ -764,8 +901,8 @@ const TicketSelection = () => {
             />
           </div>
         </div>
-      )
-    } else return null
+      );
+    } else return null;
   };
 
   return (
@@ -776,7 +913,6 @@ const TicketSelection = () => {
       {connectionStatus()}
     </div>
   );
-
 };
 
 export default TicketSelection;
