@@ -101,7 +101,7 @@ const TicketSelection = () => {
       .then((res) => {
         console.log("EVENT DATA OBJECT from Server: ", res);
         eventDetails = loadEventDetails(res);
-        eventDetails.gateway = "PayPalMarketplace";
+        //eventDetails.gateway = "PayPalMarketplace";
         //eventDetails.gateway = "PayPalExpress";
         console.log("eventDetails: ", eventDetails);
         // checks if an order exists in local storage
