@@ -152,7 +152,7 @@ const EventEdit = (props) => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
-    ) {
+      ) {
       // loads sign-in data
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
@@ -187,6 +187,9 @@ const EventEdit = (props) => {
     }
   }, []);
 
+
+
+
   //THIS SECTION IS FAIRLY UNIQUE COMPARED TO "CreateEvent"
   const saveEvent = async (newStatus) => {
     console.log("eventDescription: ", eventDescription)
@@ -195,22 +198,23 @@ const EventEdit = (props) => {
     let tempEventTitleOmission = false;
     setPageErrors(false);
     setEventTitleOmission(false);
-
+  
     if (
       typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
+      localStorage.getItem(`user`) !== null) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
     } else {
       window.location.href = "/signin";
-    }
-
+    };
+  
     let tempStatus = { ...eventStatus };
     tempStatus.status = newStatus;
 
-    console.log("ticketDetails: ", ticketDetails)
+    console.log("ticketDetails: ", ticketDetails);
+  
+  
 
     ticketDetails.forEach((ticket, index) => {
       if(ticket.nameWarning) {
@@ -275,13 +279,13 @@ const EventEdit = (props) => {
           tempPageErrors = true;
         }
       }
-    })
-
+    });
+  
     if (!eventDescription.eventTitle) {
       console.log("You need to complete these fields");
       setEventTitleOmission(true);
       tempEventTitleOmission = true;
-    }
+    };
 
     if (!tempPageErrors && !tempEventTitleOmission) {
       let eventDescriptionFields = [
@@ -335,7 +339,7 @@ const EventEdit = (props) => {
         tempDescription.locationNote = "";
         tempDescription.webinarLink = "";
         tempDescription.onlineInformation = "";
-      }
+      };
 
       var formData = new FormData();
 
@@ -347,7 +351,7 @@ const EventEdit = (props) => {
         tempDescription.isDraft = false;
         formData.append("isDraft", "false");
         console.log("event will be live")
-      }
+      };
 
       setEventDescription(tempDescription);
 
@@ -379,6 +383,7 @@ const EventEdit = (props) => {
         console.log("eventDescription.photo: ", eventDescription.photo);
         console.log("eventDescription.photoChanged: ", eventDescription.photoChanged);
       }
+    
 
       // eliminate empty ticket types
       let tempTicketDetails = [...ticketDetails];
@@ -405,7 +410,7 @@ const EventEdit = (props) => {
               `tickets[${index}][currency]`,
               ticket.currency.slice(0, 3)
             );
-          }
+          };
 
           ticketDetailsFields.forEach((field) => {
             console.log ("1) FORM APPENDING>> if ",ticket[field], `tickets[${index}][${field}]`, ticket[field]);
@@ -490,14 +495,14 @@ const EventEdit = (props) => {
         }
         else {
           console.log("skipped ticket ", index);
-        }
+        };
 
       });
-
+    
       // Display the key/value pairs
       for (var pair of formData.entries()) {
         console.log(pair[0] + ", " + pair[1]);
-      }
+      };
 
       let userid = vendorInfo.id;
 
@@ -506,43 +511,130 @@ const EventEdit = (props) => {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", authstring);
 
-      let apiurl;
-      apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
+      let apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
 
-      fetch(apiurl, {
-        method: "post",
-        headers: myHeaders,
-        body: formData,
-        redirect: "follow",
-      })
-      .then(handleErrors)
-      .then((response) => {
-        console.log("response in event/create", response);
-        return response.json();
-      })
-      .then((res) => {
-        console.log("Event was saved/went live");
-        console.log("res: ", res);
-        if (!res.status){
-            if (res.message ){
-              tempStatus.status = "error";
-              } else {
-              tempStatus.status = "failure";
+      let imgurl = "https://api.openseatdirect.com/upload";
+      let hasImgSrc = tempDescription.imgSrc ? true: false;
+
+
+      if (tempDescription.photoChanged ){
+        // photo changed. send ot cdn
+
+          let body = {
+                  mode:"raw",
+                  raw:{
+                    crop:{
+                      top:10, left: 50, width:200, height:100
+                      },
+                  upload:tempDescription.imgSrc
+                  }
+          }; 
+
+          console.log ("img=", body.raw.upload);
+      
+          let myHeaders2 = new Headers();
+          myHeaders2.append("Content-Type", "application/json");
+
+          console.log ("about to fetch to cdn", imgurl, {
+                  method: "POST",
+                  headers: myHeaders2,
+                  body: JSON.stringify(body)
+          });
+
+
+          fetch(imgurl, {
+            method: "POST",
+            headers: myHeaders2,
+            body: JSON.stringify(body)
+                  //              redirect: "follow",
+          })
+          .then(handleErrors)
+          .then((response) => {
+              console.log("response in imgpost", response);
+              return response.json();
+          })
+          .then((res) => {
+            console.log ("res=", res);
+            if (res.status){
+              console.log(">>>>>>Image was saved" , res);
+              let photoUrl1 = "path.xx";
+              formData.append("photoUrl1", photoUrl1);
+
+              return fetch(apiurl, {
+              method: "post",
+              headers: myHeaders,
+              body: formData,
+              redirect: "follow",
+              })
+            } else {
+              throw new Error("imgfail");
             }
-          };
+         })
+        .then(handleErrors)
+        .then(handleErrors)
+        .then((response) => {
+          console.log("response in event/create", response);
+          return response.json();
+        })
+        .then((res) => {
+          console.log("Event was saved/went live");
+          console.log("res: ", res);
+          if (!res.status){
+              if (res.message ){
+                tempStatus.status = "error";
+                } else {
+                tempStatus.status = "failure";
+              }
+            };
+            setEventStatus(tempStatus);
+            return res;
+        })
+        .catch((err) => {
+          console.log("**catch ERROR THROWN", err);
+          tempStatus.status = "failure";
           setEventStatus(tempStatus);
-          return res;
-      })
-      .catch((err) => {
-        console.log("Inside the .catch")
-        console.log("**ERROR THROWN", err);
-        tempStatus.status = "failure";
-        setEventStatus(tempStatus);
-      });
+        });
+
+      } else{
+
+          // no photo change here
+        fetch(apiurl, {
+          method: "post",
+          headers: myHeaders,
+          body: formData,
+          redirect: "follow",
+        })
+        .then(handleErrors)
+        .then((response) => {
+          console.log("response in event/create", response);
+          return response.json();
+        })
+        .then((res) => {
+          console.log("Event was saved/went live");
+          console.log("res: ", res);
+          if (!res.status){
+              if (res.message ){
+                tempStatus.status = "error";
+                } else {
+                tempStatus.status = "failure";
+              }
+            };
+            setEventStatus(tempStatus);
+            return res;
+        })
+        .catch((err) => {
+          console.log("Inside the .catch")
+          console.log("**ERROR THROWN", err);
+          tempStatus.status = "failure";
+          setEventStatus(tempStatus);
+        });
+      };
     }
   }
+            
 
   const handleErrors = (response) => {
+    console.log ("in handleErrors >>>>", response)
     if (!response.ok) {
       throw Error(response.status);
     }
@@ -1017,6 +1109,13 @@ const EventEdit = (props) => {
   const changeEventImage = (image) => {
     let tempDescription = { ...eventDescription };
     tempDescription.photo = image;
+    tempDescription.imgSrc  = image.imgSrc;
+    tempDescription.imgSrcExt = image.imgSrcExt;    // added MM
+    tempDescription.imgPctX = image.pctX;
+    tempDescription.imgPctY = image.pctY;
+    tempDescription.imgPctH = image.pctH;
+    tempDescription.imgPctW = image.pctW;         // MM
+
     tempDescription.photoChanged = true;
     setEventDescription(tempDescription);
   }

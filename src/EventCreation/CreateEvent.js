@@ -506,8 +506,8 @@ const CreateEvent = (props) => {
       myHeaders.append("Authorization", authstring);
 
       let apiurl = `${API}/eventix/${userid}`;
-      let imgurl = `${API}/eventix/imgpost/${userid}`;
-
+//      let imgurl = `${API}/eventix/imgpost/${userid}`;
+      let imgurl = "https://api.openseatdirect.com/upload";
       let hasImgSrc = tempDescription.imgSrc ? true: false;
 
 //      console.log ("event hasPhotoSrc=", hasImgSrc);
@@ -515,21 +515,46 @@ const CreateEvent = (props) => {
       if (hasImgSrc) {
           console.log ("hasImgSrc=true");
 
-          let imgblob = base64DatatoBlob (tempDescription.imgSrc);  // big uncropped image 
-          formData.append("imgSrc",    imgblob);
+
+  //        let imgblob = base64DatatoBlob (tempDescription.imgSrc);  // big uncropped image 
+//          formData.append("imgSrc",    imgblob);
 //          formData.append("imgSrc",    tempDescription.imgSrc);
-          formData.append("imgSrcExt", tempDescription.imgSrcExt);
-          formData.append("imgPctX", tempDescription.imgPctX);
-          formData.append("imgPctY", tempDescription.imgPctY);
-          formData.append("imgPctW", tempDescription.imgPctW);
-          formData.append("imgPctH", tempDescription.imgPctH);
+//          formData.append("imgSrcExt", tempDescription.imgSrcExt);
+//          formData.append("imgPctX", tempDescription.imgPctX);
+//          formData.append("imgPctY", tempDescription.imgPctY);
+//          formData.append("imgPctW", tempDescription.imgPctW);
+//          formData.append("imgPctH", tempDescription.imgPctH);
 
                 // if image is found they fetch image to cdn then fetch to OSD server
+
+          let body = {
+                  mode:"raw",
+                  raw:{
+                    crop:{
+                      top:10, left: 50, width:200, height:100
+                      },
+                  upload:tempDescription.imgSrc
+                  }
+          }; 
+
+          console.log ("img=", body.raw.upload);
+            
+          console.log ("about to fetch ", 
+            imgurl,
+            { method: "POST",
+//              headers: myHeaders,
+              body: JSON.stringify(body),
+              redirect: "follow",
+           });
+           
+           let myHeaders2 = new Headers();
+           myHeaders2.append("Content-Type", "application/json");
+
           fetch(imgurl, {
               method: "POST",
-              headers: myHeaders,
-              body: formData,
-              redirect: "follow",
+              headers: myHeaders2,
+              body: JSON.stringify(body)
+//              redirect: "follow",
           })
           .then(handleErrors)
           .then((response) => {
@@ -537,9 +562,10 @@ const CreateEvent = (props) => {
               return response.json();
           })
           .then((res) => {
+            console.log ("res=", res);
             if (res.status){
               console.log(">>>>>>Image was saved" , res);
-                let photoUrl1 = res.data.photoUrl1;
+                let photoUrl1 = "path.xx";
                 formData.append("photoUrl1", photoUrl1);
                 return fetch(apiurl, {
                   method: "POST",
