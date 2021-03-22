@@ -521,16 +521,11 @@ const EventEdit = (props) => {
         // photo changed. send ot cdn
 
           let body = {
-                  mode:"raw",
-                  raw:{
-                    crop:{
-                      top:10, left: 50, width:200, height:100
-                      },
+                  crop:{ top:10, left: 50, width:200, height:100},
                   upload:tempDescription.imgSrc
-                  }
-          }; 
+          };
 
-          console.log ("img=", body.raw.upload);
+          console.log ("img=", body.upload);
       
           let myHeaders2 = new Headers();
           myHeaders2.append("Content-Type", "application/json");

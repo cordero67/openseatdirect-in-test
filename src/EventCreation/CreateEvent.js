@@ -527,16 +527,12 @@ const CreateEvent = (props) => {
                 // if image is found they fetch image to cdn then fetch to OSD server
 
           let body = {
-                  mode:"raw",
-                  raw:{
-                    crop:{
-                      top:10, left: 50, width:200, height:100
-                      },
+                  crop:{ top:10, left: 50, width:200, height:100},
                   upload:tempDescription.imgSrc
-                  }
-          }; 
+          };
 
-          console.log ("img=", body.raw.upload);
+
+          console.log ("img=", body.upload);
             
           console.log ("about to fetch ", 
             imgurl,
