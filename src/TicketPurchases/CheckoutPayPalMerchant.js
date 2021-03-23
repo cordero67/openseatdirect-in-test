@@ -258,10 +258,9 @@ const Checkout = () => {
                 "Authorization",
                 `Bearer ${customerInformation.sessionToken}`
               );
-              url = `https://www.bondirectly.com/api/tixorder/sn-mpp-create-order/${customerInformation.userId}`;
+              url = `${API}/api/tixorder/sn-mpp-create-order/${customerInformation.userId}`;
             } else {
-              url =
-                "https://www.bondirectly.com/api/tixorder/us-mpp-create-order";
+              url = `${API}/api/tixorder/us-mpp-create-order`;
             }
             // Display the key/value pairs
 
@@ -306,9 +305,9 @@ const Checkout = () => {
                 "Authorization",
                 `Bearer ${customerInformation.sessionToken}`
               );
-              url = `https://www.bondirectly.com/api/tixorder/sn-mpp-capture-order/${customerInformation.userId}`;
+              url = `${API}/api/tixorder/sn-mpp-capture-order/${customerInformation.userId}`;
             } else {
-              url = `https://bondirectly.com/api/tixorder/us-mpp-capture-order`;
+              url = `${API}/api/tixorder/us-mpp-capture-order`;
             }
 
             return fetch(url, {

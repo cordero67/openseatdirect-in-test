@@ -179,14 +179,39 @@ const Checkout = () => {
   // submits paypal transaction information to the server
   const payPalPurchase = (details) => {
     setDisplay("spinner");
-    let isFree = true;
+    let order = {
+      eventNum: eventDetails.eventNum,
+      totalAmount: orderTotals.finalPurchaseAmount,
+      paypalId: details.id, // not required if “isFree === true”
+    };
 
-    if (details.purchase_units[0].amount.value > 0) {
-      isFree = false;
+    if (orderTotals.finalPurchaseAmount === 0) {
+      order.isFree = true;
+    } else {
+      order.isFree = false;
     }
 
+    let tickets = [];
+    ticketInfo.map((item) => {
+      if (item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        tickets.push(tempObject);
+        if (
+          item.ticketsSelected > 0 &&
+          "form" in item.ticketPriceFunction &&
+          item.ticketPriceFunction.form === "promo" &&
+          item.adjustedTicketPrice !== item.ticketPrice
+        ) {
+          order.promo = item.ticketPriceFunction.args[0].name;
+        }
+      }
+    });
+
+    order.tickets = tickets;
+
     let url;
-    let order = {};
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -194,44 +219,37 @@ const Checkout = () => {
       typeof window !== "undefined" &&
       localStorage.getItem("user") !== null
     ) {
-      url = `${API}/tixorder/signed_placeorder/${customerInformation.userId}`;
-      order = {
-        osdOrderId: details.purchase_units[0].reference_id,
-        totalAmount: details.purchase_units[0].amount.value,
-        isFree: isFree,
-        paymentGatewayId: details.id, // not required if “isFree === true”
-      };
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      let email = tempUser.user.email;
+      let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
+
+      setTransactionInfo(
+        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
+      );
+
+      url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+
+      console.log("signed order: ", order);
+
       myHeaders.append(
         "Authorization",
         `Bearer ${customerInformation.sessionToken}`
       );
-      setTransactionInfo(
-        loadTransactionInfo(
-          eventDetails,
-          orderTotals,
-          ticketInfo,
-          customerInformation.email
-        )
-      );
     } else {
-      url = `${API}/tixorder/unsigned_placeorder`;
-      order = {
-        osdOrderId: details.purchase_units[0].reference_id,
-        totalAmount: details.purchase_units[0].amount.value,
-        isFree: isFree,
-        paymentGatewayId: details.id, // not required if “isFree === true”
-        guestFirstname: customerInformation.firstname,
-        guestLastname: customerInformation.lastname,
-        guestEmail: customerInformation.email,
-      };
+      let email = customerInformation.email;
+      let name = `${customerInformation.firstname} ${customerInformation.lastname}`;
+
       setTransactionInfo(
-        loadTransactionInfo(
-          eventDetails,
-          orderTotals,
-          ticketInfo,
-          customerInformation.guestEmail
-        )
+        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );
+
+      url = `${API}/tixorder/unsigned_place_neworder`;
+
+      order.guestFirstname = customerInformation.firstname;
+      order.guestLastname = customerInformation.lastname;
+      order.guestEmail = customerInformation.email;
+
+      console.log("unsigned order: ", order);
     }
 
     let fetcharg = {
@@ -573,3 +591,27 @@ const Checkout = () => {
   );
 };
 export default Checkout;
+
+/*
+      order = {
+        osdOrderId: details.purchase_units[0].reference_id,
+        totalAmount: details.purchase_units[0].amount.value,
+        isFree: isFree,
+        paymentGatewayId: details.id, // not required if “isFree === true”
+        guestFirstname: customerInformation.firstname,
+        guestLastname: customerInformation.lastname,
+        guestEmail: customerInformation.email,
+      };
+      */
+/*
+      body: JSON.stringify({
+        eventNum: eventDetails.eventNum,
+        //totalAmount: orderTotals.finalPurchaseAmount,
+        //isFree: false,
+        userPromo: orderTotals.promoCodeApplied, // optional
+        tickets: paypalArray,
+        //firstname: customerInformation.firstname,
+        //lastname: customerInformation.lastname,
+        //email: customerInformation.email,
+      }),
+      */

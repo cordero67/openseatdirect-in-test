@@ -11,7 +11,7 @@ import {
   MainGridStyling,
   EventTicketSectionStyling,
   OrderSummarySectionStyling,
-  OrderSummarySectionAltStyling
+  OrderSummarySectionAltStyling,
 } from "./Resources/Styling";
 import { DateRange } from "./Resources/PricingFunctions";
 import Spinner from "../components/UI/Spinner/Spinner";
@@ -38,7 +38,7 @@ let EventTicketSection = {};
 let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
-const CustomerInfo = props => {
+const CustomerInfo = (props) => {
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, connection
 
   const [modalStatus, setModalStatus] = useState(false); // defines 'authenticationModal' display status
@@ -48,10 +48,11 @@ const CustomerInfo = props => {
 
   const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
 
-  const [guestInformation, setGuestInformation] = useState({ // defines guest information sent to server
+  const [guestInformation, setGuestInformation] = useState({
+    // defines guest information sent to server
     firstname: "",
     lastname: "",
-    email: ""
+    email: "",
   });
 
   const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
@@ -68,7 +69,7 @@ const CustomerInfo = props => {
         orderTotals = tempCart.orderTotals;
         osdOrderId = tempCart.osdOrderId;
         orderExpiration = tempCart.orderExpiration;
-        if ('guestInfo' in tempCart) {
+        if ("guestInfo" in tempCart) {
           setGuestInformation(tempCart.guestInfo);
         }
       } else {
@@ -81,7 +82,7 @@ const CustomerInfo = props => {
       window.location.href = "/events";
     }
     stylingUpdate(window.innerWidth, window.innerHeight);
-    setDisplay("main")
+    setDisplay("main");
   }, []);
   // LOOKS GOOD
   window.onresize = () => {
@@ -104,7 +105,7 @@ const CustomerInfo = props => {
   };
   // LOOKS GOOD
   // toggles between "order pane" views
-  const switchShowOrderSummary = event => {
+  const switchShowOrderSummary = (event) => {
     if (showOrderSummaryOnly) {
       setShowOrderSummaryOnly(false);
     } else {
@@ -116,21 +117,23 @@ const CustomerInfo = props => {
   const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   // LOOKS GOOD
   let detailsMinimal = () => {
-    if(guestInformation.firstname
-      && guestInformation.lastname
-      && guestInformation.email
-      && regsuper.test(guestInformation.email)) {
-      return true
+    if (
+      guestInformation.firstname &&
+      guestInformation.lastname &&
+      guestInformation.email &&
+      regsuper.test(guestInformation.email)
+    ) {
+      return true;
     } else {
-      return false
+      return false;
     }
-  }
+  };
   // LOOKS GOOD
   const changeField = (event) => {
-    let tempInformation = {...guestInformation};
+    let tempInformation = { ...guestInformation };
     tempInformation[event.target.name] = event.target.value;
     setGuestInformation(tempInformation);
-  }
+  };
   // LOOKS GOOD
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
@@ -144,141 +147,116 @@ const CustomerInfo = props => {
     localStorage.removeItem(`eventNum`);
   };
   // LOOKS GOOD
-  const handleErrors = response => {
-    console.log ("inside handleErrors ", response);
+  const handleErrors = (response) => {
+    console.log("inside handleErrors ", response);
     if (!response.ok) {
-        throw Error(response.status);
+      throw Error(response.status);
     }
     return response;
   };
 
   const freeTicketHandler = (user) => {
+    let order = {
+      eventNum: eventDetails.eventNum,
+      totalAmount: orderTotals.finalPurchaseAmount,
+    };
+
+    if (orderTotals.finalPurchaseAmount === 0) {
+      order.isFree = true;
+    } else {
+      order.isFree = false;
+    }
+
+    let tickets = [];
+    ticketInfo.map((item) => {
+      if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        tickets.push(tempObject);
+        if (
+          item.ticketsSelected > 0 &&
+          "form" in item.ticketPriceFunction &&
+          item.ticketPriceFunction.form === "promo" &&
+          item.adjustedTicketPrice !== item.ticketPrice
+        ) {
+          order.promo = item.ticketPriceFunction.args[0].name;
+        }
+      }
+    });
+
+    order.tickets = tickets;
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    let url;
+
     if (!user) {
       let email = guestInformation.email;
       let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
-      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
 
-      let isFree = true;
+      setTransactionInfo(
+        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
+      );
 
-      if (orderTotals.finalPurchaseAmount > 0) {
-        isFree = false;
-      }
+      order.guestFirstname = guestInformation.firstname;
+      order.guestLastname = guestInformation.lastname;
+      order.guestEmail = guestInformation.email;
 
-      let order = {
-        osdOrderId: osdOrderId,
-        totalAmount: orderTotals.finalPurchaseAmount,
-        isFree: isFree,
-        guestFirstname: guestInformation.firstname,
-        guestLastname: guestInformation.lastname,
-        guestEmail: guestInformation.email,
-      };
+      console.log("signed free ticket tickets: ", tickets);
 
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
+      console.log("signed free ticket order: ", order);
 
-      let url = `${API}/tixorder/unsigned_placeorder`
-      let fetcharg ={
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(order),
-      };
-      console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", order)
-      fetch(url, fetcharg )
+      url = `${API}/tixorder/unsigned_place_neworder`;
+    } else {
+      // following code runs if user signs up rather than proceed with guest checkout
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      let email = tempUser.user.email;
+      let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
+
+      setTransactionInfo(
+        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
+      );
+
+      console.log("signed free ticket tickets: ", tickets);
+      console.log("signed free ticket order: ", order);
+
+      myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
+
+      url = `${API}/tixorder/signed_place_neworder/${tempUser.user._id}`;
+    }
+
+    let fetcharg = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(order),
+    };
+
+    console.log("fetching with: ", url, fetcharg);
+    console.log("Free ticket order: ", order);
+    fetch(url, fetcharg)
       .then(handleErrors)
-      .then((response) => {return response.json()})
-      .then((data)=>{
-        console.log ("fetch return got back data:", data);
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
         setOrderStatus(data.status);
         setDisplay("confirmation");
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
-        setDisplay("connection")
-      })
-      .finally(() => {purchaseConfirmHandler()});
-    }
-    else {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      let email = tempUser.user.email;
-      let name = tempUser.user.name;
-      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name));
-
-      let order = {};
-      let ticketArray = [];
-      order.eventNum = eventDetails.eventNum;
-      ticketInfo.map((item, index) => {
-        if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-          let tempObject = {};
-          tempObject.ticketID = item.ticketID;
-          tempObject.ticketsSelected = item.ticketsSelected;
-          ticketArray.push(tempObject);
-        }
-      });
-      order.tickets = ticketArray;
-
-
-      let userPromo = "";
-      let tickets = [];
-      ticketInfo.map(item => {
-        if(item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-          let tempObject = {};
-          tempObject.ticketID = item.ticketID;
-          tempObject.ticketsSelected = item.ticketsSelected;
-          tickets.push(tempObject);
-          if (
-            item.ticketsSelected > 0 &&
-            "form" in item.ticketPriceFunction &&
-            item.ticketPriceFunction.form === "promo" &&
-            item.adjustedTicketPrice !== item.ticketPrice
-          ) {
-            userPromo = item.ticketPriceFunction.args[0].name;
-          }
-        }
-      });
-      
-      order = {
-        eventNum: eventDetails.eventNum,
-        totalAmount: 0,
-        isFree:  true,
-        userPromo: userPromo,
-        tickets: tickets
-      }
-
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
-  
-      //let url = `${API}/free/signedFreeTickets/${tempUser.user._id}`
-      let url = `${API}/tixorder/signed_expressorder/${tempUser.user._id}`
-      let fetcharg ={
-          method: "POST",
-          headers: myHeaders,
-          body:JSON.stringify (order),
-      };
-
-      console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", order)
-      fetch(url, fetcharg )
-      .then(handleErrors)
-      .then ((response)=>{
-        console.log ("then response: ", response);
-        return response.json()})
-      .then ((data)=>{
-        console.log ("fetch return got back data:", data);
-        setOrderStatus(data.status);
-        setDisplay("confirmation");
-      })
-      .catch ((error)=>{
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setDisplay("connection")
+        setDisplay("connection");
       })
       .finally(() => {
         purchaseConfirmHandler();
-        setModalStatus(false);
+        if (user) {
+          setModalStatus(false);
+        }
       });
-    }
-  }
+  };
 
   // creates submit button to send free ticket information to server
   const checkoutButton = () => {
@@ -310,18 +288,21 @@ const CustomerInfo = props => {
         </div>
       );
     } else return null;
-  }
+  };
 
   // CONTROLS "connectionStatus" VIEW
   const connectionStatus = () => {
     if (display === "connection") {
       return (
         <div className={classes.BlankCanvas}>
-          <div>There is a problem with OSD Server in processing your tickets. Please try again later.</div>
+          <div>
+            There is a problem with OSD Server in processing your tickets.
+            Please try again later.
+          </div>
         </div>
-      )
+      );
     } else return null;
-  }
+  };
 
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   const purchaseConfirmation = () => {
@@ -331,13 +312,13 @@ const CustomerInfo = props => {
           <div style={{ paddingTop: "20px" }}>
             <OrderConfirm
               transactionInfo={transactionInfo}
-              orderStatus={orderStatus}>
-            </OrderConfirm>
+              orderStatus={orderStatus}
+            ></OrderConfirm>
           </div>
         </div>
-      )
+      );
     } else return null;
-  }
+  };
 
   const calculateTimeLeft = () => {
     let timeElapsed = new Date(orderExpiration) - new Date();
@@ -345,10 +326,9 @@ const CustomerInfo = props => {
       days: Math.floor(timeElapsed / (1000 * 60 * 60 * 24)),
       hours: Math.floor((timeElapsed / (1000 * 60 * 60)) % 24),
       minutes: Math.floor((timeElapsed / 1000 / 60) % 60),
-      seconds: Math.floor((timeElapsed / 1000) % 60)
+      seconds: Math.floor((timeElapsed / 1000) % 60),
     };
     return elapsedTime;
-
   };
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
@@ -356,7 +336,7 @@ const CustomerInfo = props => {
   // every 1000 milliseconds === 1 second the timer function runs
   // when it runs it runs the "timeLeft" hook
   // this causes the page to refresh which updates the time expired numbers
-  // these numbers are fed by the "calculateTimeLeft()" function  
+  // these numbers are fed by the "calculateTimeLeft()" function
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(calculateTimeLeft());
@@ -367,16 +347,23 @@ const CustomerInfo = props => {
     if (+new Date(orderExpiration) >= +new Date()) {
       let twoDigitSec;
       if (calculateTimeLeft().seconds < 10) {
-        twoDigitSec = "0" + calculateTimeLeft().seconds
+        twoDigitSec = "0" + calculateTimeLeft().seconds;
       } else {
-        twoDigitSec = calculateTimeLeft().seconds
+        twoDigitSec = calculateTimeLeft().seconds;
       }
-  
+
       return (
-        <div style={{fontSize: "16px", textAlign: "center", paddingBottom: "10px"}}>
-          Ticket reservation expires in{" "}{calculateTimeLeft().minutes}:{twoDigitSec}
+        <div
+          style={{
+            fontSize: "16px",
+            textAlign: "center",
+            paddingBottom: "10px",
+          }}
+        >
+          Ticket reservation expires in {calculateTimeLeft().minutes}:
+          {twoDigitSec}
         </div>
-      )
+      );
     } else {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       localStorage.removeItem(`cart_${event}`);
@@ -384,17 +371,23 @@ const CustomerInfo = props => {
       localStorage.removeItem(`eventNum`);
       window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
       return (
-        <div style={{fontSize: "16px", textAlign: "center", paddingBottom: "10px"}}>
+        <div
+          style={{
+            fontSize: "16px",
+            textAlign: "center",
+            paddingBottom: "10px",
+          }}
+        >
           Ticket reservation has expired.
         </div>
-      )
+      );
     }
-  }
+  };
 
   const mainDisplay = () => {
     if (display === "main") {
       // determines whether or not to display the cart and arrow
-      const cartLink = show => {
+      const cartLink = (show) => {
         if (!show) {
           return (
             <CartLink
@@ -409,18 +402,21 @@ const CustomerInfo = props => {
       };
 
       // determines whether or not to display the purchase amount
-      const totalAmount = show => {
+      const totalAmount = (show) => {
         if (!show && orderTotals.ticketsPurchased > 0) {
-          return <div>{orderTotals.currencySym}{orderTotals.finalPurchaseAmount}</div>;
+          return (
+            <div>
+              {orderTotals.currencySym}
+              {orderTotals.finalPurchaseAmount}
+            </div>
+          );
         } else return null;
       };
 
       let paymentPane = (
         <div className={classes.MainItemLeft}>
           <div className={classes.EventHeader}>
-            <div className={classes.EventTitle}>
-                {eventDetails.eventTitle}
-            </div>
+            <div className={classes.EventTitle}>{eventDetails.eventTitle}</div>
             <div className={classes.EventDate}>
               <DateRange
                 start={eventDetails.startDateTime}
@@ -430,9 +426,9 @@ const CustomerInfo = props => {
           </div>
 
           <div style={EventTicketSection}>
-          {timeRemaining()}
+            {timeRemaining()}
             <div className={classes.TicketType}>Contact Information</div>
-            <div style={{paddingBottom: "20px"}}>
+            <div style={{ paddingBottom: "20px" }}>
               Continue as Guest or{" "}
               <button
                 className={classes.BlueText}
@@ -459,13 +455,15 @@ const CustomerInfo = props => {
       // defines and sets "orderSummary" which is displayed in right panel
       let orderSummary;
       if (orderTotals.ticketsPurchased > 0) {
-        orderSummary = <OrderSummary
-          cancel={true}
-          eventNum={eventDetails.eventNum}
-          vanity={eventDetails.vanityLink}
-          ticketOrder={ticketInfo}
-          ticketCurrency={orderTotals.currencySym}
-        />;
+        orderSummary = (
+          <OrderSummary
+            cancel={true}
+            eventNum={eventDetails.eventNum}
+            vanity={eventDetails.vanityLink}
+            ticketOrder={ticketInfo}
+            ticketCurrency={orderTotals.currencySym}
+          />
+        );
       } else if (orderTotals.finalPurchaseAmount <= 0) {
         orderSummary = (
           <div className={classes.EmptyOrderSummary}>
@@ -519,17 +517,12 @@ const CustomerInfo = props => {
           </div>
         );
       } else if (!showOrderSummaryOnly) {
-        return (
-          <div style={MainGrid}>{paymentPane}</div>
-        );
+        return <div style={MainGrid}>{paymentPane}</div>;
       } else {
-        return (
-          <div style={MainGrid}>{orderPane}</div>
-        );
+        return <div style={MainGrid}>{orderPane}</div>;
       }
-
     } else return null;
-  }
+  };
 
   return (
     <div style={MainContainer}>
