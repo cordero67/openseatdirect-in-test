@@ -25,6 +25,7 @@ const TicketSelection = () => {
     sessionToken: "",
     userId: "",
   });
+  const [checkedAgreement, setCheckedAgreement] = useState(false);
   // LOOKS GOOD
   useEffect(() => {
     if (
@@ -96,6 +97,30 @@ const TicketSelection = () => {
       );
     } else return null;
   };
+
+  // LOOKS GOOD
+  // creates checkout/submit order button
+  const submitButton = () => {
+    if (checkedAgreement) {
+      return (
+        <button
+          className={classes.ButtonGreen}
+          onClick={() => {
+            console.log("clicked");
+            window.location.href = `/infofree`;
+          }}
+        >
+          SUBMIT WAIVER
+        </button>
+      );
+    } else {
+      return (
+        <button disabled={true} className={classes.ButtonGreenOpac}>
+          SUBMIT WAIVER
+        </button>
+      );
+    }
+  };
   // LOOKS GOOD
   const releaseStatement = () => {
     if (display === "confirmation") {
@@ -113,17 +138,14 @@ const TicketSelection = () => {
           >
             <div style={{ textAlign: "center" }}>
               <img
-                src="https://ncjar.com/templates/t3-ncjar/img/theme/ncjar-logo-5-x2.png"
-                style={{ width: "320px" }}
+                src="https://scontent.fewr1-5.fna.fbcdn.net/v/t1.0-9/1904017_10152293112811495_260293811_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=YFXgyR1ZblYAX9W9H-o&_nc_ht=scontent.fewr1-5.fna&oh=4adee572922b184cf55ccee60d873a7c&oe=60816B92"
+                style={{ width: "150px" }}
               />
             </div>
             <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-              <div>
-                NCJAR<span style={{ fontSize: "12px" }}>Ⓡ</span> Young
-                Professionals Network
-              </div>
+              <div>Clean Ocean Action</div>
               <div>April 17, 2021</div>
-              <div>Beach Clean Up Community Service Project</div>
+              <div>Spring Beach Sweeps</div>
             </div>
             <div
               style={{
@@ -133,16 +155,23 @@ const TicketSelection = () => {
                 fontWeight: "600",
               }}
             >
-              RELEASE STATEMENT
+              COVID-19 WAIVER
             </div>
             <div style={{ paddingTop: "10px", paddingBottom: "20px" }}>
-              I hereby release and discharge North Central Jersey Association of
-              Realtors, it's Trustees, Officers, Employees and Members from any
-              and all liability, loss, damage, or injuries, including the
-              contraction of a communicable disease such as Covid-19 arising
-              from my volunatry participation in the "Beach Sweeps".
+              By submitting this form, I hereby release and discharge COA and
+              the Beach Sweeps sponsors, and their respective agents and
+              employees from and against any and all liability, including for
+              any losses, damages or injuries, including the contraction of a
+              communicable disease, arising from my participation in the Beach
+              Sweeps.
             </div>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              value={checkedAgreement}
+              onClick={() => {
+                setCheckedAgreement(!checkedAgreement);
+              }}
+            />
             <label
               style={{
                 paddingLeft: "10px",
@@ -151,52 +180,11 @@ const TicketSelection = () => {
               }}
             >
               {" "}
-              I have read and agree to the Release Statement
+              I have read and agree to this Waiver
             </label>
-            <div>
-              <input
-                className={classes.InputBox}
-                type="text"
-                name="fullName"
-                style={{
-                  width: "270px",
-                  border: "none",
-                  borderBottom: "1px solid grey",
-                  outline: "none",
-                  outlineBottom: "1px solid grey",
-                  paddingBottom: "0px",
-                }}
-                //onChange={handleChange}
-                //value={password}
-              />
-              <div
-                style={{
-                  fontSize: "14px",
-                  paddingTop: "0px",
-                  paddingBottom: "10px",
-                }}
-              >
-                Full Name
-              </div>
-              <input
-                className={classes.InputBox}
-                type="date"
-                name="signedDate"
-                min="2021-03-13"
-                max="2021-04-17"
-                //onChange={handleChange}
-                value="2021-03-14"
-              />
-            </div>
             <br></br>
-            <div style={{ textAlign: "center" }}>
-              <button
-                className={classes.ButtonGreen}
-                //onClick={() => props.submit(allTotal)}
-              >
-                SUBMIT RELEASE
-              </button>
-            </div>
+            <br></br>
+            <div style={{ textAlign: "center" }}>{submitButton()}</div>
           </div>
         </div>
       );

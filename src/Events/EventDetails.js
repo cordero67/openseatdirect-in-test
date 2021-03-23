@@ -80,6 +80,7 @@ const EventDetail = () => {
       ticketStatus = true;
       tempTickets = event.tickets;
     }
+    console.log("tempTickets: ", tempTickets);
 
     // defines the eniter "eventDetails" variable
     eventDetails = {
@@ -316,6 +317,7 @@ const EventDetail = () => {
   const ticketButton = () => {
     console.log("eventDetails.tickets");
     if (eventDetails.tickets !== null) {
+      console.log("eventDetails: ", eventDetails);
       return (
         <div className={styles.ButtonContainer}>
           <button onClick={ticketsHandler} className={styles.ButtonGreen}>
@@ -324,6 +326,7 @@ const EventDetail = () => {
         </div>
       );
     } else {
+      console.log("eventDetails: ", eventDetails);
       return (
         <div className={styles.ButtonContainer}>
           <button disabled={true} className={styles.ButtonGreenOpac}>

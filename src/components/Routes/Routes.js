@@ -15,7 +15,8 @@ import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import Registration from "../../TicketPurchases/Registration";
+import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
+import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
 import NewPaypal from "../../TicketPurchases/NewPaypal";
 import Authentication from "../../Users/Authentication/Authentication";
 import Slider from "../HomePage/Slider";
@@ -324,10 +325,19 @@ const Routes = () => {
       />
 
       <Route
-        path="/er/"
+        path="/er-NCJAR/"
         render={(routeProps) => (
           <React.Fragment>
-            <Registration />
+            <RegistrationNCJAR />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/er-COA/"
+        render={(routeProps) => (
+          <React.Fragment>
+            <RegistrationCOA />
           </React.Fragment>
         )}
       />
