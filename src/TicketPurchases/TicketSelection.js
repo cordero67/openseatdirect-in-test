@@ -442,7 +442,7 @@ const TicketSelection = () => {
   // creates checkout/submit order button
   const checkoutButton = () => {
     if (
-      eventDetails.eventNum === 25657749347 &&
+      eventDetails.eventNum === 16808192664 &&
       orderTotals.ticketsPurchased > 0
     ) {
       return (
@@ -455,7 +455,7 @@ const TicketSelection = () => {
           REGISTER
         </button>
       );
-    } else if (eventDetails.eventNum === 25657749347) {
+    } else if (eventDetails.eventNum === 16808192664) {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
           REGISTER
