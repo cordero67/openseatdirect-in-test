@@ -139,6 +139,26 @@
   border: 1px solid black;
   outline: none;
 }
+.ButtonGreenLarge {
+  height: 40px;
+  width: 260px;
+  background-color: #00a300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreenLarge:hover {
+  background-color: #007a00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreenLarge:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
 .faShoppingCart {
   font-size: 90px;
   vertical-align: center;
