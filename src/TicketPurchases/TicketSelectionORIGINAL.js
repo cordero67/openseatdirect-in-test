@@ -430,58 +430,10 @@ const TicketSelection = () => {
     setTicketInfo(changeTicketInfo(event, ticketType, ticketInfo));
     updateOrderTotals();
   };
-
-  // LOOKS GOOD
-  // stores order and event information into "localStorage"
-  const storeRegistration = () => {
-    console.log("Inside 'storeRegistration'");
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem(
-        `image_${eventDetails.eventNum}`,
-        JSON.stringify(eventLogo)
-      );
-
-      localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
-
-      localStorage.setItem(
-        `cart_${eventDetails.eventNum}`,
-        JSON.stringify({
-          eventDetails: eventDetails,
-          promoCodeDetails: promoCodeDetails,
-          ticketInfo: ticketInfo,
-          orderTotals: orderTotals,
-          orderExpiration: new Date(+new Date() + 7 * 60000),
-        })
-      );
-    }
-
-    window.location.href = "/er-NCJAR";
-  };
   // LOOKS GOOD
   // creates checkout/submit order button
   const checkoutButton = () => {
     if (
-      eventDetails.eventNum === 16808192664 &&
-      orderTotals.ticketsPurchased > 0
-    ) {
-      return (
-        <button
-          onClick={() => {
-            storeRegistration();
-          }}
-          className={classes.ButtonGreen}
-        >
-          REGISTER
-        </button>
-      );
-    } else if (eventDetails.eventNum === 16808192664) {
-      return (
-        <button disabled={true} className={classes.ButtonGreenOpac}>
-          REGISTER
-        </button>
-      );
-    } else if (
       orderTotals.finalPurchaseAmount === 0 &&
       orderTotals.ticketsPurchased > 0 &&
       customerInformation.sessionToken !== ""
