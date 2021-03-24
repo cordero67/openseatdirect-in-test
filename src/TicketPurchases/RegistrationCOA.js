@@ -273,7 +273,7 @@ const TicketSelection = () => {
   const submitWaiver = () => {
     if (customerInformation.sessionToken !== "") {
       console.log("Signed In User");
-      freeTicketHandler();
+      //freeTicketHandler();
     } else {
       window.location.href = `/infofree`;
     }

@@ -14,8 +14,6 @@ import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
-import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
 import Authentication from "../../Users/Authentication/Authentication";
 import Slider from "../HomePage/Slider";
 import PrivateRoute from "./PrivateRoute";
@@ -308,24 +306,6 @@ const Routes = () => {
         render={(routeProps) => (
           <React.Fragment>
             <TicketSelection />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/er-NCJAR/"
-        render={(routeProps) => (
-          <React.Fragment>
-            <RegistrationNCJAR />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/er-COA/"
-        render={(routeProps) => (
-          <React.Fragment>
-            <RegistrationCOA />
           </React.Fragment>
         )}
       />

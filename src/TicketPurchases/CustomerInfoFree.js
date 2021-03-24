@@ -156,106 +156,138 @@ const CustomerInfo = (props) => {
   };
 
   const freeTicketHandler = (user) => {
-    let order = {
-      eventNum: eventDetails.eventNum,
-      totalAmount: orderTotals.finalPurchaseAmount,
-    };
-
-    if (orderTotals.finalPurchaseAmount === 0) {
-      order.isFree = true;
-    } else {
-      order.isFree = false;
-    }
-
-    let tickets = [];
-    ticketInfo.map((item) => {
-      if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-        let tempObject = {};
-        tempObject.ticketID = item.ticketID;
-        tempObject.ticketsSelected = item.ticketsSelected;
-        tickets.push(tempObject);
-        if (
-          item.ticketsSelected > 0 &&
-          "form" in item.ticketPriceFunction &&
-          item.ticketPriceFunction.form === "promo" &&
-          item.adjustedTicketPrice !== item.ticketPrice
-        ) {
-          order.promo = item.ticketPriceFunction.args[0].name;
-        }
-      }
-    });
-
-    order.tickets = tickets;
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    let url;
-
     if (!user) {
       let email = guestInformation.email;
       let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
-
       setTransactionInfo(
         loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );
 
-      order.guestFirstname = guestInformation.firstname;
-      order.guestLastname = guestInformation.lastname;
-      order.guestEmail = guestInformation.email;
+      let isFree = true;
 
-      console.log("signed free ticket tickets: ", tickets);
+      if (orderTotals.finalPurchaseAmount > 0) {
+        isFree = false;
+      }
 
-      console.log("signed free ticket order: ", order);
+      let order = {
+        osdOrderId: osdOrderId,
+        totalAmount: orderTotals.finalPurchaseAmount,
+        isFree: isFree,
+        guestFirstname: guestInformation.firstname,
+        guestLastname: guestInformation.lastname,
+        guestEmail: guestInformation.email,
+      };
 
-      url = `${API}/tixorder/unsigned_place_neworder`;
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      let url = `${API}/tixorder/unsigned_placeorder`;
+      let fetcharg = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(order),
+      };
+      console.log("fetching with: ", url, fetcharg);
+      console.log("Free ticket order: ", order);
+      fetch(url, fetcharg)
+        .then(handleErrors)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log("fetch return got back data:", data);
+          setOrderStatus(data.status);
+          setDisplay("confirmation");
+        })
+        .catch((error) => {
+          console.log("freeTicketHandler() error.message: ", error.message);
+          setDisplay("connection");
+        })
+        .finally(() => {
+          purchaseConfirmHandler();
+        });
     } else {
-      // following code runs if user signs up rather than proceed with guest checkout
       let tempUser = JSON.parse(localStorage.getItem("user"));
       let email = tempUser.user.email;
-      let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
-
+      let name = tempUser.user.name;
       setTransactionInfo(
         loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );
 
-      console.log("signed free ticket tickets: ", tickets);
-      console.log("signed free ticket order: ", order);
-
-      myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
-
-      url = `${API}/tixorder/signed_place_neworder/${tempUser.user._id}`;
-    }
-
-    let fetcharg = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(order),
-    };
-
-    console.log("fetching with: ", url, fetcharg);
-    console.log("Free ticket order: ", order);
-    fetch(url, fetcharg)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        setOrderStatus(data.status);
-        setDisplay("confirmation");
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setDisplay("connection");
-      })
-      .finally(() => {
-        purchaseConfirmHandler();
-        if (user) {
-          setModalStatus(false);
+      let order = {};
+      let ticketArray = [];
+      order.eventNum = eventDetails.eventNum;
+      ticketInfo.map((item, index) => {
+        if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+          let tempObject = {};
+          tempObject.ticketID = item.ticketID;
+          tempObject.ticketsSelected = item.ticketsSelected;
+          ticketArray.push(tempObject);
         }
       });
+      order.tickets = ticketArray;
+
+      let userPromo = "";
+      let tickets = [];
+      ticketInfo.map((item) => {
+        if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+          let tempObject = {};
+          tempObject.ticketID = item.ticketID;
+          tempObject.ticketsSelected = item.ticketsSelected;
+          tickets.push(tempObject);
+          if (
+            item.ticketsSelected > 0 &&
+            "form" in item.ticketPriceFunction &&
+            item.ticketPriceFunction.form === "promo" &&
+            item.adjustedTicketPrice !== item.ticketPrice
+          ) {
+            userPromo = item.ticketPriceFunction.args[0].name;
+          }
+        }
+      });
+
+      order = {
+        eventNum: eventDetails.eventNum,
+        totalAmount: 0,
+        isFree: true,
+        userPromo: userPromo,
+        tickets: tickets,
+      };
+
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
+
+      //let url = `${API}/free/signedFreeTickets/${tempUser.user._id}`
+      let url = `${API}/tixorder/signed_expressorder/${tempUser.user._id}`;
+      let fetcharg = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(order),
+      };
+
+      console.log("fetching with: ", url, fetcharg);
+      console.log("Free ticket order: ", order);
+      fetch(url, fetcharg)
+        .then(handleErrors)
+        .then((response) => {
+          console.log("then response: ", response);
+          return response.json();
+        })
+        .then((data) => {
+          console.log("fetch return got back data:", data);
+          setOrderStatus(data.status);
+          setDisplay("confirmation");
+        })
+        .catch((error) => {
+          console.log("freeTicketHandler() error.message: ", error.message);
+          setDisplay("connection");
+        })
+        .finally(() => {
+          purchaseConfirmHandler();
+          setModalStatus(false);
+        });
+    }
   };
 
   // creates submit button to send free ticket information to server
@@ -457,9 +489,6 @@ const CustomerInfo = (props) => {
       if (orderTotals.ticketsPurchased > 0) {
         orderSummary = (
           <OrderSummary
-            cancel={true}
-            eventNum={eventDetails.eventNum}
-            vanity={eventDetails.vanityLink}
             ticketOrder={ticketInfo}
             ticketCurrency={orderTotals.currencySym}
           />
