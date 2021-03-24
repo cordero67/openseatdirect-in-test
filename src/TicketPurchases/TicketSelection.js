@@ -597,6 +597,12 @@ const TicketSelection = () => {
 
     if (signedIn === true) {
       window.location.href = "/checkout";
+    } else if (
+      orderTotals.finalPurchaseAmount === 0 &&
+      eventDetails.eventNum === 16808192664
+      //eventDetails.eventNum === 65548940409
+    ) {
+      window.location.href = "/er-NCJAR";
     } else if (orderTotals.finalPurchaseAmount === 0) {
       window.location.href = "/infofree";
     } else {

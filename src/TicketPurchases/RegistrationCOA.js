@@ -48,6 +48,7 @@ const TicketSelection = () => {
     sessionToken: "",
     userId: "",
   });
+  /*
   // LOOKS GOOD
   useEffect(() => {
     if (
@@ -78,6 +79,7 @@ const TicketSelection = () => {
     eventData("25657749347");
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
+  */
   // LOOKS GOOD
   const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
@@ -91,6 +93,7 @@ const TicketSelection = () => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
+  /*
   // LOOKS GOOD
   // receives Event Data from server and populates several control variables
   const eventData = (eventID) => {
@@ -135,6 +138,7 @@ const TicketSelection = () => {
         setDisplay("connection");
       });
   };
+  */
 
   // LOOKS GOOD
   const handleErrors = (response) => {
@@ -143,6 +147,7 @@ const TicketSelection = () => {
     }
     return response;
   };
+  /*
   // LOOKS GOOD
   // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
@@ -154,6 +159,8 @@ const TicketSelection = () => {
       );
     } else return null;
   };
+  */
+  /*
   // LOOKS GOOD
   // defines and sets "connectionStatus" view status
   const connectionStatus = (condition) => {
@@ -178,7 +185,8 @@ const TicketSelection = () => {
       );
     } else return null;
   };
-
+  */
+  /*
   // LOOKS GOOD
   const freeTicketHandler = () => {
     let email = customerInformation.email;
@@ -257,7 +265,9 @@ const TicketSelection = () => {
         localStorage.removeItem(`eventNum`);
       });
   };
+  */
 
+  /*
   // LOOKS GOOD
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
@@ -270,8 +280,10 @@ const TicketSelection = () => {
     localStorage.removeItem(`image_${event}`);
     localStorage.removeItem(`eventNum`);
   };
+  */
   const submitWaiver = () => {
-    if (customerInformation.sessionToken !== "") {
+    if (false) {
+      //if (customerInformation.sessionToken !== "") {
       console.log("Signed In User");
       //freeTicketHandler();
     } else {
@@ -279,6 +291,7 @@ const TicketSelection = () => {
     }
   };
 
+  /*
   // LOOKS GOOD
   const purchaseConfirmation = () => {
     if (display === "confirmation") {
@@ -335,6 +348,7 @@ const TicketSelection = () => {
       );
     } else return null;
   };
+  */
 
   // LOOKS GOOD
   const releaseStatement = () => {
@@ -399,14 +413,19 @@ const TicketSelection = () => {
     } else return null;
   };
 
-  return (
-    <div style={MainContainer}>
-      {loadingSpinner()}
-      {releaseStatement()}
-      {purchaseConfirmation()}
-      {connectionStatus()}
-    </div>
-  );
+  return <div style={MainContainer}>{releaseStatement()}</div>;
 };
 
 export default TicketSelection;
+
+/*
+
+return (
+  <div style={MainContainer}>
+    {loadingSpinner()}
+    {releaseStatement()}
+    {purchaseConfirmation()}
+    {connectionStatus()}
+  </div>
+);
+*/
