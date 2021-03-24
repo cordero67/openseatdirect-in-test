@@ -591,27 +591,3 @@ const Checkout = () => {
   );
 };
 export default Checkout;
-
-/*
-      order = {
-        osdOrderId: details.purchase_units[0].reference_id,
-        totalAmount: details.purchase_units[0].amount.value,
-        isFree: isFree,
-        paymentGatewayId: details.id, // not required if “isFree === true”
-        guestFirstname: customerInformation.firstname,
-        guestLastname: customerInformation.lastname,
-        guestEmail: customerInformation.email,
-      };
-      */
-/*
-      body: JSON.stringify({
-        eventNum: eventDetails.eventNum,
-        //totalAmount: orderTotals.finalPurchaseAmount,
-        //isFree: false,
-        userPromo: orderTotals.promoCodeApplied, // optional
-        tickets: paypalArray,
-        //firstname: customerInformation.firstname,
-        //lastname: customerInformation.lastname,
-        //email: customerInformation.email,
-      }),
-      */

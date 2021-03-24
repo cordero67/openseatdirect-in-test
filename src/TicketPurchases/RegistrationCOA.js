@@ -1,11 +1,18 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { NavLink } from "react-router-dom";
-import queryString from "query-string";
 
 import { API } from "../config.js";
+import { getEventData, getEventImage } from "./Resources/apiCore";
+import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
+import {
+  loadEventDetails,
+  loadTicketInfo,
+  loadPromoCodeDetails,
+  loadOrderTotals,
+} from "./Resources/TicketSelectionFunctions";
 
 import { MainContainerStyling } from "./Resources/Styling";
 import Spinner from "../components/UI/Spinner/Spinner";
+import DefaultLogo from "../assets/Get_Your_Tickets.png";
 
 import classes from "./TicketSelection.module.css";
 
@@ -15,9 +22,25 @@ let eventLogo = ""; // defines an event's image
 let MainContainer = {};
 
 const TicketSelection = () => {
-  const [display, setDisplay] = useState("confirmation"); // defines panel displayed: main, spinner, confirmation, connection
+  const [display, setDisplay] = useState("main"); // defines panel displayed: main, spinner, confirmation, connection
   const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
+  const [orderStatus, setOrderStatus] = useState(true); // defines if PayPal order was validated by server
 
+  const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
+
+  const [promoCodeDetails, setPromoCodeDetails] = useState({
+    // defines event's specific promo codes
+    available: false,
+    applied: false,
+    input: false,
+    errorMessage: "",
+    appliedPromoCode: "",
+    inputtedPromoValue: "",
+    lastInvalidPromoCode: "",
+    eventPromoCodes: [],
+  });
+  const [ticketInfo, setTicketInfo] = useState([]); // ticket order specific ticket information
+  const [orderTotals, setOrderTotals] = useState([]); // ticket order general info
   const [customerInformation, setCustomerInformation] = useState({
     // defines contact information sent to server
     name: "",
@@ -25,7 +48,6 @@ const TicketSelection = () => {
     sessionToken: "",
     userId: "",
   });
-  const [checkedAgreement, setCheckedAgreement] = useState(false);
   // LOOKS GOOD
   useEffect(() => {
     if (
@@ -40,7 +62,20 @@ const TicketSelection = () => {
         userId: tempUser.user._id,
       });
     }
-    //eventData(queryString.parse(window.location.search).eventID);
+
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null &&
+      localStorage.getItem("eventNum") != null
+    ) {
+      let tempEventNum = localStorage.getItem(`eventNum`);
+      let cart = JSON.parse(localStorage.getItem(`cart_${tempEventNum}`));
+      setTicketInfo(cart.ticketInfo);
+      setPromoCodeDetails(cart.promoCodeDetails);
+      setOrderTotals(cart.orderTotals);
+    }
+
+    eventData("25657749347");
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
   // LOOKS GOOD
@@ -55,6 +90,52 @@ const TicketSelection = () => {
   window.onresize = function (event) {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
+
+  // LOOKS GOOD
+  // receives Event Data from server and populates several control variables
+  const eventData = (eventID) => {
+    getEventData(eventID)
+      .then((res) => {
+        console.log("EVENT DATA OBJECT from Server: ", res);
+        eventDetails = loadEventDetails(res);
+        console.log("eventDetails: ", eventDetails);
+        // checks if an order exists in local storage
+        if (
+          typeof window !== "undefined" &&
+          localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
+        ) {
+          let cart = JSON.parse(
+            localStorage.getItem(`cart_${eventDetails.eventNum}`)
+          );
+          setTicketInfo(cart.ticketInfo);
+          setPromoCodeDetails(cart.promoCodeDetails);
+          setOrderTotals(cart.orderTotals);
+        } else {
+          console.log("ticketInfo: ", loadTicketInfo(res));
+          if (res.tickets.length === 0) {
+            window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+          }
+          setTicketInfo(loadTicketInfo(res));
+          setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
+          setOrderTotals(loadOrderTotals(res));
+        }
+        // asks for image if event is successfully imported
+        getEventImage(eventID)
+          .then((res) => {
+            eventLogo = res;
+          })
+          .catch((err) => {
+            eventLogo = DefaultLogo;
+          })
+          .finally(() => {
+            setDisplay("main");
+          });
+      })
+      .catch((err) => {
+        setDisplay("connection");
+      });
+  };
+
   // LOOKS GOOD
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -99,31 +180,165 @@ const TicketSelection = () => {
   };
 
   // LOOKS GOOD
-  // creates checkout/submit order button
-  const submitButton = () => {
-    if (checkedAgreement) {
-      return (
-        <button
-          className={classes.ButtonGreen}
-          onClick={() => {
-            console.log("clicked");
-            window.location.href = `/infofree`;
-          }}
-        >
-          SUBMIT WAIVER
-        </button>
-      );
+  const freeTicketHandler = () => {
+    let email = customerInformation.email;
+    let name = customerInformation.name;
+    setTransactionInfo();
+    loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name);
+
+    let order = {
+      //eventNum: eventDetails.eventNum,
+      eventNum: "25657749347",
+      totalAmount: orderTotals.finalPurchaseAmount,
+    };
+
+    if (orderTotals.finalPurchaseAmount === 0) {
+      order.isFree = true;
     } else {
-      return (
-        <button disabled={true} className={classes.ButtonGreenOpac}>
-          SUBMIT WAIVER
-        </button>
-      );
+      order.isFree = false;
+    }
+
+    let tickets = [];
+    ticketInfo.map((item) => {
+      if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        tickets.push(tempObject);
+        if (
+          item.ticketsSelected > 0 &&
+          "form" in item.ticketPriceFunction &&
+          item.ticketPriceFunction.form === "promo" &&
+          item.adjustedTicketPrice !== item.ticketPrice
+        ) {
+          order.promo = item.ticketPriceFunction.args[0].name;
+        }
+      }
+    });
+
+    order.tickets = tickets;
+
+    console.log("signed free ticket tickets: ", tickets);
+    console.log("signed free ticket order: ", order);
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${customerInformation.sessionToken}`
+    );
+    let url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+    let fetcharg = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(order),
+    };
+    console.log("fetching with: ", url, fetcharg);
+    console.log("Free ticket order: ", order);
+    setDisplay("spinner");
+    fetch(url, fetcharg)
+      .then(handleErrors)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        setOrderStatus(data.status);
+        setDisplay("confirmation");
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setDisplay("connection");
+      })
+      .finally(() => {
+        let event = JSON.parse(localStorage.getItem("eventNum"));
+        localStorage.removeItem(`cart_${event}`);
+        localStorage.removeItem(`image_${event}`);
+        localStorage.removeItem(`eventNum`);
+      });
+  };
+
+  // LOOKS GOOD
+  // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
+  const purchaseConfirmHandler = () => {
+    eventDetails = {};
+    ticketInfo = {};
+    orderTotals = {};
+    eventLogo = "";
+    let event = JSON.parse(localStorage.getItem("eventNum"));
+    localStorage.removeItem(`cart_${event}`);
+    localStorage.removeItem(`image_${event}`);
+    localStorage.removeItem(`eventNum`);
+  };
+  const submitWaiver = () => {
+    if (customerInformation.sessionToken !== "") {
+      console.log("Signed In User");
+      freeTicketHandler();
+    } else {
+      window.location.href = `/infofree`;
     }
   };
+
+  // LOOKS GOOD
+  const purchaseConfirmation = () => {
+    if (display === "confirmation") {
+      return (
+        <div
+          className={classes.BlankCanvas}
+          style={{ textAlign: "left", color: "black" }}
+        >
+          <div style={{ paddingTop: "20px" }}>
+            <Fragment>
+              <div
+                style={{
+                  fontWeight: "500",
+                  fontSize: "24px",
+                  paddingBottom: "20p",
+                }}
+              >
+                Order Confirmation
+              </div>
+              <br></br>
+              <div
+                style={{
+                  fontSize: "16px",
+                  paddingBottom: "20px",
+                }}
+              >
+                <div style={{ paddingBottom: "20px" }}>
+                  Thank you, your order was received and is in process.
+                </div>
+                <div style={{ paddingBottom: "20px" }}>
+                  OpenSeatDirect will be sending you an email that will contain
+                  a pdf of your ticket(s) to print-at-home or to display on your
+                  mobile device.
+                </div>
+                <div style={{ paddingBottom: "20px" }}>
+                  If you do not receive this email by the end of today, please
+                  contact the vendor.
+                </div>
+              </div>
+
+              <div style={{ textAlign: "center" }}>
+                <button
+                  className={classes.ButtonBlue}
+                  onClick={() => {
+                    window.location.href = "/events";
+                  }}
+                >
+                  CONTINUE
+                </button>
+              </div>
+            </Fragment>
+          </div>
+        </div>
+      );
+    } else return null;
+  };
+
   // LOOKS GOOD
   const releaseStatement = () => {
-    if (display === "confirmation") {
+    if (display === "main") {
       return (
         <div
           className={classes.BlankCanvas}
@@ -165,26 +380,19 @@ const TicketSelection = () => {
               communicable disease, arising from my participation in the Beach
               Sweeps.
             </div>
-            <input
-              type="checkbox"
-              value={checkedAgreement}
-              onClick={() => {
-                setCheckedAgreement(!checkedAgreement);
-              }}
-            />
-            <label
-              style={{
-                paddingLeft: "10px",
-                paddingTop: "20px",
-                paddingBottom: "10px",
-              }}
-            >
-              {" "}
-              I have read and agree to this Waiver
-            </label>
             <br></br>
             <br></br>
-            <div style={{ textAlign: "center" }}>{submitButton()}</div>
+            <div style={{ textAlign: "center" }}>
+              <button
+                className={classes.ButtonGreenLarge}
+                onClick={() => {
+                  console.log("clicked");
+                  submitWaiver();
+                }}
+              >
+                I AGREE TO THIS WAIVER
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -195,6 +403,7 @@ const TicketSelection = () => {
     <div style={MainContainer}>
       {loadingSpinner()}
       {releaseStatement()}
+      {purchaseConfirmation()}
       {connectionStatus()}
     </div>
   );

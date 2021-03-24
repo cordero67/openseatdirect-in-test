@@ -40,7 +40,6 @@ const TicketSelection = () => {
         userId: tempUser.user._id,
       });
     }
-    //eventData(queryString.parse(window.location.search).eventID);
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
   // LOOKS GOOD
@@ -99,30 +98,6 @@ const TicketSelection = () => {
   };
 
   // LOOKS GOOD
-  // creates checkout/submit order button
-  const submitButton = () => {
-    if (checkedAgreement) {
-      return (
-        <button
-          className={classes.ButtonGreen}
-          onClick={() => {
-            console.log("clicked");
-            window.location.href = `/er-COA`;
-          }}
-        >
-          SUBMIT RELEASE
-        </button>
-      );
-    } else {
-      return (
-        <button disabled={true} className={classes.ButtonGreenOpac}>
-          SUBMIT RELEASE
-        </button>
-      );
-    }
-  };
-
-  // LOOKS GOOD
   const releaseStatement = () => {
     if (display === "confirmation") {
       return (
@@ -168,26 +143,18 @@ const TicketSelection = () => {
               contraction of a communicable disease such as Covid-19 arising
               from my volunatry participation in the "Beach Sweeps".
             </div>
-            <input
-              type="checkbox"
-              value={checkedAgreement}
-              onClick={() => {
-                setCheckedAgreement(!checkedAgreement);
-              }}
-            />
-            <label
-              style={{
-                paddingLeft: "10px",
-                paddingTop: "20px",
-                paddingBottom: "10px",
-              }}
-            >
-              {" "}
-              I have read and agree to this Release Statement
-            </label>
             <br></br>
             <br></br>
-            <div style={{ textAlign: "center" }}>{submitButton()}</div>
+            <div style={{ textAlign: "center" }}>
+              <button
+                className={classes.ButtonGreenLarge}
+                onClick={() => {
+                  window.location.href = `/er-COA`;
+                }}
+              >
+                I AGREE TO THIS RELEASE
+              </button>
+            </div>
           </div>
         </div>
       );
