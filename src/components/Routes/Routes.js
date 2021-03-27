@@ -12,16 +12,19 @@ import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
-import Checkout from "../../TicketPurchases/Checkout";
+import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
+import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
 import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
+//import NewPaypal from "../../TicketPurchases/NewPaypal";
 import Authentication from "../../Users/Authentication/Authentication";
 import Slider from "../HomePage/Slider";
 import PrivateRoute from "./PrivateRoute";
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
+import SalesAnalytics from "../../Users/Vendor/SalesAnalyticsNEW";
 
 import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";
@@ -224,6 +227,15 @@ const Routes = () => {
       />
 
       <Route
+        path="/salesanalytics/"
+        render={(routeProps) => (
+          <React.Fragment>
+            <SalesAnalytics />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
         path="/events"
         exact
         render={(routeProps) => (
@@ -278,11 +290,21 @@ const Routes = () => {
       />
 
       <Route
-        path="/checkout"
+        path="/checkout-paypalexpress"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Checkout />
+            <CheckoutPayPalExpress />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/checkout-paypalmerchant"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <CheckoutPayPalMerchant />
           </React.Fragment>
         )}
       />

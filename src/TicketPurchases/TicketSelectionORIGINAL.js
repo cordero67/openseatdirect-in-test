@@ -197,18 +197,9 @@ const TicketSelection = () => {
       loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
     );
 
-    let order = {
-      eventNum: eventDetails.eventNum,
-      totalAmount: orderTotals.finalPurchaseAmount,
-    };
-
-    if (orderTotals.finalPurchaseAmount === 0) {
-      order.isFree = true;
-    } else {
-      order.isFree = false;
-    }
-
+    let userPromo = "";
     let tickets = [];
+
     ticketInfo.map((item) => {
       if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
         let tempObject = {};
@@ -221,15 +212,18 @@ const TicketSelection = () => {
           item.ticketPriceFunction.form === "promo" &&
           item.adjustedTicketPrice !== item.ticketPrice
         ) {
-          order.promo = item.ticketPriceFunction.args[0].name;
+          userPromo = item.ticketPriceFunction.args[0].name;
         }
       }
     });
 
-    order.tickets = tickets;
-
-    console.log("signed free ticket tickets: ", tickets);
-    console.log("signed free ticket order: ", order);
+    let order = {
+      eventNum: eventDetails.eventNum,
+      totalAmount: 0,
+      isFree: true,
+      userPromo: userPromo,
+      tickets: tickets,
+    };
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -237,7 +231,8 @@ const TicketSelection = () => {
       "Authorization",
       `Bearer ${customerInformation.sessionToken}`
     );
-    let url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+
+    let url = `${API}/tixorder/signed_expressorder/${customerInformation.userId}`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
@@ -441,36 +436,11 @@ const TicketSelection = () => {
   // LOOKS GOOD
   // creates checkout/submit order button
   const checkoutButton = () => {
-    console.log("eventDetails: ", eventDetails);
     if (
-      //eventDetails.regFunc &&
-      //eventDetails.regFunc.useReg &&
-      eventDetails.eventNum === 25657749347 &&
-      orderTotals.ticketsPurchased > 0
-    ) {
-      console.log("regFunc has been found");
-      return (
-        <button
-          onClick={() => {
-            storeRegistration();
-          }}
-          className={classes.ButtonGreen}
-        >
-          REGISTERR
-        </button>
-      );
-    } else if (eventDetails.eventNum === 25657749347) {
-      return (
-        <button disabled={true} className={classes.ButtonGreenOpac}>
-          REGISTERH
-        </button>
-      );
-    } else if (
       orderTotals.finalPurchaseAmount === 0 &&
       orderTotals.ticketsPurchased > 0 &&
       customerInformation.sessionToken !== ""
     ) {
-      console.log("regFunc has NOT been found");
       return (
         <button onClick={freeTicketHandler} className={classes.ButtonGreen}>
           SUBMIT ORDER
@@ -480,12 +450,14 @@ const TicketSelection = () => {
       orderTotals.finalPurchaseAmount > 0 &&
       customerInformation.sessionToken !== ""
     ) {
-      // signed paid order
-      console.log("regFunc has NOT been found");
       return (
         <button
           onClick={() => {
-            storeOrder();
+            if (eventDetails.gateway === "PayPalExpress") {
+              reserveOrder(true);
+            } else if (eventDetails.gateway === "PayPalMarketplace") {
+              storeOrder();
+            }
           }}
           className={classes.ButtonGreen}
         >
@@ -493,12 +465,14 @@ const TicketSelection = () => {
         </button>
       );
     } else if (orderTotals.ticketsPurchased > 0) {
-      // unsigned paid order
-      console.log("regFunc has NOT been found");
       return (
         <button
           onClick={() => {
-            storeOrder();
+            if (eventDetails.gateway === "PayPalExpress") {
+              reserveOrder(false);
+            } else if (eventDetails.gateway === "PayPalMarketplace") {
+              storeOrder();
+            }
           }}
           className={classes.ButtonGreen}
         >
@@ -511,6 +485,142 @@ const TicketSelection = () => {
           PROCEED TO CHECKOUT
         </button>
       );
+    }
+  };
+  // LOOKS GOOD
+  const reserveOrder = (signed) => {
+    let totalAmount = orderTotals.finalPurchaseAmount;
+    let isFree = true;
+    let userPromo;
+    let tickets = [];
+
+    ticketInfo.map((item, index) => {
+      if (item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        tickets.push(tempObject);
+        if (
+          item.ticketsSelected > 0 &&
+          "form" in item.ticketPriceFunction &&
+          item.ticketPriceFunction.form === "promo" &&
+          item.adjustedTicketPrice !== item.ticketPrice
+        ) {
+          userPromo = item.ticketPriceFunction.args[0].name;
+        }
+      }
+    });
+
+    if (totalAmount > 0) {
+      isFree = false;
+    }
+
+    let order = {
+      eventNum: eventDetails.eventNum,
+      totalAmount: totalAmount,
+      isFree: isFree,
+      userPromo: userPromo,
+      tickets: tickets,
+    };
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url;
+
+    if (signed) {
+      url = `${API}/tixorder/signed_reserveorder/${customerInformation.userId}`;
+      myHeaders.append(
+        "Authorization",
+        `Bearer ${customerInformation.sessionToken}`
+      );
+    } else {
+      url = `${API}/tixorder/unsigned_reserveorder`;
+    }
+
+    let fetcharg = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(order),
+    };
+
+    console.log("fetching with: ", url, fetcharg);
+    console.log("Free ticket order: ", order);
+    setDisplay("spinner");
+    fetch(url, fetcharg)
+      .then(handleErrors)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        storeReservedOrder(data.data.osdOrderId);
+      })
+      .catch((error) => {
+        console.log("reserveOrder() error.message: ", error.message);
+        setDisplay("connection");
+      });
+  };
+  // LOOKS GOOD
+  // stores order and event information into "localStorage"
+  const storeReservedOrder = (orderId) => {
+    let signedIn = false;
+    console.log("Inside 'storeReservedOrder'");
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        `image_${eventDetails.eventNum}`,
+        JSON.stringify(eventLogo)
+      );
+      localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
+
+      // if "cart" exists resaves exisiting "guestInfo"
+      if (localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
+        let cart = JSON.parse(
+          localStorage.getItem(`cart_${eventDetails.eventNum}`)
+        );
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals,
+            guestInfo: cart.guestInfo,
+            osdOrderId: orderId,
+            orderExpiration: new Date(+new Date() + 7 * 60000),
+          })
+        );
+      } else {
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals,
+            osdOrderId: orderId,
+            orderExpiration: new Date(+new Date() + 7 * 60000),
+          })
+        );
+      }
+      if (localStorage.getItem(`user`) !== null) {
+        signedIn = true;
+      }
+    }
+
+    if (signedIn === true) {
+      console.log("eventDetails.gateway: ", eventDetails.gateway);
+      if (eventDetails.gateway === "PayPalExpress") {
+        window.location.href = "/checkout-paypalexpress";
+      } else if (eventDetails.gateway === "PayPalMarketplace") {
+        window.location.href = "/checkout-paypalmerchant";
+      } else {
+        window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+      }
+    } else if (orderTotals.finalPurchaseAmount === 0) {
+      window.location.href = "/infofree";
+    } else {
+      window.location.href = "/infopaid";
     }
   };
   // LOOKS GOOD
@@ -524,20 +634,36 @@ const TicketSelection = () => {
         `image_${eventDetails.eventNum}`,
         JSON.stringify(eventLogo)
       );
-
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
 
-      localStorage.setItem(
-        `cart_${eventDetails.eventNum}`,
-        JSON.stringify({
-          eventDetails: eventDetails,
-          promoCodeDetails: promoCodeDetails,
-          ticketInfo: ticketInfo,
-          orderTotals: orderTotals,
-          orderExpiration: new Date(+new Date() + 7 * 60000),
-        })
-      );
-
+      // if "cart" exists resaves exisiting "guestInfo"
+      if (localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
+        let cart = JSON.parse(
+          localStorage.getItem(`cart_${eventDetails.eventNum}`)
+        );
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals,
+            guestInfo: cart.guestInfo,
+            orderExpiration: new Date(+new Date() + 7 * 60000),
+          })
+        );
+      } else {
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals,
+            orderExpiration: new Date(+new Date() + 7 * 60000),
+          })
+        );
+      }
       if (localStorage.getItem(`user`) !== null) {
         signedIn = true;
       }
@@ -550,41 +676,13 @@ const TicketSelection = () => {
       } else if (eventDetails.gateway === "PayPalMarketplace") {
         window.location.href = "/checkout-paypalmerchant";
       } else {
-        window.location.href = `/er/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+        window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
       }
     } else if (orderTotals.finalPurchaseAmount === 0) {
       window.location.href = "/infofree";
     } else {
       window.location.href = "/infopaid";
     }
-  };
-  // LOOKS GOOD
-  // stores order and event information into "localStorage"
-  const storeRegistration = () => {
-    console.log("Inside 'storeRegistration'");
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem(
-        `image_${eventDetails.eventNum}`,
-        JSON.stringify(eventLogo)
-      );
-
-      localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
-
-      localStorage.setItem(
-        `cart_${eventDetails.eventNum}`,
-        JSON.stringify({
-          eventDetails: eventDetails,
-          promoCodeDetails: promoCodeDetails,
-          ticketInfo: ticketInfo,
-          orderTotals: orderTotals,
-          orderExpiration: new Date(+new Date() + 7 * 60000),
-        })
-      );
-    }
-
-    window.location.href = "/er-NCJAR";
-    //window.location.href = `/er${eventDetails.regFunc.path}`;
   };
   // LOOKS GOOD
   // defines and sets "loadingSpinner" view status

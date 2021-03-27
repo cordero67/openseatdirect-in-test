@@ -24,6 +24,7 @@ const Events = (props) => {
         return response;
     };
 
+    // *** NEED TO LOOK AT RESTRICTING WHEN THE API IS TRIGGERED TO NOT HAVE REDUNDANT PINGS TO THE BACK END
     const loadServerData = () => {
         let tempUser = JSON.parse(localStorage.getItem("user"));
         let vendorToken = tempUser.token;

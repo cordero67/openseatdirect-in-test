@@ -373,11 +373,12 @@ const TicketSelection = () => {
               COVID-19 WAIVER
             </div>
             <div style={{ paddingTop: "10px", paddingBottom: "20px" }}>
-              I hereby release and discharge COA and the Beach Sweeps sponsors,
-              and their respective agents and employees from and against any and
-              all liability, including for any losses, damages or injuries,
-              including the contraction of a communicable disease, arising from
-              my participation in the Beach Sweeps.
+              By submitting this form, I hereby release and discharge COA and
+              the Beach Sweeps sponsors, and their respective agents and
+              employees from and against any and all liability, including for
+              any losses, damages or injuries, including the contraction of a
+              communicable disease, arising from my participation in the Beach
+              Sweeps.
             </div>
             <br></br>
             <br></br>
