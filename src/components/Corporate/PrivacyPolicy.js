@@ -56,7 +56,11 @@ const Privacy = () => {
         <li>
           <p>
             <strong>Company</strong> (referred to as either "the Company", "We",
+<<<<<<< HEAD
             "Us" or "Our" in this Agreement) refers to OpenSeatDirect LLC, 235
+=======
+            "Us" or "Our" in this Agreement) refers to OpenSeatDirect LLC, 1
+>>>>>>> master
             Main, Jersey City NJ 07302.
           </p>
         </li>

@@ -3,8 +3,11 @@ import { Redirect, Fragment, Link } from "react-router-dom";
 
 import { API } from "../../config";
 
+<<<<<<< HEAD
 import queryString from "query-string";
 
+=======
+>>>>>>> master
 import BuyerNavigation from "./BuyerNavigation";
 import Profile from "../ComponentPages/Profile";
 import MyTickets from "../ComponentPages/MyTickets";
@@ -19,6 +22,7 @@ const BuyerAccount = () => {
 
   const [paneView, setPaneView] = useState("myTickets")
 
+<<<<<<< HEAD
   const getStatus= () => {
     console.log("inside new 'getStatus' function")
     let tempData = JSON.parse(localStorage.getItem("user"));
@@ -73,6 +77,15 @@ const BuyerAccount = () => {
     }
     else return 0;
 }
+=======
+  const getStatus= (user) => { 
+    if ('accountId' in user && 'status' in user.accountId ) {
+        return user.accountId.status
+    } else {
+        return 0;
+    } 
+  }
+>>>>>>> master
 
   useEffect(() => {
     setIsLoading(true);
@@ -85,6 +98,7 @@ const BuyerAccount = () => {
       if ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true) {
         setPaneView("onboarding")
       }
+<<<<<<< HEAD
       if (
         queryString.parse(window.location.search).tracking_id !== undefined &&
         queryString.parse(window.location.search).permissionsGranted !== undefined &&
@@ -94,6 +108,9 @@ const BuyerAccount = () => {
         setPaneView("onboarding")
       }
       if (getStatus() === 7 || getStatus() === 8) {
+=======
+      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
+>>>>>>> master
         window.location.href = "/vendor";
       }
       let tempBuyerInfo = {};

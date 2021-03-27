@@ -12,19 +12,29 @@ import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
+<<<<<<< HEAD
 import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
 import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
 //import NewPaypal from "../../TicketPurchases/NewPaypal";
+=======
+import Checkout from "../../TicketPurchases/Checkout";
+import TicketSelection from "../../TicketPurchases/TicketSelection";
+import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
+import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
+>>>>>>> master
 import Authentication from "../../Users/Authentication/Authentication";
 import Slider from "../HomePage/Slider";
 import PrivateRoute from "./PrivateRoute";
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
+<<<<<<< HEAD
 import SalesAnalytics from "../../Users/Vendor/SalesAnalyticsNEW";
+=======
+>>>>>>> master
 
 import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";
@@ -227,15 +237,12 @@ const Routes = () => {
       />
 
       <Route
+<<<<<<< HEAD
         path="/salesanalytics/"
         render={(routeProps) => (
           <React.Fragment>
             <SalesAnalytics />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
+=======
         path="/events"
         exact
         render={(routeProps) => (
@@ -248,6 +255,7 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Events />
             <Footer></Footer>
+>>>>>>> master
           </React.Fragment>
         )}
       />
@@ -280,6 +288,19 @@ const Routes = () => {
       />
 
       <Route
+<<<<<<< HEAD
+        path="/infopaid"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <CustomerInfoPaid />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+=======
+>>>>>>> master
         path="/infofree"
         exact
         render={(routeProps) => (

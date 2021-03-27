@@ -70,13 +70,21 @@
 .ButtonGreen {
   height: 40px;
   width: 160px;
+<<<<<<< HEAD
   background-color: #00a300;
+=======
+  background-color: #00A300;
+>>>>>>> master
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonGreen:hover {
+<<<<<<< HEAD
   background-color: #007a00;
+=======
+  background-color: #007A00;
+>>>>>>> master
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -91,19 +99,31 @@
 .ButtonBlue {
   height: 40px;
   width: 160px;
+<<<<<<< HEAD
   background-color: #0000f5;
+=======
+  background-color: #0000F5;
+>>>>>>> master
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonBlue:hover {
+<<<<<<< HEAD
   background-color: #0000cc;
+=======
+  background-color: #0000CC;
+>>>>>>> master
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonBlue:active {
+<<<<<<< HEAD
   background-color: #0000a3;
+=======
+  background-color: #0000A3;
+>>>>>>> master
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -111,9 +131,16 @@
 
 @media (min-width: 740px) {
   .Modal {
+<<<<<<< HEAD
     width: 580px;
     padding-left: 30px;
     padding-right: 30px;
     left: calc(50% - 290px);
+=======
+    width: 700px;
+    padding-left: 30px;
+    padding-right: 30px;
+    left: calc(50% - 350px);
+>>>>>>> master
   }
 }

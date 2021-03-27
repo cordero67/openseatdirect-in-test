@@ -101,9 +101,12 @@ const TicketSelection = () => {
       .then((res) => {
         console.log("EVENT DATA OBJECT from Server: ", res);
         eventDetails = loadEventDetails(res);
+<<<<<<< HEAD
         //eventDetails.gateway = "PayPalMarketplace";
         //eventDetails.gateway = "PayPalExpress";
         console.log("eventDetails: ", eventDetails);
+=======
+>>>>>>> master
         // checks if an order exists in local storage
         if (
           typeof window !== "undefined" &&
@@ -197,6 +200,7 @@ const TicketSelection = () => {
       loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
     );
 
+<<<<<<< HEAD
     let order = {
       eventNum: eventDetails.eventNum,
       totalAmount: orderTotals.finalPurchaseAmount,
@@ -238,6 +242,44 @@ const TicketSelection = () => {
       `Bearer ${customerInformation.sessionToken}`
     );
     let url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+=======
+    let userPromo = "";
+    let tickets = [];
+
+    ticketInfo.map((item) => {
+      if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        tickets.push(tempObject);
+        if (
+          item.ticketsSelected > 0 &&
+          "form" in item.ticketPriceFunction &&
+          item.ticketPriceFunction.form === "promo" &&
+          item.adjustedTicketPrice !== item.ticketPrice
+        ) {
+          userPromo = item.ticketPriceFunction.args[0].name;
+        }
+      }
+    });
+
+    let order = {
+      eventNum: eventDetails.eventNum,
+      totalAmount: 0,
+      isFree: true,
+      userPromo: userPromo,
+      tickets: tickets,
+    };
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${customerInformation.sessionToken}`
+    );
+
+    let url = `${API}/tixorder/signed_expressorder/${customerInformation.userId}`;
+>>>>>>> master
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
@@ -441,6 +483,7 @@ const TicketSelection = () => {
   // LOOKS GOOD
   // creates checkout/submit order button
   const checkoutButton = () => {
+<<<<<<< HEAD
     console.log("eventDetails: ", eventDetails);
     if (
       //eventDetails.regFunc &&
@@ -466,11 +509,17 @@ const TicketSelection = () => {
         </button>
       );
     } else if (
+=======
+    if (
+>>>>>>> master
       orderTotals.finalPurchaseAmount === 0 &&
       orderTotals.ticketsPurchased > 0 &&
       customerInformation.sessionToken !== ""
     ) {
+<<<<<<< HEAD
       console.log("regFunc has NOT been found");
+=======
+>>>>>>> master
       return (
         <button onClick={freeTicketHandler} className={classes.ButtonGreen}>
           SUBMIT ORDER
@@ -480,12 +529,19 @@ const TicketSelection = () => {
       orderTotals.finalPurchaseAmount > 0 &&
       customerInformation.sessionToken !== ""
     ) {
+<<<<<<< HEAD
       // signed paid order
       console.log("regFunc has NOT been found");
       return (
         <button
           onClick={() => {
             storeOrder();
+=======
+      return (
+        <button
+          onClick={() => {
+            reserveOrder(true);
+>>>>>>> master
           }}
           className={classes.ButtonGreen}
         >
@@ -493,12 +549,19 @@ const TicketSelection = () => {
         </button>
       );
     } else if (orderTotals.ticketsPurchased > 0) {
+<<<<<<< HEAD
       // unsigned paid order
       console.log("regFunc has NOT been found");
       return (
         <button
           onClick={() => {
             storeOrder();
+=======
+      return (
+        <button
+          onClick={() => {
+            reserveOrder(false);
+>>>>>>> master
           }}
           className={classes.ButtonGreen}
         >
@@ -514,6 +577,7 @@ const TicketSelection = () => {
     }
   };
   // LOOKS GOOD
+<<<<<<< HEAD
   // stores order and event information into "localStorage"
   const storeOrder = () => {
     let signedIn = false;
@@ -562,12 +626,90 @@ const TicketSelection = () => {
   // stores order and event information into "localStorage"
   const storeRegistration = () => {
     console.log("Inside 'storeRegistration'");
+=======
+  const reserveOrder = (signed) => {
+    let totalAmount = orderTotals.finalPurchaseAmount;
+    let isFree = true;
+    let userPromo;
+    let tickets = [];
+
+    ticketInfo.map((item, index) => {
+      if (item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        tickets.push(tempObject);
+        if (
+          item.ticketsSelected > 0 &&
+          "form" in item.ticketPriceFunction &&
+          item.ticketPriceFunction.form === "promo" &&
+          item.adjustedTicketPrice !== item.ticketPrice
+        ) {
+          userPromo = item.ticketPriceFunction.args[0].name;
+        }
+      }
+    });
+
+    if (totalAmount > 0) {
+      isFree = false;
+    }
+
+    let order = {
+      eventNum: eventDetails.eventNum,
+      totalAmount: totalAmount,
+      isFree: isFree,
+      userPromo: userPromo,
+      tickets: tickets,
+    };
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url;
+
+    if (signed) {
+      url = `${API}/tixorder/signed_reserveorder/${customerInformation.userId}`;
+      myHeaders.append(
+        "Authorization",
+        `Bearer ${customerInformation.sessionToken}`
+      );
+    } else {
+      url = `${API}/tixorder/unsigned_reserveorder`;
+    }
+
+    let fetcharg = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(order),
+    };
+    console.log("fetching with: ", url, fetcharg);
+    console.log("Free ticket order: ", order);
+    setDisplay("spinner");
+    fetch(url, fetcharg)
+      .then(handleErrors)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        storeOrder(data.data.osdOrderId);
+      })
+      .catch((error) => {
+        console.log("reserveOrder() error.message: ", error.message);
+        setDisplay("connection");
+      });
+  };
+  // LOOKS GOOD
+  // stores order and event information into "localStorage"
+  const storeOrder = (orderId) => {
+    let signedIn = false;
+>>>>>>> master
 
     if (typeof window !== "undefined") {
       localStorage.setItem(
         `image_${eventDetails.eventNum}`,
         JSON.stringify(eventLogo)
       );
+<<<<<<< HEAD
 
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
 
@@ -585,6 +727,58 @@ const TicketSelection = () => {
 
     window.location.href = "/er-NCJAR";
     //window.location.href = `/er${eventDetails.regFunc.path}`;
+=======
+      localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
+
+      // if "cart" exists resaves exisiting "guestInfo"
+      if (localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
+        let cart = JSON.parse(
+          localStorage.getItem(`cart_${eventDetails.eventNum}`)
+        );
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals,
+            guestInfo: cart.guestInfo,
+            osdOrderId: orderId,
+            orderExpiration: new Date(+new Date() + 7 * 60000),
+          })
+        );
+      } else {
+        localStorage.setItem(
+          `cart_${eventDetails.eventNum}`,
+          JSON.stringify({
+            eventDetails: eventDetails,
+            promoCodeDetails: promoCodeDetails,
+            ticketInfo: ticketInfo,
+            orderTotals: orderTotals,
+            osdOrderId: orderId,
+            orderExpiration: new Date(+new Date() + 7 * 60000),
+          })
+        );
+      }
+      if (localStorage.getItem(`user`) !== null) {
+        signedIn = true;
+      }
+    }
+
+    if (signedIn === true) {
+      window.location.href = "/checkout";
+    } else if (
+      orderTotals.finalPurchaseAmount === 0 &&
+      eventDetails.eventNum === 16808192664
+      //eventDetails.eventNum === 65548940409
+    ) {
+      window.location.href = "/er-NCJAR";
+    } else if (orderTotals.finalPurchaseAmount === 0) {
+      window.location.href = "/infofree";
+    } else {
+      window.location.href = "/infopaid";
+    }
+>>>>>>> master
   };
   // LOOKS GOOD
   // defines and sets "loadingSpinner" view status

@@ -95,6 +95,7 @@ const EventDetail = () => {
       instagramLink: event.instagramLink, //
       linkedinLink: event.linkedinLink, //
       organizer: "", // Need to add this field to "Event" object from server
+<<<<<<< HEAD
       organizerEmail: event.accountId.accountEmail, //
       startDateTime: event.startDateTime, //
       endDateTime: event.endDateTime, //
@@ -116,6 +117,29 @@ const EventDetail = () => {
       longDescription: event.longDescription, //
       tickets: tempTickets,
       //forSale: ticketStatus,
+=======
+      organizerEmail: event.accountId.accountEmail,//
+      startDateTime: event.startDateTime,//
+      endDateTime: event.endDateTime,//
+      timeZone: event.timeZone,//
+      eventUrl: event.eventUrl,//
+      refundPolicy: event.refundPolicy,//
+      locationVenueName: event.locationVenueName,//
+      locationAddress1: event.locationAddress1,//
+      locationAddress2: event.locationAddress2,//
+      locationCity: event.locationCity,//
+      locationState: event.locationState,//
+      locationZipPostalCode: event.locationZipPostalCode,//
+      locationCountryCode: event.locationCountryCode,//
+      locationNote: event.locationNote,//
+      tbaInformation: event.tbaInformation,//
+      webinarLink: event.webinarLink,//
+      onlineInformation: event.onlineInformation,//
+      shortDescription: event.shortDescription,//
+      longDescription: event.longDescription,//
+      tickets: event.tickets,
+      //forSale: ticketStatus, 
+>>>>>>> master
     };
     console.log(
       "EVENT DETAILS variable in 'loadEventDetails()': ",
@@ -124,7 +148,11 @@ const EventDetail = () => {
   };
 
   const stylingUpdate = (inWidth) => {
+<<<<<<< HEAD
     console.log("width is ", inWidth);
+=======
+    console.log("width is ", inWidth)
+>>>>>>> master
     // based on window width, displays one or two panes
     if (inWidth < 800) {
       setShowLargerDoublePane(false);
@@ -182,14 +210,33 @@ const EventDetail = () => {
         }
       }
 
+      let ticketCurrency;
+      let pricision;
+      if (priceArray.length >= 1) {
+        if (eventDetails.tickets[0].currency === "USD") {
+          ticketCurrency = "$";
+          pricision = 2;
+        } else if (eventDetails.tickets[0].currency === "JPY") {
+          ticketCurrency = "¥";
+          pricision = 0;
+        } else {
+          ticketCurrency = "$";
+          pricision = 2;
+        }
+      }
+
       if (priceArray.length > 1) {
         //console.log("Currency: ", eventDetails.tickets[0].currency);
         //let ticketCurrency = eventDetails.tickets[0].currency;
         return (
           <div>
+<<<<<<< HEAD
             {ticketCurrency}
             {Math.min(...priceArray).toFixed(pricision)} - {ticketCurrency}
             {Math.max(...priceArray).toFixed(pricision)}
+=======
+            {ticketCurrency}{Math.min(...priceArray).toFixed(pricision)} - {ticketCurrency}{Math.max(...priceArray).toFixed(pricision)}
+>>>>>>> master
           </div>
         );
       } else if (priceArray.length === 1) {
@@ -197,8 +244,12 @@ const EventDetail = () => {
         //let ticketCurrency = eventDetails.tickets[0].currency;
         return (
           <div>
+<<<<<<< HEAD
             {ticketCurrency}
             {Math.min(...priceArray).toFixed(pricision)}
+=======
+            {ticketCurrency}{Math.min(...priceArray).toFixed(pricision)}
+>>>>>>> master
           </div>
         );
       } else {
@@ -316,6 +367,7 @@ const EventDetail = () => {
   };
 
   const ticketButton = () => {
+<<<<<<< HEAD
     console.log("eventDetails.tickets");
     if (eventDetails.tickets !== null) {
       console.log("eventDetails: ", eventDetails);
@@ -337,6 +389,33 @@ const EventDetail = () => {
       );
     }
   };
+=======
+    console.log("eventDetails.tickets")
+    if(eventDetails.tickets.length >= 0 && eventDetails.tickets.length > 0) {
+      return (
+        <div className={styles.ButtonContainer}>
+          <button 
+            onClick={ticketsHandler}
+            className={styles.ButtonGreen}
+          >
+            FIND TICKETS
+          </button>
+        </div>
+      )
+    } else {
+      return (
+        <div className={styles.ButtonContainer}>
+          <button 
+            disabled={true}
+            className={styles.ButtonGreenOpac}
+          >
+            FIND TICKETS
+          </button>
+        </div>
+      )
+    }
+  }
+>>>>>>> master
 
   const ticketDisplay = () => {
     if (!showLargerDoublePane) {
@@ -369,10 +448,14 @@ const EventDetail = () => {
           <div className={styles.TextLeft}>{eventDetails.locationAddress2}</div>
           <div className={styles.TextRight}>
             {eventDetails.locationCity}
+<<<<<<< HEAD
             {(eventDetails.locationCity && eventDetails.locationState) ||
             (eventDetails.locationCity && eventDetails.locationCountryCode)
               ? ", "
               : null}
+=======
+            {(eventDetails.locationCity && eventDetails.locationState) || (eventDetails.locationCity && eventDetails.locationCountryCode)? ", " : null}
+>>>>>>> master
             {eventDetails.locationState} {eventDetails.locationCountryCode}
           </div>
           <div className={styles.TextLeft}>{eventDetails.locationNote}</div>

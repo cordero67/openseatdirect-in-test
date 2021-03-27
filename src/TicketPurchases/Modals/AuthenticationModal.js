@@ -12,7 +12,10 @@ const Authentication = (props) => {
     password: "",
     temporary: "",
     reissued: false,
+<<<<<<< HEAD
     expired: false,
+=======
+>>>>>>> master
     confirmation: "",
     resent: false,
     username: "",
@@ -30,6 +33,7 @@ const Authentication = (props) => {
 
   const [modalSetting, setModalSetting] = useState(props.start) // signin, forgot, temporary, signup, confirmation, password, username, error
 
+<<<<<<< HEAD
 
   const { name, email, password, temporary, reissued, expired, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
 
@@ -90,6 +94,19 @@ const Authentication = (props) => {
       return 0;
     }
 }
+=======
+  const { name, email, password, temporary, reissued, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
+
+  const { message, error } = submissionStatus;
+
+  const getStatus= (user) => { 
+    if ('accountId' in user && 'status' in user.accountId ) {
+      return user.accountId.status
+    } else {
+      return 0;
+    } 
+  }
+>>>>>>> master
   
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
@@ -102,8 +119,15 @@ const Authentication = (props) => {
         getStatus(tempUser.user) === 6 ||
         ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
       ) {
+<<<<<<< HEAD
         window.location.href = "/personal";
       } else {
+=======
+        console.log("user 4, 5 or 6 and vendorIntent true");
+        window.location.href = "/personal";
+      } else {
+        console.log("user 4, 5 or 6 and vendorIntent false");
+>>>>>>> master
         window.location.href = "/events";
       }
     }
@@ -153,7 +177,10 @@ const Authentication = (props) => {
         message: "Server down please try again",
         error: true
       });
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
       setModalSetting("error")
     })
   }
@@ -193,7 +220,10 @@ const Authentication = (props) => {
         message: "Server is down, please try later",
         error: true
       });
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
       setModalSetting("error")
     })
   }
@@ -234,7 +264,10 @@ const Authentication = (props) => {
         message: "Server is down, please try later",
         error: true
       });
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
       setModalSetting("error")
     })
   }
@@ -274,7 +307,10 @@ const Authentication = (props) => {
         message: "Server is down, please try later",
         error: true
       });
+<<<<<<< HEAD
       
+=======
+>>>>>>> master
       setModalSetting("error")
     })
   }
@@ -315,7 +351,10 @@ const Authentication = (props) => {
         message: "Server is down, please try later",
         error: true
       });
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
       setModalSetting("error")
     })
   }
@@ -357,7 +396,10 @@ const Authentication = (props) => {
         message: "Server is down, please try later",
         error: true
       });
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
       setModalSetting("error")
     })
   }
@@ -400,10 +442,59 @@ const Authentication = (props) => {
         message: "Server is down, please try later",
         error: true
       });
+<<<<<<< HEAD
 
       setModalSetting("error")
     })
   }
+=======
+      setModalSetting("error")
+    })
+  }
+  // LOOKS GOOD
+  const submitExpired = () => {
+    console.log("values: ", values)
+    setSubmissionStatus({
+      message: "",
+      error: false
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/signup1_email`;
+    let information = {
+      email: email,
+      vendorIntent: props.vendorIntent
+    }
+    let fetchBody ={
+      method: "POST",
+      headers: myHeaders,
+      body:JSON.stringify (information),
+    };
+    console.log("url: ", url)
+    console.log("fetcharg: ", fetchBody)
+
+    fetch(url, fetchBody )
+    .then(handleErrors)
+    .then ((response)=>{
+      console.log ("then response: ", response);
+      return response.json()})
+    .then ((data)=>{
+      console.log ("fetch return got back data:", data);
+      console.log("ALL GOOD")
+      handleExpired(data)
+    })
+    .catch ((error)=>{
+      console.log("freeTicketHandler() error.message: ", error.message);
+      setSubmissionStatus({
+        message: "Server is down, please try later",
+        error: true
+      });
+      setModalSetting("error")
+    })
+  }
+
+>>>>>>> master
   // LOOKS GOOD
   const submitUsername = () => {
     setSubmissionStatus({
@@ -442,10 +533,17 @@ const Authentication = (props) => {
         message: "Server is down, please try later",
         error: true
       });
+<<<<<<< HEAD
 
       setModalSetting("error")
     })
   }
+=======
+      setModalSetting("error")
+    })
+  }
+
+>>>>>>> master
   // LOOKS GOOD
   const submitResend = () => {
     setSubmissionStatus({
@@ -468,6 +566,7 @@ const Authentication = (props) => {
     console.log("Information: ", information)
     fetch(url, fetchBody )
     .then(handleErrors)
+<<<<<<< HEAD
     .then ((response) => {
       console.log ("then response: ", response);
       return response.json()})
@@ -476,15 +575,32 @@ const Authentication = (props) => {
       handleResend(data)
     })
     .catch ((error) => {
+=======
+    .then ((response)=>{
+      console.log ("then response: ", response);
+      return response.json()})
+    .then ((data)=>{
+      console.log ("fetch return got back data:", data);
+      handleResend(data)
+    })
+    .catch ((error)=>{
+>>>>>>> master
       console.log("freeTicketHandler() error.message: ", error.message);
       setSubmissionStatus({
         message: "Server is down, please try later",
         error: true
       });
+<<<<<<< HEAD
 
       setModalSetting("error")
     })
   }
+=======
+      setModalSetting("error")
+    })
+  }
+
+>>>>>>> master
   // LOOKS GOOD
   const handleSignIn = (data) => {
     if (data.status) {
@@ -495,7 +611,10 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+<<<<<<< HEAD
         expired: false,
+=======
+>>>>>>> master
         confirmation: "",
         resent: false,
         username: "",
@@ -506,7 +625,10 @@ const Authentication = (props) => {
       });
       console.log("SUCCESS")
       props.submit();
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -525,7 +647,10 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+<<<<<<< HEAD
         expired: false,
+=======
+>>>>>>> master
         confirmation: "",
         resent: false,
         username: "",
@@ -555,7 +680,10 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+<<<<<<< HEAD
         expired: false,
+=======
+>>>>>>> master
         confirmation: "",
         resent: false,
         username: "",
@@ -586,7 +714,10 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: true,
+<<<<<<< HEAD
         expired: false,
+=======
+>>>>>>> master
         confirmation: "",
         resent: false,
         username: "",
@@ -614,7 +745,10 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+<<<<<<< HEAD
         expired: false,
+=======
+>>>>>>> master
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -643,7 +777,10 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+<<<<<<< HEAD
         expired: false,
+=======
+>>>>>>> master
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -663,6 +800,7 @@ const Authentication = (props) => {
     }
   }
 
+<<<<<<< HEAD
 
 
 
@@ -694,6 +832,8 @@ const Authentication = (props) => {
 
 
 
+=======
+>>>>>>> master
   // LOOKS GOOD
   const handlePassword = (data) => {
     if (data.status) {
@@ -704,7 +844,10 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+<<<<<<< HEAD
         expired: false,
+=======
+>>>>>>> master
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -716,6 +859,7 @@ const Authentication = (props) => {
       console.log("SUCCESS")
       setModalSetting("username")
     } else {
+<<<<<<< HEAD
       if (data.code === 1401){
         console.log("Status 1401 Error")
         let tempValues = {...values};
@@ -723,6 +867,11 @@ const Authentication = (props) => {
         tempValues.expired = true;
         setValues(tempValues);
         setModalSetting("signup")
+=======
+      if (data.code === 202){
+        console.log("Status 202 Error")
+        setModalSetting("expired")
+>>>>>>> master
       } else {
         setSubmissionStatus({
           message: data.error,
@@ -732,6 +881,22 @@ const Authentication = (props) => {
       }
     }
   }
+<<<<<<< HEAD
+=======
+  const handleExpired = (data) => {
+    if (data.status) {
+      //resetValues();
+      console.log("SUCCESS");
+      setModalSetting("confirmation");
+    } else {
+      setSubmissionStatus({
+        message: data.error,
+        error: true
+      });
+      console.log("ERROR: ", data.error)
+    }
+  }
+>>>>>>> master
 
   // LOOKS GOOD
   const handleUsername = (data) => {
@@ -746,7 +911,10 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+<<<<<<< HEAD
         expired: false,
+=======
+>>>>>>> master
         confirmation: "",
         resent: false,
         username: "",
@@ -757,7 +925,10 @@ const Authentication = (props) => {
       });
       console.log("SUCCESS")
       props.submit();
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -775,7 +946,10 @@ const Authentication = (props) => {
       password: "",
       temporary: "",
       reissued: false,
+<<<<<<< HEAD
       expired: false,
+=======
+>>>>>>> master
       confirmation: "",
       resent: false,
       username: "",
@@ -796,7 +970,10 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+<<<<<<< HEAD
         expired: false,
+=======
+>>>>>>> master
         confirmation: "",
         resent: true,
         username: data.user.username,
@@ -823,6 +1000,7 @@ const Authentication = (props) => {
     });
   };
 
+<<<<<<< HEAD
 
 
 
@@ -849,18 +1027,23 @@ const Authentication = (props) => {
 
 
 
+=======
+>>>>>>> master
   // LOOKS GOOD
   const showError = () => {
     if (error) {
       return (
         <div style={{color: "red", fontSize: "14px", paddingBottom: "20px"}}>{message}</div>
       )
+<<<<<<< HEAD
     } else if (modalSetting === "signup" && expired) {  
       return (
         <div style={{color: "red", fontSize: "16px", paddingBottom: "20px"}}>
           Timer has expired, please resubmit your email:
         </div>
       )
+=======
+>>>>>>> master
     } else if (modalSetting === "signin" || modalSetting === "forgot"|| modalSetting === "signup" || modalSetting === "password") {  
       return null
     } else if (modalSetting === "temporary" && !reissued) {
@@ -1016,6 +1199,7 @@ const Authentication = (props) => {
     </Fragment>
   );
 
+<<<<<<< HEAD
 
 
 
@@ -1035,6 +1219,8 @@ const Authentication = (props) => {
 
 
 
+=======
+>>>>>>> master
   // LOOKS GOOD
   const confirmationForm = (
     <Fragment>
@@ -1077,6 +1263,10 @@ const Authentication = (props) => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
+<<<<<<< HEAD
+=======
+            console.log("clicked submit button")
+>>>>>>> master
             submitPassword();
         }}>
           REGISTER YOUR PASSWORD
@@ -1102,6 +1292,10 @@ const Authentication = (props) => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
+<<<<<<< HEAD
+=======
+            console.log("clicked submit button")
+>>>>>>> master
             submitUsername();
         }}>
           CHANGE YOUR USERNAME
@@ -1111,6 +1305,10 @@ const Authentication = (props) => {
         <button
           className={classes.CancelButton}
           onClick={() => {
+<<<<<<< HEAD
+=======
+            console.log("clicked skip button")
+>>>>>>> master
             props.submit();
         }}>
           CHANGE IT LATER
@@ -1119,6 +1317,35 @@ const Authentication = (props) => {
     </Fragment>
   );
 
+<<<<<<< HEAD
+=======
+  const expiredForm = (
+    <Fragment>
+      <div style={{width: "100%", paddingBottom: "10px", fontSize: "16px"}}>
+        Would you still like to set your password?
+      </div>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.OSDBlueButton}
+          onClick={() => {
+            submitExpired();
+        }}>
+          YES RESEND CODE
+        </button>
+      </div>
+      <div style={{paddingTop: "10px"}}>
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            closeModal();
+        }}>
+          NOT AT THIS TIME
+        </button>
+      </div>
+    </Fragment>
+  );
+
+>>>>>>> master
   // LOOKS GOOD
   const errorForm = (
     <Fragment>
@@ -1130,8 +1357,12 @@ const Authentication = (props) => {
           className={classes.SubmitButton}
           onClick={() => {
             closeModal()
+<<<<<<< HEAD
           }}
         >
+=======
+        }}>
+>>>>>>> master
           CONTINUE
         </button>
       </div>
@@ -1173,6 +1404,10 @@ const Authentication = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
+<<<<<<< HEAD
+=======
+            console.log("clicked resend button")
+>>>>>>> master
             submitReissue();
           }}
         >
@@ -1414,6 +1649,25 @@ const Authentication = (props) => {
     }
   }
 
+<<<<<<< HEAD
+=======
+  const expiredDisplay = () => {
+    if (modalSetting === "expired") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>Time expired</div>
+          </div>
+          <div>
+            {showError()}
+            {expiredForm}
+          </div>
+        </div>
+      )
+    } else return null
+  }
+
+>>>>>>> master
   // LOOKS GOOD
   const usernameDisplay = () => {
     if (modalSetting === "username") {
@@ -1489,6 +1743,10 @@ const Authentication = (props) => {
         {signUpDisplay()}
         {confirmationDisplay()}
         {passwordDisplay()}
+<<<<<<< HEAD
+=======
+        {expiredDisplay()}
+>>>>>>> master
         {usernameDisplay()}
         {errorDisplay()}
       </div>

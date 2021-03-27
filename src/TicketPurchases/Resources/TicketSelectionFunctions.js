@@ -7,12 +7,21 @@ export const loadEventDetails = (event) => {
   // sets the checkout page url
   // NEED TO REMOVE THIS LINE ONCE ADDITIONAL GATEWAYS ADDED
   if (true) {
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
     // NEED TO ADD THIS LINE ONCE ADDITIONAL GATEWAYS ADDED
     //if (event.accountId.paymentGatewayType === "PayPalExpress") {
     tempGatewayURL = "/checkout_pp";
     // NEED TO ADD THESE LINES ONCE ADDITIONAL GATEWAYS ADDED
     // } else if (event.accountId.paymentGatewayType === "Braintree") {
     //   tempGatewayURL = "/checkout_bt";
+=======
+  // NEED TO ADD THIS LINE ONCE ADDITIONAL GATEWAYS ADDED
+  //if (event.accountId.paymentGatewayType === "PayPalExpress") {
+    tempGatewayURL = "/checkout_pp";
+  // NEED TO ADD THESE LINES ONCE ADDITIONAL GATEWAYS ADDED
+  // } else if (event.accountId.paymentGatewayType === "Braintree") {
+  //   tempGatewayURL = "/checkout_bt";
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
   } else {
     tempGatewayURL = "/";
   }
@@ -25,12 +34,26 @@ export const loadEventDetails = (event) => {
     ticketStatus = true;
   }
 
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
+=======
+  let ticketStatus;
+  ticketStatus = false;
+  let d = Date.parse(event.startDateTime) + 86400;
+  
+  if (Date.now() < d) {
+    ticketStatus = true;
+  }
+
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
   let tempEventDetails = {
     eventNum: event.eventNum,
     eventTitle: event.eventTitle,
     eventType: event.eventType,
     isDraft: event.isDraft,
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
     regFunc: event.regFunc,
+=======
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
     organizer: "",
     organizerEmail: event.accountId.accountEmail,
     gateway: event.accountId.paymentGatewayType,
@@ -52,7 +75,11 @@ export const loadEventDetails = (event) => {
     webinarLink: event.webinarLink,
     vanityLink: event.vanityLink,
     onlineInformation: event.onlineInformation,
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
     forSale: ticketStatus,
+=======
+    forSale: ticketStatus, 
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
   };
   console.log("INITIAL 'eventDetails': ", tempEventDetails);
   return tempEventDetails;
@@ -61,13 +88,18 @@ export const loadEventDetails = (event) => {
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // STILL NEED TO CORRECT THE usePriceFunction(true/false) ISSUE
 // initial definition of "ticketInfo"
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
 export const loadTicketInfo = (event) => {
+=======
+export const loadTicketInfo = event => {
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
   let tempTicketArray = [];
   event.tickets.forEach((item, index) => {
     let tempCurrency = "$";
     if (item.Currency === "JPY") {
       tempCurrency = "¥";
     }
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
 
     let priceFunction = {};
     let pricingCode = "";
@@ -80,22 +112,43 @@ export const loadTicketInfo = (event) => {
         // make all promo codes upper case
         let newPromoCodes = [];
         item.priceFunction.args.promocodes.forEach((argArray) => {
+=======
+    
+    let priceFunction = {};
+    let pricingCode = "";
+    if ("priceFunction" in item && "form" in item.priceFunction) {
+      if (item.priceFunction.form === "promo" && "args" in item.priceFunction && "promocodes" in item.priceFunction.args) {
+        // make all promo codes upper case
+        let newPromoCodes = [];
+        item.priceFunction.args.promocodes.forEach(argArray => {
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
           let tempElement;
           tempElement = {
             name: argArray.name.toUpperCase(),
             amount: parseFloat(argArray.amount).toFixed(2),
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
             percent: argArray.percent,
           };
           newPromoCodes.push(tempElement);
         });
+=======
+            percent: argArray.percent
+          }
+          newPromoCodes.push(tempElement)
+        })
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
         priceFunction = {
           form: "promo",
           args: newPromoCodes,
         };
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
       } else if (
         item.priceFunction.form === "twofer" &&
         "args" in item.priceFunction
       ) {
+=======
+      } else if (item.priceFunction.form === "twofer" && "args" in item.priceFunction) {
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
         let tempArgs = {
           buy: parseInt(item.priceFunction.args.buy),
           for: item.priceFunction.args.for,
@@ -105,10 +158,14 @@ export const loadTicketInfo = (event) => {
           args: tempArgs,
         };
         pricingCode = "twofer";
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
       } else if (
         item.priceFunction.form === "bogo" &&
         "args" in item.priceFunction
       ) {
+=======
+      } else if (item.priceFunction.form === "bogo" && "args" in item.priceFunction) {
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
         let tempArgs = {
           buy: parseInt(item.priceFunction.args.buy),
           get: parseInt(item.priceFunction.args.get),
@@ -157,8 +214,14 @@ export const loadTicketInfo = (event) => {
 export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   let tempCodesArray = [];
   res.tickets.forEach((tktType, index) => {
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
     if ("priceFunction" in tktType && tktType.priceFunction.form === "promo") {
       tktType.priceFunction.args.promocodes.forEach((tktPromo) => {
+=======
+
+    if ("priceFunction" in tktType && tktType.priceFunction.form === "promo") {
+      tktType.priceFunction.args.promocodes.forEach(tktPromo => {
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
         if (!tempCodesArray.includes(tktPromo.name.toUpperCase())) {
           tempCodesArray.push(tktPromo.name.toUpperCase());
         }
@@ -231,7 +294,11 @@ export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
 // updates "ticketInfo" after a change in tickets selected
 export const changeTicketInfo = (event, ticketType, ticketInfo) => {
   let tempTicketInfo = [...ticketInfo];
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
   tempTicketInfo.forEach((item) => {
+=======
+  tempTicketInfo.forEach(item => {
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
     // finds a ticketID match
     if (item.ticketID === ticketType.ticketID) {
       item.ticketsSelected = parseInt(event.target.value);
@@ -241,6 +308,7 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
           item.ticketPrice,
           item.ticketPriceFunction.args.buy,
           item.ticketPriceFunction.args.get,
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
           item.ticketPriceFunction.args.discount / 100
         );
         {
@@ -248,11 +316,19 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
             ? (item.adjustedTicketPrice = totalPurchase / event.target.value)
             : (item.adjustedTicketPrice = item.ticketPrice);
         }
+=======
+          item.ticketPriceFunction.args.discount/100
+        );
+        {event.target.value > 0 ?
+          item.adjustedTicketPrice = totalPurchase/event.target.value
+          : item.adjustedTicketPrice = item.ticketPrice};
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
       } else if (item.ticketPriceFunction.form === "twofer") {
         let totalPurchase = twofer(
           event.target.value,
           item.ticketPrice,
           item.ticketPriceFunction.args.buy,
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
           item.ticketPriceFunction.args.for
         );
         {
@@ -265,6 +341,18 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
   });
   console.log("UPDATED 'ticketInfo': ", tempTicketInfo);
   return tempTicketInfo;
+=======
+          (item.ticketPriceFunction.args.for)
+        );
+        {event.target.value > 0 ?
+          item.adjustedTicketPrice = totalPurchase/event.target.value
+          : item.adjustedTicketPrice = item.ticketPrice};
+      }
+    }
+  });
+  console.log("UPDATED 'ticketInfo': ", tempTicketInfo)
+  return(tempTicketInfo);
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
 };
 
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
@@ -283,10 +371,17 @@ export const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "ticketInfo" based on changes to promo code
 export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
   console.log("inside amendTicket");
   let tempTicketInfo = [...ticketInfo];
   // checks if ticket type has the code and then extracts and applies the discount amount
   tempTicketInfo.forEach((item) => {
+=======
+  console.log("inside amendTicket")
+  let tempTicketInfo = [...ticketInfo];
+  // checks if ticket type has the code and then extracts and applies the discount amount
+  tempTicketInfo.forEach(item => {
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
     if (item.ticketPriceFunction.form === "promo") {
       item.ticketPriceFunction.args.forEach((element) => {
         if (element.name === inputtedPromoCode) {
@@ -294,9 +389,13 @@ export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
             item.adjustedTicketPrice = item.ticketPrice - element.amount;
             item.ticketPricingCodeApplied = inputtedPromoCode;
           } else {
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
             item.adjustedTicketPrice = parseFloat(
               (item.ticketPrice * (1 - element.amount)).toFixed(2)
             );
+=======
+            item.adjustedTicketPrice = parseFloat((item.ticketPrice * (1 - (element.amount))).toFixed(2));
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
           }
           item.ticketPricingCodeApplied = inputtedPromoCode;
         }
@@ -361,6 +460,7 @@ export const clearOrderTotals = (ticketInfo, orderTotals) => {
 };
 
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+<<<<<<< HEAD:src/TicketPurchases/Resources/TicketSelectionFunctions.js
 export const loadTransactionInfo = (
   eventDetails,
   orderTotals,
@@ -397,3 +497,35 @@ export const loadTransactionInfo = (
 
   return TransactionInfo;
 };
+=======
+export const loadTransactionInfo = (eventDetails, orderTotals, ticketInfo, email, name) => {
+  let TransactionInfo = {
+      eventTitle: eventDetails.eventTitle,
+      eventType: eventDetails.eventType,
+      venue: eventDetails.locationVenueName,
+      address1: eventDetails.locationAddress1,
+      address2: eventDetails.locationAddress2,
+      city: eventDetails.locationCity,
+      state: eventDetails.locationState,
+      zipPostalCode: eventDetails.locationZipPostalCode,
+      countryCode: eventDetails.locationCountryCode,
+      locationNote: eventDetails.locationNote,
+      webinarLink: eventDetails.webinarLink,
+      onlineInformation: eventDetails.onlineInformation,
+      tbaInformation: eventDetails.tbaInformation,
+      startDateTime: eventDetails.startDateTime,
+      endDateTime: eventDetails.endDateTime,
+      timeZone: eventDetails.timeZone,
+      email: email,
+      name: name,
+      numTickets: orderTotals.ticketsPurchased,
+      fullAmount: orderTotals.fullPurchaseAmount,
+      discount: orderTotals.discountAmount,
+      totalAmount: orderTotals.finalPurchaseAmount,
+      tickets: ticketInfo,
+      organizerEmail: eventDetails.organizerEmail
+  }
+
+  return TransactionInfo
+}
+>>>>>>> master:src/TicketPurchases/TicketSelectionFunctions.js
