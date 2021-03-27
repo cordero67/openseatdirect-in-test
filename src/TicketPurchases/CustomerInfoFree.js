@@ -156,9 +156,46 @@ const CustomerInfo = (props) => {
   };
 
   const freeTicketHandler = (user) => {
+    let order = {
+      eventNum: eventDetails.eventNum,
+      totalAmount: orderTotals.finalPurchaseAmount,
+    };
+
+    if (orderTotals.finalPurchaseAmount === 0) {
+      order.isFree = true;
+    } else {
+      order.isFree = false;
+    }
+
+    let tickets = [];
+    ticketInfo.map((item) => {
+      if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        tickets.push(tempObject);
+        if (
+          item.ticketsSelected > 0 &&
+          "form" in item.ticketPriceFunction &&
+          item.ticketPriceFunction.form === "promo" &&
+          item.adjustedTicketPrice !== item.ticketPrice
+        ) {
+          order.promo = item.ticketPriceFunction.args[0].name;
+        }
+      }
+    });
+
+    order.tickets = tickets;
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    let url;
+
     if (!user) {
       let email = guestInformation.email;
       let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
+
       setTransactionInfo(
         loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );

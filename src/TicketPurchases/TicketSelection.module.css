@@ -64,7 +64,6 @@
 .MainItemLeft {
   background-color: #f9f9f9;
   border-right: 1px solid lightgrey;
-<<<<<<< HEAD
 }
 
 .ButtonBlue {
@@ -88,32 +87,6 @@
   border: 1px solid black;
   outline: none;
 }
-=======
-}
-
-.ButtonBlue {
-  height: 40px;
-  width: 150px;
-  background-color: #0000f5;
-  color: #fff;
-  font-size: 16px;
-  border: 1px solid black;
-  outline: none;
-}
-.ButtonBlue:hover {
-  background-color: #0000cc;
-  color: #fff;
-  border: 1px solid black;
-  outline: none;
-}
-.ButtonBlue:active {
-  background-color: #0000a3;
-  color: #fff;
-  border: 1px solid black;
-  outline: none;
-}
-
->>>>>>> master
 .ButtonGrey {
   height: 40px;
   width: 150px;

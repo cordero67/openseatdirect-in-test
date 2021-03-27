@@ -3,7 +3,6 @@
     grid-template-columns: auto 80px;
 }
 
-<<<<<<< HEAD
 .CancelButton {
     font-size: 14px;
     text-align: left;
@@ -31,8 +30,6 @@
 
 
 
-=======
->>>>>>> master
 @media (min-width: 1140px) {
     .RightGrid {
         grid-template-columns: 230px 80px;

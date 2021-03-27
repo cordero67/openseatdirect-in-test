@@ -178,6 +178,7 @@ const TicketSelection = () => {
       );
     } else return null;
   };
+
   // LOOKS GOOD
   const freeTicketHandler = () => {
     let email = customerInformation.email;
@@ -256,6 +257,7 @@ const TicketSelection = () => {
         localStorage.removeItem(`eventNum`);
       });
   };
+
   // LOOKS GOOD
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {

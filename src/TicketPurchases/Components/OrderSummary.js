@@ -28,7 +28,6 @@ const OrderSummary = props => {
 
   return (
     <Fragment>
-<<<<<<< HEAD:src/TicketPurchases/Components/OrderSummary.js
       <div className={classes.RightGrid}>
         <div style={{fontWeight: "600"}}>Order Summary</div>
         {props.cancel ?
@@ -41,9 +40,6 @@ const OrderSummary = props => {
           null
         }
       </div>
-=======
-      <div style={{ fontWeight: "600" }}>Order Summary</div>
->>>>>>> master:src/TicketPurchases/OrderSummary.js
       <br></br>
       {props.ticketOrder.map(item => {
         let fixedDiscountTotal;

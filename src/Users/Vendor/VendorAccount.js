@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-  
->>>>>>> master
 import React, { useState, useEffect } from "react";
 
 import Events from "./Events";
@@ -20,7 +16,6 @@ import classes from "./VendorAccount.module.css";
 const VendorAccount = () => {
   const [paneView, setPaneView] = useState("events")
 
-<<<<<<< HEAD
   const getStatus= () => {
     console.log("inside new 'getStatus' function")
     let tempData = JSON.parse(localStorage.getItem("user"));
@@ -75,29 +70,14 @@ const VendorAccount = () => {
     }
     else return 0;
 }
-=======
-  const getStatus= (user) => { 
-    if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status
-    } else {
-        return 0;
-    } 
-  }
->>>>>>> master
 
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
-<<<<<<< HEAD
       if (!(getStatus() === 7) &&
         !(getStatus() === 8)) {
-=======
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (!(getStatus(tempUser.user) === 7) &&
-        !(getStatus(tempUser.user) === 8)) {
->>>>>>> master
         window.location.href = "/personal";
       }
     } else {

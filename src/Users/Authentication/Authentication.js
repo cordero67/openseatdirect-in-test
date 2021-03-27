@@ -3,13 +3,6 @@ import { Redirect } from "react-router-dom";
 
 import { API } from "../../config";
 
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> master
 import classes from "./AuthenticationNEW.module.css";
 
 const Authentication = () => {
@@ -19,10 +12,7 @@ const Authentication = () => {
     password: "",
     temporary: "",
     reissued: false,
-<<<<<<< HEAD
     expired: false,
-=======
->>>>>>> master
     confirmation: "",
     resent: false,
     username: "",
@@ -39,7 +29,6 @@ const Authentication = () => {
   });
 
   const [modalSetting, setModalSetting] = useState("signin") // signin, forgot, temporary, signup, confirmation, password, username, error
-<<<<<<< HEAD
   const [previousModalSetting, setPreviousModalSetting] = useState("signin") // signin, forgot, temporary, signup, confirmation, password, username
 
   const { name, email, password, temporary, reissued, expired, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
@@ -115,36 +104,6 @@ const Authentication = () => {
       ) {
         window.location.href = "/personal";
       } else {
-=======
-
-  const { name, email, password, temporary, reissued, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
-
-  const { message, error } = submissionStatus;
-
-  const getStatus= (user) => { 
-    if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status
-    } else {
-        return 0;
-    } 
-  }
-  
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
-    let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
-        window.location.href = "/vendor";
-      } else if (
-        getStatus(tempUser.user) === 4 ||
-        getStatus(tempUser.user) === 5 ||
-        getStatus(tempUser.user) === 6 ||
-        ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
-      ) {
-        console.log("user 4, 5 or 6 and vendorIntent true");
-        window.location.href = "/personal";
-      } else {
-        console.log("user 4, 5 or 6 and vendorIntent false");
->>>>>>> master
         window.location.href = "/events";
       }
     }
@@ -153,11 +112,7 @@ const Authentication = () => {
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
     if (!response.ok) {
-<<<<<<< HEAD
       throw Error(response.status);
-=======
-        throw Error(response.status);
->>>>>>> master
     }
     return response;
   };
@@ -177,15 +132,9 @@ const Authentication = () => {
       password: password
     }
     let fetchBody ={
-<<<<<<< HEAD
       method: "POST",
       headers: myHeaders,
       body:JSON.stringify (information),
-=======
-        method: "POST",
-        headers: myHeaders,
-        body:JSON.stringify (information),
->>>>>>> master
     };
     console.log("fetching with: ", url, fetchBody);
     console.log("Information: ", information)
@@ -204,10 +153,7 @@ const Authentication = () => {
         message: "Server down please try again",
         error: true
       });
-<<<<<<< HEAD
       //setPreviousModalSetting(modalSetting)
-=======
->>>>>>> master
       setModalSetting("error")
     })
   }
@@ -247,10 +193,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
-<<<<<<< HEAD
       setPreviousModalSetting(modalSetting)
-=======
->>>>>>> master
       setModalSetting("error")
     })
   }
@@ -291,10 +234,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
-<<<<<<< HEAD
       //setPreviousModalSetting(modalSetting)
-=======
->>>>>>> master
       setModalSetting("error")
     })
   }
@@ -334,10 +274,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
-<<<<<<< HEAD
       setPreviousModalSetting(modalSetting)
-=======
->>>>>>> master
       setModalSetting("error")
     })
   }
@@ -378,10 +315,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
-<<<<<<< HEAD
       setPreviousModalSetting(modalSetting)
-=======
->>>>>>> master
       setModalSetting("error")
     })
   }
@@ -423,10 +357,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
-<<<<<<< HEAD
       setPreviousModalSetting(modalSetting)
-=======
->>>>>>> master
       setModalSetting("error")
     })
   }
@@ -469,17 +400,10 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
-<<<<<<< HEAD
       setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
-=======
-      setModalSetting("error")
-    })
-  }
-
->>>>>>> master
   // LOOKS GOOD
   const submitUsername = () => {
     setSubmissionStatus({
@@ -518,17 +442,10 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
-<<<<<<< HEAD
       setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
-=======
-      setModalSetting("error")
-    })
-  }
-
->>>>>>> master
   // LOOKS GOOD
   const submitResend = () => {
     setSubmissionStatus({
@@ -564,17 +481,10 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
-<<<<<<< HEAD
       setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
-=======
-      setModalSetting("error")
-    })
-  }
-
->>>>>>> master
   // LOOKS GOOD
   const handleSignIn = (data) => {
     if (data.status) {
@@ -585,17 +495,11 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
-<<<<<<< HEAD
         expired: false,
         confirmation: "",
         resent: false,
         username: "",
         vendorIntent: false,
-=======
-        confirmation: "",
-        resent: false,
-        username: "",
->>>>>>> master
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -621,10 +525,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
-<<<<<<< HEAD
         expired: false,
-=======
->>>>>>> master
         confirmation: "",
         resent: false,
         username: "",
@@ -654,10 +555,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
-<<<<<<< HEAD
         expired: false,
-=======
->>>>>>> master
         confirmation: "",
         resent: false,
         username: "",
@@ -688,10 +586,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: true,
-<<<<<<< HEAD
         expired: false,
-=======
->>>>>>> master
         confirmation: "",
         resent: false,
         username: "",
@@ -719,10 +614,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
-<<<<<<< HEAD
         expired: false,
-=======
->>>>>>> master
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -751,10 +643,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
-<<<<<<< HEAD
         expired: false,
-=======
->>>>>>> master
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -774,10 +663,7 @@ const Authentication = () => {
     }
   }
 
-<<<<<<< HEAD
 /*
-=======
->>>>>>> master
   // LOOKS GOOD
   const handlePassword = (data) => {
     if (data.status) {
@@ -806,7 +692,6 @@ const Authentication = () => {
       console.log("ERROR: ", data.error)
     }
   }
-<<<<<<< HEAD
   */
   
   // LOOKS GOOD
@@ -847,8 +732,6 @@ const Authentication = () => {
       }
     }
   }
-=======
->>>>>>> master
 
   // LOOKS GOOD
   const handleUsername = (data) => {
@@ -863,10 +746,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
-<<<<<<< HEAD
         expired: false,
-=======
->>>>>>> master
         confirmation: "",
         resent: false,
         username: "",
@@ -895,10 +775,7 @@ const Authentication = () => {
       password: "",
       temporary: "",
       reissued: false,
-<<<<<<< HEAD
       expired: false,
-=======
->>>>>>> master
       confirmation: "",
       resent: false,
       username: "",
@@ -919,10 +796,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
-<<<<<<< HEAD
         expired: false,
-=======
->>>>>>> master
         confirmation: "",
         resent: true,
         username: data.user.username,
@@ -949,10 +823,6 @@ const Authentication = () => {
     });
   };
 
-<<<<<<< HEAD
-=======
-  
->>>>>>> master
   const changeIntent = () => {
     setValues({
       ...values,
@@ -964,30 +834,17 @@ const Authentication = () => {
     console.log("Redirect user");
     if (typeof window !== "undefined" && localStorage.getItem("user") !== null) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-<<<<<<< HEAD
       if (getStatus() === 7 || getStatus() === 8) {
         window.location.href = "/vendor";
       } else if (
         getStatus() === 4 ||
         getStatus() === 5 ||
         getStatus() === 6 ||
-=======
-      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {  
-        window.location.href = "/vendor";
-      } else if (
-        getStatus(tempUser.user) === 4 ||
-        getStatus(tempUser.user) === 5 ||
-        getStatus(tempUser.user) === 6 ||
->>>>>>> master
         ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
       ) {
         window.location.href = "/personal";
       } else {
-<<<<<<< HEAD
         window.location.href = "/ ";
-=======
-        window.location.href = "/events";
->>>>>>> master
       }
     }
   }
@@ -998,37 +855,23 @@ const Authentication = () => {
       return (
         <div style={{color: "red", fontSize: "14px", paddingBottom: "20px"}}>{message}</div>
       )
-<<<<<<< HEAD
     } else if (modalSetting === "signup" && expired) {  
       return (
         <div style={{color: "red", fontSize: "16px", paddingBottom: "20px"}}>
           Timer has expired, please resubmit your email:
         </div>
       )
-=======
->>>>>>> master
     } else if (modalSetting === "signin" || modalSetting === "forgot"|| modalSetting === "signup" || modalSetting === "password") {  
       return null
     } else if (modalSetting === "temporary" && !reissued) {
       console.log("modalSetting === 'temporary' && !reissued")
       console.log("values: ", values)
       return (
-<<<<<<< HEAD
         <div style={{fontSize: "16px", paddingBottom: "20px"}}>
           Enter the 6-digit code sent to:
           <br></br>
           {email}
         </div>
-=======
-        <Fragment>
-          <div style={{fontSize: "16px", paddingBottom: "10px"}}>
-            Enter the 6-digit code sent to:
-          </div>
-          <div style={{fontSize: "16px", paddingBottom: "20px"}}>
-            {email}
-          </div>
-        </Fragment>
->>>>>>> master
       )
     } else if (modalSetting === "temporary" && reissued) {
       console.log("modalSetting === 'temporary' && reissued")
@@ -1286,14 +1129,9 @@ const Authentication = () => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
-<<<<<<< HEAD
             setModalSetting(previousModalSetting)
           }}
         >
-=======
-          window.location.href = "/events";
-        }}>
->>>>>>> master
           CONTINUE
         </button>
       </div>
@@ -1416,10 +1254,6 @@ const Authentication = () => {
 
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
           </div>
           <div>
             {showError()}
@@ -1440,7 +1274,6 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Trouble logging in?</div>
-<<<<<<< HEAD
           </div>
 
 
@@ -1452,20 +1285,6 @@ const Authentication = () => {
 
 
 
-=======
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          </div>
->>>>>>> master
           <div>
             {showError()}
             {forgotForm}
@@ -1485,7 +1304,6 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
-<<<<<<< HEAD
           </div>
 
 
@@ -1497,20 +1315,6 @@ const Authentication = () => {
 
 
 
-=======
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          </div>
->>>>>>> master
           <div>
             {showError()}
             {temporaryForm}
@@ -1530,7 +1334,6 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Tell us about yourself</div>
-<<<<<<< HEAD
           </div>
 
 
@@ -1542,20 +1345,6 @@ const Authentication = () => {
 
 
 
-=======
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          </div>
->>>>>>> master
           <div>
             {showError()}
             {signUpForm}
@@ -1563,13 +1352,7 @@ const Authentication = () => {
           </div>
         </div>
       )
-<<<<<<< HEAD
     } else return null
-=======
-    } else {
-      return null
-    }
->>>>>>> master
   }
 
   // LOOKS GOOD
@@ -1579,7 +1362,6 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
-<<<<<<< HEAD
           </div>
 
 
@@ -1591,20 +1373,6 @@ const Authentication = () => {
 
 
 
-=======
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          </div>
->>>>>>> master
           <div>
             {showError()}
             {confirmationForm}
@@ -1624,7 +1392,6 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Create your password</div>
-<<<<<<< HEAD
           </div>
 
 
@@ -1636,20 +1403,6 @@ const Authentication = () => {
 
 
 
-=======
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          </div>
->>>>>>> master
           <div>
             {showError()}
             {passwordForm}
@@ -1668,7 +1421,6 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Change your username</div>
-<<<<<<< HEAD
           </div>
 
 
@@ -1680,20 +1432,6 @@ const Authentication = () => {
 
 
 
-=======
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          </div>
->>>>>>> master
           <div>
             {showError()}
             {usernameForm}
@@ -1712,7 +1450,6 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>System Error</div>
-<<<<<<< HEAD
           </div>
 
 
@@ -1724,20 +1461,6 @@ const Authentication = () => {
 
 
 
-=======
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          </div>
->>>>>>> master
           <div>
             {errorForm}
           </div>
@@ -1751,22 +1474,15 @@ const Authentication = () => {
   // LOOKS GOOD
   return (
     <div className={classes.MainContainer}>
-<<<<<<< HEAD
-=======
+
+
+
+
+
+
+
+
       <div className={classes.Modal}>
->>>>>>> master
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-      <div className={classes.Modal}>
-=======
->>>>>>> master
         {signInDisplay()}
         {forgotDisplay()}
         {temporaryDisplay()}

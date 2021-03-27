@@ -1327,9 +1327,6 @@ const Home = () => {
               </button>
             </div>
           </div>
-          
-          <div ref={signUpRef}></div>
-          <br></br>
         </div>
       )}
       {modalStatus ? (

@@ -5,7 +5,6 @@ import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./BuyerReceiptModal.module.css";
 
 const ReceiptModal = (props) => {
-<<<<<<< HEAD
   console.log("selected order: ", props);
 
   //let allTotal = 0;
@@ -17,20 +16,6 @@ const ReceiptModal = (props) => {
   //let bitcoinTotal = 0;
   //let ethereumTotal = 0;
   //let otherTotal = 0;
-=======
-  
-  console.log("selected order: ", props)
-
-  let allTotal = 0;
-  let payPalExpressTotal = 0;
-  let cashTotal = 0;
-  let cashAppTotal = 0;
-  let venmoTotal = 0;
-  let paypalTotal = 0;
-  let bitcoinTotal = 0;
-  let ethereumTotal = 0;
-  let otherTotal = 0;
->>>>>>> master
 
   let longDateTime;
   [longDateTime] = getStartDate(props.details.startDateTime);
@@ -48,7 +33,6 @@ const ReceiptModal = (props) => {
           gridGap: "40px",
           width: "630px",
           textAlign: "center",
-<<<<<<< HEAD
           paddingLeft: "35px",
         }}
       >
@@ -56,54 +40,29 @@ const ReceiptModal = (props) => {
           className={classes.ButtonBlue}
           onClick={() => {
             props.loadPrevious();
-=======
-          paddingLeft: "35px"
-        }}
-      >
-        <button className={classes.ButtonBlue}
-          onClick={() => {
-            props.loadPrevious()
->>>>>>> master
           }}
         >
           LOAD PREVIOUS
         </button>
-<<<<<<< HEAD
         <button
           className={classes.ButtonGreen}
           onClick={() => {
             props.loadNext();
-=======
-        <button className={classes.ButtonGreen}
-          onClick={() => {
-            props.loadNext()
->>>>>>> master
           }}
         >
           LOAD NEXT
         </button>
-<<<<<<< HEAD
         <button
           className={classes.ButtonGrey}
           onClick={() => {
             props.close();
-=======
-        <button className={classes.ButtonGrey}
-          onClick={() => {
-            props.close()
->>>>>>> master
           }}
         >
           CLOSE
         </button>
       </div>
-<<<<<<< HEAD
     );
   };
-=======
-    )
-  }
->>>>>>> master
   /*
   const ticketsList = () => {
     return (
@@ -154,11 +113,7 @@ const ReceiptModal = (props) => {
     )
   }
   */
-<<<<<<< HEAD
   /*
-=======
- /*
->>>>>>> master
   const paymentTypeTotals = () => {
     console.log("tickets: ", props.details.tickets)
 
@@ -299,30 +254,18 @@ const ReceiptModal = (props) => {
           style={{
             fontWeight: "600",
             fontSize: "18px",
-<<<<<<< HEAD
             textAlign: "left",
-=======
-            textAlign: "left"
->>>>>>> master
           }}
         >
           {props.details.eventTitle}
         </div>
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> master
         <div
           style={{
             fontSize: "16px",
             textAlign: "left",
             fontWeight: "400",
-<<<<<<< HEAD
             paddingTop: "5px",
-=======
-            paddingTop: "5px"
->>>>>>> master
           }}
         >
           {longDateTime}
@@ -334,7 +277,6 @@ const ReceiptModal = (props) => {
             gridTemplateColumns: "90px 400px",
             fontSize: "16px",
             textAlign: "left",
-<<<<<<< HEAD
             paddingBottom: "10px",
           }}
         >
@@ -343,14 +285,6 @@ const ReceiptModal = (props) => {
             {props.details.order_firstName}
             {", "}
             {props.details.order_lastName}
-=======
-            paddingBottom: "10px"
-          }}
-        >
-          <div style={{fontWeight: "600"}}>Recipient:</div>
-          <div>
-            {props.details.order_firstName}{", "}{props.details.order_lastName}
->>>>>>> master
           </div>
         </div>
         <div
@@ -358,14 +292,9 @@ const ReceiptModal = (props) => {
             fontSize: "16px",
             textAlign: "left",
             paddingLeft: "90px",
-<<<<<<< HEAD
             paddingBottom: "10px",
           }}
         >
-=======
-            paddingBottom: "10px"
-          }}>
->>>>>>> master
           {props.details.order_email}
         </div>
         <div
@@ -374,35 +303,20 @@ const ReceiptModal = (props) => {
             gridTemplateColumns: "90px 400px",
             fontSize: "16px",
             textAlign: "left",
-<<<<<<< HEAD
             paddingBottom: "10px",
           }}
         >
           <div style={{ fontWeight: "600" }}>Order Date:</div>
           <div>{shortDateTime}</div>
-=======
-            paddingBottom: "10px"
-          }}
-        >
-          <div style={{fontWeight: "600"}}>Order Date:</div>
-          <div>
-            {shortDateTime}
-          </div>
->>>>>>> master
         </div>
         <div
           style={{
             fontSize: "16px",
             textAlign: "left",
             paddingLeft: "80px",
-<<<<<<< HEAD
             paddingBottom: "10px",
           }}
         >
-=======
-            paddingBottom: "10px"
-          }}>
->>>>>>> master
           {/*"message" in props.details.recipient ? props.details.recipient.message : null*/}
         </div>
         <br></br>
@@ -415,7 +329,6 @@ const ReceiptModal = (props) => {
             width: "630px",
             borderBottom: "1px solid black",
             fontWeight: "600",
-<<<<<<< HEAD
             paddingBottom: "10px",
           }}
         >
@@ -426,31 +339,15 @@ const ReceiptModal = (props) => {
             Payment Type
           </div>
           <div style={{ textAlign: "center" }}>Total</div>
-=======
-            paddingBottom: "10px"
-          }}
-        >
-          <div style={{textAlign: "left"}}>Ticket Type</div>
-          <div style={{textAlign: "center"}}># Tickets</div>
-          <div style={{textAlign: "center"}}>Price</div>
-          <div style={{textAlign: "left", paddingLeft: "10px"}}>Payment Type</div>
-          <div style={{textAlign: "center"}}>Total</div>
->>>>>>> master
         </div>
 
         <div
           style={{
             width: "630px",
             borderBottom: "1px solid black",
-<<<<<<< HEAD
             paddingBottom: "10px",
           }}
         >
-=======
-            paddingBottom: "10px"
-            }}
-          >
->>>>>>> master
           {/*ticketsList()*/}
         </div>
         <div>{/*paymentTypeTotals()*/}</div>

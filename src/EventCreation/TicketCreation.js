@@ -405,7 +405,6 @@ const TicketCreation = (props) => {
                   cursor="pointer"
                   icon={faInfoCircle}
                 />
-<<<<<<< HEAD
               }
             />
           </div>
@@ -418,35 +417,6 @@ const TicketCreation = (props) => {
             }}
           >
             Price<span style={{ color: "red" }}>*</span>
-=======
-              </div>
-  
-              <div
-                style={{
-                  padding: "10px 10px 10px 5px",
-                  boxSizing: "borderBox",
-                  fontWeight: 600,
-                }}
-              >
-                Price<span style={{ color: "red" }}>*</span>
-              </div>
-            </div>
-            {ticketTypeDisplay()}
-              <div
-                style={{
-                  padding: "10px 5px 10px 5px",
-                  borderTop: "1px solid lightgrey",
-                  boxSizing: "borderBox",
-                  height: "56px",
-                  textAlign: "center",
-                  fontWeight: 600,
-                }}
-              >
-              <button className={classes.ButtonGreen}
-                onClick={props.createNewTicketHandler}
-              >ADD A TICKET</button>
-              </div>
->>>>>>> master
           </div>
         </div>
         {ticketTypeDisplay()}
