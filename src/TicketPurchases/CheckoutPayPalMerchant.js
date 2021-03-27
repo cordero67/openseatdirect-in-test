@@ -240,7 +240,7 @@ const Checkout = () => {
     <div>
       <PayPalScriptProvider options={{ "client-id": "test" }}>
         <PayPalButtons
-          style={{ layout: "horizontal" }}
+          style={{ layout: "vertical" }}
           createOrder={(data, actions) => {
             console.log("paypalArray: ", paypalArray);
             console.log("in createOrder w data=", data);
