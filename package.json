@@ -7,7 +7,6 @@
     "@fortawesome/free-brands-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
-    "@paypal/react-paypal-js": "^5.0.0",
     "@tinymce/tinymce-react": "^3.5.0",
     "axios": "^0.21.1",
     "braintree-dropin-react": "^0.1.1",
@@ -16,7 +15,6 @@
     "date-fns": "^2.14.0",
     "dateformat": "^3.0.3",
     "moment": "^2.24.0",
-    "qrcode.react": "^1.0.1",
     "query-string": "^6.8.3",
     "react": "^16.10.2",
     "react-bootstrap": "^1.0.0-beta.14",
@@ -28,18 +26,9 @@
     "react-dropzone": "^11.0.1",
     "react-html-parser": "^2.0.2",
     "react-image-crop": "^8.6.2",
-    "react-minimal-pie-chart": "^8.2.0",
     "react-paypal-button-v2": "^2.6.1",
-    "react-responsive-carousel": "^3.2.10",
     "react-router-dom": "^5.1.2",
-<<<<<<< HEAD
-    "react-scripts": "^3.4.1",
-    "react-scroll": "^1.8.1",
-    "react-select": "^3.1.0",
-    "react-timezone": "^2.4.0",
-=======
     "react-scripts": "^3.4.3",
->>>>>>> master
     "react-youtube": "^7.9.0",
     "semantic-ui-react": "^0.88.2",
     "underscore": "^1.9.1"
