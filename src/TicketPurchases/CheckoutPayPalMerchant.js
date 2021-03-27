@@ -258,9 +258,9 @@ const Checkout = () => {
                 "Authorization",
                 `Bearer ${customerInformation.sessionToken}`
               );
-              url = `${API}/api/tixorder/sn-mpp-create-order/${customerInformation.userId}`;
+              url = `${API}/tixorder/sn-mpp-create-order/${customerInformation.userId}`;
             } else {
-              url = `${API}/api/tixorder/us-mpp-create-order`;
+              url = `${API}/tixorder/us-mpp-create-order`;
             }
             // Display the key/value pairs
 
@@ -305,9 +305,9 @@ const Checkout = () => {
                 "Authorization",
                 `Bearer ${customerInformation.sessionToken}`
               );
-              url = `${API}/api/tixorder/sn-mpp-capture-order/${customerInformation.userId}`;
+              url = `${API}/tixorder/sn-mpp-capture-order/${customerInformation.userId}`;
             } else {
-              url = `${API}/api/tixorder/us-mpp-capture-order`;
+              url = `${API}/tixorder/us-mpp-capture-order`;
             }
 
             return fetch(url, {

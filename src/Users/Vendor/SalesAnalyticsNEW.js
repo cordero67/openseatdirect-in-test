@@ -11,7 +11,9 @@ const SalesAnalytics = (props) => {
   const [eventOrders, setEventOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalRevenues, setTotalRevenues] = useState();
-  const [totalTickets, setTotalTickets] = useState();
+  const [totalTicketsSold, setTotalTicketsSold] = useState();
+  const [totalTicketsRemaining, setTotalTicketsRemaining] = useState();
+  const [customerTotals, setCustomerTotals] = useState([]);
   const [ticketSalesChart, setTicketSalesChart] = useState([]);
   const [ticketPaymentChart, setTicketPaymentChart] = useState([]);
 
@@ -36,12 +38,16 @@ const SalesAnalytics = (props) => {
     let tempEventDetails = {};
     let tempEventTickets = [];
     let tempEventOrders = [];
+    let tempTotalTicketsRemaining = 0;
     let tempEvents = JSON.parse(localStorage.getItem("events"));
     tempEvents.forEach((event, index) => {
       if (event.eventNum === 59490622550) {
         //if (order.eventNum === 5198198061) {
         tempEventDetails = event;
         tempEventTickets = event.tickets;
+        tempEventTickets.forEach((ticket, index) => {
+          tempTotalTicketsRemaining += ticket.remainingQuantity;
+        });
       }
     });
     let tempOrders = JSON.parse(localStorage.getItem("orders"));
@@ -66,42 +72,42 @@ const SalesAnalytics = (props) => {
     setEventTickets(tempEventTickets);
     setEventOrders(tempEventOrders);
 
-    let tempTicketArray = [];
-    let tempTotalTickets = 0;
+    let tempTotalTicketsSold = 0;
     let tempTotalRevenues = 0;
     let tempData = [];
 
     tempEventOrders.forEach((order, index) => {
       if ("order_ticketItems" in order) {
-        //console.log("order_ticketItems: ", order.order_ticketItems);
         order.order_ticketItems.forEach((ticketOrder, index) => {
-          console.log("ticketOrder: ", ticketOrder);
           tempEventTickets.forEach((ticket, index) => {
             console.log("ticket: ", ticket);
             if (ticket._id === ticketOrder.ticketId) {
-              console.log("made a ticket id match");
-              console.log("ticket._id: ", ticket._id);
-              console.log("ticketOrder.ticketId: ", ticketOrder.ticketId);
-              console.log(
-                "tempEventTickets[index].ticketsSold: ",
-                tempEventTickets[index].ticketsSold
-              );
-              console.log("ticketOrder.qty: ", ticketOrder.qty);
               tempEventTickets[index].ticketsSold += ticketOrder.qty;
               tempEventTickets[index].ticketRevenue += ticketOrder.subtotal;
-              console.log(
-                "tempEventTickets[index].ticketsSold: ",
-                tempEventTickets[index].ticketsSold
-              );
             }
           });
-          console.log("ticketOrder.subtotal: ", ticketOrder.subtotal);
           tempTotalRevenues += ticketOrder.subtotal;
-          tempTotalTickets += ticketOrder.qty;
+          tempTotalTicketsSold += ticketOrder.qty;
         });
       }
     });
-
+    /*
+    tempEventOrders.forEach((order, index) => {
+      if ("order_ticketItems" in order) {
+        order.order_ticketItems.forEach((ticketOrder, index) => {
+          tempEventTickets.forEach((ticket, index) => {
+            console.log("ticket: ", ticket);
+            if (ticket._id === ticketOrder.ticketId) {
+              tempEventTickets[index].ticketsSold += ticketOrder.qty;
+              tempEventTickets[index].ticketRevenue += ticketOrder.subtotal;
+            }
+          });
+          tempTotalRevenues += ticketOrder.subtotal;
+          tempTotalTicketsSold += ticketOrder.qty;
+        });
+      }
+    });
+*/
     // populate Slaes Chart data
     tempEventTickets.forEach((ticket, index) => {
       //if (parseFloat(ticket.ticketRevenue) !== 0) {
@@ -122,7 +128,8 @@ const SalesAnalytics = (props) => {
     setTicketSalesChart(tempData);
 
     setTotalRevenues(tempTotalRevenues);
-    setTotalTickets(tempTotalTickets);
+    setTotalTicketsSold(tempTotalTicketsSold);
+    setTotalTicketsRemaining(tempTotalTicketsRemaining);
 
     setIsLoading(false);
   }, []);
@@ -140,17 +147,23 @@ const SalesAnalytics = (props) => {
                 textAlign: "center",
                 display: "grid",
                 columnGap: "10px",
-                gridTemplateColumns: "300px 60px 60px 80px",
+                gridTemplateColumns: "320px 60px 60px 80px",
                 paddingLeft: "30px",
               }}
             >
               <div
-                style={{ textAlign: "left" }}
+                style={{
+                  display: "grid",
+                  columnGap: "2px",
+                  gridTemplateColumns: "18px 300px",
+                  textAlign: "left",
+                }}
                 onClick={() => {
                   setSelectedWedge(index);
                 }}
               >
-                {ticket.ticketName}
+                <div style={{ backgroundColor: colorSpec[index] }}></div>
+                <div>{ticket.ticketName}</div>
               </div>
               <div style={{ textAlign: "center" }}>{ticket.ticketsSold}</div>
               <div style={{ textAlign: "center" }}>
@@ -174,7 +187,12 @@ const SalesAnalytics = (props) => {
       <br></br>
       <div
         className={classes.DisplayPanelTitle}
-        style={{ fontSize: "16px", paddingLeft: "30px", paddingBottom: "10px" }}
+        style={{
+          fontSize: "16px",
+          paddingLeft: "30px",
+          fontWeight: "600",
+          paddingBottom: "10px",
+        }}
       >
         Net Sales
       </div>
@@ -200,10 +218,11 @@ const SalesAnalytics = (props) => {
               style={{
                 textAlign: "center",
                 fontSize: "16px",
+                fontWeight: "600",
                 paddingTop: "10px",
               }}
             >
-              ${totalRevenues}
+              ${parseFloat(totalRevenues).toFixed(2)}
             </div>
             <div
               style={{
@@ -220,10 +239,11 @@ const SalesAnalytics = (props) => {
               style={{
                 textAlign: "center",
                 fontSize: "16px",
+                fontWeight: "600",
                 paddingTop: "10px",
               }}
             >
-              {totalTickets}
+              {totalTicketsSold}
             </div>
             <div
               style={{
@@ -246,6 +266,7 @@ const SalesAnalytics = (props) => {
               style={{
                 textAlign: "center",
                 fontSize: "16px",
+                fontWeight: "600",
                 paddingTop: "10px",
               }}
             >
@@ -266,7 +287,12 @@ const SalesAnalytics = (props) => {
 
       <div
         className={classes.DisplayPanelTitle}
-        style={{ fontSize: "16px", paddingLeft: "30px", paddingBottom: "10px" }}
+        style={{
+          fontSize: "16px",
+          paddingLeft: "30px",
+          fontWeight: "600",
+          paddingBottom: "10px",
+        }}
       >
         Sales by Ticket Type
       </div>
@@ -274,9 +300,10 @@ const SalesAnalytics = (props) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "300px 60px 60px 80px",
+            gridTemplateColumns: "320px 60px 60px 80px",
             columnGap: "10px",
             borderBottom: "1px solid black",
+            fontWeight: "600",
             marginLeft: "30px",
             marginRight: "calc(100vw - 560px",
           }}
@@ -290,7 +317,7 @@ const SalesAnalytics = (props) => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "300px 60px 60px 80px",
+              gridTemplateColumns: "320px 60px 60px 80px",
               columnGap: "10px",
             }}
           >
@@ -299,10 +326,29 @@ const SalesAnalytics = (props) => {
         </div>
         <div
           style={{
+            display: "grid",
+            gridTemplateColumns: "320px 60px 60px 80px",
+            columnGap: "10px",
+            borderTop: "1px solid black",
+            marginLeft: "30px",
+            marginRight: "calc(100vw - 560px)",
+            fontWeight: "600",
+          }}
+        >
+          <div>Totals</div>
+          <div style={{ textAlign: "center" }}>{totalTicketsSold}</div>
+          <div style={{ textAlign: "center" }}>{totalTicketsRemaining}</div>
+          <div style={{ textAlign: "right", paddingRight: "10px" }}>
+            {parseFloat(totalRevenues).toFixed(2)}
+          </div>
+        </div>
+        <div
+          style={{
             textAlign: "center",
             width: "200px",
             marginLeft: "195px",
-            paddingBottom: "20px",
+            paddingTop: "20px",
+            paddingBottom: "30px",
           }}
         >
           <PieChart
@@ -333,9 +379,26 @@ const SalesAnalytics = (props) => {
 
       <div
         className={classes.DisplayPanelTitle}
-        style={{ fontSize: "16px", paddingLeft: "30px", paddingBottom: "10px" }}
+        style={{
+          fontSize: "16px",
+          paddingLeft: "30px",
+          fontWeight: "600",
+          paddingBottom: "10px",
+        }}
       >
         Sales by Payment Method
+      </div>
+
+      <div
+        className={classes.DisplayPanelTitle}
+        style={{
+          fontSize: "16px",
+          fontWeight: "600",
+          paddingLeft: "30px",
+          paddingBottom: "10px",
+        }}
+      >
+        Sales by Customer
       </div>
     </div>
   );
