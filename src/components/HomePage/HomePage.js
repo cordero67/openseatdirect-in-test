@@ -974,7 +974,7 @@ const Home = () => {
           </div>
           <div
             style={{
-              color: "#fff",
+              color: "#000",
               fontSize: "22px",
               fontWeight: "400",
               lineHeight: "52px",
@@ -1000,7 +1000,7 @@ const Home = () => {
           </div>
           <div
             style={{
-              color: "#fff",
+              color: "#000",
               fontSize: "22px",
               fontWeight: "600",
               lineHeight: "32px",
@@ -1026,7 +1026,7 @@ const Home = () => {
           </div>
           <div
             style={{
-              color: "#fff",
+              color: "#000",
               fontSize: "22px",
               fontWeight: "600",
               lineHeight: "36px",
@@ -1053,7 +1053,7 @@ const Home = () => {
           </div>
           <div
             style={{
-              color: "#fff",
+              color: "#000",
               fontSize: "20px",
               fontWeight: "600",
               lineHeight: "30px",
@@ -1072,7 +1072,7 @@ const Home = () => {
       return (
         <div
           style={{
-            color: "#fff",
+            color: "#000",
             fontSize: "22px",
             fontWeight: "400",
             lineHeight: "36px",
@@ -1085,7 +1085,7 @@ const Home = () => {
       return (
         <div
           style={{
-            color: "#fff",
+            color: "#000",
             fontSize: "22px",
             fontWeight: "600",
             lineHeight: "32px",
@@ -1098,7 +1098,7 @@ const Home = () => {
       return (
         <div
           style={{
-            color: "#fff",
+            color: "#000",
             fontSize: "22px",
             fontWeight: "600",
             lineHeight: "36px",
@@ -1113,7 +1113,7 @@ const Home = () => {
       return (
         <div
           style={{
-            color: "#fff",
+            color: "#000",
             fontSize: "20px",
             fontWeight: "600",
             lineHeight: "30px",
@@ -1244,13 +1244,16 @@ const Home = () => {
               {testimonials()}
             </div>
 
-            <div className={classes.SectionContainer}>{ourClients()}</div>
-
             <div
               className={classes.SectionContainer}
-              style={{ backgroundColor: "#2F5596" }}
+              style={{ backgroundColor: "#fff" }}
             >
-              <div className={classes.DescriptionText}>{signUpText()}</div>
+              <div
+                className={classes.DescriptionText}
+                style={{ color: "#000" }}
+              >
+                {signUpText()}
+              </div>
               <br></br>
               <button
                 className={classes.SubmitButton}
@@ -1264,7 +1267,7 @@ const Home = () => {
             </div>
             <div
               className={classes.SectionContainer}
-              style={{ backgroundColor: "#2F5596" }}
+              style={{ backgroundColor: "#fff" }}
             >
               {appointmentDisplay}
             </div>
