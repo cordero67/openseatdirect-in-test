@@ -141,11 +141,7 @@ const TicketSelection = () => {
               Realtors, it's Trustees, Officers, Employees and Members from any
               and all liability, loss, damage, or injuries, including the
               contraction of a communicable disease such as Covid-19 arising
-<<<<<<< HEAD
               from my voluntary participation in the "Beach Sweeps".
-=======
-              from my volunatry participation in the "Beach Sweeps".
->>>>>>> master
             </div>
             <br></br>
             <br></br>

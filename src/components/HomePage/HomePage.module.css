@@ -7,12 +7,7 @@
   color: #fff;
   background-color: #000;
   font-family: Helvetica, sans-serif;
-<<<<<<< HEAD
   height: calc(100vw / 2 - 8px);
-=======
-  /*height: calc(100vw * (440/650));*/
-  height: calc(100vw/2 - 8px);
->>>>>>> master
 }
 
 .BlankCanvas {
@@ -25,7 +20,6 @@
   padding-left: 0px;
   text-align: left;
   overflow-y: auto;
-<<<<<<< HEAD
 }
 .CopyRight {
   text-align: center;
@@ -61,12 +55,6 @@
   outline: none;
 }
 
-=======
-}
-
-
-
->>>>>>> master
 @media (min-width: 500px) {
   .BlankCanvas {
     padding-left: calc(50% - 170px);
@@ -88,11 +76,7 @@
     color: #fff;
     background-color: #000;
     font-family: Helvetica, sans-serif;
-<<<<<<< HEAD
     height: calc(100vw / 2 - 8px);
-=======
-    height: calc(100vw/2 - 8px);
->>>>>>> master
   }
 }
 
@@ -112,21 +96,9 @@
   padding-bottom: 20px;
 }
 
-<<<<<<< HEAD
 .ImageBox {
   box-sizing: border-box;
   width: 600px;
-=======
-
-
-
-
-
-.TextContainer {
-  color: #101C32;
-  padding-top: 20px;
-  padding-bottom: 20px
->>>>>>> master
 }
 
 .OSDImageContainer {
@@ -136,7 +108,6 @@
   padding-bottom: 40px;
 }
 
-<<<<<<< HEAD
 .ImageContainer {
   vertical-align: middle;
   text-align: center;
@@ -170,57 +141,6 @@
   text-align: center;
   padding-bottom: 10px;
 }
-
-=======
-
-
-.ImageBox {
-  box-sizing: border-box;
-  width: 600px;
-}
-
-.OSDImageContainer {
-  vertical-align: middle;
-  text-align: center;
-  padding-top: 40px;
-  padding-bottom: 40px
-}
-
-.ImageContainer {
-  vertical-align: middle;
-  text-align: center;
-  padding-top: 20px;
-  padding-bottom: 20px
-}
-
-.SectionContainer {
-  width: "100%";
-  text-align: center;
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-
-.MarketingText {
-  font-family: Lato;
-  font-weight: 600;
-  text-align: center;
-}
-
-.TagLineText {
-  z-index: 200;
-  font-family: Lato;
-  font-weight: 500;
-  text-align: center;
-}
-
-.DescriptionText {
-  font-family: Lato;
-  font-weight: 400;
-  text-align: center;
-  padding-bottom: 10px;
-}
-
->>>>>>> master
 .Grid {
   display: grid;
   grid-template-columns: 250px 250px 250px;
@@ -272,15 +192,9 @@
 }
 
 .InputBox {
-<<<<<<< HEAD
   border: 1px solid #8dadd4;
   border-radius: 0px;
   background-color: #eff3fa;
-=======
-  border: 1px solid #8DADD4;
-  border-radius: 0px;
-  background-color: #EFF3FA;
->>>>>>> master
   width: calc(100vw - 40px);
   height: 40px;
 }
@@ -292,13 +206,8 @@
 }
 
 .SubmitButton {
-<<<<<<< HEAD
   border: 1px solid #fff;
   background-color: #2f5596;
-=======
-  border: 1px solid black;
-  background-color: #2F5596;
->>>>>>> master
   border-radius: 0px;
   color: #fff;
   font-size: 14px;

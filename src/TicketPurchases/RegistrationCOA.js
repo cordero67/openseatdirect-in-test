@@ -48,10 +48,6 @@ const TicketSelection = () => {
     sessionToken: "",
     userId: "",
   });
-<<<<<<< HEAD
-=======
-  /*
->>>>>>> master
   // LOOKS GOOD
   useEffect(() => {
     if (
@@ -82,10 +78,6 @@ const TicketSelection = () => {
     eventData("25657749347");
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
-<<<<<<< HEAD
-=======
-  */
->>>>>>> master
   // LOOKS GOOD
   const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
@@ -99,10 +91,6 @@ const TicketSelection = () => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
 
-<<<<<<< HEAD
-=======
-  /*
->>>>>>> master
   // LOOKS GOOD
   // receives Event Data from server and populates several control variables
   const eventData = (eventID) => {
@@ -147,10 +135,6 @@ const TicketSelection = () => {
         setDisplay("connection");
       });
   };
-<<<<<<< HEAD
-=======
-  */
->>>>>>> master
 
   // LOOKS GOOD
   const handleErrors = (response) => {
@@ -159,10 +143,6 @@ const TicketSelection = () => {
     }
     return response;
   };
-<<<<<<< HEAD
-=======
-  /*
->>>>>>> master
   // LOOKS GOOD
   // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
@@ -174,11 +154,6 @@ const TicketSelection = () => {
       );
     } else return null;
   };
-<<<<<<< HEAD
-=======
-  */
-  /*
->>>>>>> master
   // LOOKS GOOD
   // defines and sets "connectionStatus" view status
   const connectionStatus = (condition) => {
@@ -203,12 +178,6 @@ const TicketSelection = () => {
       );
     } else return null;
   };
-<<<<<<< HEAD
-
-=======
-  */
-  /*
->>>>>>> master
   // LOOKS GOOD
   const freeTicketHandler = () => {
     let email = customerInformation.email;
@@ -287,13 +256,6 @@ const TicketSelection = () => {
         localStorage.removeItem(`eventNum`);
       });
   };
-<<<<<<< HEAD
-
-=======
-  */
-
-  /*
->>>>>>> master
   // LOOKS GOOD
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
@@ -306,28 +268,15 @@ const TicketSelection = () => {
     localStorage.removeItem(`image_${event}`);
     localStorage.removeItem(`eventNum`);
   };
-<<<<<<< HEAD
   const submitWaiver = () => {
     if (customerInformation.sessionToken !== "") {
       console.log("Signed In User");
       freeTicketHandler();
-=======
-  */
-  const submitWaiver = () => {
-    if (false) {
-      //if (customerInformation.sessionToken !== "") {
-      console.log("Signed In User");
-      //freeTicketHandler();
->>>>>>> master
     } else {
       window.location.href = `/infofree`;
     }
   };
 
-<<<<<<< HEAD
-=======
-  /*
->>>>>>> master
   // LOOKS GOOD
   const purchaseConfirmation = () => {
     if (display === "confirmation") {
@@ -384,10 +333,6 @@ const TicketSelection = () => {
       );
     } else return null;
   };
-<<<<<<< HEAD
-=======
-  */
->>>>>>> master
 
   // LOOKS GOOD
   const releaseStatement = () => {
@@ -426,20 +371,11 @@ const TicketSelection = () => {
               COVID-19 WAIVER
             </div>
             <div style={{ paddingTop: "10px", paddingBottom: "20px" }}>
-<<<<<<< HEAD
               I hereby release and discharge COA and the Beach Sweeps sponsors,
               and their respective agents and employees from and against any and
               all liability, including for any losses, damages or injuries,
               including the contraction of a communicable disease, arising from
               my participation in the Beach Sweeps.
-=======
-              By submitting this form, I hereby release and discharge COA and
-              the Beach Sweeps sponsors, and their respective agents and
-              employees from and against any and all liability, including for
-              any losses, damages or injuries, including the contraction of a
-              communicable disease, arising from my participation in the Beach
-              Sweeps.
->>>>>>> master
             </div>
             <br></br>
             <br></br>
@@ -460,7 +396,6 @@ const TicketSelection = () => {
     } else return null;
   };
 
-<<<<<<< HEAD
   return (
     <div style={MainContainer}>
       {loadingSpinner()}
@@ -472,21 +407,3 @@ const TicketSelection = () => {
 };
 
 export default TicketSelection;
-=======
-  return <div style={MainContainer}>{releaseStatement()}</div>;
-};
-
-export default TicketSelection;
-
-/*
-
-return (
-  <div style={MainContainer}>
-    {loadingSpinner()}
-    {releaseStatement()}
-    {purchaseConfirmation()}
-    {connectionStatus()}
-  </div>
-);
-*/
->>>>>>> master
