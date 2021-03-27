@@ -89,6 +89,7 @@ const EventDetail = () => {
       eventType: event.eventType, //
       isDraft: event.isDarft, //
       eventCategory: event.eventCategory, //
+      regFunc: event.regFunc,
       facebookLink: event.facebookLink, //
       twitterLink: event.twitterLink, //
       instagramLink: event.instagramLink, //

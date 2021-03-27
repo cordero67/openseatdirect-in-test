@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, Fragment } from "react";
 
-import dateFnsFormat from 'date-fns/format';
+import dateFnsFormat from "date-fns/format";
 
 import { API } from "../config";
 
@@ -28,37 +28,37 @@ const EventEdit = (props) => {
 
   // stores all Event Description variables
   const [eventDescription, setEventDescription] = useState({
-    eventNum: "",// NOT USED IN CREATEEVENT
-    eventTitle: "",//duped with "createEvent"
-    isDraft: true,//duped with "createEvent"
-    eventType: "live",//duped with "createEvent"
-    webinarLink: "",//duped with "createEvent"
-    onlineInformation: "",//duped with "createEvent"
-    tbaInformation: "",//duped with "createEvent"
-    locationVenueName: "",//duped with "createEvent"
-    locationAddress1: "",//duped with "createEvent"
-    locationAddress2: "",//duped with "createEvent"
-    locationCity: "",//duped with "createEvent"
-    locationState: "",//duped with "createEvent"
-    locationZipPostalCode: "",//duped with "createEvent"
-    locationCountryCode: "US",//duped with "createEvent"
-    locationNote: "",//duped with "createEvent"
-    startDate: new Date(new Date().toDateString()),//duped with "createEvent"
-    startTime: "19:00:00",//duped with "createEvent"
-    endDate: new Date(new Date().toDateString()),//duped with "createEvent"
-    endTime: "20:00:00",//duped with "createEvent"
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,//duped with "createEvent"
-    photo: "",// ONLY USED IN CREATEEVENT
-    photoChanged: false,// NOT USED IN CREATEEVENT
-    shortDescription: "",//duped with "createEvent"
-    longDescription: "",//duped with "createEvent"
-    eventCategory: "",//duped with "createEvent"
-    facebookLink: "",//duped with "createEvent"
-    twitterLink: "",//duped with "createEvent"
-    linkedinLink: "",//duped with "createEvent"
-    instagramLink: "",//duped with "createEvent"
-    vanityLink: "",//duped with "createEvent"
-    refundPolicy: "noRefunds",//duped with "createEvent"
+    eventNum: "", // NOT USED IN CREATEEVENT
+    eventTitle: "", //duped with "createEvent"
+    isDraft: true, //duped with "createEvent"
+    eventType: "live", //duped with "createEvent"
+    webinarLink: "", //duped with "createEvent"
+    onlineInformation: "", //duped with "createEvent"
+    tbaInformation: "", //duped with "createEvent"
+    locationVenueName: "", //duped with "createEvent"
+    locationAddress1: "", //duped with "createEvent"
+    locationAddress2: "", //duped with "createEvent"
+    locationCity: "", //duped with "createEvent"
+    locationState: "", //duped with "createEvent"
+    locationZipPostalCode: "", //duped with "createEvent"
+    locationCountryCode: "US", //duped with "createEvent"
+    locationNote: "", //duped with "createEvent"
+    startDate: new Date(new Date().toDateString()), //duped with "createEvent"
+    startTime: "19:00:00", //duped with "createEvent"
+    endDate: new Date(new Date().toDateString()), //duped with "createEvent"
+    endTime: "20:00:00", //duped with "createEvent"
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, //duped with "createEvent"
+    photo: "", // ONLY USED IN CREATEEVENT
+    photoChanged: false, // NOT USED IN CREATEEVENT
+    shortDescription: "", //duped with "createEvent"
+    longDescription: "", //duped with "createEvent"
+    eventCategory: "", //duped with "createEvent"
+    facebookLink: "", //duped with "createEvent"
+    twitterLink: "", //duped with "createEvent"
+    linkedinLink: "", //duped with "createEvent"
+    instagramLink: "", //duped with "createEvent"
+    vanityLink: "", //duped with "createEvent"
+    refundPolicy: "noRefunds", //duped with "createEvent"
   });
 
   // stores all Ticket Details variables//all duped with "createEvent"
@@ -82,20 +82,23 @@ const EventEdit = (props) => {
       maxTicketsAllowedPerOrder: "",
       maxWarning: false,
       priceFeature: "none",
-      promoCodes: [
-        { key: "1", name: "", amount: "", percent: false },
-      ],
+      promoCodes: [{ key: "1", name: "", amount: "", percent: false }],
       promoCodeNames: [],
       promoCodeWarning: "",
       functionArgs: {},
-      viewModal: false
-    }
+      viewModal: false,
+    },
   ]);
 
-  const [photoData, setPhotoData] = useState({imgSrc: null, imgSrcExt: null, isLoaded: false});
+  const [photoData, setPhotoData] = useState({
+    imgSrc: null,
+    imgSrcExt: null,
+    isLoaded: false,
+  });
 
   //START MATCHES "CreateEvent"
-  const [eventStatus, setEventStatus] = useState({//all duped with "createEvent"
+  const [eventStatus, setEventStatus] = useState({
+    //all duped with "createEvent"
     status: "", // "saved", "live", "error", "failure"
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
@@ -106,43 +109,44 @@ const EventEdit = (props) => {
 
   const initPhotoData = (resPhotoData) => {
     // converts data from server fetch call to photodata for image display
-    
+
     // check for required fields
-      if (!(resPhotoData && resPhotoData.data && resPhotoData.data.data)){
-        setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
-        return;
-      };
+    if (!(resPhotoData && resPhotoData.data && resPhotoData.data.data)) {
+      setPhotoData({ imgSrc: null, imgSrcExt: null, isLoaded: true });
+      return;
+    }
 
-      if (!(resPhotoData.contentType)){
-        setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
-        return;
-      };
+    if (!resPhotoData.contentType) {
+      setPhotoData({ imgSrc: null, imgSrcExt: null, isLoaded: true });
+      return;
+    }
 
-      const ext = resPhotoData.contentType;
+    const ext = resPhotoData.contentType;
 
-      let header ='data:image/png;base64,'; // hard codes image/png by default
-      if (ext ==='image/png'){
-        header ='data:image/png;base64,'
-      } else if (ext ==='image/jpeg'){
-        header ='data:image/jpeg;base64,'
-      };
+    let header = "data:image/png;base64,"; // hard codes image/png by default
+    if (ext === "image/png") {
+      header = "data:image/png;base64,";
+    } else if (ext === "image/jpeg") {
+      header = "data:image/jpeg;base64,";
+    }
 
-      const uint8 = new Uint8Array(resPhotoData.data.data);
-      const len =  uint8.byteLength;
-      if (len == 0){ // no photo data
-              setPhotoData({imgSrc:null, imgSrcExt: null, isLoaded:true});
-              return;
-      };
-      let bin ='';
-      for (let i = 0; i < len; i++)
-          bin += String.fromCharCode(uint8[i]); 
-      const photodat =  header+window.btoa(bin);
-      const srcExt = extractImageFileExtensionFromBase64 (photodat);
-      //console.log ("found photo> setting PhotoData:", photodat);
-      setPhotoData({imgSrc:photodat, imgSrcExt: srcExt, isLoaded:true});
- }
+    const uint8 = new Uint8Array(resPhotoData.data.data);
+    const len = uint8.byteLength;
+    if (len === 0) {
+      // no photo data
+      setPhotoData({ imgSrc: null, imgSrcExt: null, isLoaded: true });
+      return;
+    }
+    let bin = "";
+    for (let i = 0; i < len; i++) bin += String.fromCharCode(uint8[i]);
+    const photodat = header + window.btoa(bin);
+    const srcExt = extractImageFileExtensionFromBase64(photodat);
+    //console.log ("found photo> setting PhotoData:", photodat);
+    setPhotoData({ imgSrc: photodat, imgSrcExt: srcExt, isLoaded: true });
+  };
 
-  useEffect(() => {//all duped with "createEvent" except where noted
+  useEffect(() => {
+    //all duped with "createEvent" except where noted
     // checks if 'user' exists in local storage
     if (
       typeof window !== "undefined" &&
@@ -154,38 +158,38 @@ const EventEdit = (props) => {
       vendorInfo.id = tempUser.user._id;
       //start section not in "createEvent"
       if (localStorage.getItem(`eventNum`) !== null) {
-        console.log("found a valid event to edit")
+        console.log("found a valid event to edit");
         let tempEventNum = JSON.parse(localStorage.getItem("eventNum"));
         let tempEvents = JSON.parse(localStorage.getItem("events"));
         let tempEventPosition;
         tempEvents.forEach((event, index) => {
-          if(event.eventNum === tempEventNum) {
+          if (event.eventNum === tempEventNum) {
             console.log("Found a match");
             tempEventPosition = index;
           }
-        })
+        });
 
         initPhotoData(tempEvents[tempEventPosition].photo);
 
-        const [tempTicketArray, tempDescription] = loadEventInfo(tempEvents[tempEventPosition]);
-        
+        const [tempTicketArray, tempDescription] = loadEventInfo(
+          tempEvents[tempEventPosition]
+        );
+
         setTicketDetails(tempTicketArray);
         setEventDescription(tempDescription);
         setOriginalEventDescription(tempDescription);
+      } else {
+        console.log("Did not find a valid event to edit");
       }
-      else {
-        console.log("Did not find a valid event to edit")
-      }
-  
-    } else {      
+    } else {
       window.location.href = "/signin";
     }
   }, []);
 
   //THIS SECTION IS FAIRLY UNIQUE COMPARED TO "CreateEvent"
   const saveEvent = async (newStatus) => {
-    console.log("eventDescription: ", eventDescription)
-    console.log("eventStatus: ", eventStatus)
+    console.log("eventDescription: ", eventDescription);
+    console.log("eventStatus: ", eventStatus);
     let tempPageErrors = false;
     let tempEventTitleOmission = false;
     setPageErrors(false);
@@ -205,72 +209,72 @@ const EventEdit = (props) => {
     let tempStatus = { ...eventStatus };
     tempStatus.status = newStatus;
 
-    console.log("ticketDetails: ", ticketDetails)
+    console.log("ticketDetails: ", ticketDetails);
 
     ticketDetails.forEach((ticket, index) => {
-      if(ticket.nameWarning) {
-        console.log("Name Warning, ticket : ", index)
+      if (ticket.nameWarning) {
+        console.log("Name Warning, ticket : ", index);
         setPageErrors(true);
         tempPageErrors = true;
       }
-      if(ticket.quantityWarning) {
-        console.log("Quantity Warning, ticket : ", index)
+      if (ticket.quantityWarning) {
+        console.log("Quantity Warning, ticket : ", index);
         setPageErrors(true);
         tempPageErrors = true;
       }
-      if(ticket.priceWarning) {
-        console.log("Price Warning, ticket : ", index)
+      if (ticket.priceWarning) {
+        console.log("Price Warning, ticket : ", index);
         setPageErrors(true);
         tempPageErrors = true;
       }
-      if(ticket.reqWarning) {
-        console.log("Required Warning, ticket : ", index)
+      if (ticket.reqWarning) {
+        console.log("Required Warning, ticket : ", index);
         setPageErrors(true);
         tempPageErrors = true;
       }
-      if(ticket.minWarning) {
-        console.log("Min Warning, ticket : ", index)
+      if (ticket.minWarning) {
+        console.log("Min Warning, ticket : ", index);
         setPageErrors(true);
         tempPageErrors = true;
       }
-      if(ticket.maxWarning) {
-        console.log("Min Warning, ticket : ", index)
+      if (ticket.maxWarning) {
+        console.log("Min Warning, ticket : ", index);
         setPageErrors(true);
         tempPageErrors = true;
       }
       if (ticket.functionArgs) {
-        if(ticket.functionArgs.reqWarning) {
-          console.log("Req Warning, ticket : ", index)
+        if (ticket.functionArgs.reqWarning) {
+          console.log("Req Warning, ticket : ", index);
           setPageErrors(true);
           tempPageErrors = true;
         }
-        if(ticket.functionArgs.buyWarning) {
-          console.log("Buy Warning, ticket : ", index)
+        if (ticket.functionArgs.buyWarning) {
+          console.log("Buy Warning, ticket : ", index);
           setPageErrors(true);
           tempPageErrors = true;
         }
-        if(ticket.functionArgs.getWarning) {
-          console.log("Get Warning, ticket : ", index)
+        if (ticket.functionArgs.getWarning) {
+          console.log("Get Warning, ticket : ", index);
           setPageErrors(true);
           tempPageErrors = true;
         }
-        if(ticket.functionArgs.discountWarning) {
-          console.log("Discount Warning, ticket : ", index)
+        if (ticket.functionArgs.discountWarning) {
+          console.log("Discount Warning, ticket : ", index);
           setPageErrors(true);
           tempPageErrors = true;
         }
-        if(ticket.functionArgs.forWarning) {
-          console.log("For Warning, ticket : ", index)
+        if (ticket.functionArgs.forWarning) {
+          console.log("For Warning, ticket : ", index);
           setPageErrors(true);
           tempPageErrors = true;
         }
         if (ticket.functionArgs.maxForWarning) {
-          console.log("MaxFor Warning, ticket : ", index)
+          console.log("MaxFor Warning, ticket : ", index);
           setPageErrors(true);
           tempPageErrors = true;
         }
       }
-    })
+    });
 
     if (!eventDescription.eventTitle) {
       console.log("You need to complete these fields");
@@ -337,11 +341,11 @@ const EventEdit = (props) => {
       if (newStatus === "saved") {
         tempDescription.isDraft = true;
         formData.append("isDraft", "true");
-        console.log("event will be saved")
+        console.log("event will be saved");
       } else if (newStatus === "live") {
         tempDescription.isDraft = false;
         formData.append("isDraft", "false");
-        console.log("event will be live")
+        console.log("event will be live");
       }
 
       setEventDescription(tempDescription);
@@ -349,15 +353,15 @@ const EventEdit = (props) => {
       // only sends changed fields to the server
       eventDescriptionFields.forEach((field) => {
         if (tempDescription[field] || originalEventDescription[field]) {
-          console.log("eventDescription[field]: ", tempDescription[field] )
+          console.log("eventDescription[field]: ", tempDescription[field]);
           formData.append(`${field}`, tempDescription[field]);
         }
       });
-      
-      let startDate = dateFnsFormat(eventDescription.startDate,'yyyy-MM-dd');
+
+      let startDate = dateFnsFormat(eventDescription.startDate, "yyyy-MM-dd");
       //console.log("startDate from dateFnsFormat: ", startDate);
 
-      let endDate = dateFnsFormat(eventDescription.endDate,'yyyy-MM-dd');
+      let endDate = dateFnsFormat(eventDescription.endDate, "yyyy-MM-dd");
       //console.log("endDate from dateFnsFormat: ", endDate);
 
       let startDateTime = `${startDate} ${eventDescription.startTime}Z`;
@@ -372,7 +376,10 @@ const EventEdit = (props) => {
       if (eventDescription.photoChanged) {
         formData.append("photo", eventDescription.photo);
         console.log("eventDescription.photo: ", eventDescription.photo);
-        console.log("eventDescription.photoChanged: ", eventDescription.photoChanged);
+        console.log(
+          "eventDescription.photoChanged: ",
+          eventDescription.photoChanged
+        );
       }
 
       // eliminate empty ticket types
@@ -389,10 +396,15 @@ const EventEdit = (props) => {
       ];
 
       tempTicketDetails.forEach((ticket, index) => {
-        if (('ticketName' in  ticket)  &&  ticket.ticketName.length && ticket.ticketName.length > 0 &&
-          ('remainingQuantity' in ticket) && ticket.remainingQuantity >0 &&
-          ('currentTicketPrice' in ticket) && ticket.currentTicketPrice >= 0) {
-   
+        if (
+          "ticketName" in ticket &&
+          ticket.ticketName.length &&
+          ticket.ticketName.length > 0 &&
+          "remainingQuantity" in ticket &&
+          ticket.remainingQuantity > 0 &&
+          "currentTicketPrice" in ticket &&
+          ticket.currentTicketPrice >= 0
+        ) {
           formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
 
           if (ticket.currency) {
@@ -403,9 +415,23 @@ const EventEdit = (props) => {
           }
 
           ticketDetailsFields.forEach((field) => {
-            console.log ("1) FORM APPENDING>> if ",ticket[field], `tickets[${index}][${field}]`, ticket[field]);
-            if (field in ticket && ticket[field] !== "" && ('undefined' !== typeof ticket[field]) ) {
-              console.log ("2) FORM APPENDING>> if ",ticket[field], `tickets[${index}][${field}]`, ticket[field]);
+            console.log(
+              "1) FORM APPENDING>> if ",
+              ticket[field],
+              `tickets[${index}][${field}]`,
+              ticket[field]
+            );
+            if (
+              field in ticket &&
+              ticket[field] !== "" &&
+              "undefined" !== typeof ticket[field]
+            ) {
+              console.log(
+                "2) FORM APPENDING>> if ",
+                ticket[field],
+                `tickets[${index}][${field}]`,
+                ticket[field]
+              );
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
           });
@@ -416,29 +442,32 @@ const EventEdit = (props) => {
             ticket.priceFeature === "bogod" ||
             ticket.priceFeature === "bogof"
           ) {
+            formData.append(`tickets[${index}][priceFunction][form]`, "bogo");
             formData.append(
-              `tickets[${index}][priceFunction][form]`, "bogo");
-            formData.append(
-              `tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy
+              `tickets[${index}][priceFunction][args][buy]`,
+              ticket.functionArgs.buy
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][get]`, ticket.functionArgs.get
+              `tickets[${index}][priceFunction][args][get]`,
+              ticket.functionArgs.get
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][discount]`, ticket.functionArgs.discount/100
+              `tickets[${index}][priceFunction][args][discount]`,
+              ticket.functionArgs.discount / 100
             );
           }
 
           // {form: "twofer", args: {buy:2,  for:15}}
           // for "twofer"
           if (ticket.priceFeature === "twofer") {
+            formData.append(`tickets[${index}][priceFunction][form]`, "twofer");
             formData.append(
-              `tickets[${index}][priceFunction][form]`, "twofer");
-            formData.append(
-              `tickets[${index}][priceFunction][args][buy]`, ticket.functionArgs.buy
+              `tickets[${index}][priceFunction][args][buy]`,
+              ticket.functionArgs.buy
             );
             formData.append(
-              `tickets[${index}][priceFunction][args][for]`, ticket.functionArgs.for
+              `tickets[${index}][priceFunction][args][for]`,
+              ticket.functionArgs.for
             );
           }
 
@@ -453,22 +482,27 @@ const EventEdit = (props) => {
             formData.append(`tickets[${index}][priceFunction][form]`, "promo");
             ticket.promoCodes.forEach((item, number) => {
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes][${number}][key]`, item.key
+                `tickets[${index}][priceFunction][args][promocodes][${number}][key]`,
+                item.key
               );
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes][${number}][name]`, item.name
+                `tickets[${index}][priceFunction][args][promocodes][${number}][name]`,
+                item.name
               );
               if (item.percent) {
                 formData.append(
-                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`, item.amount/100
+                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`,
+                  item.amount / 100
                 );
               } else {
                 formData.append(
-                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`, item.amount
+                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`,
+                  item.amount
                 );
               }
               formData.append(
-                `tickets[${index}][priceFunction][args][promocodes][${number}][percent]`, item.percent
+                `tickets[${index}][priceFunction][args][promocodes][${number}][percent]`,
+                item.percent
               );
               console.log(
                 "New promo details: key-",
@@ -482,11 +516,9 @@ const EventEdit = (props) => {
               );
             });
           }
-        }
-        else {
+        } else {
           console.log("skipped ticket ", index);
         }
-
       });
 
       // Display the key/value pairs
@@ -510,32 +542,32 @@ const EventEdit = (props) => {
         body: formData,
         redirect: "follow",
       })
-      .then(handleErrors)
-      .then((response) => {
-        console.log("response in event/create", response);
-        return response.json();
-      })
-      .then((res) => {
-        console.log("Event was saved/went live");
-        console.log("res: ", res);
-        if (!res.status){
-            if (res.message ){
+        .then(handleErrors)
+        .then((response) => {
+          console.log("response in event/create", response);
+          return response.json();
+        })
+        .then((res) => {
+          console.log("Event was saved/went live");
+          console.log("res: ", res);
+          if (!res.status) {
+            if (res.message) {
               tempStatus.status = "error";
-              } else {
+            } else {
               tempStatus.status = "failure";
             }
-          };
+          }
           setEventStatus(tempStatus);
           return res;
-      })
-      .catch((err) => {
-        console.log("Inside the .catch")
-        console.log("**ERROR THROWN", err);
-        tempStatus.status = "failure";
-        setEventStatus(tempStatus);
-      });
+        })
+        .catch((err) => {
+          console.log("Inside the .catch");
+          console.log("**ERROR THROWN", err);
+          tempStatus.status = "failure";
+          setEventStatus(tempStatus);
+        });
     }
-  }
+  };
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -543,7 +575,6 @@ const EventEdit = (props) => {
     }
     return response;
   };
-
 
   const savedModal = () => {
     if (eventStatus.status === "failure" || eventStatus.status === "error") {
@@ -616,15 +647,15 @@ const EventEdit = (props) => {
     }
     setEventDescription(tempDescription);
     console.log("Event Description: ", tempDescription);
-  }; 
+  };
 
   // duped from createEvent
   const changeEventDate = (day, fieldName) => {
     console.log("day from Date selector: ", day);
     let tempDescription = { ...eventDescription };
-    console.log("day: ", day)
+    console.log("day: ", day);
 
-    let date = dateFnsFormat(day,'MM/dd/yyyy');
+    let date = dateFnsFormat(day, "MM/dd/yyyy");
     console.log("date from dateFnsFormat: ", date);
 
     if (fieldName === "start") {
@@ -775,13 +806,11 @@ const EventEdit = (props) => {
           maxTicketsAllowedPerOrder: "",
           maxWarning: false,
           priceFeature: "none",
-          promoCodes: [
-            { key: "1", name: "", amount: "", percent: false },
-          ],
+          promoCodes: [{ key: "1", name: "", amount: "", percent: false }],
           promoCodeNames: [],
           promoCodeWarning: "",
           functionArgs: {},
-          viewModal: false
+          viewModal: false,
         },
       ]);
     } else {
@@ -922,33 +951,44 @@ const EventEdit = (props) => {
   const subTitleDisplay = () => {
     if (pageErrors || eventTitleOmission) {
       return (
-        <div style={{display: "grid", gridTemplateColumns: "200px 600px"}}>
-          <div style={{paddingTop: "5px"}}>
+        <div style={{ display: "grid", gridTemplateColumns: "200px 600px" }}>
+          <div style={{ paddingTop: "5px" }}>
             <button
               className={classes.SwitchButton}
-              onClick={() => {props.clicked("events")}}
+              onClick={() => {
+                props.clicked("events");
+              }}
             >
               Switch Event
             </button>
           </div>
-          <div style={{ paddingTop: "5px", textAlign: "center", fontSize: "14px", color: "red"}}>
+          <div
+            style={{
+              paddingTop: "5px",
+              textAlign: "center",
+              fontSize: "14px",
+              color: "red",
+            }}
+          >
             Please correct input errors identified below.
           </div>
         </div>
-      )
+      );
     } else {
       return (
-        <div style={{paddingTop: "5px"}}>
+        <div style={{ paddingTop: "5px" }}>
           <button
             className={classes.SwitchButton}
-            onClick={() => {props.clicked("events")}}
+            onClick={() => {
+              props.clicked("events");
+            }}
           >
             Switch Event
           </button>
         </div>
-      )
+      );
     }
-  }
+  };
 
   // duped from createEvent
   const [dragging, setDragging] = useState(false);
@@ -977,9 +1017,7 @@ const EventEdit = (props) => {
 
   // duped from createEvent
   const handleDragEnter = (event, index) => {
-
     if (index !== dragItem.current) {
-
       const currentItem = dragItem.current;
       setTicketDetails((oldDetails) => {
         let newDetails = JSON.parse(JSON.stringify(oldDetails));
@@ -1014,7 +1052,7 @@ const EventEdit = (props) => {
     tempDescription.photo = image;
     tempDescription.photoChanged = true;
     setEventDescription(tempDescription);
-  }
+  };
 
   const currentStatus = () => {
     if (eventDescription.isDraft) {
@@ -1025,11 +1063,12 @@ const EventEdit = (props) => {
             fontSize: "20px",
             color: "#B80000",
             fontWeight: "400",
-            textAlign: "center"
-            }}>
-            STATUS DRAFT
-          </div>
-      )
+            textAlign: "center",
+          }}
+        >
+          STATUS DRAFT
+        </div>
+      );
     } else {
       return (
         <div
@@ -1039,12 +1078,13 @@ const EventEdit = (props) => {
             color: "#008F00",
             fontWeight: "400",
             textAlign: "center",
-            }}>
+          }}
+        >
           STATUS LIVE
         </div>
-      )
+      );
     }
-  }
+  };
 
   const buttonDisplay = () => {
     let draftStatus;
@@ -1054,7 +1094,7 @@ const EventEdit = (props) => {
       draftStatus = "UPDATE DRAFT";
       liveStatus = "GO LIVE NOW";
     } else {
-      draftStatus = "SAVE AS DRAFT"
+      draftStatus = "SAVE AS DRAFT";
       liveStatus = "UPDATE LIVE";
     }
 
@@ -1064,142 +1104,157 @@ const EventEdit = (props) => {
           <button
             className={classes.ButtonRed}
             onClick={() => {
-              let tempDescription = {...eventDescription };
+              let tempDescription = { ...eventDescription };
               tempDescription.isDraft = true;
               setEventDescription(tempDescription);
               saveEvent("saved");
             }}
-          >{draftStatus}</button>
+          >
+            {draftStatus}
+          </button>
         </div>
         <div>
           <button
             className={classes.ButtonGreen}
             onClick={() => {
-              let tempDescription = {...eventDescription };
+              let tempDescription = { ...eventDescription };
               tempDescription.isDraft = false;
               setEventDescription(tempDescription);
               saveEvent("live");
             }}
-          >{liveStatus}</button>
+          >
+            {liveStatus}
+          </button>
         </div>
         <div>
           <button
             className={classes.ButtonGrey}
             onClick={() => {
-              window.location.href = `/vendor`
+              window.location.href = `/vendor`;
             }}
-          >CANCEL EDIT</button>
+          >
+            CANCEL EDIT
+          </button>
         </div>
       </Fragment>
-    )
-  }
+    );
+  };
 
   const displayHeader = (
     <div className={classes.GridTitlePanel}>
       <div className={classes.GridTitle}>
-        <div style={{fontSize: "26px", paddingTop: "6px", paddingLeft: "15px"}}>
+        <div
+          style={{ fontSize: "26px", paddingTop: "6px", paddingLeft: "15px" }}
+        >
           Event Edit
         </div>
         {currentStatus()}
         {buttonDisplay()}
       </div>
-      <div>
-        {subTitleDisplay()}
-      </div>
+      <div>{subTitleDisplay()}</div>
     </div>
-  )
+  );
 
   const mainDisplay = () => {
-      return (
-        <div
-          style={{
-            backgroundColor: "white",
-            height: "calc(100vh - 193px)",
-            scrollbarWidth: "thin",
-            overflowY: "auto",
-            fontSize: "15px",
-            width: "1030px",
-            marginTop: "76px",
-            paddingTop: "10px",
-            paddingBotton: "15px",
-            paddingLeft: "20px",
-            paddingRight: "20px"
-          }}>
-          <div>
-            <EventDetails
-              event={eventDescription}
-              titleOmission={eventTitleOmission}
-              eventImage={"existing"}
-              photoData={photoData}
-              change={changeEventDescription}
-              radioChange={changeEventDescriptionRadio}
-              changeDate={changeEventDate}
-              changeEventField={changeEventField}
-              changeCategory={changeEventCategory}
-              changeLong={changeLongDescription}
-              changeImage={changeEventImage}
-              changeOmission={() => {
-                setEventTitleOmission(false);
-              }}
-            />
-            <br></br>
-            <TicketCreation
-              tickets={ticketDetails}
-              radioChange={changeEventDescriptionRadio}
-              changeTicket={changeTicketDetail}
-              changeSettings={switchTicketSettings}
-              showModal={activateShowModal}
-              deactivateModal={deactivateShowModal}
-              delete={deleteTicket}
-              switchSettings={switchTicketSettings}
-              changeFeature={changePriceFeature}
-              switchPriceFeature={switchPriceFeature}
-              addPromoCode={addPromoCode}
-              changeArgument={changeArgument}
-              changePromoCodesName={changePromoCodesName}
-              changePromoCodesAmount={changePromoCodesAmount}
-              changePromoCodesPercent={changePromoCodesPercent}
-              deletePromoCode={deletePromoCode}
-              createNewTicketHandler={createNewTicketHandler}
-              handleDragStart={handleDragStart}
-              handleDragEnter={handleDragEnter}
-              dragging={dragging}
-            />
-            <br></br>
-            <AdditionalSettings
-              event={eventDescription}
-              radioChange={changeEventDescriptionRadio}
-            />
-            <br></br>
-          </div>
+    return (
+      <div
+        style={{
+          backgroundColor: "white",
+          height: "calc(100vh - 193px)",
+          scrollbarWidth: "thin",
+          overflowY: "auto",
+          fontSize: "15px",
+          width: "1030px",
+          marginTop: "76px",
+          paddingTop: "10px",
+          paddingBotton: "15px",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+        }}
+      >
+        <div>
+          <EventDetails
+            event={eventDescription}
+            titleOmission={eventTitleOmission}
+            eventImage={"existing"}
+            photoData={photoData}
+            change={changeEventDescription}
+            radioChange={changeEventDescriptionRadio}
+            changeDate={changeEventDate}
+            changeEventField={changeEventField}
+            changeCategory={changeEventCategory}
+            changeLong={changeLongDescription}
+            changeImage={changeEventImage}
+            changeOmission={() => {
+              setEventTitleOmission(false);
+            }}
+          />
+          <br></br>
+          <TicketCreation
+            tickets={ticketDetails}
+            radioChange={changeEventDescriptionRadio}
+            changeTicket={changeTicketDetail}
+            changeSettings={switchTicketSettings}
+            showModal={activateShowModal}
+            deactivateModal={deactivateShowModal}
+            delete={deleteTicket}
+            switchSettings={switchTicketSettings}
+            changeFeature={changePriceFeature}
+            switchPriceFeature={switchPriceFeature}
+            addPromoCode={addPromoCode}
+            changeArgument={changeArgument}
+            changePromoCodesName={changePromoCodesName}
+            changePromoCodesAmount={changePromoCodesAmount}
+            changePromoCodesPercent={changePromoCodesPercent}
+            deletePromoCode={deletePromoCode}
+            createNewTicketHandler={createNewTicketHandler}
+            handleDragStart={handleDragStart}
+            handleDragEnter={handleDragEnter}
+            dragging={dragging}
+          />
+          <br></br>
+          <AdditionalSettings
+            event={eventDescription}
+            radioChange={changeEventDescriptionRadio}
+          />
+          <br></br>
         </div>
-      );
-  }
+      </div>
+    );
+  };
 
+  /*
   const tabTitle = (
     <div className={classes.DashboardHeader}>
-      {(true) ?
-      <div style={{fontSize: "26px", fontWeight: "600"}}>Event Title for Event Edit</div>
-      :
-      <div><br></br></div>}
-      <div style={{paddingTop: "5px"}}>
-      <button
-        className={classes.SwitchButton}
-        onClick={() => {props.clicked("events")}}
-      >
-        Switch Event
-      </button>
+      {true ? (
+        <div style={{ fontSize: "26px", fontWeight: "600" }}>
+          Event Title for Event Edit
+        </div>
+      ) : (
+        <div>
+          <br></br>
+        </div>
+      )}
+      <div style={{ paddingTop: "5px" }}>
+        <button
+          className={classes.SwitchButton}
+          onClick={() => {
+            props.clicked("events");
+          }}
+        >
+          Switch Event
+        </button>
       </div>
     </div>
-  )
-
+  );
+*/
   return (
     <div>
       {displayHeader}
       {mainDisplay()}
       {savedModal()}
     </div>
-  )
+  );
 };
 
 export default EventEdit;

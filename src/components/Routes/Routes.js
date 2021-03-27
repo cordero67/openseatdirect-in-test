@@ -17,13 +17,14 @@ import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
 import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
-import NewPaypal from "../../TicketPurchases/NewPaypal";
+//import NewPaypal from "../../TicketPurchases/NewPaypal";
 import Authentication from "../../Users/Authentication/Authentication";
 import Slider from "../HomePage/Slider";
 import PrivateRoute from "./PrivateRoute";
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
+import SalesAnalytics from "../../Users/Vendor/SalesAnalyticsNEW";
 
 import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";
@@ -226,6 +227,15 @@ const Routes = () => {
       />
 
       <Route
+        path="/salesanalytics/"
+        render={(routeProps) => (
+          <React.Fragment>
+            <SalesAnalytics />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
         path="/events"
         exact
         render={(routeProps) => (
@@ -338,15 +348,6 @@ const Routes = () => {
         render={(routeProps) => (
           <React.Fragment>
             <RegistrationCOA />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/newpaypal/"
-        render={(routeProps) => (
-          <React.Fragment>
-            <NewPaypal />
           </React.Fragment>
         )}
       />

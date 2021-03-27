@@ -21,6 +21,39 @@
   text-align: left;
   overflow-y: auto;
 }
+.CopyRight {
+  text-align: center;
+  padding-top: 7px;
+  padding-right: 8px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.Button {
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  background-color: #0b1423;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+  padding: 0px 3px 0px 3px;
+  box-sizing: border-box;
+}
+.Button:hover {
+  border: none;
+  outline: none;
+}
+.Button:active {
+  border: none;
+  outline: none;
+}
+.Button:focus {
+  border: none;
+  outline: none;
+}
 
 @media (min-width: 500px) {
   .BlankCanvas {

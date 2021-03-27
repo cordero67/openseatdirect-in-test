@@ -441,10 +441,14 @@ const TicketSelection = () => {
   // LOOKS GOOD
   // creates checkout/submit order button
   const checkoutButton = () => {
+    console.log("eventDetails: ", eventDetails);
     if (
+      //eventDetails.regFunc &&
+      //eventDetails.regFunc.useReg &&
       eventDetails.eventNum === 25657749347 &&
       orderTotals.ticketsPurchased > 0
     ) {
+      console.log("regFunc has been found");
       return (
         <button
           onClick={() => {
@@ -452,13 +456,13 @@ const TicketSelection = () => {
           }}
           className={classes.ButtonGreen}
         >
-          REGISTER
+          REGISTERR
         </button>
       );
     } else if (eventDetails.eventNum === 25657749347) {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
-          REGISTER
+          REGISTERH
         </button>
       );
     } else if (
@@ -466,6 +470,7 @@ const TicketSelection = () => {
       orderTotals.ticketsPurchased > 0 &&
       customerInformation.sessionToken !== ""
     ) {
+      console.log("regFunc has NOT been found");
       return (
         <button onClick={freeTicketHandler} className={classes.ButtonGreen}>
           SUBMIT ORDER
@@ -476,6 +481,7 @@ const TicketSelection = () => {
       customerInformation.sessionToken !== ""
     ) {
       // signed paid order
+      console.log("regFunc has NOT been found");
       return (
         <button
           onClick={() => {
@@ -488,6 +494,7 @@ const TicketSelection = () => {
       );
     } else if (orderTotals.ticketsPurchased > 0) {
       // unsigned paid order
+      console.log("regFunc has NOT been found");
       return (
         <button
           onClick={() => {
@@ -543,7 +550,7 @@ const TicketSelection = () => {
       } else if (eventDetails.gateway === "PayPalMarketplace") {
         window.location.href = "/checkout-paypalmerchant";
       } else {
-        window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+        window.location.href = `/er/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
       }
     } else if (orderTotals.finalPurchaseAmount === 0) {
       window.location.href = "/infofree";
@@ -577,6 +584,7 @@ const TicketSelection = () => {
     }
 
     window.location.href = "/er-NCJAR";
+    //window.location.href = `/er${eventDetails.regFunc.path}`;
   };
   // LOOKS GOOD
   // defines and sets "loadingSpinner" view status

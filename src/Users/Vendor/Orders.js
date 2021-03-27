@@ -92,7 +92,6 @@ const Orders = (props) => {
     console.log("ticketOrders: ", ticketOrders);
     if (!isLoading && isSuccessfull && ticketOrders.length !== 0) {
       console.log("SUCCESS");
-      //if (false) {
       return (
         <div>
           <br></br>

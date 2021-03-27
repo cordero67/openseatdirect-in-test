@@ -7,15 +7,15 @@ import classes from "./TicketsModal.module.css";
 const TicketsModal = (props) => {
   console.log("Ticket Modal props: ", props);
 
-  let allTotal = 0;
-  let payPalExpressTotal = 0;
-  let cashTotal = 0;
-  let cashAppTotal = 0;
-  let venmoTotal = 0;
-  let paypalTotal = 0;
-  let bitcoinTotal = 0;
-  let ethereumTotal = 0;
-  let otherTotal = 0;
+  //let allTotal = 0;
+  //let payPalExpressTotal = 0;
+  //let cashTotal = 0;
+  //let cashAppTotal = 0;
+  //let venmoTotal = 0;
+  //let paypalTotal = 0;
+  //let bitcoinTotal = 0;
+  //let ethereumTotal = 0;
+  //let otherTotal = 0;
 
   let longDateTime;
   [longDateTime] = getLongStartDate(props.details.startDateTime);

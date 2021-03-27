@@ -1271,7 +1271,7 @@ const Home = () => {
           </div>
           <div
             className={classes.SectionContainer}
-            style={{ backgroundColor: "#0B1423" }}
+            style={{ backgroundColor: "#0B1423", color: "#fff" }}
           >
             <div className={classes.Header}>
               <a>
@@ -1299,9 +1299,29 @@ const Home = () => {
                 />
               </a>
             </div>
-            <br></br>
             <div className={classes.CopyRight} style={{ color: "white" }}>
               Copyright &copy; 2021 Open Seat Direct LLC | All Rights Reserved
+            </div>
+            <div>
+              <button
+                className={classes.Button}
+                styles={{ border: "none", outline: "none" }}
+                onClick={() => {
+                  window.location.href = `/privacy-policy`;
+                }}
+              >
+                Privacy Policy
+              </button>
+              |
+              <button
+                className={classes.Button}
+                styles={{ border: "none", outline: "none" }}
+                onClick={() => {
+                  window.location.href = `/terms-and-conditions`;
+                }}
+              >
+                Terms and Conditions
+              </button>
             </div>
           </div>
         </div>
