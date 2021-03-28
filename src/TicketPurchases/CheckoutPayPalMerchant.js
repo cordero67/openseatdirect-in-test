@@ -272,7 +272,7 @@ const Checkout = () => {
               method: "POST",
               headers: myHeaders,
               body: JSON.stringify({
-                merchant_id: "9MBSKA59BGFY6",
+                merchant_id: eventDetails.gatewayMerchantID,
                 eventNum: eventDetails.eventNum,
                 totalAmount: orderTotals.finalPurchaseAmount,
                 isFree: false,
