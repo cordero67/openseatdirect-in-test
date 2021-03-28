@@ -137,6 +137,7 @@ const TicketSelection = () => {
           });
       })
       .catch((err) => {
+        console.log("getEventData error");
         setDisplay("connection");
       });
   };
