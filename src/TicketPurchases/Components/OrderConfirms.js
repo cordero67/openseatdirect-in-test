@@ -4,7 +4,6 @@ import dateFormat from "dateformat";
 import classes from "./OrderConfirms.module.css";
 
 export const OrderConfirm = (props) => {
-  console.log("props: ", props);
   const response = () => {
     if (props.orderStatus) {
       return (

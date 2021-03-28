@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 
-import { API, PAYPAL_CLIENT_ID } from "../config.js";
+import { API } from "../config.js";
 //import { PayPalButton } from "react-paypal-button-v2";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
@@ -39,7 +39,6 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const Checkout = () => {
-  console.log("PAYPAL_CLIENT_ID: ", PAYPAL_CLIENT_ID);
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
 
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
@@ -241,7 +240,8 @@ const Checkout = () => {
     <div>
       <PayPalScriptProvider
         options={{
-          "client-id": PAYPAL_CLIENT_ID,
+          "client-id":
+            "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
           "merchant-id": eventDetails.gatewayMerchantID,
           "enable-funding": "venmo",
         }}
