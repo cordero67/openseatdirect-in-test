@@ -243,7 +243,7 @@ const Checkout = () => {
           "client-id":
             "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
           "merchant-id": eventDetails.gatewayMerchantID,
-          "enable-funding": "venmo",
+          debug: true,
         }}
       >
         <PayPalButtons
@@ -360,7 +360,7 @@ const Checkout = () => {
             });
           }}
           onCancel={() => {
-            //console.log("onCancel 'data': ", data);
+            console.log("onCancel");
           }}
           onError={(err) => {
             console.log("onError 'err': ", err);
@@ -371,6 +371,7 @@ const Checkout = () => {
             });
             setDisplay("paypal");
           }}
+          /*
           catchError={(err) => {
             console.log("catchError 'err': ", err);
             setTransactionStatus({
@@ -380,6 +381,7 @@ const Checkout = () => {
             });
             setDisplay("paypal");
           }}
+          */
         />
       </PayPalScriptProvider>
     </div>

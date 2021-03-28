@@ -379,6 +379,7 @@ const Checkout = () => {
           });
           setDisplay("paypal");
         }}
+        /*
         catchError={(err) => {
           console.log("catchError 'err': ", err);
           setTransactionStatus({
@@ -388,6 +389,7 @@ const Checkout = () => {
           });
           setDisplay("paypal");
         }}
+        */
       />
     </div>
   );
