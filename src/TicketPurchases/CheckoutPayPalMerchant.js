@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 
-import { API } from "../config.js";
+import { API, PAYPAL_CLIENT_ID } from "../config.js";
 //import { PayPalButton } from "react-paypal-button-v2";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
@@ -39,6 +39,7 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const Checkout = () => {
+  console.log("PAYPAL_CLIENT_ID: ", PAYPAL_CLIENT_ID);
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
 
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
@@ -238,7 +239,13 @@ const Checkout = () => {
   // displays the "PayPalButton" or an "empty cart" error message
   const showPayPal = (
     <div>
-      <PayPalScriptProvider options={{ "client-id": "test" }}>
+      <PayPalScriptProvider
+        options={{
+          "client-id": PAYPAL_CLIENT_ID,
+          "merchant-id": eventDetails.gatewayMerchantID,
+          "enable-funding": "venmo",
+        }}
+      >
         <PayPalButtons
           style={{ layout: "vertical" }}
           createOrder={(data, actions) => {
