@@ -316,14 +316,39 @@ const Checkout = () => {
               body: JSON.stringify({ id: data.orderID }),
             }).then(function (res) {
               if (!res.ok) {
-                alert("OSD Error");
-              } else {
-                alert("All good bitch");
+                setTransactionInfo(
+                  loadTransactionInfo(
+                    eventDetails,
+                    orderTotals,
+                    ticketInfo
+                    //email,
+                    //name
+                  )
+                );
+                setOrderStatus(false);
+                setDisplay("confirmation");
                 let event = JSON.parse(localStorage.getItem("eventNum"));
                 localStorage.removeItem(`cart_${event}`);
                 localStorage.removeItem(`image_${event}`);
                 localStorage.removeItem(`eventNum`);
-                window.location.href = `/events`;
+              } else {
+                setTransactionInfo(
+                  loadTransactionInfo(
+                    eventDetails,
+                    orderTotals,
+                    ticketInfo
+                    //email,
+                    //name
+                  )
+                );
+                setOrderStatus(true);
+                setDisplay("confirmation");
+
+                let event = JSON.parse(localStorage.getItem("eventNum"));
+                localStorage.removeItem(`cart_${event}`);
+                localStorage.removeItem(`image_${event}`);
+                localStorage.removeItem(`eventNum`);
+                //window.location.href = `/events`;
               }
             });
           }}

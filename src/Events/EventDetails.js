@@ -81,42 +81,41 @@ const EventDetail = () => {
       tempTickets = event.tickets;
     }
     console.log("tempTickets: ", tempTickets);
-
-    // defines the eniter "eventDetails" variable
     eventDetails = {
       eventNum: event.eventNum, //
       eventTitle: event.eventTitle, //
       eventType: event.eventType, //
-      isDraft: event.isDarft, //
-      eventCategory: event.eventCategory, //
-      regFunc: event.regFunc,
-      facebookLink: event.facebookLink, //
-      twitterLink: event.twitterLink, //
-      instagramLink: event.instagramLink, //
-      linkedinLink: event.linkedinLink, //
       organizer: "", // Need to add this field to "Event" object from server
-      organizerEmail: event.accountId.accountEmail, //
       startDateTime: event.startDateTime, //
       endDateTime: event.endDateTime, //
-      timeZone: event.timeZone, //
       eventUrl: event.eventUrl, //
-      refundPolicy: event.refundPolicy, //
       locationVenueName: event.locationVenueName, //
       locationAddress1: event.locationAddress1, //
       locationAddress2: event.locationAddress2, //
       locationCity: event.locationCity, //
       locationState: event.locationState, //
-      locationZipPostalCode: event.locationZipPostalCode, //
       locationCountryCode: event.locationCountryCode, //
       locationNote: event.locationNote, //
-      tbaInformation: event.tbaInformation, //
-      webinarLink: event.webinarLink, //
-      onlineInformation: event.onlineInformation, //
-      shortDescription: event.shortDescription, //
       longDescription: event.longDescription, //
       tickets: tempTickets,
-      //forSale: ticketStatus,
     };
+
+    //isDraft: event.isDraft, //NOT USED
+    //eventCategory: event.eventCategory, //NOT USED
+    //regFunc: event.regFunc, //NOT USED
+    //facebookLink: event.facebookLink, //NOT USED
+    //twitterLink: event.twitterLink, //NOT USED
+    //instagramLink: event.instagramLink, //NOT USED
+    //linkedinLink: event.linkedinLink, //NOT USED
+    //organizerEmail: "", //event.accountId.accountEmail, //NOT USED
+    //timeZone: event.timeZone, //NOT USED
+    //refundPolicy: event.refundPolicy, //NOT USED
+    //locationZipPostalCode: event.locationZipPostalCode, //NOT USED
+    //tbaInformation: event.tbaInformation, //NOT USED
+    //webinarLink: event.webinarLink, //NOT USED
+    //onlineInformation: event.onlineInformation, //NOT USED
+    //shortDescription: event.shortDescription, //NOT USED
+
     console.log(
       "EVENT DETAILS variable in 'loadEventDetails()': ",
       eventDetails

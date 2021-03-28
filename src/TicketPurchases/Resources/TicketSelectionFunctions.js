@@ -24,7 +24,7 @@ export const loadEventDetails = (event) => {
   if (Date.now() < d) {
     ticketStatus = true;
   }
-
+  console.log("inside loadEventDetails");
   let tempEventDetails = {
     eventNum: event.eventNum,
     eventTitle: event.eventTitle,
@@ -32,7 +32,7 @@ export const loadEventDetails = (event) => {
     isDraft: event.isDraft,
     regFunc: event.regFunc,
     organizer: "",
-    organizerEmail: event.accountId.accountEmail,
+    //organizerEmail: event.accountId.accountEmail,
     gateway: event.accountId.paymentGatewayType,
     gatewayClientID: event.accountId.paypalExpress_client_id,
     gatewayURL: tempGatewayURL,
@@ -370,14 +370,12 @@ export const loadTransactionInfo = (
 ) => {
   let TransactionInfo = {
     eventTitle: eventDetails.eventTitle,
-    eventType: eventDetails.eventType,
     venue: eventDetails.locationVenueName,
     address1: eventDetails.locationAddress1,
     address2: eventDetails.locationAddress2,
     city: eventDetails.locationCity,
     state: eventDetails.locationState,
     zipPostalCode: eventDetails.locationZipPostalCode,
-    countryCode: eventDetails.locationCountryCode,
     locationNote: eventDetails.locationNote,
     webinarLink: eventDetails.webinarLink,
     onlineInformation: eventDetails.onlineInformation,
