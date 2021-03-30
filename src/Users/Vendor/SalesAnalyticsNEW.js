@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PieChart } from "react-minimal-pie-chart";
+import dateFnsFormat from "date-fns/format";
 
 import classes from "./SalesAnalytics.module.css";
 
@@ -14,6 +15,8 @@ const SalesAnalytics = (props) => {
   const [totalTickets, setTotalTickets] = useState();
   const [ticketSalesChart, setTicketSalesChart] = useState([]);
   const [ticketPaymentChart, setTicketPaymentChart] = useState([]);
+
+  const [dateArray, setDateArray] = useState([]);
 
   let colorSpec = [
     "#FFC921",
@@ -31,6 +34,17 @@ const SalesAnalytics = (props) => {
   ];
 
   useEffect(() => {
+    var day = new Date();
+    let date = dateFnsFormat(day, "MM/dd/yyyy");
+    console.log("date: ", date);
+
+    var newDay = new Date(day.getTime() + 86400000);
+    let newDate = dateFnsFormat(newDay, "MM/dd/yyyy");
+    console.log("newDate: ", newDate);
+
+    let short = dateFnsFormat(new Date(day.getTime() + 86400000), "MM/dd/yyyy");
+    console.log("short: ", short);
+
     setIsLoading(true);
 
     let tempEventDetails = {};
@@ -61,6 +75,8 @@ const SalesAnalytics = (props) => {
     console.log("Event Details: ", tempEventDetails);
     console.log("Event Tickets: ", tempEventTickets);
     console.log("Event Orders: ", tempEventOrders);
+
+    console.log(new Date("2021-03-25T21:59:37.451Z"));
 
     setEventDetails(tempEventDetails);
     setEventTickets(tempEventTickets);
@@ -124,6 +140,58 @@ const SalesAnalytics = (props) => {
     setTotalRevenues(tempTotalRevenues);
     setTotalTickets(tempTotalTickets);
 
+    let tempDateArray = [];
+
+    let tempCreatedAt = day.getTime(new Date(tempEventDetails.createdAt));
+    console.log(day.getTime(new Date("2021-03-25T21:59:37.451Z")));
+    console.log(day.getTime(new Date(tempEventDetails.createdAt)));
+    console.log(tempCreatedAt);
+    console.log(tempEventDetails.createdAt);
+    console.log(tempEventDetails.startDateTime);
+    console.log("TODAY: ", day.getTime(new Date()));
+
+    console.log("ANOTHER DATE: ", day.getTime("2022-03-31T15:00:00.000Z"));
+
+    console.log("Created At: ", new Date(tempEventDetails.createdAt));
+    console.log(
+      "2021-03-25T21:59:37.451Z",
+      new Date(day.getTime(new Date("2021-03-25T21:59:37.451Z")))
+    );
+
+    console.log(
+      "2021-03-25T21:59:37.451Z",
+      day.getTime(new Date("2021-03-25T21:59:37.451Z"))
+    );
+
+    console.log(
+      "2021-03-26T21:59:37.451Z",
+      day.getTime(new Date("2021-03-25T21:59:37.451Z")) + 1 * 86400000
+    );
+
+    for (let i = 0; i < 15; i++) {
+      let start = dateFnsFormat(
+        new Date(day.getTime(Date(tempEventDetails.createdAt)) + 0 * 86400000),
+        "MM/dd/yyyy"
+      );
+      let end = dateFnsFormat(
+        new Date(day.getTime() + (i + 1) * 86400000),
+        "MM/dd/yyyy"
+      );
+
+      if (start > dateFnsFormat(new Date(), "MM/dd/yyyy")) {
+        console.log("future date");
+      } else if (start === dateFnsFormat(new Date(), "MM/dd/yyyy")) {
+        console.log("TODAY");
+      } else {
+        console.log("past date");
+      }
+
+      tempDateArray.push({ startDate: start, endDate: end });
+    }
+
+    console.log("dateArray: ", tempDateArray);
+    setDateArray(tempDateArray);
+
     setIsLoading(false);
   }, []);
 
@@ -168,13 +236,26 @@ const SalesAnalytics = (props) => {
 
   return (
     <div>
-      <div className={classes.DisplayPanelTitle} style={{ fontSize: "18px" }}>
+      <div
+        className={classes.DisplayPanelTitle}
+        style={{
+          fontSize: "18px",
+          fontWeight: "600",
+          paddingTop: "30px",
+          paddingLeft: "30px",
+        }}
+      >
         Sales Analytics
       </div>
       <br></br>
       <div
         className={classes.DisplayPanelTitle}
-        style={{ fontSize: "16px", paddingLeft: "30px", paddingBottom: "10px" }}
+        style={{
+          fontSize: "16px",
+          fontWeight: "600",
+          paddingLeft: "30px",
+          paddingBottom: "10px",
+        }}
       >
         Net Sales
       </div>
@@ -200,10 +281,11 @@ const SalesAnalytics = (props) => {
               style={{
                 textAlign: "center",
                 fontSize: "16px",
+                fontWeight: "600",
                 paddingTop: "10px",
               }}
             >
-              ${totalRevenues}
+              ${parseFloat(totalRevenues).toFixed(2)}
             </div>
             <div
               style={{
@@ -220,6 +302,7 @@ const SalesAnalytics = (props) => {
               style={{
                 textAlign: "center",
                 fontSize: "16px",
+                fontWeight: "600",
                 paddingTop: "10px",
               }}
             >
@@ -246,6 +329,7 @@ const SalesAnalytics = (props) => {
               style={{
                 textAlign: "center",
                 fontSize: "16px",
+                fontWeight: "600",
                 paddingTop: "10px",
               }}
             >
@@ -266,7 +350,12 @@ const SalesAnalytics = (props) => {
 
       <div
         className={classes.DisplayPanelTitle}
-        style={{ fontSize: "16px", paddingLeft: "30px", paddingBottom: "10px" }}
+        style={{
+          fontSize: "16px",
+          fontWeight: "600",
+          paddingLeft: "30px",
+          paddingBottom: "10px",
+        }}
       >
         Sales by Ticket Type
       </div>
@@ -277,6 +366,7 @@ const SalesAnalytics = (props) => {
             gridTemplateColumns: "300px 60px 60px 80px",
             columnGap: "10px",
             borderBottom: "1px solid black",
+            fontWeight: "600",
             marginLeft: "30px",
             marginRight: "calc(100vw - 560px",
           }}
@@ -333,9 +423,27 @@ const SalesAnalytics = (props) => {
 
       <div
         className={classes.DisplayPanelTitle}
-        style={{ fontSize: "16px", paddingLeft: "30px", paddingBottom: "10px" }}
+        style={{
+          fontSize: "16px",
+          fontWeight: "600",
+          paddingLeft: "30px",
+          paddingBottom: "1000px",
+        }}
       >
         Sales by Payment Method
+      </div>
+      <div>Initial Sales Date: {eventDetails.createdAt}</div>
+
+      <div></div>
+      <div>Date</div>
+      <div>
+        {dateArray.map((date, index) => {
+          return (
+            <div>
+              {date.startDate}, End Date: {date.endDate}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

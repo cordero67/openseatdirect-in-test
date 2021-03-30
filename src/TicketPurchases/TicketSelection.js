@@ -443,7 +443,7 @@ const TicketSelection = () => {
     if (
       //eventDetails.regFunc &&
       //eventDetails.regFunc.useReg &&
-      eventDetails.eventNum === 25657749347 &&
+      eventDetails.eventNum === 16808192664 &&
       orderTotals.ticketsPurchased > 0
     ) {
       console.log("regFunc has been found");
@@ -457,7 +457,7 @@ const TicketSelection = () => {
           REGISTERR
         </button>
       );
-    } else if (eventDetails.eventNum === 25657749347) {
+    } else if (eventDetails.eventNum === 16808192664) {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
           REGISTERH
