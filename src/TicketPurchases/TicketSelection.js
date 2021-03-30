@@ -101,8 +101,6 @@ const TicketSelection = () => {
       .then((res) => {
         console.log("EVENT DATA OBJECT from Server: ", res);
         eventDetails = loadEventDetails(res);
-        //eventDetails.gateway = "PayPalMarketplace";
-        //eventDetails.gateway = "PayPalExpress";
         console.log("eventDetails: ", eventDetails);
         // checks if an order exists in local storage
         if (
@@ -137,7 +135,6 @@ const TicketSelection = () => {
           });
       })
       .catch((err) => {
-        console.log("getEventData error");
         setDisplay("connection");
       });
   };
@@ -551,7 +548,7 @@ const TicketSelection = () => {
       } else if (eventDetails.gateway === "PayPalMarketplace") {
         window.location.href = "/checkout-paypalmerchant";
       } else {
-        window.location.href = `/er/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+        window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
       }
     } else if (orderTotals.finalPurchaseAmount === 0) {
       window.location.href = "/infofree";

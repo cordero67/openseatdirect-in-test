@@ -47,7 +47,6 @@ const EventDetail = () => {
             eventLogo = res;
           })
           .catch((err) => {
-            console.log(".catch inner fetch");
             eventLogo = DefaultLogo;
           })
           .finally(() => {
@@ -55,7 +54,6 @@ const EventDetail = () => {
           });
       })
       .catch((err) => {
-        console.log(".catch outer fetch");
         // NEED TO ADDRESS THESE SITUATIONS
         if (err === "Error: Error: 400") {
         }
@@ -72,25 +70,17 @@ const EventDetail = () => {
     ticketStatus = false;
     let tempTickets = null;
 
-    /*
-    if ("event" in event.accountId) {
-      console.log("it does exist");
-    }
-    //} else {
-    console.log("it DOES NOT exist");
-    //}
-    */
-
     console.log("now: ", Date.now());
     let d = Date.parse(event.startDateTime) + 86400;
+    console.log("d: ", d);
+    console.log("d+: ", d + 86400);
+    console.log("event.tickets: ", event.tickets);
 
     if ("tickets" in event && event.tickets.length > 0 && Date.now() < d) {
       ticketStatus = true;
       tempTickets = event.tickets;
     }
     console.log("tempTickets: ", tempTickets);
-
-    // defines the entire "eventDetails" variable
     eventDetails = {
       eventNum: event.eventNum, //
       eventTitle: event.eventTitle, //
@@ -169,7 +159,7 @@ const EventDetail = () => {
       console.log("Inside ticketPriceRange");
       console.log("eventDetails: ", eventDetails);
       let priceArray = [];
-      if (eventDetails.tickets !== null && eventDetails.tickets) {
+      if (eventDetails.ticket !== null && eventDetails.tickets) {
         console.log("We have tickets");
         eventDetails.tickets.map((item) => {
           priceArray.push(item.currentTicketPrice);

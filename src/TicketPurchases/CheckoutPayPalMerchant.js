@@ -238,7 +238,14 @@ const Checkout = () => {
   // displays the "PayPalButton" or an "empty cart" error message
   const showPayPal = (
     <div>
-      <PayPalScriptProvider options={{ "client-id": "test" }}>
+      <PayPalScriptProvider
+        options={{
+          "client-id":
+            "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
+          "merchant-id": eventDetails.gatewayMerchantID,
+          debug: true,
+        }}
+      >
         <PayPalButtons
           style={{ layout: "vertical" }}
           createOrder={(data, actions) => {
@@ -272,7 +279,7 @@ const Checkout = () => {
               method: "POST",
               headers: myHeaders,
               body: JSON.stringify({
-                merchant_id: "9MBSKA59BGFY6",
+                merchant_id: eventDetails.gatewayMerchantID,
                 eventNum: eventDetails.eventNum,
                 totalAmount: orderTotals.finalPurchaseAmount,
                 isFree: false,
@@ -316,19 +323,44 @@ const Checkout = () => {
               body: JSON.stringify({ id: data.orderID }),
             }).then(function (res) {
               if (!res.ok) {
-                alert("OSD Error");
-              } else {
-                alert("All good bitch");
+                setTransactionInfo(
+                  loadTransactionInfo(
+                    eventDetails,
+                    orderTotals,
+                    ticketInfo
+                    //email,
+                    //name
+                  )
+                );
+                setOrderStatus(false);
+                setDisplay("confirmation");
                 let event = JSON.parse(localStorage.getItem("eventNum"));
                 localStorage.removeItem(`cart_${event}`);
                 localStorage.removeItem(`image_${event}`);
                 localStorage.removeItem(`eventNum`);
-                window.location.href = `/events`;
+              } else {
+                setTransactionInfo(
+                  loadTransactionInfo(
+                    eventDetails,
+                    orderTotals,
+                    ticketInfo
+                    //email,
+                    //name
+                  )
+                );
+                setOrderStatus(true);
+                setDisplay("confirmation");
+
+                let event = JSON.parse(localStorage.getItem("eventNum"));
+                localStorage.removeItem(`cart_${event}`);
+                localStorage.removeItem(`image_${event}`);
+                localStorage.removeItem(`eventNum`);
+                //window.location.href = `/events`;
               }
             });
           }}
           onCancel={() => {
-            //console.log("onCancel 'data': ", data);
+            console.log("onCancel");
           }}
           onError={(err) => {
             console.log("onError 'err': ", err);
@@ -339,6 +371,7 @@ const Checkout = () => {
             });
             setDisplay("paypal");
           }}
+          /*
           catchError={(err) => {
             console.log("catchError 'err': ", err);
             setTransactionStatus({
@@ -348,6 +381,7 @@ const Checkout = () => {
             });
             setDisplay("paypal");
           }}
+          */
         />
       </PayPalScriptProvider>
     </div>
