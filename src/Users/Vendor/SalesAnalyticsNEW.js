@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { PieChart } from "react-minimal-pie-chart";
+
 import dateFnsFormat from "date-fns/format";
 
 import classes from "./SalesAnalytics.module.css";
 
 const SalesAnalytics = (props) => {
   const [displayView, setDisplayView] = useState("spinner"); // spinner,
-  //const [buyerInfo, setBuyerInfo] = useState();
   const [eventDetails, setEventDetails] = useState({});
   const [eventTickets, setEventTickets] = useState([{ ticketName: "GA" }]);
   const [eventOrders, setEventOrders] = useState([]);
@@ -34,17 +34,6 @@ const SalesAnalytics = (props) => {
   ];
 
   useEffect(() => {
-    var day = new Date();
-    let date = dateFnsFormat(day, "MM/dd/yyyy");
-    console.log("date: ", date);
-
-    var newDay = new Date(day.getTime() + 86400000);
-    let newDate = dateFnsFormat(newDay, "MM/dd/yyyy");
-    console.log("newDate: ", newDate);
-
-    let short = dateFnsFormat(new Date(day.getTime() + 86400000), "MM/dd/yyyy");
-    console.log("short: ", short);
-
     setIsLoading(true);
 
     let tempEventDetails = {};
@@ -53,7 +42,7 @@ const SalesAnalytics = (props) => {
     let tempEvents = JSON.parse(localStorage.getItem("events"));
     tempEvents.forEach((event, index) => {
       if (event.eventNum === 59490622550) {
-        //if (order.eventNum === 5198198061) {
+        //if (event.eventNum === 96587655611) {
         tempEventDetails = event;
         tempEventTickets = event.tickets;
       }
@@ -61,7 +50,7 @@ const SalesAnalytics = (props) => {
     let tempOrders = JSON.parse(localStorage.getItem("orders"));
     tempOrders.forEach((order, index) => {
       if (order.eventNum === 59490622550) {
-        //if (order.eventNum === 5198198061) {
+        //if (order.eventNum === 96587655611) {
         tempEventOrders.push(order);
       }
     });
@@ -76,49 +65,145 @@ const SalesAnalytics = (props) => {
     console.log("Event Tickets: ", tempEventTickets);
     console.log("Event Orders: ", tempEventOrders);
 
-    console.log(new Date("2021-03-25T21:59:37.451Z"));
+    //console.log(new Date("2021-03-25T21:59:37.451Z"));
 
     setEventDetails(tempEventDetails);
-    setEventTickets(tempEventTickets);
+    //setEventTickets(tempEventTickets);
     setEventOrders(tempEventOrders);
 
-    let tempTicketArray = [];
+    let createdAtTime = new Date(
+      dateFnsFormat(new Date(tempEventDetails.createdAt), "MM/dd/yy")
+    ).getTime();
+    console.log("createdAtTime: ", createdAtTime);
+
+    let nowTime = new Date(dateFnsFormat(new Date(), "MM/dd/yy")).getTime();
+    console.log("nowTime: ", nowTime);
+
+    let startTime = createdAtTime;
+
+    let tempDateArray = [];
+    let tempField = [];
+
+    tempEventTickets.forEach((ticket, index) => {
+      let tempElement = {
+        ticketName: ticket.ticketName,
+        ticketId: ticket._id,
+        ticketsSold: 0,
+      };
+      tempField.push(tempElement);
+    });
+    console.log("tempField: ", tempField);
+
+    while (startTime <= nowTime) {
+      let tempElement = {};
+      console.log(
+        "time: ",
+        startTime,
+        " Date: ",
+        dateFnsFormat(new Date(startTime), "MM/dd/yy")
+      );
+      tempElement.startTime = startTime;
+      tempElement.endTime = startTime + 86400000;
+      tempElement.startDate = dateFnsFormat(
+        new Date(startTime),
+        "EEE: MM/dd/yy"
+      );
+      tempElement.ticketsSold = 0;
+      tempElement.ticketSales = tempField;
+      tempElement.displayDetail = false;
+      startTime += 86400000;
+      tempDateArray.push(tempElement);
+    }
+
+    console.log("tempDateArray: ", tempDateArray);
+
+    setDateArray(tempDateArray);
+
     let tempTotalTickets = 0;
     let tempTotalRevenues = 0;
     let tempData = [];
 
     tempEventOrders.forEach((order, index) => {
       if ("order_ticketItems" in order) {
-        //console.log("order_ticketItems: ", order.order_ticketItems);
         order.order_ticketItems.forEach((ticketOrder, index) => {
-          console.log("ticketOrder: ", ticketOrder);
           tempEventTickets.forEach((ticket, index) => {
-            console.log("ticket: ", ticket);
             if (ticket._id === ticketOrder.ticketId) {
-              console.log("made a ticket id match");
-              console.log("ticket._id: ", ticket._id);
-              console.log("ticketOrder.ticketId: ", ticketOrder.ticketId);
-              console.log(
-                "tempEventTickets[index].ticketsSold: ",
-                tempEventTickets[index].ticketsSold
-              );
-              console.log("ticketOrder.qty: ", ticketOrder.qty);
               tempEventTickets[index].ticketsSold += ticketOrder.qty;
               tempEventTickets[index].ticketRevenue += ticketOrder.subtotal;
-              console.log(
-                "tempEventTickets[index].ticketsSold: ",
-                tempEventTickets[index].ticketsSold
-              );
             }
           });
-          console.log("ticketOrder.subtotal: ", ticketOrder.subtotal);
           tempTotalRevenues += ticketOrder.subtotal;
           tempTotalTickets += ticketOrder.qty;
         });
       }
     });
 
-    // populate Slaes Chart data
+    tempEventOrders.forEach((order, index1) => {
+      let orderTime = new Date(order.order_createdAt).getTime();
+
+      let match = false;
+      tempDateArray.forEach((date, index2) => {
+        if (orderTime >= date.startTime && orderTime < date.endTime) {
+          console.log("We have a Match");
+          console.log("End: ", date.endTime);
+          console.log("Actual: ", orderTime);
+          console.log("Start: ", date.startTime);
+          console.log("tempDateArray[index2]: ", tempDateArray[index2]);
+          tempDateArray[index2].ticketsSold += order.order_numTickets;
+
+          order.order_ticketItems.forEach((ticketOrder, index3) => {
+            console.log(
+              "ticket item ",
+              index3,
+              ": ",
+              ticketOrder,
+              ", itcketId: ",
+              ticketOrder.ticketId
+            );
+            console.log("tempDateArray[0]: ", tempDateArray[0]);
+            console.log("tempDateArray[3]: ", tempDateArray[3]);
+            console.log("tempDateArray[index2]: ", tempDateArray[index2]);
+            //tempDateArray[index2].ticketSales.forEach((sale, index4) => {
+            /*
+              if (sale.ticketId === ticketOrder.ticketId) {
+                console.log("We have a ticket type match");
+                console.log("tempDataArray: ", sale);
+                //tempDataArray[index3].ticketsSales[index4].ticketsSold +=
+                //  tickerOrder.qty;
+              }
+            });*/
+          });
+          //console.log("End: ", date.endTime);
+          //console.log("Actual: ", orderTime);
+          //console.log("Start: ", date.startTime);
+          match = true;
+        }
+      });
+
+      console.log("Was there a match: ", match);
+      /*
+      if ("order_ticketItems" in order) {
+        order.order_ticketItems.forEach((ticketOrder, index) => {
+          console.log("ticketOrder: ", ticketOrder);
+          
+          tempEventTickets.forEach((ticket, index) => {
+            if (ticket._id === ticketOrder.ticketId) {
+              tempEventTickets[index].ticketsSold += ticketOrder.qty;
+              tempEventTickets[index].ticketRevenue += ticketOrder.subtotal;
+            }
+          });
+          tempTotalRevenues += ticketOrder.subtotal;
+          tempTotalTickets += ticketOrder.qty;
+          
+        });
+      }
+      */
+    });
+    console.log("tempDateArray: ", tempDateArray);
+
+    setDateArray(tempDateArray);
+
+    // populate Sales Chart data
     tempEventTickets.forEach((ticket, index) => {
       //if (parseFloat(ticket.ticketRevenue) !== 0) {
       let tempEntry = {
@@ -127,7 +212,7 @@ const SalesAnalytics = (props) => {
         color: colorSpec[index],
       };
       tempData.push(tempEntry);
-      console.log("tempEntry: ", tempEntry);
+      //console.log("tempEntry: ", tempEntry);
       //}
     });
 
@@ -139,58 +224,6 @@ const SalesAnalytics = (props) => {
 
     setTotalRevenues(tempTotalRevenues);
     setTotalTickets(tempTotalTickets);
-
-    let tempDateArray = [];
-
-    let tempCreatedAt = day.getTime(new Date(tempEventDetails.createdAt));
-    console.log(day.getTime(new Date("2021-03-25T21:59:37.451Z")));
-    console.log(day.getTime(new Date(tempEventDetails.createdAt)));
-    console.log(tempCreatedAt);
-    console.log(tempEventDetails.createdAt);
-    console.log(tempEventDetails.startDateTime);
-    console.log("TODAY: ", day.getTime(new Date()));
-
-    console.log("ANOTHER DATE: ", day.getTime("2022-03-31T15:00:00.000Z"));
-
-    console.log("Created At: ", new Date(tempEventDetails.createdAt));
-    console.log(
-      "2021-03-25T21:59:37.451Z",
-      new Date(day.getTime(new Date("2021-03-25T21:59:37.451Z")))
-    );
-
-    console.log(
-      "2021-03-25T21:59:37.451Z",
-      day.getTime(new Date("2021-03-25T21:59:37.451Z"))
-    );
-
-    console.log(
-      "2021-03-26T21:59:37.451Z",
-      day.getTime(new Date("2021-03-25T21:59:37.451Z")) + 1 * 86400000
-    );
-
-    for (let i = 0; i < 15; i++) {
-      let start = dateFnsFormat(
-        new Date(day.getTime(Date(tempEventDetails.createdAt)) + 0 * 86400000),
-        "MM/dd/yyyy"
-      );
-      let end = dateFnsFormat(
-        new Date(day.getTime() + (i + 1) * 86400000),
-        "MM/dd/yyyy"
-      );
-
-      if (start > dateFnsFormat(new Date(), "MM/dd/yyyy")) {
-        console.log("future date");
-      } else if (start === dateFnsFormat(new Date(), "MM/dd/yyyy")) {
-        console.log("TODAY");
-      } else {
-        console.log("past date");
-      }
-
-      tempDateArray.push({ startDate: start, endDate: end });
-    }
-
-    console.log("dateArray: ", tempDateArray);
-    setDateArray(tempDateArray);
 
     setIsLoading(false);
   }, []);
@@ -208,17 +241,27 @@ const SalesAnalytics = (props) => {
                 textAlign: "center",
                 display: "grid",
                 columnGap: "10px",
-                gridTemplateColumns: "300px 60px 60px 80px",
+                gridTemplateColumns: "320px 60px 60px 80px",
                 paddingLeft: "30px",
               }}
             >
               <div
-                style={{ textAlign: "left" }}
-                onClick={() => {
-                  setSelectedWedge(index);
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "20px 320px",
                 }}
               >
-                {ticket.ticketName}
+                <div
+                  style={{ backgroundColor: colorSpec[index], width: "15px" }}
+                ></div>
+                <div
+                  style={{ textAlign: "left" }}
+                  onClick={() => {
+                    setSelectedWedge(index);
+                  }}
+                >
+                  {ticket.ticketName}
+                </div>
               </div>
               <div style={{ textAlign: "center" }}>{ticket.ticketsSold}</div>
               <div style={{ textAlign: "center" }}>
@@ -227,6 +270,30 @@ const SalesAnalytics = (props) => {
               <div style={{ textAlign: "right", paddingRight: "10px" }}>
                 {parseFloat(ticket.ticketRevenue).toFixed(2)}
               </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const dates = () => {
+    return (
+      <div>
+        {dateArray.map((date, index) => {
+          return (
+            <div
+              key={index}
+              style={{
+                textAlign: "center",
+                display: "grid",
+                columnGap: "10px",
+                gridTemplateColumns: "200px 60px",
+                paddingLeft: "30px",
+              }}
+            >
+              <div style={{ textAlign: "left" }}>{date.startDate}</div>
+              <div style={{ textAlign: "center" }}>{date.ticketsSold}</div>
             </div>
           );
         })}
@@ -348,27 +415,27 @@ const SalesAnalytics = (props) => {
         </div>
       </div>
 
-      <div
-        className={classes.DisplayPanelTitle}
-        style={{
-          fontSize: "16px",
-          fontWeight: "600",
-          paddingLeft: "30px",
-          paddingBottom: "10px",
-        }}
-      >
-        Sales by Ticket Type
-      </div>
       <div className={classes.DisplayPanel}>
+        <div
+          className={classes.DisplayPanelTitle}
+          style={{
+            fontSize: "16px",
+            fontWeight: "600",
+            paddingLeft: "30px",
+            paddingBottom: "10px",
+          }}
+        >
+          Sales by Ticket Type
+        </div>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "300px 60px 60px 80px",
+            gridTemplateColumns: "320px 60px 60px 80px",
             columnGap: "10px",
             borderBottom: "1px solid black",
             fontWeight: "600",
             marginLeft: "30px",
-            marginRight: "calc(100vw - 560px",
+            marginRight: "calc(100vw - 595px)",
           }}
         >
           <div>Ticket Name</div>
@@ -380,8 +447,9 @@ const SalesAnalytics = (props) => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "300px 60px 60px 80px",
+              gridTemplateColumns: "340px 60px 60px 80px",
               columnGap: "10px",
+              paddingBottom: "20px",
             }}
           >
             <div>{tickets()}</div>
@@ -426,24 +494,49 @@ const SalesAnalytics = (props) => {
         style={{
           fontSize: "16px",
           fontWeight: "600",
+          paddingTop: "20px",
           paddingLeft: "30px",
-          paddingBottom: "1000px",
+          paddingBottom: "10px",
+        }}
+      >
+        Sales by Date
+      </div>
+      <div>
+        <div
+          style={{
+            textAlign: "center",
+            display: "grid",
+            columnGap: "10px",
+            gridTemplateColumns: "200px 60px",
+            borderBottom: "1px solid black",
+            fontWeight: "600",
+            marginLeft: "30px",
+            marginRight: "calc(100vw - 315px)",
+          }}
+        >
+          <div style={{ textAlign: "left" }}>Date</div>
+          <div style={{ textAlign: "center" }}>Sales</div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          paddingBottom: "40px",
+        }}
+      >
+        {dates()}
+      </div>
+
+      <div
+        className={classes.DisplayPanelTitle}
+        style={{
+          fontSize: "16px",
+          fontWeight: "600",
+          paddingLeft: "30px",
+          paddingBottom: "40px",
         }}
       >
         Sales by Payment Method
-      </div>
-      <div>Initial Sales Date: {eventDetails.createdAt}</div>
-
-      <div></div>
-      <div>Date</div>
-      <div>
-        {dateArray.map((date, index) => {
-          return (
-            <div>
-              {date.startDate}, End Date: {date.endDate}
-            </div>
-          );
-        })}
       </div>
     </div>
   );

@@ -288,48 +288,46 @@ const TicketSelection = () => {
           style={{ textAlign: "left", color: "black" }}
         >
           <div style={{ paddingTop: "20px" }}>
-            <Fragment>
-              <div
-                style={{
-                  fontWeight: "500",
-                  fontSize: "24px",
-                  paddingBottom: "20p",
-                }}
-              >
-                Order Confirmation
+            <div
+              style={{
+                fontWeight: "500",
+                fontSize: "24px",
+                paddingBottom: "20p",
+              }}
+            >
+              Order Confirmation
+            </div>
+            <br></br>
+            <div
+              style={{
+                fontSize: "16px",
+                paddingBottom: "20px",
+              }}
+            >
+              <div style={{ paddingBottom: "20px" }}>
+                Thank you, your order was received and is in process.
               </div>
-              <br></br>
-              <div
-                style={{
-                  fontSize: "16px",
-                  paddingBottom: "20px",
-                }}
-              >
-                <div style={{ paddingBottom: "20px" }}>
-                  Thank you, your order was received and is in process.
-                </div>
-                <div style={{ paddingBottom: "20px" }}>
-                  OpenSeatDirect will be sending you an email that will contain
-                  a pdf of your ticket(s) to print-at-home or to display on your
-                  mobile device.
-                </div>
-                <div style={{ paddingBottom: "20px" }}>
-                  If you do not receive this email by the end of today, please
-                  contact the vendor.
-                </div>
+              <div style={{ paddingBottom: "20px" }}>
+                OpenSeatDirect will be sending you an email that will contain a
+                pdf of your ticket(s) to print-at-home or to display on your
+                mobile device.
               </div>
+              <div style={{ paddingBottom: "20px" }}>
+                If you do not receive this email by the end of today, please
+                contact the vendor.
+              </div>
+            </div>
 
-              <div style={{ textAlign: "center" }}>
-                <button
-                  className={classes.ButtonBlue}
-                  onClick={() => {
-                    window.location.href = "/events";
-                  }}
-                >
-                  CONTINUE
-                </button>
-              </div>
-            </Fragment>
+            <div style={{ textAlign: "center" }}>
+              <button
+                className={classes.ButtonBlue}
+                onClick={() => {
+                  window.location.href = "/events";
+                }}
+              >
+                CONTINUE
+              </button>
+            </div>
           </div>
         </div>
       );

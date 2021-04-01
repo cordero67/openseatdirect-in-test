@@ -1,3 +1,7 @@
+.ParagraphStyling {
+  color: "blue";
+}
+
 .EventHeader {
   text-align: center;
   padding-top: 5px;
@@ -154,6 +158,26 @@
 }
 .ButtonGreenLarge:active {
   background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRedLarge {
+  height: 40px;
+  width: 260px;
+  background-color: #cc0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRedLarge:hover {
+  background-color: #a30000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRedLarge:active {
+  background-color: #7a0000;
   color: #fff;
   border: 1px solid black;
   outline: none;
