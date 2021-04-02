@@ -881,15 +881,15 @@ const TicketSelection = () => {
             paddingLeft: "calc(50% - 190px)",
           }}
         >
-          {agreeButton()}
           {disagreeButton}
+          {agreeButton()}
         </div>
       );
     } else {
       return (
         <Fragment>
-          {agreeButton()}
           {disagreeButton}
+          {agreeButton()}
         </Fragment>
       );
     }
