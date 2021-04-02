@@ -7,15 +7,68 @@ import classes from "./SalesAnalytics.module.css";
 
 const SalesAnalytics = (props) => {
   const [displayView, setDisplayView] = useState("spinner"); // spinner,
+
+  // contains straight values from localStorage
   const [eventDetails, setEventDetails] = useState({});
-  const [eventTickets, setEventTickets] = useState([{ ticketName: "GA" }]);
+  const [eventTickets, setEventTickets] = useState([]);
   const [eventOrders, setEventOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const [saleTotals, setSalesTotals] = useState({
+    ticketsSold: 0,
+    ticketsRemaining: 0,
+    grossRevenues: 0,
+    netRevenues: 0,
+    orders: 0,
+    ticketTypes: [
+      {
+        ticketId: "",
+        ticketName: "",
+        grossRevenues: 0,
+        netRevenues: 0,
+        ticketsSold: 0,
+        ticketsRemaining: 0,
+      },
+    ],
+  });
+
+  const [ticketTotals, setTicketTotals] = useState([
+    {
+      ticketName: "",
+      ticketId: "",
+      currency: "0",
+      faceValue: 0,
+      ticketsSold: 0,
+      ticketsRemaining: 0,
+      grossRevenues: 0,
+      netRevenues: 0,
+    },
+  ]);
+
+  const [dateSales, setDateSales] = useState([
+    {
+      date: 0,
+      startTime: 0,
+      endTime: 0,
+      ticketsSold: 0,
+      grossRevenues: 0,
+      netRevenues: 0,
+      displayDetail: false,
+      ticketSales: [
+        {
+          ticketId: "",
+          ticketName: "",
+          ticketsSold: 0,
+          grossRevenues: 0,
+          netRevenues: 0,
+        },
+      ],
+    },
+  ]);
+
+  // look to deprecate these four variables
   const [totalRevenues, setTotalRevenues] = useState();
   const [totalTickets, setTotalTickets] = useState();
   const [ticketSalesChart, setTicketSalesChart] = useState([]);
-  const [ticketPaymentChart, setTicketPaymentChart] = useState([]);
-
   const [dateArray, setDateArray] = useState([]);
 
   let colorSpec = [
@@ -33,20 +86,56 @@ const SalesAnalytics = (props) => {
     "#FF9817",
   ];
 
-  useEffect(() => {
-    setIsLoading(true);
+  const populateEventTickets = (tickets) => {
+    const tempArray = [];
+    tickets.forEach((ticket, index) => {
+      let tempElement = {};
+      tempElement.ticketName = ticket.ticketName;
+      tempElement.ticketId = ticket._id;
+      tempElement.currency = ticket.currency;
+      tempElement.faceValue = ticket.currentTicketPrice;
+      tempElement.ticketsSold = 0;
+      tempElement.ticketsRemaining = ticket.remainingQuantity;
+      tempElement.grossRevenues = 0;
+      tempElement.netRevenues = 0;
+      tempArray.push(tempElement);
+    });
+    console.log("tempArray Ticket Totals: ", tempArray);
+    //setTicketTotals(tempTicketTotals);
+    return tempArray;
+  };
 
+  useEffect(() => {
     let tempEventDetails = {};
     let tempEventTickets = [];
     let tempEventOrders = [];
+
+    let tempTicketTotals = [];
+    console.log("temp tickets: ", tempTicketTotals);
+
+    // finds the specific event within the events object
+    // extracts the event details and tickets information
     let tempEvents = JSON.parse(localStorage.getItem("events"));
+    console.log("tempEvents: ", tempEvents);
     tempEvents.forEach((event, index) => {
       if (event.eventNum === 59490622550) {
         //if (event.eventNum === 96587655611) {
+        console.log("event: ", event);
+        // SHOULD BE ABLE TO DEPRECATE THIS
         tempEventDetails = event;
+        tempTicketTotals = populateEventTickets(event.tickets);
+        console.log("temp tickets: ", tempTicketTotals);
         tempEventTickets = event.tickets;
       }
     });
+    console.log("Event Details: ", tempEventDetails);
+    setEventDetails(tempEventDetails);
+    // SHOULD BE ABLE TO DEPRECATE THIS
+    console.log("Event Tickets: ", tempEventTickets);
+    setEventTickets(tempEventTickets);
+
+    // finds orders for specific event
+    // extracts the orders information
     let tempOrders = JSON.parse(localStorage.getItem("orders"));
     tempOrders.forEach((order, index) => {
       if (order.eventNum === 59490622550) {
@@ -54,54 +143,142 @@ const SalesAnalytics = (props) => {
         tempEventOrders.push(order);
       }
     });
-
-    // add ticketsSold and ticketRevenue fields into tempEventTickets
-    tempEventTickets.forEach((ticket, index) => {
-      tempEventTickets[index].ticketsSold = 0;
-      tempEventTickets[index].ticketRevenue = 0;
-    });
-
-    console.log("Event Details: ", tempEventDetails);
-    console.log("Event Tickets: ", tempEventTickets);
     console.log("Event Orders: ", tempEventOrders);
-
-    //console.log(new Date("2021-03-25T21:59:37.451Z"));
-
-    setEventDetails(tempEventDetails);
-    //setEventTickets(tempEventTickets);
     setEventOrders(tempEventOrders);
 
+    // SPACE
+    // SPACE
+    // SPACE
+    // SPACE
+    // SPACE
+
+    let tempTicketsSold = 0;
+    let tempGrossRevenues = 0;
+    let tempNetRevenues = 0;
+
+    /*
+    ticketName: "",
+    ticketId: "",
+    currency: "0",
+    faceValue: 0,
+    ticketsSold: 0,
+    ticketsRemaining: 0,
+    grossRevenues: 0,
+    netRevenues: 0,
+
+    */
+
+    tempEventOrders.forEach((order, index) => {
+      if ("order_qrTickets" in order) {
+        order.order_qrTickets.forEach((ticketOrder, index) => {
+          tempTicketTotals.forEach((ticket, index) => {
+            if (ticket.ticketId === ticketOrder.ticketId) {
+              tempTicketTotals[index].ticketsSold += 1;
+              tempTicketTotals[index].grossRevenues += ticketOrder.fullPrice;
+              tempTicketTotals[index].netRevenues += ticketOrder.sellingPrice;
+            }
+          });
+          //tempTotalRevenues += ticketOrder.subtotal;
+          //tempTotalTickets += ticketOrder.qty;
+        });
+      }
+    });
+
+    console.log("tempTicketTotals: ", tempTicketTotals);
+
+    // SPACE
+    // SPACE
+    // SPACE
+    // SPACE
+    // SPACE
+    // SPACE
+    // SPACE
+    // SPACE
+    // SPACE
+    // SPACE
+
+    let tempTotalTickets = 0;
+    let tempTotalRevenues = 0;
+
+    tempEventOrders.forEach((order, index) => {
+      if ("order_ticketItems" in order) {
+        order.order_ticketItems.forEach((ticketOrder, index) => {
+          tempEventTickets.forEach((ticket, index) => {
+            if (ticket._id === ticketOrder.ticketId) {
+              tempEventTickets[index].ticketsSold += ticketOrder.qty;
+              tempEventTickets[index].ticketRevenue += ticketOrder.subtotal;
+            }
+          });
+          tempTotalRevenues += ticketOrder.subtotal;
+          tempTotalTickets += ticketOrder.qty;
+        });
+      }
+    });
+
+    // I CAN DEPRECATE THIS ONCE THE NEW "ticketsTotal" VARIABLE IS POPULATED
+    // add "ticketsSold" and "ticketRevenue" fields into tempEventTickets
+    tempEventTickets.forEach((ticket, index) => {
+      tempEventTickets[index].ticketsSold = 0;
+      tempEventTickets[index].ticketRevenues = 0;
+    });
+    console.log("Event Tickets: ", tempEventTickets);
+    setEventTickets(tempEventTickets);
+
+    // "createdAtTime" is the time in milliseconds of the event creation date
     let createdAtTime = new Date(
       dateFnsFormat(new Date(tempEventDetails.createdAt), "MM/dd/yy")
     ).getTime();
     console.log("createdAtTime: ", createdAtTime);
 
+    // "nowTime" is the time in milliseconds of now()
     let nowTime = new Date(dateFnsFormat(new Date(), "MM/dd/yy")).getTime();
     console.log("nowTime: ", nowTime);
 
-    let startTime = createdAtTime;
-
-    let tempDateArray = [];
+    // array to house the total ticket revenue and sale for each ticket type
     let tempField = [];
 
+    // populates "tempField" with an array of objects, one for each ticket type
     tempEventTickets.forEach((ticket, index) => {
       let tempElement = {
         ticketName: ticket.ticketName,
         ticketId: ticket._id,
         ticketsSold: 0,
+        ticketGrossRevenue: 0,
+        ticketNetRevenue: 0,
+        ticketSales: [
+          {
+            email: "",
+            tickets: 0,
+            ticketGrossRevenue: 0,
+            ticketNetRevenue: 0,
+          },
+        ],
       };
       tempField.push(tempElement);
     });
     console.log("tempField: ", tempField);
 
+    // space
+    // space
+    // space
+    // space
+    // space
+    // space
+
+    let tempDateArray = [];
+
+    let startTime = createdAtTime;
+
     while (startTime <= nowTime) {
       let tempElement = {};
+      /*
       console.log(
         "time: ",
         startTime,
         " Date: ",
         dateFnsFormat(new Date(startTime), "MM/dd/yy")
       );
+      */
       tempElement.startTime = startTime;
       tempElement.endTime = startTime + 86400000;
       tempElement.startDate = dateFnsFormat(
@@ -119,89 +296,29 @@ const SalesAnalytics = (props) => {
 
     setDateArray(tempDateArray);
 
-    let tempTotalTickets = 0;
-    let tempTotalRevenues = 0;
-    let tempData = [];
-
-    tempEventOrders.forEach((order, index) => {
-      if ("order_ticketItems" in order) {
-        order.order_ticketItems.forEach((ticketOrder, index) => {
-          tempEventTickets.forEach((ticket, index) => {
-            if (ticket._id === ticketOrder.ticketId) {
-              tempEventTickets[index].ticketsSold += ticketOrder.qty;
-              tempEventTickets[index].ticketRevenue += ticketOrder.subtotal;
-            }
-          });
-          tempTotalRevenues += ticketOrder.subtotal;
-          tempTotalTickets += ticketOrder.qty;
-        });
-      }
-    });
-
     tempEventOrders.forEach((order, index1) => {
       let orderTime = new Date(order.order_createdAt).getTime();
 
       let match = false;
       tempDateArray.forEach((date, index2) => {
         if (orderTime >= date.startTime && orderTime < date.endTime) {
+          /*
           console.log("We have a Match");
           console.log("End: ", date.endTime);
           console.log("Actual: ", orderTime);
           console.log("Start: ", date.startTime);
           console.log("tempDateArray[index2]: ", tempDateArray[index2]);
+          */
           tempDateArray[index2].ticketsSold += order.order_numTickets;
-
-          order.order_ticketItems.forEach((ticketOrder, index3) => {
-            console.log(
-              "ticket item ",
-              index3,
-              ": ",
-              ticketOrder,
-              ", itcketId: ",
-              ticketOrder.ticketId
-            );
-            console.log("tempDateArray[0]: ", tempDateArray[0]);
-            console.log("tempDateArray[3]: ", tempDateArray[3]);
-            console.log("tempDateArray[index2]: ", tempDateArray[index2]);
-            //tempDateArray[index2].ticketSales.forEach((sale, index4) => {
-            /*
-              if (sale.ticketId === ticketOrder.ticketId) {
-                console.log("We have a ticket type match");
-                console.log("tempDataArray: ", sale);
-                //tempDataArray[index3].ticketsSales[index4].ticketsSold +=
-                //  tickerOrder.qty;
-              }
-            });*/
-          });
-          //console.log("End: ", date.endTime);
-          //console.log("Actual: ", orderTime);
-          //console.log("Start: ", date.startTime);
           match = true;
         }
       });
-
-      console.log("Was there a match: ", match);
-      /*
-      if ("order_ticketItems" in order) {
-        order.order_ticketItems.forEach((ticketOrder, index) => {
-          console.log("ticketOrder: ", ticketOrder);
-          
-          tempEventTickets.forEach((ticket, index) => {
-            if (ticket._id === ticketOrder.ticketId) {
-              tempEventTickets[index].ticketsSold += ticketOrder.qty;
-              tempEventTickets[index].ticketRevenue += ticketOrder.subtotal;
-            }
-          });
-          tempTotalRevenues += ticketOrder.subtotal;
-          tempTotalTickets += ticketOrder.qty;
-          
-        });
-      }
-      */
     });
     console.log("tempDateArray: ", tempDateArray);
 
     setDateArray(tempDateArray);
+
+    let tempData = [];
 
     // populate Sales Chart data
     tempEventTickets.forEach((ticket, index) => {
@@ -224,8 +341,6 @@ const SalesAnalytics = (props) => {
 
     setTotalRevenues(tempTotalRevenues);
     setTotalTickets(tempTotalTickets);
-
-    setIsLoading(false);
   }, []);
 
   const [selectedWedge, setSelectedWedge] = useState();
@@ -254,14 +369,18 @@ const SalesAnalytics = (props) => {
                 <div
                   style={{ backgroundColor: colorSpec[index], width: "15px" }}
                 ></div>
-                <div
-                  style={{ textAlign: "left" }}
-                  onClick={() => {
+                <button
+                  className={classes.TableLine}
+                  cursor="pointer"
+                  onMouseEnter={() => {
                     setSelectedWedge(index);
+                  }}
+                  onMouseLeave={() => {
+                    setSelectedWedge();
                   }}
                 >
                   {ticket.ticketName}
-                </div>
+                </button>
               </div>
               <div style={{ textAlign: "center" }}>{ticket.ticketsSold}</div>
               <div style={{ textAlign: "center" }}>
@@ -269,6 +388,55 @@ const SalesAnalytics = (props) => {
               </div>
               <div style={{ textAlign: "right", paddingRight: "10px" }}>
                 {parseFloat(ticket.ticketRevenue).toFixed(2)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const tickets2 = () => {
+    return (
+      <div>
+        {ticketTotals.map((ticket, index) => {
+          return (
+            <div
+              key={index}
+              style={{
+                textAlign: "center",
+                display: "grid",
+                columnGap: "10px",
+                gridTemplateColumns: "320px 60px 60px 80px",
+                paddingLeft: "30px",
+              }}
+            >
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "20px 320px",
+                }}
+              >
+                <div
+                  style={{ backgroundColor: colorSpec[index], width: "15px" }}
+                ></div>
+                <button
+                  className={classes.TableLine}
+                  cursor="pointer"
+                  onMouseEnter={() => {
+                    setSelectedWedge(index);
+                  }}
+                  onMouseLeave={() => {
+                    setSelectedWedge();
+                  }}
+                >
+                  {ticket.name}
+                </button>
+              </div>
+              <div style={{ textAlign: "center" }}>{ticket.sold}</div>
+              <div style={{ textAlign: "center" }}>{ticket.remaining}</div>
+              <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                {parseFloat(ticket.grossRevenue).toFixed(2)}
               </div>
             </div>
           );
@@ -453,6 +621,18 @@ const SalesAnalytics = (props) => {
             }}
           >
             <div>{tickets()}</div>
+          </div>
+        </div>
+        <div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "340px 60px 60px 80px",
+              columnGap: "10px",
+              paddingBottom: "20px",
+            }}
+          >
+            <div>{tickets2()}</div>
           </div>
         </div>
         <div

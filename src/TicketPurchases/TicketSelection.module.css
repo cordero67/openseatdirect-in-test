@@ -144,7 +144,7 @@
 }
 .ButtonGreenLarge {
   height: 40px;
-  width: 260px;
+  width: 180px;
   background-color: #00a300;
   color: #fff;
   border: 1px solid black;
@@ -164,7 +164,7 @@
 }
 .ButtonRedLarge {
   height: 40px;
-  width: 260px;
+  width: 180px;
   background-color: #cc0000;
   color: #fff;
   border: 1px solid black;

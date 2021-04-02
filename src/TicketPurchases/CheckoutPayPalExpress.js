@@ -489,7 +489,7 @@ const Checkout = () => {
               {timeRemaining()}
               <br></br>
               <span style={{ fontSize: "18px", fontWeight: "600" }}>
-                PayPal Express Checkout
+                PayPal Checkout
               </span>
               <br></br>
               <br></br>

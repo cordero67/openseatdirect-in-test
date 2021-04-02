@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 
-import { API } from "../config.js";
-//import { PayPalButton } from "react-paypal-button-v2";
+import { API, OSD_SUBSCRIPTION_PAYPAL_CLIENT_ID } from "../config.js";
+
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 import {
@@ -56,6 +56,10 @@ const Checkout = () => {
   });
 
   useEffect(() => {
+    console.log(
+      "OSD_SUBSCRIPTION_PAYPAL_CLIENT_ID: ",
+      OSD_SUBSCRIPTION_PAYPAL_CLIENT_ID
+    );
     if (typeof window !== "undefined" && localStorage.getItem("eventNum")) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
@@ -240,8 +244,7 @@ const Checkout = () => {
     <div>
       <PayPalScriptProvider
         options={{
-          "client-id":
-            "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
+          "client-id": OSD_SUBSCRIPTION_PAYPAL_CLIENT_ID,
           "merchant-id": eventDetails.gatewayMerchantID,
           debug: true,
         }}
@@ -482,7 +485,7 @@ const Checkout = () => {
               {timeRemaining()}
               <br></br>
               <span style={{ fontSize: "18px", fontWeight: "600" }}>
-                PayPal Marketplace
+                PayPal Checkout
               </span>
               <br></br>
               <br></br>
