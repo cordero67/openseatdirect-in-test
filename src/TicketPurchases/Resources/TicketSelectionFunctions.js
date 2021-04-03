@@ -30,7 +30,7 @@ export const loadEventDetails = (event) => {
     eventTitle: event.eventTitle,
     eventType: event.eventType,
     isDraft: event.isDraft,
-    regFunc: event.regFunc,
+    register: event.register,
     organizer: "",
     gateway: event.accountId.paymentGatewayType,
     gatewayClientID: event.accountId.paypalExpress_client_id,

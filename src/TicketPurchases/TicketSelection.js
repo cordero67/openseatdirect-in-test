@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import queryString from "query-string";
+import ReactHtmlParser from "react-html-parser";
 
 import { API } from "../config.js";
 import { getEventData, getEventImage } from "./Resources/apiCore";
@@ -37,6 +38,7 @@ import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackgroun
 
 import TicketItem from "./Components/TicketItem";
 import classes from "./TicketSelection.module.css";
+import { Button } from "react-scroll";
 
 let eventDetails; // defines an event's NON ticket type specific information
 let eventLogo = ""; // defines an event's image
@@ -48,7 +50,7 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const TicketSelection = () => {
-  const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, connection
+  const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, registration, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
 
@@ -70,6 +72,7 @@ const TicketSelection = () => {
   const [ticketInfo, setTicketInfo] = useState([]); // ticket order specific ticket information
   const [orderTotals, setOrderTotals] = useState([]); // ticket order general info
   const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
+  const [registrationIndex, setRegistrationIndex] = useState(0);
   const [customerInformation, setCustomerInformation] = useState({
     // defines contact information sent to server
     name: "",
@@ -168,6 +171,7 @@ const TicketSelection = () => {
       setShowOrderSummaryOnly(true);
     }
   };
+
   // LOOKS GOOD
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
@@ -180,6 +184,7 @@ const TicketSelection = () => {
     localStorage.removeItem(`image_${event}`);
     localStorage.removeItem(`eventNum`);
   };
+
   // LOOKS GOOD
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -441,26 +446,31 @@ const TicketSelection = () => {
   const checkoutButton = () => {
     console.log("eventDetails: ", eventDetails);
     if (
-      //eventDetails.regFunc &&
-      //eventDetails.regFunc.useReg &&
-      eventDetails.eventNum === 16808192664 &&
+      eventDetails.register &&
+      "buttonLabel" in eventDetails.register &&
+      "content" in eventDetails.register &&
+      eventDetails.register.content.length > 0 &&
       orderTotals.ticketsPurchased > 0
     ) {
-      console.log("regFunc has been found");
       return (
         <button
           onClick={() => {
-            storeRegistration();
+            setDisplay("registration");
           }}
           className={classes.ButtonGreen}
         >
-          REGISTERR
+          {eventDetails.register.buttonLabel.toUpperCase()}
         </button>
       );
-    } else if (eventDetails.eventNum === 16808192664) {
+    } else if (
+      eventDetails.register &&
+      "buttonLabel" in eventDetails.register &&
+      "content" in eventDetails.register &&
+      eventDetails.register.content.length > 0
+    ) {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
-          REGISTERH
+          {eventDetails.register.buttonLabel.toUpperCase()}
         </button>
       );
     } else if (
@@ -479,7 +489,6 @@ const TicketSelection = () => {
       customerInformation.sessionToken !== ""
     ) {
       // signed paid order
-      console.log("regFunc has NOT been found");
       return (
         <button
           onClick={() => {
@@ -492,7 +501,6 @@ const TicketSelection = () => {
       );
     } else if (orderTotals.ticketsPurchased > 0) {
       // unsigned paid order
-      console.log("regFunc has NOT been found");
       return (
         <button
           onClick={() => {
@@ -532,7 +540,7 @@ const TicketSelection = () => {
           promoCodeDetails: promoCodeDetails,
           ticketInfo: ticketInfo,
           orderTotals: orderTotals,
-          orderExpiration: new Date(+new Date() + 7 * 60000),
+          orderExpiration: new Date(+new Date() + 10 * 60000),
         })
       );
 
@@ -581,7 +589,8 @@ const TicketSelection = () => {
       );
     }
 
-    window.location.href = "/er-NCJAR";
+    setDisplay("registration");
+    //window.location.href = "/er-NCJAR";
     //window.location.href = `/er${eventDetails.regFunc.path}`;
   };
   // LOOKS GOOD
@@ -805,10 +814,118 @@ const TicketSelection = () => {
     } else return null;
   };
 
+  const disagreeButton = (
+    <div style={{ textAlign: "center", paddingTop: "15px" }}>
+      <button
+        className={classes.ButtonRedLarge}
+        onClick={() => {
+          setRegistrationIndex(0);
+          setDisplay("main");
+        }}
+      >
+        I DISAGREE
+      </button>
+    </div>
+  );
+
+  const agreeButton = () => {
+    if (display === "registration") {
+      return (
+        <div style={{ textAlign: "center", paddingTop: "15px" }}>
+          <button
+            className={classes.ButtonGreenLarge}
+            onClick={() => {
+              if (
+                registrationIndex <
+                eventDetails.register.content.length - 1
+              ) {
+                setRegistrationIndex(registrationIndex + 1);
+              } else {
+                if (
+                  orderTotals.finalPurchaseAmount === 0 &&
+                  orderTotals.ticketsPurchased > 0 &&
+                  customerInformation.sessionToken !== ""
+                ) {
+                  // signed free order
+                  freeTicketHandler();
+                } else if (
+                  (orderTotals.finalPurchaseAmount > 0 &&
+                    customerInformation.sessionToken !== "") ||
+                  orderTotals.ticketsPurchased > 0
+                ) {
+                  // signed paid order or an unsigned order
+                  storeOrder();
+                } else {
+                  // some other type of order
+                }
+              }
+            }}
+          >
+            I AGREE
+          </button>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const registrationButtons = () => {
+    if (window.innerWidth >= 500) {
+      return (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "180px 180px",
+            columnGap: "20px",
+            paddingLeft: "calc(50% - 190px)",
+          }}
+        >
+          {disagreeButton}
+          {agreeButton()}
+        </div>
+      );
+    } else {
+      return (
+        <Fragment>
+          {disagreeButton}
+          {agreeButton()}
+        </Fragment>
+      );
+    }
+  };
+
+  // LOOKS GOOD
+  const registration = () => {
+    if (display === "registration") {
+      return (
+        <div
+          className={classes.BlankCanvas}
+          style={{
+            color: "black",
+            fontSize: "16px",
+            paddingTop: "40px",
+          }}
+        >
+          <div
+            style={{
+              paddingLeft: "40px",
+              paddingRight: "40px",
+            }}
+          >
+            {ReactHtmlParser(eventDetails.register.content[registrationIndex])}
+          </div>
+          {registrationButtons()}
+        </div>
+      );
+    } else return null;
+  };
+
   return (
     <div style={MainContainer}>
       {loadingSpinner()}
       {mainDisplay()}
+      {registration()}
       {purchaseConfirmation()}
       {connectionStatus()}
     </div>

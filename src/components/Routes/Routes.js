@@ -6,7 +6,7 @@ import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
-import EventDeletion from "../../EventCreation/DeleteEvent";
+import EventDeletion from "../../EventCreation/DeleteEvent"; // THIS IS A TEST ROUTE
 import ContactUs from "../ContactUs/ContactUs";
 import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
@@ -15,16 +15,12 @@ import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
-import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
-//import NewPaypal from "../../TicketPurchases/NewPaypal";
 import Authentication from "../../Users/Authentication/Authentication";
-import Slider from "../HomePage/Slider";
-import PrivateRoute from "./PrivateRoute";
+import Slider from "../HomePage/Slider"; // THIS IS A TEST ROUTE
+import PrivateRoute from "./PrivateRoute"; // THIS IS A TEST ROUTE
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
-import SalesAnalytics from "../../Users/Vendor/SalesAnalyticsNEW";
 
 import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";
@@ -227,15 +223,6 @@ const Routes = () => {
       />
 
       <Route
-        path="/salesanalytics/"
-        render={(routeProps) => (
-          <React.Fragment>
-            <SalesAnalytics />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
         path="/events"
         exact
         render={(routeProps) => (
@@ -330,24 +317,6 @@ const Routes = () => {
         render={(routeProps) => (
           <React.Fragment>
             <TicketSelection />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/er-NCJAR/"
-        render={(routeProps) => (
-          <React.Fragment>
-            <RegistrationNCJAR />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/er-COA/"
-        render={(routeProps) => (
-          <React.Fragment>
-            <RegistrationCOA />
           </React.Fragment>
         )}
       />
