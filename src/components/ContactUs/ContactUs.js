@@ -191,7 +191,6 @@ const ContactUs = () => {
         style={{
           fontWeight: "600",
           paddingLeft: "20px",
-          fontWeight: "600",
           fontSize: "16px",
         }}
       >
@@ -206,7 +205,6 @@ const ContactUs = () => {
         style={{
           fontWeight: "600",
           paddingLeft: "20px",
-          fontWeight: "600",
           fontSize: "16px",
         }}
       >
@@ -225,7 +223,6 @@ const ContactUs = () => {
         style={{
           fontWeight: "600",
           paddingLeft: "20px",
-          fontWeight: "600",
           fontSize: "16px",
         }}
       >
