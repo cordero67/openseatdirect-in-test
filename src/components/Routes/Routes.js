@@ -6,18 +6,19 @@ import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
-import EventDeletion from "../../EventCreation/DeleteEvent"; // THIS IS A TEST ROUTE
+import EventDeletion from "../../EventCreation/DeleteEvent";
 import ContactUs from "../ContactUs/ContactUs";
 import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
-import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
-import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
+import Checkout from "../../TicketPurchases/Checkout";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
+import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
+import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
 import Authentication from "../../Users/Authentication/Authentication";
-import Slider from "../HomePage/Slider"; // THIS IS A TEST ROUTE
-import PrivateRoute from "./PrivateRoute"; // THIS IS A TEST ROUTE
+import Slider from "../HomePage/Slider";
+import PrivateRoute from "./PrivateRoute";
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
@@ -277,21 +278,11 @@ const Routes = () => {
       />
 
       <Route
-        path="/checkout-paypalexpress"
+        path="/checkout"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <CheckoutPayPalExpress />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/checkout-paypalmerchant"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <CheckoutPayPalMerchant />
+            <Checkout />
           </React.Fragment>
         )}
       />
@@ -317,6 +308,24 @@ const Routes = () => {
         render={(routeProps) => (
           <React.Fragment>
             <TicketSelection />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/er-NCJAR/"
+        render={(routeProps) => (
+          <React.Fragment>
+            <RegistrationNCJAR />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/er-COA/"
+        render={(routeProps) => (
+          <React.Fragment>
+            <RegistrationCOA />
           </React.Fragment>
         )}
       />

@@ -21,13 +21,3 @@
   text-align: left;
   box-sizing: border-box;
 }
-
-.TableLine {
-  text-align: left;
-  background-color: #fff;
-  border: none;
-  outline: none;
-}
-.TableLine:hover {
-  font-weight: 600;
-}
