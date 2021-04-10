@@ -17,9 +17,29 @@ const OrderSummary = props => {
     fixedPurchaseTotal = purchaseTotal.toFixed(2);
   }
 
+  const clearOrder = () => {
+    let event = JSON.parse(localStorage.getItem("eventNum"));
+    localStorage.removeItem(`cart_${event}`);
+    localStorage.removeItem(`image_${event}`);
+    localStorage.removeItem(`eventNum`);
+    //window.location.href = `/ed/${props.vanity}?eventID=${props.eventNum}`;
+    window.history.back();
+  }
+
   return (
     <Fragment>
-      <div style={{ fontWeight: "600" }}>Order Summary</div>
+      <div className={classes.RightGrid}>
+        <div style={{fontWeight: "600"}}>Order Summary</div>
+        {props.cancel ?
+          (<button
+            className={classes.CancelButton}
+            onClick={clearOrder}
+          >
+            Cancel
+          </button> ) :
+          null
+        }
+      </div>
       <br></br>
       {props.ticketOrder.map(item => {
         let fixedDiscountTotal;

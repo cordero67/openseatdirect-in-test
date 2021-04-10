@@ -3,10 +3,6 @@ import { Redirect } from "react-router-dom";
 
 import { API } from "../../config";
 
-
-
-
-
 import classes from "./AuthenticationNEW.module.css";
 
 const Authentication = () => {
@@ -16,6 +12,7 @@ const Authentication = () => {
     password: "",
     temporary: "",
     reissued: false,
+    expired: false,
     confirmation: "",
     resent: false,
     username: "",
@@ -32,34 +29,81 @@ const Authentication = () => {
   });
 
   const [modalSetting, setModalSetting] = useState("signin") // signin, forgot, temporary, signup, confirmation, password, username, error
+  const [previousModalSetting, setPreviousModalSetting] = useState("signin") // signin, forgot, temporary, signup, confirmation, password, username
 
-  const { name, email, password, temporary, reissued, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
+  const { name, email, password, temporary, reissued, expired, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
 
   const { message, error } = submissionStatus;
 
-  const getStatus= (user) => { 
-    if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status
-    } else {
-        return 0;
-    } 
-  }
-  
+  const getStatus= () => {
+    let tempData = JSON.parse(localStorage.getItem("user"));
+    if ('user' in tempData && 'accountId' in tempData.user) {  
+      let tempAccountId = tempData.user.accountId;
+      let hasLinkIds = false;
+      let hasPaid = false;
+      if (tempAccountId.ticketPlan === 'free') {
+        return 7;
+      };
+      if (tempAccountId.ticketPlan === 'comp') {
+        hasPaid = true;
+      };
+      if (
+        'paymentGatewayType' in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalExpress" &&
+        'paypalExpress_client_id' in tempAccountId &&
+        'string' === typeof tempAccountId.paypalExpress_client_id
+      ) {
+
+          hasLinkIds = true;
+      };
+      if (
+        'paymentGatewayType' in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
+        'paypal_merchant_id' in tempAccountId &&
+        'string' === typeof tempAccountId.paypal_merchant_id
+      ) {
+          hasLinkIds = true;
+      };
+      if (
+        'paypal_plan_id' in tempAccountId && 
+        'string' === typeof tempAccountId.paypal_plan_id &&
+        'accountPaymentStatus' in tempAccountId &&
+        tempAccountId.accountPaymentStatus ==='good'
+      ) {
+        hasPaid = true;
+      }
+      if (!hasPaid && !hasLinkIds) {
+        return 4;
+      }
+      if (!hasPaid && hasLinkIds) {
+        return 5;
+      }
+      if (hasPaid && !hasLinkIds) {
+        return 6;
+      }
+      if (hasPaid && hasLinkIds) {
+        return 8;
+      }
+      return 4;
+    }
+    else {
+      return 0;
+    }
+}
+
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
     let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
+      if (getStatus() === 7 || getStatus() === 8) {
         window.location.href = "/vendor";
       } else if (
-        getStatus(tempUser.user) === 4 ||
-        getStatus(tempUser.user) === 5 ||
-        getStatus(tempUser.user) === 6 ||
+        getStatus() === 4 ||
+        getStatus() === 5 ||
+        getStatus() === 6 ||
         ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
       ) {
-        console.log("user 4, 5 or 6 and vendorIntent true");
         window.location.href = "/personal";
       } else {
-        console.log("user 4, 5 or 6 and vendorIntent false");
         window.location.href = "/events";
       }
     }
@@ -68,7 +112,7 @@ const Authentication = () => {
   const handleErrors = response => {
     console.log ("inside handleErrors ", response);
     if (!response.ok) {
-        throw Error(response.status);
+      throw Error(response.status);
     }
     return response;
   };
@@ -88,9 +132,9 @@ const Authentication = () => {
       password: password
     }
     let fetchBody ={
-        method: "POST",
-        headers: myHeaders,
-        body:JSON.stringify (information),
+      method: "POST",
+      headers: myHeaders,
+      body:JSON.stringify (information),
     };
     console.log("fetching with: ", url, fetchBody);
     console.log("Information: ", information)
@@ -109,6 +153,7 @@ const Authentication = () => {
         message: "Server down please try again",
         error: true
       });
+      //setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
@@ -148,6 +193,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
+      setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
@@ -188,6 +234,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
+      //setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
@@ -227,6 +274,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
+      setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
@@ -267,6 +315,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
+      setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
@@ -308,6 +357,7 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
+      setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
@@ -350,10 +400,10 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
+      setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
-
   // LOOKS GOOD
   const submitUsername = () => {
     setSubmissionStatus({
@@ -392,10 +442,10 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
+      setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
-
   // LOOKS GOOD
   const submitResend = () => {
     setSubmissionStatus({
@@ -431,10 +481,10 @@ const Authentication = () => {
         message: "Server is down, please try later",
         error: true
       });
+      setPreviousModalSetting(modalSetting)
       setModalSetting("error")
     })
   }
-
   // LOOKS GOOD
   const handleSignIn = (data) => {
     if (data.status) {
@@ -445,9 +495,11 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
+        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: ""
@@ -473,6 +525,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
@@ -502,6 +555,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
@@ -532,6 +586,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: true,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
@@ -559,6 +614,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -587,6 +643,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -606,6 +663,7 @@ const Authentication = () => {
     }
   }
 
+/*
   // LOOKS GOOD
   const handlePassword = (data) => {
     if (data.status) {
@@ -634,6 +692,46 @@ const Authentication = () => {
       console.log("ERROR: ", data.error)
     }
   }
+  */
+  
+  // LOOKS GOOD
+  const handlePassword = (data) => {
+    if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data));
+      setValues({
+        name: "",
+        email: data.user.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        expired: false,
+        confirmation: "",
+        resent: false,
+        username: data.user.username,
+        vendorIntent: data.user.vendorIntent,
+        resetToken: "",
+        sessionToken: data.token,
+        userId: data.user._id
+      });
+      console.log("SUCCESS")
+      setModalSetting("username")
+    } else {
+      if (data.code === 1401){
+        console.log("Status 1401 Error")
+        let tempValues = {...values};
+        tempValues.email= "";
+        tempValues.expired = true;
+        setValues(tempValues);
+        setModalSetting("signup")
+      } else {
+        setSubmissionStatus({
+          message: data.error,
+          error: true
+        });
+        console.log("ERROR: ", data.error)
+      }
+    }
+  }
 
   // LOOKS GOOD
   const handleUsername = (data) => {
@@ -648,6 +746,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
@@ -676,6 +775,7 @@ const Authentication = () => {
       password: "",
       temporary: "",
       reissued: false,
+      expired: false,
       confirmation: "",
       resent: false,
       username: "",
@@ -696,6 +796,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: true,
         username: data.user.username,
@@ -722,7 +823,6 @@ const Authentication = () => {
     });
   };
 
-  
   const changeIntent = () => {
     setValues({
       ...values,
@@ -734,17 +834,17 @@ const Authentication = () => {
     console.log("Redirect user");
     if (typeof window !== "undefined" && localStorage.getItem("user") !== null) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {  
+      if (getStatus() === 7 || getStatus() === 8) {
         window.location.href = "/vendor";
       } else if (
-        getStatus(tempUser.user) === 4 ||
-        getStatus(tempUser.user) === 5 ||
-        getStatus(tempUser.user) === 6 ||
+        getStatus() === 4 ||
+        getStatus() === 5 ||
+        getStatus() === 6 ||
         ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
       ) {
         window.location.href = "/personal";
       } else {
-        window.location.href = "/events";
+        window.location.href = "/ ";
       }
     }
   }
@@ -755,20 +855,23 @@ const Authentication = () => {
       return (
         <div style={{color: "red", fontSize: "14px", paddingBottom: "20px"}}>{message}</div>
       )
+    } else if (modalSetting === "signup" && expired) {  
+      return (
+        <div style={{color: "red", fontSize: "16px", paddingBottom: "20px"}}>
+          Timer has expired, please resubmit your email:
+        </div>
+      )
     } else if (modalSetting === "signin" || modalSetting === "forgot"|| modalSetting === "signup" || modalSetting === "password") {  
       return null
     } else if (modalSetting === "temporary" && !reissued) {
       console.log("modalSetting === 'temporary' && !reissued")
       console.log("values: ", values)
       return (
-        <Fragment>
-          <div style={{fontSize: "16px", paddingBottom: "10px"}}>
-            Enter the 6-digit code sent to:
-          </div>
-          <div style={{fontSize: "16px", paddingBottom: "20px"}}>
-            {email}
-          </div>
-        </Fragment>
+        <div style={{fontSize: "16px", paddingBottom: "20px"}}>
+          Enter the 6-digit code sent to:
+          <br></br>
+          {email}
+        </div>
       )
     } else if (modalSetting === "temporary" && reissued) {
       console.log("modalSetting === 'temporary' && reissued")
@@ -1026,8 +1129,9 @@ const Authentication = () => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
-          window.location.href = "/events";
-        }}>
+            setModalSetting(previousModalSetting)
+          }}
+        >
           CONTINUE
         </button>
       </div>
@@ -1150,7 +1254,6 @@ const Authentication = () => {
 
 
 
-
           </div>
           <div>
             {showError()}
@@ -1171,18 +1274,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Trouble logging in?</div>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
           </div>
+
+
+
+
+
+
+
+
+
+
           <div>
             {showError()}
             {forgotForm}
@@ -1202,18 +1304,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
           </div>
+
+
+
+
+
+
+
+
+
+
           <div>
             {showError()}
             {temporaryForm}
@@ -1233,18 +1334,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Tell us about yourself</div>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
           </div>
+
+
+
+
+
+
+
+
+
+
           <div>
             {showError()}
             {signUpForm}
@@ -1252,9 +1352,7 @@ const Authentication = () => {
           </div>
         </div>
       )
-    } else {
-      return null
-    }
+    } else return null
   }
 
   // LOOKS GOOD
@@ -1264,18 +1362,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
           </div>
+
+
+
+
+
+
+
+
+
+
           <div>
             {showError()}
             {confirmationForm}
@@ -1295,18 +1392,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Create your password</div>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
           </div>
+
+
+
+
+
+
+
+
+
+
           <div>
             {showError()}
             {passwordForm}
@@ -1325,18 +1421,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Change your username</div>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
           </div>
+
+
+
+
+
+
+
+
+
+
           <div>
             {showError()}
             {usernameForm}
@@ -1355,18 +1450,17 @@ const Authentication = () => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>System Error</div>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
           </div>
+
+
+
+
+
+
+
+
+
+
           <div>
             {errorForm}
           </div>
@@ -1380,15 +1474,15 @@ const Authentication = () => {
   // LOOKS GOOD
   return (
     <div className={classes.MainContainer}>
+
+
+
+
+
+
+
+
       <div className={classes.Modal}>
-
-
-
-
-
-
-
-
         {signInDisplay()}
         {forgotDisplay()}
         {temporaryDisplay()}

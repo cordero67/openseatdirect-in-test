@@ -3,15 +3,12 @@ import React, { useState, useEffect, Fragment } from "react";
 import { API } from "../config.js";
 import { PayPalButton } from "react-paypal-button-v2";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-
 import {
   MainContainerStyling,
   MainGridStyling,
   EventTicketSectionStyling,
   OrderSummarySectionStyling,
-  OrderSummarySectionAltStyling
+  OrderSummarySectionAltStyling,
 } from "./Resources/Styling";
 import { DateRange } from "./Resources/PricingFunctions";
 import Spinner from "../components/UI/Spinner/Spinner";
@@ -28,7 +25,6 @@ let orderTotals = {};
 let osdOrderId;
 let orderExpiration;
 
-// defines an event's image
 let eventLogo = "";
 
 // defines the PayPal "purchase_units.items" value populated from "ticketOrder"
@@ -41,7 +37,7 @@ let EventTicketSection = {};
 let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
-const Checkout = props => {
+const Checkout = () => {
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
 
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
@@ -49,41 +45,39 @@ const Checkout = props => {
 
   const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
 
+  const [orderStatus, setOrderStatus] = useState(false); // defines status of order sent to server
   const [customerInformation, setCustomerInformation] = useState({});
-
   const [transactionInfo, setTransactionInfo] = useState({}); // defines transaction variables for display on confirmation page
-
-  const [transactionStatus, setTransactionStatus] = useState({ // defines status of paypal order
+  const [transactionStatus, setTransactionStatus] = useState({
+    // defines status of paypal order
     message: null,
     error: "",
-    //connection: true
   });
 
-  const [orderStatus, setOrderStatus] = useState(false); // defines status of order sent to server
-  // LOOKS GOOD
   useEffect(() => {
-    if (
-      typeof window !== "undefined" && localStorage.getItem("eventNum")
-    ) {
+    if (typeof window !== "undefined" && localStorage.getItem("eventNum")) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
         let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
         eventDetails = tempCart.eventDetails;
+        console.log("eventDetails: ", eventDetails);
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
         osdOrderId = tempCart.osdOrderId;
         orderExpiration = tempCart.orderExpiration;
-        if("guestInfo" in tempCart) {
+        if ("guestInfo" in tempCart) {
           setCustomerInformation(tempCart.guestInfo);
         } else if (localStorage.getItem("user") !== null) {
           let tempUser = JSON.parse(localStorage.getItem("user"));
           setCustomerInformation({
             sessionToken: tempUser.token,
             userId: tempUser.user._id,
-            email: tempUser.user.email
+            email: tempUser.user.email,
           });
+        } else {
+          window.location.href = `/et/${tempCart.eventDetails.vanityLink}?eventID=${tempCart.eventDetails.eventNum}`;
         }
-        setPaypalArray();
+        populatePaypalArray();
         console.log("orderTotals: ", orderTotals);
         console.log("ticketInfo: ", ticketInfo);
       } else {
@@ -96,13 +90,13 @@ const Checkout = props => {
       window.location.href = "/events";
     }
     stylingUpdate(window.innerWidth, window.innerHeight);
-    setDisplay("main")
+    setDisplay("main");
   }, []);
-  // LOOKS GOOD
-  window.onresize = function(event) {
+
+  window.onresize = function (event) {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
-  // LOOKS GOOD
+
   const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
     if (inWidth < 790) {
@@ -110,7 +104,6 @@ const Checkout = props => {
     } else {
       setShowDoublePane(true);
     }
-
     MainContainer = MainContainerStyling(inWidth, inHeight);
     MainGrid = MainGridStyling(inWidth, inHeight);
     EventTicketSection = EventTicketSectionStyling(inWidth, inHeight);
@@ -118,20 +111,20 @@ const Checkout = props => {
     OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
     setIsRestyling(false);
   };
-  // LOOKS GOOD
+
   // toggles between "order pane" views
-  const switchShowOrderSummary = event => {
+  const switchShowOrderSummary = (event) => {
     if (showOrderSummaryOnly) {
       setShowOrderSummaryOnly(false);
     } else {
       setShowOrderSummaryOnly(true);
     }
   };
-  // LOOKS GOOD
+
   // sets the PayPal "purchase_units.items" value populated from "ticketInfo"
-  const setPaypalArray = () => {
+  const populatePaypalArray = () => {
     paypalArray = [];
-    ticketInfo.forEach(item => {
+    ticketInfo.forEach((item) => {
       if (item.ticketsSelected > 0) {
         let newElement;
         newElement = {
@@ -139,18 +132,19 @@ const Checkout = props => {
           sku: item.ticketID,
           unit_amount: {
             currency_code: orderTotals.currencyAbv,
-            value: item.ticketPrice.toString()
+            value: item.ticketPrice.toString(),
           },
-          quantity: item.ticketsSelected.toString()
+          quantity: item.ticketsSelected.toString(),
         };
         paypalArray.push(newElement);
       }
     });
-    console.log("paypalArray: ", paypalArray)
+    console.log("paypalArray: ", paypalArray);
   };
-  // LOOKS GOOD
-  // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
+
+  // removes order related information from "localStorage"
   const purchaseConfirmHandler = () => {
+    console.log("inside purchaseConfirmHandler");
     eventDetails = {};
     ticketInfo = {};
     orderTotals = {};
@@ -160,92 +154,131 @@ const Checkout = props => {
     localStorage.removeItem(`image_${event}`);
     localStorage.removeItem(`eventNum`);
   };
-  // LOOKS GOOD
-  const handleErrors = response => {
-    console.log ("inside handleErrors ", response);
+
+  // TICKET DETAILS HANDLERS
+  // duped from createEvent
+  const changeTicketDetail = () => {
+    //let tempDetails = [...ticketDetails];
+    //tempDetails.forEach((item) => {
+    //  if (item.key === id) {
+    //    item[event.target.name] = event.target.value;
+    //  }
+    //});
+    //setTicketDetails(tempDetails);
+    console.log("inside changeTicketDetail");
+  };
+
+  const handleErrors = (response) => {
+    console.log("inside handleErrors ", response);
     if (!response.ok) {
-        throw Error(response.status);
+      throw Error(response.status);
     }
     return response;
   };
 
-  // delivers paypal transaction information to the server
+  // submits paypal transaction information to the server
   const payPalPurchase = (details) => {
-    console.log("Paypal details: ", details)
-    console.log("refernce_id: ", details.purchase_units[0].reference_id)
-    console.log("total amount: ", details.purchase_units[0].amount.value)
-    console.log("Paypal id: ", details.id)
+    setDisplay("spinner");
+    let order = {
+      eventNum: eventDetails.eventNum,
+      totalAmount: orderTotals.finalPurchaseAmount,
+      paypalId: details.id, // not required if “isFree === true”
+    };
 
-    let isFree = true;
-
-    if (details.purchase_units[0].amount.value > 0) {
-      isFree = false;
+    if (orderTotals.finalPurchaseAmount === 0) {
+      order.isFree = true;
+    } else {
+      order.isFree = false;
     }
 
+    let tickets = [];
+    ticketInfo.map((item) => {
+      if (item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        tickets.push(tempObject);
+        if (
+          item.ticketsSelected > 0 &&
+          "form" in item.ticketPriceFunction &&
+          item.ticketPriceFunction.form === "promo" &&
+          item.adjustedTicketPrice !== item.ticketPrice
+        ) {
+          order.promo = item.ticketPriceFunction.args[0].name;
+        }
+      }
+    });
+
+    order.tickets = tickets;
+
     let url;
-    let order = {};
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    if (typeof window !== "undefined" && localStorage.getItem("user") !== null) {
-      console.log("user is signed in");
-      console.log("customerInformation: ", customerInformation)
-      url = `${API}/tixorder/signed_placeorder/${customerInformation.userId}`
-      console.log("url: ", url)
-      order = {
-        osdOrderId: details.purchase_units[0].reference_id,
-        totalAmount: details.purchase_units[0].amount.value, // or 0
-        isFree: isFree, // or true
-        paymentGatewayId: details.id, // not required if “isFree === true”
-      };
-      myHeaders.append("Authorization", `Bearer ${customerInformation.sessionToken}`);
-      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, customerInformation.email));
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("user") !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      let email = tempUser.user.email;
+      let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
+
+      setTransactionInfo(
+        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
+      );
+
+      url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+
+      console.log("signed order: ", order);
+
+      myHeaders.append(
+        "Authorization",
+        `Bearer ${customerInformation.sessionToken}`
+      );
     } else {
-      console.log("user is NOT signed in");
-      url = `${API}/tixorder/unsigned_placeorder`
-      order = {
-        osdOrderId: details.purchase_units[0].reference_id,
-        totalAmount: details.purchase_units[0].amount.value, // or 0
-        isFree: isFree, // or true
-        paymentGatewayId: details.id, // not required if “isFree === true”
-        guestFirstname: customerInformation.firstname,
-        guestLastname: customerInformation.lastname,
-        guestEmail: customerInformation.email,
-      };
-      setTransactionInfo(loadTransactionInfo(eventDetails, orderTotals, ticketInfo, customerInformation.guestEmail));
+      let email = customerInformation.email;
+      let name = `${customerInformation.firstname} ${customerInformation.lastname}`;
+
+      setTransactionInfo(
+        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
+      );
+
+      url = `${API}/tixorder/unsigned_place_neworder`;
+
+      order.guestFirstname = customerInformation.firstname;
+      order.guestLastname = customerInformation.lastname;
+      order.guestEmail = customerInformation.email;
+
+      console.log("unsigned order: ", order);
     }
 
-    console.log("order: ", order)
-
-    let fetcharg ={
-        method: "POST",
-        headers: myHeaders,
-        body:JSON.stringify (order),
+    let fetcharg = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(order),
     };
-    console.log("fetching with: ", url, fetcharg);
-    console.log("Free ticket order: ", order)
 
-    fetch(url, fetcharg )
-    .then(handleErrors)
-    .then ((response)=>{
-        console.log ("then response: ", response);
-        return response.json()})
-    .then ((data)=>{
-        console.log ("fetch return got back data:", data);
+    fetch(url, fetcharg)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
         setOrderStatus(data.status);
-        setDisplay("confirmation")
-    })
-    .catch ((error)=>{
+        setDisplay("confirmation");
+      })
+      .catch((error) => {
         console.log("paymentOnSuccess() error.message: ", error.message);
         setOrderStatus(false);
-        setDisplay("confirmation")
-    })
-    .finally(() => {
-      purchaseConfirmHandler();
-    });
+        setDisplay("confirmation");
+      })
+      .finally(() => {
+        purchaseConfirmHandler();
+      });
+  };
 
-  }
-  // LOOKS GOOD
   // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
     if (display === "spinner") {
@@ -257,9 +290,9 @@ const Checkout = props => {
     } else {
       return null;
     }
-  }
+  };
 
-  // CONTROLS "paypalStatus" VIEW
+  // controls "paypalStatus" view
   const paypalStatus = () => {
     if (display === "paypal") {
       return (
@@ -271,12 +304,12 @@ const Checkout = props => {
           </div>
           <button>Continue</button>
         </div>
-      )
+      );
     } else {
       return null;
     }
-  }
-  // LOOKS GOOD
+  };
+
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   const purchaseConfirmation = () => {
     if (display === "confirmation") {
@@ -284,31 +317,28 @@ const Checkout = props => {
         <div className={classes.BlankCanvas}>
           <div style={{ paddingTop: "20px" }}>
             <OrderConfirm
+              clearOrder={changeTicketDetail}
               transactionInfo={transactionInfo}
               orderStatus={orderStatus}
             />
           </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
+  // REFACTORED TO THIS POINT 3/2/21
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // displays the "PayPalButton" or an "empty cart" error message
   const showPayPal = (
-    // loads PayPal Smart buttons if order exists
     <div>
       <PayPalButton
-        onButtonReady={() => {
-          console.log("inside onButtonReady")}}
-          createOrder={(data, actions) => {
-          console.log("inside createOrder")
+        onButtonReady={() => {}}
+        createOrder={(data, actions) => {
           return actions.order.create({
             purchase_units: [
               {
                 reference_id: osdOrderId,
-                //description: eventDetails.eventTitle,
-                //payment_descriptor: eventDetails.eventNum,
                 amount: {
                   currency_code: orderTotals.currencyAbv,
                   value: orderTotals.finalPurchaseAmount.toString(),
@@ -316,51 +346,50 @@ const Checkout = props => {
                   breakdown: {
                     item_total: {
                       currency_code: orderTotals.currencyAbv,
-                      value: orderTotals.fullPurchaseAmount.toString()
+                      value: orderTotals.fullPurchaseAmount.toString(),
                     },
                     discount: {
                       currency_code: orderTotals.currencyAbv,
-                      value: orderTotals.discountAmount.toString()
-                    }
-                  }
+                      value: orderTotals.discountAmount.toString(),
+                    },
+                  },
                 },
-                items: paypalArray
-              }
-            ]
+                items: paypalArray,
+              },
+            ],
           });
         }}
-        onCancel={data => {
-          console.log("onCancel 'data': ", data);
+        options={{
+          clientId: eventDetails.gatewayClientID,
+          currency: orderTotals.currencyAbv,
         }}
         onSuccess={(details, data) => {
-          console.log("inside onSuccess, paypal details: ", details)
-          //payPalPurchaseOLD(details);
+          console.log("inside onSuccess, paypal details: ", details);
           payPalPurchase(details);
         }}
-        onError = {(err) => {
+        onCancel={(data) => {
+          console.log("onCancel 'data': ", data);
+        }}
+        onError={(err) => {
           console.log("error occurs: ", err);
           setTransactionStatus({
             ...transactionStatus,
             paypalSuccess: false,
-            error: err
+            error: err,
           });
-          //onlyShowPurchaseConfirmation();
-          setDisplay("paypal")
+          setDisplay("paypal");
         }}
-        options={{
-          clientId: eventDetails.gatewayClientID,
-          currency: orderTotals.currencyAbv
-        }}
-        catchError={err => {
+        /*
+        catchError={(err) => {
           console.log("catchError 'err': ", err);
           setTransactionStatus({
             ...transactionStatus,
             paypalSuccess: false,
-            error: err
+            error: err,
           });
-          //onlyShowPurchaseConfirmation();
-          setDisplay("paypal")
+          setDisplay("paypal");
         }}
+        */
       />
     </div>
   );
@@ -371,37 +400,37 @@ const Checkout = props => {
       days: Math.floor(timeElapsed / (1000 * 60 * 60 * 24)),
       hours: Math.floor((timeElapsed / (1000 * 60 * 60)) % 24),
       minutes: Math.floor((timeElapsed / 1000 / 60) % 60),
-      seconds: Math.floor((timeElapsed / 1000) % 60)
+      seconds: Math.floor((timeElapsed / 1000) % 60),
     };
     return elapsedTime;
   };
-  // LOOKS GOOD BUT REVIEW LOGIC
+
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
-  // every 1000 milliseconds === 1 second the timer function runs
-  // when it runs it runs the "timeLeft" hook
+  // runs the "timeLeft" hook every 1000 milliseconds === 1 second
   // this causes the page to refresh which updates the time expired numbers
-  // these numbers are fed by the "calculateTimeLeft()" function  
+  // these numbers are fed by the "calculateTimeLeft()" function
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
   });
-  // LOOKS GOOD BUT REVIEW LOGIC
+  // LOOKS GOOD
   const timeRemaining = () => {
     if (+new Date(orderExpiration) >= +new Date()) {
       let twoDigitSec;
       if (calculateTimeLeft().seconds < 10) {
-        twoDigitSec = "0" + calculateTimeLeft().seconds
+        twoDigitSec = "0" + calculateTimeLeft().seconds;
       } else {
-        twoDigitSec = calculateTimeLeft().seconds
+        twoDigitSec = calculateTimeLeft().seconds;
       }
 
       return (
-        <div style={{fontSize: "16px", textAlign: "center"}}>
-          Ticket reservation expires in{" "}{calculateTimeLeft().minutes}:{twoDigitSec}
+        <div style={{ fontSize: "16px", textAlign: "center" }}>
+          Ticket reservation expires in {calculateTimeLeft().minutes}:
+          {twoDigitSec}
         </div>
-      )
+      );
     } else {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       localStorage.removeItem(`cart_${event}`);
@@ -409,22 +438,22 @@ const Checkout = props => {
       localStorage.removeItem(`eventNum`);
       window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
     }
-  }
+  };
   // LOOKS GOOD
   // determines whether or not to display the purchase amount
-  const totalAmount = show => {
+  const totalAmount = (show) => {
     if (!show && orderTotals.ticketsPurchased > 0) {
       return (
         <div>
           {orderTotals.currencySym}
           {orderTotals.finalPurchaseAmount}
         </div>
-      )
+      );
     } else return null;
   };
   // LOOKS GOOD
   // determines whether or not to display cart and arrow
-  const cartLink = show => {
+  const cartLink = (show) => {
     if (!show) {
       return (
         <CartLink
@@ -439,17 +468,15 @@ const Checkout = props => {
       return null;
     }
   };
-  
 
   const mainDisplay = () => {
     if (display === "main") {
-
       let paymentPane = (
         <Fragment>
           <div className={classes.MainItemLeft}>
             <div className={classes.EventHeader}>
               <div className={classes.EventTitle}>
-                  {eventDetails.eventTitle}
+                {eventDetails.eventTitle}
               </div>
               <div className={classes.EventDate}>
                 <DateRange
@@ -460,6 +487,11 @@ const Checkout = props => {
             </div>
             <div style={EventTicketSection}>
               {timeRemaining()}
+              <br></br>
+              <span style={{ fontSize: "18px", fontWeight: "600" }}>
+                PayPal Checkout
+              </span>
+              <br></br>
               <br></br>
               <span className={classes.TicketType}>Payment Information</span>
               <br></br>
@@ -483,13 +515,21 @@ const Checkout = props => {
       // defines and sets "orderSummary" which is displayed in right panel
       let orderSummary;
       if (orderTotals.ticketsPurchased > 0) {
-        orderSummary = <OrderSummary ticketOrder={ticketInfo} ticketCurrency={orderTotals.currencySym}/>;
+        orderSummary = (
+          <OrderSummary
+            cancel={true}
+            eventNum={eventDetails.eventNum}
+            vanity={eventDetails.vanityLink}
+            ticketOrder={ticketInfo}
+            ticketCurrency={orderTotals.currencySym}
+          />
+        );
       } else if (orderTotals.finalPurchaseAmount <= 0) {
         orderSummary = (
           <div className={classes.EmptyOrderSummary}>
-            <FontAwesomeIcon
-              className={classes.faShoppingCart}
-              icon={faShoppingCart}
+            <ion-icon
+              style={{ fontSize: "36px", color: "grey" }}
+              name="cart-outline"
             />
           </div>
         );
@@ -536,17 +576,12 @@ const Checkout = props => {
           </div>
         );
       } else if (!showOrderSummaryOnly) {
-        return (
-          <div style={MainGrid}>{paymentPane}</div>
-        );
+        return <div style={MainGrid}>{paymentPane}</div>;
       } else {
-        return (
-          <div style={MainGrid}>{orderPane}</div>
-        );
+        return <div style={MainGrid}>{orderPane}</div>;
       }
-
-    } else return null
-  }
+    } else return null;
+  };
 
   return (
     <div style={MainContainer}>

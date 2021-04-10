@@ -1,4 +1,3 @@
-  
 import React, { useState, useEffect } from "react";
 
 import Events from "./Events";
@@ -17,22 +16,68 @@ import classes from "./VendorAccount.module.css";
 const VendorAccount = () => {
   const [paneView, setPaneView] = useState("events")
 
-  const getStatus= (user) => { 
-    if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status
-    } else {
-        return 0;
-    } 
-  }
+  const getStatus= () => {
+    console.log("inside new 'getStatus' function")
+    let tempData = JSON.parse(localStorage.getItem("user"));
+    if ('user' in tempData && 'accountId' in tempData.user) {  
+      let tempAccountId = tempData.user.accountId;
+
+      let hasLinkIds = false;
+      let hasPaid = false;
+      if (tempAccountId.ticketPlan === 'free') {
+          return 7;
+      };
+      if (tempAccountId.ticketPlan === 'comp') {
+          hasPaid = true;
+      };
+      if (
+        'paymentGatewayType' in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalExpress" &&
+        'paypalExpress_client_id' in tempAccountId &&
+        'string' === typeof tempAccountId.paypalExpress_client_id
+      ) {
+          hasLinkIds = true;
+      };
+      if (
+        'paymentGatewayType' in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
+        'paypal_merchant_id' in tempAccountId &&
+        'string' === typeof tempAccountId.paypal_merchant_id
+      ) {
+          hasLinkIds = true;
+      };
+      if (
+        'paypal_plan_id' in tempAccountId && 
+        'string' === typeof tempAccountId.paypal_plan_id &&
+        'accountPaymentStatus' in tempAccountId &&
+        tempAccountId.accountPaymentStatus ==='good'
+      ) {
+        hasPaid = true;
+      }
+      if (!hasPaid && !hasLinkIds) {
+        return 4;
+      }
+      if (!hasPaid && hasLinkIds) {
+        return 5;
+      }
+      if (hasPaid && !hasLinkIds) {
+        return 6;
+      }
+      if (hasPaid && hasLinkIds) {
+        return 8;
+      }
+      return 4;
+    }
+    else return 0;
+}
 
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (!(getStatus(tempUser.user) === 7) &&
-        !(getStatus(tempUser.user) === 8)) {
+      if (!(getStatus() === 7) &&
+        !(getStatus() === 8)) {
         window.location.href = "/personal";
       }
     } else {

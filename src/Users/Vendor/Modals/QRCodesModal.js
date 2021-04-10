@@ -1,16 +1,15 @@
 import React, { useState, Fragment } from "react";
 
-import QRCode from "qrcode.react"
+import QRCode from "qrcode.react";
 
 import { getLongStartDate } from "../Resources/VendorFunctions";
 import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./QRCodesModal.module.css";
 
 const ReceiptModal = (props) => {
-  
   console.log("selected order: ", props);
   console.log(props.details.tickets[0].uuid);
-  const [ticketQRCode, setTicketQRCode] = useState(props.details.tickets[0].uuid);
+  //const [ticketQRCode, setTicketQRCode] = useState(props.details.tickets[0].uuid);
   const [ticketIndex, setTicketIndex] = useState(0);
 
   let longDateTime;
@@ -22,41 +21,42 @@ const ReceiptModal = (props) => {
       <div
         style={{
           width: "330px",
-          textAlign: "center"
+          textAlign: "center",
         }}
       >
-        <button className={classes.ButtonGrey}
+        <button
+          className={classes.ButtonGrey}
           onClick={() => {
-            props.close()
+            props.close();
           }}
         >
           CLOSE
         </button>
       </div>
-    )
-  }
+    );
+  };
 
   const loadPreviousTicket = () => {
     let newPosition;
     if (ticketIndex === 0) {
       newPosition = props.details.tickets.length - 1;
     } else {
-      newPosition = ticketIndex - 1
+      newPosition = ticketIndex - 1;
     }
-    setTicketIndex(newPosition)
-    console.log("newPosition: ,", newPosition)
-  }
+    setTicketIndex(newPosition);
+    console.log("newPosition: ,", newPosition);
+  };
 
   const loadNextTicket = () => {
     let newPosition;
     if (ticketIndex === props.details.tickets.length - 1) {
       newPosition = 0;
     } else {
-      newPosition = ticketIndex + 1
+      newPosition = ticketIndex + 1;
     }
-    setTicketIndex(newPosition)
-    console.log("newPosition: ,", newPosition)
-  }
+    setTicketIndex(newPosition);
+    console.log("newPosition: ,", newPosition);
+  };
 
   return (
     <Fragment>
@@ -74,7 +74,7 @@ const ReceiptModal = (props) => {
             width: "330px",
             fontWeight: "600",
             fontSize: "18px",
-            textAlign: "center"
+            textAlign: "center",
           }}
         >
           {props.details.eventTitle}
@@ -85,7 +85,7 @@ const ReceiptModal = (props) => {
             fontSize: "16px",
             textAlign: "center",
             fontWeight: "400",
-            paddingTop: "5px"
+            paddingTop: "5px",
           }}
         >
           {longDateTime}
@@ -97,7 +97,7 @@ const ReceiptModal = (props) => {
             gridTemplateColumns: "42px 246px 42px",
             width: "330px",
             height: "220px",
-            paddingTop: "10px"
+            paddingTop: "10px",
           }}
         >
           <ion-icon
@@ -105,22 +105,22 @@ const ReceiptModal = (props) => {
               paddingTop: "80px",
               fontSize: "42px",
               border: "none",
-              color: "lightgrey"
+              color: "lightgrey",
             }}
             name="chevron-back-outline"
             onClick={() => {
-                loadPreviousTicket()
+              loadPreviousTicket();
             }}
           />
-          <div style={{textAlign: "center"}}>
+          <div style={{ textAlign: "center" }}>
             <QRCode
               value={props.details.tickets[ticketIndex].uuid}
               size="96"
               imageSettings={{
                 height: "20",
-                width: "20%"
+                width: "20%",
               }}
-              styles={{border: "2px solid blue"}}
+              styles={{ border: "2px solid blue" }}
             />
           </div>
           <ion-icon
@@ -128,16 +128,18 @@ const ReceiptModal = (props) => {
               paddingTop: "80px",
               fontSize: "42px",
               border: "none",
-              color: "lightgrey"
+              color: "lightgrey",
             }}
             name="chevron-forward-outline"
             onClick={() => {
-                loadNextTicket()
+              loadNextTicket();
             }}
           />
         </div>
         <br></br>
-        <div>Ticket #{ticketIndex+1} of {props.details.tickets.length}</div>
+        <div>
+          Ticket #{ticketIndex + 1} of {props.details.tickets.length}
+        </div>
         <br></br>
         {modalButtons()}
 
