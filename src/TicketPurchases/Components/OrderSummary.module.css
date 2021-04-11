@@ -3,33 +3,6 @@
     grid-template-columns: auto 80px;
 }
 
-.CancelButton {
-    font-size: 14px;
-    text-align: left;
-    font-weight: 400;
-    text-align: right;
-    padding: 0px;
-    color: blue;
-    border: none;
-    outline: none;
-    background-color: #E7E7E7;
-    cursor: pointer;
-    display: inline-block;
-    outline: none;
-}
-
-.CancelButton:hover {
-    border: none;
-    outline: none;
-}
-
-.CancelButton:focus {
-    border: none;
-    outline: none;
-}
-
-
-
 @media (min-width: 1140px) {
     .RightGrid {
         grid-template-columns: 230px 80px;

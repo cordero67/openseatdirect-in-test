@@ -5,17 +5,18 @@ import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./BuyerReceiptModal.module.css";
 
 const ReceiptModal = (props) => {
-  console.log("selected order: ", props);
+  
+  console.log("selected order: ", props)
 
-  //let allTotal = 0;
-  //let payPalExpressTotal = 0;
-  //let cashTotal = 0;
-  //let cashAppTotal = 0;
-  //let venmoTotal = 0;
-  //let paypalTotal = 0;
-  //let bitcoinTotal = 0;
-  //let ethereumTotal = 0;
-  //let otherTotal = 0;
+  let allTotal = 0;
+  let payPalExpressTotal = 0;
+  let cashTotal = 0;
+  let cashAppTotal = 0;
+  let venmoTotal = 0;
+  let paypalTotal = 0;
+  let bitcoinTotal = 0;
+  let ethereumTotal = 0;
+  let otherTotal = 0;
 
   let longDateTime;
   [longDateTime] = getStartDate(props.details.startDateTime);
@@ -33,36 +34,33 @@ const ReceiptModal = (props) => {
           gridGap: "40px",
           width: "630px",
           textAlign: "center",
-          paddingLeft: "35px",
+          paddingLeft: "35px"
         }}
       >
-        <button
-          className={classes.ButtonBlue}
+        <button className={classes.ButtonBlue}
           onClick={() => {
-            props.loadPrevious();
+            props.loadPrevious()
           }}
         >
           LOAD PREVIOUS
         </button>
-        <button
-          className={classes.ButtonGreen}
+        <button className={classes.ButtonGreen}
           onClick={() => {
-            props.loadNext();
+            props.loadNext()
           }}
         >
           LOAD NEXT
         </button>
-        <button
-          className={classes.ButtonGrey}
+        <button className={classes.ButtonGrey}
           onClick={() => {
-            props.close();
+            props.close()
           }}
         >
           CLOSE
         </button>
       </div>
-    );
-  };
+    )
+  }
   /*
   const ticketsList = () => {
     return (
@@ -113,7 +111,7 @@ const ReceiptModal = (props) => {
     )
   }
   */
-  /*
+ /*
   const paymentTypeTotals = () => {
     console.log("tickets: ", props.details.tickets)
 
@@ -254,18 +252,18 @@ const ReceiptModal = (props) => {
           style={{
             fontWeight: "600",
             fontSize: "18px",
-            textAlign: "left",
+            textAlign: "left"
           }}
         >
           {props.details.eventTitle}
         </div>
-
+        
         <div
           style={{
             fontSize: "16px",
             textAlign: "left",
             fontWeight: "400",
-            paddingTop: "5px",
+            paddingTop: "5px"
           }}
         >
           {longDateTime}
@@ -277,14 +275,12 @@ const ReceiptModal = (props) => {
             gridTemplateColumns: "90px 400px",
             fontSize: "16px",
             textAlign: "left",
-            paddingBottom: "10px",
+            paddingBottom: "10px"
           }}
         >
-          <div style={{ fontWeight: "600" }}>Recipient:</div>
+          <div style={{fontWeight: "600"}}>Recipient:</div>
           <div>
-            {props.details.order_firstName}
-            {", "}
-            {props.details.order_lastName}
+            {props.details.order_firstName}{", "}{props.details.order_lastName}
           </div>
         </div>
         <div
@@ -292,9 +288,8 @@ const ReceiptModal = (props) => {
             fontSize: "16px",
             textAlign: "left",
             paddingLeft: "90px",
-            paddingBottom: "10px",
-          }}
-        >
+            paddingBottom: "10px"
+          }}>
           {props.details.order_email}
         </div>
         <div
@@ -303,20 +298,21 @@ const ReceiptModal = (props) => {
             gridTemplateColumns: "90px 400px",
             fontSize: "16px",
             textAlign: "left",
-            paddingBottom: "10px",
+            paddingBottom: "10px"
           }}
         >
-          <div style={{ fontWeight: "600" }}>Order Date:</div>
-          <div>{shortDateTime}</div>
+          <div style={{fontWeight: "600"}}>Order Date:</div>
+          <div>
+            {shortDateTime}
+          </div>
         </div>
         <div
           style={{
             fontSize: "16px",
             textAlign: "left",
             paddingLeft: "80px",
-            paddingBottom: "10px",
-          }}
-        >
+            paddingBottom: "10px"
+          }}>
           {/*"message" in props.details.recipient ? props.details.recipient.message : null*/}
         </div>
         <br></br>
@@ -329,25 +325,23 @@ const ReceiptModal = (props) => {
             width: "630px",
             borderBottom: "1px solid black",
             fontWeight: "600",
-            paddingBottom: "10px",
+            paddingBottom: "10px"
           }}
         >
-          <div style={{ textAlign: "left" }}>Ticket Type</div>
-          <div style={{ textAlign: "center" }}># Tickets</div>
-          <div style={{ textAlign: "center" }}>Price</div>
-          <div style={{ textAlign: "left", paddingLeft: "10px" }}>
-            Payment Type
-          </div>
-          <div style={{ textAlign: "center" }}>Total</div>
+          <div style={{textAlign: "left"}}>Ticket Type</div>
+          <div style={{textAlign: "center"}}># Tickets</div>
+          <div style={{textAlign: "center"}}>Price</div>
+          <div style={{textAlign: "left", paddingLeft: "10px"}}>Payment Type</div>
+          <div style={{textAlign: "center"}}>Total</div>
         </div>
 
         <div
           style={{
             width: "630px",
             borderBottom: "1px solid black",
-            paddingBottom: "10px",
-          }}
-        >
+            paddingBottom: "10px"
+            }}
+          >
           {/*ticketsList()*/}
         </div>
         <div>{/*paymentTypeTotals()*/}</div>

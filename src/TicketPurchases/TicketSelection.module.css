@@ -1,7 +1,3 @@
-.ParagraphStyling {
-  color: "blue";
-}
-
 .EventHeader {
   text-align: center;
   padding-top: 5px;
@@ -91,6 +87,7 @@
   border: 1px solid black;
   outline: none;
 }
+
 .ButtonGrey {
   height: 40px;
   width: 150px;
@@ -144,7 +141,7 @@
 }
 .ButtonGreenLarge {
   height: 40px;
-  width: 180px;
+  width: 260px;
   background-color: #00a300;
   color: #fff;
   border: 1px solid black;
@@ -158,26 +155,6 @@
 }
 .ButtonGreenLarge:active {
   background-color: #005200;
-  color: #fff;
-  border: 1px solid black;
-  outline: none;
-}
-.ButtonRedLarge {
-  height: 40px;
-  width: 180px;
-  background-color: #cc0000;
-  color: #fff;
-  border: 1px solid black;
-  outline: none;
-}
-.ButtonRedLarge:hover {
-  background-color: #a30000;
-  color: #fff;
-  border: 1px solid black;
-  outline: none;
-}
-.ButtonRedLarge:active {
-  background-color: #7a0000;
   color: #fff;
   border: 1px solid black;
   outline: none;

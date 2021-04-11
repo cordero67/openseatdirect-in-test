@@ -16,49 +16,43 @@ import {
   faTrashAlt,
   faGripVertical,
   faChevronUp,
-  faChevronDown,
+  faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Popup } from "semantic-ui-react";
 
 const TicketCreation = (props) => {
+
   const ticketTypeDisplay = (index) => {
     let display = (
       <Aux>
-        {props.tickets.map((item, index) => {
-          // defines warnings for ticket name, quantity and price
-          let nameRegex = /^[a-zA-Z0-9\-\s]+$/;
+        {props.tickets.map((item, index) => {// defines warnings for ticket name, quantity and price
+          let nameRegex = /^[a-zA-Z0-9\-\s]+$/
           let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
           let priceRegex = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
           // determines if a required field warning is required
-          if (
-            (item.ticketName === "" &&
-              item.remainingQuantity === "" &&
-              item.currentTicketPrice === "") ||
-            (item.ticketName !== "" &&
-              item.remainingQuantity !== "" &&
-              item.currentTicketPrice !== "")
-          ) {
+          if ((item.ticketName === "" && item.remainingQuantity === "" && item.currentTicketPrice === "") ||
+            (item.ticketName !== "" && item.remainingQuantity !== "" && item.currentTicketPrice !== "")) {
             item.reqWarning = false;
           } else {
             item.reqWarning = true;
           }
-
-          // determines if a name, price or quantity field warning is required
-          if (!item.ticketName) {
+          
+          // determines if a name, price or quantity field warning is required          
+          if(!item.ticketName) {
             item.nameWarning = false;
           } else {
             item.nameWarning = !nameRegex.test(item.ticketName);
             console.log("nameWarning: ", !nameRegex.test(item.ticketName));
           }
 
-          if (!item.remainingQuantity) {
+          if(!item.remainingQuantity) {
             item.quantityWarning = false;
           } else {
             item.quantityWarning = !quantityRegex.test(item.remainingQuantity);
           }
 
-          if (!item.currentTicketPrice) {
+          if(!item.currentTicketPrice) {
             item.priceWarning = false;
           } else {
             item.priceWarning = !priceRegex.test(item.currentTicketPrice);
@@ -71,7 +65,7 @@ const TicketCreation = (props) => {
           let nameWarningText;
           let priceWarningText;
           let quantityWarningText;
-
+      
           if (item.nameWarning) {
             tempNameBox = classes.NameBoxWarning;
             nameWarningText = "Only alphanumeric characters and spaces";
@@ -99,7 +93,7 @@ const TicketCreation = (props) => {
             tempPriceBox = classes.PriceBox;
             priceWarningText = "";
           }
-
+      
           //console.log("item.quantityWarning: ", item.quantityWarning)
           if (item.quantityWarning) {
             tempQuantityBox = classes.QuantityBoxWarning;
@@ -115,7 +109,7 @@ const TicketCreation = (props) => {
             quantityWarningText = "";
           }
 
-          /*
+/*
     //XX START CODE REPLICATION REQUIRED
           // defines styling for the ticket name, quantity and price line
           let tempTicketStyling;
@@ -128,7 +122,9 @@ const TicketCreation = (props) => {
 */
           return (
             <Aux key={index}>
-              <div className={classes.TicketLine}>
+              <div
+                className={classes.TicketLine}
+              >
                 <div
                   style={{
                     padding: "10px 5px",
@@ -140,12 +136,10 @@ const TicketCreation = (props) => {
                   <div
                     draggable
                     onDragStart={(event) => {
-                      props.handleDragStart(event, index);
+                      props.handleDragStart(event, index)
                     }}
                     onDragEnter={
-                      props.dragging
-                        ? (event) => props.handleDragEnter(event, index)
-                        : null
+                      props.dragging ? (event) => props.handleDragEnter(event, index) : null
                     }
                     style={{
                       padding: "9px 0px 9px 3px",
@@ -155,8 +149,7 @@ const TicketCreation = (props) => {
                     <FontAwesomeIcon cursor="pointer" icon={faGripVertical} />
                   </div>
 
-                  <input
-                    className={tempNameBox}
+                  <input className={tempNameBox}
                     type="text"
                     maxLength="64"
                     id="ticketName"
@@ -169,14 +162,14 @@ const TicketCreation = (props) => {
                   ></input>
                 </div>
 
+
                 <div
                   style={{
                     padding: "10px 5px",
                     boxSizing: "borderBox",
                   }}
                 >
-                  <input
-                    className={tempQuantityBox}
+                  <input className={tempQuantityBox}
                     type="text"
                     id="remainingQuantity"
                     placeholder="100"
@@ -217,7 +210,7 @@ const TicketCreation = (props) => {
                     }}
                   ></input>
                 </div>
-
+                
                 <div
                   style={{
                     padding: "20px 5px",
@@ -254,30 +247,25 @@ const TicketCreation = (props) => {
                 </Aux>
               ) : null}
 
-              {item.nameWarning ||
-              item.priceWarning ||
-              item.quantityWarning ||
-              item.reqWarning ? (
-                <div className={classes.TicketLineWarning}>
-                  <div style={{ paddingLeft: "25px" }}> {nameWarningText}</div>
-                  <div style={{ paddingLeft: "5px" }}>
-                    {" "}
-                    {quantityWarningText}
-                  </div>
-                  <div style={{ paddingRight: "5px", textAlign: "right" }}>
-                    {" "}
-                    {priceWarningText}
-                  </div>
+              {item.nameWarning || item.priceWarning || item.quantityWarning || item.reqWarning
+                ? <div
+                  className={classes.TicketLineWarning}
+                >
+                  <div style={{ paddingLeft: "25px"}}> {nameWarningText}</div>
+                  <div style={{ paddingLeft: "5px"}}> {quantityWarningText}</div>
+                  <div style={{ paddingRight: "5px", textAlign: "right"}}> {priceWarningText}</div>
                 </div>
-              ) : null}
+                : null
+              }
+              
 
               <div
-                style={{
-                  padding: "5px",
-                  borderTop: "1px solid lightgrey",
-                  height: "30px",
-                  textAlign: "center",
-                }}
+                  style={{
+                      padding: "5px",
+                      borderTop: "1px solid lightgrey",
+                      height: "30px",
+                      textAlign: "center",
+                  }}
               >
                 {!item.settings ? (
                   <button
@@ -290,54 +278,48 @@ const TicketCreation = (props) => {
                       display: "inlineBlock",
                       outline: "none",
                     }}
-                    onClick={(event) => {
-                      props.changeSettings(event, item.key);
-                    }}
+                    onClick={(event) => {props.changeSettings(event, item.key)}}
                   >
-                    <FontAwesomeIcon
-                      color="blue"
-                      size="sm"
-                      cursor="pointer"
-                      onClick={() => {
+                  <FontAwesomeIcon
+                    color="blue"
+                    size="sm"
+                    cursor="pointer"
+                    onClick={() => {
                         //let tempDisplay = {...ticketDisplay};
                         //tempDisplay[item.eventNum] = false;
                         //setTicketDisplay(tempDisplay);
-                      }}
-                      icon={faChevronDown}
-                    />{" "}
-                    Show additional features
-                  </button>
-                ) : (
-                  <button
-                    style={{
-                      fontSize: "15px",
-                      color: "blue",
-                      border: "none",
-                      backgroundColor: "white",
-                      cursor: "pointer",
-                      display: "inlineBlock",
-                      outline: "none",
                     }}
-                    onClick={(event) => {
-                      props.changeSettings(event, item.key);
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      color="blue"
-                      size="sm"
-                      cursor="pointer"
-                      onClick={() => {
-                        //let tempDisplay = {...ticketDisplay};
-                        //tempDisplay[item.eventNum] = false;
-                        //setTicketDisplay(tempDisplay);
-                      }}
-                      icon={faChevronUp}
-                    />{" "}
-                    Hide additional features
-                  </button>
-                )}
+                    icon={faChevronDown}
+                  />
+                    {" "}Show additional features
+                  </button>) : 
+                <button
+                  style={{
+                    fontSize: "15px",
+                    color: "blue",
+                    border: "none",
+                    backgroundColor: "white",
+                    cursor: "pointer",
+                    display: "inlineBlock",
+                    outline: "none",
+                  }}
+                  onClick={(event) => {props.changeSettings(event, item.key)}}
+                >
+                <FontAwesomeIcon
+                  color="blue"
+                  size="sm"
+                  cursor="pointer"
+                  onClick={() => {
+                      //let tempDisplay = {...ticketDisplay};
+                      //tempDisplay[item.eventNum] = false;
+                      //setTicketDisplay(tempDisplay);
+                  }}
+                  icon={faChevronUp}
+                />
+                  {" "}Hide additional features
+                </button>}
               </div>
-              {item.settings ? (
+              {item.settings ?
                 <PriceSettings
                   ticket={item}
                   changeTicket={props.changeTicket}
@@ -350,96 +332,93 @@ const TicketCreation = (props) => {
                   changePromoCodesAmount={props.changePromoCodesAmount}
                   changePromoCodesPercent={props.changePromoCodesPercent}
                   deletePromoCode={props.deletePromoCode}
-                />
-              ) : null}
+                /> :
+              null}
             </Aux>
-          );
+          )
         })}
       </Aux>
     );
     return display;
   };
 
-  return (
-    <Aux>
-      <div className={classes.CategoryTitle} style={{ width: "160px" }}>
-        Ticket Creation
-      </div>
-
-      <div style={{ border: "1px solid grey" }}>
-        <div
-          style={{
-            display: `grid`,
-            gridTemplateColumns: "360px 165px 165px 80px",
-            height: "40px",
-            fontSize: "15px",
-            backgroundColor: "#E7E7E7",
-            boxSizing: "borderBox",
-          }}
-        >
-          <div
-            style={{
-              padding: "10px 10px 10px 25px",
-              boxSizing: "borderBox",
-              fontWeight: 600,
-            }}
-          >
-            Ticket Name<span style={{ color: "red" }}>*</span>
+    return (
+        <Aux>
+          <div className={classes.CategoryTitle} style={{ width: "160px" }}>
+            Ticket Creation
           </div>
 
-          <div
-            style={{
-              padding: "10px 10px 10px 5px",
-              boxSizing: "borderBox",
-              fontWeight: 600,
-            }}
-          >
-            # Available<span style={{ color: "red" }}>*</span>{" "}
-            <Popup
-              position="right center"
-              content="The total number of tickets available for sale"
-              header="Total Ticket Quantity"
-              trigger={
-                <FontAwesomeIcon
-                  color="blue"
-                  cursor="pointer"
-                  icon={faInfoCircle}
+          <div style={{ border: "1px solid grey" }}>
+            <div
+              style={{
+                display: `grid`,
+                gridTemplateColumns: "360px 165px 165px 80px",
+                height: "40px",
+                fontSize: "15px",
+                backgroundColor: "#E7E7E7",
+                boxSizing: "borderBox",
+              }}
+            >
+              <div
+                style={{
+                  padding: "10px 10px 10px 25px",
+                  boxSizing: "borderBox",
+                  fontWeight: 600,
+                }}
+              >
+                Ticket Name<span style={{ color: "red" }}>*</span>
+              </div>
+  
+              <div
+                style={{
+                  padding: "10px 10px 10px 5px",
+                  boxSizing: "borderBox",
+                  fontWeight: 600,
+                }}
+              >
+                # Available<span style={{ color: "red" }}>*</span>{" "}
+                <Popup
+                  position="right center"
+                  content="The total number of tickets available for sale"
+                  header="Total Ticket Quantity"
+                  trigger={
+                    <FontAwesomeIcon
+                      color="blue"
+                      cursor="pointer"
+                      icon={faInfoCircle}
+                    />
+                  }
                 />
-              }
-            />
+              </div>
+  
+              <div
+                style={{
+                  padding: "10px 10px 10px 5px",
+                  boxSizing: "borderBox",
+                  fontWeight: 600,
+                }}
+              >
+                Price<span style={{ color: "red" }}>*</span>
+              </div>
+            </div>
+            {ticketTypeDisplay()}
+              <div
+                style={{
+                  padding: "10px 5px 10px 5px",
+                  borderTop: "1px solid lightgrey",
+                  boxSizing: "borderBox",
+                  height: "56px",
+                  textAlign: "center",
+                  fontWeight: 600,
+                }}
+              >
+              <button className={classes.ButtonGreen}
+                onClick={props.createNewTicketHandler}
+              >ADD A TICKET</button>
+              </div>
           </div>
-
-          <div
-            style={{
-              padding: "10px 10px 10px 5px",
-              boxSizing: "borderBox",
-              fontWeight: 600,
-            }}
-          >
-            Price<span style={{ color: "red" }}>*</span>
-          </div>
-        </div>
-        {ticketTypeDisplay()}
-        <div
-          style={{
-            padding: "10px 5px 10px 5px",
-            borderTop: "1px solid lightgrey",
-            boxSizing: "borderBox",
-            height: "56px",
-            textAlign: "center",
-            fontWeight: 600,
-          }}
-        >
-          <button
-            className={classes.ButtonGreen}
-            onClick={props.createNewTicketHandler}
-          >
-            ADD A TICKET
-          </button>
-        </div>
-      </div>
-    </Aux>
-  );
+        </Aux>
+    )
 };
 
 export default TicketCreation;
