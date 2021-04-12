@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { PieChart } from "react-minimal-pie-chart";
 
 import dateFnsFormat from "date-fns/format";
@@ -47,6 +47,8 @@ const SalesAnalytics = (props) => {
   const [buyers, setBuyers] = useState([
     {
       email: "",
+      firstname: "",
+      lastname: "",
       ticketsPurchased: 0,
       salesRevenues: 0,
     },
@@ -110,9 +112,9 @@ const SalesAnalytics = (props) => {
   };
 
   useEffect(() => {
-    let tempEventDetails = {};
-    let tempEventOrders = [];
-    let tempTicketTotals = [];
+    let tempEventDetails = {}; // temp hold of specifc event's details
+    let tempEventOrders = []; // temp hold of specifc event's orders
+    let tempTicketTotals = []; // temp hold of specifc event's ticket details
 
     // SHOULD BE ABLE TO DEPRECATE THIS LINE
     let tempEventTickets = [];
@@ -151,6 +153,7 @@ const SalesAnalytics = (props) => {
     let tempTicketsSold = 0;
     let tempGrossRevenues = 0;
     let tempNetRevenues = 0;
+    let tempOrderNetRevenues = 0;
 
     tempEventOrders.forEach((order, index) => {
       if ("order_qrTickets" in order) {
@@ -167,17 +170,50 @@ const SalesAnalytics = (props) => {
           tempNetRevenues += ticketOrder.sellingPrice;
         });
       }
+      tempOrderNetRevenues += order.order_totalAmount;
     });
 
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    // builds the "buyers" array
+    // checks that every unique only appears once in the array
     let tempBuyers = [];
-    tempEventOrders.forEach((order, index) => {
+    tempEventOrders.forEach((order) => {
       let match = false;
+      let matchIndex;
 
-      tempBuyers.push({
-        email: order.order_email,
-        ticketsPurchased: order.order_numTickets,
-        salesRevenues: order.order_totalAmount,
+      let newEmail = order.order_email;
+      console.log("newEmail: ", newEmail);
+
+      tempBuyers.forEach((extBuyer, index) => {
+        console.log("extBuyer.email: ", extBuyer.email);
+        if (extBuyer.email === newEmail) {
+          match = true;
+          matchIndex = index;
+          console.log("THIS EMAIL ALREADY EXISTS");
+        } else {
+          console.log("New Email");
+        }
       });
+
+      if (!match) {
+        tempBuyers.push({
+          email: order.order_email,
+          firstname: order.order_firstName,
+          lastname: order.order_lastName,
+          ticketsPurchased: order.order_numTickets,
+          salesRevenues: order.order_totalAmount,
+        });
+      } else {
+        tempBuyers[matchIndex].ticketsPurchased += order.order_numTickets;
+        tempBuyers[matchIndex].salesRevenues += order.order_totalAmount;
+      }
     });
     console.log("tempBuyers: ", tempBuyers);
     setBuyers(tempBuyers);
@@ -187,6 +223,7 @@ const SalesAnalytics = (props) => {
       ticketsSold: tempTicketsSold,
       grossRevenues: tempGrossRevenues,
       netRevenues: tempNetRevenues,
+      orderNetRevenues: tempOrderNetRevenues,
       orders: tempOrders.length,
     });
 
@@ -320,24 +357,90 @@ const SalesAnalytics = (props) => {
   };
 
   const dates = () => {
+    let ordersTotal = 0;
+    let totalTickets = 0;
+    let totalRevenue = 0;
+    return (
+      <div
+        style={{
+          marginLeft: "30px",
+          marginRight: "calc(100vw - 470px)",
+          marginBottom: "40px",
+        }}
+      >
+        <div
+          style={{
+            borderBottom: "1px solid black",
+          }}
+        >
+          {dateSales.map((date, index) => {
+            if (date.ticketsSold > 0) {
+              ordersTotal += 1;
+              totalTickets += date.ticketsSold;
+              totalRevenue += date.netRevenues;
+            }
+            return (
+              <div
+                key={index}
+                style={{
+                  textAlign: "center",
+                  display: "grid",
+                  columnGap: "10px",
+                  gridTemplateColumns: "200px 60px 60px 80px",
+                }}
+              >
+                <div style={{ textAlign: "left" }}>{date.date}</div>
+                <div style={{ textAlign: "center" }}>{date.orders}</div>
+                <div style={{ textAlign: "center" }}>{date.ticketsSold}</div>
+                <div style={{ textAlign: "right", paddingRight: "15px" }}>
+                  {date.netRevenues.toFixed(2)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            columnGap: "10px",
+            gridTemplateColumns: "200px 60px 60px 80px",
+            fontWeight: "600",
+          }}
+        >
+          <div>Totals</div>
+          <div style={{ textAlign: "center" }}>{ordersTotal}</div>
+          <div style={{ textAlign: "center" }}>{totalTickets}</div>
+          <div style={{ textAlign: "right", paddingRight: "15px" }}>
+            {totalRevenue.toFixed(2)}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const customers = () => {
     return (
       <div>
-        {dateSales.map((date, index) => {
+        {buyers.map((buyer, index) => {
           return (
             <div
-              key={index}
               style={{
-                textAlign: "center",
                 display: "grid",
                 columnGap: "10px",
-                gridTemplateColumns: "200px 60px 60px 80px",
+                gridTemplateColumns: "200px 100px 60px 60px",
               }}
             >
-              <div style={{ textAlign: "left" }}>{date.date}</div>
-              <div style={{ textAlign: "center" }}>{date.orders}</div>
-              <div style={{ textAlign: "center" }}>{date.ticketsSold}</div>
+              <div style={{ textAlign: "left" }}>{buyer.email}</div>
+              <div style={{ textAlign: "left" }}>
+                {buyer.lastname}, {buyer.firstname}
+              </div>
+              <div style={{ textAlign: "center" }}>
+                {buyer.ticketsPurchased}
+              </div>
+
               <div style={{ textAlign: "right", paddingRight: "15px" }}>
-                {date.netRevenues.toFixed(2)}
+                {buyer.salesRevenues.toFixed(2)}
               </div>
             </div>
           );
@@ -451,7 +554,7 @@ const SalesAnalytics = (props) => {
                 paddingTop: "15px",
               }}
             >
-              ${parseFloat(salesTotals.netRevenues).toFixed(2)}
+              ${parseFloat(salesTotals.orderNetRevenues).toFixed(2)}
             </div>
             <div
               style={{
@@ -627,9 +730,22 @@ const SalesAnalytics = (props) => {
         >
           <div style={{ textAlign: "left" }}>Date</div>
           <div style={{ textAlign: "center" }}>Orders</div>
-          <div style={{ textAlign: "center" }}>Sales</div>
+          <div style={{ textAlign: "center" }}>Tickets</div>
           <div style={{ textAlign: "center" }}>Revenues</div>
         </div>
+      </div>
+      {dates()}
+
+      <div
+        className={classes.DisplayPanelTitle}
+        style={{
+          fontSize: "16px",
+          fontWeight: "600",
+          paddingLeft: "30px",
+          paddingBottom: "10px",
+        }}
+      >
+        Customer Sales
       </div>
 
       <div
@@ -640,25 +756,7 @@ const SalesAnalytics = (props) => {
           marginBottom: "40px",
         }}
       >
-        {dates()}
-      </div>
-
-      <div
-        className={classes.DisplayPanelTitle}
-        style={{
-          fontSize: "16px",
-          fontWeight: "600",
-          paddingLeft: "30px",
-          paddingBottom: "40px",
-        }}
-      >
-        Customer Sales
-      </div>
-
-      <div>
-        {buyers.forEach((buyer, index) => {
-          return <div>{buyer.email}</div>;
-        })}
+        {customers()}
       </div>
 
       <div
