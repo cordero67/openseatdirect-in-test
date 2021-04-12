@@ -578,7 +578,6 @@ const EventEdit = (props) => {
 
   const savedModal = () => {
     if (eventStatus.status === "failure" || eventStatus.status === "error") {
-      console.log("status of failure or error");
       return (
         <Fragment>
           <SavedModal
@@ -588,9 +587,6 @@ const EventEdit = (props) => {
               let tempStatus = { ...eventStatus };
               tempStatus.status = "";
               setEventStatus(tempStatus);
-            }}
-            closeModal={() => {
-              setEventStatus("");
             }}
           ></SavedModal>
         </Fragment>

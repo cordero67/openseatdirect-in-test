@@ -496,7 +496,9 @@ const CreateEvent = (props) => {
               window.location.href = `/vendor`;
             }}
             closeModal={() => {
-              setEventStatus("");
+              let tempStatus = { ...eventStatus };
+              tempStatus.status = "";
+              setEventStatus(tempStatus);
             }}
           ></SavedModal>
         </Fragment>
