@@ -66,6 +66,8 @@ const EventDetail = () => {
   };
 
   const loadEventDetails = (event) => {
+    console.log("event: ", event);
+    console.log("event tickets: ", event.tickets);
     let ticketStatus;
     ticketStatus = false;
     let tempTickets = null;

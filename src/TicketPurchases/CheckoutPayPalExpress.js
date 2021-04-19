@@ -227,6 +227,7 @@ const Checkout = () => {
         loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );
 
+      // USED BY CURRENT CODE APRIL 17, 2021
       url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
 
       console.log("signed order: ", order);
@@ -243,6 +244,7 @@ const Checkout = () => {
         loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );
 
+      // USED BY CURRENT CODE APRIL 17, 2021
       url = `${API}/tixorder/unsigned_place_neworder`;
 
       order.guestFirstname = customerInformation.firstname;

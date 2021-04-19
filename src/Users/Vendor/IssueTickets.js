@@ -792,7 +792,17 @@ const IssueTickets = (props) => {
         </div>
       ) : (
         <div>{null}</div>
-      )}
+      )}{" "}
+      <div style={{ paddingTop: "5px" }}>
+        <button
+          className={classes.SwitchButton}
+          onClick={() => {
+            props.clicked("events");
+          }}
+        >
+          Switch Event
+        </button>
+      </div>
     </div>
   );
 

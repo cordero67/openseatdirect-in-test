@@ -14,43 +14,44 @@ import VendorNavigation from "./Components/VendorNavigation";
 import classes from "./VendorAccount.module.css";
 
 const VendorAccount = () => {
-  const [paneView, setPaneView] = useState("events")
+  const [paneView, setPaneView] = useState("events");
+  const [selectedEvent, setSelectedEvent] = useState();
+  const [selectedOrders, setSelectedOrders] = useState([]);
 
-  const getStatus= () => {
-    console.log("inside new 'getStatus' function")
+  const getStatus = () => {
     let tempData = JSON.parse(localStorage.getItem("user"));
-    if ('user' in tempData && 'accountId' in tempData.user) {  
+    if ("user" in tempData && "accountId" in tempData.user) {
       let tempAccountId = tempData.user.accountId;
 
       let hasLinkIds = false;
       let hasPaid = false;
-      if (tempAccountId.ticketPlan === 'free') {
-          return 7;
-      };
-      if (tempAccountId.ticketPlan === 'comp') {
-          hasPaid = true;
-      };
+      if (tempAccountId.ticketPlan === "free") {
+        return 7;
+      }
+      if (tempAccountId.ticketPlan === "comp") {
+        hasPaid = true;
+      }
       if (
-        'paymentGatewayType' in tempAccountId &&
+        "paymentGatewayType" in tempAccountId &&
         tempAccountId.paymentGatewayType === "PayPalExpress" &&
-        'paypalExpress_client_id' in tempAccountId &&
-        'string' === typeof tempAccountId.paypalExpress_client_id
+        "paypalExpress_client_id" in tempAccountId &&
+        "string" === typeof tempAccountId.paypalExpress_client_id
       ) {
-          hasLinkIds = true;
-      };
+        hasLinkIds = true;
+      }
       if (
-        'paymentGatewayType' in tempAccountId &&
+        "paymentGatewayType" in tempAccountId &&
         tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
-        'paypal_merchant_id' in tempAccountId &&
-        'string' === typeof tempAccountId.paypal_merchant_id
+        "paypal_merchant_id" in tempAccountId &&
+        "string" === typeof tempAccountId.paypal_merchant_id
       ) {
-          hasLinkIds = true;
-      };
+        hasLinkIds = true;
+      }
       if (
-        'paypal_plan_id' in tempAccountId && 
-        'string' === typeof tempAccountId.paypal_plan_id &&
-        'accountPaymentStatus' in tempAccountId &&
-        tempAccountId.accountPaymentStatus ==='good'
+        "paypal_plan_id" in tempAccountId &&
+        "string" === typeof tempAccountId.paypal_plan_id &&
+        "accountPaymentStatus" in tempAccountId &&
+        tempAccountId.accountPaymentStatus === "good"
       ) {
         hasPaid = true;
       }
@@ -67,17 +68,15 @@ const VendorAccount = () => {
         return 8;
       }
       return 4;
-    }
-    else return 0;
-}
+    } else return 0;
+  };
 
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
-      if (!(getStatus() === 7) &&
-        !(getStatus() === 8)) {
+      if (!(getStatus() === 7) && !(getStatus() === 8)) {
         window.location.href = "/personal";
       }
     } else {
@@ -85,87 +84,91 @@ const VendorAccount = () => {
     }
   }, []);
 
-const MainDisplay = () => {
-  if (paneView === "events") {
-    return (
-      <Events
-        salesAnalytics={() => {
-          setPaneView("salesAnalytics")
-        }}
-        ticketSales={() => {
-          setPaneView("ticketSales")
-        }}
-        issueTickets={() => {
-          setPaneView("issueTickets")
-        }}
-        editEvent={() => {
-          setPaneView("editEvent")
-        }}
-      />
-    )
-  } else if (paneView === "salesAnalytics") {
-    return (
-      <SalesAnalytics/>
-    )
-  } else if (paneView === "ticketSales") {
-    return (
-      <TicketSales
-        clicked={() => {
-          setPaneView("events")
-        }}
-      />
-    )
-  } else if (paneView === "issueTickets") {
-    return (
-      <IssueTickets
-        clicked={() => {
-          setPaneView("events")
-        }}
-      />
-    )
-  } else if (paneView === "editEvent") {
-    return (
-      <EditEvent
-        clicked={() => {
-          setPaneView("events")
-        }}
-      />
-    )
-  } else if (paneView === "orders") {
-    return (
-      <Orders/>
-    )
-  } else if (paneView === "create") {
-    return (
-      <CreateEvent/>
-    )
-  } else if (paneView === "account") {
-    return (
-      <Account/>
-    )
-  } else if (paneView === "myTickets") {
-    return (
-      <MyTickets/>
-    )
-  } else {
-    return null;
-  }
-}
+  const MainDisplay = () => {
+    if (paneView === "events") {
+      return (
+        <Events
+          salesAnalytics={(event, orders) => {
+            console.log("EventNum: ", event);
+            console.log("EventOrders: ", orders);
+            setSelectedEvent(event);
+            setSelectedOrders(orders);
 
-const Navigation = (
-  <VendorNavigation
-    pane={paneView}
-    clicked={(event) => {
-      setPaneView(event.target.name)
-    }}
-  />
-)
+            setPaneView("salesAnalytics");
+          }}
+          ticketSales={() => {
+            setPaneView("ticketSales");
+          }}
+          issueTickets={() => {
+            setPaneView("issueTickets");
+          }}
+          editEvent={() => {
+            setPaneView("editEvent");
+          }}
+        />
+      );
+    } else if (paneView === "salesAnalytics") {
+      console.log("About to go to sales and anlaytics");
+      return (
+        <SalesAnalytics
+          event={selectedEvent}
+          orders={selectedOrders}
+          clicked={() => {
+            setPaneView("events");
+          }}
+        />
+      );
+    } else if (paneView === "ticketSales") {
+      return (
+        <TicketSales
+          clicked={() => {
+            setPaneView("events");
+          }}
+        />
+      );
+    } else if (paneView === "issueTickets") {
+      return (
+        <IssueTickets
+          clicked={() => {
+            setPaneView("events");
+          }}
+        />
+      );
+    } else if (paneView === "editEvent") {
+      return (
+        <EditEvent
+          clicked={() => {
+            setPaneView("events");
+          }}
+        />
+      );
+    } else if (paneView === "orders") {
+      return <Orders />;
+    } else if (paneView === "create") {
+      return <CreateEvent />;
+    } else if (paneView === "account") {
+      return <Account />;
+    } else if (paneView === "myTickets") {
+      return <MyTickets />;
+    } else {
+      return null;
+    }
+  };
+
+  const Navigation = (
+    <VendorNavigation
+      pane={paneView}
+      clicked={(event) => {
+        setPaneView(event.target.name);
+      }}
+    />
+  );
 
   return (
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
-          {Navigation}
-          {MainDisplay()}
+        {Navigation}
+        {MainDisplay()}
       </div>
     </div>
   );

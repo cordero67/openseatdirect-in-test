@@ -1,7 +1,7 @@
 import { API } from "../../config";
 import { each, isObject } from "underscore";
 
-const handleErrors = response => {
+const handleErrors = (response) => {
   console.log("Inside 'apiCore' 'handleErrors()'", response);
   console.log("Inside 'apiCore' 'handleErrors()'");
   //console.log("json response: ", expandedLog(response, 1));
@@ -13,41 +13,43 @@ const handleErrors = response => {
   return response;
 };
 
+// USED BY CURRENT CODE APRIL 17, 2021
 // extracts specific event data, non-transactional
-export const getEventData = eventId => {
+export const getEventData = (eventId) => {
   return fetch(`${API}/event/e/${eventId}`, {
-    method: "GET"
+    method: "GET",
   })
     .then(handleErrors)
-    .then(response => {
+    .then((response) => {
       return response.json();
     })
-    .catch(err => {
+    .catch((err) => {
       throw Error(err);
     });
 };
 
-export const getEventImage = eventId => {
-    console.log("Inside apiCore and the 'getEventImage' function call");
-    return fetch(`${API}/event/photo/e/${eventId}`, {
-      method: "GET"
-    })
+// USED BY CURRENT CODE APRIL 17, 2021
+export const getEventImage = (eventId) => {
+  console.log("Inside apiCore and the 'getEventImage' function call");
+  return fetch(`${API}/event/photo/e/${eventId}`, {
+    method: "GET",
+  })
     .then(handleErrors)
-    .then(response => {
-    console.log("Inside apiCore and the 'getEventImage' .then block");
-    console.log("response: ", response, " response.url: ", response.url);
-    return response.url;
+    .then((response) => {
+      console.log("Inside apiCore and the 'getEventImage' .then block");
+      console.log("response: ", response, " response.url: ", response.url);
+      return response.url;
     })
-    .catch(err => {
-    console.log("jumping here", err);
-    throw Error(err);
+    .catch((err) => {
+      console.log("jumping here", err);
+      throw Error(err);
     });
 };
 
-var expandedLog = (function() {
+var expandedLog = (function () {
   var MAX_DEPTH = 100;
 
-  return function(item, depth) {
+  return function (item, depth) {
     depth = depth || 0;
 
     if (depth > MAX_DEPTH) {
@@ -56,7 +58,7 @@ var expandedLog = (function() {
     }
 
     if (isObject(item)) {
-      each(item, function(value, key) {
+      each(item, function (value, key) {
         console.group(key + " : " + typeof value);
         expandedLog(value, depth + 1);
         console.groupEnd();
@@ -70,23 +72,23 @@ var expandedLog = (function() {
 // *********
 // NEED TO ADJUST
 // PayPal Smart button fetch api
-export const expressPaymentOnSuccess = paymentTicketData => {
+export const expressPaymentOnSuccess = (paymentTicketData) => {
   return (
     fetch(`${API}/paypal/expressPayment`, {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(paymentTicketData)
+      body: JSON.stringify(paymentTicketData),
     })
       .then(handleErrors)
-      .then(response => {
+      .then((response) => {
         //console.log("response: ", response)
         return response.json();
       })
       // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
-      .catch(err => {
+      .catch((err) => {
         console.log("fetch API/paypal/expressPayment): ERROR THROWN", err);
         throw Error(err);
       })
@@ -95,58 +97,57 @@ export const expressPaymentOnSuccess = paymentTicketData => {
 
 // PayPal Smart button fetch api
 export const paymentOnSuccess = (paypalOrderDetails, customerInformation) => {
-  console.log("paypalOrderDetails: ", paypalOrderDetails)
+  console.log("paypalOrderDetails: ", paypalOrderDetails);
   if ("sessionToken" in customerInformation) {
-    console.log("User is logged in")
+    console.log("User is logged in");
     let orderDetails = {
       orderDetails: {
-        paypalOrderDetails: paypalOrderDetails
-      }
-    }
+        paypalOrderDetails: paypalOrderDetails,
+      },
+    };
     return (
       fetch(`${API}/paypal/signedPayment/${customerInformation.userId}`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${customerInformation.sessionToken}`
+          Authorization: `Bearer ${customerInformation.sessionToken}`,
         },
-        body: JSON.stringify(orderDetails)
+        body: JSON.stringify(orderDetails),
       })
         .then(handleErrors)
-        .then(response => {
+        .then((response) => {
           return response.json();
         })
         // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
-        .catch(err => {
+        .catch((err) => {
           console.log("fetch API/paypal/guestPayment): ERROR THROWN", err);
           throw Error(err);
         })
     );
-
   } else {
-    console.log("User is NOT logged in")
+    console.log("User is NOT logged in");
     let orderDetails = {
       orderDetails: {
         guestInfo: customerInformation,
-        paypalOrderDetails: paypalOrderDetails
-      }
-    }
+        paypalOrderDetails: paypalOrderDetails,
+      },
+    };
     return (
       fetch(`${API}/paypal/guestPayment`, {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderDetails)
+        body: JSON.stringify(orderDetails),
       })
         .then(handleErrors)
-        .then(response => {
+        .then((response) => {
           return response.json();
         })
         // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
-        .catch(err => {
+        .catch((err) => {
           console.log("fetch API/paypal/guestPayment): ERROR THROWN", err);
           throw Error(err);
         })
@@ -193,26 +194,23 @@ export const paymentOnSuccessNEW = (paypalOrderDetails, customerInformation) => 
 */
 
 // BrainTree fetch api
-export const processExpressPayment = paymentTicketData => {
+export const processExpressPayment = (paymentTicketData) => {
   return (
     fetch(`${API}/braintree/expressPayment`, {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(paymentTicketData)
+      body: JSON.stringify(paymentTicketData),
     })
       .then(handleErrors)
-      .then(response => {
+      .then((response) => {
         return response.json();
       })
       // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN
-      .catch(err => {
-        console.log(
-          "fetch API/braintree/expressPayment): ERROR THROWN",
-          err
-        );
+      .catch((err) => {
+        console.log("fetch API/braintree/expressPayment): ERROR THROWN", err);
         throw Error(err);
       })
   );
@@ -224,18 +222,15 @@ export const getExpressBraintreeClientToken = () => {
     method: "GET",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   })
     .then(handleErrors)
-    .then(response => {
+    .then((response) => {
       return response.json();
     })
-    .catch(err => {
-      console.log(
-        "fetch API/braintree/getExpressToken): ERROR THROWN",
-        err
-      );
+    .catch((err) => {
+      console.log("fetch API/braintree/getExpressToken): ERROR THROWN", err);
       throw Error(err);
     });
 };
@@ -247,15 +242,15 @@ export const processPayment = (userId, token, paymentData) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(paymentData)
+    body: JSON.stringify(paymentData),
   })
     .then(handleErrors)
-    .then(response => {
+    .then((response) => {
       return response.json();
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       throw Error(err);
     });
@@ -268,14 +263,14 @@ export const getBraintreeClientToken = (userId, token) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   })
     .then(handleErrors)
-    .then(response => {
+    .then((response) => {
       return response.json();
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       throw Error(err);
     });

@@ -18,8 +18,6 @@ import {
 
 import AfroGirlShort from "../../assets/KobeShort.jpg";
 
-//import DemoCarousel from "./DemoCarousel.js";
-
 import CashInHand from "../../assets/CashInHand.png";
 import ZeroFee from "../../assets/ZeroFee.png";
 import OSDImage from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
@@ -82,6 +80,7 @@ const Home = () => {
     },
   };
 
+  /*
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -102,6 +101,7 @@ const Home = () => {
   const sysmessage = networkError
     ? "NetworkError...please check your connectivity"
     : "SYSTEM ERROR - please try again";
+  */
 
   const stylingUpdate = (inWidth) => {
     console.log("stylingUpdate");

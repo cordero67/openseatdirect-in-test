@@ -15,6 +15,7 @@ const Events = (props) => {
   });
 
   const [eventDescriptions, setEventDescriptions] = useState(); //
+  const [eventOrders, setEventOrders] = useState(); //
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -45,19 +46,24 @@ const Events = (props) => {
       .then((response) => response.text())
       .then((result) => {
         console.log("result: ", JSON.parse(result));
+        // LOOK TO NOT STORE IN LOCAL STORAGE
         localStorage.setItem("events", result);
-        let js = JSON.parse(result);
-        js.sort(compareValues("startDateTime", "asc"));
-        setEventDescriptions(js);
+        let jsEvents = JSON.parse(result);
+        jsEvents.sort(compareValues("startDateTime", "asc"));
+        setEventDescriptions(jsEvents);
         fetchstr = `${API}/order/${vendorId}`;
         fetch(fetchstr, requestOptions)
           .then(handleErrors)
           .then((response) => response.text())
           .then((result) => {
+            // LOOK TO NOT STORE IN LOCAL STORAGE
             localStorage.setItem("orders", result);
+            let jsOrders = JSON.parse(result);
+            jsOrders.sort(compareValues("order_createdAt", "asc"));
+            setEventOrders(jsOrders);
             setDisplay("main");
           });
-        return js;
+        return jsEvents;
       })
       .catch((error) => {
         console.log("error", error);
@@ -84,6 +90,34 @@ const Events = (props) => {
     }
   };
 
+  const switchTabNEW = (name, item) => {
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      if (name === "analytics") {
+        console.log("item.eventNum: ", item.eventNum);
+        let tempOrders = [];
+        eventOrders.forEach((order) => {
+          if (order.eventNum === item.eventNum) {
+            tempOrders.push(order);
+          }
+        });
+        console.log("ORDERS: ", tempOrders);
+        if (tempOrders.length > 0) {
+          props.salesAnalytics(item, tempOrders);
+        } else {
+          setWarningModal({
+            status: true,
+            type: "analytics",
+          });
+        }
+      }
+    } else {
+      window.location.href = "/auth";
+    }
+  };
+
   const switchTab = (name, item) => {
     if (
       typeof window !== "undefined" &&
@@ -99,10 +133,22 @@ const Events = (props) => {
         let storedOrders = JSON.parse(localStorage.getItem("orders"));
 
         if (name === "analytics") {
-          setWarningModal({
-            status: true,
-            type: "analytics",
+          console.log("item.eventNum: ", item.eventNum);
+          let tempOrders = [];
+          eventOrders.forEach((order) => {
+            if (order.eventNum === item.eventNum) {
+              tempOrders.push(order);
+            }
           });
+          console.log("ORDERS: ", tempOrders);
+          if (tempOrders.length > 0) {
+            props.salesAnalytics(item, tempOrders);
+          } else {
+            setWarningModal({
+              status: true,
+              type: "analytics",
+            });
+          }
         } else if (name === "orders") {
           let ordersExist = false;
           storedOrders.forEach((order) => {
@@ -220,7 +266,7 @@ const Events = (props) => {
                     style={{ fontSize: "28px", color: "blue" }}
                     name="analytics"
                     onClick={() => {
-                      switchTab("analytics", item);
+                      switchTabNEW("analytics", item);
                     }}
                   />
                 </button>
