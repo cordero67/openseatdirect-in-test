@@ -36,7 +36,7 @@ const SavedModal = (props) => {
           }}
         >
           <button className={classes.ButtonGrey} onClick={props.toDashboard}>
-            CONTINUE1
+            CONTINUE
           </button>
         </div>
       </div>
@@ -52,7 +52,7 @@ const SavedModal = (props) => {
           }}
         >
           <button className={classes.ButtonGrey} onClick={props.toDashboard}>
-            CONTINUE2
+            CONTINUE
           </button>
         </div>
       </div>
@@ -69,7 +69,7 @@ const SavedModal = (props) => {
           }}
         >
           <button className={classes.ButtonGrey} onClick={props.closeModal}>
-            CONTINUE3
+            CONTINUE
           </button>
         </div>
       </div>

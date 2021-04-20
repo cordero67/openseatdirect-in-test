@@ -22,11 +22,6 @@ import classes from "./BuyerAccount.module.css";
 import Spinner from "../../components/UI/Spinner/SpinnerNew"; // experimental..
 
 const Onboarding = (props) => {
-  //console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX);
-  //console.log("SUBSCRIPTION_PROMO_CODE_1: ", SUBSCRIPTION_PROMO_CODE_1);
-  //console.log("SUBSCRIPTION_PROMO_CODE_2: ", SUBSCRIPTION_PROMO_CODE_2);
-  //console.log("API: ", API);
-
   // UPDATE WHEN A NEW PLAN IS INTRODUCED
   const [values, setValues] = useState({
     accountName: "",
@@ -351,25 +346,6 @@ const Onboarding = (props) => {
           console.log("tempData: ", tempData);
           tempData.user.accountId = data.accountId;
           localStorage.setItem("user", JSON.stringify(tempData));
-          /*
-                if (data.status){
-                    switch (data.result.status){
-                        case(4): 
-                        case(5):    setPageView("ticket"); break;
-                        case(6):    setPageView("payment");break;
-                        case(7):    setPageView("completed");break;
-                        case(8):    setPageView("completed");break;
-                        case(0):
-                        default:    setPageView("summary");
-                    }
-                } else {
-                        // this is a frieldly error
-                        let errmsg = "There was a error. please retry";
-                        if (data.message){
-                                errmsg = data.message;
-                        };
-                };
-                */
         })
         .catch((err) => {
           //setPreFetchView(pageView);
@@ -1558,9 +1534,6 @@ const Onboarding = (props) => {
               <button
                 className={classes.ButtonGreen}
                 style={{ width: "700px" }}
-                //disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
-
-                //https://www.bondirectly.com/api/paypal/onboard1/%7BuserId%7D
                 onClick={() => {
                   let url = `${API}/paypal/onboard1/${props.userid}`;
                   let fetcharg = {
@@ -1594,29 +1567,6 @@ const Onboarding = (props) => {
                       );
 
                       window.location.href = data.data.customer_redirect_url;
-                      /*
-                                        tempData.user.accountId = data.result;
-                                        localStorage.setItem("user", JSON.stringify(tempData));
-
-                                        if (data.status){
-                                            switch (data.result.status){
-                                                case(4): 
-                                                case(5):    setPageView("ticket"); break;
-                                                case(6):    setPageView("payment");break;
-                                                case(7):    setPageView("completed");break;
-                                                case(8):    setPageView("completed");break;
-                                                case(0):
-                                                default:    setPageView("summary");
-                                            }
-                                        } else {
-                                                // this is a frieldly error
-                                                let errmsg = "unable to validate ClientId and secret at this time";
-                                                if (data.message){
-                                                    errmsg = data.message;
-                                                };
-                                                window.alert (errmsg);
-                                        };
-                                        */
                     })
                     .catch((err) => {
                       //setPreFetchView(pageView);

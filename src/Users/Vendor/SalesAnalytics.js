@@ -38,6 +38,7 @@ const SalesAnalytics = (props) => {
     PayPal: 0,
     Bitcoin: 0,
     Ethereum: 0,
+    Dogecoin: 0,
     other: 0,
   });
 
@@ -285,6 +286,9 @@ const SalesAnalytics = (props) => {
           }
           if (payment.payMethod === "Ethereum") {
             tempOfflinePayments.Ethereum += parseFloat(payment.amt);
+          }
+          if (payment.payMethod === "Dogecoin") {
+            tempOfflinePayments.Dogecoin += parseFloat(payment.amt);
           }
           if (payment.payMethod === "other") {
             tempOfflinePayments.other += parseFloat(payment.amt);
@@ -541,13 +545,7 @@ const SalesAnalytics = (props) => {
           paddingLeft: "30px",
         }}
       >
-        <div
-          style={{
-            scrollbarWidth: "thin",
-            overflowX: "auto",
-            maxWidth: "600px",
-          }}
-        >
+        <div>
           <div
             style={{
               textAlign: "center",
@@ -609,7 +607,9 @@ const SalesAnalytics = (props) => {
           }
           return (
             <div
+              key={index}
               style={{
+                textAlign: "center",
                 display: "grid",
                 columnGap: "10px",
                 gridTemplateColumns: "200px 100px 65px",
@@ -630,7 +630,11 @@ const SalesAnalytics = (props) => {
 
   const postalCodesTable = () => {
     return (
-      <Fragment>
+      <div
+        style={{
+          paddingLeft: "30px",
+        }}
+      >
         <div
           style={{
             textAlign: "center",
@@ -638,13 +642,13 @@ const SalesAnalytics = (props) => {
             columnGap: "10px",
             gridTemplateColumns: "200px 100px 65px",
             fontWeight: "600",
-            marginLeft: "30px",
           }}
         >
           <div style={{ textAlign: "left" }}>Postal Code</div>
           <div style={{ textAlign: "center" }}>Tickets</div>
           <div style={{ textAlign: "center" }}>Amount</div>
         </div>
+
         <div
           style={{
             borderTop: "1px solid black",
@@ -653,14 +657,25 @@ const SalesAnalytics = (props) => {
             width: "395px",
             scrollbarWidth: "thin",
             overflowY: "auto",
-            marginLeft: "30px",
-            columnGap: "10px",
-            marginBottom: "40px",
           }}
         >
           {postalCodes()}
         </div>
-      </Fragment>
+        <div
+          style={{
+            display: "grid",
+            columnGap: "10px",
+            gridTemplateColumns: "200px 100px 65px",
+            fontWeight: "600",
+          }}
+        >
+          <div>Totals</div>
+          <div style={{ textAlign: "center" }}>{salesTotals.ticketsSold}</div>
+          <div style={{ textAlign: "right", paddingRight: "5px" }}>
+            {parseFloat(salesTotals.netRevenues).toFixed(2)}
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -671,6 +686,7 @@ const SalesAnalytics = (props) => {
           return (
             <div
               style={{
+                textAlign: "center",
                 display: "grid",
                 columnGap: "10px",
                 gridTemplateColumns: "200px 100px 60px 65px",
@@ -696,7 +712,11 @@ const SalesAnalytics = (props) => {
 
   const customersTable = () => {
     return (
-      <Fragment>
+      <div
+        style={{
+          paddingLeft: "30px",
+        }}
+      >
         <div
           style={{
             textAlign: "center",
@@ -704,7 +724,6 @@ const SalesAnalytics = (props) => {
             columnGap: "10px",
             gridTemplateColumns: "200px 100px 60px 65px",
             fontWeight: "600",
-            marginLeft: "30px",
           }}
         >
           <div style={{ textAlign: "left" }}>Email</div>
@@ -720,13 +739,11 @@ const SalesAnalytics = (props) => {
             width: "470px",
             scrollbarWidth: "thin",
             overflowY: "auto",
-            marginLeft: "30px",
-            marginBottom: "40px",
           }}
         >
           {customers()}
         </div>
-      </Fragment>
+      </div>
     );
   };
 
@@ -893,16 +910,34 @@ const SalesAnalytics = (props) => {
         </div>
 
         <div className={classes.DisplayTitle}>by Postal Code</div>
-        {postalCodesTable()}
-        {/*postalCodesChart*/}
+        <div
+          style={{
+            paddingBottom: "40px",
+          }}
+        >
+          {postalCodesTable()}
+          {/*postalCodesChart*/}
+        </div>
 
         <div className={classes.DisplayTitle}>by Customer</div>
-        {customersTable()}
-        {/*customersCharts*/}
+        <div
+          style={{
+            paddingBottom: "40px",
+          }}
+        >
+          {customersTable()}
+          {/*customersCharts*/}
+        </div>
 
         <div className={classes.DisplayTitle}>by Payment Method</div>
-        {paymentsTable()}
-        {/*methodCharts*/}
+        <div
+          style={{
+            paddingBottom: "40px",
+          }}
+        >
+          {paymentsTable()}
+          {/*methodCharts*/}
+        </div>
       </div>
     </div>
   );

@@ -1,11 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Link } from "react-router-dom";
 import YouTube from "react-youtube";
 
 import AuthenticationModal from "../../TicketPurchases/Modals/AuthenticationModal";
-
-import { useOurApi } from "./apiUsers";
-import { API } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

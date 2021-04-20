@@ -109,10 +109,36 @@ const ReceiptModal = (props) => {
   };
 
   const paymentTypeTotals = () => {
-    console.log("tickets: ", props.details.tickets);
+    //console.log("tickets: ", props.details.tickets);
 
+    if (props.details.isOffline) {
+      console.log("OFFLINE PAYMENT");
+      props.details.offlinePayment.forEach((payment) => {
+        console.log(payment.amt, "---", payment.payMethod);
+        if (payment.payMethod === "cash") {
+          cashTotal += payment.amt;
+        } else if (payment.payMethod === "CashApp") {
+          cashAppTotal += payment.amt;
+        } else if (payment.payMethod === "Venmo") {
+          venmoTotal += payment.amt;
+        } else if (payment.payMethod === "Paypal") {
+          paypalTotal += payment.amt;
+        } else if (payment.payMethod === "Bitcoin") {
+          bitcoinTotal += payment.amt;
+        } else if (payment.payMethod === "Ethereum") {
+          ethereumTotal += payment.amt;
+        } else if (payment.payMethod === "Dogecoin") {
+          dogecoinTotal += payment.amt;
+        } else if (payment.payMethod === "PayPal Express") {
+          payPalExpressTotal += payment.amt;
+        } else {
+          otherTotal += payment.amt;
+        }
+      });
+    }
+    /*
     props.details.order_ticketItems.forEach((ticket, index) => {
-      console.log("TICKET: ", ticket);
+      //console.log("TICKET: ", ticket);
 
       let adjustedPaymentMethod;
 
@@ -127,11 +153,11 @@ const ReceiptModal = (props) => {
       } else {
         adjustedPaymentMethod = "PayPal Express";
       }
-      console.log("allTotal before: ", allTotal);
-      console.log("ticket.subtotal: ", ticket.subtotal);
-      console.log("parseFloat(ticket.subtotal): ", parseFloat(ticket.subtotal));
+      //console.log("allTotal before: ", allTotal);
+      //console.log("ticket.subtotal: ", ticket.subtotal);
+      //console.log("parseFloat(ticket.subtotal): ", parseFloat(ticket.subtotal));
       allTotal += parseFloat(ticket.subtotal);
-      console.log("allTotal after: ", allTotal);
+      //console.log("allTotal after: ", allTotal);
       if (adjustedPaymentMethod === "cash" && ticket.subTotal !== 0) {
         cashTotal += ticket.subtotal;
       } else if (adjustedPaymentMethod === "CashApp") {
@@ -152,11 +178,11 @@ const ReceiptModal = (props) => {
         otherTotal += ticket.subtotal;
       }
     });
-
+*/
     let allTotalBorder = classes.Total;
 
-    console.log("allTotal: ", allTotal);
-    console.log("typeof: ", typeof allTotal);
+    //console.log("allTotal: ", allTotal);
+    //console.log("typeof: ", typeof allTotal);
 
     if (parseInt(allTotal) === 0) {
       console.log("equal to 0");

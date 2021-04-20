@@ -2,13 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { API } from "../../config";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronUp,
-  faChevronDown,
-  faEdit,
-} from "@fortawesome/free-solid-svg-icons";
-
 import classes from "./Orders.module.css";
 import { compareValues, getDate } from "./Resources/VendorFunctions";
 import { Button, Popup } from "semantic-ui-react";

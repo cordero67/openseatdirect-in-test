@@ -8,7 +8,7 @@ const handleErrors = (response) => {
   }
   return response;
 };
-
+/*
 export const signup = (user) => {
   var myHeaders = new Headers();
   //myHeaders.append("Accept", "application/json");
@@ -62,7 +62,7 @@ export const signin = (user) => {
       throw Error(err);
     });
 };
-
+*/
 // USED BY CURRENT CODE APRIL 17, 2021
 export const signout = (callback) => {
   // checks if the "window" object exists
@@ -80,7 +80,7 @@ export const signout = (callback) => {
       .catch((err) => console.log(err));
   }
 };
-
+/*
 export const recoverPassword = (user) => {
   console.log("inside recoverPassword");
   var myHeaders = new Headers();
@@ -109,13 +109,14 @@ export const recoverPassword = (user) => {
       throw err;
     });
 };
+*/
 
 /*
 www.openseatdirect.com/api/auth/reset?
 token=7cc9fb0823099c779a64e26e93883c76fbb3b750&
 email=gual325@gmail.com
 */
-
+/*
 export const resetPassword = (user) => {
   console.log("inside resetPassword");
   let myHeaders = new Headers();
@@ -142,7 +143,8 @@ export const resetPassword = (user) => {
       throw err;
     });
 };
-
+*/
+/*
 export const changePassword = (user) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -170,6 +172,7 @@ export const changePassword = (user) => {
       throw err;
     });
 };
+*/
 
 export const authenticate = (data, callback) => {
   // checks if the "window" object exists
@@ -193,7 +196,7 @@ export const isAuthenticated = () => {
     return false;
   }
 };
-
+/*
 // extracts all event data, non-transactional
 export const getAllEventData = (userId) => {
   return fetch(`${API}/event/list/${userId}`, {
@@ -206,3 +209,4 @@ export const getAllEventData = (userId) => {
       console.log("jumping here", err);
     });
 };
+*/
