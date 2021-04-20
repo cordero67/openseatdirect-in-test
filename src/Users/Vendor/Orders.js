@@ -42,7 +42,7 @@ const Orders = (props) => {
             //vendorInfo.name = tempUser.user.name
             //console.log("vendorInfo.name: ", tempUser.user.name)
         } else {
-             //window.location.href = "/signin";
+             //window.location.href = "/auth";
         }
     
         if (

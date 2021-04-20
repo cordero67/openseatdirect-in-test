@@ -60,6 +60,7 @@ const Events = (props) => {
             localStorage.setItem("orders", result);
             let jsOrders = JSON.parse(result);
             jsOrders.sort(compareValues("order_createdAt", "asc"));
+            console.log("ORDERS FROM SERVER:", jsOrders);
             setEventOrders(jsOrders);
             setDisplay("main");
           });

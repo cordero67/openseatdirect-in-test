@@ -6,6 +6,7 @@ import dateFnsFormat from "date-fns/format";
 import classes from "./SalesAnalytics.module.css";
 
 const SalesAnalytics = (props) => {
+  console.log("PROPS.ORDERS: ", props.orders);
   const [salesTotals, setSalesTotals] = useState({
     ticketsSold: 0,
     ticketsRemaining: 0,
@@ -189,6 +190,7 @@ const SalesAnalytics = (props) => {
     // checks that every unique name only appears once in the array
     let tempBuyers = [];
     props.orders.forEach((order) => {
+      console.log("ORDER: ", order);
       let match = false;
       let matchIndex;
       let newEmail = order.order_email;
@@ -213,6 +215,7 @@ const SalesAnalytics = (props) => {
         tempBuyers[matchIndex].salesRevenues += order.order_totalAmount;
       }
     });
+    console.log("temp buyers: ", tempBuyers);
     setBuyers(tempBuyers);
 
     // "createdAtTime" is the time in milliseconds of the event creation date
@@ -370,7 +373,7 @@ const SalesAnalytics = (props) => {
           }}
         >
           <div>Ticket Type</div>
-          <div style={{ textAlign: "center" }}>Sold</div>
+          <div style={{ textAlign: "center" }}>Issued</div>
           <div style={{ textAlign: "center" }}>Remaining</div>
           <div style={{ textAlign: "center" }}>Revenue</div>
         </div>
@@ -476,7 +479,7 @@ const SalesAnalytics = (props) => {
           paddingBottom: "5px",
         }}
       >
-        <div>Tickets Sold</div>
+        <div>Tickets Issued</div>
         <div>Ticket Revenues</div>
       </div>
       <div
@@ -496,7 +499,11 @@ const SalesAnalytics = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {pieChart("ticketsSold")}
+          {salesTotals.ticketsSold > 0 ? (
+            pieChart("ticketsSold")
+          ) : (
+            <div>NONE</div>
+          )}
         </div>
         <div
           style={{
@@ -505,7 +512,11 @@ const SalesAnalytics = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {pieChart("netRevenues")}
+          {salesTotals.netRevenues > 0 ? (
+            pieChart("netRevenues")
+          ) : (
+            <div style={{ paddingTop: "80px" }}>No Revenues to Display</div>
+          )}
         </div>
       </div>
     </Fragment>
@@ -881,7 +892,7 @@ const SalesAnalytics = (props) => {
             <div className={classes.NetSalesAmount}>
               {salesTotals.ticketsSold}
             </div>
-            <div className={classes.NetSalesCategory}>Tickets Sold</div>
+            <div className={classes.NetSalesCategory}>Tickets Issued</div>
           </div>
           <div
             style={{

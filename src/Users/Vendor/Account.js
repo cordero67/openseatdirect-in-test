@@ -30,7 +30,7 @@ const Account = (props) => {
         console.log("tempUserInfo: ", tempUserInfo)
         setUserInfo(tempUserInfo);
       } else {
-        window.location.href = "/signin";
+        window.location.href = "/auth";
       }
       setIsLoading(false);
   }, []);
