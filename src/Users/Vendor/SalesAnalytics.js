@@ -6,6 +6,9 @@ import dateFnsFormat from "date-fns/format";
 import classes from "./SalesAnalytics.module.css";
 
 const SalesAnalytics = (props) => {
+  console.log("PROPS.ORDERS: ", props.orders);
+  console.log("PROPS.EVENT.TICEKTS: ", props.event.tickets);
+
   const [salesTotals, setSalesTotals] = useState({
     ticketsSold: 0,
     ticketsRemaining: 0,
@@ -123,18 +126,22 @@ const SalesAnalytics = (props) => {
     let tempNetRevenues = 0;
 
     props.orders.forEach((order, index) => {
-      if ("order_qrTickets" in order) {
-        order.order_qrTickets.forEach((ticketOrder, index) => {
+      if ("qrTickets" in order) {
+        order.qrTickets.forEach((ticketOrder, index) => {
           tempTicketsSold += 1;
           tempGrossRevenues += ticketOrder.fullPrice;
         });
       }
-      tempNetRevenues += order.order_totalAmount;
+      tempNetRevenues += order.totalAmount;
     });
 
+    console.log("tempTicketsSold: ", tempTicketsSold);
+    console.log("tempGrossRevenues: ", tempGrossRevenues);
+    console.log("tempNetRevenues: ", tempNetRevenues);
+
     props.orders.forEach((order, index) => {
-      if ("order_qrTickets" in order) {
-        order.order_qrTickets.forEach((ticketOrder) => {
+      if ("qrTickets" in order) {
+        order.qrTickets.forEach((ticketOrder) => {
           tempTicketTotals.forEach((ticket, index) => {
             if (ticket.ticketId === ticketOrder.ticketId) {
               tempTicketTotals[index].ticketsSold += 1;
@@ -158,7 +165,7 @@ const SalesAnalytics = (props) => {
     setTicketTotals(tempTicketTotals);
 
     // builds the "codes" array
-    // checks that every unique name only appears once in the array
+    // checks that every unique postal code only appears once in the array
     let tempCodes = [];
     props.orders.forEach((order) => {
       let match = false;
@@ -175,23 +182,24 @@ const SalesAnalytics = (props) => {
       if (!match) {
         tempCodes.push({
           postalCode: order.gwAddr_postcode,
-          ticketsPurchased: order.order_numTickets,
-          salesRevenues: order.order_totalAmount,
+          ticketsPurchased: order.numTickets,
+          salesRevenues: order.totalAmount,
         });
       } else {
-        tempCodes[matchIndex].ticketsPurchased += order.order_numTickets;
-        tempCodes[matchIndex].salesRevenues += order.order_totalAmount;
+        tempCodes[matchIndex].ticketsPurchased += order.numTickets;
+        tempCodes[matchIndex].salesRevenues += order.totalAmount;
       }
     });
     setCodes(tempCodes);
 
     // builds the "buyers" array
-    // checks that every unique name only appears once in the array
+    // checks that every unique buyer email only appears once in the array
     let tempBuyers = [];
     props.orders.forEach((order) => {
+      console.log("ORDER: ", order);
       let match = false;
       let matchIndex;
-      let newEmail = order.order_email;
+      let newEmail = order.email;
 
       tempBuyers.forEach((extBuyer, index) => {
         if (extBuyer.email === newEmail) {
@@ -202,17 +210,18 @@ const SalesAnalytics = (props) => {
 
       if (!match) {
         tempBuyers.push({
-          email: order.order_email,
-          firstname: order.order_firstName,
-          lastname: order.order_lastName,
-          ticketsPurchased: order.order_numTickets,
-          salesRevenues: order.order_totalAmount,
+          email: order.email,
+          firstname: order.firstName,
+          lastname: order.lastName,
+          ticketsPurchased: order.numTickets,
+          salesRevenues: order.totalAmount,
         });
       } else {
-        tempBuyers[matchIndex].ticketsPurchased += order.order_numTickets;
-        tempBuyers[matchIndex].salesRevenues += order.order_totalAmount;
+        tempBuyers[matchIndex].ticketsPurchased += order.numTickets;
+        tempBuyers[matchIndex].salesRevenues += order.totalAmount;
       }
     });
+    console.log("temp buyers: ", tempBuyers);
     setBuyers(tempBuyers);
 
     // "createdAtTime" is the time in milliseconds of the event creation date
@@ -249,13 +258,13 @@ const SalesAnalytics = (props) => {
     // populating
     props.orders.forEach((order, index1) => {
       // determines the "orderTime" of each individual order
-      let orderTime = new Date(order.order_createdAt).getTime();
+      let orderTime = new Date(order.createdAt).getTime();
 
       tempDateArray.forEach((date, index2) => {
         if (orderTime >= date.startTime && orderTime < date.endTime) {
-          tempDateArray[index2].ticketsSold += order.order_numTickets;
+          tempDateArray[index2].ticketsSold += order.numTickets;
           tempDateArray[index2].orders += 1;
-          tempDateArray[index2].netRevenues += order.order_totalAmount;
+          tempDateArray[index2].netRevenues += order.totalAmount;
         }
       });
     });
@@ -295,7 +304,7 @@ const SalesAnalytics = (props) => {
           }
         });
       } else {
-        tempOnlinePayments.online += parseFloat(order.order_totalAmount);
+        tempOnlinePayments.online += parseFloat(order.totalAmount);
       }
     });
     setOnlinePayments(tempOnlinePayments);
@@ -370,7 +379,7 @@ const SalesAnalytics = (props) => {
           }}
         >
           <div>Ticket Type</div>
-          <div style={{ textAlign: "center" }}>Sold</div>
+          <div style={{ textAlign: "center" }}>Issued</div>
           <div style={{ textAlign: "center" }}>Remaining</div>
           <div style={{ textAlign: "center" }}>Revenue</div>
         </div>
@@ -476,7 +485,7 @@ const SalesAnalytics = (props) => {
           paddingBottom: "5px",
         }}
       >
-        <div>Tickets Sold</div>
+        <div>Tickets Issued</div>
         <div>Ticket Revenues</div>
       </div>
       <div
@@ -496,7 +505,11 @@ const SalesAnalytics = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {pieChart("ticketsSold")}
+          {salesTotals.ticketsSold > 0 ? (
+            pieChart("ticketsSold")
+          ) : (
+            <div>NONE</div>
+          )}
         </div>
         <div
           style={{
@@ -505,7 +518,11 @@ const SalesAnalytics = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {pieChart("netRevenues")}
+          {salesTotals.netRevenues > 0 ? (
+            pieChart("netRevenues")
+          ) : (
+            <div style={{ paddingTop: "80px" }}>No Revenues to Display</div>
+          )}
         </div>
       </div>
     </Fragment>
@@ -881,7 +898,7 @@ const SalesAnalytics = (props) => {
             <div className={classes.NetSalesAmount}>
               {salesTotals.ticketsSold}
             </div>
-            <div className={classes.NetSalesCategory}>Tickets Sold</div>
+            <div className={classes.NetSalesCategory}>Tickets Issued</div>
           </div>
           <div
             style={{

@@ -39,7 +39,12 @@ const Events = (props) => {
       headers: myHeaders,
       redirect: "follow",
     };
-    let fetchstr = `${API}/event/alluser/${vendorId}`;
+    let requestOptions2 = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    let fetchstr = `${API}/events`;
 
     fetch(fetchstr, requestOptions)
       .then(handleErrors)
@@ -51,17 +56,22 @@ const Events = (props) => {
         let jsEvents = JSON.parse(result);
         jsEvents.sort(compareValues("startDateTime", "asc"));
         setEventDescriptions(jsEvents);
-        fetchstr = `${API}/order/${vendorId}`;
-        fetch(fetchstr, requestOptions)
+        fetchstr = `${API}/reports/seller`;
+        fetch(fetchstr, requestOptions2)
           .then(handleErrors)
           .then((response) => response.text())
           .then((result) => {
             // LOOK TO NOT STORE IN LOCAL STORAGE
             localStorage.setItem("orders", result);
             let jsOrders = JSON.parse(result);
+            console.log("ORDERS: ", jsOrders);
             jsOrders.sort(compareValues("order_createdAt", "asc"));
             setEventOrders(jsOrders);
             setDisplay("main");
+          })
+          .catch((error) => {
+            console.log("error", error);
+            setDisplay("connection");
           });
         return jsEvents;
       })

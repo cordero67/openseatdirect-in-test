@@ -46,9 +46,9 @@ const MyTickets = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
 
-    let url = `${API}/tixorder/get_wallet/${tempUser.user._id}`;
+    let url = `${API}/reports/buyer`;
     let fetcharg = {
-      method: "GET",
+      method: "POST",
       headers: myHeaders,
       redirect: "follow",
     };
@@ -217,9 +217,8 @@ const MyTickets = () => {
               );
 
               return (
-                <Fragment>
+                <Fragment key={index}>
                   <div
-                    key={index}
                     style={{
                       display: "grid",
                       gridTemplateColumns: "60px 80px 500px 60px 80px",
