@@ -4,8 +4,6 @@ import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./SavedModal.module.css";
 
-import { Button } from "semantic-ui-react";
-
 const SavedModal = (props) => {
   console.log("item", props.details);
 

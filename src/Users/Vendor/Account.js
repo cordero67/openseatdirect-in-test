@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { API } from "../../config.js";
 
@@ -6,33 +6,10 @@ import ResetModal from "./Modals/ResetModal";
 
 import classes from "./Account.module.css";
 
-const Account = (props) => {
+const Account = () => {
   const [userInfo, setUserInfo] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [modalStatus, setModalStatus] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      let tempUserInfo = {
-        email: tempUser.user.email,
-        firstname: tempUser.user.firstname,
-        lastname: tempUser.user.lastname,
-        id: tempUser.user._id,
-        token: tempUser.token,
-      };
-      console.log("tempUserInfo: ", tempUserInfo);
-      setUserInfo(tempUserInfo);
-    } else {
-      window.location.href = "/signin";
-    }
-    setIsLoading(false);
-  }, []);
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -42,9 +19,6 @@ const Account = (props) => {
   };
 
   const requestChange = () => {
-    console.log("inside requestChange");
-    console.log("userInfo: ", userInfo);
-
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${userInfo.token}`);

@@ -21,3 +21,10 @@
   text-align: left;
   box-sizing: border-box;
 }
+
+.ConnectionText {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  padding-top: 30px;
+}

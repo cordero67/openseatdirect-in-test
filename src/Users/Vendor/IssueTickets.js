@@ -5,15 +5,12 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 import { API } from "../../config";
 import OrderModal from "./Modals/OrderModal";
-import Spinner from "../../components/UI/Spinner/Spinner";
 
 import classes from "./IssueTickets.module.css";
 
 const IssueTickets = (props) => {
-  const [display, setDisplay] = useState("spinner"); //main, spinner, connection
   const [modalView, setModalView] = useState("none");
-
-  const [selectedEventDetails, setSelectedEventDetails] = useState({}); //event details of a single selected event
+  const [eventDetails, setEventDetails] = useState({}); //event details of a single selected event
   const [ticketDetails, setTicketDetails] = useState([]); //ticket details of a single selected event
   const [order, setOrder] = useState({
     recipient: {
@@ -49,55 +46,50 @@ const IssueTickets = (props) => {
   ];
 
   // LOOKS GOOD: 1/26/21
-  const loadEventData = (eventNum) => {
-    let tempEvents = JSON.parse(localStorage.getItem("events"));
+  const loadEventData = () => {
+    setEventDetails(props.event);
+    let tempTicketDetails = [];
 
-    tempEvents.forEach((event, index) => {
-      if (event.eventNum === eventNum) {
-        setSelectedEventDetails(event);
-        let tempTicketDetails = [];
+    if ("tickets" in props.event && props.event.tickets.length > 0) {
+      props.event.tickets.forEach((ticket) => {
+        let ticketsAvailableArray = [];
+        let maxAmount;
+        let i;
 
-        if ("tickets" in event && event.tickets.length > 0) {
-          event.tickets.forEach((ticket, index) => {
-            let ticketsAvailableArray = [];
-            let maxAmount;
-            let i;
-
-            if (ticket.maxTicketsAllowedPerOrder) {
-              maxAmount = Math.min(
-                ticket.maxTicketsAllowedPerOrder,
-                ticket.remainingQuantity
-              );
-            } else {
-              maxAmount = Math.min(10, ticket.remainingQuantity);
-            }
-
-            for (i = 1; i <= maxAmount; i++) {
-              ticketsAvailableArray.push(i);
-            }
-            let newTicketKey = Math.floor(Math.random() * 1000000000000000);
-            tempTicketDetails.push({
-              key: newTicketKey,
-              ticketName: ticket.ticketName,
-              ticketId: ticket._id,
-              ticketPrice: ticket.currentTicketPrice,
-              ticketQuantity: ticket.remainingQuantity,
-              maxTicketsAvailable: ticketsAvailableArray,
-              currency: ticket.currency,
-            });
-          });
+        if (ticket.maxTicketsAllowedPerOrder) {
+          maxAmount = Math.min(
+            ticket.maxTicketsAllowedPerOrder,
+            ticket.remainingQuantity
+          );
+        } else {
+          maxAmount = Math.min(10, ticket.remainingQuantity);
         }
 
-        setTicketDetails(tempTicketDetails);
-
-        if (tempTicketDetails.length > 0) {
-          let addedTicket = newTicket(tempTicketDetails[0]);
-          let tempOrder = { ...order };
-          tempOrder.tickets = [addedTicket];
-          setOrder(tempOrder);
+        for (i = 1; i <= maxAmount; i++) {
+          ticketsAvailableArray.push(i);
         }
-      }
-    });
+        let newTicketKey = Math.floor(Math.random() * 1000000000000000);
+        tempTicketDetails.push({
+          key: newTicketKey,
+          ticketName: ticket.ticketName,
+          ticketId: ticket._id,
+          ticketPrice: ticket.currentTicketPrice,
+          ticketQuantity: ticket.remainingQuantity,
+          maxTicketsAvailable: ticketsAvailableArray,
+          currency: ticket.currency,
+        });
+      });
+    }
+
+    setTicketDetails(tempTicketDetails);
+
+    // creates an empty ticket order populated with ticket[0]
+    if (tempTicketDetails.length > 0) {
+      let addedTicket = newTicket(tempTicketDetails[0]);
+      let tempOrder = { ...order };
+      tempOrder.tickets = [addedTicket];
+      setOrder(tempOrder);
+    }
   };
 
   // LOOKS GOOD: 1/26/21
@@ -127,33 +119,17 @@ const IssueTickets = (props) => {
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
-      if (
-        localStorage.getItem(`events`) !== null &&
-        localStorage.getItem(`eventNum`) !== null
-      ) {
-        let storedEvents = JSON.parse(localStorage.getItem("events"));
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      setCustomerInformation({
+        sessionToken: tempUser.token,
+        userId: tempUser.user._id,
+      });
 
-        let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
-
-        let tempUser = JSON.parse(localStorage.getItem("user"));
-        setCustomerInformation({
-          sessionToken: tempUser.token,
-          userId: tempUser.user._id,
-        });
-
-        storedEvents.forEach((event) => {
-          if (event.eventNum === storedEventNum) {
-            loadEventData(storedEventNum);
-          }
-        });
-      } else {
-        props.clicked("events");
-      }
+      loadEventData(props.event.eventNum);
     } else {
       window.location.href = "/auth";
     }
-    setDisplay("main");
-  }, []);
+  }, [props]);
 
   // LOOKS GOOD: 1/29/21
   const handleErrors = (response) => {
@@ -172,7 +148,7 @@ const IssueTickets = (props) => {
     newOrder.lastname = order.recipient.lastname;
     newOrder.email = order.recipient.email;
     newOrder.message = order.recipient.message;
-    newOrder.eventNum = selectedEventDetails.eventNum;
+    newOrder.eventNum = eventDetails.eventNum;
 
     order.tickets.forEach((ticket) => {
       let tempObject = {};
@@ -219,6 +195,7 @@ const IssueTickets = (props) => {
       .then((data) => {
         console.log("fetch return got back data:", data);
         setModalView("confirmation");
+        props.confirmed();
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -382,7 +359,7 @@ const IssueTickets = (props) => {
   );
 
   const ticketCart = () => {
-    if (display === "main" && ticketDetails.length > 0) {
+    if (ticketDetails.length > 0) {
       return (
         <div className={classes.CartDisplay}>
           <div
@@ -409,7 +386,7 @@ const IssueTickets = (props) => {
               paddingTop: "10px",
             }}
           >
-            {order.tickets.map((ticket) => {
+            {order.tickets.map((ticket, index) => {
               let priceBox;
               if (ticket.chargedPriceWarning === "") {
                 priceBox = classes.PriceBox;
@@ -417,7 +394,7 @@ const IssueTickets = (props) => {
                 priceBox = classes.PriceBoxWarning;
               }
               return (
-                <div>
+                <div key={index}>
                   <div className={classes.TicketCart}>
                     <div>
                       <select
@@ -448,8 +425,8 @@ const IssueTickets = (props) => {
                           changeTicket(event, ticket.key);
                         }}
                       >
-                        {ticket.maxTicketsAvailable.map((number) => {
-                          return <option>{number}</option>;
+                        {ticket.maxTicketsAvailable.map((number, index) => {
+                          return <option key={index}>{number}</option>;
                         })}
                       </select>
                     </div>
@@ -497,7 +474,7 @@ const IssueTickets = (props) => {
                         }}
                       >
                         {paymentTypes.map((type, index) => {
-                          return <option>{type}</option>;
+                          return <option key={index}>{type}</option>;
                         })}
                       </select>
                     </div>
@@ -728,13 +705,14 @@ const IssueTickets = (props) => {
         <OrderModal
           show={true}
           status={modalView}
-          title={selectedEventDetails.eventTitle}
-          dateTime={selectedEventDetails.startDateTime}
+          title={eventDetails.eventTitle}
+          dateTime={eventDetails.startDateTime}
           details={order}
           edit={() => {
             setModalView("none");
           }}
           close={() => {
+            console.log("INSIDE CLOSE");
             let tempOrder = { ...order };
             tempOrder.recipient = {
               firstname: "",
@@ -756,39 +734,22 @@ const IssueTickets = (props) => {
 
   // LOOKS GOOD: 1/26/21
   const mainDisplay = () => {
-    if (display === "main") {
-      return (
-        <div style={{ paddingTop: "20px", paddingLeft: "30px" }}>
-          <div style={{ fontWeight: "600", fontSize: "18px" }}>
-            Issue Tickets
-          </div>
-          {recipientDisplay()}
-          {ticketCart()}
-          {orderModalDisplay()}
-        </div>
-      );
-    } else return null;
-  };
-
-  // LOOKS GOOD: 1/26/21
-  const loadingSpinner = () => {
-    if (display === "spinner") {
-      return (
-        <div style={{ paddingTop: "60px" }}>
-          <Spinner />
-        </div>
-      );
-    } else {
-      return null;
-    }
+    return (
+      <div style={{ paddingTop: "20px", paddingLeft: "30px" }}>
+        <div style={{ fontWeight: "600", fontSize: "18px" }}>Issue Tickets</div>
+        {recipientDisplay()}
+        {ticketCart()}
+        {orderModalDisplay()}
+      </div>
+    );
   };
 
   // LOOKS GOOD: 1/26/21
   const tabTitle = (
     <div className={classes.DisplayPanelTitle}>
-      {display !== "spinner" && "eventTitle" in selectedEventDetails ? (
+      {"eventTitle" in eventDetails ? (
         <div style={{ fontSize: "26px", fontWeight: "600" }}>
-          {selectedEventDetails.eventTitle}
+          {eventDetails.eventTitle}
         </div>
       ) : (
         <div>{null}</div>
@@ -809,10 +770,7 @@ const IssueTickets = (props) => {
   return (
     <div>
       {tabTitle}
-      <div className={classes.DisplayPanel}>
-        {loadingSpinner()}
-        {mainDisplay()}
-      </div>
+      <div className={classes.DisplayPanel}>{mainDisplay()}</div>
     </div>
   );
 };

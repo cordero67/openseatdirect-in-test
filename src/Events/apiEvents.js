@@ -29,7 +29,7 @@ const handleErrors = (response) => {
 // USED BY CURRENT CODE APRIL 17, 2021
 // extracts specific event data, non-transactional
 export const getEventData = (eventId) => {
-  return fetch(`${API}/pevent/${eventId}`, {
+  return fetch(`${API}/events/${eventId}`, {
     method: "GET",
   })
     .then(handleErrors)
@@ -81,7 +81,7 @@ export const getAllEventData = () => {
   };
 
   //let fetchstr = `${API}/event/all`;
-  let fetchstr = `${API}/pevents`;
+  let fetchstr = `${API}/events`;
 
   return fetch(fetchstr, requestOptions)
     .then(handleErrors)

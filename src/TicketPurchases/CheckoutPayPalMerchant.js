@@ -156,6 +156,7 @@ const Checkout = () => {
   };
 
   // removes order related information from "localStorage"
+  /*
   const purchaseConfirmHandler = () => {
     console.log("inside purchaseConfirmHandler");
     eventDetails = {};
@@ -167,6 +168,7 @@ const Checkout = () => {
     localStorage.removeItem(`image_${event}`);
     localStorage.removeItem(`eventNum`);
   };
+  */
 
   // TICKET DETAILS HANDLERS
   // duped from createEvent
@@ -181,6 +183,7 @@ const Checkout = () => {
     console.log("inside changeTicketDetail");
   };
 
+  /*
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -188,6 +191,7 @@ const Checkout = () => {
     }
     return response;
   };
+  */
 
   // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
@@ -268,7 +272,7 @@ const Checkout = () => {
                 "Authorization",
                 `Bearer ${customerInformation.sessionToken}`
               );
-              url = `${API}/tixorder/sn-mpp-create-order/${customerInformation.userId}`;
+              url = `${API}/tixorder/sn-mpp-create-order`;
             } else {
               url = `${API}/tixorder/us-mpp-create-order`;
             }
@@ -315,7 +319,7 @@ const Checkout = () => {
                 "Authorization",
                 `Bearer ${customerInformation.sessionToken}`
               );
-              url = `${API}/tixorder/sn-mpp-capture-order/${customerInformation.userId}`;
+              url = `${API}/tixorder/sn-mpp-capture-order`;
             } else {
               url = `${API}/tixorder/us-mpp-capture-order`;
             }

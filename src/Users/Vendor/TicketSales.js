@@ -2,23 +2,16 @@ import React, { useEffect, useState, Fragment } from "react";
 
 import { getDate } from "./Resources/VendorFunctions";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faReceipt } from "@fortawesome/free-solid-svg-icons";
-
 import classes from "./TicketSales.module.css";
 import ReceiptModal from "./Modals/ReceiptModal";
-import Spinner from "../../components/UI/Spinner/Spinner";
 
 const TicketSales = (props) => {
-  const [display, setDisplay] = useState("spinner"); //main, spinner
   const [modalView, setModalView] = useState(false); // defines appearance of ReceiptModal
-
   const [eventOrders, setEventOrders] = useState([]);
   const [selectedEventTitle, setSelectedEventTitle] = useState("");
   const [selectedOrder, setSelectedOrder] = useState({});
-
   const [sortParameters, setSortParameters] = useState({
-    label: "order_createdAt",
+    label: "createdAt",
     direction: "asc",
   });
 
@@ -27,47 +20,42 @@ const TicketSales = (props) => {
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
-      if (
-        localStorage.getItem(`orders`) !== null &&
-        localStorage.getItem(`events`) !== null &&
-        localStorage.getItem(`eventNum`) !== null
-      ) {
-        let storedEvents = JSON.parse(localStorage.getItem("events"));
-        let storedOrders = JSON.parse(localStorage.getItem("orders"));
-        let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
-
-        storedEvents.forEach((event) => {
-          if (event.eventNum === storedEventNum) {
-            loadEventTitle(storedEventNum);
-          }
+      // create an array of objects to hold transactions by ticket type
+      let tempOrders = [];
+      props.event.tickets.forEach((ticket) => {
+        tempOrders.push({
+          ticketId: ticket._id,
+          ticketName: ticket.ticketName,
+          ticketsSold: 0,
+          ticketPrice: ticket.currentTicketPrice,
+          grossTotal: 0,
+          netTotal: 0,
         });
+      });
+      console.log("tempOrders: ", tempOrders);
 
-        let tempEventOrders = [];
-        storedOrders.forEach((order) => {
-          if (order.eventNum === storedEventNum) {
-            order.key = Math.floor(Math.random() * 1000000000000000);
-            order.view = false;
-            tempEventOrders.push(order);
-          }
+      // populate this ticketOrder array
+      props.orders.forEach((order) => {
+        order.qrTickets.forEach((qrTix) => {
+          //console.log("qrTix: ", qrTix.ticketId);
+          tempOrders.forEach((ticketType, index) => {
+            if (ticketType.ticketId === qrTix.ticketId) {
+              //console.log("We have a match");
+              tempOrders[index].ticketsSold += 1;
+              tempOrders[index].grossTotal += parseFloat(qrTix.fullPrice);
+              tempOrders[index].netTotal += qrTix.sellingPrice;
+            }
+          });
         });
-        setEventOrders(tempEventOrders);
-      } else {
-        props.clicked("events");
-      }
+      });
+      console.log("tempOrders: ", tempOrders);
+
+      setEventOrders(props.orders);
+      setSelectedEventTitle(props.event.eventTitle);
     } else {
       window.location.href = "/auth";
     }
-    setDisplay("main");
-  }, []);
-
-  const loadEventTitle = (eventNum) => {
-    let tempEvents = JSON.parse(localStorage.getItem("events"));
-    tempEvents.forEach((event, index) => {
-      if (event.eventNum === eventNum) {
-        setSelectedEventTitle(event.eventTitle);
-      }
-    });
-  };
+  }, [props]);
 
   const compareValues = (key, order) => {
     return function innerSort(a, b) {
@@ -104,22 +92,23 @@ const TicketSales = (props) => {
   };
 
   const mainDisplay = () => {
-    if (display === "main" && eventOrders.length > 0) {
+    if (props.orders.length > 0) {
       return (
         <Fragment>
           {eventOrders.map((item, index) => {
             let shortDateTime;
             [shortDateTime] = getDate(item);
+
             return (
               <div key={index} className={classes.Orders}>
                 <div style={{ textAlign: "left" }}>{shortDateTime}</div>
                 <div style={{ textAlign: "left" }}>
-                  {item.order_lastName}, {item.order_firstName}
+                  {item.lastName}, {item.firstName}
                 </div>
-                <div style={{ textAlign: "left" }}>{item.order_email}</div>
-                <div>{item.order_qrTickets.length}</div>
+                <div style={{ textAlign: "left" }}>{item.email}</div>
+                <div>{item.qrTickets.length}</div>
                 <div style={{ textAlign: "right", paddingRight: "20px" }}>
-                  {item.order_totalAmount}
+                  {item.totalAmount}
                 </div>
                 <div style={{ fontSize: "22px", textAlign: "center" }}>
                   <button className={classes.EventButton}>
@@ -127,6 +116,7 @@ const TicketSales = (props) => {
                       style={{ fontSize: "24px", color: "blue" }}
                       name="receipt-outline"
                       onClick={() => {
+                        console.log("ITEM");
                         setSelectedOrder(item);
                         setModalView(true);
                       }}
@@ -138,19 +128,19 @@ const TicketSales = (props) => {
           })}
         </Fragment>
       );
-    } else if (display === "main") {
+    } else {
       return (
         <div className={classes.NoTicketsText}>
           There are no past orders associated with this event.
         </div>
       );
-    } else return null;
+    }
   };
 
   const loadPreviousOrder = () => {
     let newPosition;
-    eventOrders.map((order, index) => {
-      if (order.key === selectedOrder.key) {
+    eventOrders.forEach((order, index) => {
+      if (order.osdOrderId === selectedOrder.osdOrderId) {
         if (index === 0) {
           newPosition = eventOrders.length - 1;
         } else {
@@ -163,8 +153,8 @@ const TicketSales = (props) => {
 
   const loadNextOrder = () => {
     let newPosition;
-    eventOrders.map((order, index) => {
-      if (order.key === selectedOrder.key) {
+    eventOrders.forEach((order, index) => {
+      if (order.osdOrderId === selectedOrder.osdOrderId) {
         if (index === eventOrders.length - 1) {
           newPosition = 0;
         } else {
@@ -182,6 +172,7 @@ const TicketSales = (props) => {
           <ReceiptModal
             show={modalView}
             details={selectedOrder}
+            event={props.event}
             close={() => {
               setModalView(false);
             }}
@@ -199,7 +190,7 @@ const TicketSales = (props) => {
 
   const tabTitle = (
     <div className={classes.DisplayPanelTitle}>
-      {display === "main" && selectedEventTitle !== "" ? (
+      {selectedEventTitle !== "" ? (
         <div style={{ fontSize: "26px", fontWeight: "600" }}>
           {selectedEventTitle}
         </div>
@@ -228,7 +219,7 @@ const TicketSales = (props) => {
         <div>
           <button
             className={classes.SortButton}
-            name="order_createdAt"
+            name="createdAt"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -239,7 +230,7 @@ const TicketSales = (props) => {
         <div>
           <button
             className={classes.SortButton}
-            name="order_lastName"
+            name="lastName"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -249,7 +240,7 @@ const TicketSales = (props) => {
           ,{" "}
           <button
             className={classes.SortButton}
-            name="order_firstName"
+            name="firstName"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -260,7 +251,7 @@ const TicketSales = (props) => {
         <div>
           <button
             className={classes.SortButton}
-            name="order_email"
+            name="email"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -271,7 +262,7 @@ const TicketSales = (props) => {
         <div style={{ textAlign: "center" }}>
           <button
             className={classes.SortButton}
-            name="order_numTickets"
+            name="numTickets"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -282,7 +273,7 @@ const TicketSales = (props) => {
         <div style={{ textAlign: "center" }}>
           <button
             className={classes.SortButton}
-            name="order_totalAmount"
+            name="totalAmount"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -295,26 +286,11 @@ const TicketSales = (props) => {
     </div>
   );
 
-  const loadingSpinner = () => {
-    if (display === "spinner") {
-      return (
-        <div style={{ paddingTop: "60px" }}>
-          <Spinner />
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
-
   return (
     <div>
       {tabTitle}
       {displayHeader}
-      <div className={classes.DisplayPanel}>
-        {loadingSpinner()}
-        {mainDisplay()}
-      </div>
+      <div className={classes.DisplayPanel}>{mainDisplay()}</div>
       {receiptModalDisplay()}
     </div>
   );

@@ -1321,6 +1321,7 @@ const Home = () => {
               >
                 Terms and Conditions
               </button>
+              | v1.0
             </div>
           </div>
         </div>

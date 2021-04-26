@@ -192,7 +192,7 @@ const Checkout = () => {
     }
 
     let tickets = [];
-    ticketInfo.map((item) => {
+    ticketInfo.forEach((item) => {
       if (item.ticketsSelected > 0) {
         let tempObject = {};
         tempObject.ticketID = item.ticketID;
@@ -417,6 +417,7 @@ const Checkout = () => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
   });
+
   // LOOKS GOOD
   const timeRemaining = () => {
     if (+new Date(orderExpiration) >= +new Date()) {

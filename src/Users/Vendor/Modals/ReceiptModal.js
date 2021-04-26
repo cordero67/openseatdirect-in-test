@@ -7,7 +7,8 @@ import classes from "./ReceiptModal.module.css";
 const ReceiptModal = (props) => {
   console.log("selected order: ", props);
 
-  let allTotal = 0;
+  let netTotal = 0;
+  let grossTotal = 0;
   let payPalExpressTotal = 0;
   let cashTotal = 0;
   let cashAppTotal = 0;
@@ -18,11 +19,40 @@ const ReceiptModal = (props) => {
   let dogecoinTotal = 0;
   let otherTotal = 0;
 
+  // create an array of objects to hold transactions by ticket type
+  let orderDetails = [];
+  props.event.tickets.forEach((ticket) => {
+    orderDetails.push({
+      ticketId: ticket._id,
+      ticketName: ticket.ticketName,
+      ticketsSold: 0,
+      ticketPrice: ticket.currentTicketPrice,
+      grossTotal: 0,
+      netTotal: 0,
+    });
+  });
+  console.log("tempOrdorderDetailsrs: ", orderDetails);
+
+  // populate this ticketOrder array
+  props.details.qrTickets.forEach((qrTix) => {
+    orderDetails.forEach((ticketType, index) => {
+      if (ticketType.ticketId === qrTix.ticketId) {
+        orderDetails[index].ticketsSold += 1;
+        orderDetails[index].grossTotal += qrTix.fullPrice;
+        orderDetails[index].netTotal += qrTix.sellingPrice;
+
+        grossTotal += qrTix.fullPrice;
+        netTotal += qrTix.sellingPrice;
+      }
+    });
+  });
+  console.log("orderDetails: ", orderDetails);
+
   let longDateTime;
   [longDateTime] = getStartDate(props.details.startDateTime);
 
   let shortDateTime;
-  [shortDateTime] = getStartDate(props.details.order_createdAt);
+  [shortDateTime] = getStartDate(props.details.createdAt);
 
   // LOOKS GOOD: 1/21/21
   const modalButtons = () => {
@@ -66,9 +96,7 @@ const ReceiptModal = (props) => {
   };
 
   const ticketsList = () => {
-    return props.details.order_ticketItems.map((ticket, index) => {
-      console.log("ticket: ", ticket);
-
+    return orderDetails.map((ticket, index) => {
       let adjustedPaymentMethod;
 
       if (
@@ -82,34 +110,70 @@ const ReceiptModal = (props) => {
         adjustedPaymentMethod = "PayPal Express";
       }
 
-      return (
-        <Fragment key={index}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "260px 80px 70px 70px",
-              gridGap: "10px",
-              width: "510px",
-              height: "28px",
-              paddingTop: "10px",
-            }}
-          >
-            <div style={{ textAlign: "left" }}>{ticket.ticketName}</div>
-            <div style={{ textAlign: "center" }}>{ticket.qty}</div>
-            <div style={{ textAlign: "right", paddingRight: "10px" }}>
-              {parseFloat(ticket.unit_price).toFixed(2)}
+      if (ticket.ticketsSold > 0) {
+        return (
+          <Fragment key={index}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "60px 280px 70px 70px",
+                gridGap: "10px",
+                width: "510px",
+                height: "28px",
+                paddingTop: "10px",
+              }}
+            >
+              <div style={{ textAlign: "center" }}>{ticket.ticketsSold}</div>
+              <div style={{ textAlign: "left" }}>{ticket.ticketName}</div>
+              <div style={{ textAlign: "right" }}>
+                {parseFloat(ticket.ticketPrice).toFixed(2)}
+              </div>
+              <div style={{ textAlign: "right" }}>
+                {parseFloat(ticket.grossTotal).toFixed(2)}
+              </div>
             </div>
-            <div style={{ textAlign: "right", paddingRight: "10px" }}>
-              {parseFloat(ticket.subtotal).toFixed(2)}
-            </div>
-          </div>
-        </Fragment>
-      );
+          </Fragment>
+        );
+      }
     });
   };
 
-  const paymentTypeTotals = () => {
-    //console.log("tickets: ", props.details.tickets);
+  const paymentTotals = () => {
+    const grandTotals = () => {
+      if (grossTotal != netTotal) {
+        return (
+          <Fragment>
+            <div className={classes.SubTotal}>
+              <div style={{ textAlign: "right" }}>Sub Total:</div>
+              <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                {parseFloat(grossTotal).toFixed(2)}
+              </div>
+            </div>
+            <div className={classes.SubTotal}>
+              <div style={{ textAlign: "right" }}>less Promos/Discounts:</div>
+              <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                {parseFloat(grossTotal - netTotal).toFixed(2)}
+              </div>
+            </div>
+            <div className={classes.Total}>
+              <div style={{ textAlign: "right" }}>Grand Total:</div>
+              <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                {parseFloat(netTotal).toFixed(2)}
+              </div>
+            </div>
+          </Fragment>
+        );
+      } else {
+        return (
+          <div className={classes.SubTotal}>
+            <div style={{ textAlign: "right" }}>Grand Total:</div>
+            <div style={{ textAlign: "right", paddingRight: "10px" }}>
+              {parseFloat(netTotal).toFixed(2)}
+            </div>
+          </div>
+        );
+      }
+    };
 
     if (props.details.isOffline) {
       console.log("OFFLINE PAYMENT");
@@ -136,58 +200,6 @@ const ReceiptModal = (props) => {
         }
       });
     }
-    /*
-    props.details.order_ticketItems.forEach((ticket, index) => {
-      //console.log("TICKET: ", ticket);
-
-      let adjustedPaymentMethod;
-
-      if (
-        //"manualPaymentMethod" in ticket &&
-        parseFloat(ticket.unit_price).toFixed(2) !== 0
-      ) {
-        //adjustedPaymentMethod = ticket.manualPaymentMethod;
-        adjustedPaymentMethod = "Dogecoin";
-      } else if ("manualPaymentMethod" in ticket) {
-        adjustedPaymentMethod = "comp";
-      } else {
-        adjustedPaymentMethod = "PayPal Express";
-      }
-      //console.log("allTotal before: ", allTotal);
-      //console.log("ticket.subtotal: ", ticket.subtotal);
-      //console.log("parseFloat(ticket.subtotal): ", parseFloat(ticket.subtotal));
-      allTotal += parseFloat(ticket.subtotal);
-      //console.log("allTotal after: ", allTotal);
-      if (adjustedPaymentMethod === "cash" && ticket.subTotal !== 0) {
-        cashTotal += ticket.subtotal;
-      } else if (adjustedPaymentMethod === "CashApp") {
-        cashAppTotal += ticket.subtotal;
-      } else if (adjustedPaymentMethod === "Venmo") {
-        venmoTotal += ticket.subtotal;
-      } else if (adjustedPaymentMethod === "Paypal") {
-        paypalTotal += ticket.subtotal;
-      } else if (adjustedPaymentMethod === "Bitcoin") {
-        bitcoinTotal += ticket.subtotal;
-      } else if (adjustedPaymentMethod === "Ethereum") {
-        ethereumTotal += ticket.subtotal;
-      } else if (adjustedPaymentMethod === "Dogecoin") {
-        dogecoinTotal += ticket.subtotal;
-      } else if (adjustedPaymentMethod === "PayPal Express") {
-        payPalExpressTotal += ticket.subtotal;
-      } else {
-        otherTotal += ticket.subtotal;
-      }
-    });
-*/
-    let allTotalBorder = classes.Total;
-
-    //console.log("allTotal: ", allTotal);
-    //console.log("typeof: ", typeof allTotal);
-
-    if (parseInt(allTotal) === 0) {
-      console.log("equal to 0");
-      allTotalBorder = classes.SubTotal;
-    }
 
     return (
       <Fragment>
@@ -202,86 +214,87 @@ const ReceiptModal = (props) => {
         <div
           style={{
             marginRight: "8px",
-            marginLeft: "280px",
+            marginLeft: "275px",
           }}
         >
-          {payPalExpressTotal > 0 ? (
-            <div className={classes.SubTotal}>
-              <div style={{ textAlign: "right" }}>PayPal Express Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                {parseFloat(payPalExpressTotal).toFixed(2)}
+          {grandTotals()}
+          <div
+            style={{
+              borderTop: "1px solid black",
+            }}
+          >
+            {payPalExpressTotal > 0 ? (
+              <div className={classes.SubTotal}>
+                <div style={{ textAlign: "right" }}>PayPal Express Total:</div>
+                <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                  {parseFloat(payPalExpressTotal).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ) : null}
-          {cashTotal > 0 ? (
-            <div className={classes.SubTotal}>
-              <div style={{ textAlign: "right" }}>cash Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                {parseFloat(cashTotal).toFixed(2)}
+            ) : null}
+            {cashTotal > 0 ? (
+              <div className={classes.SubTotal}>
+                <div style={{ textAlign: "right" }}>cash Total:</div>
+                <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                  {parseFloat(cashTotal).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ) : null}
-          {cashAppTotal > 0 ? (
-            <div className={classes.SubTotal}>
-              <div style={{ textAlign: "right" }}>CashApp Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                {parseFloat(cashAppTotal).toFixed(2)}
+            ) : null}
+            {cashAppTotal > 0 ? (
+              <div className={classes.SubTotal}>
+                <div style={{ textAlign: "right" }}>CashApp Total:</div>
+                <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                  {parseFloat(cashAppTotal).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ) : null}
-          {venmoTotal > 0 ? (
-            <div className={classes.SubTotal}>
-              <div style={{ textAlign: "right" }}>Venmo Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                {parseFloat(venmoTotal).toFixed(2)}
+            ) : null}
+            {venmoTotal > 0 ? (
+              <div className={classes.SubTotal}>
+                <div style={{ textAlign: "right" }}>Venmo Total:</div>
+                <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                  {parseFloat(venmoTotal).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ) : null}
-          {paypalTotal > 0 ? (
-            <div className={classes.SubTotal}>
-              <div style={{ textAlign: "right" }}>PayPal Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                {parseFloat(paypalTotal).toFixed(2)}
+            ) : null}
+            {paypalTotal > 0 ? (
+              <div className={classes.SubTotal}>
+                <div style={{ textAlign: "right" }}>PayPal Total:</div>
+                <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                  {parseFloat(paypalTotal).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ) : null}
-          {bitcoinTotal > 0 ? (
-            <div className={classes.SubTotal}>
-              <div style={{ textAlign: "right" }}>Bitcoin Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                {parseFloat(bitcoinTotal).toFixed(2)}
+            ) : null}
+            {bitcoinTotal > 0 ? (
+              <div className={classes.SubTotal}>
+                <div style={{ textAlign: "right" }}>Bitcoin Total:</div>
+                <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                  {parseFloat(bitcoinTotal).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ) : null}
-          {ethereumTotal > 0 ? (
-            <div className={classes.SubTotal}>
-              <div style={{ textAlign: "right" }}>Ethereum Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                {parseFloat(ethereumTotal).toFixed(2)}
+            ) : null}
+            {ethereumTotal > 0 ? (
+              <div className={classes.SubTotal}>
+                <div style={{ textAlign: "right" }}>Ethereum Total:</div>
+                <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                  {parseFloat(ethereumTotal).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ) : null}
-          {dogecoinTotal > 0 ? (
-            <div className={classes.SubTotal}>
-              <div style={{ textAlign: "right" }}>Dogecoin Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                {parseFloat(dogecoinTotal).toFixed(2)}
+            ) : null}
+            {dogecoinTotal > 0 ? (
+              <div className={classes.SubTotal}>
+                <div style={{ textAlign: "right" }}>Dogecoin Total:</div>
+                <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                  {parseFloat(dogecoinTotal).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ) : null}
-          {otherTotal > 0 ? (
-            <div className={classes.SubTotal}>
-              <div style={{ textAlign: "right" }}>other Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                {parseFloat(otherTotal).toFixed(2)}
+            ) : null}
+            {otherTotal > 0 ? (
+              <div className={classes.SubTotal}>
+                <div style={{ textAlign: "right" }}>other Total:</div>
+                <div style={{ textAlign: "right", paddingRight: "10px" }}>
+                  {parseFloat(otherTotal).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ) : null}
-          <div className={allTotalBorder}>
-            <div style={{ textAlign: "right" }}>Grand Total:</div>
-            <div style={{ textAlign: "right", paddingRight: "10px" }}>
-              {parseFloat(allTotal).toFixed(2)}
-            </div>
+            ) : null}
           </div>
         </div>
       </Fragment>
@@ -331,9 +344,9 @@ const ReceiptModal = (props) => {
         >
           <div style={{ fontWeight: "600" }}>Recipient:</div>
           <div>
-            {props.details.order_firstName}
+            {props.details.firstName}
             {", "}
-            {props.details.order_lastName}
+            {props.details.lastName}
           </div>
         </div>
         <div
@@ -344,7 +357,7 @@ const ReceiptModal = (props) => {
             paddingBottom: "10px",
           }}
         >
-          {props.details.order_email}
+          {props.details.email}
         </div>
         <div
           style={{
@@ -373,7 +386,7 @@ const ReceiptModal = (props) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "260px 80px 70px 70px",
+            gridTemplateColumns: "60px 280px 70px 70px",
             gridGap: "10px",
             width: "510px",
             borderBottom: "1px solid black",
@@ -381,10 +394,10 @@ const ReceiptModal = (props) => {
             paddingBottom: "10px",
           }}
         >
-          <div style={{ textAlign: "left" }}>Ticket Type</div>
-          <div style={{ textAlign: "center" }}># Tickets</div>
-          <div style={{ textAlign: "center" }}>Price</div>
-          <div style={{ textAlign: "center" }}>Total</div>
+          <div style={{ textAlign: "center" }}>Quantity</div>
+          <div style={{ textAlign: "left" }}>Type</div>
+          <div style={{ textAlign: "right" }}>Price</div>
+          <div style={{ textAlign: "right" }}>Total</div>
         </div>
 
         <div
@@ -396,7 +409,7 @@ const ReceiptModal = (props) => {
         >
           {ticketsList()}
         </div>
-        <div>{paymentTypeTotals()}</div>
+        <div>{paymentTotals()}</div>
         <br></br>
 
         {modalButtons()}

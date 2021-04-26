@@ -4,8 +4,6 @@ import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./TicketModal.module.css";
 
-import { Button } from "semantic-ui-react";
-
 const TicketModal = (props) => {
   console.log("item", props.details, props.details.ticketName);
   console.log("ticketName", props.details.ticketName);
@@ -43,14 +41,15 @@ const TicketModal = (props) => {
             display: "grid",
             gridGap: "40px",
             gridTemplateColumns: "150px 150px",
-            paddingLeft: "114px"
-          }}>
-          <button className={classes.ButtonGrey}
-            onClick={props.closeModal}
-          >CANCEL DELETE</button>
-          <button className={classes.ButtonRed}
-            onClick={props.deleteTicket}
-          >DELETE TICKET</button>
+            paddingLeft: "114px",
+          }}
+        >
+          <button className={classes.ButtonGrey} onClick={props.closeModal}>
+            CANCEL DELETE
+          </button>
+          <button className={classes.ButtonRed} onClick={props.deleteTicket}>
+            DELETE TICKET
+          </button>
         </div>
         <br></br>
       </div>

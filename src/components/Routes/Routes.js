@@ -17,7 +17,6 @@ import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Authentication from "../../Users/Authentication/Authentication";
 import Slider from "../HomePage/Slider"; // THIS IS A TEST ROUTE
-import PrivateRoute from "./PrivateRoute"; // THIS IS A TEST ROUTE
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";

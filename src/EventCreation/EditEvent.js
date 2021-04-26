@@ -20,6 +20,7 @@ import classes from "./EditEvent.module.css";
 let vendorInfo = {};
 
 const EventEdit = (props) => {
+  console.log("props.event: ", props.event);
   const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [pageErrors, setPageErrors] = useState(false);
 
@@ -156,31 +157,14 @@ const EventEdit = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
-      //start section not in "createEvent"
-      if (localStorage.getItem(`eventNum`) !== null) {
-        console.log("found a valid event to edit");
-        let tempEventNum = JSON.parse(localStorage.getItem("eventNum"));
-        let tempEvents = JSON.parse(localStorage.getItem("events"));
-        let tempEventPosition;
-        tempEvents.forEach((event, index) => {
-          if (event.eventNum === tempEventNum) {
-            console.log("Found a match");
-            tempEventPosition = index;
-          }
-        });
 
-        initPhotoData(tempEvents[tempEventPosition].photo);
+      initPhotoData(props.event.photo);
 
-        const [tempTicketArray, tempDescription] = loadEventInfo(
-          tempEvents[tempEventPosition]
-        );
+      const [tempTicketArray, tempDescription] = loadEventInfo(props.event);
 
-        setTicketDetails(tempTicketArray);
-        setEventDescription(tempDescription);
-        setOriginalEventDescription(tempDescription);
-      } else {
-        console.log("Did not find a valid event to edit");
-      }
+      setTicketDetails(tempTicketArray);
+      setEventDescription(tempDescription);
+      setOriginalEventDescription(tempDescription);
     } else {
       window.location.href = "/signin";
     }
@@ -534,10 +518,10 @@ const EventEdit = (props) => {
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
-      apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
+      apiurl = `${API}/organizer/events/${eventDescription.eventNum}`;
 
       fetch(apiurl, {
-        method: "post",
+        method: "PATCH",
         headers: myHeaders,
         body: formData,
         redirect: "follow",

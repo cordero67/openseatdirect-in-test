@@ -38,7 +38,6 @@ import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackgroun
 
 import TicketItem from "./Components/TicketItem";
 import classes from "./TicketSelection.module.css";
-import { Button } from "react-scroll";
 
 let eventDetails; // defines an event's NON ticket type specific information
 let eventLogo = ""; // defines an event's image
@@ -50,6 +49,7 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const TicketSelection = () => {
+  console.log("INSIDE TICKET SELECTION");
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, registration, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
@@ -240,7 +240,7 @@ const TicketSelection = () => {
       "Authorization",
       `Bearer ${customerInformation.sessionToken}`
     );
-    let url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+    let url = `${API}/tixorder/signed_place_neworder`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,

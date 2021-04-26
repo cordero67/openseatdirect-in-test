@@ -27,23 +27,21 @@
 
 .SubTotal {
   display: grid;
-  grid-template-columns: 150px 70px;
+  grid-template-columns: 165px 70px;
   grid-gap: 10px;
   font-weight: 600;
   padding-top: 5px;
   padding-bottom: 5px;
-  margin-left: 400p;
 }
 
 .Total {
   display: grid;
-  grid-template-columns: 150px 70px;
+  grid-template-columns: 165px 70px;
   grid-gap: 10px;
   border-top: 1px solid black;
   font-weight: 600;
   padding-top: 5px;
   padding-bottom: 5px;
-  margin-left: 400p;
 }
 
 .ButtonGrey {

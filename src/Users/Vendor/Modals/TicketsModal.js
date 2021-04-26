@@ -46,8 +46,8 @@ const TicketsModal = (props) => {
     return props.details.tickets.map((ticket, index) => {
       console.log("ticket: ", ticket);
 
-      let adjustedTicketName;
-      let num = 40;
+      //let adjustedTicketName;
+      //let num = 40;
 
       /*
         //if (ticket.ticketName.length <= num) {
@@ -118,7 +118,6 @@ const TicketsModal = (props) => {
         <div
           style={{
             fontSize: "16px",
-            textAlign: "left",
             textAlign: "center",
             fontWeight: "400",
             paddingTop: "5px",

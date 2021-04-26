@@ -4,13 +4,12 @@ import { API } from "../../config";
 
 import classes from "./Orders.module.css";
 import { compareValues, getDate } from "./Resources/VendorFunctions";
-import { Button, Popup } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 
 let vendorInfo = {};
 
 const Orders = (props) => {
   const [ticketOrders, setTicketOrders] = useState(); //
-  const [orderDisplay, setOrderDisplay] = useState();
   const [isLoading, setIsLoading] = useState(true); //
   const [isSuccessfull, setIsSuccessfull] = useState(true); //
 
@@ -33,7 +32,7 @@ const Orders = (props) => {
       //vendorInfo.name = tempUser.user.name
       //console.log("vendorInfo.name: ", tempUser.user.name)
     } else {
-      //window.location.href = "/signin";
+      window.location.href = "/signin";
     }
 
     if (

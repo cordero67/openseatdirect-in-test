@@ -3,12 +3,8 @@ import { NavLink } from "react-router-dom";
 
 import { isAuthenticated } from "../../Users/apiUsers";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-
 import { signout } from "./apiSideDrawer";
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./SideDrawerItems.module.css";
 
 // determines if current menu item, i.e. "<NavLink>" is the active link

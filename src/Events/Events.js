@@ -5,8 +5,6 @@ import { API } from "../config";
 import Aux from "../hoc/Auxiliary/Auxiliary";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
-import EventsModal from "./Modals/EventsModal";
-
 import { getAllEventData } from "./apiEvents";
 
 import classes from "./Events.module.css";

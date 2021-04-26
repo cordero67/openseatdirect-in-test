@@ -76,6 +76,8 @@ const SalesAnalytics = (props) => {
     },
   ]);
 
+  const [selectedWedge, setSelectedWedge] = useState();
+
   let colorSpec = [
     "#FFC921",
     "#FFFF00",
@@ -93,7 +95,7 @@ const SalesAnalytics = (props) => {
 
   const populateEventTickets = (tickets) => {
     const tempArray = [];
-    tickets.forEach((ticket, index) => {
+    tickets.forEach((ticket) => {
       let tempElement = {};
       tempElement.ticketName = ticket.ticketName;
       tempElement.ticketId = ticket._id;
@@ -111,37 +113,24 @@ const SalesAnalytics = (props) => {
   useEffect(() => {
     let tempTicketTotals = []; // temp hold of specifc event's ticket details
     let tempRemaining = 0; // temp hold of tickets remaining
+    let tempTicketsSold = 0; // temp hold of tickets sold
+    let tempGrossRevenues = 0; // temp hold of gross revenues
+    let tempNetRevenues = 0; // temp hold of net revenues
 
+    // populates intial values in "ticketTotals" variables
     tempTicketTotals = populateEventTickets(props.event.tickets);
 
     props.event.tickets.forEach((ticket) => {
       tempRemaining += ticket.remainingQuantity;
     });
 
-    // finds the specific event within the events object
-    // extracts the event details and tickets information
-    //let tempEvents = JSON.parse(localStorage.getItem("events"));
-    let tempTicketsSold = 0;
-    let tempGrossRevenues = 0;
-    let tempNetRevenues = 0;
-
-    props.orders.forEach((order, index) => {
-      if ("qrTickets" in order) {
-        order.qrTickets.forEach((ticketOrder, index) => {
-          tempTicketsSold += 1;
-          tempGrossRevenues += ticketOrder.fullPrice;
-        });
-      }
-      tempNetRevenues += order.totalAmount;
-    });
-
-    console.log("tempTicketsSold: ", tempTicketsSold);
-    console.log("tempGrossRevenues: ", tempGrossRevenues);
-    console.log("tempNetRevenues: ", tempNetRevenues);
-
-    props.orders.forEach((order, index) => {
+    // populates temp "ticketTotals" and temp "salesTotals" variables
+    props.orders.forEach((order) => {
       if ("qrTickets" in order) {
         order.qrTickets.forEach((ticketOrder) => {
+          tempTicketsSold += 1;
+          tempGrossRevenues += ticketOrder.fullPrice;
+
           tempTicketTotals.forEach((ticket, index) => {
             if (ticket.ticketId === ticketOrder.ticketId) {
               tempTicketTotals[index].ticketsSold += 1;
@@ -151,6 +140,7 @@ const SalesAnalytics = (props) => {
           });
         });
       }
+      tempNetRevenues += order.totalAmount;
     });
 
     setSalesTotals({
@@ -164,8 +154,8 @@ const SalesAnalytics = (props) => {
 
     setTicketTotals(tempTicketTotals);
 
-    // builds the "codes" array
-    // checks that every unique postal code only appears once in the array
+    // builds "codes" array
+    // checks that every unique postal code appears once in array
     let tempCodes = [];
     props.orders.forEach((order) => {
       let match = false;
@@ -192,11 +182,10 @@ const SalesAnalytics = (props) => {
     });
     setCodes(tempCodes);
 
-    // builds the "buyers" array
-    // checks that every unique buyer email only appears once in the array
+    // builds "buyers" array
+    // checks that every unique buyer email appears once in array
     let tempBuyers = [];
     props.orders.forEach((order) => {
-      console.log("ORDER: ", order);
       let match = false;
       let matchIndex;
       let newEmail = order.email;
@@ -224,58 +213,49 @@ const SalesAnalytics = (props) => {
     console.log("temp buyers: ", tempBuyers);
     setBuyers(tempBuyers);
 
-    // "createdAtTime" is the time in milliseconds of the event creation date
-    let createdAtTime = new Date(
+    // builds "dateSales" array
+    let tempDateSales = [];
+
+    // "startTime": time in milliseconds of event creation date
+    let startTime = new Date(
       dateFnsFormat(new Date(props.event.createdAt), "MM/dd/yy")
     ).getTime();
 
-    // "nowTime" is the time in milliseconds of now()
-    let nowTime = new Date(dateFnsFormat(new Date(), "MM/dd/yy")).getTime();
+    let nowTime = new Date(dateFnsFormat(new Date(), "MM/dd/yy")).getTime(); // time in milliseconds of now()
 
-    let startTime = createdAtTime;
-    // array to house the total ticket revenues and sales for each date
-    let tempDateArray = [];
-
-    // populates "tempDateArray" with an array of empty objects, one for each date
+    // populates "tempDateSales" with array of empty objects, one per date
     while (startTime <= nowTime) {
       let tempElement = {};
-      tempElement.startTime = startTime; //
-      tempElement.endTime = startTime + 86400000; //
-      tempElement.date = dateFnsFormat(
-        //
-        new Date(startTime),
-        "EEE: MM/dd/yy"
-      );
-      tempElement.ticketsSold = 0; //
-      tempElement.grossRevenues = 0; //
-      tempElement.orders = 0; //
-      tempElement.netRevenues = 0; //
-      tempElement.displayDetail = false; //
+      tempElement.startTime = startTime;
+      tempElement.endTime = startTime + 86400000;
+      tempElement.date = dateFnsFormat(new Date(startTime), "EEE: MM/dd/yy");
+      tempElement.ticketsSold = 0;
+      tempElement.grossRevenues = 0;
+      tempElement.orders = 0;
+      tempElement.netRevenues = 0;
+      tempElement.displayDetail = false;
       startTime += 86400000;
-      tempDateArray.push(tempElement);
+      tempDateSales.push(tempElement);
     }
 
-    // populating
-    props.orders.forEach((order, index1) => {
-      // determines the "orderTime" of each individual order
-      let orderTime = new Date(order.createdAt).getTime();
+    // populates "dateSales" array
+    props.orders.forEach((order) => {
+      let orderTime = new Date(order.createdAt).getTime(); // "orderTime" of each individual order
 
-      tempDateArray.forEach((date, index2) => {
+      tempDateSales.forEach((date, index) => {
         if (orderTime >= date.startTime && orderTime < date.endTime) {
-          tempDateArray[index2].ticketsSold += order.numTickets;
-          tempDateArray[index2].orders += 1;
-          tempDateArray[index2].netRevenues += order.totalAmount;
+          tempDateSales[index].ticketsSold += order.numTickets;
+          tempDateSales[index].orders += 1;
+          tempDateSales[index].netRevenues += order.totalAmount;
         }
       });
     });
-    console.log("tempDateArray: ", tempDateArray);
-    setDateSales(tempDateArray);
+    setDateSales(tempDateSales);
 
-    // array to house the total ticket revenues and sales for each date
+    // builds "onlinePayments" and "offlinePayments" arrays
     let tempOfflinePayments = offlinePayments;
     let tempOnlinePayments = onlinePayments;
-    // populating
-    props.orders.forEach((order, index1) => {
+    props.orders.forEach((order) => {
       if ("offlinePayment" in order) {
         order.offlinePayment.forEach((payment) => {
           if (payment.payMethod === "cash") {
@@ -311,28 +291,48 @@ const SalesAnalytics = (props) => {
     setOfflinePayments(tempOfflinePayments);
   }, []);
 
-  const [selectedWedge, setSelectedWedge] = useState();
+  const netTable = () => {
+    return (
+      <div className={classes.NetTableGrid}>
+        <div
+          style={{
+            borderLeft: "1px solid grey",
+            borderTop: "1px solid grey",
+            borderBottom: "1px solid grey",
+          }}
+        >
+          <div className={classes.NetSalesAmount}>
+            ${parseFloat(salesTotals.netRevenues).toFixed(2)}
+          </div>
+          <div className={classes.NetSalesCategory}>Total Revenue</div>
+        </div>
+        <div style={{ border: "1px solid grey" }}>
+          <div className={classes.NetSalesAmount}>
+            {salesTotals.ticketsSold}
+          </div>
+          <div className={classes.NetSalesCategory}>Tickets Issued</div>
+        </div>
+        <div
+          style={{
+            borderRight: "1px solid grey",
+            borderTop: "1px solid grey",
+            borderBottom: "1px solid grey",
+          }}
+        >
+          <div className={classes.NetSalesAmount}>{props.orders.length}</div>
+          <div className={classes.NetSalesCategory}>Total Orders</div>
+        </div>
+      </div>
+    );
+  };
 
   const tickets = () => {
     return (
       <div>
         {ticketTotals.map((ticket, index) => {
           return (
-            <div
-              key={index}
-              style={{
-                textAlign: "center",
-                display: "grid",
-                columnGap: "10px",
-                gridTemplateColumns: "320px 60px 60px 80px",
-              }}
-            >
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "20px 320px",
-                }}
-              >
+            <div key={index} className={classes.TicketsGrid}>
+              <div className={classes.TicketType}>
                 <div
                   style={{ backgroundColor: colorSpec[index], width: "15px" }}
                 ></div>
@@ -365,41 +365,19 @@ const SalesAnalytics = (props) => {
 
   const ticketsTable = () => {
     return (
-      <div
-        style={{
-          paddingLeft: "30px",
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "320px 60px 60px 80px",
-            columnGap: "10px",
-            fontWeight: "600",
-          }}
-        >
+      <div>
+        <div className={classes.TicketsGrid} style={{ fontWeight: "600" }}>
           <div>Ticket Type</div>
           <div style={{ textAlign: "center" }}>Issued</div>
           <div style={{ textAlign: "center" }}>Remaining</div>
           <div style={{ textAlign: "center" }}>Revenue</div>
         </div>
-        <div
-          style={{
-            borderTop: "1px solid black",
-            borderBottom: "1px solid black",
-            width: "550px",
-          }}
-        >
+        <div className={classes.TicketsSection}>
           <div>{tickets()}</div>
         </div>
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "320px 60px 60px 80px",
-            columnGap: "10px",
-            fontWeight: "600",
-            paddingBottom: "30px",
-          }}
+          className={classes.TicketsGrid}
+          style={{ fontWeight: "600", paddingBottom: "30px" }}
         >
           <div>Totals</div>
           <div style={{ textAlign: "center" }}>{salesTotals.ticketsSold}</div>
@@ -444,11 +422,7 @@ const SalesAnalytics = (props) => {
 
     return (
       <PieChart
-        style={{
-          fontFamily:
-            '"Nunito Sans", -apple-system, Helvetica, Arial, sans-serif',
-          fontSize: "6px",
-        }}
+        className={classes.PieChart}
         data={pieData}
         onClick={(e, segmentIndex) => {
           console.log("Clicked wedge ", segmentIndex);
@@ -473,51 +447,19 @@ const SalesAnalytics = (props) => {
 
   const ticketsCharts = (
     <Fragment>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "200px 200px",
-          columnGap: "50px",
-          fontWeight: "600",
-          textAlign: "center",
-          textDecoration: "underline",
-          paddingLeft: "80px",
-          paddingBottom: "5px",
-        }}
-      >
+      <div className={classes.TicketChartsNameGrid}>
         <div>Tickets Issued</div>
         <div>Ticket Revenues</div>
       </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "200px 200px",
-          columnGap: "50px",
-          fontWeight: "600",
-          paddingLeft: "80px",
-          paddingBottom: "20px",
-        }}
-      >
-        <div
-          style={{
-            textAlign: "center",
-            width: "200px",
-            paddingBottom: "20px",
-          }}
-        >
+      <div className={classes.TicketChartsGrid}>
+        <div className={classes.PieChartSection}>
           {salesTotals.ticketsSold > 0 ? (
             pieChart("ticketsSold")
           ) : (
             <div>NONE</div>
           )}
         </div>
-        <div
-          style={{
-            textAlign: "center",
-            width: "200px",
-            paddingBottom: "20px",
-          }}
-        >
+        <div className={classes.PieChartSection}>
           {salesTotals.netRevenues > 0 ? (
             pieChart("netRevenues")
           ) : (
@@ -533,15 +475,7 @@ const SalesAnalytics = (props) => {
       <div>
         {dateSales.map((date, index) => {
           return (
-            <div
-              key={index}
-              style={{
-                textAlign: "center",
-                display: "grid",
-                columnGap: "10px",
-                gridTemplateColumns: "200px 60px 60px 80px",
-              }}
-            >
+            <div key={index} className={classes.DatesGrid}>
               <div style={{ textAlign: "left" }}>{date.date}</div>
               <div style={{ textAlign: "center" }}>{date.orders}</div>
               <div style={{ textAlign: "center" }}>{date.ticketsSold}</div>
@@ -557,60 +491,25 @@ const SalesAnalytics = (props) => {
 
   const datesTable = () => {
     return (
-      <div
-        style={{
-          paddingLeft: "30px",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              textAlign: "center",
-              display: "grid",
-              columnGap: "10px",
-              gridTemplateColumns: "200px 60px 60px 80px",
-              fontWeight: "600",
-            }}
-          >
-            <div style={{ textAlign: "left" }}>Date</div>
-            <div style={{ textAlign: "center" }}>Orders</div>
-            <div style={{ textAlign: "center" }}>Tickets</div>
-            <div style={{ textAlign: "center" }}>Revenue</div>
-          </div>
-
-          <div
-            style={{
-              borderTop: "1px solid black",
-              borderBottom: "1px solid black",
-              maxHeight: "195px",
-              width: "440px",
-              scrollbarWidth: "thin",
-              overflowY: "auto",
-            }}
-          >
-            {dates()}
-          </div>
-          <div
-            style={{
-              display: "grid",
-              columnGap: "10px",
-              gridTemplateColumns: "200px 60px 60px 80px",
-              fontWeight: "600",
-            }}
-          >
-            <div>Totals</div>
-            <div style={{ textAlign: "center" }}>{props.orders.length}</div>
-            <div style={{ textAlign: "center" }}>{salesTotals.ticketsSold}</div>
-            <div style={{ textAlign: "right", paddingRight: "10px" }}>
-              {parseFloat(salesTotals.netRevenues).toFixed(2)}
-            </div>
+      <div>
+        <div className={classes.DatesGrid} style={{ fontWeight: "600" }}>
+          <div style={{ textAlign: "left" }}>Date</div>
+          <div style={{ textAlign: "center" }}>Orders</div>
+          <div style={{ textAlign: "center" }}>Tickets</div>
+          <div style={{ textAlign: "center" }}>Revenue</div>
+        </div>
+        <div className={classes.DatesSection}>{dates()}</div>
+        <div className={classes.DatesGrid} style={{ fontWeight: "600" }}>
+          <div style={{ textAlign: "left" }}>Totals</div>
+          <div style={{ textAlign: "center" }}>{props.orders.length}</div>
+          <div style={{ textAlign: "center" }}>{salesTotals.ticketsSold}</div>
+          <div style={{ textAlign: "right", paddingRight: "10px" }}>
+            {parseFloat(salesTotals.netRevenues).toFixed(2)}
           </div>
         </div>
       </div>
     );
   };
-
-  const datesCharts = () => {};
 
   const postalCodes = () => {
     return (
@@ -623,18 +522,9 @@ const SalesAnalytics = (props) => {
             tempPostalCode = code.postalCode;
           }
           return (
-            <div
-              key={index}
-              style={{
-                textAlign: "center",
-                display: "grid",
-                columnGap: "10px",
-                gridTemplateColumns: "200px 100px 65px",
-              }}
-            >
+            <div key={index} className={classes.PostalCodesGrid}>
               <div style={{ textAlign: "left" }}>{tempPostalCode}</div>
               <div style={{ textAlign: "center" }}>{code.ticketsPurchased}</div>
-
               <div style={{ textAlign: "right", paddingRight: "5px" }}>
                 {code.salesRevenues.toFixed(2)}
               </div>
@@ -647,45 +537,15 @@ const SalesAnalytics = (props) => {
 
   const postalCodesTable = () => {
     return (
-      <div
-        style={{
-          paddingLeft: "30px",
-        }}
-      >
-        <div
-          style={{
-            textAlign: "center",
-            display: "grid",
-            columnGap: "10px",
-            gridTemplateColumns: "200px 100px 65px",
-            fontWeight: "600",
-          }}
-        >
+      <div>
+        <div className={classes.PostalCodesGrid} style={{ fontWeight: "600" }}>
           <div style={{ textAlign: "left" }}>Postal Code</div>
           <div style={{ textAlign: "center" }}>Tickets</div>
           <div style={{ textAlign: "center" }}>Amount</div>
         </div>
 
-        <div
-          style={{
-            borderTop: "1px solid black",
-            borderBottom: "1px solid black",
-            maxHeight: "100px",
-            width: "395px",
-            scrollbarWidth: "thin",
-            overflowY: "auto",
-          }}
-        >
-          {postalCodes()}
-        </div>
-        <div
-          style={{
-            display: "grid",
-            columnGap: "10px",
-            gridTemplateColumns: "200px 100px 65px",
-            fontWeight: "600",
-          }}
-        >
+        <div className={classes.PostalCodesSection}>{postalCodes()}</div>
+        <div className={classes.PostalCodesGrid} style={{ fontWeight: "600" }}>
           <div>Totals</div>
           <div style={{ textAlign: "center" }}>{salesTotals.ticketsSold}</div>
           <div style={{ textAlign: "right", paddingRight: "5px" }}>
@@ -701,14 +561,7 @@ const SalesAnalytics = (props) => {
       <div>
         {buyers.map((buyer, index) => {
           return (
-            <div
-              style={{
-                textAlign: "center",
-                display: "grid",
-                columnGap: "10px",
-                gridTemplateColumns: "200px 100px 60px 65px",
-              }}
-            >
+            <div key={index} className={classes.CustomersGrid}>
               <div style={{ textAlign: "left" }}>{buyer.email}</div>
               <div style={{ textAlign: "left" }}>
                 {buyer.lastname}, {buyer.firstname}
@@ -729,53 +582,22 @@ const SalesAnalytics = (props) => {
 
   const customersTable = () => {
     return (
-      <div
-        style={{
-          paddingLeft: "30px",
-        }}
-      >
-        <div
-          style={{
-            textAlign: "center",
-            display: "grid",
-            columnGap: "10px",
-            gridTemplateColumns: "200px 100px 60px 65px",
-            fontWeight: "600",
-          }}
-        >
+      <div>
+        <div className={classes.CustomersGrid} style={{ fontWeight: "600" }}>
           <div style={{ textAlign: "left" }}>Email</div>
           <div style={{ textAlign: "left" }}>Last, First</div>
           <div style={{ textAlign: "center" }}>Tickets</div>
           <div style={{ textAlign: "center" }}>Amount</div>
         </div>
-        <div
-          style={{
-            borderTop: "1px solid black",
-            borderBottom: "1px solid black",
-            maxHeight: "100px",
-            width: "470px",
-            scrollbarWidth: "thin",
-            overflowY: "auto",
-          }}
-        >
-          {customers()}
-        </div>
+        <div className={classes.CustomersSection}>{customers()}</div>
       </div>
     );
   };
 
-  const customersCharts = () => {};
-
   const payments = () => {
     return (
       <div>
-        <div
-          style={{
-            display: "grid",
-            columnGap: "10px",
-            gridTemplateColumns: "150px 65px",
-          }}
-        >
+        <div className={classes.PaymentsGrid}>
           <div style={{ fontWeight: "600" }}>Online Payments</div>
           <div style={{ textAlign: "right", paddingRight: "5px" }}>
             {onlinePayments.online.toFixed(2)}
@@ -784,14 +606,7 @@ const SalesAnalytics = (props) => {
         <div style={{ fontWeight: "600" }}>Offline</div>
         {Object.entries(offlinePayments).map(([key, val]) => {
           return (
-            <div
-              key={key}
-              style={{
-                display: "grid",
-                columnGap: "10px",
-                gridTemplateColumns: "150px 65px",
-              }}
-            >
+            <div key={key} className={classes.PaymentsGrid}>
               <div>{key}</div>
               <div style={{ textAlign: "right", paddingRight: "5px" }}>
                 {val.toFixed(2)}
@@ -806,30 +621,11 @@ const SalesAnalytics = (props) => {
   const paymentsTable = () => {
     return (
       <Fragment>
-        <div
-          style={{
-            textAlign: "center",
-            display: "grid",
-            columnGap: "10px",
-            gridTemplateColumns: "150px 65px",
-            fontWeight: "600",
-            marginLeft: "30px",
-          }}
-        >
+        <div className={classes.PaymentsGrid} style={{ fontWeight: "600" }}>
           <div style={{ textAlign: "left" }}>Payment Method</div>
           <div style={{ textAlign: "center" }}>Amount</div>
         </div>
-        <div
-          style={{
-            borderTop: "1px solid black",
-            borderBottom: "1px solid black",
-            width: "225px",
-            marginLeft: "30px",
-            marginBottom: "40px",
-          }}
-        >
-          {payments()}
-        </div>
+        <div className={classes.PaymentsSection}>{payments()}</div>
       </Fragment>
     );
   };
@@ -837,9 +633,7 @@ const SalesAnalytics = (props) => {
   const tabTitle = (
     <div className={classes.DisplayPanelTitle}>
       {"eventTitle" in props.event ? (
-        <div style={{ fontSize: "26px", fontWeight: "600" }}>
-          {props.event.eventTitle}
-        </div>
+        <div className={classes.TabTitle}>{props.event.eventTitle}</div>
       ) : (
         <div>{null}</div>
       )}
@@ -860,101 +654,28 @@ const SalesAnalytics = (props) => {
     <div>
       {tabTitle}{" "}
       <div className={classes.DisplayPanel}>
-        <div
-          className={classes.DisplayTitle}
-          style={{
-            fontSize: "18px",
-            fontWeight: "600",
-            paddingTop: "20px",
-            paddingLeft: "30px",
-          }}
-        >
-          Sales Analytics
-        </div>
+        <div className={classes.DisplayTitle}>Sales Analytics</div>
         <br></br>
-        <div className={classes.DisplayTitle}>Net Sales</div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "175px 175px 175px",
-            paddingLeft: "30px",
-            paddingRight: "30px",
-            paddingBottom: "30px",
-          }}
-        >
-          <div
-            style={{
-              borderLeft: "1px solid grey",
-              borderTop: "1px solid grey",
-              borderBottom: "1px solid grey",
-            }}
-          >
-            <div className={classes.NetSalesAmount} z>
-              ${parseFloat(salesTotals.netRevenues).toFixed(2)}
-            </div>
-            <div className={classes.NetSalesCategory}>Total Revenue</div>
-          </div>
-          <div style={{ border: "1px solid grey" }}>
-            <div className={classes.NetSalesAmount}>
-              {salesTotals.ticketsSold}
-            </div>
-            <div className={classes.NetSalesCategory}>Tickets Issued</div>
-          </div>
-          <div
-            style={{
-              borderRight: "1px solid grey",
-              borderTop: "1px solid grey",
-              borderBottom: "1px solid grey",
-            }}
-          >
-            <div className={classes.NetSalesAmount}>{props.orders.length}</div>
-            <div className={classes.NetSalesCategory}>Total Orders</div>
-          </div>
+        <div className={classes.SectionTitle}>Net Sales</div>
+        <div className={classes.AnalyticsSection}>{netTable()}</div>
+
+        <div className={classes.SectionTitle}>by Ticket Type</div>
+        <div className={classes.AnalyticsSection}>
+          {ticketsTable()}
+          {ticketsCharts}
         </div>
 
-        <div className={classes.DisplayTitle}>by Ticket Type</div>
-        {ticketsTable()}
-        {ticketsCharts}
+        <div className={classes.SectionTitle}>by Date</div>
+        <div className={classes.AnalyticsSection}>{datesTable()}</div>
 
-        <div className={classes.DisplayTitle}>by Date</div>
-        <div
-          style={{
-            paddingBottom: "40px",
-          }}
-        >
-          {datesTable()}
-          {/*datesCharts*/}
-        </div>
+        <div className={classes.SectionTitle}>by Postal Code</div>
+        <div className={classes.AnalyticsSection}>{postalCodesTable()}</div>
 
-        <div className={classes.DisplayTitle}>by Postal Code</div>
-        <div
-          style={{
-            paddingBottom: "40px",
-          }}
-        >
-          {postalCodesTable()}
-          {/*postalCodesChart*/}
-        </div>
+        <div className={classes.SectionTitle}>by Customer</div>
+        <div className={classes.AnalyticsSection}>{customersTable()}</div>
 
-        <div className={classes.DisplayTitle}>by Customer</div>
-        <div
-          style={{
-            paddingBottom: "40px",
-          }}
-        >
-          {customersTable()}
-          {/*customersCharts*/}
-        </div>
-
-        <div className={classes.DisplayTitle}>by Payment Method</div>
-        <div
-          style={{
-            paddingBottom: "40px",
-          }}
-        >
-          {paymentsTable()}
-          {/*methodCharts*/}
-        </div>
+        <div className={classes.SectionTitle}>by Payment Method</div>
+        <div className={classes.AnalyticsSection}>{paymentsTable()}</div>
       </div>
     </div>
   );

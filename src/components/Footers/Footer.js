@@ -4,7 +4,6 @@ import Logo from "../Logo/Logo";
 import logo from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 
 import styles from "./Footer.module.css";
-import { NonceProvider } from "react-select";
 
 const Footer = () => {
   const [showLargeFooter, setShowLargeFooter] = useState(false);
@@ -58,6 +57,7 @@ const Footer = () => {
             >
               Terms and Conditions
             </button>
+            | v1.0
           </div>
         </div>
       </div>
@@ -92,6 +92,7 @@ const Footer = () => {
             >
               Terms and Conditions
             </button>
+            | v1.0
           </div>
         </div>
       </div>

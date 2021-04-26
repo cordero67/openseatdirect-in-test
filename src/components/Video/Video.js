@@ -10,10 +10,10 @@ const Video = () => {
   // [isRestyling, setIsRestyling] = useState(false);
   const [youTubeDimensions, setYouTubeDimensions] = useState({
     width: "640",
-    height: "360"
+    height: "360",
   });
 
-  const _onReady = event => {
+  const _onReady = (event) => {
     event.target.pauseVideo();
   };
 
@@ -26,15 +26,15 @@ const Video = () => {
       start: 0,
       playsinline: 1,
       modestbranding: 1,
-      rel: 0
-    }
+      rel: 0,
+    },
   };
 
   const resetOpts = (newWidth, newHeight) => {
     //setIsRestyling(true);
     setYouTubeDimensions({
       width: newWidth,
-      height: newHeight
+      height: newHeight,
     });
     opts = {
       width: youTubeDimensions.width,
@@ -45,14 +45,14 @@ const Video = () => {
         start: 0,
         playsinline: 1,
         modestbranding: 1,
-        rel: 0
-      }
+        rel: 0,
+      },
     };
     //setIsRestyling(false);
   };
 
   const stylingUpdate = (inWidth, inHeight) => {
-    console.log("stylingUpdate")
+    console.log("stylingUpdate");
     // based on window width, displays one or two panes
     let width;
     let height;
@@ -78,17 +78,17 @@ const Video = () => {
   useEffect(() => {
     setYouTubeDimensions({
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     });
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
 
-  window.onresize = function(event) {
-    console.log("resized")
+  window.onresize = function (event) {
+    console.log("resized");
     let width;
     let height;
     if (window.innerWidth < 330) {
-      console.log("resized")
+      console.log("resized");
       height = "174.375";
       width = "310";
     } else if (window.innerWidth < 380) {
