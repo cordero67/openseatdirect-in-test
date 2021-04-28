@@ -116,8 +116,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/terms
-        conditions"
+        path="/termsconditions"
         exact
         render={(routeProps) => (
           <React.Fragment>
