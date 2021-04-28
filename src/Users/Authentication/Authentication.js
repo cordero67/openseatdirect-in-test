@@ -142,7 +142,7 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     // USED BY CURRENT CODE APRIL 17, 2021
-    let url = `${API}/auth/signin_email`;
+    let url = `${API}/auth/signin/email`;
     let information = {
       email: email,
       password: password,

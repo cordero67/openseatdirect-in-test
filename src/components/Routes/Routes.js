@@ -98,7 +98,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/privacy-policy"
+        path="/privacypolicy"
         exact
         render={(routeProps) => (
           <React.Fragment>

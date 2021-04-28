@@ -8,6 +8,7 @@ import SalesAnalytics from "./SalesAnalytics";
 import TicketSales from "./TicketSales";
 import IssueTickets from "./IssueTickets";
 import EditEvent from "../../EventCreation/EditEvent";
+// CURRENTLY NOT USING THIS TAB
 import Orders from "./Orders";
 import CreateEvent from "../../EventCreation/CreateEvent";
 import Account from "./Account";
@@ -29,7 +30,6 @@ const VendorAccount = () => {
     let tempData = JSON.parse(localStorage.getItem("user"));
     if ("user" in tempData && "accountId" in tempData.user) {
       let tempAccountId = tempData.user.accountId;
-
       let hasLinkIds = false;
       let hasPaid = false;
       if (tempAccountId.ticketPlan === "free") {
@@ -38,7 +38,6 @@ const VendorAccount = () => {
       if (tempAccountId.ticketPlan === "comp") {
         hasPaid = true;
       }
-
       if (
         "paymentGatewayType" in tempAccountId &&
         tempAccountId.paymentGatewayType === "PayPalExpress" &&
@@ -47,7 +46,6 @@ const VendorAccount = () => {
       ) {
         hasLinkIds = true;
       }
-
       if (
         "paymentGatewayType" in tempAccountId &&
         tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
@@ -64,23 +62,18 @@ const VendorAccount = () => {
       ) {
         hasPaid = true;
       }
-
       if (!hasPaid && !hasLinkIds) {
         return 4;
       }
-
       if (!hasPaid && hasLinkIds) {
         return 5;
       }
-
       if (hasPaid && !hasLinkIds) {
         return 6;
       }
-
       if (hasPaid && hasLinkIds) {
         return 8;
       }
-
       return 4;
     } else return 0;
   };
@@ -107,19 +100,19 @@ const VendorAccount = () => {
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("Authorization", "Bearer " + vendorToken);
-      let requestOptionsA = {
+      let requestOptionsGET = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
       };
-      let requestOptionsB = {
+      let requestOptionsPOST = {
         method: "POST",
         headers: myHeaders,
         redirect: "follow",
       };
       let fetchstr = `${API}/organizer/events`;
 
-      fetch(fetchstr, requestOptionsA)
+      fetch(fetchstr, requestOptionsGET)
         .then(handleErrors)
         .then((response) => response.text())
         .then((result) => {
@@ -128,7 +121,7 @@ const VendorAccount = () => {
           jsEvents.sort(compareValues("startDateTime", "asc"));
           setEventDescriptions(jsEvents);
           fetchstr = `${API}/reports/organizer`;
-          fetch(fetchstr, requestOptionsB)
+          fetch(fetchstr, requestOptionsPOST)
             .then(handleErrors)
             .then((response) => response.text())
             .then((result) => {
@@ -176,11 +169,11 @@ const VendorAccount = () => {
         console.log("ORDERS: ", jsOrders);
         jsOrders.sort(compareValues("createdAt", "asc"));
         setEventOrders(jsOrders);
-        //setDisplay("events");
       })
       .catch((error) => {
+        // no error is shown to user
+        // orders are not updated but older order information still exists
         console.log("error", error);
-        //setDisplay("connection");
       });
   };
 
@@ -222,7 +215,6 @@ const VendorAccount = () => {
           ticketSales={(event, orders) => {
             setSelectedEvent(event);
             setSelectedOrders(orders);
-
             setDisplay("ticketSales");
           }}
           issueTickets={(event) => {
@@ -240,7 +232,7 @@ const VendorAccount = () => {
         <SalesAnalytics
           event={selectedEvent}
           orders={selectedOrders}
-          clicked={() => {
+          toEvents={() => {
             setDisplay("events");
           }}
         />
@@ -250,7 +242,7 @@ const VendorAccount = () => {
         <TicketSales
           event={selectedEvent}
           orders={selectedOrders}
-          clicked={() => {
+          toEvents={() => {
             setDisplay("events");
           }}
         />
@@ -260,10 +252,9 @@ const VendorAccount = () => {
         <IssueTickets
           event={selectedEvent}
           confirmed={() => {
-            console.log("CONFIRMED");
             reloadOrders();
           }}
-          clicked={() => {
+          toEvents={() => {
             setDisplay("events");
           }}
         />
@@ -273,12 +264,13 @@ const VendorAccount = () => {
       return (
         <EditEvent
           event={selectedEvent}
-          clicked={() => {
+          toEvents={() => {
             setDisplay("events");
           }}
         />
       );
     } else if (display === "orders") {
+      // CURRENTLY NOT USING THIS TAB
       return <Orders />;
     } else if (display === "create") {
       return <CreateEvent />;

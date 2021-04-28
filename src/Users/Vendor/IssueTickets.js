@@ -194,8 +194,8 @@ const IssueTickets = (props) => {
       })
       .then((data) => {
         console.log("fetch return got back data:", data);
-        setModalView("confirmation");
         props.confirmed();
+        setModalView("confirmation");
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -758,7 +758,7 @@ const IssueTickets = (props) => {
         <button
           className={classes.SwitchButton}
           onClick={() => {
-            props.clicked("events");
+            props.toEvents("events");
           }}
         >
           Switch Event

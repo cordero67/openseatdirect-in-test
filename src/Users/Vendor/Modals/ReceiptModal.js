@@ -9,15 +9,6 @@ const ReceiptModal = (props) => {
 
   let netTotal = 0;
   let grossTotal = 0;
-  let payPalExpressTotal = 0;
-  let cashTotal = 0;
-  let cashAppTotal = 0;
-  let venmoTotal = 0;
-  let paypalTotal = 0;
-  let bitcoinTotal = 0;
-  let ethereumTotal = 0;
-  let dogecoinTotal = 0;
-  let otherTotal = 0;
 
   // create an array of objects to hold transactions by ticket type
   let orderDetails = [];
@@ -175,32 +166,6 @@ const ReceiptModal = (props) => {
       }
     };
 
-    if (props.details.isOffline) {
-      console.log("OFFLINE PAYMENT");
-      props.details.offlinePayment.forEach((payment) => {
-        console.log(payment.amt, "---", payment.payMethod);
-        if (payment.payMethod === "cash") {
-          cashTotal += payment.amt;
-        } else if (payment.payMethod === "CashApp") {
-          cashAppTotal += payment.amt;
-        } else if (payment.payMethod === "Venmo") {
-          venmoTotal += payment.amt;
-        } else if (payment.payMethod === "Paypal") {
-          paypalTotal += payment.amt;
-        } else if (payment.payMethod === "Bitcoin") {
-          bitcoinTotal += payment.amt;
-        } else if (payment.payMethod === "Ethereum") {
-          ethereumTotal += payment.amt;
-        } else if (payment.payMethod === "Dogecoin") {
-          dogecoinTotal += payment.amt;
-        } else if (payment.payMethod === "PayPal Express") {
-          payPalExpressTotal += payment.amt;
-        } else {
-          otherTotal += payment.amt;
-        }
-      });
-    }
-
     return (
       <Fragment>
         <div
@@ -218,84 +183,6 @@ const ReceiptModal = (props) => {
           }}
         >
           {grandTotals()}
-          <div
-            style={{
-              borderTop: "1px solid black",
-            }}
-          >
-            {payPalExpressTotal > 0 ? (
-              <div className={classes.SubTotal}>
-                <div style={{ textAlign: "right" }}>PayPal Express Total:</div>
-                <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                  {parseFloat(payPalExpressTotal).toFixed(2)}
-                </div>
-              </div>
-            ) : null}
-            {cashTotal > 0 ? (
-              <div className={classes.SubTotal}>
-                <div style={{ textAlign: "right" }}>cash Total:</div>
-                <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                  {parseFloat(cashTotal).toFixed(2)}
-                </div>
-              </div>
-            ) : null}
-            {cashAppTotal > 0 ? (
-              <div className={classes.SubTotal}>
-                <div style={{ textAlign: "right" }}>CashApp Total:</div>
-                <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                  {parseFloat(cashAppTotal).toFixed(2)}
-                </div>
-              </div>
-            ) : null}
-            {venmoTotal > 0 ? (
-              <div className={classes.SubTotal}>
-                <div style={{ textAlign: "right" }}>Venmo Total:</div>
-                <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                  {parseFloat(venmoTotal).toFixed(2)}
-                </div>
-              </div>
-            ) : null}
-            {paypalTotal > 0 ? (
-              <div className={classes.SubTotal}>
-                <div style={{ textAlign: "right" }}>PayPal Total:</div>
-                <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                  {parseFloat(paypalTotal).toFixed(2)}
-                </div>
-              </div>
-            ) : null}
-            {bitcoinTotal > 0 ? (
-              <div className={classes.SubTotal}>
-                <div style={{ textAlign: "right" }}>Bitcoin Total:</div>
-                <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                  {parseFloat(bitcoinTotal).toFixed(2)}
-                </div>
-              </div>
-            ) : null}
-            {ethereumTotal > 0 ? (
-              <div className={classes.SubTotal}>
-                <div style={{ textAlign: "right" }}>Ethereum Total:</div>
-                <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                  {parseFloat(ethereumTotal).toFixed(2)}
-                </div>
-              </div>
-            ) : null}
-            {dogecoinTotal > 0 ? (
-              <div className={classes.SubTotal}>
-                <div style={{ textAlign: "right" }}>Dogecoin Total:</div>
-                <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                  {parseFloat(dogecoinTotal).toFixed(2)}
-                </div>
-              </div>
-            ) : null}
-            {otherTotal > 0 ? (
-              <div className={classes.SubTotal}>
-                <div style={{ textAlign: "right" }}>other Total:</div>
-                <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                  {parseFloat(otherTotal).toFixed(2)}
-                </div>
-              </div>
-            ) : null}
-          </div>
         </div>
       </Fragment>
     );
@@ -336,7 +223,7 @@ const ReceiptModal = (props) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "90px 400px",
+            gridTemplateColumns: "110px 380px",
             fontSize: "16px",
             textAlign: "left",
             paddingBottom: "10px",
@@ -353,7 +240,7 @@ const ReceiptModal = (props) => {
           style={{
             fontSize: "16px",
             textAlign: "left",
-            paddingLeft: "90px",
+            paddingLeft: "110px",
             paddingBottom: "10px",
           }}
         >
@@ -362,7 +249,7 @@ const ReceiptModal = (props) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "90px 400px",
+            gridTemplateColumns: "110px 380px",
             fontSize: "16px",
             textAlign: "left",
             paddingBottom: "10px",
@@ -373,14 +260,24 @@ const ReceiptModal = (props) => {
         </div>
         <div
           style={{
+            display: "grid",
+            gridTemplateColumns: "110px 380px",
+            fontSize: "16px",
+            textAlign: "left",
+            paddingBottom: "10px",
+          }}
+        >
+          <div style={{ fontWeight: "600" }}>Order Number:</div>
+          <div>{props.details.osdOrderId}</div>
+        </div>
+        <div
+          style={{
             fontSize: "16px",
             textAlign: "left",
             paddingLeft: "80px",
             paddingBottom: "10px",
           }}
-        >
-          {/*"message" in props.details.recipient ? props.details.recipient.message : null*/}
-        </div>
+        ></div>
         <br></br>
 
         <div
@@ -421,3 +318,133 @@ const ReceiptModal = (props) => {
 };
 
 export default ReceiptModal;
+
+// KEEP ALL THIS CODE
+// THIS SUPPORTS POTENTIAL CASH PAYMENT DISPLAY INFORMATION
+
+/*
+  let payPalExpressTotal = 0;
+  let cashTotal = 0;
+  let cashAppTotal = 0;
+  let venmoTotal = 0;
+  let paypalTotal = 0;
+  let bitcoinTotal = 0;
+  let ethereumTotal = 0;
+  let dogecoinTotal = 0;
+  let otherTotal = 0;
+*/
+
+/*
+{"message" in props.details.recipient ? props.details.recipient.message : null}
+*/
+
+/*
+if (props.details.isOffline) {
+  console.log("OFFLINE PAYMENT");
+  props.details.offlinePayment.forEach((payment) => {
+    console.log(payment.amt, "---", payment.payMethod);
+    if (payment.payMethod === "cash") {
+      cashTotal += payment.amt;
+    } else if (payment.payMethod === "CashApp") {
+      cashAppTotal += payment.amt;
+    } else if (payment.payMethod === "Venmo") {
+      venmoTotal += payment.amt;
+    } else if (payment.payMethod === "Paypal") {
+      paypalTotal += payment.amt;
+    } else if (payment.payMethod === "Bitcoin") {
+      bitcoinTotal += payment.amt;
+    } else if (payment.payMethod === "Ethereum") {
+      ethereumTotal += payment.amt;
+    } else if (payment.payMethod === "Dogecoin") {
+      dogecoinTotal += payment.amt;
+    } else if (payment.payMethod === "PayPal Express") {
+      payPalExpressTotal += payment.amt;
+    } else {
+      otherTotal += payment.amt;
+    }
+  });
+}
+*/
+
+/*
+<div
+  style={{
+    borderTop: "1px solid black",
+  }}
+>
+  {payPalExpressTotal > 0 ? (
+    <div className={classes.SubTotal}>
+      <div style={{ textAlign: "right" }}>
+        PayPal Express payment:
+      </div>
+      <div style={{ textAlign: "right", paddingRight: "10px" }}>
+        {parseFloat(payPalExpressTotal).toFixed(2)}
+      </div>
+    </div>
+  ) : null}
+  {cashTotal > 0 ? (
+    <div className={classes.SubTotal}>
+      <div style={{ textAlign: "right" }}>cash payment:</div>
+      <div style={{ textAlign: "right", paddingRight: "10px" }}>
+        {parseFloat(cashTotal).toFixed(2)}
+      </div>
+    </div>
+  ) : null}
+  {cashAppTotal > 0 ? (
+    <div className={classes.SubTotal}>
+      <div style={{ textAlign: "right" }}>CashApp payment:</div>
+      <div style={{ textAlign: "right", paddingRight: "10px" }}>
+        {parseFloat(cashAppTotal).toFixed(2)}
+      </div>
+    </div>
+  ) : null}
+  {venmoTotal > 0 ? (
+    <div className={classes.SubTotal}>
+      <div style={{ textAlign: "right" }}>Venmo payment:</div>
+      <div style={{ textAlign: "right", paddingRight: "10px" }}>
+        {parseFloat(venmoTotal).toFixed(2)}
+      </div>
+    </div>
+  ) : null}
+  {paypalTotal > 0 ? (
+    <div className={classes.SubTotal}>
+      <div style={{ textAlign: "right" }}>PayPal payment:</div>
+      <div style={{ textAlign: "right", paddingRight: "10px" }}>
+        {parseFloat(paypalTotal).toFixed(2)}
+      </div>
+    </div>
+  ) : null}
+  {bitcoinTotal > 0 ? (
+    <div className={classes.SubTotal}>
+      <div style={{ textAlign: "right" }}>Bitcoin payment:</div>
+      <div style={{ textAlign: "right", paddingRight: "10px" }}>
+        {parseFloat(bitcoinTotal).toFixed(2)}
+      </div>
+    </div>
+  ) : null}
+  {ethereumTotal > 0 ? (
+    <div className={classes.SubTotal}>
+      <div style={{ textAlign: "right" }}>Ethereum payment:</div>
+      <div style={{ textAlign: "right", paddingRight: "10px" }}>
+        {parseFloat(ethereumTotal).toFixed(2)}
+      </div>
+    </div>
+  ) : null}
+  {dogecoinTotal > 0 ? (
+    <div className={classes.SubTotal}>
+      <div style={{ textAlign: "right" }}>Dogecoin payment:</div>
+      <div style={{ textAlign: "right", paddingRight: "10px" }}>
+        {parseFloat(dogecoinTotal).toFixed(2)}
+      </div>
+    </div>
+  ) : null}
+  {otherTotal > 0 ? (
+    <div className={classes.SubTotal}>
+      <div style={{ textAlign: "right" }}>other payment:</div>
+      <div style={{ textAlign: "right", paddingRight: "10px" }}>
+        {parseFloat(otherTotal).toFixed(2)}
+      </div>
+    </div>
+  ) : null}
+</div>
+*/

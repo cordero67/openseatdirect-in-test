@@ -3,7 +3,7 @@ import React, { useState, Fragment } from "react";
 import WarningModal from "./Modals/WarningModal";
 
 import classes from "./Events.module.css";
-import { compareValues, getDates } from "./Resources/VendorFunctions";
+import { getDates } from "./Resources/VendorFunctions";
 
 const Events = (props) => {
   const [warningModal, setWarningModal] = useState({

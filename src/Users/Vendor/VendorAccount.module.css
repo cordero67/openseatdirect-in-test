@@ -9,7 +9,6 @@
   padding-bottom: 0px;
   box-sizing: border-box;
 }
-
 .DashboardCanvas {
   background-color: white;
   display: grid;
@@ -21,10 +20,10 @@
   text-align: left;
   box-sizing: border-box;
 }
-
 .ConnectionText {
   text-align: center;
   font-size: 16px;
   font-weight: 600;
   padding-top: 30px;
+  box-sizing: border-box;
 }

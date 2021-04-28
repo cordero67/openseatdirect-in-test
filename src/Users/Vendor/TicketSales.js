@@ -201,7 +201,7 @@ const TicketSales = (props) => {
         <button
           className={classes.SwitchButton}
           onClick={() => {
-            props.clicked("events");
+            props.toEvents("events");
           }}
         >
           Switch Event
