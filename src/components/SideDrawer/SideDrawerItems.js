@@ -135,8 +135,8 @@ const SideDrawerItems = (props) => {
 
       <li>
         <NavLink
-          to="/terms-and-conditions"
-          style={isActive(props.currentPage, "/terms-and-conditions")}
+          to="/termsconditions"
+          style={isActive(props.currentPage, "/termsconditions")}
           onClick={props.clicked}
           exact
         >
