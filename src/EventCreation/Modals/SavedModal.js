@@ -17,7 +17,7 @@ const SavedModal = (props) => {
   } else if (props.details.status === "error") {
     titleText = props.details.errorMessage;
   } else if (props.details.status === "failure") {
-    if (!props.details.failureMessage ) {
+    if (!props.details.failureMessage) {
       titleText = "Please fix input errors and resubmit.";
     } else {
       titleText = props.details.failureMessage;
@@ -35,12 +35,12 @@ const SavedModal = (props) => {
             paddingTop: "5px",
           }}
         >
-          <button className={classes.ButtonGrey}
-            onClick={props.toDashboard}
-          >CONTINUE</button>
+          <button className={classes.ButtonGrey} onClick={props.toDashboard}>
+            CONTINUE
+          </button>
         </div>
       </div>
-    )
+    );
   } else if (props.details.status === "live") {
     buttonSelection = (
       <div className={classes.CropBoxControls}>
@@ -51,13 +51,14 @@ const SavedModal = (props) => {
             paddingTop: "5px",
           }}
         >
-        <button className={classes.ButtonGrey}
-          onClick={props.toDashboard}
-        >CONTINUE</button>
+          <button className={classes.ButtonGrey} onClick={props.toDashboard}>
+            CONTINUE
+          </button>
+        </div>
       </div>
-      </div>
-    )
-  } if (props.details.status === "error" || props.details.status === "failure") {
+    );
+  }
+  if (props.details.status === "error" || props.details.status === "failure") {
     buttonSelection = (
       <div className={classes.CropBoxControls}>
         <div
@@ -67,12 +68,12 @@ const SavedModal = (props) => {
             paddingTop: "5px",
           }}
         >
-        <button className={classes.ButtonGrey}
-          onClick={props.toDashboard}
-        >CONTINUE</button>
+          <button className={classes.ButtonGrey} onClick={props.closeModal}>
+            CONTINUE
+          </button>
+        </div>
       </div>
-      </div>
-    ) 
+    );
   }
 
   return (

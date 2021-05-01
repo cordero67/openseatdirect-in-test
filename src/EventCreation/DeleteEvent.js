@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import { API } from "../config";
-//import { faBullseye } from "@fortawesome/free-solid-svg-icons";
 
 let vendorInfo = {};
 

@@ -3,22 +3,25 @@ import { Route } from "react-router-dom";
 
 import Main from "../HomePage/HomePage";
 import Video from "../Video/Video";
-import EventEdit from "../../EventCreation/EventEdit";
 import Events from "../../Events/Events";
 import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
-import EventDeletion from "../../EventCreation/DeleteEvent";
+import EventDeletion from "../../EventCreation/DeleteEvent"; // THIS IS A TEST ROUTE
 import ContactUs from "../ContactUs/ContactUs";
+import PrivacyPolicy from "../Corporate/PrivacyPolicy";
+import TermsConditions from "../Corporate/TermsConditions";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
-import Checkout from "../../TicketPurchases/Checkout";
+import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
+import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Authentication from "../../Users/Authentication/Authentication";
-import Slider from "../HomePage/Slider";
-import PrivateRoute from "./PrivateRoute";
+import Slider from "../HomePage/Slider"; // THIS IS A TEST ROUTE
+import PrivateRoute from "./PrivateRoute"; // THIS IS A TEST ROUTE
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
+import SalesAnalytics from "../../Users/Vendor/SalesAnalytics"; // THIS IS A TEST ROUTE
 
 import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";
@@ -39,14 +42,14 @@ const Routes = () => {
 
   const [isResizing, setIsResizing] = useState(false);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
-  
+
   const stylingUpdate = (inWidth) => {
-      setIsResizing(true);
-      setScreenSize(inWidth);
-      setIsResizing(false);
+    setIsResizing(true);
+    setScreenSize(inWidth);
+    setIsResizing(false);
   };
 
-  window.onresize = function(event) {
+  window.onresize = function (event) {
     stylingUpdate(window.innerWidth);
   };
 
@@ -95,47 +98,79 @@ const Routes = () => {
         )}
       />
 
-    <Route
-      path="/personal"
-      exact
-      render={(routeProps) => (
-        <React.Fragment>
-          <Header
-            positioning="fixed"
-            logo={LogoC}
-            clicked={toggleSideDrawer}
-          />
-          <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-          <BuyerAccount />
-          <Footer></Footer>
-        </React.Fragment>
-      )}
-    />
+      <Route
+        path="/privacy-policy"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <PrivacyPolicy />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
 
-    <Route
-      path="/paypalonboarding"
-      exact
-      render={(routeProps) => (
-          <PaypalOnboarding />
-      )}
-    />
+      <Route
+        path="/terms-and-conditions"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <TermsConditions />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
 
-    <Route
-      path="/vendor"
-      exact
-      render={(routeProps) => (
-        <React.Fragment>
-          <Header
-            positioning="fixed"
-            logo={LogoC}
-            clicked={toggleSideDrawer}
-          />
-          <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-          <VendorAccount />
-          <Footer></Footer>
-        </React.Fragment>
-      )}
-    />
+      <Route
+        path="/personal"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <BuyerAccount />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/paypalonboarding"
+        exact
+        render={(routeProps) => <PaypalOnboarding />}
+      />
+
+      <Route
+        path="/vendor"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <VendorAccount />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
 
       <Route
         path="/video"
@@ -189,18 +224,10 @@ const Routes = () => {
       />
 
       <Route
-        path="/eventedit"
-        exact
+        path="/salesanalytics/"
         render={(routeProps) => (
           <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventEdit />
-            <Footer></Footer>
+            <SalesAnalytics />
           </React.Fragment>
         )}
       />
@@ -260,11 +287,21 @@ const Routes = () => {
       />
 
       <Route
-        path="/checkout"
+        path="/checkout-paypalexpress"
         exact
         render={(routeProps) => (
           <React.Fragment>
-            <Checkout />
+            <CheckoutPayPalExpress />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/checkout-paypalmerchant"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <CheckoutPayPalMerchant />
           </React.Fragment>
         )}
       />
@@ -293,7 +330,6 @@ const Routes = () => {
           </React.Fragment>
         )}
       />
-
     </Fragment>
   );
 };

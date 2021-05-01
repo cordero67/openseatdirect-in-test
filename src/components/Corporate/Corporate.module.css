@@ -1,0 +1,105 @@
+.MainContainer {
+  font-family: Helvetica, sans-serif;
+  font-size: 16px;
+  padding: 70px 20px 40px 20px;
+}
+
+.MainContainer h1 {
+  font-size: 34px;
+  margin: 0px;
+  padding: 25px 0px 15px 0px;
+}
+
+.MainContainer h2 {
+  font-size: 26px;
+  margin: 0px;
+  padding: 15px 0px 15px 0px;
+}
+
+.MainContainer h3 {
+  font-size: 22px;
+  margin: 0px;
+  padding: 10px 0px 10px 0px;
+}
+
+.MainContainer p {
+  line-height: 26px;
+  margin: 0px;
+  padding-bottom: 10px;
+}
+
+.TopContainerLarge {
+  color: #fff;
+  background-color: #000;
+  font-family: Helvetica, sans-serif;
+  /*height: calc(100vw * (440/650));*/
+  height: calc(100vw / 2 - 8px);
+}
+
+.BlankCanvas {
+  background-color: white;
+  margin: auto;
+  width: auto;
+  height: auto;
+  z-index: 100;
+  padding-left: 0px;
+  padding-left: 0px;
+  text-align: left;
+  overflow-y: auto;
+}
+
+@media (min-width: 500px) {
+  .BlankCanvas {
+    padding-left: calc(50% - 170px);
+    padding-left: calc(50% - 170px);
+  }
+}
+
+@media (min-width: 650px) {
+  .TopContainerLarge {
+    color: #fff;
+    background-color: #000;
+    font-family: Helvetica, sans-serif;
+    height: 440px;
+  }
+}
+
+@media (min-width: 900px) {
+  .TopContainerLarge {
+    color: #fff;
+    background-color: #000;
+    font-family: Helvetica, sans-serif;
+    height: calc(100vw / 2 - 8px);
+  }
+}
+
+@media (min-width: 1200px) {
+  .TopContainerLarge {
+    color: #fff;
+    background-color: #000;
+    font-family: Helvetica, sans-serif;
+    height: 600px;
+    padding-left: calc(50vw - 605px);
+  }
+}
+
+.MarketingText {
+  font-family: Lato;
+  font-weight: 600;
+  text-align: center;
+}
+
+.TagLineText {
+  z-index: 200;
+  font-family: Lato;
+  font-weight: 500;
+  text-align: center;
+}
+
+.Header {
+  display: grid;
+  grid-template-columns: 40px 40px 40px 40px;
+  font-weight: 500;
+  font-size: 18px;
+  padding-left: calc(50vw - 80px);
+}

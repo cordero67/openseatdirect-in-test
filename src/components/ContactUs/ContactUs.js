@@ -7,7 +7,7 @@ import {
   faFacebook,
   faInstagram,
   faYoutube,
-  faTwitter
+  faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 
 import Aux from "../../hoc/Auxiliary/Auxiliary";
@@ -22,16 +22,16 @@ const ContactUs = () => {
       controlId: "formGridEmail",
       elementConfig: {
         type: "email",
-        placeHolder: "Email"
+        placeHolder: "Email",
       },
       value: "",
       validation: {
         required: true,
-        validEmail: true
+        validEmail: true,
       },
       valid: false,
       touched: false,
-      message: "Please provide a valid email."
+      message: "Please provide a valid email.",
     },
     firstName: {
       label: "FIRST NAME:",
@@ -39,13 +39,13 @@ const ContactUs = () => {
       controlId: "formGridFirstName",
       elementConfig: {
         type: "text",
-        placeHolder: "First Name"
+        placeHolder: "First Name",
       },
       value: "",
       validation: {},
       valid: true,
       touched: false,
-      message: "Please provide your first name."
+      message: "Please provide your first name.",
     },
     lastName: {
       label: "LAST NAME:",
@@ -53,13 +53,13 @@ const ContactUs = () => {
       controlId: "formGridLastName",
       elementConfig: {
         type: "text",
-        placeHolder: "Last Name"
+        placeHolder: "Last Name",
       },
       value: "",
       validation: {},
       valid: true,
       touched: false,
-      message: "Please provide your last name."
+      message: "Please provide your last name.",
     },
     company: {
       label: "COMPANY NAME:",
@@ -67,13 +67,13 @@ const ContactUs = () => {
       controlId: "formGridCompanyName",
       elementConfig: {
         type: "text",
-        placeHolder: "Company "
+        placeHolder: "Company ",
       },
       value: "",
       validation: {},
       valid: true,
       touched: false,
-      message: "Please provide your company name."
+      message: "Please provide your company name.",
     },
     phoneNumber: {
       label: "PHONE NUMBER:",
@@ -81,13 +81,13 @@ const ContactUs = () => {
       controlId: "formGridPhoneNumber",
       elementConfig: {
         type: "text",
-        placeHolder: "Phone Number"
+        placeHolder: "Phone Number",
       },
       value: "",
       validation: {},
       valid: true,
       touched: false,
-      message: "Please provide your phone number."
+      message: "Please provide your phone number.",
     },
     message: {
       label: "MESSAGE:",
@@ -97,14 +97,14 @@ const ContactUs = () => {
         type: "text",
         placeHolder: "Message",
         as: "textarea",
-        rows: "3"
+        rows: "3",
       },
       value: "",
       validation: {},
       valid: true,
       touched: false,
-      errorMessage: "Please provide a message."
-    }
+      errorMessage: "Please provide a message.",
+    },
   });
 
   const [formIsValid, setFormIsValid] = useState(false);
@@ -123,11 +123,11 @@ const ContactUs = () => {
     stylingUpdate(window.innerWidth);
   }, []);
 
-  window.onresize = function(event) {
-    stylingUpdate(window.innerWidth)
+  window.onresize = function (event) {
+    stylingUpdate(window.innerWidth);
   };
 
-  const sendMessageHandler = event => {
+  const sendMessageHandler = (event) => {
     //event.preventDefault();
     let contactInfo = {};
     for (let key in contactData) {
@@ -136,13 +136,13 @@ const ContactUs = () => {
     console.log("contactInfo: ", contactInfo);
     axios
       .post("https://openseatdirect-contacts.firebaseio.com/.json", contactInfo)
-      .then(response => {
+      .then((response) => {
         alert("Data received by Firebase.");
         console.log("Response from Firebase: ", response);
         console.log("contactInfo: ", contactInfo);
         console.log("contactData: ", contactData);
       })
-      .catch(err => {
+      .catch((err) => {
         alert("Data WAS NOT received by Firebase.");
         console.log("Error from Firebase: ", err);
       });
@@ -187,12 +187,50 @@ const ContactUs = () => {
     <Aux>
       <div className={styles.Header}>Or contact us directly:</div>
       <br></br>
+      <div
+        style={{
+          fontWeight: "600",
+          paddingLeft: "20px",
+          fontSize: "16px",
+        }}
+      >
+        Michael Collazo
+      </div>
+      <br></br>
       <div style={{ paddingLeft: "20px", fontWeight: "400", fontSize: "16px" }}>
-        mikem@openseatdirect.com
+        micahelc@openseatdirect.com
+      </div>
+      <br></br>
+      <div
+        style={{
+          fontWeight: "600",
+          paddingLeft: "20px",
+          fontSize: "16px",
+        }}
+      >
+        Rafael Cordero
       </div>
       <br></br>
       <div style={{ paddingLeft: "20px", fontWeight: "400", fontSize: "16px" }}>
         rafaelc@openseatdirect.com
+      </div>
+      <br></br>
+      <div style={{ paddingLeft: "20px", fontWeight: "400", fontSize: "16px" }}>
+        +1 312.719.7363
+      </div>
+      <br></br>
+      <div
+        style={{
+          fontWeight: "600",
+          paddingLeft: "20px",
+          fontSize: "16px",
+        }}
+      >
+        Mike Mazier
+      </div>
+      <br></br>
+      <div style={{ paddingLeft: "20px", fontWeight: "400", fontSize: "16px" }}>
+        mikem@openseatdirect.com
       </div>
       <br></br>
       <br></br>
@@ -218,7 +256,7 @@ const ContactUs = () => {
   for (let key in contactData) {
     formDataArray.push({
       id: key,
-      config: contactData[key]
+      config: contactData[key],
     });
   }
 
@@ -227,7 +265,7 @@ const ContactUs = () => {
   formData = (
     <Form onSubmit={sendMessageHandler}>
       <div style={{ paddingLeft: "15px", paddingRight: "15px" }}>
-        {formDataArray.map(item => {
+        {formDataArray.map((item) => {
           return (
             <FormItem
               key={item.id}
@@ -240,7 +278,7 @@ const ContactUs = () => {
               invalid={!item.config.valid}
               shouldValidate={item.config.validation}
               validationError={item.config.message}
-              changed={event => inputChangedHandler(event, item.id)}
+              changed={(event) => inputChangedHandler(event, item.id)}
             />
           );
         })}
@@ -267,10 +305,10 @@ const ContactUs = () => {
   if (showDoublePane) {
     mainDisplay = (
       <Aux>
-      <div className={styles.MainGrid}>
-        <div className={styles.LeftPane}>{leftPane}</div>
-        <div className={styles.RightPane}>{rightPane}</div>
-      </div>
+        <div className={styles.MainGrid}>
+          <div className={styles.LeftPane}>{leftPane}</div>
+          <div className={styles.RightPane}>{rightPane}</div>
+        </div>
       </Aux>
     );
   } else {

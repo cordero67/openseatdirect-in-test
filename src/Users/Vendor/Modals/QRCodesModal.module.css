@@ -2,11 +2,11 @@
   position: fixed;
   z-index: 700;
   background-color: white;
-  width: 90%;
+  width: 330;
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px black;
-  padding: 16px;
-  left: 15%;
+  padding: 16px 15px 16px 15px;
+  left: calc(50% - 181px);
   top: 10%;
   text-align: center;
   box-sizing: border-box;
@@ -24,6 +24,35 @@
   margin-right: 8px;
   margin-left: 440p;
 }
+
+
+.EventButton {
+  text-align: center;
+  color: blue;
+  font-weight: 600;
+  width: 80px;
+  padding-left: 5px;
+  border: 1px solid white;
+  background-color: white;
+  cursor: pointer;
+  outline: 1px solid white;
+}
+.EventButton:focus {
+  border: 1px solid white;
+  outline: 1px solid white;
+}
+
+.EventArrow {
+  padding-top: 80px;
+  font-size: 42px;
+  border: none;
+  color: lightgrey;
+  text-align: center;
+}
+.EventArrow:hover {
+  color: black;
+}
+
 
 .SubTotal {
   display: grid;
@@ -70,13 +99,13 @@
 .ButtonGreen {
   height: 40px;
   width: 160px;
-  background-color: #00a300;
+  background-color: #00A300;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonGreen:hover {
-  background-color: #007a00;
+  background-color: #007A00;
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -91,19 +120,19 @@
 .ButtonBlue {
   height: 40px;
   width: 160px;
-  background-color: #0000f5;
+  background-color: #0000F5;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonBlue:hover {
-  background-color: #0000cc;
+  background-color: #0000CC;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonBlue:active {
-  background-color: #0000a3;
+  background-color: #0000A3;
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -111,9 +140,9 @@
 
 @media (min-width: 740px) {
   .Modal {
-    width: 580px;
-    padding-left: 30px;
-    padding-right: 30px;
-    left: calc(50% - 290px);
+    width: 360px;
+    padding-left: 15px;
+    padding-right: 15px;
+    left: calc(50% - 180px);
   }
 }

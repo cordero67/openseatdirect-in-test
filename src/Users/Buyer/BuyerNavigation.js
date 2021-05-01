@@ -1,16 +1,11 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Link, Redirect } from "react-router-dom";
-import { NavLink } from "react-router-dom";
 
 import classes from "./BuyerAccount.module.css";
-
-import { signout } from '../apiUsers';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 
 const BuyerNavigation = (props) => {
-
   const [buyerInfo, setBuyerInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,27 +18,28 @@ const BuyerNavigation = (props) => {
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       let tempBuyerInfo = {};
-      tempBuyerInfo.name = tempUser.user.name
+      tempBuyerInfo.name = tempUser.user.name;
       setBuyerInfo(tempBuyerInfo);
     } else {
       window.location.href = "/signin";
     }
     setIsLoading(false);
   }, []);
-  
+
   return (
     <Fragment>
       <div className={classes.NavigationTitle}>
-          {!isLoading ?
-            <span
-              style={{
-                display: "inline-block",
-                verticalAlign: "middle",
-                lineHeight: "normal",
-              }}>
-              {buyerInfo.name}
-            </span> :
-            null}
+        {!isLoading ? (
+          <span
+            style={{
+              display: "inline-block",
+              verticalAlign: "middle",
+              lineHeight: "normal",
+            }}
+          >
+            {buyerInfo.name}
+          </span>
+        ) : null}
       </div>
 
       <div className={classes.DashboardTitle}>
@@ -52,27 +48,26 @@ const BuyerNavigation = (props) => {
             display: "inline-block",
             verticalAlign: "middle",
             lineHeight: "normal",
-          }}>
-          <FontAwesomeIcon
-            color="white"
-            cursor="pointer"
-            icon={faHome}
-          />{" "}My Account
+          }}
+        >
+          <FontAwesomeIcon color="white" cursor="pointer" icon={faHome} /> My
+          Account
         </span>
       </div>
 
       <ul className={classes.NavigationBar}>
-
         <div className={classes.NavigationItems}>
           <li>
             <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "myTickets" ? "#fff" : "#b8b8b8",
-                outline: "none"
+                backgroundColor:
+                  props.pane === "myTickets" ? "#fff" : "#b8b8b8",
+                outline: "none",
               }}
               name="myTickets"
-              onClick={props.clicked}>
+              onClick={props.clicked}
+            >
               My Tickets
             </button>
           </li>
@@ -82,27 +77,29 @@ const BuyerNavigation = (props) => {
               className={classes.NavigationButton}
               style={{
                 backgroundColor: props.pane === "profile" ? "#fff" : "#b8b8b8",
-                outline: "none"
+                outline: "none",
               }}
               name="profile"
-              onClick={props.clicked}>
+              onClick={props.clicked}
+            >
               Profile
             </button>
           </li>
 
           <li>
-          <button
+            <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor: props.pane === "onboarding" ? "#fff" : "#b8b8b8",
-                outline: "none"
+                backgroundColor:
+                  props.pane === "onboarding" ? "#fff" : "#b8b8b8",
+                outline: "none",
               }}
               name="onboarding"
-              onClick={props.clicked}>
+              onClick={props.clicked}
+            >
               Create Events
             </button>
           </li>
-          
         </div>
       </ul>
     </Fragment>

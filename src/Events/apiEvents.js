@@ -1,7 +1,5 @@
 import { API } from "../config";
 
-import { useEffect, useState, useRef } from "react"; //HENRIK SOMMERFELD example
-
 const compareValues = (key, order) => {
   return function innerSort(a, b) {
     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
@@ -20,104 +18,112 @@ const compareValues = (key, order) => {
   };
 };
 
-const handleErrors = response => {
-    console.log("Inside 'apiCore' 'handleErrors()'", response);
-    if (!response.ok) {
-        throw Error(response.status);
-    }
-    return response;
+const handleErrors = (response) => {
+  console.log("Inside 'apiCore' 'handleErrors()'", response);
+  if (!response.ok) {
+    throw Error(response.status);
+  }
+  return response;
 };
 
+// USED BY CURRENT CODE APRIL 17, 2021
 // extracts specific event data, non-transactional
-export const getEventData = eventId => {
-    return fetch(`${API}/event/e/${eventId}`, {
-        method: "GET"
-    })
+export const getEventData = (eventId) => {
+  return fetch(`${API}/event/e/${eventId}`, {
+    method: "GET",
+  })
     .then(handleErrors)
-    .then(response => {
-        console.log("response from getEventData: ", response);
-        //console.log("response.json() from getEventData: ", response.json());
-        return response.json();
+    .then((response) => {
+      console.log("response from getEventData: ", response);
+      //console.log("response.json() from getEventData: ", response.json());
+      return response.json();
     })
-    .catch(err => {
-        console.log("Inside '.catch' block of 'getEventData()', this is the error:", err);
-        throw Error(err);
+    .catch((err) => {
+      console.log(
+        "Inside '.catch' block of 'getEventData()', this is the error:",
+        err
+      );
+      throw Error(err);
     });
 };
 
+// USED BY CURRENT CODE APRIL 17, 2021
 // NEED TO REFACTOR TO NEW TEMPLATE
 // retrieves image for a specific event
-export const getEventImage = eventId => {
-    console.log("Inside apiCore and the 'getEventImage' function call");
-    return fetch(`${API}/event/photo/e/${eventId}`, {
-      method: "GET"
-    })
+export const getEventImage = (eventId) => {
+  console.log("Inside apiCore and the 'getEventImage' function call");
+  return fetch(`${API}/event/photo/e/${eventId}`, {
+    method: "GET",
+  })
     .then(handleErrors)
-    .then(response => {
-        console.log("Inside apiCore and the 'getEventImage' .then block");
-        console.log("response: ", response, " response.url: ", response.url);
-        return response.url;
+    .then((response) => {
+      console.log("Inside apiCore and the 'getEventImage' .then block");
+      console.log("response: ", response, " response.url: ", response.url);
+      return response.url;
     })
-    .catch(err => {
-        console.log("Inside catch", err);
-        throw Error(err);
+    .catch((err) => {
+      console.log("Inside catch", err);
+      throw Error(err);
     });
 };
 
+// USED BY CURRENT CODE APRIL 17, 2021
 // REFACTORED
 // retrieves all public event data (less image), non-transactional
 export const getAllEventData = () => {
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
 
-    let requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow", // what is this and when is it required
-    }
-        
-    let fetchstr = `${API}/event/all`;
+  let requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow", // what is this and when is it required
+  };
 
-    return fetch(fetchstr, requestOptions)
+  //let fetchstr = `${API}/event/all`;
+  let fetchstr = `${API}/pevents`;
+
+  return fetch(fetchstr, requestOptions)
     .then(handleErrors)
     .then((response) => response.text())
     .then((result) => {
-        let js = JSON.parse(result);
-        //js.sort(compareValues("startDateTime", "asc"));
-        //console.log("eventDescriptions ordered: ", js);
-        return js;
+      let js = JSON.parse(result);
+      //js.sort(compareValues("startDateTime", "asc"));
+      //console.log("eventDescriptions ordered: ", js);
+      return js;
     })
     .catch((error) => {
-        console.log("Inside getAllEventData .catch", error);
-        throw Error(error);
+      console.log("Inside getAllEventData .catch", error);
+      throw Error(error);
     });
 };
 
+// USED BY CURRENT CODE APRIL 17, 2021
 // REFACTORED
 // retrieves all public event data (less image), non-transactional
 export const getAllPastEventData = () => {
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
 
-    let requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow", // what is this and when is it required
-    }
-        
-    let fetchstr = `${API}/event/allpast`;
+  let requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow", // what is this and when is it required
+  };
 
-    return fetch(fetchstr, requestOptions)
+  let fetchstr = `${API}/event/allpast`;
+
+  return fetch(fetchstr, requestOptions)
     .then(handleErrors)
     .then((response) => response.text())
     .then((result) => {
-        let js = JSON.parse(result);
-        //js.sort(compareValues("startDateTime", "asc"));
-        //console.log("eventDescriptions ordered: ", js);
-        return js;
+      let js = JSON.parse(result);
+      //js.sort(compareValues("startDateTime", "asc"));
+      //console.log("eventDescriptions ordered: ", js);
+      return js;
     })
     .catch((error) => {
-        console.log("Inside getAllEventData .catch", error);
-        throw Error(error);
+      console.log("Inside getAllEventData .catch", error);
+      throw Error(error);
     });
 };

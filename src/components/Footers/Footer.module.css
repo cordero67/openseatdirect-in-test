@@ -14,11 +14,35 @@
 }
 .CopyRight {
   text-align: center;
-  padding-top: 5px;
+  padding-top: 7px;
   padding-right: 8px;
-  color: #2F5596;
-  font-size: 11px;
+  color: #2f5596;
+  font-size: 10px;
   font-weight: 600;
+}
+.Button {
+  font-size: 10px;
+  font-weight: 600;
+  color: #2f5596;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+  padding: 0px 3px 0px 3px;
+  box-sizing: border-box;
+}
+.Button:hover {
+  border: none;
+  outline: none;
+}
+.Button:active {
+  border: none;
+  outline: none;
+}
+.Button:focus {
+  border: none;
+  outline: none;
 }
 
 @media (min-width: 550px) {
@@ -26,10 +50,12 @@
     display: grid;
     grid-template-columns: 90px auto;
   }
+  .Button {
+    font-size: 12px;
+  }
   .CopyRight {
-    padding-top: 12px;
-    padding-right: 8px;
-    font-size: 14px;
+    padding-top: 8px;
+    font-size: 12px;
   }
 }
 
@@ -37,8 +63,5 @@
   .Footer {
     display: grid;
     grid-template-columns: 110px auto;
-  }
-  .CopyRight {
-    font-size: 16px;
   }
 }
