@@ -1,3 +1,63 @@
+.OrdersInnerGrid {
+  display: grid;
+  grid-template-columns: 140px 80px 500px 60px 70px 80px;
+  grid-gap: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.FutureInnerGrid {
+  display: grid;
+  grid-template-columns: 60px 80px 500px 60px 80px;
+  grid-gap: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.PastInnerGrid {
+  display: grid;
+  grid-template-columns: 60px 80px 500px 60px 80px;
+  grid-gap: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.InvisibleButton {
+  background-color: #fff;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+
+.IconButton {
+  text-align: center;
+  color: blue;
+  font-weight: 600;
+  width: 80px;
+  padding-left: 5px;
+  border: 1px solid white;
+  background-color: white;
+  cursor: pointer;
+  outline: 1px solid white;
+}
+
+.IconButton:focus {
+  border: 1px solid white;
+  outline: 1px solid white;
+}
+
+.DateRed {
+  font-size: 12px;
+  font-weight: 400;
+  color: red;
+}
+
+.DateBlack {
+  font-size: 18px;
+  color: black;
+  font-weight: 600;
+}
+
 .DashboardContainer {
   font-family: "Roboto", sans-serif;
   background-color: #2f5596;
@@ -14,7 +74,7 @@
   background-color: white;
   display: grid;
   grid-template-columns: 170px auto;
-  border: 1px solid #3D3D3D;
+  border: 1px solid #3d3d3d;
   width: 1200px;
   height: 100%;
   margin: auto;
@@ -62,8 +122,6 @@
   text-align: center;
 }
 
-
-
 .ButtonGrey {
   height: auto;
   border-radius: 0px;
@@ -103,13 +161,13 @@
   -o-border-radius: 0px;
 }
 .ButtonClear:hover {
-  background-color: #EBEBEB;
+  background-color: #ebebeb;
   color: #000;
   border: none;
   outline: none;
 }
 .ButtonClear:active {
-  background-color: #CCCCCC;
+  background-color: #cccccc;
   color: #000;
   border: none;
   outline: none;
@@ -118,24 +176,6 @@
   border: none;
   outline: none;
 }
-
-
-.EventButton {
-  text-align: center;
-  color: blue;
-  font-weight: 600;
-  width: 80px;
-  padding-left: 5px;
-  border: 1px solid white;
-  background-color: white;
-  cursor: pointer;
-  outline: 1px solid white;
-}
-.EventButton:focus {
-  border: 1px solid white;
-  outline: 1px solid white;
-}
-
 
 .DisplayButtonActive {
   background-color: blue;
@@ -211,9 +251,9 @@
   height: 50px;
   line-height: 50px;
   color: white;
-  background-color: #3D3D3D;
-  border-top: 1px solid #3D3D3D;
-  border-bottom: 1px solid #3D3D3D;
+  background-color: #3d3d3d;
+  border-top: 1px solid #3d3d3d;
+  border-bottom: 1px solid #3d3d3d;
   font-size: 14px;
   font-weight: 600;
   padding: 0px 5px;
@@ -228,8 +268,8 @@
   height: 30px;
   line-height: 30px;
   color: white;
-  background-color: #3D3D3D;
-  border: 1px solid #3D3D3D;
+  background-color: #3d3d3d;
+  border: 1px solid #3d3d3d;
   box-sizing: border-box;
   text-align: center;
 }
@@ -238,8 +278,8 @@
   background-color: #b8b8b8;
   height: calc(100vh - 196px);
   width: 170px;
-  border-top: 1px solid #3D3D3D;
-  border-right: 1px solid #3D3D3D;
+  border-top: 1px solid #3d3d3d;
+  border-right: 1px solid #3d3d3d;
   font-size: 16px;
   font-weight: 600;
   margin-top: 79px;
@@ -416,97 +456,96 @@
 }
 
 .MainDisplay {
-    display: grid;
-    position: fixed;
-    top: 250px;
-    column-gap: 10px;
-    background-color: white;
-    border-bottom: 1px solid lightgrey;
-    width: 1030px;
-    /*height: 60px;*/
-    grid-template-columns: 60px 20px 490px 195px 80px;
-    font-size: 15px;
-    padding-top: 20px;
-    padding-bottom: 15px;
-    padding-left: 20px;
-    padding-right: 30px;
-    overflow-Y: auto;
+  display: grid;
+  position: fixed;
+  top: 250px;
+  column-gap: 10px;
+  background-color: white;
+  border-bottom: 1px solid lightgrey;
+  width: 1030px;
+  /*height: 60px;*/
+  grid-template-columns: 60px 20px 490px 195px 80px;
+  font-size: 15px;
+  padding-top: 20px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  padding-right: 30px;
+  overflow-y: auto;
 }
 
 .OrdersHeader {
-    z-index: 200;
-    display: grid;
-    position: fixed;
-    top: 110px;
-    column-gap: 10px;
-    background-color: #e7e7e7;
-    border-bottom: 1px solid lightgrey;
-    width: 1030px;
-    height: 40px;
-    grid-template-columns: 200px 100px 100px 280px 100px 60px 100px;
-    font-size: 15px;
-    font-weight: 600;
-    padding-top: 10px;
-    padding-bottom: 15px;
-    padding-left: 30px;
-    padding-right: 30px;
+  z-index: 200;
+  display: grid;
+  position: fixed;
+  top: 110px;
+  column-gap: 10px;
+  background-color: #e7e7e7;
+  border-bottom: 1px solid lightgrey;
+  width: 1030px;
+  height: 40px;
+  grid-template-columns: 200px 100px 100px 280px 100px 60px 100px;
+  font-size: 15px;
+  font-weight: 600;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 .MainDisplayHeader {
-    z-index: 200;
-    display: grid;
-    position: fixed;
-    top: 110px;
-    column-gap: 10px;
-    background-color: #e7e7e7;
-    border-bottom: 1px solid lightgrey;
-    width: 1030px;
-    height: 40px;
-    grid-template-columns: 60px 20px 640px 100px 80px;
-    font-size: 15px;
-    font-weight: 600;
-    padding-top: 10px;
-    padding-bottom: 15px;
-    padding-left: 20px;
-    padding-right: 30px;
+  z-index: 200;
+  display: grid;
+  position: fixed;
+  top: 110px;
+  column-gap: 10px;
+  background-color: #e7e7e7;
+  border-bottom: 1px solid lightgrey;
+  width: 1030px;
+  height: 40px;
+  grid-template-columns: 60px 20px 640px 100px 80px;
+  font-size: 15px;
+  font-weight: 600;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  padding-right: 30px;
 }
 
 .MainDisplayHeader2 {
-    z-index: 200;
-    display: grid;
-    position: fixed;
-    top: 110px;
-    column-gap: 5px;
-    background-color: #e7e7e7;
-    border-bottom: 1px solid lightgrey;
-    width: 1030px;
-    height: 60px;
-    grid-template-columns: 60px 500px 80px 80px 80px 80px 80px;
-    font-size: 15px;
-    font-weight: 600;
-    padding-top: 10px;
-    padding-bottom: 15px;
-    padding-left: 20px;
-    padding-right: 30px;
+  z-index: 200;
+  display: grid;
+  position: fixed;
+  top: 110px;
+  column-gap: 5px;
+  background-color: #e7e7e7;
+  border-bottom: 1px solid lightgrey;
+  width: 1030px;
+  height: 60px;
+  grid-template-columns: 60px 500px 80px 80px 80px 80px 80px;
+  font-size: 15px;
+  font-weight: 600;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  padding-right: 30px;
 }
 
 .DashboardHeader {
-    z-index: 200;
-    position: fixed;
-    top: 110px;
-    background-color: #e7e7e7;
-    border-bottom: 1px solid lightgrey;
-    width: 1030px;
-    height: 60px;
-    text-align: left;
-    font-size: 15px;
-    font-weight: 600;
-    padding-top: 10px;
-    padding-bottom: 15px;
-    padding-left: 15px;
-    padding-right: 30px;
+  z-index: 200;
+  position: fixed;
+  top: 110px;
+  background-color: #e7e7e7;
+  border-bottom: 1px solid lightgrey;
+  width: 1030px;
+  height: 60px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+  padding-right: 30px;
 }
-
 
 .DashboardMain {
   /*border: 1px solid green;*/
@@ -532,7 +571,7 @@
 
 .SummaryHeader {
   padding-top: 60px;
-  color: #2F5596;
+  color: #2f5596;
   font-size: 26px;
   font-weight: 600;
   padding-bottom: 20px;
@@ -543,47 +582,47 @@
   height: 30px;
   width: 325px;
   border: 0.5px solid grey;
-  padding-left: 10px
+  padding-left: 10px;
 }
 
 .FirstNameBoxWarning {
   height: 30px;
   width: 325px;
   border: 0.5px solid red;
-  padding-left: 10px
+  padding-left: 10px;
 }
 
 .LastNameBox {
   height: 30px;
   width: 325px;
   border: 0.5px solid grey;
-  padding-left: 10px
+  padding-left: 10px;
 }
 
 .LastNameBoxWarning {
   height: 30px;
   width: 325px;
   border: 0.5px solid red;
-  padding-left: 10px
+  padding-left: 10px;
 }
 
 .EmailBox {
   height: 30px;
   width: 660px;
   border: 0.5px solid grey;
-  padding-left: 10px
+  padding-left: 10px;
 }
 
 .EmailBoxWarning {
   height: 30px;
   width: 660px;
   border: 0.5px solid red;
-  padding-left: 10px
+  padding-left: 10px;
 }
 
 .InputBox {
   height: 30px;
   width: 660px;
   border: 0.5px solid grey;
-  padding-left: 10px
+  padding-left: 10px;
 }

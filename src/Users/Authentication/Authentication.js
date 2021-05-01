@@ -185,7 +185,7 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     // USED BY CURRENT CODE APRIL 17, 2021
-    let url = `${API}/auth/send_access_code2`;
+    let url = `${API}/auth/password/sendcode`;
     let information = {
       email: email,
     };
@@ -227,7 +227,7 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     // USED BY CURRENT CODE APRIL 17, 2021
-    let url = `${API}/auth/confirm_access_code2`;
+    let url = `${API}/auth/signin/confirmcode`;
     let information = {
       email: email,
       confirm_code: temporary,
@@ -270,7 +270,7 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     // USED BY CURRENT CODE APRIL 17, 2021
-    let url = `${API}/auth/send_access_code2`;
+    let url = `${API}/auth​/signin​/sendcode`;
     let information = {
       email: email,
     };
@@ -312,7 +312,7 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     // USED BY CURRENT CODE APRIL 17, 2021
-    let url = `${API}/auth/signup1_email`;
+    let url = `${API}/auth/signup/email`;
     let information = {
       email: email,
       vendorIntent: vendorIntent,
@@ -355,7 +355,7 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     // USED BY CURRENT CODE APRIL 17, 2021
-    let url = `${API}/auth/signup2_confirm`;
+    let url = `${API}/auth/signup/confirmcode`;
     let information = {
       email: email,
       confirm_code: confirmation,
@@ -399,7 +399,7 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     // USED BY CURRENT CODE APRIL 17, 2021
-    let url = `${API}/auth/signup3_password`;
+    let url = `${API}/auth/signup/password`;
     let information = {
       email: email,
       resetPasswordToken: resetToken,
@@ -444,14 +444,14 @@ const Authentication = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
     // USED BY CURRENT CODE APRIL 17, 2021
-    let url = `${API}/auth/update_username/${userId}`;
+    let url = `${API}/user/${userId}`;
     let information = {
       email: email,
       username: username,
     };
     console.log("myHeaders: ", myHeaders);
     let fetchBody = {
-      method: "POST",
+      method: "PATCH",
       headers: myHeaders,
       body: JSON.stringify(information),
     };
@@ -487,7 +487,7 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     // USED BY CURRENT CODE APRIL 17, 2021
-    let url = `${API}/auth/resend_confirm_code`;
+    let url = `${API}/auth/signup/resendcode`;
     let information = {
       email: email,
     };

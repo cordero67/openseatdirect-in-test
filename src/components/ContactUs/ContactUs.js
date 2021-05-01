@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Form } from "react-bootstrap";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,7 +10,6 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 import styles from "./ContactUs.module.css";
 import FormItem from "./FormItem";
 
@@ -184,7 +183,7 @@ const ContactUs = () => {
 
   let mainDisplay;
   let rightPane = (
-    <Aux>
+    <Fragment>
       <div className={styles.Header}>Or contact us directly:</div>
       <br></br>
       <div
@@ -249,7 +248,7 @@ const ContactUs = () => {
           <FontAwesomeIcon className={styles.faInstagram} icon={faInstagram} />
         </a>
       </div>
-    </Aux>
+    </Fragment>
   );
 
   const formDataArray = [];
@@ -290,7 +289,7 @@ const ContactUs = () => {
   );
 
   let leftPane = (
-    <Aux>
+    <Fragment>
       <div className={styles.Header}>
         To learn more about{" "}
         <span style={{ color: "#2F5596" }}>OpenSeatDirect</span>, please provide
@@ -299,17 +298,17 @@ const ContactUs = () => {
       <br></br>
       {formData}
       <br></br>
-    </Aux>
+    </Fragment>
   );
 
   if (showDoublePane) {
     mainDisplay = (
-      <Aux>
+      <Fragment>
         <div className={styles.MainGrid}>
           <div className={styles.LeftPane}>{leftPane}</div>
           <div className={styles.RightPane}>{rightPane}</div>
         </div>
-      </Aux>
+      </Fragment>
     );
   } else {
     mainDisplay = (
@@ -323,9 +322,9 @@ const ContactUs = () => {
   }
 
   return (
-    <Aux>
+    <Fragment>
       <div className={styles.MainContainer}>{mainDisplay}</div>
-    </Aux>
+    </Fragment>
   );
 };
 

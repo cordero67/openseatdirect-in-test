@@ -1,7 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import Backdrop from "../../components/UI/Backdrop/Backdrop";
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./SavedModal.module.css";
 
 const SavedModal = (props) => {
@@ -75,7 +74,7 @@ const SavedModal = (props) => {
   }
 
   return (
-    <Aux>
+    <Fragment>
       <Backdrop show={props.show}></Backdrop>
       <div
         style={{
@@ -98,7 +97,7 @@ const SavedModal = (props) => {
         {buttonSelection}
         <br></br>
       </div>
-    </Aux>
+    </Fragment>
   );
 };
 

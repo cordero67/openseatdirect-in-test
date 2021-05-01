@@ -7,15 +7,19 @@ import classes from "./TicketsModal.module.css";
 const TicketsModal = (props) => {
   console.log("Ticket Modal props: ", props);
 
-  //let allTotal = 0;
-  //let payPalExpressTotal = 0;
-  //let cashTotal = 0;
-  //let cashAppTotal = 0;
-  //let venmoTotal = 0;
-  //let paypalTotal = 0;
-  //let bitcoinTotal = 0;
-  //let ethereumTotal = 0;
-  //let otherTotal = 0;
+  // create an array of objects to hold transactions by ticket type
+  let orderDetails = [];
+  props.event.tickets.forEach((ticket) => {
+    orderDetails.push({
+      ticketId: ticket._id,
+      ticketName: ticket.ticketName,
+      ticketsSold: 0,
+      ticketPrice: ticket.currentTicketPrice,
+      grossTotal: 0,
+      netTotal: 0,
+    });
+  });
+  console.log("tempOrderDetails: ", orderDetails);
 
   let longDateTime;
   [longDateTime] = getLongStartDate(props.details.startDateTime);
@@ -40,6 +44,10 @@ const TicketsModal = (props) => {
         </button>
       </div>
     );
+  };
+
+  const ticketName = (ticketId) => {
+    return ticketId;
   };
 
   const ticketsList = () => {
@@ -69,24 +77,21 @@ const TicketsModal = (props) => {
         */
 
       return (
-        <Fragment>
+        <Fragment key={index}>
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "360px 80px 70px",
+              gridTemplateColumns: "430px 70px",
               gridGap: "10px",
-              width: "530px",
+              width: "510px",
               height: "28px",
               paddingTop: "10px",
             }}
           >
             {" "}
-            <div>1{ticket.ticketName}</div>
-            <div style={{ textAlign: "right", paddingRight: "10px" }}>
+            <div>{ticketName(ticket._id)}</div>
+            <div style={{ textAlign: "left" }}>
               {parseFloat(ticket.fullPrice).toFixed(2)}
-            </div>
-            <div style={{ textAlign: "right", paddingRight: "10px" }}>
-              {parseFloat(ticket.sellingPrice).toFixed(2)}
             </div>
           </div>
         </Fragment>
@@ -109,7 +114,7 @@ const TicketsModal = (props) => {
           style={{
             fontWeight: "600",
             fontSize: "18px",
-            textAlign: "center",
+            textAlign: "left",
           }}
         >
           {props.details.eventTitle}
@@ -118,12 +123,39 @@ const TicketsModal = (props) => {
         <div
           style={{
             fontSize: "16px",
-            textAlign: "center",
+            textAlign: "left",
             fontWeight: "400",
             paddingTop: "5px",
           }}
         >
           {longDateTime}
+        </div>
+        <br></br>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "110px 380px",
+            fontSize: "16px",
+            textAlign: "left",
+            paddingBottom: "10px",
+          }}
+        >
+          <div style={{ fontWeight: "600" }}>Recipient:</div>
+          <div>
+            {props.details.firstName}
+            {", "}
+            {props.details.lastName}
+          </div>
+        </div>
+        <div
+          style={{
+            fontSize: "16px",
+            textAlign: "left",
+            paddingLeft: "110px",
+            paddingBottom: "10px",
+          }}
+        >
+          {props.details.email}
         </div>
         <div
           style={{
@@ -138,24 +170,21 @@ const TicketsModal = (props) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "360px 80px 70px",
+            gridTemplateColumns: "430px 70px",
             gridGap: "10px",
-            width: "530px",
+            width: "510px",
             borderBottom: "1px solid black",
             fontWeight: "600",
             paddingBottom: "10px",
           }}
         >
-          <div style={{ textAlign: "left" }}>Ticket Type</div>
-          <div style={{ textAlign: "center" }}>
-            Full<br></br>Price
-          </div>
-          <div style={{ textAlign: "center" }}>Purchase Price</div>
+          <div style={{ textAlign: "left" }}>Type</div>
+          <div style={{ textAlign: "right" }}>Price</div>
         </div>
 
         <div
           style={{
-            width: "530px",
+            width: "510px",
             borderBottom: "1px solid black",
             paddingBottom: "10px",
           }}

@@ -69,10 +69,12 @@
   outline: 1px solid white;
   box-sizing: border-box;
 }
+
 .EventButton:focus {
   border: 1px solid white;
   outline: 1px solid white;
 }
+
 .ConnectionText {
   text-align: center;
   font-size: 16px;
@@ -80,6 +82,7 @@
   padding-top: 30px;
   box-sizing: border-box;
 }
+
 .NoEventsText {
   width: 1030px;
   text-align: center;

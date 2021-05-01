@@ -24,7 +24,6 @@ const IssueTickets = (props) => {
 
   const [customerInformation, setCustomerInformation] = useState({});
 
-  // THESE LOOK GOOD: 1/29/21
   const [recipientFirstNameWarning, setRecipientFirstNameWarning] = useState(
     false
   );

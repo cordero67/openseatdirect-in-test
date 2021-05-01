@@ -23,7 +23,7 @@ const Account = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${userInfo.token}`);
 
-    let url = `${API}/auth/change_password/${userInfo.id}`;
+    let url = `${API}/auth/password/sendcode`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,

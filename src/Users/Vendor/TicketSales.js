@@ -3,9 +3,10 @@ import React, { useEffect, useState, Fragment } from "react";
 import { getDate } from "./Resources/VendorFunctions";
 
 import classes from "./TicketSales.module.css";
-import ReceiptModal from "./Modals/ReceiptModal";
+import ReceiptModal from "../Modals/ReceiptModal";
 
 const TicketSales = (props) => {
+  console.log("PROPS: ", props);
   const [modalView, setModalView] = useState(false); // defines appearance of ReceiptModal
   const [eventOrders, setEventOrders] = useState([]);
   const [selectedEventTitle, setSelectedEventTitle] = useState("");
@@ -116,7 +117,7 @@ const TicketSales = (props) => {
                       style={{ fontSize: "24px", color: "blue" }}
                       name="receipt-outline"
                       onClick={() => {
-                        console.log("ITEM");
+                        console.log("ITEM: ", item);
                         setSelectedOrder(item);
                         setModalView(true);
                       }}

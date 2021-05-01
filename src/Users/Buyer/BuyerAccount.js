@@ -4,7 +4,7 @@ import queryString from "query-string";
 
 import BuyerNavigation from "./BuyerNavigation";
 import Profile from "../ComponentPages/Profile";
-import MyTickets from "../ComponentPages/MyTickets";
+import TicketWallet from "../TicketWallet/TicketWallet";
 import Onboarding from "./Onboarding";
 import classes from "./BuyerAccount.module.css";
 
@@ -12,7 +12,7 @@ const BuyerAccount = () => {
   const [buyerInfo, setBuyerInfo] = useState(); //
   const [isLoading, setIsLoading] = useState(true); //
 
-  const [paneView, setPaneView] = useState("myTickets");
+  const [paneView, setPaneView] = useState("wallet");
 
   const getStatus = () => {
     console.log("inside new 'getStatus' function");
@@ -120,8 +120,8 @@ const BuyerAccount = () => {
         );
       } else if (paneView === "onboarding") {
         return <Onboarding userid={buyerInfo.id} token={buyerInfo.token} />;
-      } else if (paneView === "myTickets") {
-        return <MyTickets />;
+      } else if (paneView === "wallet") {
+        return <TicketWallet />;
       }
     } else {
       return null;

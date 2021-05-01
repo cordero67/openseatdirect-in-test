@@ -335,7 +335,7 @@ const SalesAnalytics = (props) => {
               <div className={classes.TicketType}>
                 <div
                   style={{ backgroundColor: colorSpec[index], width: "15px" }}
-                ></div>
+                />
                 <button
                   className={classes.TableLine}
                   cursor="pointer"
@@ -543,7 +543,6 @@ const SalesAnalytics = (props) => {
           <div style={{ textAlign: "center" }}>Tickets</div>
           <div style={{ textAlign: "center" }}>Amount</div>
         </div>
-
         <div className={classes.PostalCodesSection}>{postalCodes()}</div>
         <div className={classes.PostalCodesGrid} style={{ fontWeight: "600" }}>
           <div>Totals</div>
@@ -569,7 +568,6 @@ const SalesAnalytics = (props) => {
               <div style={{ textAlign: "center" }}>
                 {buyer.ticketsPurchased}
               </div>
-
               <div style={{ textAlign: "right", paddingRight: "5px" }}>
                 {buyer.salesRevenues.toFixed(2)}
               </div>
@@ -655,7 +653,7 @@ const SalesAnalytics = (props) => {
       {tabTitle}{" "}
       <div className={classes.DisplayPanel}>
         <div className={classes.DisplayTitle}>Sales Analytics</div>
-        <br></br>
+
         <div className={classes.SectionTitle}>Net Sales</div>
         <div className={classes.AnalyticsSection}>{netTable()}</div>
 

@@ -120,7 +120,7 @@ const SideDrawerItems = (props) => {
 
       <li>
         <NavLink
-          to="/privacy-policy"
+          to="/privacypolicy"
           style={isActive(props.currentPage, "/privacypolicy")}
           onClick={props.clicked}
           exact
@@ -131,8 +131,8 @@ const SideDrawerItems = (props) => {
 
       <li>
         <NavLink
-          to="/terms-and-conditions"
-          style={isActive(props.currentPage, "/terms-and-conditions")}
+          to="/termsconditions"
+          style={isActive(props.currentPage, "/termsconditions")}
           onClick={props.clicked}
           exact
         >

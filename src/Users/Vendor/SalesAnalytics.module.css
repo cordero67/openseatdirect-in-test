@@ -30,6 +30,8 @@
   font-weight: 600;
   padding-top: 20px;
   padding-left: 30px;
+  padding-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .TabTitle {
@@ -40,6 +42,7 @@
 .AnalyticsSection {
   padding-left: 30px;
   padding-bottom: 40px;
+  box-sizing: border-box;
 }
 
 .SectionTitle {
@@ -47,6 +50,7 @@
   font-weight: 600;
   padding-left: 30px;
   padding-bottom: 10px;
+  box-sizing: border-box;
 }
 
 .NetTableGrid {
@@ -59,13 +63,16 @@
   font-size: 18px;
   font-weight: 600;
   padding-top: 15px;
+  box-sizing: border-box;
 }
 
 .NetSalesCategory {
   text-align: center;
   font-size: 12px;
   padding-bottom: 10px;
+  box-sizing: border-box;
 }
+
 .TicketsGrid {
   display: grid;
   grid-template-columns: 320px 60px 60px 80px;
@@ -103,6 +110,7 @@
   text-decoration: underline;
   padding-left: 50px;
   padding-bottom: 5px;
+  box-sizing: border-box;
 }
 
 .TicketChartsGrid {
@@ -111,12 +119,14 @@
   column-gap: 50px;
   font-weight: 600;
   padding-left: 50px;
+  box-sizing: border-box;
 }
 
 .PieChartSection {
   text-align: center;
   width: 200px;
   padding-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .PieChart {
@@ -137,6 +147,7 @@
   width: 440px;
   scrollbar-width: thin;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .PostalCodesGrid {
@@ -152,6 +163,7 @@
   width: 395px;
   scrollbar-width: thin;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .CustomersGrid {
@@ -167,6 +179,7 @@
   width: 470px;
   scrollbar-width: thin;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .PaymentsGrid {
@@ -179,6 +192,7 @@
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   width: 225px;
+  box-sizing: border-box;
 }
 
 .SwitchButton {

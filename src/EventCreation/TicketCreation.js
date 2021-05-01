@@ -2,13 +2,12 @@
 //EXCEPT FOR SMALL STYLING SECTION LABELED BELOW
 //EXCEPT FOR <PriceSettings/> SECTION LABELED BELOW
 
-import React from "react";
+import React, { Fragment } from "react";
 
 import TicketModal from "./Modals/TicketModal";
 import PriceSettings from "./PriceSettings";
 
 import classes from "./EventCreation.module.css";
-import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +22,7 @@ import { Button, Popup } from "semantic-ui-react";
 const TicketCreation = (props) => {
   const ticketTypeDisplay = (index) => {
     let display = (
-      <Aux>
+      <Fragment>
         {props.tickets.map((item, index) => {
           // defines warnings for ticket name, quantity and price
           let nameRegex = /^[a-zA-Z0-9\-\s]+$/;
@@ -127,7 +126,7 @@ const TicketCreation = (props) => {
     //XX END CODE REPLICATION REQUIRED
 */
           return (
-            <Aux key={index}>
+            <Fragment key={index}>
               <div className={classes.TicketLine}>
                 <div
                   style={{
@@ -238,7 +237,7 @@ const TicketCreation = (props) => {
               </div>
 
               {item.viewModal ? (
-                <Aux>
+                <Fragment>
                   <TicketModal
                     show={true}
                     details={item}
@@ -251,7 +250,7 @@ const TicketCreation = (props) => {
                       props.delete(item.key);
                     }}
                   ></TicketModal>
-                </Aux>
+                </Fragment>
               ) : null}
 
               {item.nameWarning ||
@@ -352,16 +351,16 @@ const TicketCreation = (props) => {
                   deletePromoCode={props.deletePromoCode}
                 />
               ) : null}
-            </Aux>
+            </Fragment>
           );
         })}
-      </Aux>
+      </Fragment>
     );
     return display;
   };
 
   return (
-    <Aux>
+    <Fragment>
       <div className={classes.CategoryTitle} style={{ width: "160px" }}>
         Ticket Creation
       </div>
@@ -438,7 +437,7 @@ const TicketCreation = (props) => {
           </button>
         </div>
       </div>
-    </Aux>
+    </Fragment>
   );
 };
 

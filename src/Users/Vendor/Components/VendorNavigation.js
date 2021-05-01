@@ -66,11 +66,11 @@ const VendorNavigation = (props) => {
           <li>
             <button
               className={
-                props.pane === "myTickets"
+                props.pane === "wallet"
                   ? classes.NavigationButtonActive
                   : classes.NavigationButton
               }
-              name="myTickets"
+              name="wallet"
               onClick={props.clicked}
             >
               My Tickets

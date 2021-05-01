@@ -1210,32 +1210,6 @@ const EventEdit = (props) => {
       </div>
     );
   };
-
-  /*
-  const tabTitle = (
-    <div className={classes.DashboardHeader}>
-      {true ? (
-        <div style={{ fontSize: "26px", fontWeight: "600" }}>
-          Event Title for Event Edit
-        </div>
-      ) : (
-        <div>
-          <br></br>
-        </div>
-      )}
-      <div style={{ paddingTop: "5px" }}>
-        <button
-          className={classes.SwitchButton}
-          onClick={() => {
-            props.toEvents("events");
-          }}
-        >
-          Switch Event
-        </button>
-      </div>
-    </div>
-  );
-*/
   return (
     <div>
       {displayHeader}

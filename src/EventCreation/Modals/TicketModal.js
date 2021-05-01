@@ -1,7 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import Backdrop from "../../components/UI/Backdrop/Backdrop";
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 import classes from "./TicketModal.module.css";
 
 const TicketModal = (props) => {
@@ -9,7 +8,7 @@ const TicketModal = (props) => {
   console.log("ticketName", props.details.ticketName);
 
   return (
-    <Aux>
+    <Fragment>
       <Backdrop show={props.show} clicked={props.modalClosed}></Backdrop>
       <div
         style={{
@@ -53,7 +52,7 @@ const TicketModal = (props) => {
         </div>
         <br></br>
       </div>
-    </Aux>
+    </Fragment>
   );
 };
 

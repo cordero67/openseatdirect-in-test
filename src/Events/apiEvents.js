@@ -80,7 +80,6 @@ export const getAllEventData = () => {
     redirect: "follow", // what is this and when is it required
   };
 
-  //let fetchstr = `${API}/event/all`;
   let fetchstr = `${API}/events`;
 
   return fetch(fetchstr, requestOptions)

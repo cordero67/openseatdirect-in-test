@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 
-import Aux from "../hoc/Auxiliary/Auxiliary";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../config";
@@ -77,7 +76,7 @@ const EventsPasts = () => {
       console.log("eventDescriptions: ", eventDescriptions);
       if (eventDescriptions.length > 0) {
         return (
-          <Aux>
+          <Fragment>
             {eventDescriptions.map((eventItem, index) => {
               return (
                 <Event
@@ -92,7 +91,7 @@ const EventsPasts = () => {
                 />
               );
             })}
-          </Aux>
+          </Fragment>
         );
       } else {
         return (

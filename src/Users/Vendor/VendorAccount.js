@@ -12,14 +12,14 @@ import EditEvent from "../../EventCreation/EditEvent";
 import Orders from "./Orders";
 import CreateEvent from "../../EventCreation/CreateEvent";
 import Account from "./Account";
-import MyTickets from "../ComponentPages/MyTickets";
+import TicketWallet from "../TicketWallet/TicketWallet";
 import VendorNavigation from "./Components/VendorNavigation";
 import Spinner from "../../components/UI/Spinner/Spinner";
 
 import classes from "./VendorAccount.module.css";
 
 const VendorAccount = () => {
-  // spinner, events, salesAnalytics, ticketSales, issueTickets, editEvent, myTickets, account, create, orders
+  // spinner, events, salesAnalytics, ticketSales, issueTickets, editEvent, wallet, account, create, orders
   const [display, setDisplay] = useState("spinner");
   const [eventDescriptions, setEventDescriptions] = useState(); //
   const [eventOrders, setEventOrders] = useState(); //
@@ -213,6 +213,8 @@ const VendorAccount = () => {
             setDisplay("salesAnalytics");
           }}
           ticketSales={(event, orders) => {
+            console.log("EVENT: ", event);
+            console.log("ORDER: ", orders);
             setSelectedEvent(event);
             setSelectedOrders(orders);
             setDisplay("ticketSales");
@@ -276,8 +278,8 @@ const VendorAccount = () => {
       return <CreateEvent />;
     } else if (display === "account") {
       return <Account />;
-    } else if (display === "myTickets") {
-      return <MyTickets />;
+    } else if (display === "wallet") {
+      return <TicketWallet />;
     } else {
       return null;
     }

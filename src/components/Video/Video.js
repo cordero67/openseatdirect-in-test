@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import YouTube from "react-youtube";
-
-import Aux from "../../hoc/Auxiliary/Auxiliary";
 
 import styles from "./Video.module.css";
 
@@ -108,7 +106,7 @@ const Video = () => {
   };
 
   return (
-    <Aux>
+    <Fragment>
       <div className={styles.MainContainer}>
         <div className={styles.MainGrid}>
           <div className={styles.SectionHeader}>
@@ -123,7 +121,7 @@ const Video = () => {
           </div>
         </div>
       </div>
-    </Aux>
+    </Fragment>
   );
 };
 

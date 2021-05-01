@@ -16,7 +16,7 @@ import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Authentication from "../../Users/Authentication/Authentication";
-import Slider from "../HomePage/Slider"; // THIS IS A TEST ROUTE
+//import Slider from "../HomePage/Slider"; // THIS IS A TEST ROUTE
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
@@ -71,16 +71,6 @@ const Routes = () => {
       />
 
       <Route
-        path="/slider"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Slider />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
         path="/auth"
         exact
         render={(routeProps) => (
@@ -115,7 +105,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/terms-and-conditions"
+        path="/termsconditions"
         exact
         render={(routeProps) => (
           <React.Fragment>

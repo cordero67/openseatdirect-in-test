@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 
 import { API } from "../config";
 
-import Aux from "../hoc/Auxiliary/Auxiliary";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import { getAllEventData } from "./apiEvents";
@@ -138,7 +137,7 @@ const Events = () => {
       console.log("eventDescriptions: ", eventDescriptions);
       if (eventDescriptions.length > 0) {
         return (
-          <Aux>
+          <Fragment>
             {eventDescriptions.map((eventItem, index) => {
               return (
                 <Event
@@ -153,7 +152,7 @@ const Events = () => {
                 />
               );
             })}
-          </Aux>
+          </Fragment>
         );
       } else {
         return (

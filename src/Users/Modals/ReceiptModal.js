@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 
-import { getStartDate } from "../Resources/VendorFunctions";
-import Backdrop from "../../../components/UI/Backdrop/Backdrop";
+import { getStartDate } from "../Vendor/Resources/VendorFunctions";
+import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import classes from "./ReceiptModal.module.css";
 
 const ReceiptModal = (props) => {
-  console.log("selected order: ", props);
+  console.log("props: ", props);
 
   let netTotal = 0;
   let grossTotal = 0;
@@ -22,7 +22,7 @@ const ReceiptModal = (props) => {
       netTotal: 0,
     });
   });
-  console.log("tempOrdorderDetailsrs: ", orderDetails);
+  console.log("tempOrderDetails: ", orderDetails);
 
   // populate this ticketOrder array
   props.details.qrTickets.forEach((qrTix) => {
@@ -89,42 +89,44 @@ const ReceiptModal = (props) => {
   const ticketsList = () => {
     return orderDetails.map((ticket, index) => {
       let adjustedPaymentMethod;
-
-      if (
-        "manualPaymentMethod" in ticket &&
-        parseFloat(ticket.unit_price).toFixed(2) !== "0.00"
-      ) {
-        adjustedPaymentMethod = ticket.manualPaymentMethod;
-      } else if ("manualPaymentMethod" in ticket) {
-        adjustedPaymentMethod = "comp";
-      } else {
-        adjustedPaymentMethod = "PayPal Express";
-      }
-
       if (ticket.ticketsSold > 0) {
-        return (
-          <Fragment key={index}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "60px 280px 70px 70px",
-                gridGap: "10px",
-                width: "510px",
-                height: "28px",
-                paddingTop: "10px",
-              }}
-            >
-              <div style={{ textAlign: "center" }}>{ticket.ticketsSold}</div>
-              <div style={{ textAlign: "left" }}>{ticket.ticketName}</div>
-              <div style={{ textAlign: "right" }}>
-                {parseFloat(ticket.ticketPrice).toFixed(2)}
+        if (
+          "manualPaymentMethod" in ticket &&
+          parseFloat(ticket.unit_price).toFixed(2) !== "0.00"
+        ) {
+          adjustedPaymentMethod = ticket.manualPaymentMethod;
+        } else if ("manualPaymentMethod" in ticket) {
+          adjustedPaymentMethod = "comp";
+        } else {
+          adjustedPaymentMethod = "PayPal Express";
+        }
+
+        //if (ticket.ticketsSold > 0) {
+        if (true) {
+          return (
+            <Fragment key={index}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "60px 280px 70px 70px",
+                  gridGap: "10px",
+                  width: "510px",
+                  height: "28px",
+                  paddingTop: "10px",
+                }}
+              >
+                <div style={{ textAlign: "center" }}>{ticket.ticketsSold}</div>
+                <div style={{ textAlign: "left" }}>{ticket.ticketName}</div>
+                <div style={{ textAlign: "right" }}>
+                  {parseFloat(ticket.ticketPrice).toFixed(2)}
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  {parseFloat(ticket.grossTotal).toFixed(2)}
+                </div>
               </div>
-              <div style={{ textAlign: "right" }}>
-                {parseFloat(ticket.grossTotal).toFixed(2)}
-              </div>
-            </div>
-          </Fragment>
-        );
+            </Fragment>
+          );
+        }
       }
     });
   };

@@ -76,29 +76,6 @@ const Home = () => {
     },
   };
 
-  /*
-  let myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-
-  const url1 = `${API}/signup`;
-  const method1 = "POST";
-  const body1 = null;
-  const initialData1 = { status: true, message: "hi first time" };
-
-  const {
-    isLoading,
-    hasError,
-    setUrl,
-    setBody,
-    data,
-    networkError,
-  } = useOurApi(method1, url1, myHeaders, body1, initialData1);
-
-  const sysmessage = networkError
-    ? "NetworkError...please check your connectivity"
-    : "SYSTEM ERROR - please try again";
-  */
-
   const stylingUpdate = (inWidth) => {
     console.log("stylingUpdate");
     setIsResizing(true);
