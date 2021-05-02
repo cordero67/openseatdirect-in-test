@@ -23,7 +23,7 @@ const TicketsModal = (props) => {
 
   let longDateTime;
   [longDateTime] = getLongStartDate(props.details.startDateTime);
-
+  /*
   // LOOKS GOOD: 1/21/21
   const modalButtons = () => {
     return (
@@ -34,6 +34,47 @@ const TicketsModal = (props) => {
           paddingLeft: "35px",
         }}
       >
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            props.close();
+          }}
+        >
+          CLOSE
+        </button>
+      </div>
+    );
+  };
+*/
+
+  const modalButtons = () => {
+    return (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "160px 160px 160px",
+          gridGap: "15px",
+          width: "590px",
+          textAlign: "center",
+          paddingLeft: "0px",
+        }}
+      >
+        <button
+          className={classes.ButtonBlue}
+          onClick={() => {
+            props.loadPrevious();
+          }}
+        >
+          PREVIOUS EVENT
+        </button>
+        <button
+          className={classes.ButtonGreen}
+          onClick={() => {
+            props.loadNext();
+          }}
+        >
+          NEXT EVENT
+        </button>
         <button
           className={classes.ButtonGrey}
           onClick={() => {

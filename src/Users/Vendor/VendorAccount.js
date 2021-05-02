@@ -86,6 +86,7 @@ const VendorAccount = () => {
     return response;
   };
 
+  // CURRENTLY NOT USING THIS TAB
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
@@ -96,6 +97,8 @@ const VendorAccount = () => {
       }
       let tempUser = JSON.parse(localStorage.getItem("user"));
       let vendorToken = tempUser.token;
+      let userId = tempUser.user.accountId.accountNum;
+      console.log("userId: ", userId);
 
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -110,7 +113,7 @@ const VendorAccount = () => {
         headers: myHeaders,
         redirect: "follow",
       };
-      let fetchstr = `${API}/organizer/events`;
+      let fetchstr = `${API}/accounts/${userId}/events`;
 
       fetch(fetchstr, requestOptionsGET)
         .then(handleErrors)

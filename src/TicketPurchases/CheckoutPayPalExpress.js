@@ -228,7 +228,7 @@ const Checkout = () => {
       );
 
       // USED BY CURRENT CODE APRIL 17, 2021
-      url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+      url = `${API}/tixorder/signed_place_neworder`;
 
       console.log("signed order: ", order);
 

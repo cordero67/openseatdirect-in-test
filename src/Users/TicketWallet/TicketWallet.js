@@ -20,14 +20,15 @@ const MyTickets = () => {
 
   const [modalItem, setModalItem] = useState({});
 
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState([]); // holds all orders for the given buyer
+  const [futureEvents, setFutureEvents] = useState([]); // an array of events that tickets were received for future events
+  const [pastEvents, setPastEvents] = useState([]); // an array of events that tickets were received for past events
 
-  const [selectedOrder, setSelectedOrder] = useState({});
-  const [selectedEvent, setSelectedEvent] = useState({});
-  const [selectedTickets, setSelectedTickets] = useState({});
-
-  const [futureEvents, setFutureEvents] = useState([]);
-  const [pastEvents, setPastEvents] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState({}); // order to populate receipt modal
+  const [selectedTickets, setSelectedTickets] = useState({}); // tickets to populate tickets modal
+  const [selectedEvent, setSelectedEvent] = useState({}); // event to populate receipt and ticket modals
+  //const [selectedFutureEvent, setSelectedFutureEvent] = useState({}); // event to populate receipt modal
+  //const [selectedPastEvent, setSelectedPastEvent] = useState({}); // event to populate receipt modal
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -80,6 +81,8 @@ const MyTickets = () => {
     let tempPastArray = []; // an array of events that tickets were received for past events
     let tempFutureArray = []; // an array of events that tickets were received for future events
 
+    console.log("ORDERS: ", orders);
+
     orders.map((order) => {
       let adjusted = order.eventId.startDateTime.replace("T", " ");
 
@@ -98,7 +101,7 @@ const MyTickets = () => {
       }
     });
 
-    // populates "tempArray" with ticket pruchase information
+    // populates "tempArray" with individual ticket purchase information, not individual order information
     orders.map((order) => {
       let position = tempEvents.indexOf(order.eventNum);
       order.qrTickets.map((ticket) => {
@@ -114,14 +117,14 @@ const MyTickets = () => {
       let eventTime = Date.parse(event.endDateTime);
       if (eventTime > Date.now()) {
         tempFutureArray.push(event);
-        console.log("tempFutureArray: ", tempFutureArray);
         setFutureEvents(tempFutureArray);
       } else {
         tempPastArray.push(event);
-        console.log("tempPastArray: ", tempPastArray);
         setPastEvents(tempPastArray);
       }
     });
+    console.log("tempFutureArray: ", tempFutureArray);
+    console.log("tempPastArray: ", tempPastArray);
   };
 
   const loadPreviousOrder = () => {
@@ -152,6 +155,35 @@ const MyTickets = () => {
     setSelectedOrder(orders[newPosition]);
   };
 
+  const loadNextTickets = () => {
+    let newPosition;
+    futureEvents.forEach((event, index) => {
+      if (event.eventNum === selectedTickets.eventNum) {
+        if (index === futureEvents.length - 1) {
+          newPosition = 0;
+        } else {
+          newPosition = index + 1;
+        }
+      }
+    });
+    setSelectedTickets(futureEvents[newPosition]);
+  };
+
+  const loadPreviousTickets = () => {
+    let newPosition;
+    console.log("PREVIOUS");
+    futureEvents.forEach((event, index) => {
+      if (event.eventNum === selectedTickets.eventNum) {
+        if (index === 0) {
+          newPosition = futureEvents.length - 1;
+        } else {
+          newPosition = index - 1;
+        }
+      }
+    });
+    setSelectedTickets(futureEvents[newPosition]);
+  };
+
   // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
     if (display === "spinner") {
@@ -165,7 +197,8 @@ const MyTickets = () => {
     }
   };
 
-  const launchModal = (item, modalType) => {
+  const launchReceiptModal = (item) => {
+    console.log("ITEM: ", item);
     let tempUser;
     if (
       typeof window !== "undefined" &&
@@ -183,12 +216,40 @@ const MyTickets = () => {
         console.log("result: ", JSON.parse(result));
         let jsEvents = JSON.parse(result);
         setSelectedEvent(jsEvents);
-        if (modalType === "receipt") {
-          setSelectedOrder(item);
-        } else if (modalType === "tickets") {
-          setSelectedTickets(item);
-        }
-        setModalView(modalType);
+        setSelectedOrder(item);
+        setModalView("receipt");
+      })
+      .catch((err) => {
+        console.log(
+          "Inside '.catch' block of 'getEventData()', this is the error:",
+          // NEED TO ADD AN ERROR MODAL
+          err
+        );
+        setModalView("warning");
+      });
+  };
+
+  const launchTicketsModal = (item) => {
+    console.log("ITEM: ", item);
+    let tempUser;
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      tempUser = JSON.parse(localStorage.getItem("user"));
+    }
+
+    fetch(`${API}/events/${item.eventNum}`, {
+      method: "GET",
+    })
+      .then(handleErrors)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log("result: ", JSON.parse(result));
+        let jsEvents = JSON.parse(result);
+        setSelectedEvent(jsEvents);
+        setSelectedTickets(item);
+        setModalView("tickets");
       })
       .catch((err) => {
         console.log(
@@ -238,7 +299,7 @@ const MyTickets = () => {
                         style={{ fontSize: "24px", color: "blue" }}
                         name="receipt-outline"
                         onClick={() => {
-                          launchModal(order, "receipt");
+                          launchReceiptModal(order);
                         }}
                       />
                     </button>
@@ -291,7 +352,7 @@ const MyTickets = () => {
                       <button
                         className={classes.InvisibleButton}
                         onClick={() => {
-                          launchModal(event, "tickets");
+                          launchTicketsModal(event);
                         }}
                       >
                         <span style={{ color: "blue", fontWeight: "600" }}>
@@ -527,8 +588,12 @@ const MyTickets = () => {
             close={() => {
               setModalView("none");
             }}
-            //loadNext={() => {loadNextOrder()}}
-            //loadPrevious={() => {loadPreviousOrder()}}
+            loadNext={() => {
+              loadNextTickets();
+            }}
+            loadPrevious={() => {
+              loadPreviousTickets();
+            }}
           />
         </Fragment>
       );

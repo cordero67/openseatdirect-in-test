@@ -186,6 +186,7 @@ const EventEdit = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
+      vendorInfo.vendorAccount = tempUser.user.accountId.accountNum;
     } else {
       window.location.href = "/signin";
     }
@@ -518,10 +519,13 @@ const EventEdit = (props) => {
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
-      apiurl = `${API}/organizer/events/${eventDescription.eventNum}`;
+      //apiurl = `${API}/organizer/events/${eventDescription.eventNum}`;
+      apiurl = `${API}/accounts/${vendorInfo.vendorAccount}/events/${eventDescription.eventNum}`;
+
+      //accounts/{accountNum}/events/{eventNum}
 
       fetch(apiurl, {
-        method: "PATCH",
+        method: "POST",
         headers: myHeaders,
         body: formData,
         redirect: "follow",
