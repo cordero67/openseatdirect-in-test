@@ -19,7 +19,7 @@ const OrderModal = (props) => {
 
   let longDateTime;
   [longDateTime] = getStartDate(props.dateTime);
-  console.log("longDateTime: ", longDateTime);
+  //console.log("longDateTime: ", longDateTime);
 
   const modalTitle = () => {
     if (props.status === "review") {
@@ -67,7 +67,10 @@ const OrderModal = (props) => {
     } else if (props.status === "confirmation") {
       return (
         <Fragment>
-          <button className={classes.ButtonGrey} onClick={props.close}>
+          <button
+            className={classes.ButtonGrey}
+            onClick={() => props.close("confirmation")}
+          >
             CONTINUE
           </button>
         </Fragment>
@@ -75,7 +78,10 @@ const OrderModal = (props) => {
     } else if (props.status === "error") {
       return (
         <Fragment>
-          <button className={classes.ButtonGrey} onClick={props.close}>
+          <button
+            className={classes.ButtonGrey}
+            onClick={() => props.close("error")}
+          >
             CONTINUE
           </button>
         </Fragment>
@@ -84,8 +90,8 @@ const OrderModal = (props) => {
   };
 
   const ticketsList = () => {
+    console.log("tickets: ", props.details.tickets);
     return props.details.tickets.map((ticket, index) => {
-      console.log("ticket: ", ticket);
       /*
         let adjustedTicketName;
         let num = 40;
@@ -168,15 +174,6 @@ const OrderModal = (props) => {
       console.log("equal to 0");
       allTotalBorder = classes.SubTotal;
     }
-    /*
-    if (allTotal === "0") {
-      console.log("equal to '0'")
-    }
-    
-    if (allTotal === "0.00") {
-      console.log("equal to '0.00'")
-    }
-    */
 
     return (
       <Fragment>
@@ -388,9 +385,7 @@ const OrderModal = (props) => {
         </div>
         <div>{paymentTypeTotals()}</div>
         <br></br>
-
         {modalButtons()}
-
         <br></br>
         <br></br>
       </div>

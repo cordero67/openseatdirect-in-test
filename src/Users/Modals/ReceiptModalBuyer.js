@@ -40,7 +40,7 @@ const ReceiptModal = (props) => {
   console.log("orderDetails: ", orderDetails);
 
   let longDateTime;
-  [longDateTime] = getStartDate(props.details.startDateTime);
+  [longDateTime] = getStartDate(props.details.eventId.startDateTime);
 
   let shortDateTime;
   [shortDateTime] = getStartDate(props.details.createdAt);
@@ -64,7 +64,7 @@ const ReceiptModal = (props) => {
             props.loadPrevious();
           }}
         >
-          PREVIOUS ORDER
+          PREVIOUS RECEIPT
         </button>
         <button
           className={classes.ButtonGreen}
@@ -72,7 +72,7 @@ const ReceiptModal = (props) => {
             props.loadNext();
           }}
         >
-          NEXT ORDER
+          NEXT RECEIPT
         </button>
         <button
           className={classes.ButtonGrey}
@@ -87,6 +87,7 @@ const ReceiptModal = (props) => {
   };
 
   const ticketsList = () => {
+    console.log("orderDetails: ", orderDetails);
     return orderDetails.map((ticket, index) => {
       let adjustedPaymentMethod;
       if (ticket.ticketsSold > 0) {
@@ -101,7 +102,6 @@ const ReceiptModal = (props) => {
           adjustedPaymentMethod = "PayPal Express";
         }
 
-        //if (ticket.ticketsSold > 0) {
         if (true) {
           return (
             <Fragment key={index}>
@@ -138,19 +138,19 @@ const ReceiptModal = (props) => {
           <Fragment>
             <div className={classes.SubTotal}>
               <div style={{ textAlign: "right" }}>Sub Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
+              <div style={{ textAlign: "right" }}>
                 {parseFloat(grossTotal).toFixed(2)}
               </div>
             </div>
             <div className={classes.SubTotal}>
               <div style={{ textAlign: "right" }}>less Promos/Discounts:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
+              <div style={{ textAlign: "right" }}>
                 {parseFloat(grossTotal - netTotal).toFixed(2)}
               </div>
             </div>
             <div className={classes.Total}>
               <div style={{ textAlign: "right" }}>Grand Total:</div>
-              <div style={{ textAlign: "right", paddingRight: "10px" }}>
+              <div style={{ textAlign: "right" }}>
                 {parseFloat(netTotal).toFixed(2)}
               </div>
             </div>
@@ -160,7 +160,7 @@ const ReceiptModal = (props) => {
         return (
           <div className={classes.SubTotal}>
             <div style={{ textAlign: "right" }}>Grand Total:</div>
-            <div style={{ textAlign: "right", paddingRight: "10px" }}>
+            <div style={{ textAlign: "right" }}>
               {parseFloat(netTotal).toFixed(2)}
             </div>
           </div>
@@ -208,7 +208,7 @@ const ReceiptModal = (props) => {
             textAlign: "left",
           }}
         >
-          {props.details.eventTitle}
+          {props.details.eventId.eventTitle}
         </div>
 
         <div
@@ -233,9 +233,9 @@ const ReceiptModal = (props) => {
         >
           <div style={{ fontWeight: "600" }}>Recipient:</div>
           <div>
-            {props.details.firstName}
+            {props.details.firstname}
             {", "}
-            {props.details.lastName}
+            {props.details.lastname}
           </div>
         </div>
         <div

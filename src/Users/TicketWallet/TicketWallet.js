@@ -3,8 +3,8 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 
 import { API } from "../../config";
 import classes from "./TicketWallet.module.css";
-import ReceiptModal from "../Modals/ReceiptModal";
-import TicketsModal from "../Vendor/Modals/TicketsModal";
+import ReceiptModal from "../Modals/ReceiptModalBuyer";
+import TicketsModal from "../Modals/TicketsModal";
 import QRCodesModal from "../Vendor/Modals/QRCodesModal";
 import WarningModal from "../Vendor/Modals/WarningModal";
 
@@ -20,6 +20,7 @@ const MyTickets = () => {
 
   const [modalItem, setModalItem] = useState({});
 
+  const [ticketBuyer, setTicketBuyer] = useState({});
   const [orders, setOrders] = useState([]); // holds all orders for the given buyer
   const [futureEvents, setFutureEvents] = useState([]); // an array of events that tickets were received for future events
   const [pastEvents, setPastEvents] = useState([]); // an array of events that tickets were received for past events
@@ -66,6 +67,13 @@ const MyTickets = () => {
         let js = JSON.parse(result);
         setOrders(js);
         console.log("result: ", js);
+        if (js.length > 0) {
+          console.log("LENGTH");
+          setTicketBuyer({
+            firstName: js[0].firstname,
+            lastName: js[0].lastname,
+          });
+        }
         createEventArrays(js);
         setDisplay("future");
       })
@@ -127,7 +135,7 @@ const MyTickets = () => {
     console.log("tempPastArray: ", tempPastArray);
   };
 
-  const loadPreviousOrder = () => {
+  const previousOrder = () => {
     let newPosition;
     orders.forEach((order, index) => {
       if (order.osdOrderId === selectedOrder.osdOrderId) {
@@ -138,10 +146,10 @@ const MyTickets = () => {
         }
       }
     });
-    setSelectedOrder(orders[newPosition]);
+    launchReceiptModal(orders[newPosition]);
   };
 
-  const loadNextOrder = () => {
+  const nextOrder = () => {
     let newPosition;
     orders.forEach((order, index) => {
       if (order.osdOrderId === selectedOrder.osdOrderId) {
@@ -152,10 +160,10 @@ const MyTickets = () => {
         }
       }
     });
-    setSelectedOrder(orders[newPosition]);
+    launchReceiptModal(orders[newPosition]);
   };
 
-  const loadNextTickets = () => {
+  const nextFutureTicket = () => {
     let newPosition;
     futureEvents.forEach((event, index) => {
       if (event.eventNum === selectedTickets.eventNum) {
@@ -166,12 +174,11 @@ const MyTickets = () => {
         }
       }
     });
-    setSelectedTickets(futureEvents[newPosition]);
+    launchTicketsModal(futureEvents[newPosition], "future");
   };
 
-  const loadPreviousTickets = () => {
+  const previousFutureTicket = () => {
     let newPosition;
-    console.log("PREVIOUS");
     futureEvents.forEach((event, index) => {
       if (event.eventNum === selectedTickets.eventNum) {
         if (index === 0) {
@@ -181,7 +188,35 @@ const MyTickets = () => {
         }
       }
     });
-    setSelectedTickets(futureEvents[newPosition]);
+    launchTicketsModal(futureEvents[newPosition], "future");
+  };
+
+  const nextPastTicket = () => {
+    let newPosition;
+    pastEvents.forEach((event, index) => {
+      if (event.eventNum === selectedTickets.eventNum) {
+        if (index === pastEvents.length - 1) {
+          newPosition = 0;
+        } else {
+          newPosition = index + 1;
+        }
+      }
+    });
+    launchTicketsModal(pastEvents[newPosition], "past");
+  };
+
+  const previousPastTicket = () => {
+    let newPosition;
+    pastEvents.forEach((event, index) => {
+      if (event.eventNum === selectedTickets.eventNum) {
+        if (index === 0) {
+          newPosition = pastEvents.length - 1;
+        } else {
+          newPosition = index - 1;
+        }
+      }
+    });
+    launchTicketsModal(pastEvents[newPosition], "past");
   };
 
   // defines and sets "loadingSpinner" view status
@@ -229,7 +264,7 @@ const MyTickets = () => {
       });
   };
 
-  const launchTicketsModal = (item) => {
+  const launchTicketsModal = (item, type) => {
     console.log("ITEM: ", item);
     let tempUser;
     if (
@@ -249,7 +284,16 @@ const MyTickets = () => {
         let jsEvents = JSON.parse(result);
         setSelectedEvent(jsEvents);
         setSelectedTickets(item);
-        setModalView("tickets");
+        if (type === "future") {
+          console.log("FUTURE");
+          setModalView("future");
+        } else if (type === "past") {
+          console.log("PAST");
+          setModalView("past");
+        } else {
+          console.log("NONE");
+          setModalView("none");
+        }
       })
       .catch((err) => {
         console.log(
@@ -319,7 +363,6 @@ const MyTickets = () => {
         <Fragment>
           <div>
             {futureEvents.map((event, index) => {
-              console.log("event: ", event);
               let shortMonth, dayDate, longDateTime;
               [shortMonth, dayDate, longDateTime] = getDates(
                 event.startDateTime
@@ -352,7 +395,7 @@ const MyTickets = () => {
                       <button
                         className={classes.InvisibleButton}
                         onClick={() => {
-                          launchTicketsModal(event);
+                          launchTicketsModal(event, "future");
                         }}
                       >
                         <span style={{ color: "blue", fontWeight: "600" }}>
@@ -368,7 +411,6 @@ const MyTickets = () => {
                         onClick={() => {
                           setModalItem(event);
                           setModalView("qrcodes");
-                          //switchTab("orders", item);
                         }}
                       />
                     </button>
@@ -421,9 +463,7 @@ const MyTickets = () => {
                       <button
                         className={classes.InvisibleButton}
                         onClick={() => {
-                          setModalItem(event);
-                          setModalView("tickets");
-                          //switchTab("orders", item);
+                          launchTicketsModal(event, "past");
                         }}
                       >
                         <span style={{ color: "blue", fontWeight: "600" }}>
@@ -564,10 +604,10 @@ const MyTickets = () => {
               setModalView("none");
             }}
             loadNext={() => {
-              loadNextOrder();
+              nextOrder();
             }}
             loadPrevious={() => {
-              loadPreviousOrder();
+              previousOrder();
             }}
           />
         </Fragment>
@@ -577,22 +617,47 @@ const MyTickets = () => {
     }
   };
 
-  const ticketsModalDisplay = () => {
-    if (modalView === "tickets") {
+  const futureTicketsModalDisplay = () => {
+    if (modalView === "future") {
       return (
         <Fragment>
           <TicketsModal
-            show={modalView === "tickets"}
+            show={modalView === "future"}
+            buyer={ticketBuyer}
             details={selectedTickets}
             event={selectedEvent}
             close={() => {
               setModalView("none");
             }}
             loadNext={() => {
-              loadNextTickets();
+              nextFutureTicket();
             }}
             loadPrevious={() => {
-              loadPreviousTickets();
+              previousFutureTicket();
+            }}
+          />
+        </Fragment>
+      );
+    } else return null;
+  };
+
+  const pastTicketsModalDisplay = () => {
+    if (modalView === "past") {
+      return (
+        <Fragment>
+          <TicketsModal
+            show={modalView === "past"}
+            buyer={ticketBuyer}
+            details={selectedTickets}
+            event={selectedEvent}
+            close={() => {
+              setModalView("none");
+            }}
+            loadNext={() => {
+              nextPastTicket();
+            }}
+            loadPrevious={() => {
+              previousPastTicket();
             }}
           />
         </Fragment>
@@ -674,7 +739,8 @@ const MyTickets = () => {
       {mainDisplay()}
       {connectionStatus()}
       {receiptModalDisplay()}
-      {ticketsModalDisplay()}
+      {futureTicketsModalDisplay()}
+      {pastTicketsModalDisplay()}
       {qrcodesModalDisplay()}
     </div>
   );

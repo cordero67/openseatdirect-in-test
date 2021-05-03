@@ -193,7 +193,6 @@ const IssueTickets = (props) => {
       })
       .then((data) => {
         console.log("fetch return got back data:", data);
-        props.confirmed();
         setModalView("confirmation");
       })
       .catch((error) => {
@@ -710,8 +709,7 @@ const IssueTickets = (props) => {
           edit={() => {
             setModalView("none");
           }}
-          close={() => {
-            console.log("INSIDE CLOSE");
+          close={(type) => {
             let tempOrder = { ...order };
             tempOrder.recipient = {
               firstname: "",
@@ -722,6 +720,9 @@ const IssueTickets = (props) => {
             tempOrder.tickets = [newTicket(ticketDetails[0])];
             setOrder(tempOrder);
             setModalView("none");
+            if (type === "confirmation") {
+              props.confirmed();
+            }
           }}
           submit={submitOrder}
         />

@@ -1,51 +1,29 @@
 import React, { Fragment } from "react";
 
-import { getLongStartDate } from "../Resources/VendorFunctions";
-import Backdrop from "../../../components/UI/Backdrop/Backdrop";
+import { getLongStartDate } from "../Vendor/Resources/VendorFunctions";
+import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import classes from "./TicketsModal.module.css";
 
 const TicketsModal = (props) => {
   console.log("Ticket Modal props: ", props);
 
-  // create an array of objects to hold transactions by ticket type
-  let orderDetails = [];
-  props.event.tickets.forEach((ticket) => {
-    orderDetails.push({
-      ticketId: ticket._id,
-      ticketName: ticket.ticketName,
-      ticketsSold: 0,
-      ticketPrice: ticket.currentTicketPrice,
-      grossTotal: 0,
-      netTotal: 0,
+  let ticketDetails = [];
+
+  props.details.tickets.forEach((qrTix) => {
+    props.event.tickets.forEach((ticket) => {
+      if (ticket._id === qrTix.ticketId) {
+        console.log("WE HAVE A MATCH");
+        ticketDetails.push({
+          ticketId: ticket._id,
+          ticketName: ticket.ticketName,
+          ticketPrice: qrTix.fullPrice,
+        });
+      }
     });
   });
-  console.log("tempOrderDetails: ", orderDetails);
 
   let longDateTime;
   [longDateTime] = getLongStartDate(props.details.startDateTime);
-  /*
-  // LOOKS GOOD: 1/21/21
-  const modalButtons = () => {
-    return (
-      <div
-        style={{
-          width: "530px",
-          textAlign: "center",
-          paddingLeft: "35px",
-        }}
-      >
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            props.close();
-          }}
-        >
-          CLOSE
-        </button>
-      </div>
-    );
-  };
-*/
 
   const modalButtons = () => {
     return (
@@ -87,35 +65,10 @@ const TicketsModal = (props) => {
     );
   };
 
-  const ticketName = (ticketId) => {
-    return ticketId;
-  };
-
   const ticketsList = () => {
-    return props.details.tickets.map((ticket, index) => {
+    //return props.details.tickets.map((ticket, index) => {
+    return ticketDetails.map((ticket, index) => {
       console.log("ticket: ", ticket);
-
-      //let adjustedTicketName;
-      //let num = 40;
-
-      /*
-        //if (ticket.ticketName.length <= num) {
-          if (true) {
-          adjustedTicketName = ticket.ticketName;
-        } else {
-          adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
-        }
-
-        let adjustedPaymentMethod;
-
-        if ("manualPaymentMethod" in  ticket && parseFloat(ticket.unit_price).toFixed(2) !== "0.00") {
-          adjustedPaymentMethod = ticket.manualPaymentMethod;
-        } else if ("manualPaymentMethod" in  ticket) {
-          adjustedPaymentMethod = "comp"
-        } else {
-          adjustedPaymentMethod = "PayPal Express"
-        }
-        */
 
       return (
         <Fragment key={index}>
@@ -130,9 +83,9 @@ const TicketsModal = (props) => {
             }}
           >
             {" "}
-            <div>{ticketName(ticket._id)}</div>
-            <div style={{ textAlign: "left" }}>
-              {parseFloat(ticket.fullPrice).toFixed(2)}
+            <div style={{ textAlign: "left" }}>{ticket.ticketName}</div>
+            <div style={{ textAlign: "right" }}>
+              {parseFloat(ticket.ticketPrice).toFixed(2)}
             </div>
           </div>
         </Fragment>
@@ -175,7 +128,7 @@ const TicketsModal = (props) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "110px 380px",
+            gridTemplateColumns: "80px 380px",
             fontSize: "16px",
             textAlign: "left",
             paddingBottom: "10px",
@@ -183,9 +136,9 @@ const TicketsModal = (props) => {
         >
           <div style={{ fontWeight: "600" }}>Recipient:</div>
           <div>
-            {props.details.firstName}
+            {props.buyer.firstName}
             {", "}
-            {props.details.lastName}
+            {props.buyer.lastName}
           </div>
         </div>
         <div
@@ -243,3 +196,25 @@ const TicketsModal = (props) => {
 };
 
 export default TicketsModal;
+
+//let adjustedTicketName;
+//let num = 40;
+
+/*
+  //if (ticket.ticketName.length <= num) {
+    if (true) {
+    adjustedTicketName = ticket.ticketName;
+  } else {
+    adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
+  }
+
+  let adjustedPaymentMethod;
+
+  if ("manualPaymentMethod" in  ticket && parseFloat(ticket.unit_price).toFixed(2) !== "0.00") {
+    adjustedPaymentMethod = ticket.manualPaymentMethod;
+  } else if ("manualPaymentMethod" in  ticket) {
+    adjustedPaymentMethod = "comp"
+  } else {
+    adjustedPaymentMethod = "PayPal Express"
+  }
+  */

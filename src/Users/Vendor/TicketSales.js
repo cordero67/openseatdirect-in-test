@@ -3,7 +3,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import { getDate } from "./Resources/VendorFunctions";
 
 import classes from "./TicketSales.module.css";
-import ReceiptModal from "../Modals/ReceiptModal";
+import ReceiptModal from "../Modals/ReceiptModalVendor";
 
 const TicketSales = (props) => {
   console.log("PROPS: ", props);
@@ -108,8 +108,8 @@ const TicketSales = (props) => {
                 </div>
                 <div style={{ textAlign: "left" }}>{item.email}</div>
                 <div>{item.qrTickets.length}</div>
-                <div style={{ textAlign: "right", paddingRight: "20px" }}>
-                  {item.totalAmount}
+                <div style={{ textAlign: "right" }}>
+                  {item.totalAmount.toFixed(2)}
                 </div>
                 <div style={{ fontSize: "22px", textAlign: "center" }}>
                   <button className={classes.EventButton}>
@@ -271,7 +271,7 @@ const TicketSales = (props) => {
             Tickets
           </button>
         </div>
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "right" }}>
           <button
             className={classes.SortButton}
             name="totalAmount"
