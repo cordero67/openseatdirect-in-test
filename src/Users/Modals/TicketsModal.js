@@ -26,43 +26,64 @@ const TicketsModal = (props) => {
   [longDateTime] = getLongStartDate(props.details.startDateTime);
 
   const modalButtons = () => {
-    return (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "160px 160px 160px",
-          gridGap: "15px",
-          width: "590px",
-          textAlign: "center",
-          paddingLeft: "0px",
-        }}
-      >
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            props.loadPrevious();
+    if (props.numberEvents > 1) {
+      return (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "160px 160px 160px",
+            gridGap: "15px",
+            width: "510px",
+            textAlign: "center",
+            paddingLeft: "0px",
           }}
         >
-          PREVIOUS EVENT
-        </button>
-        <button
-          className={classes.ButtonGreen}
-          onClick={() => {
-            props.loadNext();
+          <button
+            className={classes.ButtonBlue}
+            onClick={() => {
+              props.loadPrevious();
+            }}
+          >
+            PREVIOUS EVENT
+          </button>
+          <button
+            className={classes.ButtonGreen}
+            onClick={() => {
+              props.loadNext();
+            }}
+          >
+            NEXT EVENT
+          </button>
+          <button
+            className={classes.ButtonGrey}
+            onClick={() => {
+              props.close();
+            }}
+          >
+            CLOSE
+          </button>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          style={{
+            width: "510px",
+            textAlign: "center",
+            paddingLeft: "0px",
           }}
         >
-          NEXT EVENT
-        </button>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            props.close();
-          }}
-        >
-          CLOSE
-        </button>
-      </div>
-    );
+          <button
+            className={classes.ButtonGrey}
+            onClick={() => {
+              props.close();
+            }}
+          >
+            CLOSE
+          </button>
+        </div>
+      );
+    }
   };
 
   const ticketsList = () => {

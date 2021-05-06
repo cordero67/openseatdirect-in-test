@@ -542,7 +542,7 @@ const MyTickets = () => {
             <div>Image</div>
             <div>Event</div>
             <div style={{ textAlign: "center" }}>Tickets</div>
-            <div style={{ textAlign: "center" }}>Checkin</div>
+            <div style={{ textAlign: "center" }}>Check In</div>
           </div>
           <div className={classes.DisplayPanel}>{futureEventItems()}</div>
         </Fragment>
@@ -626,6 +626,7 @@ const MyTickets = () => {
             buyer={ticketBuyer}
             details={selectedTickets}
             event={selectedEvent}
+            numberEvents={futureEvents.length}
             close={() => {
               setModalView("none");
             }}
@@ -650,6 +651,7 @@ const MyTickets = () => {
             buyer={ticketBuyer}
             details={selectedTickets}
             event={selectedEvent}
+            numberEvents={pastEvents.length}
             close={() => {
               setModalView("none");
             }}

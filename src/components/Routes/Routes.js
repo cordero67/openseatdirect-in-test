@@ -14,6 +14,7 @@ import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
+import CheckoutStripe from "../../TicketPurchases/CheckoutStripe";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Authentication from "../../Users/Authentication/Authentication";
 //import Slider from "../HomePage/Slider"; // THIS IS A TEST ROUTE
@@ -291,6 +292,16 @@ const Routes = () => {
         render={(routeProps) => (
           <React.Fragment>
             <CheckoutPayPalMerchant />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/checkout-stripe"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <CheckoutStripe />
           </React.Fragment>
         )}
       />

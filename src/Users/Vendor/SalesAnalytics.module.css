@@ -208,3 +208,24 @@
   outline: none;
   box-sizing: border-box;
 }
+
+.SortButton {
+  font-weight: 600;
+  padding-right: 0px;
+  padding-left: 0px;
+  border: none;
+  background-color: white;
+  color: blue;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+  box-sizing: border-box;
+}
+.SortButton:focus {
+  border: none;
+  outline: none;
+}
+.SortButton:active {
+  border: none;
+  outline: none;
+}

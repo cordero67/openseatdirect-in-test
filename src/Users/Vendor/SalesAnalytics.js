@@ -93,6 +93,16 @@ const SalesAnalytics = (props) => {
     "#FF9817",
   ];
 
+  const [sortCodesParameters, setSortCodesParameters] = useState({
+    label: "salesRevenues",
+    direction: "asc",
+  });
+
+  const [sortBuyersParameters, setSortBuyersParameters] = useState({
+    label: "salesRevenues",
+    direction: "asc",
+  });
+
   const populateEventTickets = (tickets) => {
     const tempArray = [];
     tickets.forEach((ticket) => {
@@ -160,7 +170,12 @@ const SalesAnalytics = (props) => {
     props.orders.forEach((order) => {
       let match = false;
       let matchIndex;
-      let newCode = order.gwAddr_postcode;
+      let newCode;
+      if ("gwAddr_postcode" in order) {
+        newCode = order.gwAddr_postcode;
+      } else {
+        newCode = "00000";
+      }
 
       tempCodes.forEach((extCode, index) => {
         if (extCode.postalCode === newCode) {
@@ -171,7 +186,7 @@ const SalesAnalytics = (props) => {
 
       if (!match) {
         tempCodes.push({
-          postalCode: order.gwAddr_postcode,
+          postalCode: newCode,
           ticketsPurchased: order.numTickets,
           salesRevenues: order.totalAmount,
         });
@@ -180,6 +195,7 @@ const SalesAnalytics = (props) => {
         tempCodes[matchIndex].salesRevenues += order.totalAmount;
       }
     });
+    console.log("temp codes: ", tempCodes);
     setCodes(tempCodes);
 
     // builds "buyers" array
@@ -212,6 +228,7 @@ const SalesAnalytics = (props) => {
     });
     console.log("temp buyers: ", tempBuyers);
     setBuyers(tempBuyers);
+    //updateValues("salesRevenues", "tempBuyers");
 
     // builds "dateSales" array
     let tempDateSales = [];
@@ -290,6 +307,56 @@ const SalesAnalytics = (props) => {
     setOnlinePayments(tempOnlinePayments);
     setOfflinePayments(tempOfflinePayments);
   }, []);
+
+  const compareValues = (key, order) => {
+    return function innerSort(a, b) {
+      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        return 0;
+      }
+      const varA = typeof a[key] === "string" ? a[key].toUpperCase() : a[key];
+      const varB = typeof b[key] === "string" ? b[key].toUpperCase() : b[key];
+
+      let comparison = 0;
+      if (varA > varB) {
+        comparison = 1;
+      } else if (varA < varB) {
+        comparison = -1;
+      }
+      return order === "desc" ? comparison * -1 : comparison;
+    };
+  };
+
+  const updateValues = (newLabel, dataName) => {
+    let newDirection;
+    let temp;
+    if (dataName === "buyers") {
+      if (newLabel !== sortBuyersParameters.label) {
+        newDirection = sortBuyersParameters.direction;
+      } else if (sortBuyersParameters.direction === "asc") {
+        newDirection = "desc";
+      } else {
+        newDirection = "asc";
+      }
+      console.log("SORTING BUYERS");
+      temp = [...buyers];
+      temp.sort(compareValues(newLabel, newDirection));
+      setBuyers(temp);
+      setSortBuyersParameters({ label: newLabel, direction: newDirection });
+    } else if (dataName === "codes") {
+      if (newLabel !== sortCodesParameters.label) {
+        newDirection = sortCodesParameters.direction;
+      } else if (sortCodesParameters.direction === "asc") {
+        newDirection = "desc";
+      } else {
+        newDirection = "asc";
+      }
+      console.log("SORTING CODES");
+      temp = [...codes];
+      temp.sort(compareValues(newLabel, newDirection));
+      setCodes(temp);
+      setSortCodesParameters({ label: newLabel, direction: newDirection });
+    }
+  };
 
   const netTable = () => {
     return (
@@ -516,7 +583,7 @@ const SalesAnalytics = (props) => {
       <div>
         {codes.map((code, index) => {
           let tempPostalCode;
-          if (code.postalCode === undefined) {
+          if (code.postalCode === "00000") {
             tempPostalCode = "none";
           } else {
             tempPostalCode = code.postalCode;
@@ -539,9 +606,36 @@ const SalesAnalytics = (props) => {
     return (
       <div>
         <div className={classes.PostalCodesGrid} style={{ fontWeight: "600" }}>
-          <div style={{ textAlign: "left" }}>Postal Code</div>
-          <div style={{ textAlign: "center" }}>Tickets</div>
-          <div style={{ textAlign: "center" }}>Amount</div>
+          <button
+            className={classes.SortButton}
+            name="postalCode"
+            onClick={(e) => {
+              updateValues(e.target.name, "codes");
+            }}
+            style={{ textAlign: "left" }}
+          >
+            Postal Code
+          </button>
+          <button
+            className={classes.SortButton}
+            name="ticketsPurchased"
+            onClick={(e) => {
+              updateValues(e.target.name, "codes");
+            }}
+            style={{ textAlign: "center" }}
+          >
+            Tickets
+          </button>
+          <button
+            className={classes.SortButton}
+            name="salesRevenues"
+            onClick={(e) => {
+              updateValues(e.target.name, "codes");
+            }}
+            style={{ textAlign: "center" }}
+          >
+            Amount
+          </button>
         </div>
         <div className={classes.PostalCodesSection}>{postalCodes()}</div>
         <div className={classes.PostalCodesGrid} style={{ fontWeight: "600" }}>
@@ -582,12 +676,56 @@ const SalesAnalytics = (props) => {
     return (
       <div>
         <div className={classes.CustomersGrid} style={{ fontWeight: "600" }}>
-          <div style={{ textAlign: "left" }}>Email</div>
-          <div style={{ textAlign: "left" }}>Last, First</div>
-          <div style={{ textAlign: "center" }}>Tickets</div>
-          <div style={{ textAlign: "center" }}>Amount</div>
+          <button
+            className={classes.SortButton}
+            name="email"
+            onClick={(e) => {
+              updateValues(e.target.name, "buyers");
+            }}
+            style={{ textAlign: "left" }}
+          >
+            Email
+          </button>
+          <button
+            className={classes.SortButton}
+            name="lastname"
+            onClick={(e) => {
+              updateValues(e.target.name, "buyers");
+            }}
+            style={{ textAlign: "left" }}
+          >
+            Last, First
+          </button>
+          <button
+            className={classes.SortButton}
+            name="ticketsPurchased"
+            onClick={(e) => {
+              updateValues(e.target.name, "buyers");
+            }}
+            style={{ textAlign: "left" }}
+          >
+            Tickets
+          </button>
+          <button
+            className={classes.SortButton}
+            name="salesRevenues"
+            onClick={(e) => {
+              updateValues(e.target.name, "buyers");
+            }}
+            style={{ textAlign: "left" }}
+          >
+            Amount
+          </button>
         </div>
         <div className={classes.CustomersSection}>{customers()}</div>
+        <div className={classes.CustomersGrid} style={{ fontWeight: "600" }}>
+          <div>Totals</div>
+          <div></div>
+          <div style={{ textAlign: "center" }}>{salesTotals.ticketsSold}</div>
+          <div style={{ textAlign: "right", paddingRight: "5px" }}>
+            {parseFloat(salesTotals.netRevenues).toFixed(2)}
+          </div>
+        </div>
       </div>
     );
   };
