@@ -19,6 +19,19 @@ const Account = () => {
   };
 
   const requestChange = () => {
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      vendorInfo.token = tempUser.token;
+      vendorInfo.id = tempUser.user._id;
+      //vendorInfo.name = tempUser.user.name
+      //console.log("vendorInfo.name: ", tempUser.user.name)
+    } else {
+      window.location.href = "/signin";
+    }
+
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${userInfo.token}`);

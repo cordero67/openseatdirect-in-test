@@ -1,0 +1,78 @@
+.Modal {
+  position: fixed;
+  z-index: 700;
+  background-color: white;
+  width: 330;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px black;
+  padding: 16px 15px 16px 15px;
+  left: calc(50% - 181px);
+  top: 10%;
+  text-align: center;
+  transition: all 0.3s ease-out;
+  box-sizing: border-box;
+}
+
+.EventTitle {
+  width: 330px;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  padding-top: 20px;
+  box-sizing: border-box;
+}
+
+.DateTime {
+  font-size: 16px;
+  text-align: center;
+  font-weight: 400;
+  padding-top: 5px;
+}
+
+.QRCodeGrid {
+  display: grid;
+  grid-template-columns: 42px 246px 42px;
+  width: 330px;
+  height: 220px;
+  padding-top: 30px;
+  box-sizing: border-box;
+}
+
+.ButtonDisplay {
+  width: 330px;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.ButtonGrey {
+  height: 40px;
+  width: 160px;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+  box-sizing: border-box;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+
+@media (min-width: 740px) {
+  .Modal {
+    width: 360px;
+    padding-left: 15px;
+    padding-right: 15px;
+    left: calc(50% - 180px);
+  }
+}

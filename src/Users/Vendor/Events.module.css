@@ -30,7 +30,6 @@
   padding-bottom: 5px;
   padding-left: 20px;
   padding-right: 30px;
-  box-sizing: border-box;
 }
 .EventsHeader {
   z-index: 200;
@@ -55,7 +54,6 @@
   font-size: 16px;
   text-align: left;
   font-weight: 600;
-  box-sizing: border-box;
 }
 .EventButton {
   text-align: center;
@@ -80,7 +78,6 @@
   font-size: 16px;
   font-weight: 600;
   padding-top: 30px;
-  box-sizing: border-box;
 }
 
 .NoEventsText {

@@ -1,3 +1,21 @@
+.OrdersGrid {
+  display: grid;
+  grid-template-columns: 140px 80px 500px 60px 70px 80px;
+  grid-gap: 10px;
+  position: fixed;
+  top: 140px;
+  height: 30px;
+  width: 1030px;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+  font-weight: 600;
+  vertical-align: center;
+  padding-top: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 .OrdersInnerGrid {
   display: grid;
   grid-template-columns: 140px 80px 500px 60px 70px 80px;
@@ -6,12 +24,48 @@
   padding-bottom: 10px;
 }
 
+.FutureGrid {
+  display: grid;
+  grid-template-columns: 60px 80px 500px 60px 80px;
+  grid-gap: 10px;
+  position: fixed;
+  top: 140px;
+  height: 30px;
+  width: 1030px;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+  font-weight: 600;
+  vertical-align: center;
+  padding-top: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 .FutureInnerGrid {
   display: grid;
   grid-template-columns: 60px 80px 500px 60px 80px;
   grid-gap: 10px;
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.PastGrid {
+  display: grid;
+  grid-template-columns: 60px 80px 500px 60px;
+  grid-gap: 10px;
+  position: fixed;
+  top: 140px;
+  height: 30px;
+  width: 1030px;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+  font-weight: 600;
+  vertical-align: center;
+  padding-top: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .PastInnerGrid {
@@ -101,13 +155,15 @@
 }
 
 .DisplayView {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
   position: fixed;
   top: 110px;
   width: 1030px;
   background-color: white;
-  /*border-bottom: 1px solid grey;*/
   height: 30px;
-  padding-left: 15px;
+  padding-right: 215px;
+  padding-left: 215px;
   font-size: 14px;
   font-weight: 600;
   box-sizing: border-box;

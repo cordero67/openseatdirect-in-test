@@ -5,7 +5,7 @@ import { API } from "../../config";
 import classes from "./TicketWallet.module.css";
 import ReceiptModal from "../Modals/ReceiptModalBuyer";
 import TicketsModal from "../Modals/TicketsModal";
-import QRCodesModal from "../Vendor/Modals/QRCodesModal";
+import QRCodesModal from "../Modals/QRCodesModal";
 import WarningModal from "../Vendor/Modals/WarningModal";
 
 import {
@@ -18,8 +18,6 @@ const MyTickets = () => {
   const [display, setDisplay] = useState("spinner"); // orders, future, past, spinner, connection
   const [modalView, setModalView] = useState("none"); // none, receipt, tickets, qrcode, warning
 
-  const [modalItem, setModalItem] = useState({});
-
   const [ticketBuyer, setTicketBuyer] = useState({});
   const [orders, setOrders] = useState([]); // holds all orders for the given buyer
   const [futureEvents, setFutureEvents] = useState([]); // an array of events that tickets were received for future events
@@ -28,8 +26,6 @@ const MyTickets = () => {
   const [selectedOrder, setSelectedOrder] = useState({}); // order to populate receipt modal
   const [selectedTickets, setSelectedTickets] = useState({}); // tickets to populate tickets modal
   const [selectedEvent, setSelectedEvent] = useState({}); // event to populate receipt and ticket modals
-  //const [selectedFutureEvent, setSelectedFutureEvent] = useState({}); // event to populate receipt modal
-  //const [selectedPastEvent, setSelectedPastEvent] = useState({}); // event to populate receipt modal
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -39,7 +35,6 @@ const MyTickets = () => {
     return response;
   };
 
-  // LOOKS GOOD
   useEffect(() => {
     let tempUser;
     if (
@@ -146,7 +141,7 @@ const MyTickets = () => {
         }
       }
     });
-    launchReceiptModal(orders[newPosition]);
+    launchModal(orders[newPosition], "receipt");
   };
 
   const nextOrder = () => {
@@ -160,7 +155,7 @@ const MyTickets = () => {
         }
       }
     });
-    launchReceiptModal(orders[newPosition]);
+    launchModal(orders[newPosition], "receipt");
   };
 
   const nextFutureTicket = () => {
@@ -174,7 +169,7 @@ const MyTickets = () => {
         }
       }
     });
-    launchTicketsModal(futureEvents[newPosition], "future");
+    launchModal(futureEvents[newPosition], "future");
   };
 
   const previousFutureTicket = () => {
@@ -188,7 +183,7 @@ const MyTickets = () => {
         }
       }
     });
-    launchTicketsModal(futureEvents[newPosition], "future");
+    launchModal(futureEvents[newPosition], "future");
   };
 
   const nextPastTicket = () => {
@@ -202,7 +197,7 @@ const MyTickets = () => {
         }
       }
     });
-    launchTicketsModal(pastEvents[newPosition], "past");
+    launchModal(pastEvents[newPosition], "past");
   };
 
   const previousPastTicket = () => {
@@ -216,7 +211,7 @@ const MyTickets = () => {
         }
       }
     });
-    launchTicketsModal(pastEvents[newPosition], "past");
+    launchModal(pastEvents[newPosition], "past");
   };
 
   // defines and sets "loadingSpinner" view status
@@ -232,7 +227,7 @@ const MyTickets = () => {
     }
   };
 
-  const launchReceiptModal = (item) => {
+  const launchModal = (item, type) => {
     console.log("ITEM: ", item);
     let tempUser;
     if (
@@ -251,56 +246,24 @@ const MyTickets = () => {
         console.log("result: ", JSON.parse(result));
         let jsEvents = JSON.parse(result);
         setSelectedEvent(jsEvents);
-        setSelectedOrder(item);
-        setModalView("receipt");
-      })
-      .catch((err) => {
-        console.log(
-          "Inside '.catch' block of 'getEventData()', this is the error:",
-          // NEED TO ADD AN ERROR MODAL
-          err
-        );
-        setModalView("warning");
-      });
-  };
-
-  const launchTicketsModal = (item, type) => {
-    console.log("ITEM: ", item);
-    let tempUser;
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      tempUser = JSON.parse(localStorage.getItem("user"));
-    }
-
-    fetch(`${API}/events/${item.eventNum}`, {
-      method: "GET",
-    })
-      .then(handleErrors)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log("result: ", JSON.parse(result));
-        let jsEvents = JSON.parse(result);
-        setSelectedEvent(jsEvents);
-        setSelectedTickets(item);
-        if (type === "future") {
-          console.log("FUTURE");
+        if (type === "receipt") {
+          setSelectedOrder(item);
+          setModalView("receipt");
+        } else if (type === "future") {
+          setSelectedTickets(item);
           setModalView("future");
         } else if (type === "past") {
-          console.log("PAST");
+          setSelectedTickets(item);
           setModalView("past");
+        } else if (type === "qrcodes") {
+          setSelectedTickets(item);
+          setModalView("qrcodes");
         } else {
-          console.log("NONE");
           setModalView("none");
         }
       })
       .catch((err) => {
-        console.log(
-          "Inside '.catch' block of 'getEventData()', this is the error:",
-          // NEED TO ADD AN ERROR MODAL
-          err
-        );
+        console.log("error:", err);
         setModalView("warning");
       });
   };
@@ -343,7 +306,7 @@ const MyTickets = () => {
                         style={{ fontSize: "24px", color: "blue" }}
                         name="receipt-outline"
                         onClick={() => {
-                          launchReceiptModal(order);
+                          launchModal(order, "receipt");
                         }}
                       />
                     </button>
@@ -395,7 +358,7 @@ const MyTickets = () => {
                       <button
                         className={classes.InvisibleButton}
                         onClick={() => {
-                          launchTicketsModal(event, "future");
+                          launchModal(event, "future");
                         }}
                       >
                         <span style={{ color: "blue", fontWeight: "600" }}>
@@ -409,8 +372,7 @@ const MyTickets = () => {
                         style={{ fontSize: "24px", color: "blue" }}
                         name="qr-code-outline"
                         onClick={() => {
-                          setModalItem(event);
-                          setModalView("qrcodes");
+                          launchModal(event, "qrcodes");
                         }}
                       />
                     </button>
@@ -463,7 +425,7 @@ const MyTickets = () => {
                       <button
                         className={classes.InvisibleButton}
                         onClick={() => {
-                          launchTicketsModal(event, "past");
+                          launchModal(event, "past");
                         }}
                       >
                         <span style={{ color: "blue", fontWeight: "600" }}>
@@ -487,25 +449,7 @@ const MyTickets = () => {
     if (display === "orders") {
       return (
         <Fragment>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "140px 80px 500px 60px 70px 80px",
-              gridGap: "10px",
-              position: "fixed",
-              top: "140px",
-              height: "30px",
-              width: "1030px",
-              backgroundColor: "#e7e7e7",
-              borderTop: "1px solid lightgrey",
-              borderBottom: "1px solid lightgrey",
-              fontWeight: "600",
-              verticalAlign: "center",
-              paddingTop: "5px",
-              paddingLeft: "20px",
-              paddingRight: "20px",
-            }}
-          >
+          <div className={classes.OrdersGrid}>
             <div>Order Date</div>
             <div>Image</div>
             <div>Event</div>
@@ -519,25 +463,7 @@ const MyTickets = () => {
     } else if (display === "future") {
       return (
         <Fragment>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "60px 80px 500px 60px 80px",
-              gridGap: "10px",
-              position: "fixed",
-              top: "140px",
-              height: "30px",
-              width: "1030px",
-              backgroundColor: "#e7e7e7",
-              borderTop: "1px solid lightgrey",
-              borderBottom: "1px solid lightgrey",
-              fontWeight: "600",
-              verticalAlign: "center",
-              paddingTop: "5px",
-              paddingLeft: "20px",
-              paddingRight: "20px",
-            }}
-          >
+          <div className={classes.FutureGrid}>
             <div style={{ textAlign: "center" }}>Date</div>
             <div>Image</div>
             <div>Event</div>
@@ -550,25 +476,7 @@ const MyTickets = () => {
     } else if (display === "past") {
       return (
         <Fragment>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "60px 80px 500px 60px",
-              gridGap: "10px",
-              position: "fixed",
-              top: "140px",
-              height: "30px",
-              width: "1030px",
-              backgroundColor: "#e7e7e7",
-              borderTop: "1px solid lightgrey",
-              borderBottom: "1px solid lightgrey",
-              fontWeight: "600",
-              verticalAlign: "center",
-              paddingTop: "5px",
-              paddingLeft: "20px",
-              paddingRight: "20px",
-            }}
-          >
+          <div className={classes.PastGrid}>
             <div style={{ textAlign: "center" }}>Date</div>
             <div>Image</div>
             <div>Event</div>
@@ -582,7 +490,7 @@ const MyTickets = () => {
 
   // LOOKS GOOD
   // defines and sets "connectionStatus" view status
-  const connectionStatus = (condition) => {
+  const connectionStatus = () => {
     if (display === "connection") {
       return (
         <div className={classes.BlankCanvas}>
@@ -673,12 +581,11 @@ const MyTickets = () => {
         <Fragment>
           <QRCodesModal
             show={modalView === "qrcodes"}
-            details={modalItem}
+            details={selectedTickets}
+            event={selectedEvent}
             close={() => {
               setModalView("none");
             }}
-            //loadNext={() => {loadNextOrder()}}
-            //loadPrevious={() => {loadPreviousOrder()}}
           />
         </Fragment>
       );
@@ -712,15 +619,7 @@ const MyTickets = () => {
   const tabTitle = <div className={classes.DisplayPanelTitle}>My Tickets</div>;
 
   const displayHeader = (
-    <div
-      className={classes.DisplayView}
-      style={{
-        display: "grid",
-        gridTemplateColumns: "200px 200px 200px",
-        paddingRight: "215px",
-        paddingLeft: "215px",
-      }}
-    >
+    <div className={classes.DisplayView}>
       <button className={futureButton()} onClick={() => setDisplay("future")}>
         Upcoming Events
       </button>
@@ -749,32 +648,3 @@ const MyTickets = () => {
 };
 
 export default MyTickets;
-
-/*
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    //myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
-
-    let url = `${API}/events/${eventNum}`;
-    let fetcharg = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-
-    fetch(url, fetcharg)
-      .then(handleErrors)
-      .then((response) => response.text())
-      .then((result) => {
-        let js = JSON.parse(result);
-        //setOrders(js);
-        console.log("result: ", js);
-        //createEventArrays(js);
-        //setDisplay("future");
-      })
-      .catch((error) => {
-        //setDisplay("connection");
-        console.log("error", error);
-      });
-
-      */
