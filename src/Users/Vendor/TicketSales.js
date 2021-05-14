@@ -7,9 +7,9 @@ import ReceiptModal from "../Modals/ReceiptModalVendor";
 
 const TicketSales = (props) => {
   console.log("PROPS: ", props);
+
   const [modalView, setModalView] = useState(false); // defines appearance of ReceiptModal
   const [eventOrders, setEventOrders] = useState([]);
-  const [selectedEventTitle, setSelectedEventTitle] = useState("");
   const [selectedOrder, setSelectedOrder] = useState({});
   const [sortParameters, setSortParameters] = useState({
     label: "createdAt",
@@ -17,45 +17,7 @@ const TicketSales = (props) => {
   });
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      // create an array of objects to hold transactions by ticket type
-      let tempOrders = [];
-      props.event.tickets.forEach((ticket) => {
-        tempOrders.push({
-          ticketId: ticket._id,
-          ticketName: ticket.ticketName,
-          ticketsSold: 0,
-          ticketPrice: ticket.currentTicketPrice,
-          grossTotal: 0,
-          netTotal: 0,
-        });
-      });
-      console.log("tempOrders: ", tempOrders);
-
-      // populate this ticketOrder array
-      props.orders.forEach((order) => {
-        order.qrTickets.forEach((qrTix) => {
-          //console.log("qrTix: ", qrTix.ticketId);
-          tempOrders.forEach((ticketType, index) => {
-            if (ticketType.ticketId === qrTix.ticketId) {
-              //console.log("We have a match");
-              tempOrders[index].ticketsSold += 1;
-              tempOrders[index].grossTotal += parseFloat(qrTix.fullPrice);
-              tempOrders[index].netTotal += qrTix.sellingPrice;
-            }
-          });
-        });
-      });
-      console.log("tempOrders: ", tempOrders);
-
-      setEventOrders(props.orders);
-      setSelectedEventTitle(props.event.eventTitle);
-    } else {
-      window.location.href = "/auth";
-    }
+    setEventOrders(props.orders);
   }, [props]);
 
   const compareValues = (key, order) => {
@@ -94,14 +56,26 @@ const TicketSales = (props) => {
 
   const mainDisplay = () => {
     if (props.orders.length > 0) {
+      let oddOrder = "true";
+      let styling = {};
       return (
         <Fragment>
           {eventOrders.map((item, index) => {
             let shortDateTime;
             [shortDateTime] = getDate(item);
+            if (oddOrder) {
+              styling = {
+                backgroundColor: "#F0F0F0",
+              };
+            } else {
+              styling = {
+                backgroundColor: "#fff",
+              };
+            }
+            oddOrder = !oddOrder;
 
             return (
-              <div key={index} className={classes.Orders}>
+              <div key={index} className={classes.Orders} style={styling}>
                 <div style={{ textAlign: "left" }}>{shortDateTime}</div>
                 <div style={{ textAlign: "left" }}>
                   {item.lastName}, {item.firstName}
@@ -112,9 +86,10 @@ const TicketSales = (props) => {
                   {item.totalAmount.toFixed(2)}
                 </div>
                 <div style={{ fontSize: "22px", textAlign: "center" }}>
-                  <button className={classes.EventButton}>
+                  <button className={classes.EventButton} style={styling}>
                     <ion-icon
                       style={{ fontSize: "24px", color: "blue" }}
+                      style={styling}
                       name="receipt-outline"
                       onClick={() => {
                         console.log("ITEM: ", item);
@@ -174,6 +149,7 @@ const TicketSales = (props) => {
             show={modalView}
             details={selectedOrder}
             event={props.event}
+            numberOrders={props.orders.length}
             close={() => {
               setModalView(false);
             }}
@@ -191,10 +167,8 @@ const TicketSales = (props) => {
 
   const tabTitle = (
     <div className={classes.DisplayPanelTitle}>
-      {selectedEventTitle !== "" ? (
-        <div style={{ fontSize: "26px", fontWeight: "600" }}>
-          {selectedEventTitle}
-        </div>
+      {props.event.eventTitle !== "" ? (
+        <div className={classes.TabTitle}>{props.event.eventTitle}</div>
       ) : (
         <div>{null}</div>
       )}

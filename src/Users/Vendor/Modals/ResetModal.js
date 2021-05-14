@@ -74,7 +74,7 @@ const Reset = (props) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
-    let url = `${API}/auth​/password​/confirmcode`;
+    let url = `${API}/auth/password/confirmcode`;
     let information = {
       confirm_code: confirmation,
     };

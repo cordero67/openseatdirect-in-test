@@ -110,7 +110,7 @@ const Authentication = () => {
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       if (getStatus() === 7 || getStatus() === 8) {
-        window.location.href = "/vendor";
+        window.location.href = "/myaccount";
       } else if (
         getStatus() === 4 ||
         getStatus() === 5 ||
@@ -871,7 +871,7 @@ const Authentication = () => {
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       if (getStatus() === 7 || getStatus() === 8) {
-        window.location.href = "/vendor";
+        window.location.href = "/myaccount";
       } else if (
         getStatus() === 4 ||
         getStatus() === 5 ||

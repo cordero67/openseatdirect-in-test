@@ -63,7 +63,7 @@
   display: grid;
   grid-template-columns: 160px 160px 160px;
   grid-gap: 20px;
-  width: 510px;
+  width: 520px;
   text-align: center;
   padding-top: 30px;
   padding-bottom: 20px;
@@ -72,7 +72,7 @@
 }
 
 .ButtonDisplay {
-  width: 510px;
+  width: 520px;
   text-align: center;
   padding-top: 30px;
   padding-bottom: 20px;

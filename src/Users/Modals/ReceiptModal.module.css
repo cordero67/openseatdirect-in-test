@@ -5,24 +5,64 @@
   width: 90%;
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px black;
-  padding: 16px;
-  left: 15%;
-  top: 10%;
+  padding: 15px;
+  left: 5%;
+  top: 5%;
   text-align: center;
   box-sizing: border-box;
   transition: all 0.3s ease-out;
 }
 
-.Minimal {
-  display: grid;
-  grid-template-columns: 110px 70px;
-  grid-gap: 10px;
-  border-top: allTotalBorder;
+@media (min-width: 640px) {
+  .Modal {
+    width: 580px;
+    padding-left: 30px;
+    padding-right: 30px;
+    left: calc(50% - 290px);
+  }
+}
+
+.EventTitle {
   font-weight: 600;
+  font-size: 18px;
+  text-align: left;
+  padding-top: 20px;
+}
+
+.DateTime {
+  font-size: 16px;
+  text-align: left;
+  font-weight: 400;
   padding-top: 5px;
-  padding-bottom: 5px;
-  margin-right: 8px;
-  margin-left: 440p;
+}
+
+.OrderDetailsGrid {
+  display: grid;
+  grid-template-columns: 110px 380px;
+  font-size: 16px;
+  line-height: 30px;
+  text-align: left;
+  padding-top: 30px;
+  padding-bottom: 10px;
+}
+
+.TicketsHeader {
+  display: grid;
+  grid-template-columns: 60px 280px 70px 70px;
+  grid-gap: 10px;
+  width: 520px;
+  border-bottom: 1px solid black;
+  font-weight: 600;
+  padding-top: 30px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.TicketsDisplay {
+  width: 520px;
+  border-bottom: 1px solid black;
+  padding-bottom: 10px;
+  box-sizing: border-box;
 }
 
 .SubTotal {
@@ -44,6 +84,37 @@
   padding-bottom: 5px;
 }
 
+.TicketsGrid {
+  display: grid;
+  grid-template-columns: 60px 280px 70px 70px;
+  grid-gap: 10px;
+  width: 520px;
+  height: 28px;
+  padding-top: 10px;
+  box-sizing: border-box;
+}
+
+.ButtonDisplayGrid {
+  display: grid;
+  grid-template-columns: 160px 160px 160px;
+  grid-gap: 20px;
+  width: 520px;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  padding-left: 0px;
+  box-sizing: border-box;
+}
+
+.ButtonDisplay {
+  width: 520px;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  padding-left: 0px;
+  box-sizing: border-box;
+}
+
 .ButtonGrey {
   height: 40px;
   width: 160px;
@@ -51,6 +122,7 @@
   color: white;
   border: 1px solid black;
   outline: none;
+  box-sizing: border-box;
 }
 .ButtonGrey:hover {
   background-color: #858585;
@@ -72,6 +144,7 @@
   color: #fff;
   border: 1px solid black;
   outline: none;
+  box-sizing: border-box;
 }
 .ButtonGreen:hover {
   background-color: #007a00;
@@ -93,6 +166,7 @@
   color: #fff;
   border: 1px solid black;
   outline: none;
+  box-sizing: border-box;
 }
 .ButtonBlue:hover {
   background-color: #0000cc;
@@ -105,13 +179,4 @@
   color: #fff;
   border: 1px solid black;
   outline: none;
-}
-
-@media (min-width: 740px) {
-  .Modal {
-    width: 580px;
-    padding-left: 30px;
-    padding-right: 30px;
-    left: calc(50% - 290px);
-  }
 }

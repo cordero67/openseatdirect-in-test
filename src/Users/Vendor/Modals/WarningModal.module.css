@@ -12,11 +12,11 @@
   box-sizing: border-box;
   transition: all 0.3s ease-out;
 }
-  
+
 .ButtonBlue {
   height: 40px;
   width: 127px;
-  background-color: #0000CC;
+  background-color: #0000cc;
   color: #fff;
   border: 1px solid black;
 }
@@ -28,12 +28,12 @@
 }
 .ButtonBlue:active {
   background-color: #fff;
-  color: #0000CC;
-  border: 2px solid #0000CC;
+  color: #0000cc;
+  border: 2px solid #0000cc;
   font-weight: 600;
 }
 
-  /*
+/*
   fontSize: "14px",
   fontWeight: "500"
   */
@@ -62,8 +62,7 @@
 
 @media (min-width: 540px) {
   .Modal {
-    width: 500px;
-    padding: 30px;
-    left: calc(50% - 270px);
+    width: 420px;
+    padding: 30px 20px;
   }
 }

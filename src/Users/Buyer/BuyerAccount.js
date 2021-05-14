@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 
 import BuyerNavigation from "./BuyerNavigation";
-import Profile from "../ComponentPages/Profile";
+import Account from "../Vendor/Account";
 import TicketWallet from "../TicketWallet/TicketWallet";
 import Onboarding from "./Onboarding";
 import classes from "./BuyerAccount.module.css";
@@ -93,7 +93,7 @@ const BuyerAccount = () => {
         setPaneView("onboarding");
       }
       if (getStatus() === 7 || getStatus() === 8) {
-        window.location.href = "/vendor";
+        window.location.href = "/myaccount";
       }
       let tempBuyerInfo = {};
       tempBuyerInfo.token = tempUser.token;
@@ -112,7 +112,7 @@ const BuyerAccount = () => {
     if (!isLoading) {
       if (paneView === "profile") {
         return (
-          <Profile
+          <Account
             loading={isLoading}
             name={buyerInfo.name}
             email={buyerInfo.email}

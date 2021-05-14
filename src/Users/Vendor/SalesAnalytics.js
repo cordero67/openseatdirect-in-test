@@ -6,8 +6,7 @@ import dateFnsFormat from "date-fns/format";
 import classes from "./SalesAnalytics.module.css";
 
 const SalesAnalytics = (props) => {
-  console.log("PROPS.ORDERS: ", props.orders);
-  console.log("PROPS.EVENT.TICEKTS: ", props.event.tickets);
+  console.log("PROPS: ", props);
 
   const [salesTotals, setSalesTotals] = useState({
     ticketsSold: 0,
@@ -788,7 +787,7 @@ const SalesAnalytics = (props) => {
 
   return (
     <div>
-      {tabTitle}{" "}
+      {tabTitle}
       <div className={classes.DisplayPanel}>
         <div className={classes.DisplayTitle}>Sales Analytics</div>
 

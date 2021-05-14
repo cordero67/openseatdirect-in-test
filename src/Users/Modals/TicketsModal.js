@@ -75,7 +75,6 @@ const TicketsModal = (props) => {
       return (
         <Fragment key={index}>
           <div className={classes.TicketsGrid}>
-            {" "}
             <div style={{ textAlign: "left" }}>{ticket.ticketName}</div>
             <div style={{ textAlign: "right" }}>
               {parseFloat(ticket.ticketPrice).toFixed(2)}

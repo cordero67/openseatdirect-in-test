@@ -1,17 +1,16 @@
 .SideDrawer {
   position: fixed;
-  top:0;
-  right:0;
-  width: 100vw;
-  height: auto;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
   z-index: 400;
-  color: #fff;
-  background-color: #2F5596;
+  color: #000;
+  background-color: #fff;
   padding: 16px 25px 10px 25px;
   box-sizing: border-box;
   transition: transform 0.3s ease-out;
-  
-  
+
   /*transition: opacity transform 0.3s ease-out, bottom 0.9s ease-out;
   -webkit-transition: opacity transform 0.3s ease-out, bottom 0.9s ease-out;
   -moz-transition: opacity transform 0.3s ease-out, bottom 0.9s ease-out;
@@ -20,18 +19,22 @@
 }
 
 .Open {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .Close {
-    transform: translateX(+100%);
+  transform: translateX(-100%);
+  -webkit-transform: translateX(-100%);
+  -moz-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
+  -o-transform: translateX(-100%);
 }
 
 .Title {
-    color: "#000";
-    text-decoration: none;
-    font-weight: 300;
-    text-align: right;
-    display: grid;
-    grid-template-columns: auto 30px;
+  color: "#000";
+  text-decoration: none;
+  font-weight: 300;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 180px 60px;
 }

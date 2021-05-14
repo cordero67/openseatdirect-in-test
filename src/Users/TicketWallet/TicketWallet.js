@@ -270,20 +270,33 @@ const MyTickets = () => {
 
   const orderItems = () => {
     if (display === "orders") {
+      let oddOrder = true;
+      let styling = {};
       return (
         <Fragment>
           <div>
             {orders.map((order, index) => {
               let longDateTime = getLongStartDate(order.eventId.startDateTime);
               let orderDate = getStartDate(order.createdAt);
+              if (!oddOrder) {
+                styling = {
+                  backgroundColor: "#F0F0F0",
+                };
+              } else {
+                styling = {
+                  backgroundColor: "#fff",
+                };
+              }
+              oddOrder = !oddOrder;
               return (
                 <Fragment key={index}>
-                  <div className={classes.OrdersInnerGrid}>
+                  <div className={classes.OrdersInnerGrid} style={styling}>
                     <div>{orderDate}</div>
                     <div />
                     <div>
                       <button
                         className={classes.InvisibleButton}
+                        style={styling}
                         onClick={() => {
                           window.location.href = `/ed/?eventID=${order.eventId.eventNum}`;
                         }}
@@ -301,7 +314,7 @@ const MyTickets = () => {
                     <div style={{ textAlign: "right", paddingRight: "10px" }}>
                       {order.totalPaidAmount.toFixed(2)}
                     </div>
-                    <button className={classes.IconButton}>
+                    <button className={classes.IconButton} style={styling}>
                       <ion-icon
                         style={{ fontSize: "24px", color: "blue" }}
                         name="receipt-outline"
@@ -322,6 +335,8 @@ const MyTickets = () => {
 
   const futureEventItems = () => {
     if (display === "future") {
+      let oddOrder = true;
+      let styling = {};
       return (
         <Fragment>
           <div>
@@ -330,10 +345,20 @@ const MyTickets = () => {
               [shortMonth, dayDate, longDateTime] = getDates(
                 event.startDateTime
               );
+              if (!oddOrder) {
+                styling = {
+                  backgroundColor: "#F0F0F0",
+                };
+              } else {
+                styling = {
+                  backgroundColor: "#fff",
+                };
+              }
+              oddOrder = !oddOrder;
 
               return (
                 <Fragment key={index}>
-                  <div className={classes.FutureInnerGrid}>
+                  <div className={classes.FutureInnerGrid} style={styling}>
                     <div style={{ textAlign: "center" }}>
                       <div className={classes.DateRed}>{shortMonth}</div>
                       <div className={classes.DateBlack}>{dayDate}</div>
@@ -342,6 +367,7 @@ const MyTickets = () => {
                     <div>
                       <button
                         className={classes.InvisibleButton}
+                        style={styling}
                         onClick={() => {
                           window.location.href = `/ed/?eventID=${event.eventNum}`;
                         }}
@@ -357,6 +383,7 @@ const MyTickets = () => {
                     <div style={{ textAlign: "center" }}>
                       <button
                         className={classes.InvisibleButton}
+                        style={styling}
                         onClick={() => {
                           launchModal(event, "future");
                         }}
@@ -367,7 +394,7 @@ const MyTickets = () => {
                       </button>
                     </div>
 
-                    <button className={classes.IconButton}>
+                    <button className={classes.IconButton} style={styling}>
                       <ion-icon
                         style={{ fontSize: "24px", color: "blue" }}
                         name="qr-code-outline"
@@ -388,6 +415,8 @@ const MyTickets = () => {
 
   const pastEventItems = () => {
     if (display === "past") {
+      let oddOrder = true;
+      let styling = {};
       return (
         <Fragment>
           <div>
@@ -397,10 +426,20 @@ const MyTickets = () => {
               [shortMonth, dayDate, longDateTime] = getDates(
                 event.startDateTime
               );
+              if (!oddOrder) {
+                styling = {
+                  backgroundColor: "#F0F0F0",
+                };
+              } else {
+                styling = {
+                  backgroundColor: "#fff",
+                };
+              }
+              oddOrder = !oddOrder;
 
               return (
                 <Fragment key={index}>
-                  <div className={classes.PastInnerGrid}>
+                  <div className={classes.PastInnerGrid} style={styling}>
                     <div style={{ textAlign: "center" }}>
                       <div className={classes.DateRed}>{shortMonth}</div>
                       <div className={classes.DateBlack}>{dayDate}</div>
@@ -409,6 +448,7 @@ const MyTickets = () => {
                     <div>
                       <button
                         className={classes.InvisibleButton}
+                        style={styling}
                         onClick={() => {
                           window.location.href = `/ed/?eventID=${event.eventNum}`;
                         }}
@@ -424,6 +464,7 @@ const MyTickets = () => {
                     <div style={{ textAlign: "center" }}>
                       <button
                         className={classes.InvisibleButton}
+                        style={styling}
                         onClick={() => {
                           launchModal(event, "past");
                         }}
@@ -508,6 +549,7 @@ const MyTickets = () => {
             show={modalView === "receipt"}
             details={selectedOrder}
             event={selectedEvent}
+            numberOrders={orders.length}
             close={() => {
               setModalView("none");
             }}
@@ -520,9 +562,7 @@ const MyTickets = () => {
           />
         </Fragment>
       );
-    } else {
-      return null;
-    }
+    } else return null;
   };
 
   const futureTicketsModalDisplay = () => {

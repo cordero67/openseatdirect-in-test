@@ -6,6 +6,7 @@ import classes from "./Events.module.css";
 import { getDates } from "./Resources/VendorFunctions";
 
 const Events = (props) => {
+  console.log("PROPS: ", props);
   const [warningModal, setWarningModal] = useState({
     status: false,
     type: "",
@@ -70,97 +71,212 @@ const Events = (props) => {
   );
 
   const mainDisplay = () => {
-    if (props.eventDescriptions.length !== 0) {
+    if (props.eventDescriptions.length > 0) {
+      let oddOrder = true;
+      let styling = {};
       return (
         <div>
           {props.eventDescriptions.map((item, index) => {
             let shortMonth, dayDate, longDateTime;
             [shortMonth, dayDate, longDateTime] = getDates(item.startDateTime);
-            return (
-              <div key={index} className={classes.Events}>
-                <div style={{ textAlign: "center" }}>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "400",
-                      color: "red",
-                    }}
-                  >
-                    {shortMonth}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "18px",
-                      color: "black",
-                      fontWeight: "600",
-                    }}
-                  >
-                    {dayDate}
-                  </div>
-                </div>
-                <div style={{ textAlign: "left" }}>
-                  <div className={classes.EventTitle}>{item.eventTitle}</div>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      textAlign: "left",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {longDateTime}
-                  </div>
-                </div>
+            if (!oddOrder) {
+              styling = {
+                backgroundColor: "#F0F0F0",
+              };
+            } else {
+              styling = {
+                backgroundColor: "#fff",
+              };
+            }
+            oddOrder = !oddOrder;
+            if (props.windowWidth >= 760) {
+              return (
                 <div
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: "500",
-                    paddingTop: "12px",
-                  }}
+                  key={index}
+                  className={classes.EventsDouble}
+                  style={styling}
                 >
-                  {item.isDraft ? (
-                    <span style={{ color: "#B80000" }}>DRAFT</span>
-                  ) : (
-                    <span style={{ color: "#008F00" }}>LIVE</span>
-                  )}
+                  <div style={{ textAlign: "center" }}>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "400",
+                        color: "red",
+                      }}
+                    >
+                      {shortMonth}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "18px",
+                        color: "black",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {dayDate}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "left" }}>
+                    <div className={classes.EventTitle}>{item.eventTitle}</div>
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        textAlign: "left",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {longDateTime}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "500",
+                      paddingTop: "12px",
+                    }}
+                  >
+                    {item.isDraft ? (
+                      <span style={{ color: "#B80000" }}>DRAFT</span>
+                    ) : (
+                      <span style={{ color: "#008F00" }}>LIVE</span>
+                    )}
+                  </div>
+                  <button className={classes.EventButton} style={styling}>
+                    <ion-icon
+                      style={{ fontSize: "28px", color: "blue" }}
+                      name="analytics"
+                      onClick={() => {
+                        switchTab("analytics", item);
+                      }}
+                    />
+                  </button>
+                  <button className={classes.EventButton} style={styling}>
+                    <ion-icon
+                      style={{ fontSize: "24px", color: "blue" }}
+                      name="receipt-outline"
+                      onClick={() => {
+                        switchTab("orders", item);
+                      }}
+                    />
+                  </button>
+                  <button className={classes.EventButton} style={styling}>
+                    <ion-icon
+                      style={{ fontSize: "26px", color: "blue" }}
+                      name="ticket-outline"
+                      onClick={() => {
+                        switchTab("tickets", item);
+                      }}
+                    />
+                  </button>
+                  <button className={classes.EventButton} style={styling}>
+                    <ion-icon
+                      style={{ fontSize: "26px", color: "blue" }}
+                      name="create-outline"
+                      onClick={() => {
+                        props.editEvent(item);
+                      }}
+                    />
+                  </button>
                 </div>
-                <button className={classes.EventButton}>
-                  <ion-icon
-                    style={{ fontSize: "28px", color: "blue" }}
-                    name="analytics"
-                    onClick={() => {
-                      switchTab("analytics", item);
-                    }}
-                  />
-                </button>
-                <button className={classes.EventButton}>
-                  <ion-icon
-                    style={{ fontSize: "24px", color: "blue" }}
-                    name="receipt-outline"
-                    onClick={() => {
-                      switchTab("orders", item);
-                    }}
-                  />
-                </button>
-                <button className={classes.EventButton}>
-                  <ion-icon
-                    style={{ fontSize: "26px", color: "blue" }}
-                    name="ticket-outline"
-                    onClick={() => {
-                      switchTab("tickets", item);
-                    }}
-                  />
-                </button>
-                <button className={classes.EventButton}>
-                  <ion-icon
-                    style={{ fontSize: "26px", color: "blue" }}
-                    name="create-outline"
-                    onClick={() => {
-                      props.editEvent(item);
-                    }}
-                  />
-                </button>
-              </div>
-            );
+              );
+            } else {
+              return (
+                <div
+                  key={index}
+                  className={classes.EventsSingle}
+                  style={styling}
+                >
+                  <div className={classes.EventsSingleGridLeft}>
+                    <div style={{ textAlign: "center" }}>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          fontWeight: "400",
+                          color: "red",
+                        }}
+                      >
+                        {shortMonth}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "18px",
+                          color: "black",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {dayDate}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "left" }}>
+                      <div className={classes.EventTitle}>
+                        {item.eventTitle}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "13px",
+                          textAlign: "left",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {longDateTime}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={classes.EventsSingleGridRight}>
+                    <div
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: "500",
+                        paddingTop: "5px",
+                      }}
+                    >
+                      {item.isDraft ? (
+                        <span style={{ color: "#B80000" }}>DRAFT</span>
+                      ) : (
+                        <span style={{ color: "#008F00" }}>LIVE</span>
+                      )}
+                    </div>
+                    <button className={classes.EventButton} style={styling}>
+                      <ion-icon
+                        style={{ fontSize: "28px", color: "blue" }}
+                        name="analytics"
+                        onClick={() => {
+                          switchTab("analytics", item);
+                        }}
+                      />
+                    </button>
+                    <button className={classes.EventButton} style={styling}>
+                      <ion-icon
+                        style={{ fontSize: "24px", color: "blue" }}
+                        name="receipt-outline"
+                        onClick={() => {
+                          switchTab("orders", item);
+                        }}
+                      />
+                    </button>
+                    <button className={classes.EventButton} style={styling}>
+                      <ion-icon
+                        style={{ fontSize: "26px", color: "blue" }}
+                        name="ticket-outline"
+                        onClick={() => {
+                          switchTab("tickets", item);
+                        }}
+                      />
+                    </button>
+                    <button className={classes.EventButton} style={styling}>
+                      <ion-icon
+                        style={{ fontSize: "26px", color: "blue" }}
+                        name="create-outline"
+                        onClick={() => {
+                          props.editEvent(item);
+                        }}
+                      />
+                    </button>
+                  </div>
+                </div>
+              );
+            }
           })}
         </div>
       );
@@ -173,39 +289,74 @@ const Events = (props) => {
     }
   };
 
-  const tabTitle = <div className={classes.DisplayPanelTitle}>My Events</div>;
+  const tabTitle = () => {
+    if (props.windowWidth >= 1200) {
+      return <div className={classes.DisplayPanelTitle}>My Events</div>;
+    } else {
+      return (
+        <div className={classes.DisplayPanelTitleGrid}>
+          <div style={{ textAlign: "center" }}>
+            <ion-icon
+              style={{
+                fontSize: "20px",
+                color: "blue",
+                textAlign: "left",
+                paddingTop: "5px",
+              }}
+              name="home-outline"
+              /*onClick={() => {
+              switchTab("analytics", item);
+            }}*/
+            />
+          </div>
+          <div style={{ paddingTop: "5px" }}>My Events</div>
+        </div>
+      );
+    }
+  };
 
-  const displayHeader = (
-    <div className={classes.EventsHeader}>
-      <div style={{ textAlign: "center" }}>Date</div>
-      <div>Event</div>
-      <div style={{ textAlign: "center" }}>
-        <div>Event</div>
-        <div>Status</div>
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <div>Sales</div>
-        <div>Analytics</div>
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <div>Past</div>
-        <div>Orders</div>
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <div>Issue</div>
-        <div>Tickets</div>
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <div>Edit</div>
-        <div>Event</div>
-      </div>
-    </div>
-  );
+  const displayHeader = () => {
+    if (props.windowWidth >= 760) {
+      return (
+        <div className={classes.EventsHeaderDouble}>
+          <div style={{ textAlign: "center" }}>Date</div>
+          <div>Event</div>
+          <div style={{ textAlign: "center" }}>
+            <div>Event</div>
+            <div>Status</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div>Sales</div>
+            <div>Analytics</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div>Past</div>
+            <div>Orders</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div>Issue</div>
+            <div>Tickets</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div>Edit</div>
+            <div>Event</div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className={classes.EventsHeaderSingle}>
+          <div style={{ textAlign: "center" }}>Date</div>
+          <div>Event</div>
+        </div>
+      );
+    }
+  };
 
   return (
     <div>
-      {tabTitle}
-      {displayHeader}
+      {tabTitle()}
+      {displayHeader()}
       <div className={classes.DisplayPanel}>{mainDisplay()}</div>
       {warningModalDisplay}
     </div>

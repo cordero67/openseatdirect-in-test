@@ -10,8 +10,8 @@ const ReceiptModal = (props) => {
   let netTotal = 0;
   let grossTotal = 0;
 
-  // create an array of objects to hold transactions by ticket type
-  let orderDetails = [];
+  let orderDetails = []; // stores all ticket transactions by ticket type
+
   props.event.tickets.forEach((ticket) => {
     orderDetails.push({
       ticketId: ticket._id,
@@ -24,7 +24,6 @@ const ReceiptModal = (props) => {
   });
   console.log("tempOrderDetails: ", orderDetails);
 
-  // populate this ticketOrder array
   props.details.qrTickets.forEach((qrTix) => {
     orderDetails.forEach((ticketType, index) => {
       if (ticketType.ticketId === qrTix.ticketId) {
@@ -37,7 +36,6 @@ const ReceiptModal = (props) => {
       }
     });
   });
-  console.log("orderDetails: ", orderDetails);
 
   let longDateTime;
   [longDateTime] = getStartDate(props.details.eventId.startDateTime);
@@ -45,49 +43,53 @@ const ReceiptModal = (props) => {
   let shortDateTime;
   [shortDateTime] = getStartDate(props.details.createdAt);
 
-  // LOOKS GOOD: 1/21/21
   const modalButtons = () => {
-    return (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "160px 160px 160px",
-          gridGap: "15px",
-          width: "590px",
-          textAlign: "center",
-          paddingLeft: "0px",
-        }}
-      >
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            props.loadPrevious();
-          }}
-        >
-          PREVIOUS RECEIPT
-        </button>
-        <button
-          className={classes.ButtonGreen}
-          onClick={() => {
-            props.loadNext();
-          }}
-        >
-          NEXT RECEIPT
-        </button>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            props.close();
-          }}
-        >
-          CLOSE
-        </button>
-      </div>
-    );
+    if (props.numberOrders > 1) {
+      return (
+        <div className={classes.ButtonDisplayGrid}>
+          <button
+            className={classes.ButtonBlue}
+            onClick={() => {
+              props.loadPrevious();
+            }}
+          >
+            PREVIOUS RECEIPT
+          </button>
+          <button
+            className={classes.ButtonGreen}
+            onClick={() => {
+              props.loadNext();
+            }}
+          >
+            NEXT RECEIPT
+          </button>
+          <button
+            className={classes.ButtonGrey}
+            onClick={() => {
+              props.close();
+            }}
+          >
+            CLOSE
+          </button>
+        </div>
+      );
+    } else {
+      return (
+        <div className={classes.ButtonDisplay}>
+          <button
+            className={classes.ButtonGrey}
+            onClick={() => {
+              props.close();
+            }}
+          >
+            CLOSE
+          </button>
+        </div>
+      );
+    }
   };
 
   const ticketsList = () => {
-    console.log("orderDetails: ", orderDetails);
     return orderDetails.map((ticket, index) => {
       let adjustedPaymentMethod;
       if (ticket.ticketsSold > 0) {
@@ -105,16 +107,7 @@ const ReceiptModal = (props) => {
         if (true) {
           return (
             <Fragment key={index}>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "60px 280px 70px 70px",
-                  gridGap: "10px",
-                  width: "510px",
-                  height: "28px",
-                  paddingTop: "10px",
-                }}
-              >
+              <div className={classes.TicketsGrid}>
                 <div style={{ textAlign: "center" }}>{ticket.ticketsSold}</div>
                 <div style={{ textAlign: "left" }}>{ticket.ticketName}</div>
                 <div style={{ textAlign: "right" }}>
@@ -170,29 +163,14 @@ const ReceiptModal = (props) => {
 
     return (
       <Fragment>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "520px 70px",
-            gridGap: "10px",
-            paddingTop: "5px",
-          }}
-        ></div>
-        <div
-          style={{
-            marginRight: "8px",
-            marginLeft: "275px",
-          }}
-        >
-          {grandTotals()}
-        </div>
+        <div style={{ paddingLeft: "275px" }}>{grandTotals()}</div>
       </Fragment>
     );
   };
 
   return (
     <Fragment>
-      <Backdrop show={props.show}></Backdrop>
+      <Backdrop show={props.show} />
       <div
         style={{
           transform: props.show ? "translateY(0)" : "translateY(-100vh)",
@@ -200,120 +178,38 @@ const ReceiptModal = (props) => {
         }}
         className={classes.Modal}
       >
-        <br></br>
-        <div
-          style={{
-            fontWeight: "600",
-            fontSize: "18px",
-            textAlign: "left",
-          }}
-        >
+        <div className={classes.EventTitle}>
           {props.details.eventId.eventTitle}
         </div>
 
-        <div
-          style={{
-            fontSize: "16px",
-            textAlign: "left",
-            fontWeight: "400",
-            paddingTop: "5px",
-          }}
-        >
-          {longDateTime}
-        </div>
-        <br></br>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "110px 380px",
-            fontSize: "16px",
-            textAlign: "left",
-            paddingBottom: "10px",
-          }}
-        >
+        <div className={classes.DateTime}>{longDateTime}</div>
+        <div className={classes.OrderDetailsGrid}>
           <div style={{ fontWeight: "600" }}>Recipient:</div>
           <div>
             {props.details.firstname}
             {", "}
             {props.details.lastname}
           </div>
-        </div>
-        <div
-          style={{
-            fontSize: "16px",
-            textAlign: "left",
-            paddingLeft: "110px",
-            paddingBottom: "10px",
-          }}
-        >
-          {props.details.email}
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "110px 380px",
-            fontSize: "16px",
-            textAlign: "left",
-            paddingBottom: "10px",
-          }}
-        >
+          <div />
+          <div>{props.details.email}</div>
+
           <div style={{ fontWeight: "600" }}>Order Date:</div>
           <div>{shortDateTime}</div>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "110px 380px",
-            fontSize: "16px",
-            textAlign: "left",
-            paddingBottom: "10px",
-          }}
-        >
           <div style={{ fontWeight: "600" }}>Order Number:</div>
           <div>{props.details.osdOrderId}</div>
         </div>
-        <div
-          style={{
-            fontSize: "16px",
-            textAlign: "left",
-            paddingLeft: "80px",
-            paddingBottom: "10px",
-          }}
-        ></div>
-        <br></br>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "60px 280px 70px 70px",
-            gridGap: "10px",
-            width: "510px",
-            borderBottom: "1px solid black",
-            fontWeight: "600",
-            paddingBottom: "10px",
-          }}
-        >
+        <div className={classes.TicketsHeader}>
           <div style={{ textAlign: "center" }}>Quantity</div>
           <div style={{ textAlign: "left" }}>Type</div>
           <div style={{ textAlign: "right" }}>Price</div>
           <div style={{ textAlign: "right" }}>Total</div>
         </div>
 
-        <div
-          style={{
-            width: "510px",
-            borderBottom: "1px solid black",
-            paddingBottom: "10px",
-          }}
-        >
-          {ticketsList()}
-        </div>
+        <div className={classes.TicketsDisplay}>{ticketsList()}</div>
         <div>{paymentTotals()}</div>
-        <br></br>
 
         {modalButtons()}
-
-        <br></br>
       </div>
     </Fragment>
   );

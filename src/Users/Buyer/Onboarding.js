@@ -1614,7 +1614,7 @@ const Onboarding = (props) => {
                 fontWeight: "500",
               }}
               onClick={() => {
-                window.location.href = "/vendor";
+                window.location.href = "/myaccount";
               }}
             >
               GET STARTED

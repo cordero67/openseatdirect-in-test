@@ -16,7 +16,6 @@ import AfroGirlShort from "../../assets/KobeShort.jpg";
 
 import CashInHand from "../../assets/CashInHand.png";
 import ZeroFee from "../../assets/ZeroFee.png";
-import OSDImage from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 import DataLock from "../../assets/DataLock.png";
 
 import classes from "./HomePage.module.css";
@@ -33,8 +32,6 @@ const Home = () => {
     email: "",
     password: "",
   });
-
-  const { name, email, password } = values;
 
   const [youTubeDimensions, setYouTubeDimensions] = useState({
     width: "640",
@@ -115,13 +112,6 @@ const Home = () => {
     resetOpts(width, height);
   };
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
-  };
-
   const getStatus = (user) => {
     if ("accountId" in user && "status" in user.accountId) {
       return user.accountId.status;
@@ -193,7 +183,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -230,7 +243,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -267,7 +303,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -304,7 +363,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -341,7 +423,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -979,7 +1084,7 @@ const Home = () => {
               lineHeight: "32px",
             }}
           >
-            Sign up for a free trial or a subscription for as low as $7 a month.
+            Sign up for a free trial or a subscription.
           </div>
         </Fragment>
       );
@@ -1006,7 +1111,7 @@ const Home = () => {
             }}
           >
             Sign up for a free trial or a<br></br>
-            subscription for as low as $7 a month.
+            subscription.
           </div>
         </Fragment>
       );
@@ -1033,7 +1138,7 @@ const Home = () => {
             }}
           >
             Sign up for a free trial or a<br></br>
-            subscription for as low as $7 a month.
+            subscription.
           </div>
         </Fragment>
       );
@@ -1232,7 +1337,30 @@ const Home = () => {
                 className={classes.SubmitButton}
                 onClick={() => {
                   console.log("Clicking button");
-                  setModalStatus(true);
+                  if (
+                    typeof window !== "undefined" &&
+                    localStorage.getItem("user") !== null
+                  ) {
+                    let tempUser = JSON.parse(localStorage.getItem("user"));
+                    if (
+                      getStatus(tempUser.user) === 7 ||
+                      getStatus(tempUser.user) === 8
+                    ) {
+                      window.location.href = "/vendor";
+                    } else if (
+                      getStatus(tempUser.user) === 4 ||
+                      getStatus(tempUser.user) === 5 ||
+                      getStatus(tempUser.user) === 6 ||
+                      ("vendorIntent" in tempUser.user &&
+                        tempUser.user.vendorIntent === true)
+                    ) {
+                      window.location.href = "/personal";
+                    } else {
+                      window.location.href = "/events";
+                    }
+                  } else {
+                    setModalStatus(true);
+                  }
                 }}
               >
                 SIGN UP NOW
@@ -1298,7 +1426,8 @@ const Home = () => {
               >
                 Terms and Conditions
               </button>
-              | v1.0
+              |{" "}
+              <span style={{ fontSize: "10px", fontWeight: "600" }}>v1.0</span>
             </div>
           </div>
         </div>

@@ -7,36 +7,46 @@ import { signout } from "./apiSideDrawer";
 
 import classes from "./SideDrawerItems.module.css";
 
-// determines if current menu item, i.e. "<NavLink>" is the active link
-// "page" represents the actual active path
-// "path" represents the path defined in the respective "<NavLink>"
-const isActive = (page, path) => {
-  if (page === path) {
-    return { color: "white" };
-  } else {
-    return { color: "#0B1423" };
-  }
-};
-
-const getStatus = () => {
-  let tempData = JSON.parse(localStorage.getItem("user"));
-  if (
-    "user" in tempData &&
-    "accountId" in tempData.user &&
-    "status" in tempData.user.accountId
-  ) {
-    return tempData.user.accountId.status;
-  } else {
-    console.log("returns 0");
-    return 0;
-  }
-};
-
 const SideDrawerItems = (props) => {
+  console.log("PROPS: ", props);
   const [showSubItems, setShowSubItems] = useState(false);
 
-  const changeShowItems = (setting) => {
-    setShowSubItems(setting);
+  // determines if current menu item, i.e. "<NavLink>" is the active link
+  // "page" represents the actual active path
+  // "path" represents the path defined in the respective "<NavLink>"
+  const isActive = (page, path) => {
+    if (page === path) {
+      return { color: "blue", fontWeight: "500" };
+    } else {
+      return { color: "#000", fontWeight: "400" };
+    }
+  };
+
+  const currentTab = (page, path, tab) => {
+    if (page === path && tab === props.accountTab) {
+      return { color: "blue", fontWeight: "500" };
+    } else {
+      return { color: "#000", fontWeight: "400" };
+    }
+  };
+
+  const getStatus = () => {
+    let tempData = JSON.parse(localStorage.getItem("user"));
+    if (
+      "user" in tempData &&
+      "accountId" in tempData.user &&
+      "status" in tempData.user.accountId
+    ) {
+      return tempData.user.accountId.status;
+    } else {
+      console.log("returns 0");
+      return 0;
+    }
+  };
+
+  const changeShowItems = () => {
+    console.log("Changing Show Status");
+    setShowSubItems(!showSubItems);
   };
 
   return (
@@ -62,28 +72,113 @@ const SideDrawerItems = (props) => {
       </li>
 
       {isAuthenticated() && (getStatus() === 7 || getStatus() === 8) ? (
-        <li>
-          <NavLink
-            to="/vendor"
-            style={isActive(props.currentPage, "/vendor")}
-            onClick={props.clicked}
+        <li style={isActive(props.currentPage, "/myaccount")}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "185px 25px",
+            }}
           >
             My Account
-          </NavLink>
+            {!showSubItems ? (
+              <ion-icon
+                style={{
+                  fontWeight: "600",
+                  fontSize: "24px",
+                  color: "black",
+                }}
+                name="add-outline"
+                cursor="pointer"
+                onClick={() => setShowSubItems(!showSubItems)}
+              />
+            ) : (
+              <ion-icon
+                style={{
+                  fontWeight: "600",
+                  fontSize: "24px",
+                  color: "black",
+                }}
+                name="remove-outline"
+                cursor="pointer"
+                onClick={() => setShowSubItems(!showSubItems)}
+              />
+            )}
+          </div>
         </li>
       ) : null}
 
-      {isAuthenticated() && getStatus() !== 7 && getStatus() !== 8 ? (
-        <li>
-          <NavLink
-            to="/personal"
-            style={isActive(props.currentPage, "/personal")}
-            onClick={props.clicked}
-          >
-            My Account
-          </NavLink>
-        </li>
-      ) : null}
+      <div style={{ paddingLeft: "20px" }}>
+        {isAuthenticated() &&
+        (getStatus() === 7 || getStatus() === 8) &&
+        showSubItems ? (
+          <li>
+            <NavLink
+              to="/myaccount"
+              style={currentTab(props.currentPage, "/myaccount", "events")}
+              onClick={(e) => props.clicked(e, "events")}
+            >
+              My Events
+            </NavLink>
+          </li>
+        ) : null}
+
+        {isAuthenticated() &&
+        (getStatus() === 7 || getStatus() === 8) &&
+        showSubItems ? (
+          <li>
+            <NavLink
+              to="/myaccount"
+              style={currentTab(props.currentPage, "/myaccount", "create")}
+              onClick={(e) => props.clicked(e, "create")}
+            >
+              Create Event
+            </NavLink>
+          </li>
+        ) : null}
+
+        {isAuthenticated() &&
+        (getStatus() === 7 || getStatus() === 8) &&
+        showSubItems ? (
+          <li>
+            <NavLink
+              to="/myaccount"
+              style={currentTab(props.currentPage, "/myaccount", "account")}
+              onClick={(e) => props.clicked(e, "account")}
+            >
+              Account Settings
+            </NavLink>
+          </li>
+        ) : null}
+
+        {isAuthenticated() &&
+        (getStatus() === 7 || getStatus() === 8) &&
+        showSubItems ? (
+          <li>
+            <NavLink
+              to="/myaccount"
+              style={currentTab(props.currentPage, "/myaccount", "wallet")}
+              onClick={(e) => props.clicked(e, "wallet")}
+            >
+              My Tickets
+            </NavLink>
+          </li>
+        ) : null}
+
+        {isAuthenticated() &&
+        getStatus() !== 7 &&
+        getStatus() !== 8 &&
+        showSubItems ? (
+          <li>
+            <NavLink
+              to="/personal"
+              style={isActive(props.currentPage, "/personal")}
+              onClick={props.clicked}
+            >
+              My Account
+            </NavLink>
+          </li>
+        ) : null}
+      </div>
 
       <li>
         <NavLink
@@ -155,10 +250,10 @@ const SideDrawerItems = (props) => {
       )}
 
       {isAuthenticated() && (
-        <li>
+        <li style={{ borderBottom: "none" }}>
           <NavLink
             to="/events"
-            style={{ color: "#0B1423" }}
+            style={{ color: "#000", fontWeight: "400" }}
             onClick={() => {
               props.clicked();
               signout(() => {});

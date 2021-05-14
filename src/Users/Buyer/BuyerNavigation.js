@@ -61,11 +61,10 @@ const BuyerNavigation = (props) => {
             <button
               className={classes.NavigationButton}
               style={{
-                backgroundColor:
-                  props.pane === "myTickets" ? "#fff" : "#b8b8b8",
+                backgroundColor: props.pane === "wallet" ? "#fff" : "#b8b8b8",
                 outline: "none",
               }}
-              name="myTickets"
+              name="wallet"
               onClick={props.clicked}
             >
               My Tickets
@@ -82,7 +81,7 @@ const BuyerNavigation = (props) => {
               name="profile"
               onClick={props.clicked}
             >
-              Profile
+              Account Settings
             </button>
           </li>
 

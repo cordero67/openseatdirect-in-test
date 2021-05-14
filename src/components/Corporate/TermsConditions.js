@@ -57,8 +57,8 @@ const Privacy = () => {
         <li>
           <p>
             <strong>Company</strong> (referred to as either "the Company", "We",
-            "Us" or "Our" in this Agreement) refers to OpenSeatDirect LLC, 235
-            Main, Jersey City NJ 07302.
+            "Us" or "Our" in this Agreement) refers to OpenSeatDirect LLC, 15
+            Wilkinson Avenue Unit 3 A-1, Jersey City NJ 07305.
           </p>
         </li>
         <li>

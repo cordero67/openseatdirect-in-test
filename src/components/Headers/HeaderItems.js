@@ -48,7 +48,7 @@ const NavigationItems = (props) => {
   if (isAuthenticated() && getStatus() !== 7 && getStatus() !== 8) {
     userPath = "/personal";
   } else if (isAuthenticated()) {
-    userPath = "/vendor";
+    userPath = "/myaccount";
   }
 
   return (
@@ -67,9 +67,12 @@ const NavigationItems = (props) => {
         </li>
       )}
 
-      {userPath === "/vendor" && (
+      {userPath === "/myaccount" && (
         <li>
-          <NavLink to="/vendor" style={isActive(props.currentPage, "/vendor")}>
+          <NavLink
+            to="/myaccount"
+            style={isActive(props.currentPage, "/myaccount")}
+          >
             MY ACCOUNT
           </NavLink>
         </li>

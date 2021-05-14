@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { API } from "../../config";
 import { compareValues } from "./Resources/VendorFunctions";
 
-import Events from "./Events";
+import Events from "./EventsOLD";
 import SalesAnalytics from "./SalesAnalytics";
 import TicketSales from "./TicketSales";
 import IssueTickets from "./IssueTickets";
@@ -16,7 +16,7 @@ import TicketWallet from "../TicketWallet/TicketWallet";
 import VendorNavigation from "./Components/VendorNavigation";
 import Spinner from "../../components/UI/Spinner/Spinner";
 
-import classes from "./VendorAccount.module.css";
+import classes from "./VendorAccountOLD.module.css";
 
 const VendorAccount = (props) => {
   console.log("VENDOR PROPS: ", props);
@@ -26,23 +26,8 @@ const VendorAccount = (props) => {
   const [eventOrders, setEventOrders] = useState(); //
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedOrders, setSelectedOrders] = useState([]);
-  const [windowWidth, setWindowWidth] = useState([]);
 
   const [accountType, setAccountType] = useState();
-
-  const firstTime = useRef(true);
-
-  // LOOKS GOOD
-  // determines resized width and height of window
-  window.onresize = function (event) {
-    console.log(window.innerWidth, window.innerHeight);
-    setWindowWidth(window.innerWidth);
-  };
-
-  // LOOKS GOOD
-  const stylingUpdate = (inWidth, inHeight) => {
-    setWindowWidth(inWidth);
-  };
 
   const getStatus = () => {
     let tempData = JSON.parse(localStorage.getItem("user"));
@@ -110,18 +95,6 @@ const VendorAccount = (props) => {
   };
 
   useEffect(() => {
-    console.log("MY ACCOUNT TAB: ", props.myAccountTab);
-    if (firstTime.current) {
-      console.log("FIRST TIME");
-      firstTime.current = false;
-    } else {
-      console.log("SECOND TIME");
-      setDisplay(props.myAccountTab);
-    }
-  }, [props.myAccountTab]);
-
-  useEffect(() => {
-    stylingUpdate(window.innerWidth, window.innerHeight);
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -181,6 +154,11 @@ const VendorAccount = (props) => {
       window.location.href = "/auth";
     }
   }, []);
+  /*
+  useEffect(() => {
+    setDisplay(props.myAccountTab);
+  }, [props]);
+  */
 
   const reloadOrders = () => {
     let tempUser = JSON.parse(localStorage.getItem("user"));
@@ -242,7 +220,6 @@ const VendorAccount = (props) => {
         <Events
           eventDescriptions={eventDescriptions}
           eventOrders={eventOrders}
-          windowWidth={windowWidth}
           salesAnalytics={(event, orders) => {
             setSelectedEvent(event);
             setSelectedOrders(orders);
@@ -322,24 +299,21 @@ const VendorAccount = (props) => {
     }
   };
 
-  const Navigation = () => {
-    if (windowWidth >= 1200) {
-      return (
-        <VendorNavigation
-          pane={display}
-          accountType={accountType}
-          clicked={(event) => {
-            setDisplay(event.target.name);
-            props.changeTab(event.target.name);
-          }}
-        />
-      );
-    } else return null;
-  };
+  const Navigation = (
+    <VendorNavigation
+      pane={display}
+      accountType={accountType}
+      clicked={(event) => {
+        setDisplay(event.target.name);
+        props.changeTab(event.target.name);
+      }}
+    />
+  );
+
   return (
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
-        {Navigation()}
+        {Navigation}
         {loadingSpinner()}
         {mainDisplay()}
         {connectionStatus()}

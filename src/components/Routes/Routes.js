@@ -27,13 +27,17 @@ import Header from "../Headers/Header";
 import SideDrawer from "../SideDrawer/SideDrawer";
 import Footer from "../Footers/Footer";
 
-import LogoC from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
+import Logo from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 
 const Routes = () => {
   const [showSideDrawer, setShowSideDrawer] = useState(false);
+  const [accountTab, setAccountTab] = useState("events");
 
-  const closeSideDrawer = () => {
+  const closeSideDrawer = (e, type) => {
+    console.log("EVENT: ", e);
+    console.log("TYPE: ", type);
     setShowSideDrawer(false);
+    setAccountTab(type);
   };
 
   const toggleSideDrawer = () => {
@@ -62,7 +66,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -78,7 +82,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -95,7 +99,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -112,7 +116,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -129,7 +133,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -146,17 +150,26 @@ const Routes = () => {
       />
 
       <Route
-        path="/vendor"
+        path="/myaccount"
         exact
         render={(routeProps) => (
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <VendorAccount />
+            <SideDrawer
+              myAccountTab={accountTab}
+              open={showSideDrawer}
+              closed={closeSideDrawer}
+            />
+            <VendorAccount
+              myAccountTab={accountTab}
+              changeTab={(name) => {
+                setAccountTab(name);
+              }}
+            />
             <Footer></Footer>
           </React.Fragment>
         )}
@@ -169,7 +182,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -186,7 +199,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -203,7 +216,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -229,7 +242,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -246,7 +259,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
@@ -312,7 +325,7 @@ const Routes = () => {
           <React.Fragment>
             <Header
               positioning="fixed"
-              logo={LogoC}
+              logo={Logo}
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />

@@ -200,6 +200,14 @@
   display: inline-block;
   outline: none;
 }
+.SwitchButton:focus {
+  border: none;
+  outline: none;
+}
+.SwitchButton:active {
+  border: none;
+  outline: none;
+}
 
 .SortButton {
   font-weight: 600;
