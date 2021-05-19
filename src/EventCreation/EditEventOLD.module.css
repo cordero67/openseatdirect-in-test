@@ -1,4 +1,4 @@
-.DisplayPanel {
+/*.DisplayPanel {
   background-color: white;
   font-size: 15px;
   width: 1030px;
@@ -7,16 +7,57 @@
   padding-left: 0px;
   padding-right: 0px;
   box-sizing: border-box;
+}*/
+
+.DisplayPanel {
+  background-color: white;
+  font-size: 15px;
+  width: 900px;
+  height: calc(100vh - 167px);
+  margin-top: 50px;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
   scrollbar-width: thin;
   overflow-y: auto;
 }
 
+.SwitchButton {
+  font-size: 14px;
+  text-align: left;
+  font-weight: 400;
+  padding-left: 15px;
+  color: blue;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
+
+.DashboardHeader {
+  position: fixed;
+  background-color: #e7e7e7;
+  border-bottom: 1px solid lightgrey;
+  width: 1030px;
+  height: 60px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+  padding-right: 30px;
+}
+
 .MainContainer {
   font-family: "Roboto", sans-serif;
-  background-color: #2f5596;
+  background-color: green;
   background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
-  padding-top: 60px;
-  padding-left: 0px;
+  padding-top: 80px;
+  padding-left: 30px;
   padding-right: 0px;
   padding-bottom: 40px;
 }
@@ -25,33 +66,95 @@
   background-color: white;
   padding-left: 15px;
   padding-right: 15px;
-  padding-bottom: 15px;
   margin: auto;
   margin-top: 66px;
-  width: 930px;
+  width: 1025px;
+  height: calc(100vh - 57px);
   border: 1px solid grey;
+  scrollbar-width: thin;
+  overflow-y: auto;
+}
+
+.MainDisplay {
+  background-color: white;
+  height: calc(100vh - 232px);
+  margin-top: 115px;
+  scrollbar-width: thin;
+  overflow-y: auto;
+  font-size: 15px;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media (min-width: 768px) {
+  .MainDisplay {
+    height: calc(100vh - 192px);
+    margin-top: 75px;
+  }
+}
+
+@media (min-width: 71030px) {
+  .MainDisplay {
+    width: 1030px;
+  }
 }
 
 .GridTitlePanel {
   position: fixed;
-  top: 60px;
-  left: calc((100vw - 945px) / 2);
-  border-bottom: 1px solid grey;
   background-color: #fff;
-  /*background-color: #C2D9FF;*/
+  border-bottom: 1px solid grey;
+  width: 1030px;
   z-index: 200;
-  padding: 15px;
+  top: 60px;
+  padding-top: 15px;
+  padding-right: 0px;
+  padding-left: 0px;
   padding-bottom: 5px;
   box-sizing: border-box;
-  width: 928px;
 }
 
 .GridTitle {
   display: grid;
-  grid-template-columns: 200px 395px 95px 95px 95px;
-  column-gap: 5px;
+  grid-template-columns: 200px 410px 120px 120px 120px;
+  column-gap: 10px;
   box-sizing: border-box;
   height: 30px;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.GridButtons {
+  display: grid;
+  grid-template-columns: 110px 110px 110px;
+  column-gap: calc((100% - 335px) / 2);
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 35px;
+  box-sizing: border-box;
+  height: 30px;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+@media (min-width: 420px) {
+  .GridButtons {
+    display: grid;
+    grid-template-columns: 120px 120px 120px;
+    column-gap: calc((100% - 380px) / 2);
+    padding-left: 20px;
+  }
+}
+
+@media (min-width: 600px) {
+  .GridButtons {
+    display: grid;
+    grid-template-columns: 120px 120px 120px;
+    column-gap: 30px;
+    padding-left: calc((100% - 270px) / 2);
+  }
 }
 
 .GridSubTitle {
@@ -90,7 +193,7 @@
 }
 
 .SectionTitleTight {
-  padding: 10px 10px 0px 20px;
+  padding: 10px 10px 0px 25px;
   height: 30px;
   font-size: 15px;
   font-weight: 600;
@@ -100,7 +203,7 @@
 }
 
 .SectionTitle {
-  padding: 10px 10px 0px 20px;
+  padding: 10px 10px 0px 25px;
   height: 35px;
   font-size: 15px;
   font-weight: 600;
@@ -132,7 +235,7 @@
 .InputBox {
   height: auto;
   font-size: 16px;
-  padding: 5px 10px 10px 20px;
+  padding: 5px 10px 10px 25px;
   box-sizing: border-box;
   border-color: red;
   background-color: #e7e7e7;
@@ -141,7 +244,7 @@
 .InputBoxTight {
   height: auto;
   font-size: 16px;
-  padding: 5px 10px 0px 20px;
+  padding: 5px 10px 0px 25px;
   box-sizing: border-box;
   background-color: #e7e7e7;
 }
@@ -164,15 +267,14 @@
 .TextBox {
   height: auto;
   font-size: 16px;
-  padding: 5px 10px 6px 20px;
+  padding: 5px 10px 6px 25px;
   box-sizing: border-box;
   background-color: #e7e7e7;
 }
 
 .SocialMediaLink {
-  color: red;
   display: grid;
-  grid-template-columns: 40px 120px 500px;
+  grid-template-columns: 40px 120px 400px;
   height: 55px;
   font-size: 16px;
   padding: 5px 10px 10px 35px;
@@ -238,7 +340,7 @@
 
 .TicketLine {
   display: grid;
-  grid-template-columns: 380px 120px 165px 40px;
+  grid-template-columns: 360px 165px 165px 80px 80px;
   height: 60px;
   font-size: 16px;
   border-top: 1px solid lightgrey;
@@ -248,7 +350,7 @@
 .DraggedTicketLine {
   background-color: #f0f7fc;
   display: grid;
-  grid-template-columns: 360px 140px 165px 40px;
+  grid-template-columns: 360px 100px 165px 80px 80px;
   height: 60px;
   font-size: 16px;
   border-top: 1px solid lightgrey;
@@ -287,7 +389,7 @@
   padding: 9px 10px;
   border: 1px solid lightgrey;
   box-sizing: border-box;
-  width: 110px;
+  width: 155px;
   height: 40px;
 }
 
@@ -295,7 +397,7 @@
   padding: 9px 10px;
   border: 1px solid red;
   box-sizing: border-box;
-  width: 110px;
+  width: 155px;
   height: 40px;
 }
 
@@ -437,6 +539,116 @@
 .ButtonGreen:active {
   background-color: #005200;
   color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonRed {
+  height: 30px;
+  width: 120px;
+  background-color: #cc0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 12px;
+}
+.ButtonRed:hover {
+  background-color: #a30000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRed:active {
+  background-color: #7a0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonGrey {
+  height: 30px;
+  width: 120px;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+  font-size: 12px;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonGreenTight {
+  height: 30px;
+  width: 100px;
+  background-color: #00a300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 11px;
+}
+.ButtonGreenTight:hover {
+  background-color: #007a00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreenTight:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonRedTight {
+  height: 30px;
+  width: 100px;
+  background-color: #cc0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  font-size: 11px;
+}
+.ButtonRed:hover {
+  background-color: #a30000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRedTight:active {
+  background-color: #7a0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonGreyTight {
+  height: 30px;
+  width: 100px;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+  font-size: 11px;
+}
+.ButtonGreyTight:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreyTight:active {
+  background-color: #707070;
+  color: white;
   border: 1px solid black;
   outline: none;
 }

@@ -7,7 +7,7 @@ import Events from "./EventsOLD";
 import SalesAnalytics from "./SalesAnalytics";
 import TicketSales from "./TicketSales";
 import IssueTickets from "./IssueTickets";
-import EditEvent from "../../EventCreation/EditEvent";
+import EditEvent from "../../EventCreation/EditEventOLD";
 
 import Orders from "./Orders"; // CURRENTLY NOT USING THIS TAB
 import CreateEvent from "../../EventCreation/CreateEvent";
@@ -154,11 +154,6 @@ const VendorAccount = (props) => {
       window.location.href = "/auth";
     }
   }, []);
-  /*
-  useEffect(() => {
-    setDisplay(props.myAccountTab);
-  }, [props]);
-  */
 
   const reloadOrders = () => {
     let tempUser = JSON.parse(localStorage.getItem("user"));

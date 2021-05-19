@@ -9,8 +9,8 @@ import dateFnsFormat from "date-fns/format";
 import { API } from "../config";
 
 import SavedModal from "./Modals/SavedModal";
-import EventDetails from "./Components/EventDetails";
-import TicketCreation from "./TicketCreation";
+import EventDetails from "./Components/EventDetailsOLD";
+import TicketCreation from "./TicketCreationOLD";
 import AdditionalSettings from "./Components/AdditionalSettings";
 
 import classes from "./VendorDashboard.module.css";

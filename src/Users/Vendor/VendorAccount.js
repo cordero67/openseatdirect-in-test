@@ -7,6 +7,7 @@ import Events from "./Events";
 import SalesAnalytics from "./SalesAnalytics";
 import TicketSales from "./TicketSales";
 import IssueTickets from "./IssueTickets";
+//import EditEvent from "../../EventCreation/EditEvent";
 import EditEvent from "../../EventCreation/EditEvent";
 
 import Orders from "./Orders"; // CURRENTLY NOT USING THIS TAB
@@ -165,7 +166,11 @@ const VendorAccount = (props) => {
               console.log("ORDERS: ", jsOrders);
               jsOrders.sort(compareValues("createdAt", "asc"));
               setEventOrders(jsOrders);
-              setDisplay(props.myAccountTab);
+              if (props.myAccountTab !== "undefined") {
+                setDisplay(props.myAccountTab);
+              } else {
+                setDisplay("events");
+              }
             })
             .catch((error) => {
               console.log("error", error);
@@ -303,6 +308,7 @@ const VendorAccount = (props) => {
       return (
         <EditEvent
           event={selectedEvent}
+          windowWidth={windowWidth}
           toEvents={() => {
             setDisplay("events");
           }}
@@ -323,7 +329,7 @@ const VendorAccount = (props) => {
   };
 
   const Navigation = () => {
-    if (windowWidth >= 1200) {
+    if (windowWidth >= 1190) {
       return (
         <VendorNavigation
           pane={display}
@@ -336,6 +342,7 @@ const VendorAccount = (props) => {
       );
     } else return null;
   };
+
   return (
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>

@@ -3,14 +3,14 @@ import React, { useState, Fragment } from "react";
 
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 import { Editor } from "@tinymce/tinymce-react";
-import DateSelector from "../DateSelector";
+import DateSelector from "../DateSelectorOLD";
 import CountrySelector from "../Selectors/CountrySelector";
-import TimeSelector from "../Selectors/TimeSelector";
+import TimeSelector from "../Selectors/TimeSelectorOLD";
 import TimeZoneSelector from "../Selectors/TimeZoneSelector";
 import CategorySelector from "../Selectors/CategorySelector";
 import RadioForm from "../RadioForm";
 
-import classes from "./Components.module.css";
+import classes from "./ComponentsOLD.module.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,7 +21,6 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 const EventDetails = (props) => {
-  console.log("props: ", props);
   const [eventTitleWarning, setEventTitleWarning] = useState(false);
   const [eventLocationWarning, setEventLocationWarning] = useState(false);
   const [eventAddress1Warning, setEventAddress1Warning] = useState(false);
@@ -104,244 +103,6 @@ const EventDetails = (props) => {
     }
   };
 
-  const facebookDisplay = () => {
-    if (props.windowWidth >= 540) {
-      return (
-        <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-          <FontAwesomeIcon
-            className={classes.SocialMediaIcon}
-            style={{ color: "#43609c" }}
-            icon={faFacebook}
-          />
-          <div className={classes.SocialMediaName}>facebook.com/ </div>
-          <input
-            className={classes.SocialMediaContent}
-            onFocus={() => setFacebookWarning(true)}
-            onBlur={() => setFacebookWarning(false)}
-            type="text"
-            id="facebookLink"
-            name="facebookLink"
-            maxLength="64"
-            placeholder="your facebook address: limit 64 characters"
-            value={props.event.facebookLink}
-            onChange={(event) => {
-              props.change(event);
-            }}
-          />
-        </div>
-      );
-    } else {
-      return (
-        <Fragment>
-          <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-            <FontAwesomeIcon
-              className={classes.SocialMediaIcon}
-              style={{ color: "#43609c" }}
-              icon={faFacebook}
-            />
-            <div className={classes.SocialMediaName}>facebook.com/ </div>
-          </div>
-
-          <div className={classes.InputBoxTightest}>
-            <input
-              className={classes.SocialMediaContent}
-              onFocus={() => setFacebookWarning(true)}
-              onBlur={() => setFacebookWarning(false)}
-              type="text"
-              id="facebookLink"
-              name="facebookLink"
-              maxLength="64"
-              placeholder="your facebook address: limit 64 characters"
-              value={props.event.facebookLink}
-              onChange={(event) => {
-                props.change(event);
-              }}
-            />
-          </div>
-        </Fragment>
-      );
-    }
-  };
-
-  const twitterDisplay = () => {
-    if (props.windowWidth >= 540) {
-      return (
-        <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-          <FontAwesomeIcon
-            className={classes.SocialMediaIcon}
-            style={{ color: "#0084b4" }}
-            icon={faTwitter}
-          />
-          <div className={classes.SocialMediaName}>twitter.com/ </div>
-          <input
-            className={classes.SocialMediaContent}
-            onFocus={() => setTwitterWarning(true)}
-            onBlur={() => setTwitterWarning(false)}
-            type="text"
-            maxLength="64"
-            id="twitterLink"
-            name="twitterLink"
-            placeholder="your twitter address: limit 64 characters"
-            value={props.event.twitterLink}
-            onChange={(event) => {
-              props.change(event);
-            }}
-          />
-        </div>
-      );
-    } else {
-      return (
-        <Fragment>
-          <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-            <FontAwesomeIcon
-              className={classes.SocialMediaIcon}
-              style={{ color: "#0084b4" }}
-              icon={faTwitter}
-            />
-            <div className={classes.SocialMediaName}>twitter.com/ </div>
-          </div>
-
-          <div className={classes.InputBoxTightest}>
-            <input
-              className={classes.SocialMediaContent}
-              onFocus={() => setTwitterWarning(true)}
-              onBlur={() => setTwitterWarning(false)}
-              type="text"
-              maxLength="64"
-              id="twitterLink"
-              name="twitterLink"
-              placeholder="your twitter address: limit 64 characters"
-              value={props.event.twitterLink}
-              onChange={(event) => {
-                props.change(event);
-              }}
-            />
-          </div>
-        </Fragment>
-      );
-    }
-  };
-
-  const linkedinDisplay = () => {
-    if (props.windowWidth >= 540) {
-      return (
-        <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-          <FontAwesomeIcon
-            className={classes.SocialMediaIcon}
-            style={{ color: "#0e76a8" }}
-            icon={faLinkedin}
-          />
-          <div className={classes.SocialMediaName}>linkedin.com/ </div>
-          <input
-            className={classes.SocialMediaContent}
-            onFocus={() => setLinkedinWarning(true)}
-            onBlur={() => setLinkedinWarning(false)}
-            type="text"
-            maxLength="64"
-            id="linkedinLink"
-            name="linkedinLink"
-            placeholder="your linkedin address: limit 64 characters"
-            value={props.event.linkedinLink}
-            onChange={(event) => {
-              props.change(event);
-            }}
-          />
-        </div>
-      );
-    } else {
-      return (
-        <Fragment>
-          <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-            <FontAwesomeIcon
-              className={classes.SocialMediaIcon}
-              style={{ color: "#0e76a8" }}
-              icon={faLinkedin}
-            />
-            <div className={classes.SocialMediaName}>linkedin.com/ </div>
-          </div>
-
-          <div className={classes.InputBoxTightest}>
-            <input
-              className={classes.SocialMediaContent}
-              onFocus={() => setLinkedinWarning(true)}
-              onBlur={() => setLinkedinWarning(false)}
-              type="text"
-              maxLength="64"
-              id="linkedinLink"
-              name="linkedinLink"
-              placeholder="your linkedin address: limit 64 characters"
-              value={props.event.linkedinLink}
-              onChange={(event) => {
-                props.change(event);
-              }}
-            />
-          </div>
-        </Fragment>
-      );
-    }
-  };
-
-  const instagramDisplay = () => {
-    if (props.windowWidth >= 540) {
-      return (
-        <div className={classes.SocialMediaLink} style={{ height: "55px" }}>
-          <FontAwesomeIcon
-            className={classes.SocialMediaIcon}
-            style={{ color: "#8a3ab9" }}
-            icon={faInstagram}
-          />
-          <div className={classes.SocialMediaName}>instagram.com/ </div>
-          <input
-            className={classes.SocialMediaContent}
-            onFocus={() => setInstagramWarning(true)}
-            onBlur={() => setInstagramWarning(false)}
-            type="text"
-            maxLength="64"
-            id="instagramLink"
-            name="instagramLink"
-            placeholder="your instagram address: limit 64 characters"
-            value={props.event.instagramLink}
-            onChange={(event) => {
-              props.change(event);
-            }}
-          />
-        </div>
-      );
-    } else {
-      return (
-        <Fragment>
-          <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
-            <FontAwesomeIcon
-              className={classes.SocialMediaIcon}
-              style={{ color: "#8a3ab9" }}
-              icon={faInstagram}
-            />
-          </div>
-
-          <div
-            className={classes.InputBoxTightest}
-            style={{ paddingBottom: "10px" }}
-          >
-            <input
-              className={classes.SocialMediaContent}
-              onFocus={() => setInstagramWarning(true)}
-              onBlur={() => setInstagramWarning(false)}
-              type="text"
-              maxLength="64"
-              id="instagramLink"
-              name="instagramLink"
-              placeholder="your instagram address: limit 64 characters"
-              value={props.event.instagramLink}
-              onChange={(event) => {
-                props.change(event);
-              }}
-            />
-          </div>
-        </Fragment>
-      );
-    }
-  };
-
   return (
     <Fragment>
       <div className={classes.CategoryTitle} style={{ width: "140px" }}>
@@ -358,6 +119,7 @@ const EventDetails = (props) => {
                 ? classes.InputBoxContentError
                 : classes.InputBoxContent
             }
+            style={{ width: "600px" }}
             onFocus={() => {
               setEventTitleWarning(true);
               props.changeOmission(false);
@@ -407,6 +169,7 @@ const EventDetails = (props) => {
             <div className={classes.InputBoxTight}>
               <input
                 className={classes.InputBoxContent}
+                style={{ width: "600px" }}
                 onFocus={() => setEventLocationWarning(true)}
                 onBlur={() => setEventLocationWarning(false)}
                 type="text"
@@ -427,6 +190,7 @@ const EventDetails = (props) => {
             <div className={classes.InputBoxTight}>
               <input
                 className={classes.InputBoxContent}
+                style={{ width: "600px" }}
                 onFocus={() => setEventAddress1Warning(true)}
                 onBlur={() => setEventAddress1Warning(false)}
                 type="text"
@@ -447,6 +211,7 @@ const EventDetails = (props) => {
             <div className={classes.InputBoxTight}>
               <input
                 className={classes.InputBoxContent}
+                style={{ width: "600px" }}
                 onFocus={() => setEventAddress2Warning(true)}
                 onBlur={() => setEventAddress2Warning(false)}
                 type="text"
@@ -467,6 +232,7 @@ const EventDetails = (props) => {
             <div className={classes.InputBoxTight}>
               <input
                 className={classes.InputBoxContent}
+                style={{ width: "600px" }}
                 onFocus={() => setEventCityWarning(true)}
                 onBlur={() => setEventCityWarning(false)}
                 type="text"
@@ -484,10 +250,13 @@ const EventDetails = (props) => {
                 : null}
             </div>
 
-            <div className={classes.StatePostalCode}>
+            <div
+              className={classes.InputBoxTight}
+              style={{ display: "grid", gridTemplateColumns: "300px 300px" }}
+            >
               <input
                 className={classes.InputBoxContent}
-                style={{ width: "100%" }}
+                style={{ width: "295px" }}
                 onFocus={() => setEventStateWarning(true)}
                 onBlur={() => setEventStateWarning(false)}
                 type="text"
@@ -503,7 +272,7 @@ const EventDetails = (props) => {
 
               <input
                 className={classes.InputBoxContent}
-                style={{ width: "100%" }}
+                style={{ width: "300px" }}
                 onFocus={() => setEventZipPostalWarning(true)}
                 onBlur={() => setEventZipPostalWarning(false)}
                 type="text"
@@ -531,6 +300,7 @@ const EventDetails = (props) => {
             <div className={classes.InputBoxTight}>
               <CountrySelector
                 className={classes.InputBoxContent}
+                style={{ width: "600px" }}
                 current={props.event.locationCountryCode}
                 //defaultValue="United States of America"
                 getCountry={(value) =>
@@ -542,6 +312,7 @@ const EventDetails = (props) => {
             <div className={classes.InputBox}>
               <input
                 className={classes.InputBoxContent}
+                style={{ width: "600px" }}
                 onFocus={() => setEventAdditionalWarning(true)}
                 onBlur={() => setEventAdditionalWarning(false)}
                 type="text"
@@ -569,6 +340,7 @@ const EventDetails = (props) => {
             <div className={classes.InputBoxTight}>
               <input
                 className={classes.InputBoxContent}
+                style={{ width: "600px" }}
                 onFocus={() => setWebinarLinkWarning(true)}
                 onBlur={() => setWebinarLinkWarning(false)}
                 type="text"
@@ -589,6 +361,7 @@ const EventDetails = (props) => {
             <div className={classes.InputBox}>
               <input
                 className={classes.InputBoxContent}
+                style={{ width: "600px" }}
                 onFocus={() => setWebinarInfoWarning(true)}
                 onBlur={() => setWebinarInfoWarning(false)}
                 type="text"
@@ -617,6 +390,7 @@ const EventDetails = (props) => {
             <div className={classes.InputBox}>
               <input
                 className={classes.InputBoxContent}
+                style={{ width: "600px" }}
                 onFocus={() => setTbaInfoWarning(true)}
                 onBlur={() => setTbaInfoWarning(false)}
                 type="text"
@@ -636,8 +410,42 @@ const EventDetails = (props) => {
           </Fragment>
         ) : null}
 
-        <div className={classes.TimeHeader}>Time Zone</div>
-        <div className={classes.InputBox}>
+        <div className={classes.SectionTitle}>Event Dates and Time</div>
+        <div className={classes.DateTimeHeader}>
+          <div>
+            Start Date<span style={{ color: "red" }}>*</span>
+          </div>
+          <div>
+            Start Time<span style={{ color: "red" }}>*</span>
+          </div>
+          <div>End Date</div>
+          <div>End Time</div>
+          <div>Time Zone</div>
+        </div>
+
+        <div className={classes.DateTimeInputs}>
+          <DateSelector
+            type={"startDate"}
+            startDate={props.event.startDate}
+            current={props.event.startDate}
+            change={(date) => props.changeDate(date, "start")}
+            beforeDate={new Date()}
+          />
+          <TimeSelector
+            current={props.event.startTime}
+            getTime={(value) => props.changeEventField(value, "startTime")}
+          />
+          <DateSelector
+            type={"endDate"}
+            startDate={props.event.startDate}
+            current={props.event.endDate}
+            change={(date) => props.changeDate(date, "end")}
+            beforeDate={props.event.startDate}
+          />
+          <TimeSelector
+            current={props.event.endTime}
+            getTime={(value) => props.changeEventField(value, "endTime")}
+          />
           <TimeZoneSelector
             current={props.event.timeZone}
             getTimeZone={(value) => props.changeEventField(value, "timeZone")}
@@ -645,6 +453,8 @@ const EventDetails = (props) => {
         </div>
 
         <div className={classes.SectionTitleTight}>Event Image</div>
+
+        <div className={classes.ImageBox}>{imageCanvas()}</div>
 
         <div className={classes.SectionTitleTight}>
           Detailed Event Description
@@ -683,7 +493,29 @@ const EventDetails = (props) => {
           Event Specific Social Media Links
         </div>
 
-        {facebookDisplay()}
+        <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
+          <FontAwesomeIcon
+            className={classes.SocialMediaIcon}
+            style={{ color: "#43609c" }}
+            icon={faFacebook}
+          />
+          <div className={classes.SocialMediaName}>facebook.com/ </div>
+          <input
+            className={classes.InputBoxContent}
+            style={{ width: "400px" }}
+            onFocus={() => setFacebookWarning(true)}
+            onBlur={() => setFacebookWarning(false)}
+            type="text"
+            id="facebookLink"
+            name="facebookLink"
+            maxLength="64"
+            placeholder="your facebook address: limit 64 characters"
+            value={props.event.facebookLink}
+            onChange={(event) => {
+              props.change(event);
+            }}
+          />
+        </div>
 
         {facebookWarning ? (
           <div className={classes.SocialMediaLink} style={{ height: "20px" }}>
@@ -693,7 +525,29 @@ const EventDetails = (props) => {
           </div>
         ) : null}
 
-        {twitterDisplay()}
+        <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
+          <FontAwesomeIcon
+            className={classes.SocialMediaIcon}
+            style={{ color: "#0084b4" }}
+            icon={faTwitter}
+          />
+          <div className={classes.SocialMediaName}>twitter.com/ </div>
+          <input
+            className={classes.InputBoxContent}
+            style={{ width: "400px" }}
+            onFocus={() => setTwitterWarning(true)}
+            onBlur={() => setTwitterWarning(false)}
+            type="text"
+            maxLength="64"
+            id="twitterLink"
+            name="twitterLink"
+            placeholder="your twitter address: limit 64 characters"
+            value={props.event.twitterLink}
+            onChange={(event) => {
+              props.change(event);
+            }}
+          />
+        </div>
 
         {twitterWarning ? (
           <div className={classes.SocialMediaLink} style={{ height: "20px" }}>
@@ -703,7 +557,29 @@ const EventDetails = (props) => {
           </div>
         ) : null}
 
-        {linkedinDisplay()}
+        <div className={classes.SocialMediaLink} style={{ height: "45px" }}>
+          <FontAwesomeIcon
+            className={classes.SocialMediaIcon}
+            style={{ color: "#0e76a8" }}
+            icon={faLinkedin}
+          />
+          <div className={classes.SocialMediaName}>linkedin.com/ </div>
+          <input
+            className={classes.InputBoxContent}
+            style={{ width: "400px" }}
+            onFocus={() => setLinkedinWarning(true)}
+            onBlur={() => setLinkedinWarning(false)}
+            type="text"
+            maxLength="64"
+            id="linkedinLink"
+            name="linkedinLink"
+            placeholder="your linkedin address: limit 64 characters"
+            value={props.event.linkedinLink}
+            onChange={(event) => {
+              props.change(event);
+            }}
+          />
+        </div>
 
         {linkedinWarning ? (
           <div className={classes.SocialMediaLink} style={{ height: "20px" }}>
@@ -713,7 +589,29 @@ const EventDetails = (props) => {
           </div>
         ) : null}
 
-        {instagramDisplay()}
+        <div className={classes.SocialMediaLink} style={{ height: "55px" }}>
+          <FontAwesomeIcon
+            className={classes.SocialMediaIcon}
+            style={{ color: "#8a3ab9" }}
+            icon={faInstagram}
+          />
+          <div className={classes.SocialMediaName}>instagram.com/ </div>
+          <input
+            className={classes.InputBoxContent}
+            style={{ width: "400px" }}
+            onFocus={() => setInstagramWarning(true)}
+            onBlur={() => setInstagramWarning(false)}
+            type="text"
+            maxLength="64"
+            id="instagramLink"
+            name="instagramLink"
+            placeholder="your instagram address: limit 64 characters"
+            value={props.event.instagramLink}
+            onChange={(event) => {
+              props.change(event);
+            }}
+          />
+        </div>
 
         {instagramWarning ? (
           <div className={classes.SocialMediaLink} style={{ height: "20px" }}>
@@ -747,17 +645,15 @@ const EventDetails = (props) => {
         </div>
 
         <div className={classes.SectionTitleTight}>
-          Customize OpenSeatDirect Vanity URL:{" "}
-          <span
-            className={classes.SocialMediaName}
-            style={{ fontWeight: "400" }}
-          >
-            www.openseatdirect.com/et/
-          </span>
+          Customize OpenSeatDirect Vanity URL
         </div>
-        <div className={classes.InputBox}>
+        <div className={classes.VanityGrid}>
+          <div className={classes.SocialMediaName}>
+            www.openseatdirect.com/et/{" "}
+          </div>
           <input
             className={classes.InputBoxContent}
+            style={{ width: "500px" }}
             onFocus={() => setVanityWarning(true)}
             onBlur={() => setVanityWarning(false)}
             type="text"
@@ -770,9 +666,11 @@ const EventDetails = (props) => {
               props.change(event);
             }}
           />
-          <div>
-            {vanityWarning ? displayMessage(75, props.event.vanityLink) : null}
-          </div>
+        </div>
+
+        <div className={classes.VanityGridBoxGrid}>
+          <div> </div>
+          {vanityWarning ? displayMessage(75, props.event.vanityLink) : null}
         </div>
       </div>
     </Fragment>
@@ -780,46 +678,3 @@ const EventDetails = (props) => {
 };
 
 export default EventDetails;
-
-/*
-
-
-        <div className={classes.ImageBox}>{imageCanvas()}</div>
-
-        <div className={classes.SectionTitle}>Event Dates and Time</div>
-        <div className={classes.DateTimeHeader}>
-          <div>
-            Start Date<span style={{ color: "red" }}>*</span>
-          </div>
-          <div>
-            Start Time<span style={{ color: "red" }}>*</span>
-          </div>
-          <div>End Date</div>
-          <div>End Time</div>
-        </div>
-
-        <div className={classes.DateTimeInputs}>
-          <DateSelector
-            type={"startDate"}
-            startDate={props.event.startDate}
-            current={props.event.startDate}
-            change={(date) => props.changeDate(date, "start")}
-            beforeDate={new Date()}
-          />
-          <TimeSelector
-            current={props.event.startTime}
-            getTime={(value) => props.changeEventField(value, "startTime")}
-          />
-          <DateSelector
-            type={"endDate"}
-            startDate={props.event.startDate}
-            current={props.event.endDate}
-            change={(date) => props.changeDate(date, "end")}
-            beforeDate={props.event.startDate}
-          />
-          <TimeSelector
-            current={props.event.endTime}
-            getTime={(value) => props.changeEventField(value, "endTime")}
-          />
-        </div>
-        */

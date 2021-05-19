@@ -2,8 +2,6 @@ import React from "react";
 
 import { timeZones } from "./SelectorLists";
 
-import classes from "./Selectors.module.css";
-
 const TimeZoneSelector = (props) => {
   let transformedTimeZones = Object.keys(timeZones);
   let currentZone;
@@ -16,7 +14,14 @@ const TimeZoneSelector = (props) => {
 
   return (
     <select
-      className={classes.TimeZone}
+      style={{
+        padding: "9px 5px",
+        border: "1px solid red",
+        boxSizing: "borderBox",
+        width: "500px",
+        lineHeight: "1.75",
+        cursor: "pointer",
+      }}
       type="text"
       id="input box time zone selection"
       value={currentZone}

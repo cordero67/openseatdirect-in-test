@@ -1,0 +1,11 @@
+.RadioForm {
+  padding: 0px 0px 0px 10px;
+  font-size: 16px;
+  background-color: #e7e7e7;
+}
+
+@media (min-width: 760px) {
+  .RadioForm {
+    padding: 0px 0px 0px 20px;
+  }
+}

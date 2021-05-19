@@ -12,7 +12,7 @@
 }
 
 .SectionTitle {
-  padding: 10px 10px 0px 25px;
+  padding: 10px 10px 0px 10px;
   height: 35px;
   font-size: 15px;
   font-weight: 600;
@@ -21,8 +21,14 @@
   box-sizing: border-box;
 }
 
+@media (min-width: 760px) {
+  .SectionTitle {
+    padding: 5px 10px 10px 20px;
+  }
+}
+
 .SectionTitleTight {
-  padding: 10px 10px 0px 25px;
+  padding: 10px 10px 0px 10px;
   height: 30px;
   font-size: 15px;
   font-weight: 600;
@@ -31,21 +37,72 @@
   box-sizing: border-box;
 }
 
+@media (min-width: 760px) {
+  .SectionTitleTight {
+    padding: 5px 10px 10px 20px;
+  }
+}
+
 .InputBox {
   height: auto;
   font-size: 16px;
-  padding: 5px 10px 10px 25px;
+  padding: 5px 10px 10px 10px;
   box-sizing: border-box;
-  border-color: red;
   background-color: #e7e7e7;
+}
+
+@media (min-width: 760px) {
+  .InputBox {
+    padding: 5px 10px 10px 20px;
+  }
 }
 
 .InputBoxTight {
   height: auto;
   font-size: 16px;
-  padding: 5px 10px 0px 25px;
+  padding: 5px 10px 0px 10px;
   box-sizing: border-box;
   background-color: #e7e7e7;
+}
+
+@media (min-width: 760px) {
+  .InputBoxTight {
+    padding: 5px 10px 0px 20px;
+  }
+}
+
+.InputBoxTightest {
+  height: auto;
+  font-size: 16px;
+  padding: 0px 10px 0px 10px;
+  box-sizing: border-box;
+  background-color: #e7e7e7;
+}
+
+.StatePostalCode {
+  display: grid;
+  grid-template-columns: calc((100% - 6px) / 2) calc(50%);
+  column-gap: 5px;
+  height: auto;
+  font-size: 16px;
+  padding: 5px 10px 0px 10px;
+  box-sizing: border-box;
+  background-color: #e7e7e7;
+}
+
+@media (min-width: 630px) {
+  .StatePostalCode {
+    display: grid;
+    grid-template-columns: 295px 300px;
+    column-gap: 5px;
+    padding: 5px 10px 0px 10px;
+  }
+}
+
+@media (min-width: 760px) {
+  .StatePostalCode {
+    padding: 5px 10px 0px 20px;
+  }
 }
 
 .InputBoxContent {
@@ -54,6 +111,13 @@
   box-sizing: border-box;
   line-height: 1.75;
   height: 40px;
+  width: calc(100vw - 30px);
+}
+
+@media (min-width: 630px) {
+  .InputBoxContent {
+    width: 600px;
+  }
 }
 
 .InputBoxContentError {
@@ -62,12 +126,56 @@
   box-sizing: border-box;
   line-height: 1.75;
   height: 40px;
+  width: calc(100vw - 30px);
+}
+
+@media (min-width: 630px) {
+  .InputBoxContentError {
+    width: 600px;
+  }
+}
+
+.SocialMediaContent {
+  padding: 9px 10px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  line-height: 1.75;
+  height: 40px;
+  width: calc(100vw - 30px);
+}
+
+@media (min-width: 540px) {
+  .SocialMediaContent {
+    width: calc(100vw - 190px);
+  }
+}
+
+@media (min-width: 630px) {
+  .SocialMediaContent {
+    width: 440px;
+  }
+}
+
+.SocialMediaContentError {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+  line-height: 1.75;
+  height: 40px;
+  width: calc(100vw - 190px);
+}
+
+@media (min-width: 630px) {
+  .SocialMediaContentError {
+    width: 440px;
+  }
 }
 
 .DateTimeHeader {
   display: grid;
-  grid-template-columns: 110px 120px 110px 120px 330px;
-  padding: 5px 10px 5px 35px;
+  grid-template-columns: 130px 180px 130px 140px;
+  column-gap: 10px;
+  padding: 5px 10px 5px 20px;
   box-sizing: border-box;
   font-size: 16px;
   background-color: #e7e7e7;
@@ -77,21 +185,58 @@
 
 .DateTimeInputs {
   display: grid;
-  grid-template-columns: 110px 120px 110px 120px 330px;
-  padding: 0px 10px 10px 35px;
+  grid-template-columns: 130px 180px 130px 130px;
+  column-gap: 10px;
+  padding: 0px 10px 10px 20px;
   font-size: 16px;
   background-color: #e7e7e7;
+}
+
+.TimeHeader {
+  padding: 5px 10px 5px 20px;
   box-sizing: border-box;
+  font-size: 16px;
+  background-color: #e7e7e7;
+  text-align: left;
+  font-weight: 400;
+}
+
+.TimeInput {
+  padding: 0px 10px 10px 20px;
+  font-size: 16px;
+  background-color: #e7e7e7;
 }
 
 .SocialMediaLink {
   display: grid;
-  grid-template-columns: 40px 120px 400px;
-  height: 55px;
+  grid-template-columns: 30px 180px;
   font-size: 16px;
-  padding: 5px 10px 10px 35px;
+  max-height: 40px;
+  padding: 5px 10px 0px 10px;
   box-sizing: border-box;
   background-color: #e7e7e7;
+}
+
+@media (min-width: 540px) {
+  .SocialMediaLink {
+    display: grid;
+    grid-template-columns: 30px 130px auto;
+    max-height: 45px;
+    padding: 5px 10px 10px 10px;
+  }
+}
+
+@media (min-width: 630px) {
+  .SocialMediaLink {
+    display: grid;
+    grid-template-columns: 30px 130px 440px;
+  }
+}
+
+@media (min-width: 760px) {
+  .SocialMediaLink {
+    padding: 5px 10px 6px 20px;
+  }
 }
 
 .SocialMediaIcon {
@@ -100,16 +245,29 @@
 }
 
 .SocialMediaName {
-  padding: 11px 5px 0px 0px;
-  text-align: right;
+  padding: 8px 5px 0px 5px;
+  text-align: left;
+}
+
+@media (min-width: 540px) {
+  .SocialMediaName {
+    padding: 11px 5px 0px 0px;
+    text-align: right;
+  }
 }
 
 .TextBox {
   height: auto;
   font-size: 16px;
-  padding: 5px 10px 6px 25px;
+  padding: 5px 10px 6px 10px;
   box-sizing: border-box;
   background-color: #e7e7e7;
+}
+
+@media (min-width: 760px) {
+  .TextBox {
+    padding: 5px 10px 6px 20px;
+  }
 }
 
 .WarningText {
@@ -119,19 +277,25 @@
 }
 
 .ImageBox {
-    height: 227px;
-    font-size: 16px;
-    padding: 5px 10px 10px 25px;
-    box-sizing: borderBox;
-    background-color: #E7E7E7;
+  height: 227px;
+  font-size: 16px;
+  padding: 5px 10px 10px 20px;
+  box-sizing: borderBox;
+  background-color: #e7e7e7;
 }
 
 .TinyMice {
-    padding: 5px 270px 10px 25px;
-    border: 0px solid green;
-    box-sizing: borderBox;
-    height: auto;
-    background-color: #E7E7E7;
+  padding: 5px 10px 10px 10px;
+  border: 0px solid green;
+  box-sizing: borderBox;
+  height: auto;
+  background-color: #e7e7e7;
+}
+
+@media (min-width: 760px) {
+  .TextBox {
+    padding: 5px 10px 10px 20px;
+  }
 }
 
 .SocialMediaDescription {
@@ -142,6 +306,13 @@
   height: 80px;
   width: 600px;
   resize: vertical;
+  width: calc(100vw - 30px);
+}
+
+@media (min-width: 630px) {
+  .SocialMediaDescription {
+    width: 600px;
+  }
 }
 
 .VanityGrid {
@@ -151,15 +322,15 @@
   font-size: 16px;
   padding: 5px 10px 10px 35px;
   box-sizing: borderBox;
-  background-color: #E7E7E7;
+  background-color: #e7e7e7;
 }
 
 .VanityGridBoxGrid {
-    display: grid;
-    grid-template-columns: 220px 500px;
-    height: 18px;
-    font-size: 10px;
-    padding: 0px 10px 0px 35px;
-    box-sizing: borderBox;
-    background-color: #E7E7E7
+  display: grid;
+  grid-template-columns: 220px 500px;
+  height: 18px;
+  font-size: 10px;
+  padding: 0px 10px 0px 35px;
+  box-sizing: borderBox;
+  background-color: #e7e7e7;
 }

@@ -4,14 +4,14 @@ import React, { useState, Fragment } from "react";
 
 import ImgDropAndCrop from "./ImgDropAndCrop/ImgDropAndCrop";
 import { Editor } from "@tinymce/tinymce-react";
-import DateSelector from "./DateSelector";
+import DateSelector from "./DateSelectorOLD";
 import CountrySelector from "./Selectors/CountrySelector";
 import TimeSelector from "./Selectors/TimeSelector";
-import TimeZoneSelector from "./Selectors/TimeZoneSelector";
+import TimeZoneSelector from "./Selectors/TimeZoneSelectorOLD";
 import CategorySelector from "./Selectors/CategorySelector";
 import RadioForm from "./RadioForm";
 
-import classes from "./EventCreation.module.css";
+import classes from "./EventCreationOLD.module.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -495,7 +495,7 @@ const EventDetails = (props) => {
         </div>
         <div
           style={{
-            padding: "5px 270px 10px 25px",
+            padding: "5px 25px 10px 25px",
             border: "0px solid green",
             boxSizing: "borderBox",
             height: "auto",
@@ -514,7 +514,7 @@ const EventDetails = (props) => {
               autoresize_bottom_margin: 0,
               padding: "0 0 0 0",
               min_height: 250,
-              max_height: 400,
+              max_height: 600,
               icons: "jam",
               skin: "fabric",
               resize: true,

@@ -290,7 +290,7 @@ const Events = (props) => {
   };
 
   const tabTitle = () => {
-    if (props.windowWidth >= 1200) {
+    if (props.windowWidth >= 1190) {
       return <div className={classes.DisplayPanelTitle}>My Events</div>;
     } else {
       return (

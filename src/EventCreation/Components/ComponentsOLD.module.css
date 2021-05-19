@@ -1,0 +1,165 @@
+.CategoryTitle {
+  margin: 10px 0px 0px 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
+  box-sizing: border-box;
+  font-size: 20px;
+  font-weight: 600;
+  height: 40px;
+  background-color: black;
+  color: white;
+}
+
+.SectionTitle {
+  padding: 10px 10px 0px 25px;
+  height: 35px;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.SectionTitleTight {
+  padding: 10px 10px 0px 25px;
+  height: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
+.InputBox {
+  height: auto;
+  font-size: 16px;
+  padding: 5px 10px 10px 25px;
+  box-sizing: border-box;
+  border-color: red;
+  background-color: #e7e7e7;
+}
+
+.InputBoxTight {
+  height: auto;
+  font-size: 16px;
+  padding: 5px 10px 0px 25px;
+  box-sizing: border-box;
+  background-color: #e7e7e7;
+}
+
+.InputBoxContent {
+  padding: 9px 10px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  line-height: 1.75;
+  height: 40px;
+}
+
+.InputBoxContentError {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+  line-height: 1.75;
+  height: 40px;
+}
+
+.DateTimeHeader {
+  display: grid;
+  grid-template-columns: 110px 120px 110px 120px 330px;
+  padding: 5px 10px 5px 35px;
+  box-sizing: border-box;
+  font-size: 16px;
+  background-color: #e7e7e7;
+  text-align: left;
+  font-weight: 400;
+}
+
+.DateTimeInputs {
+  display: grid;
+  grid-template-columns: 110px 120px 110px 120px 330px;
+  padding: 0px 10px 10px 35px;
+  font-size: 16px;
+  background-color: #e7e7e7;
+  box-sizing: border-box;
+}
+
+.SocialMediaLink {
+  display: grid;
+  grid-template-columns: 40px 120px 400px;
+  height: 55px;
+  font-size: 16px;
+  padding: 5px 10px 10px 35px;
+  box-sizing: border-box;
+  background-color: #e7e7e7;
+}
+
+.SocialMediaIcon {
+  margin: auto;
+  padding-top: 1px;
+}
+
+.SocialMediaName {
+  padding: 11px 5px 0px 0px;
+  text-align: right;
+}
+
+.TextBox {
+  height: auto;
+  font-size: 16px;
+  padding: 5px 10px 6px 25px;
+  box-sizing: border-box;
+  background-color: #e7e7e7;
+}
+
+.WarningText {
+  padding-left: 10px;
+  height: 14px;
+  font-size: 12px;
+}
+
+.ImageBox {
+  height: 227px;
+  font-size: 16px;
+  padding: 5px 10px 10px 25px;
+  box-sizing: borderBox;
+  background-color: #e7e7e7;
+}
+
+.TinyMice {
+  padding: 5px 270px 10px 25px;
+  border: 0px solid green;
+  box-sizing: borderBox;
+  height: auto;
+  background-color: #e7e7e7;
+}
+
+.SocialMediaDescription {
+  padding: 9px 10px;
+  border: 1px solid lightgrey;
+  box-sizing: borderBox;
+  line-height: 1.75;
+  height: 80px;
+  width: 600px;
+  resize: vertical;
+}
+
+.VanityGrid {
+  display: grid;
+  grid-template-columns: 220px 500px;
+  height: 45px;
+  font-size: 16px;
+  padding: 5px 10px 10px 35px;
+  box-sizing: borderBox;
+  background-color: #e7e7e7;
+}
+
+.VanityGridBoxGrid {
+  display: grid;
+  grid-template-columns: 220px 500px;
+  height: 18px;
+  font-size: 10px;
+  padding: 0px 10px 0px 35px;
+  box-sizing: borderBox;
+  background-color: #e7e7e7;
+}

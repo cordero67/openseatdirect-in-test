@@ -3,6 +3,7 @@
   background-color: #fff;
   border-bottom: 2px solid #2f5596;
   height: 60px;
+  max-height: 60px;
   width: 100%;
   box-sizing: border-box;
   z-index: 200;

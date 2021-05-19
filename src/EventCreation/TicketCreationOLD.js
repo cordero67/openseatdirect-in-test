@@ -7,7 +7,7 @@ import React, { Fragment } from "react";
 import TicketModal from "./Modals/TicketModal";
 import PriceSettings from "./PriceSettings";
 
-import classes from "./EventCreation.module.css";
+import classes from "./EventCreationOLD.module.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -134,7 +134,7 @@ const TicketCreation = (props) => {
                     padding: "10px 5px",
                     boxSizing: "borderBox",
                     display: `grid`,
-                    gridTemplateColumns: "20px 350px",
+                    gridTemplateColumns: "20px 330px",
                   }}
                 >
                   <div
@@ -370,7 +370,7 @@ const TicketCreation = (props) => {
         <div
           style={{
             display: `grid`,
-            gridTemplateColumns: "380px 120px 165px 80px",
+            gridTemplateColumns: "360px 165px 165px 80px",
             height: "40px",
             fontSize: "15px",
             backgroundColor: "#E7E7E7",
@@ -397,8 +397,8 @@ const TicketCreation = (props) => {
             # Available<span style={{ color: "red" }}>*</span>{" "}
             <Popup
               position="right center"
-              content="Total number of remaining tickets for sale NOT necessarily intial number of tickets for sale"
-              header="Total Remaining Tickets"
+              content="The total number of tickets available for sale"
+              header="Total Ticket Quantity"
               trigger={
                 <FontAwesomeIcon
                   color="blue"

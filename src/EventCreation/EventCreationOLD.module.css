@@ -90,7 +90,7 @@
 }
 
 .SectionTitleTight {
-  padding: 10px 10px 0px 20px;
+  padding: 10px 10px 0px 25px;
   height: 30px;
   font-size: 15px;
   font-weight: 600;
@@ -100,7 +100,7 @@
 }
 
 .SectionTitle {
-  padding: 10px 10px 0px 20px;
+  padding: 10px 10px 0px 25px;
   height: 35px;
   font-size: 15px;
   font-weight: 600;
@@ -132,7 +132,7 @@
 .InputBox {
   height: auto;
   font-size: 16px;
-  padding: 5px 10px 10px 20px;
+  padding: 5px 10px 10px 25px;
   box-sizing: border-box;
   border-color: red;
   background-color: #e7e7e7;
@@ -141,7 +141,7 @@
 .InputBoxTight {
   height: auto;
   font-size: 16px;
-  padding: 5px 10px 0px 20px;
+  padding: 5px 10px 0px 25px;
   box-sizing: border-box;
   background-color: #e7e7e7;
 }
@@ -164,7 +164,7 @@
 .TextBox {
   height: auto;
   font-size: 16px;
-  padding: 5px 10px 6px 20px;
+  padding: 5px 10px 6px 25px;
   box-sizing: border-box;
   background-color: #e7e7e7;
 }
@@ -238,7 +238,7 @@
 
 .TicketLine {
   display: grid;
-  grid-template-columns: 380px 120px 165px 40px;
+  grid-template-columns: 360px 165px 165px 80px 80px;
   height: 60px;
   font-size: 16px;
   border-top: 1px solid lightgrey;
@@ -248,7 +248,7 @@
 .DraggedTicketLine {
   background-color: #f0f7fc;
   display: grid;
-  grid-template-columns: 360px 140px 165px 40px;
+  grid-template-columns: 360px 100px 165px 80px 80px;
   height: 60px;
   font-size: 16px;
   border-top: 1px solid lightgrey;
@@ -287,7 +287,7 @@
   padding: 9px 10px;
   border: 1px solid lightgrey;
   box-sizing: border-box;
-  width: 110px;
+  width: 155px;
   height: 40px;
 }
 
@@ -295,7 +295,7 @@
   padding: 9px 10px;
   border: 1px solid red;
   box-sizing: border-box;
-  width: 110px;
+  width: 155px;
   height: 40px;
 }
 

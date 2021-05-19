@@ -37,7 +37,9 @@ const Routes = () => {
     console.log("EVENT: ", e);
     console.log("TYPE: ", type);
     setShowSideDrawer(false);
-    setAccountTab(type);
+    if (type !== undefined) {
+      setAccountTab(type);
+    }
   };
 
   const toggleSideDrawer = () => {

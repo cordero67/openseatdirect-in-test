@@ -6,7 +6,7 @@ import { faTrashAlt, faGripVertical, faCog } from "@fortawesome/free-solid-svg-i
 import CurrencySelector from './CurrencySelector';
 import RadioForm from './RadioForm';
 
-import classes from './EventCreation.module.css';
+import classes from './EventCreationOLD.module.css';
 
 const TicketType = (props) => {
 

@@ -3,7 +3,7 @@
 
 import React, { Fragment } from "react";
 
-import classes from "./EventCreation.module.css";
+import classes from "./EventCreationOLD.module.css";
 import { Popup } from "semantic-ui-react";
 
 import PromoCodeDisplay from "./PromoCodeDisplay";
@@ -410,7 +410,8 @@ const priceFeatureSettings = (props) => {
   } else if (props.ticket.priceFeature === "bogod") {
     // defines warnings for Buy-One-Get-One-at-a-Discount price feature
     let bogodRegexNum = /^(0|[1-9]|[1-9][0-9]+)$/;
-    let bogodRegexPercent = /^(0\.[1-9]|0\.[0-9][1-9]|[1-9]|[1-9]\.|[1-9]\.[0-9]|[1-9]\.[0-9][0-9]|[1-9][0-9]|[1-9][0-9]\.|[1-9][0-9]\.[0-9]|[1-9][0-9]\.[0-9][0-9]|100|100\.|100\.0|100\.00)$/;
+    let bogodRegexPercent =
+      /^(0\.[1-9]|0\.[0-9][1-9]|[1-9]|[1-9]\.|[1-9]\.[0-9]|[1-9]\.[0-9][0-9]|[1-9][0-9]|[1-9][0-9]\.|[1-9][0-9]\.[0-9]|[1-9][0-9]\.[0-9][0-9]|100|100\.|100\.0|100\.00)$/;
 
     // determines if a required field warning is required
     if (
@@ -645,7 +646,8 @@ const priceFeatureSettings = (props) => {
   } else if (props.ticket.priceFeature === "twofer") {
     // defines warnings for Two-for-One price feature
     let twoferRegexNum = /^(0|[1-9]|[1-9][0-9]+)$/;
-    let twoferRegexPrice = /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
+    let twoferRegexPrice =
+      /^(0|0\.|0\.[0-9]|0\.[0-9][0-9]|\.|\.[0-9]|\.[0-9][0-9]|[1-9][0-9]+|[1-9][0-9]+\.|[1-9][0-9]+\.[0-9]|[1-9][0-9]+\.[0-9][0-9]|[0-9]| [0-9]\.|[0-9]\.[0-9]|[0-9]\.[0-9][0-9]|)$/;
 
     // determines if a required field warning is required
     if (

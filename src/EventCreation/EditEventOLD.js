@@ -10,19 +10,32 @@ import { loadEventInfo } from "./EventCreationFunctions.js";
 import { extractImageFileExtensionFromBase64 } from "./ImgDropAndCrop/ResuableUtils";
 
 import SavedModal from "./Modals/SavedModal";
-import EventDetails from "./Components/EventDetails";
-import TicketCreation from "./TicketCreation";
+import EventDetails from "./Components/EventDetailsOLD";
+import TicketCreation from "./TicketCreationOLD";
 import AdditionalSettings from "./Components/AdditionalSettings";
 
-import classes from "./EditEvent.module.css";
+import classes from "./EditEventOLD.module.css";
 
 // holds sign-in information
 let vendorInfo = {};
 
 const EventEdit = (props) => {
-  console.log("props: ", props);
+  console.log("props.event: ", props.event);
   const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [pageErrors, setPageErrors] = useState(false);
+  const [windowWidth, setWindowWidth] = useState([]);
+
+  // LOOKS GOOD
+  // determines resized width and height of window
+  window.onresize = function (event) {
+    console.log(window.innerWidth, window.innerHeight);
+    setWindowWidth(window.innerWidth);
+  };
+
+  // LOOKS GOOD
+  const stylingUpdate = (inWidth, inHeight) => {
+    setWindowWidth(inWidth);
+  };
   // stores all original Event Description variables
   const [originalEventDescription, setOriginalEventDescription] = useState({});
 
@@ -941,54 +954,15 @@ const EventEdit = (props) => {
   // duped from createEvent
   const subTitleDisplay = () => {
     if (pageErrors || eventTitleOmission) {
-      if (props.windowWidth >= 760) {
-        return (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "140px auto",
-              columnGap: "10px",
-            }}
-          >
-            <div style={{ paddingTop: "5px" }}>
-              <button
-                className={classes.SwitchButton}
-                onClick={() => {
-                  props.toEvents("events");
-                }}
-              >
-                Switch Event
-              </button>
-            </div>
-            <div
-              style={{
-                paddingTop: "5px",
-                textAlign: "center",
-                fontSize: "14px",
-                color: "red",
-              }}
-            >
-              Please correct input errors identified below.
-            </div>
-          </div>
-        );
-      } else {
-        return (
-          <div
-            style={{
-              paddingTop: "5px",
-              textAlign: "center",
-              fontSize: "14px",
-              color: "red",
-            }}
-          >
-            Please correct input errors identified below.
-          </div>
-        );
-      }
-    } else {
-      if (props.windowWidth >= 760) {
-        return (
+      //if (true) {
+      return (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "140px auto",
+            columnGap: "10px",
+          }}
+        >
           <div style={{ paddingTop: "5px" }}>
             <button
               className={classes.SwitchButton}
@@ -999,8 +973,31 @@ const EventEdit = (props) => {
               Switch Event
             </button>
           </div>
-        );
-      }
+          <div
+            style={{
+              paddingTop: "5px",
+              textAlign: "center",
+              fontSize: "14px",
+              color: "red",
+            }}
+          >
+            Please correct input errors identified below.
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div style={{ paddingTop: "5px" }}>
+          <button
+            className={classes.SwitchButton}
+            onClick={() => {
+              props.toEvents("events");
+            }}
+          >
+            Switch Event
+          </button>
+        </div>
+      );
     }
   };
 
@@ -1069,27 +1066,15 @@ const EventEdit = (props) => {
   };
 
   const currentStatus = () => {
-    let tempAlign;
-    if (props.windowWidth >= 760) {
-      tempAlign = "center";
-    } else {
-      tempAlign = "right";
-    }
-    let tempSize;
-    if (props.windowWidth >= 420) {
-      tempSize = "20px";
-    } else {
-      tempSize = "18px";
-    }
     if (eventDescription.isDraft) {
       return (
         <div
           style={{
             paddingTop: "6px",
-            fontSize: tempSize,
+            fontSize: "20px",
             color: "#B80000",
             fontWeight: "400",
-            textAlign: tempAlign,
+            textAlign: "center",
           }}
         >
           STATUS DRAFT
@@ -1100,10 +1085,10 @@ const EventEdit = (props) => {
         <div
           style={{
             paddingTop: "6px",
-            fontSize: tempSize,
+            fontSize: "20px",
             color: "#008F00",
             fontWeight: "400",
-            textAlign: tempAlign,
+            textAlign: "center",
           }}
         >
           STATUS LIVE
@@ -1124,7 +1109,7 @@ const EventEdit = (props) => {
       liveStatus = "UPDATE LIVE";
     }
 
-    if (props.windowWidth >= 420) {
+    if (windowWidth >= 420) {
       return (
         <Fragment>
           <div style={{ paddingBottom: "10px" }}>
@@ -1157,7 +1142,7 @@ const EventEdit = (props) => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
-                window.location.href = `/myaccount`;
+                window.location.href = `/vendor`;
               }}
             >
               CANCEL EDIT
@@ -1198,7 +1183,7 @@ const EventEdit = (props) => {
             <button
               className={classes.ButtonGreyTight}
               onClick={() => {
-                window.location.href = `/myaccount`;
+                window.location.href = `/vendor`;
               }}
             >
               CANCEL EDIT
@@ -1209,64 +1194,42 @@ const EventEdit = (props) => {
     }
   };
 
-  const displayHeader = () => {
-    if (props.windowWidth >= 760) {
-      return (
-        <div className={classes.GridTitlePanel}>
-          <div className={classes.GridTitle}>
-            <div
-              style={{
-                fontSize: "26px",
-                paddingTop: "6px",
-              }}
-            >
-              Event Edit
-            </div>
-            {currentStatus()}
-            {buttonDisplay()}
-          </div>
-          <div>{subTitleDisplay()}</div>
+  const displayHeader = (
+    <div className={classes.GridTitlePanel}>
+      <div className={classes.GridTitle}>
+        <div
+          style={{ fontSize: "26px", paddingTop: "6px", paddingLeft: "15px" }}
+        >
+          Event Edit
         </div>
-      );
-    } else {
-      return (
-        <div className={classes.GridTitlePanel}>
-          <div className={classes.GridTitle}>
-            <div
-              style={{
-                fontSize: "26px",
-                paddingTop: "6px",
-              }}
-            >
-              Event Edit
-            </div>
-            <div style={{ paddingTop: "5px" }}>
-              <button
-                className={classes.SwitchButton}
-                onClick={() => {
-                  props.toEvents("events");
-                }}
-              >
-                Switch Event
-              </button>
-            </div>
-            {currentStatus()}
-          </div>
-          <div>{subTitleDisplay()}</div>
-          <div className={classes.GridButtons}>{buttonDisplay()}</div>
-        </div>
-      );
-    }
-  };
+        {currentStatus()}
+        {buttonDisplay()}
+      </div>
+      <div>{subTitleDisplay()}</div>
+    </div>
+  );
 
   const mainDisplay = () => {
     return (
-      <div className={classes.MainDisplay}>
+      <div
+        style={{
+          backgroundColor: "white",
+          height: "calc(100vh - 193px)",
+          scrollbarWidth: "thin",
+          overflowY: "auto",
+          fontSize: "15px",
+          width: "1030px",
+          marginTop: "76px",
+          paddingTop: "10px",
+          paddingBotton: "15px",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+        }}
+      >
         <div>
           <EventDetails
             event={eventDescription}
             titleOmission={eventTitleOmission}
-            windowWidth={props.windowWidth}
             eventImage={"existing"}
             photoData={photoData}
             change={changeEventDescription}
@@ -1281,29 +1244,6 @@ const EventEdit = (props) => {
             }}
           />
           <br></br>
-          <AdditionalSettings
-            event={eventDescription}
-            radioChange={changeEventDescriptionRadio}
-          />
-          <br></br>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <div>
-      {displayHeader()}
-      {mainDisplay()}
-      {savedModal()}
-    </div>
-  );
-};
-
-export default EventEdit;
-
-/*
-
           <TicketCreation
             tickets={ticketDetails}
             radioChange={changeEventDescriptionRadio}
@@ -1327,4 +1267,22 @@ export default EventEdit;
             dragging={dragging}
           />
           <br></br>
-          */
+          <AdditionalSettings
+            event={eventDescription}
+            radioChange={changeEventDescriptionRadio}
+          />
+          <br></br>
+        </div>
+      </div>
+    );
+  };
+  return (
+    <div>
+      {displayHeader}
+      {mainDisplay()}
+      {savedModal()}
+    </div>
+  );
+};
+
+export default EventEdit;

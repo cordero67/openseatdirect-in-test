@@ -1,0 +1,44 @@
+.TimeZone {
+  padding: 9px 5px;
+  border: 1px solid lightgrey;
+  box-sizing: borderBox;
+  width: calc(100vw - 30px);
+  line-height: 1.75;
+  cursor: pointer;
+}
+
+@media (min-width: 630px) {
+  .TimeZone {
+    width: 600px;
+  }
+}
+
+.Category {
+  padding: 9px 5px;
+  border: 1px solid lightgrey;
+  box-sizing: borderBox;
+  width: calc(100vw - 30px);
+  line-height: 1.75;
+  cursor: pointer;
+}
+
+@media (min-width: 630px) {
+  .Category {
+    width: 600px;
+  }
+}
+
+.Country {
+  padding: 9px 5px;
+  border: 1px solid lightgrey;
+  box-sizing: borderBox;
+  width: calc(100vw - 30px);
+  line-height: 1.75;
+  cursor: pointer;
+}
+
+@media (min-width: 630px) {
+  .Country {
+    width: 600px;
+  }
+}
