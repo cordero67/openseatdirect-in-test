@@ -30,6 +30,7 @@ const Events = (props) => {
     let tempUser = JSON.parse(localStorage.getItem("user"));
     let vendorToken = tempUser.token;
     let vendorId = tempUser.user._id;
+    let accountNum = tempUser.user.accountId.accountNum;
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -52,6 +53,7 @@ const Events = (props) => {
         jsEvents.sort(compareValues("startDateTime", "asc"));
         setEventDescriptions(jsEvents);
         fetchstr = `${API}/order/${vendorId}`;
+        //fetchstr = `${API}/accounts/${accountNum}/orders?pending=false`;
         fetch(fetchstr, requestOptions)
           .then(handleErrors)
           .then((response) => response.text())
@@ -59,7 +61,7 @@ const Events = (props) => {
             // LOOK TO NOT STORE IN LOCAL STORAGE
             localStorage.setItem("orders", result);
             let jsOrders = JSON.parse(result);
-            jsOrders.sort(compareValues("order_createdAt", "asc"));
+            //jsOrders.sort(compareValues("order_createdAt", "asc"));
             console.log("ORDERS FROM SERVER:", jsOrders);
             setEventOrders(jsOrders);
             setDisplay("main");

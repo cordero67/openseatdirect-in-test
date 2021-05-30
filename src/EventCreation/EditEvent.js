@@ -1,3 +1,7 @@
+//
+//
+//
+//
 import React, { useState, useRef, useEffect, Fragment } from "react";
 
 import dateFnsFormat from "date-fns/format";
@@ -6,7 +10,6 @@ import { API } from "../config";
 
 import { loadEventInfo } from "./EventCreationFunctions.js";
 
-// NEW LINE OF CODE
 import { extractImageFileExtensionFromBase64 } from "./ImgDropAndCrop/ResuableUtils";
 
 import SavedModal from "./Modals/SavedModal";
@@ -21,7 +24,13 @@ let vendorInfo = {};
 
 const EventEdit = (props) => {
   const [eventTitleOmission, setEventTitleOmission] = useState(false);
+  const [locationVenueNameOmission, setLocationVenueNameOmission] =
+    useState(false);
+  const [webinarLinkOmission, setWebinarLinkOmission] = useState(false);
+  const [tbaInformationOmission, setTbaInformationOmission] = useState(false);
   const [pageErrors, setPageErrors] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
 
   // stores all original Event Description variables
   const [originalEventDescription, setOriginalEventDescription] = useState({});
@@ -105,7 +114,6 @@ const EventEdit = (props) => {
     errorMessage: "", //["Please fix input errors and resubmit."],
     failureMessage: "System error please try again.",
   });
-  //END MATCHES "CreateEvent"
 
   const initPhotoData = (resPhotoData) => {
     // converts data from server fetch call to photodata for image display
@@ -146,7 +154,6 @@ const EventEdit = (props) => {
   };
 
   useEffect(() => {
-    //all duped with "createEvent" except where noted
     // checks if 'user' exists in local storage
     if (
       typeof window !== "undefined" &&
@@ -192,8 +199,14 @@ const EventEdit = (props) => {
     console.log("eventStatus: ", eventStatus);
     let tempPageErrors = false;
     let tempEventTitleOmission = false;
+    let tempLocationVenueNameOmission = false;
+    let tempWebinarLinkOmission = false;
+    let tempTbaInformationOmission = false;
     setPageErrors(false);
     setEventTitleOmission(false);
+    setLocationVenueNameOmission(false);
+    setWebinarLinkOmission(false);
+    setTbaInformationOmission(false);
 
     if (
       typeof window !== "undefined" &&
@@ -282,7 +295,40 @@ const EventEdit = (props) => {
       tempEventTitleOmission = true;
     }
 
-    if (!tempPageErrors && !tempEventTitleOmission) {
+    if (
+      eventDescription.eventType === "live" &&
+      !eventDescription.locationVenueName
+    ) {
+      console.log("You need to complete Venue Name field");
+      setLocationVenueNameOmission(true);
+      tempLocationVenueNameOmission = true;
+    }
+
+    if (
+      eventDescription.eventType === "online" &&
+      !eventDescription.webinarLink
+    ) {
+      console.log("You need to complete Webinar Link field");
+      setWebinarLinkOmission(true);
+      tempWebinarLinkOmission = true;
+    }
+
+    if (
+      eventDescription.eventType === "tba" &&
+      !eventDescription.tbaInformation
+    ) {
+      console.log("You need to complete tba Information field");
+      setTbaInformationOmission(true);
+      tempTbaInformationOmission = true;
+    }
+
+    if (
+      !tempPageErrors &&
+      !tempEventTitleOmission &&
+      !tempLocationVenueNameOmission &&
+      !tempWebinarLinkOmission &&
+      !tempTbaInformationOmission
+    ) {
       let eventDescriptionFields = [
         "eventNum",
         "eventTitle",
@@ -548,13 +594,14 @@ const EventEdit = (props) => {
           return response.json();
         })
         .then((res) => {
-          console.log("Event was saved/went live");
           console.log("res: ", res);
           if (!res.status) {
             if (res.message) {
               tempStatus.status = "error";
+              tempStatus.errorMessage = "input error";
             } else {
               tempStatus.status = "failure";
+              tempStatus.failureMessage = res.error;
             }
           }
           setEventStatus(tempStatus);
@@ -565,6 +612,9 @@ const EventEdit = (props) => {
           console.log("**ERROR THROWN", err);
           tempStatus.status = "failure";
           setEventStatus(tempStatus);
+        })
+        .finally(() => {
+          setShowModal(true);
         });
     }
   };
@@ -581,12 +631,10 @@ const EventEdit = (props) => {
       return (
         <Fragment>
           <SavedModal
-            show={true}
+            show={showModal}
             details={eventStatus}
-            editEvent={() => {
-              let tempStatus = { ...eventStatus };
-              tempStatus.status = "";
-              setEventStatus(tempStatus);
+            closeModal={() => {
+              setShowModal(false);
             }}
           ></SavedModal>
         </Fragment>
@@ -598,9 +646,10 @@ const EventEdit = (props) => {
       return (
         <Fragment>
           <SavedModal
-            show={true}
+            show={showModal}
             details={eventStatus}
             toDashboard={() => {
+              setShowModal(false);
               window.location.href = `/vendor`;
             }}
           ></SavedModal>
@@ -949,7 +998,13 @@ const EventEdit = (props) => {
 
   // duped from createEvent
   const subTitleDisplay = () => {
-    if (pageErrors || eventTitleOmission) {
+    if (
+      pageErrors ||
+      eventTitleOmission ||
+      (locationVenueNameOmission && eventDescription.eventType === "live") ||
+      (webinarLinkOmission && eventDescription.eventType === "online") ||
+      (tbaInformationOmission && eventDescription.eventType === "tba")
+    ) {
       return (
         <div style={{ display: "grid", gridTemplateColumns: "200px 600px" }}>
           <div style={{ paddingTop: "5px" }}>
@@ -1176,6 +1231,9 @@ const EventEdit = (props) => {
           <EventDetails
             event={eventDescription}
             titleOmission={eventTitleOmission}
+            venueOmission={locationVenueNameOmission}
+            webinarOmission={webinarLinkOmission}
+            tbaOmission={tbaInformationOmission}
             eventImage={"existing"}
             photoData={photoData}
             change={changeEventDescription}

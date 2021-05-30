@@ -8,6 +8,7 @@ const SavedModal = (props) => {
   console.log("item", props.details);
 
   let titleText;
+  let errorMessage;
   if (props.details.status === "saved") {
     titleText = props.details.savedMessage;
   } else if (props.details.status === "live") {
@@ -18,7 +19,8 @@ const SavedModal = (props) => {
     if (!props.details.failureMessage) {
       titleText = "Please fix input errors and resubmit.";
     } else {
-      titleText = props.details.failureMessage;
+      titleText = "Please fix following input error";
+      errorMessage = props.details.failureMessage;
     }
   }
 
@@ -88,12 +90,23 @@ const SavedModal = (props) => {
         <div
           style={{
             fontSize: "24px",
-            height: "50px",
             textAlign: "center",
             paddingTop: "5px",
+            paddingBottom: "10px",
           }}
         >
           {titleText}
+        </div>
+        <div
+          style={{
+            fontSize: "16px",
+            textAlign: "center",
+            color: "red",
+            paddingTop: "5px",
+            paddingBottom: "10px",
+          }}
+        >
+          {errorMessage}
         </div>
         {buttonSelection}
         <br></br>
