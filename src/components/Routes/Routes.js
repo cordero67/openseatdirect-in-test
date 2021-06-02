@@ -17,8 +17,6 @@ import TicketSelection from "../../TicketPurchases/TicketSelection";
 import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
 import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
 import Authentication from "../../Users/Authentication/Authentication";
-import Slider from "../HomePage/Slider";
-import PrivateRoute from "./PrivateRoute";
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
@@ -67,16 +65,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Main />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/slider"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Slider />
           </React.Fragment>
         )}
       />
