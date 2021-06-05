@@ -155,19 +155,6 @@ const Checkout = () => {
     localStorage.removeItem(`eventNum`);
   };
 
-  // TICKET DETAILS HANDLERS
-  // duped from createEvent
-  const changeTicketDetail = () => {
-    //let tempDetails = [...ticketDetails];
-    //tempDetails.forEach((item) => {
-    //  if (item.key === id) {
-    //    item[event.target.name] = event.target.value;
-    //  }
-    //});
-    //setTicketDetails(tempDetails);
-    console.log("inside changeTicketDetail");
-  };
-
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -226,9 +213,7 @@ const Checkout = () => {
       setTransactionInfo(
         loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );
-
-      // USED BY CURRENT CODE APRIL 17, 2021
-      url = `${API}/tixorder/signed_place_neworder`;
+      url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
 
       console.log("signed order: ", order);
 
@@ -319,7 +304,6 @@ const Checkout = () => {
         <div className={classes.BlankCanvas}>
           <div style={{ paddingTop: "20px" }}>
             <OrderConfirm
-              clearOrder={changeTicketDetail}
               transactionInfo={transactionInfo}
               orderStatus={orderStatus}
             />
@@ -381,17 +365,6 @@ const Checkout = () => {
           });
           setDisplay("paypal");
         }}
-        /*
-        catchError={(err) => {
-          console.log("catchError 'err': ", err);
-          setTransactionStatus({
-            ...transactionStatus,
-            paypalSuccess: false,
-            error: err,
-          });
-          setDisplay("paypal");
-        }}
-        */
       />
     </div>
   );

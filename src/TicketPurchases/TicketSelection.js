@@ -239,9 +239,7 @@ const TicketSelection = () => {
       `Bearer ${customerInformation.sessionToken}`
     );
 
-    // USED IN PRODUCTION
-    //let url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
-    let url = `${API}/tixorder/signed_place_neworder`;
+    let url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
@@ -534,26 +532,7 @@ const TicketSelection = () => {
         JSON.stringify(eventLogo)
       );
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
-      /* REMOVED FORM PRODUCTION TO ALIGN WITH BONDIRECTLY
-      // if "cart" exists resaves exisiting "guestInfo"
-      if (localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
-        let cart = JSON.parse(
-          localStorage.getItem(`cart_${eventDetails.eventNum}`)
-        );
-        localStorage.setItem(
-          `cart_${eventDetails.eventNum}`,
-          JSON.stringify({
-            eventDetails: eventDetails,
-            promoCodeDetails: promoCodeDetails,
-            ticketInfo: ticketInfo,
-            orderTotals: orderTotals,
-            guestInfo: cart.guestInfo,
-            //osdOrderId: orderId,
-            orderExpiration: new Date(+new Date() + 7 * 60000),
-          })
-        );
-      } else {
-      */
+
       localStorage.setItem(
         `cart_${eventDetails.eventNum}`,
         JSON.stringify({
@@ -564,7 +543,6 @@ const TicketSelection = () => {
           orderExpiration: new Date(+new Date() + 7 * 60000),
         })
       );
-      // }
       if (localStorage.getItem(`user`) !== null) {
         signedIn = true;
       }
@@ -572,15 +550,15 @@ const TicketSelection = () => {
 
     if (signedIn === true) {
       // user is signed in therefore skip guest info page
-      window.location.href = "/checkout";
-      /*
-    } else if (
-      orderTotals.finalPurchaseAmount === 0 &&
-      eventDetails.eventNum === 16808192664
-      //eventDetails.eventNum === 65548940409
-    ) {
-      window.location.href = "/er-NCJAR";
-    */
+      console.log("eventDetails.gateway: ", eventDetails.gateway);
+      if (eventDetails.gateway === "PayPalExpress") {
+        window.location.href = "/checkout-paypalexpress";
+      } else if (eventDetails.gateway === "PayPalMarketplace") {
+        window.location.href = "/checkout-paypalmerchant";
+      } else {
+        // no gateway is found
+        window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+      }
     } else if (orderTotals.finalPurchaseAmount === 0) {
       window.location.href = "/infofree";
     } else {
@@ -927,77 +905,3 @@ const TicketSelection = () => {
 };
 
 export default TicketSelection;
-
-/*
-const reserveOrder = (signed) => {
-  let totalAmount = orderTotals.finalPurchaseAmount;
-  let isFree = true;
-  let userPromo;
-  let tickets = [];
-
-  ticketInfo.map((item, index) => {
-    if (item.ticketsSelected > 0) {
-      let tempObject = {};
-      tempObject.ticketID = item.ticketID;
-      tempObject.ticketsSelected = item.ticketsSelected;
-      tickets.push(tempObject);
-      if (
-        item.ticketsSelected > 0 &&
-        "form" in item.ticketPriceFunction &&
-        item.ticketPriceFunction.form === "promo" &&
-        item.adjustedTicketPrice !== item.ticketPrice
-      ) {
-        userPromo = item.ticketPriceFunction.args[0].name;
-      }
-    }
-  });
-
-  if (totalAmount > 0) {
-    isFree = false;
-  }
-
-  let order = {
-    eventNum: eventDetails.eventNum,
-    totalAmount: totalAmount,
-    isFree: isFree,
-    userPromo: userPromo,
-    tickets: tickets,
-  };
-
-  let myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  let url;
-
-  if (signed) {
-    url = `${API}/tixorder/signed_reserveorder/${customerInformation.userId}`;
-    myHeaders.append(
-      "Authorization",
-      `Bearer ${customerInformation.sessionToken}`
-    );
-  } else {
-    url = `${API}/tixorder/unsigned_reserveorder`;
-  }
-
-  let fetcharg = {
-    method: "POST",
-    headers: myHeaders,
-    body: JSON.stringify(order),
-  };
-  console.log("fetching with: ", url, fetcharg);
-  console.log("Free ticket order: ", order);
-  setDisplay("spinner");
-  fetch(url, fetcharg)
-    .then(handleErrors)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log("fetch return got back data:", data);
-      storeOrder(data.data.osdOrderId);
-    })
-    .catch((error) => {
-      console.log("reserveOrder() error.message: ", error.message);
-      setDisplay("connection");
-    });
-};
-*/

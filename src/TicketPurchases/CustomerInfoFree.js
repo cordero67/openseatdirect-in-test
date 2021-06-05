@@ -114,7 +114,8 @@ const CustomerInfo = (props) => {
   };
   // LOOKS GOOD
   // determines what "contact information" has been filled out by the ticket buyer
-  const regsuper = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const regsuper =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   // LOOKS GOOD
   let detailsMinimal = () => {
     if (
@@ -156,140 +157,106 @@ const CustomerInfo = (props) => {
   };
 
   const freeTicketHandler = (user) => {
+    let order = {
+      eventNum: eventDetails.eventNum,
+      totalAmount: orderTotals.finalPurchaseAmount,
+    };
+
+    if (orderTotals.finalPurchaseAmount === 0) {
+      order.isFree = true;
+    } else {
+      order.isFree = false;
+    }
+
+    let tickets = [];
+    ticketInfo.map((item) => {
+      if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
+        let tempObject = {};
+        tempObject.ticketID = item.ticketID;
+        tempObject.ticketsSelected = item.ticketsSelected;
+        tickets.push(tempObject);
+        if (
+          item.ticketsSelected > 0 &&
+          "form" in item.ticketPriceFunction &&
+          item.ticketPriceFunction.form === "promo" &&
+          item.adjustedTicketPrice !== item.ticketPrice
+        ) {
+          order.promo = item.ticketPriceFunction.args[0].name;
+        }
+      }
+    });
+
+    order.tickets = tickets;
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    let url;
+
     if (!user) {
       let email = guestInformation.email;
       let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
+
       setTransactionInfo(
         loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );
 
-      let isFree = true;
+      order.guestFirstname = guestInformation.firstname;
+      order.guestLastname = guestInformation.lastname;
+      order.guestEmail = guestInformation.email;
 
-      if (orderTotals.finalPurchaseAmount > 0) {
-        isFree = false;
-      }
+      console.log("signed free ticket tickets: ", tickets);
 
-      let order = {
-        osdOrderId: osdOrderId,
-        totalAmount: orderTotals.finalPurchaseAmount,
-        isFree: isFree,
-        guestFirstname: guestInformation.firstname,
-        guestLastname: guestInformation.lastname,
-        guestEmail: guestInformation.email,
-      };
+      console.log("signed free ticket order: ", order);
 
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      let url = `${API}/tixorder/unsigned_placeorder`;
-      let fetcharg = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(order),
-      };
-      console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", order);
-      fetch(url, fetcharg)
-        .then(handleErrors)
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          console.log("fetch return got back data:", data);
-          setOrderStatus(data.status);
-          setDisplay("confirmation");
-        })
-        .catch((error) => {
-          console.log("freeTicketHandler() error.message: ", error.message);
-          setDisplay("connection");
-        })
-        .finally(() => {
-          purchaseConfirmHandler();
-        });
+      url = `${API}/tixorder/unsigned_place_neworder`;
     } else {
+      // following code runs if user signs up rather than proceed with guest checkout
       let tempUser = JSON.parse(localStorage.getItem("user"));
       let email = tempUser.user.email;
-      let name = tempUser.user.name;
+      let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
+
       setTransactionInfo(
         loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );
 
-      let order = {};
-      let ticketArray = [];
-      order.eventNum = eventDetails.eventNum;
-      ticketInfo.map((item, index) => {
-        if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-          let tempObject = {};
-          tempObject.ticketID = item.ticketID;
-          tempObject.ticketsSelected = item.ticketsSelected;
-          ticketArray.push(tempObject);
-        }
-      });
-      order.tickets = ticketArray;
+      console.log("signed free ticket tickets: ", tickets);
+      console.log("signed free ticket order: ", order);
 
-      let userPromo = "";
-      let tickets = [];
-      ticketInfo.map((item) => {
-        if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-          let tempObject = {};
-          tempObject.ticketID = item.ticketID;
-          tempObject.ticketsSelected = item.ticketsSelected;
-          tickets.push(tempObject);
-          if (
-            item.ticketsSelected > 0 &&
-            "form" in item.ticketPriceFunction &&
-            item.ticketPriceFunction.form === "promo" &&
-            item.adjustedTicketPrice !== item.ticketPrice
-          ) {
-            userPromo = item.ticketPriceFunction.args[0].name;
-          }
-        }
-      });
-
-      order = {
-        eventNum: eventDetails.eventNum,
-        totalAmount: 0,
-        isFree: true,
-        userPromo: userPromo,
-        tickets: tickets,
-      };
-
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
       myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
-
-      //let url = `${API}/free/signedFreeTickets/${tempUser.user._id}`
-      let url = `${API}/tixorder/signed_expressorder/${tempUser.user._id}`;
-      let fetcharg = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(order),
-      };
-
-      console.log("fetching with: ", url, fetcharg);
-      console.log("Free ticket order: ", order);
-      fetch(url, fetcharg)
-        .then(handleErrors)
-        .then((response) => {
-          console.log("then response: ", response);
-          return response.json();
-        })
-        .then((data) => {
-          console.log("fetch return got back data:", data);
-          setOrderStatus(data.status);
-          setDisplay("confirmation");
-        })
-        .catch((error) => {
-          console.log("freeTicketHandler() error.message: ", error.message);
-          setDisplay("connection");
-        })
-        .finally(() => {
-          purchaseConfirmHandler();
-          setModalStatus(false);
-        });
+      url = `${API}/tixorder/signed_place_neworder/${tempUser.user._id}`;
     }
-  };
 
+    let fetcharg = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(order),
+    };
+
+    console.log("fetching with: ", url, fetcharg);
+    console.log("Free ticket order: ", order);
+    fetch(url, fetcharg)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        setOrderStatus(data.status);
+        setDisplay("confirmation");
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setDisplay("connection");
+      })
+      .finally(() => {
+        purchaseConfirmHandler();
+        if (user) {
+          setModalStatus(false);
+        }
+      });
+  };
   // creates submit button to send free ticket information to server
   const checkoutButton = () => {
     if (orderTotals.ticketsPurchased > 0 && detailsMinimal()) {
@@ -489,6 +456,9 @@ const CustomerInfo = (props) => {
       if (orderTotals.ticketsPurchased > 0) {
         orderSummary = (
           <OrderSummary
+            cancel={true}
+            eventNum={eventDetails.eventNum}
+            vanity={eventDetails.vanityLink}
             ticketOrder={ticketInfo}
             ticketCurrency={orderTotals.currencySym}
           />
