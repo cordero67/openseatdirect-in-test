@@ -650,7 +650,7 @@ const CreateEvent = (props) => {
             show={showModal}
             details={eventStatus}
             toDashboard={() => {
-              window.location.href = `/vendor`;
+              window.location.href = `/myaccount`;
             }}
           ></SavedModal>
         </Fragment>
@@ -1105,7 +1105,7 @@ const CreateEvent = (props) => {
         <button
           className={classes.ButtonGrey}
           onClick={() => {
-            window.location.href = `/vendor`;
+            window.location.href = `/myaccount`;
           }}
         >
           CANCEL CREATE

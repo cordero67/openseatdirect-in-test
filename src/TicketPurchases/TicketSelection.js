@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import queryString from "query-string";
+import ReactHtmlParser from "react-html-parser";
 
 import { API } from "../config.js";
 import { getEventData, getEventImage } from "./Resources/apiCore";
@@ -48,7 +49,7 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const TicketSelection = () => {
-  const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, connection
+  const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, registration, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
 
@@ -70,6 +71,7 @@ const TicketSelection = () => {
   const [ticketInfo, setTicketInfo] = useState([]); // ticket order specific ticket information
   const [orderTotals, setOrderTotals] = useState([]); // ticket order general info
   const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
+  const [registrationIndex, setRegistrationIndex] = useState(0);
   const [customerInformation, setCustomerInformation] = useState({
     // defines contact information sent to server
     name: "",
@@ -101,6 +103,7 @@ const TicketSelection = () => {
       .then((res) => {
         console.log("EVENT DATA OBJECT from Server: ", res);
         eventDetails = loadEventDetails(res);
+        console.log("eventDetails: ", eventDetails);
         // checks if an order exists in local storage
         if (
           typeof window !== "undefined" &&
@@ -167,6 +170,7 @@ const TicketSelection = () => {
       setShowOrderSummaryOnly(true);
     }
   };
+
   // LOOKS GOOD
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
@@ -186,12 +190,6 @@ const TicketSelection = () => {
     }
     return response;
   };
-  //
-  //
-  //
-  //
-  //
-  //
   // LOOKS GOOD
   const freeTicketHandler = () => {
     let email = customerInformation.email;
@@ -212,7 +210,6 @@ const TicketSelection = () => {
     }
 
     let tickets = [];
-
     ticketInfo.map((item) => {
       if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
         let tempObject = {};
@@ -231,10 +228,10 @@ const TicketSelection = () => {
     });
 
     order.tickets = tickets;
-    //
-    //
-    //
-    //
+
+    console.log("signed free ticket tickets: ", tickets);
+    console.log("signed free ticket order: ", order);
+
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append(
@@ -242,7 +239,9 @@ const TicketSelection = () => {
       `Bearer ${customerInformation.sessionToken}`
     );
 
-    let url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+    // USED IN PRODUCTION
+    //let url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+    let url = `${API}/tixorder/signed_place_neworder`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
@@ -445,8 +444,40 @@ const TicketSelection = () => {
   };
   // LOOKS GOOD
   // creates checkout/submit order button
+  // THIS IS NOT IN PRODUCTION CODE
   const checkoutButton = () => {
+    console.log("eventDetails: ", eventDetails);
     if (
+      // there is a registration requirement & total purchase amount > zero
+      eventDetails.register &&
+      "buttonLabel" in eventDetails.register &&
+      "content" in eventDetails.register &&
+      eventDetails.register.content.length > 0 &&
+      orderTotals.ticketsPurchased > 0
+    ) {
+      return (
+        <button
+          onClick={() => {
+            setDisplay("registration");
+          }}
+          className={classes.ButtonGreen}
+        >
+          {eventDetails.register.buttonLabel.toUpperCase()}
+        </button>
+      );
+    } else if (
+      // there is a registration requirement & total purchase amount > zero
+      eventDetails.register &&
+      "buttonLabel" in eventDetails.register &&
+      "content" in eventDetails.register &&
+      eventDetails.register.content.length > 0
+    ) {
+      return (
+        <button disabled={true} className={classes.ButtonGreenOpac}>
+          {eventDetails.register.buttonLabel.toUpperCase()}
+        </button>
+      );
+    } else if (
       orderTotals.finalPurchaseAmount === 0 &&
       orderTotals.ticketsPurchased > 0 &&
       customerInformation.sessionToken !== ""
@@ -460,10 +491,11 @@ const TicketSelection = () => {
       orderTotals.finalPurchaseAmount > 0 &&
       customerInformation.sessionToken !== ""
     ) {
+      // signed paid order
       return (
         <button
           onClick={() => {
-            reserveOrder(true);
+            storeOrder();
           }}
           className={classes.ButtonGreen}
         >
@@ -471,10 +503,11 @@ const TicketSelection = () => {
         </button>
       );
     } else if (orderTotals.ticketsPurchased > 0) {
+      // unsigned paid order
       return (
         <button
           onClick={() => {
-            reserveOrder(false);
+            storeOrder();
           }}
           className={classes.ButtonGreen}
         >
@@ -490,81 +523,10 @@ const TicketSelection = () => {
     }
   };
   // LOOKS GOOD
-  const reserveOrder = (signed) => {
-    let totalAmount = orderTotals.finalPurchaseAmount;
-    let isFree = true;
-    let userPromo;
-    let tickets = [];
-
-    ticketInfo.map((item, index) => {
-      if (item.ticketsSelected > 0) {
-        let tempObject = {};
-        tempObject.ticketID = item.ticketID;
-        tempObject.ticketsSelected = item.ticketsSelected;
-        tickets.push(tempObject);
-        if (
-          item.ticketsSelected > 0 &&
-          "form" in item.ticketPriceFunction &&
-          item.ticketPriceFunction.form === "promo" &&
-          item.adjustedTicketPrice !== item.ticketPrice
-        ) {
-          userPromo = item.ticketPriceFunction.args[0].name;
-        }
-      }
-    });
-
-    if (totalAmount > 0) {
-      isFree = false;
-    }
-
-    let order = {
-      eventNum: eventDetails.eventNum,
-      totalAmount: totalAmount,
-      isFree: isFree,
-      userPromo: userPromo,
-      tickets: tickets,
-    };
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url;
-
-    if (signed) {
-      url = `${API}/tixorder/signed_reserveorder/${customerInformation.userId}`;
-      myHeaders.append(
-        "Authorization",
-        `Bearer ${customerInformation.sessionToken}`
-      );
-    } else {
-      url = `${API}/tixorder/unsigned_reserveorder`;
-    }
-
-    let fetcharg = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(order),
-    };
-    console.log("fetching with: ", url, fetcharg);
-    console.log("Free ticket order: ", order);
-    setDisplay("spinner");
-    fetch(url, fetcharg)
-      .then(handleErrors)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        storeOrder(data.data.osdOrderId);
-      })
-      .catch((error) => {
-        console.log("reserveOrder() error.message: ", error.message);
-        setDisplay("connection");
-      });
-  };
-  // LOOKS GOOD
   // stores order and event information into "localStorage"
-  const storeOrder = (orderId) => {
+  const storeOrder = (/*orderId*/) => {
     let signedIn = false;
+    console.log("Inside 'storeOrder'");
 
     if (typeof window !== "undefined") {
       localStorage.setItem(
@@ -572,7 +534,7 @@ const TicketSelection = () => {
         JSON.stringify(eventLogo)
       );
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
-
+      /* REMOVED FORM PRODUCTION TO ALIGN WITH BONDIRECTLY
       // if "cart" exists resaves exisiting "guestInfo"
       if (localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null) {
         let cart = JSON.parse(
@@ -586,36 +548,39 @@ const TicketSelection = () => {
             ticketInfo: ticketInfo,
             orderTotals: orderTotals,
             guestInfo: cart.guestInfo,
-            osdOrderId: orderId,
+            //osdOrderId: orderId,
             orderExpiration: new Date(+new Date() + 7 * 60000),
           })
         );
       } else {
-        localStorage.setItem(
-          `cart_${eventDetails.eventNum}`,
-          JSON.stringify({
-            eventDetails: eventDetails,
-            promoCodeDetails: promoCodeDetails,
-            ticketInfo: ticketInfo,
-            orderTotals: orderTotals,
-            osdOrderId: orderId,
-            orderExpiration: new Date(+new Date() + 7 * 60000),
-          })
-        );
-      }
+      */
+      localStorage.setItem(
+        `cart_${eventDetails.eventNum}`,
+        JSON.stringify({
+          eventDetails: eventDetails,
+          promoCodeDetails: promoCodeDetails,
+          ticketInfo: ticketInfo,
+          orderTotals: orderTotals,
+          orderExpiration: new Date(+new Date() + 7 * 60000),
+        })
+      );
+      // }
       if (localStorage.getItem(`user`) !== null) {
         signedIn = true;
       }
     }
 
     if (signedIn === true) {
+      // user is signed in therefore skip guest info page
       window.location.href = "/checkout";
+      /*
     } else if (
       orderTotals.finalPurchaseAmount === 0 &&
       eventDetails.eventNum === 16808192664
       //eventDetails.eventNum === 65548940409
     ) {
       window.location.href = "/er-NCJAR";
+    */
     } else if (orderTotals.finalPurchaseAmount === 0) {
       window.location.href = "/infofree";
     } else {
@@ -729,6 +694,7 @@ const TicketSelection = () => {
     if (display === "main" && orderTotals.ticketsPurchased > 0) {
       return (
         <OrderSummary
+          cancel={false}
           ticketOrder={ticketInfo}
           ticketCurrency={orderTotals.currencySym}
         />
@@ -842,10 +808,118 @@ const TicketSelection = () => {
     } else return null;
   };
 
+  const disagreeButton = (
+    <div style={{ textAlign: "center", paddingTop: "15px" }}>
+      <button
+        className={classes.ButtonRedLarge}
+        onClick={() => {
+          setRegistrationIndex(0);
+          setDisplay("main");
+        }}
+      >
+        I DISAGREE
+      </button>
+    </div>
+  );
+
+  const agreeButton = () => {
+    if (display === "registration") {
+      return (
+        <div style={{ textAlign: "center", paddingTop: "15px" }}>
+          <button
+            className={classes.ButtonGreenLarge}
+            onClick={() => {
+              if (
+                registrationIndex <
+                eventDetails.register.content.length - 1
+              ) {
+                setRegistrationIndex(registrationIndex + 1);
+              } else {
+                if (
+                  orderTotals.finalPurchaseAmount === 0 &&
+                  orderTotals.ticketsPurchased > 0 &&
+                  customerInformation.sessionToken !== ""
+                ) {
+                  // signed free order
+                  freeTicketHandler();
+                } else if (
+                  (orderTotals.finalPurchaseAmount > 0 &&
+                    customerInformation.sessionToken !== "") ||
+                  orderTotals.ticketsPurchased > 0
+                ) {
+                  // signed paid order or an unsigned order
+                  storeOrder();
+                } else {
+                  // some other type of order
+                }
+              }
+            }}
+          >
+            I AGREE
+          </button>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const registrationButtons = () => {
+    if (window.innerWidth >= 500) {
+      return (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "180px 180px",
+            columnGap: "20px",
+            paddingLeft: "calc(50% - 190px)",
+          }}
+        >
+          {disagreeButton}
+          {agreeButton()}
+        </div>
+      );
+    } else {
+      return (
+        <Fragment>
+          {disagreeButton}
+          {agreeButton()}
+        </Fragment>
+      );
+    }
+  };
+
+  // LOOKS GOOD
+  const registration = () => {
+    if (display === "registration") {
+      return (
+        <div
+          className={classes.BlankCanvas}
+          style={{
+            color: "black",
+            fontSize: "16px",
+            paddingTop: "40px",
+          }}
+        >
+          <div
+            style={{
+              paddingLeft: "40px",
+              paddingRight: "40px",
+            }}
+          >
+            {ReactHtmlParser(eventDetails.register.content[registrationIndex])}
+          </div>
+          {registrationButtons()}
+        </div>
+      );
+    } else return null;
+  };
+
   return (
     <div style={MainContainer}>
       {loadingSpinner()}
       {mainDisplay()}
+      {registration()}
       {purchaseConfirmation()}
       {connectionStatus()}
     </div>
@@ -853,3 +927,77 @@ const TicketSelection = () => {
 };
 
 export default TicketSelection;
+
+/*
+const reserveOrder = (signed) => {
+  let totalAmount = orderTotals.finalPurchaseAmount;
+  let isFree = true;
+  let userPromo;
+  let tickets = [];
+
+  ticketInfo.map((item, index) => {
+    if (item.ticketsSelected > 0) {
+      let tempObject = {};
+      tempObject.ticketID = item.ticketID;
+      tempObject.ticketsSelected = item.ticketsSelected;
+      tickets.push(tempObject);
+      if (
+        item.ticketsSelected > 0 &&
+        "form" in item.ticketPriceFunction &&
+        item.ticketPriceFunction.form === "promo" &&
+        item.adjustedTicketPrice !== item.ticketPrice
+      ) {
+        userPromo = item.ticketPriceFunction.args[0].name;
+      }
+    }
+  });
+
+  if (totalAmount > 0) {
+    isFree = false;
+  }
+
+  let order = {
+    eventNum: eventDetails.eventNum,
+    totalAmount: totalAmount,
+    isFree: isFree,
+    userPromo: userPromo,
+    tickets: tickets,
+  };
+
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  let url;
+
+  if (signed) {
+    url = `${API}/tixorder/signed_reserveorder/${customerInformation.userId}`;
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${customerInformation.sessionToken}`
+    );
+  } else {
+    url = `${API}/tixorder/unsigned_reserveorder`;
+  }
+
+  let fetcharg = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(order),
+  };
+  console.log("fetching with: ", url, fetcharg);
+  console.log("Free ticket order: ", order);
+  setDisplay("spinner");
+  fetch(url, fetcharg)
+    .then(handleErrors)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log("fetch return got back data:", data);
+      storeOrder(data.data.osdOrderId);
+    })
+    .catch((error) => {
+      console.log("reserveOrder() error.message: ", error.message);
+      setDisplay("connection");
+    });
+};
+*/

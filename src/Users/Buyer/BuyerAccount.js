@@ -11,19 +11,18 @@ import Onboarding from "./Onboarding";
 import classes from "./BuyerAccount.module.css";
 
 const BuyerAccount = () => {
+  const [buyerInfo, setBuyerInfo] = useState(); //
+  const [isLoading, setIsLoading] = useState(true); //
 
-  const [buyerInfo, setBuyerInfo] = useState();//
-  const [isLoading, setIsLoading] = useState(true);//
+  const [paneView, setPaneView] = useState("myTickets");
 
-  const [paneView, setPaneView] = useState("myTickets")
-
-  const getStatus= (user) => { 
-    if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status
+  const getStatus = (user) => {
+    if ("accountId" in user && "status" in user.accountId) {
+      return user.accountId.status;
     } else {
-        return 0;
-    } 
-  }
+      return 0;
+    }
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -32,18 +31,21 @@ const BuyerAccount = () => {
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("tempUser: ", tempUser)
-      if ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true) {
-        setPaneView("onboarding")
+      console.log("tempUser: ", tempUser);
+      if (
+        "vendorIntent" in tempUser.user &&
+        tempUser.user.vendorIntent === true
+      ) {
+        setPaneView("onboarding");
       }
       if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
-        window.location.href = "/vendor";
+        window.location.href = "/myaccount";
       }
       let tempBuyerInfo = {};
       tempBuyerInfo.token = tempUser.token;
-      tempBuyerInfo.email = tempUser.user.email
-      tempBuyerInfo.name = tempUser.user.name
-      tempBuyerInfo.role = tempUser.user.role
+      tempBuyerInfo.email = tempUser.user.email;
+      tempBuyerInfo.name = tempUser.user.name;
+      tempBuyerInfo.role = tempUser.user.role;
       tempBuyerInfo.id = tempUser.user._id;
       setBuyerInfo(tempBuyerInfo);
     } else {
@@ -53,7 +55,7 @@ const BuyerAccount = () => {
   }, []);
 
   const MainDisplay = () => {
-    if(!isLoading) {
+    if (!isLoading) {
       if (paneView === "profile") {
         return (
           <Profile
@@ -61,56 +63,49 @@ const BuyerAccount = () => {
             name={buyerInfo.name}
             email={buyerInfo.email}
           />
-        )
+        );
       } else if (paneView === "onboarding") {
-        return (
-          <Onboarding
-            userid={buyerInfo.id}
-            token={buyerInfo.token}
-          />
-        )
+        return <Onboarding userid={buyerInfo.id} token={buyerInfo.token} />;
       } else if (paneView === "myTickets") {
-        return (
-          <MyTickets/>
-        )
-    }
+        return <MyTickets />;
+      }
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
   const Navigation = () => {
-    if(!isLoading) {
+    if (!isLoading) {
       return (
-          <BuyerNavigation
-            name="My Name"
-            buyerInfo={buyerInfo}
-            loading={isLoading}
-            pane={paneView}
-            clicked={(event) => {
-              console.log("Clicked button")
-              console.log("event: ", event.target)
-              console.log("event.name: ", event.target.name)
-              setPaneView(event.target.name)
-            }}
-          />
-      )
-    } else {return null}
-  }
+        <BuyerNavigation
+          name="My Name"
+          buyerInfo={buyerInfo}
+          loading={isLoading}
+          pane={paneView}
+          clicked={(event) => {
+            console.log("Clicked button");
+            console.log("event: ", event.target);
+            console.log("event.name: ", event.target.name);
+            setPaneView(event.target.name);
+          }}
+        />
+      );
+    } else {
+      return null;
+    }
+  };
 
   const onboardingMessage = () => {
     if (true) {
-      return (
-        <div style={{zIndex: "400"}}>Onboarding</div>
-      )
+      return <div style={{ zIndex: "400" }}>Onboarding</div>;
     }
-  }
+  };
 
   return (
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
-          {Navigation()}
-          {MainDisplay()}
+        {Navigation()}
+        {MainDisplay()}
       </div>
     </div>
   );

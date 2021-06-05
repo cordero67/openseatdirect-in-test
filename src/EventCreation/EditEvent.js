@@ -650,7 +650,7 @@ const EventEdit = (props) => {
             details={eventStatus}
             toDashboard={() => {
               setShowModal(false);
-              window.location.href = `/vendor`;
+              window.location.href = `/myaccount`;
             }}
           ></SavedModal>
         </Fragment>
@@ -1185,7 +1185,7 @@ const EventEdit = (props) => {
           <button
             className={classes.ButtonGrey}
             onClick={() => {
-              window.location.href = `/vendor`;
+              window.location.href = `/myaccount`;
             }}
           >
             CANCEL EDIT

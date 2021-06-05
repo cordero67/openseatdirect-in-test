@@ -68,8 +68,8 @@ const SideDrawerItems = (props) => {
       {isAuthenticated() && (getStatus() === 7 || getStatus() === 8) ? (
         <li>
           <NavLink
-            to="/vendor"
-            style={isActive(props.currentPage, "/vendor")}
+            to="/myaccount"
+            style={isActive(props.currentPage, "/myaccount")}
             onClick={props.clicked}
           >
             My Account

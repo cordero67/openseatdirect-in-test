@@ -13,9 +13,11 @@ import TermsConditions from "../Corporate/TermsConditions";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import Checkout from "../../TicketPurchases/Checkout";
+import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
+import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
-import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
+//import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
+//import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
 import Authentication from "../../Users/Authentication/Authentication";
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
@@ -144,7 +146,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/vendor"
+        path="/myaccount"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -276,6 +278,26 @@ const Routes = () => {
       />
 
       <Route
+        path="/checkout-paypalexpress"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <CheckoutPayPalExpress />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/checkout-paypalmerchant"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <CheckoutPayPalMerchant />
+          </React.Fragment>
+        )}
+      />
+
+      <Route
         path="/ed/"
         render={(routeProps) => (
           <React.Fragment>
@@ -299,6 +321,13 @@ const Routes = () => {
           </React.Fragment>
         )}
       />
+    </Fragment>
+  );
+};
+
+export default Routes;
+
+/*
 
       <Route
         path="/er-NCJAR/"
@@ -317,8 +346,4 @@ const Routes = () => {
           </React.Fragment>
         )}
       />
-    </Fragment>
-  );
-};
-
-export default Routes;
+      */

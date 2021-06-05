@@ -215,7 +215,7 @@ const Home = () => {
     if (typeof window !== "undefined" && localStorage.getItem("user") !== null) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {  
-        window.location.href = "/vendor";
+        window.location.href = "/myaccount";
       } else if (
         getStatus(tempUser.user) === 4 ||
         getStatus(tempUser.user) === 5 ||
