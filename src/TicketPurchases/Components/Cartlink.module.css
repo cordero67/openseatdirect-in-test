@@ -21,10 +21,10 @@
   display: grid;
 }
 .Red {
-  border: 1px solid red
+  border: 1px solid red;
 }
 .Blue {
-  border: 1px solid blue
+  border: 1px solid blue;
 }
 .RightGrid {
   display: grid;
@@ -127,7 +127,6 @@
 .MainItemLeft {
   background-color: #f9f9f9;
   border-right: 1px solid lightgrey;
-
 }
 .SectionHeader {
   font-size: 1.5rem;
@@ -176,7 +175,7 @@
   box-sizing: border-box;
 }
 .OrderConfirmItems {
-  padding-left: 0px
+  padding-left: 0px;
 }
 .Spinner {
   background-color: #fff;
@@ -295,7 +294,7 @@
   color: red;
   background-color: white;
   border: none;
-  outline: none; 
+  outline: none;
 }
 
 .PromoInputBlue {
@@ -325,15 +324,15 @@
 }
 
 .PromoButtonRed:focus {
-	-moz-outline-style: none;
-	outline:none;
-	outline:0;
+  -moz-outline-style: none;
+  outline: none;
+  outline: 0;
 }
 
 .PromoButtonBlue:focus {
-	-moz-outline-style: none;
-	outline:none;
-	outline:0;
+  -moz-outline-style: none;
+  outline: none;
+  outline: 0;
 }
 .EnterPromoCode {
   color: blue;
@@ -345,7 +344,7 @@
   text-decoration: underline;
 }
 .AppliedPromoCode {
-  background-color: #EFF8E9;
+  background-color: #eff8e9;
   padding-top: 5px;
   padding-left: 5px;
   height: 30px;
@@ -367,7 +366,7 @@
 
 @media (min-width: 400px) {
   .EventTitle {
-    font-size: 1.0rem;
+    font-size: 1rem;
     font-weight: 600;
   }
   .EventDate {
@@ -641,7 +640,7 @@
     padding-right: 25px;
   }
   .OrderConfirmItems {
-    padding-left: 30px
+    padding-left: 30px;
   }
 
   .SubSectionHeader {

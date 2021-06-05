@@ -4,10 +4,7 @@ import { each, isObject } from "underscore";
 const handleErrors = (response) => {
   console.log("Inside 'apiCore' 'handleErrors()'", response);
   console.log("Inside 'apiCore' 'handleErrors()'");
-  //console.log("json response: ", expandedLog(response, 1));
   if (!response.ok) {
-    //console.log("response was false!");
-    //console.log("response.status: ", response.status);
     throw Error(response.status);
   }
   return response;
@@ -69,8 +66,6 @@ var expandedLog = (function () {
   };
 })();
 
-// *********
-// NEED TO ADJUST
 // PayPal Smart button fetch api
 export const expressPaymentOnSuccess = (paymentTicketData) => {
   return (
@@ -84,7 +79,6 @@ export const expressPaymentOnSuccess = (paymentTicketData) => {
     })
       .then(handleErrors)
       .then((response) => {
-        //console.log("response: ", response)
         return response.json();
       })
       // NEED TO RETURN ERROR STATEMENT THAT BACKEND IS DOWN

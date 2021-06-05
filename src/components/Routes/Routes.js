@@ -12,12 +12,10 @@ import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
-import Checkout from "../../TicketPurchases/Checkout";
+//import Checkout from "../../TicketPurchases/Checkout";
 import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
-//import RegistrationNCJAR from "../../TicketPurchases/RegistrationNCJAR";
-//import RegistrationCOA from "../../TicketPurchases/RegistrationCOA";
 import Authentication from "../../Users/Authentication/Authentication";
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
@@ -263,16 +261,6 @@ const Routes = () => {
         render={(routeProps) => (
           <React.Fragment>
             <CustomerInfoFree />
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/checkout"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Checkout />
           </React.Fragment>
         )}
       />

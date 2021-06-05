@@ -4,22 +4,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faShoppingCart,
   faChevronUp,
-  faChevronDown
+  faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./Cartlink.module.css";
 
-const CartLink = props => {
+const CartLink = (props) => {
   // determines whether or not to display the number of tickets purchased
   // "showDoublePane" must be false and "orderTotals.ticketsPurchased" must be > 0
 
-  const ticketAmount = show => {
+  const ticketAmount = () => {
     if (props.orderTotals.ticketsPurchased > 0) {
       return (
         <Fragment>
-          <span
-            onClick={props.onClick}
-            className={styles.cartBadge}>
+          <span onClick={props.onClick} className={styles.cartBadge}>
             {props.orderTotals.ticketsPurchased}
           </span>
         </Fragment>

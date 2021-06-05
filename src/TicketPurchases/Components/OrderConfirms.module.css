@@ -11,20 +11,20 @@
 .ButtonBlue {
   height: 40px;
   width: 150px;
-  background-color: #0000F5;
+  background-color: #0000f5;
   color: #fff;
   font-size: 16px;
   border: 1px solid black;
   outline: none;
 }
 .ButtonBlue:hover {
-  background-color: #0000CC;
+  background-color: #0000cc;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonBlue:active {
-  background-color: #0000A3;
+  background-color: #0000a3;
   color: #fff;
   border: 1px solid black;
   outline: none;

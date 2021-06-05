@@ -48,7 +48,7 @@
 .ButtonGreen {
   height: 40px;
   width: 200px;
-  background-color: #008F00;
+  background-color: #008f00;
   color: #fff;
   border: 1px solid black;
   font-weight: 500;
@@ -61,14 +61,14 @@
 }
 .ButtonGreen:active {
   background-color: #fff;
-  color: #008F00;
-  border: 2px solid #008F00;
+  color: #008f00;
+  border: 2px solid #008f00;
   font-weight: 600;
 }
 .ButtonGreenOpac {
   height: 40px;
   width: 200px;
-  background-color: #008F00;
+  background-color: #008f00;
   opacity: 0.3;
   color: white;
   font-weight: 500;
@@ -127,8 +127,8 @@
     font-size: 12px;
   }
   .EventFooter {
-      padding-left: 25px;
-      padding-right: 25px;
+    padding-left: 25px;
+    padding-right: 25px;
   }
 }
 

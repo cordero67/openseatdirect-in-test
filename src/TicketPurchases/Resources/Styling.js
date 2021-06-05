@@ -10,7 +10,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
       paddingTop: `0px`,
       paddingLeft: `0px`,
       paddingRight: `0px`,
-      paddingBottom: `0px`
+      paddingBottom: `0px`,
     };
   } else if (inHeight < 720) {
     MainContainer = {
@@ -21,7 +21,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
       paddingTop: `0px`,
       paddingLeft: `25px`,
       paddingRight: `25px`,
-      paddingBottom: `0px`
+      paddingBottom: `0px`,
     };
   } else {
     MainContainer = {
@@ -31,7 +31,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
       paddingTop: `calc((${inHeight}px - 720px) / 2)`,
       paddingLeft: `25px`,
       paddingRight: `25px`,
-      paddingBottom: `calc((${inHeight}px - 720px) / 2)`
+      paddingBottom: `calc((${inHeight}px - 720px) / 2)`,
     };
   }
 
@@ -49,7 +49,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
       margin: `auto`,
       height: `${inHeight}px`,
       display: `grid`,
-      gridTemplateColumns: `auto`
+      gridTemplateColumns: `auto`,
     };
   } else if (inWidth < 790) {
     // width < 790px, NEED TO CHECK HEIGHT
@@ -60,7 +60,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `${inHeight}px`,
         display: `grid`,
-        gridTemplateColumns: `auto`
+        gridTemplateColumns: `auto`,
       };
     } else {
       // height >= 720px
@@ -69,7 +69,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `720px`,
         display: `grid`,
-        gridTemplateColumns: `auto`
+        gridTemplateColumns: `auto`,
       };
     }
   } else if (inWidth < 960) {
@@ -81,7 +81,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `${inHeight}px`,
         display: `grid`,
-        gridTemplateColumns: `auto 320px`
+        gridTemplateColumns: `auto 320px`,
       };
     } else {
       // height >= 720px
@@ -90,7 +90,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `720px`,
         display: `grid`,
-        gridTemplateColumns: `auto 320px`
+        gridTemplateColumns: `auto 320px`,
       };
     }
   } else if (inWidth < 1140) {
@@ -102,7 +102,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `${inHeight}px`,
         display: `grid`,
-        gridTemplateColumns: `auto 360px`
+        gridTemplateColumns: `auto 360px`,
       };
     } else {
       // height >= 720px
@@ -111,7 +111,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `720px`,
         display: `grid`,
-        gridTemplateColumns: `auto 360px`
+        gridTemplateColumns: `auto 360px`,
       };
     }
   } else {
@@ -124,7 +124,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
         height: `${inHeight}px`,
         width: `1080px`,
         display: `grid`,
-        gridTemplateColumns: `720px 360px`
+        gridTemplateColumns: `720px 360px`,
       };
     } else {
       // height >= 720px
@@ -134,7 +134,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
         height: `720px`,
         width: `1080px`,
         display: `grid`,
-        gridTemplateColumns: `720px 360px`
+        gridTemplateColumns: `720px 360px`,
       };
     }
   }
@@ -156,7 +156,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
       paddingRight: `10px`,
       textAlign: `left`,
       scrollbarWidth: `10px`,
-      overflowY: `auto`
+      overflowY: `auto`,
     };
   } else if (inWidth < 660) {
     // width < 660px, height does not matter
@@ -168,7 +168,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
       paddingRight: `25px`,
       textAlign: `left`,
       scrollbarWidth: `10px`,
-      overflowY: `auto`
+      overflowY: `auto`,
     };
   } else {
     // width >= 1140px, NEED TO CHECK HEIGHT
@@ -182,7 +182,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         paddingRight: `25px`,
         textAlign: `left`,
         scrollbarWidth: `10px`,
-        overflowY: `auto`
+        overflowY: `auto`,
       };
     } else {
       // height >= 720px
@@ -194,7 +194,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
         paddingRight: `25px`,
         textAlign: `left`,
         scrollbarWidth: `10px`,
-        overflowY: `auto`
+        overflowY: `auto`,
       };
     }
   }
@@ -214,7 +214,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
       paddingTop: `20px`,
       paddingLeft: `25px`,
       paddingRight: `25px`,
-      overflowY: `auto`
+      overflowY: `auto`,
     };
   } else if (inWidth < 960) {
     // width < 960px, NEED TO CHECK HEIGHT
@@ -227,7 +227,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
-        overflowY: `auto`
+        overflowY: `auto`,
       };
     } else {
       // height >= 720px
@@ -238,7 +238,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
-        overflowY: `auto`
+        overflowY: `auto`,
       };
     }
   } else {
@@ -252,7 +252,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
-        overflowY: `auto`
+        overflowY: `auto`,
       };
     } else {
       // height >= 720px
@@ -263,7 +263,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
-        overflowY: `auto`
+        overflowY: `auto`,
       };
     }
   }
@@ -284,7 +284,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
       paddingTop: `20px`,
       paddingLeft: `25px`,
       paddingRight: `25px`,
-      overflowY: `auto`
+      overflowY: `auto`,
     };
   } else {
     // width < 960px, NEED TO CHECK HEIGHT
@@ -297,7 +297,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
-        overflowY: `auto`
+        overflowY: `auto`,
       };
     } else {
       // height >= 720px
@@ -308,7 +308,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
         paddingTop: `20px`,
         paddingLeft: `25px`,
         paddingRight: `25px`,
-        overflowY: `auto`
+        overflowY: `auto`,
       };
     }
   }
