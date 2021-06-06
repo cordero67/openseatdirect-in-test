@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 
 import styles from "./ContactUs.module.css";
 
-const form = props => {
+const form = (props) => {
   let inputClasses = [];
   let validationError = null;
   let inputItem = null;
@@ -20,14 +20,14 @@ const form = props => {
           paddingLeft: "10px",
           margin: "5px 0",
           fontWeight: "500",
-          fontSize: "14px"
+          fontSize: "14px",
         }}
       >
         {props.validationError}
       </p>
     );
   }
-  
+
   switch (props.elementType) {
     case "input":
       inputItem = (
@@ -37,7 +37,7 @@ const form = props => {
               style={{
                 paddingLeft: "10px",
                 fontWeight: "500",
-                fontSize: "14px"
+                fontSize: "14px",
               }}
             >
               {props.label}
@@ -64,7 +64,7 @@ const form = props => {
               style={{
                 paddingLeft: "10px",
                 fontWeight: "500",
-                fontSize: "14px"
+                fontSize: "14px",
               }}
             >
               {props.label}
@@ -93,7 +93,7 @@ const form = props => {
               style={{
                 paddingLeft: "10px",
                 fontWeight: "500",
-                fontSize: "14px"
+                fontSize: "14px",
               }}
             >
               {props.label}
@@ -107,7 +107,7 @@ const form = props => {
               onChange={props.changed}
               as={props.elementConfig.as}
             >
-              {props.elementConfig.options.map(option => {
+              {props.elementConfig.options.map((option) => {
                 return <option>{option}</option>;
               })}
             </Form.Control>
@@ -124,7 +124,7 @@ const form = props => {
               style={{
                 paddingLeft: "10px",
                 fontWeight: "500",
-                fontSize: "14px"
+                fontSize: "14px",
               }}
             >
               {props.label}

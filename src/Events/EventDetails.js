@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
 import dateFormat from "dateformat";
 import ReactHtmlParser from "react-html-parser";
@@ -6,7 +6,6 @@ import ReactHtmlParser from "react-html-parser";
 import { getEventData, getEventImage } from "./apiEvents";
 
 import styles from "./EventDetails.module.css";
-import Aux from "../hoc/Auxiliary/Auxiliary";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import DefaultLogo from "../assets/Get_Your_Tickets.png";
@@ -213,7 +212,7 @@ const EventDetail = () => {
         dateFormat(eventDetails.endDateTime, "m d yy", true)
       ) {
         return (
-          <Aux>
+          <Fragment>
             <div className={styles.TextLeft}>
               {dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy", true)}
             </div>
@@ -222,11 +221,11 @@ const EventDetail = () => {
               {" - "}
               {dateFormat(eventDetails.endDateTime, "h:MM TT", true)}
             </div>
-          </Aux>
+          </Fragment>
         );
       } else {
         return (
-          <Aux>
+          <Fragment>
             <div className={styles.TextLeft}>
               {dateFormat(
                 eventDetails.startDateTime,
@@ -242,7 +241,7 @@ const EventDetail = () => {
                 true
               )}
             </div>
-          </Aux>
+          </Fragment>
         );
       }
     } else if (!isLoadingEvent) {
@@ -251,7 +250,7 @@ const EventDetail = () => {
         dateFormat(eventDetails.endDateTime, "m d yy", true)
       ) {
         return (
-          <Aux>
+          <Fragment>
             <div className={styles.TextRight}>
               {dateFormat(eventDetails.startDateTime, "ddd, mmm d, yyyy", true)}
             </div>
@@ -260,11 +259,11 @@ const EventDetail = () => {
               {" - "}
               {dateFormat(eventDetails.endDateTime, "h:MM TT", true)}
             </div>
-          </Aux>
+          </Fragment>
         );
       } else {
         return (
-          <Aux>
+          <Fragment>
             <div className={styles.TextRight}>
               {dateFormat(
                 eventDetails.startDateTime,
@@ -280,7 +279,7 @@ const EventDetail = () => {
                 true
               )}
             </div>
-          </Aux>
+          </Fragment>
         );
       }
     }
@@ -358,7 +357,7 @@ const EventDetail = () => {
   const locationInfo = () => {
     if (eventDetails.eventType === "live") {
       return (
-        <Aux>
+        <Fragment>
           <br></br>
           <div className={styles.TitleRight}>Location</div>
           <div className={styles.TextLeft}>
@@ -376,22 +375,22 @@ const EventDetail = () => {
           </div>
           <div className={styles.TextLeft}>{eventDetails.locationNote}</div>
           <br></br>
-        </Aux>
+        </Fragment>
       );
     } else if (eventDetails.eventType === "online") {
       return (
-        <Aux>
+        <Fragment>
           <br></br>
           <div className={styles.TitleRight}>Online Event</div>
-        </Aux>
+        </Fragment>
       );
     } else if (eventDetails.eventType === "tba") {
       return (
-        <Aux>
+        <Fragment>
           <br></br>
           <div className={styles.TitleRight}>Location</div>
           <div className={styles.TextLeft}>To be announced</div>
-        </Aux>
+        </Fragment>
       );
     } else {
       return null;
@@ -443,7 +442,7 @@ const EventDetail = () => {
     if (!showLargerDoublePane && !isLoadingEvent) {
       if (showSmallerDoublePane) {
         return (
-          <Aux>
+          <Fragment>
             <div className={styles.MiddleGrid}>
               <div>
                 <div className={styles.Month}>
@@ -468,11 +467,11 @@ const EventDetail = () => {
                 <div className={styles.TextLeft}>{eventDetails.organizer}</div>
               </div>
             </div>
-          </Aux>
+          </Fragment>
         );
       } else {
         return (
-          <Aux>
+          <Fragment>
             <div className={styles.MiddleGrid}>
               <div>
                 <div className={styles.TitleLeft}>
@@ -483,7 +482,7 @@ const EventDetail = () => {
                 </div>
               </div>
             </div>
-          </Aux>
+          </Fragment>
         );
       }
     }

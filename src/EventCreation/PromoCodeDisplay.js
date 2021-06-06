@@ -1,7 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, Fragment } from "react";
 
 import classes from "./EventCreation.module.css";
-import Aux from "../hoc/Auxiliary/Auxiliary";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,7 +24,7 @@ const PromoCodeDisplay = (props) => {
           }
 
           return (
-            <Aux key={index}>
+            <Fragment key={index}>
               <div
                 style={{
                   display: `grid`,
@@ -162,7 +161,7 @@ const PromoCodeDisplay = (props) => {
                   />
                 </div>
               </div>
-            </Aux>
+            </Fragment>
           );
         })}
       </div>

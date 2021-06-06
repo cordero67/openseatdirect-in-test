@@ -4,28 +4,20 @@ import { NavLink } from "react-router-dom";
 import styles from "./Logo.module.css";
 
 const Logo = (props) => {
+  let styleName = styles.Header;
 
-let styleName = styles.Header;
-
-if (props.placement === 'header') {
+  if (props.placement === "header") {
     styleName = styles.Header;
-} else if (props.placement === 'side') {
+  } else if (props.placement === "side") {
     styleName = styles.Side;
-} else if (props.placement === 'footer') {
+  } else if (props.placement === "footer") {
     styleName = styles.Footer;
-}
-    return (
-        <NavLink
-            to="/"
-            exact
-        >
-            <img
-                src={props.source}
-                alt="OpenSeatDirect Logo"
-                className={styleName}
-            />
-        </NavLink>
-    )
-}
+  }
+  return (
+    <NavLink to="/" exact>
+      <img src={props.source} alt="OpenSeatDirect Logo" className={styleName} />
+    </NavLink>
+  );
+};
 
-export default Logo
+export default Logo;
