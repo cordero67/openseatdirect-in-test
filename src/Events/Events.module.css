@@ -47,7 +47,7 @@
 
 @media (min-width: 620px) {
   .EventsHeader {
-    padding-left: calc((100vw - 600px)/2);
+    padding-left: calc((100vw - 600px) / 2);
   }
 }
 
@@ -59,7 +59,7 @@
 
 @media (min-width: 880px) {
   .EventsHeader {
-    padding-left: calc((100vw - 880px)/2);
+    padding-left: calc((100vw - 880px) / 2);
   }
 }
 
@@ -71,7 +71,7 @@
 
 @media (min-width: 1160px) {
   .EventsHeader {
-    padding-left: calc((100vw - 1160px)/2);
+    padding-left: calc((100vw - 1160px) / 2);
   }
 }
 
@@ -83,6 +83,6 @@
 
 @media (min-width: 1440px) {
   .EventsHeader {
-    padding-left: calc((100vw - 1440px)/2);
+    padding-left: calc((100vw - 1440px) / 2);
   }
 }

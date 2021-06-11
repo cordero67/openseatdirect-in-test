@@ -37,7 +37,7 @@
   width: 100%;
 }
 .SummaryPlacard {
-  background-color: #E8E8E8;
+  background-color: #e8e8e8;
   box-sizing: border-box;
   height: 100%;
   width: 100%;
@@ -90,18 +90,16 @@
   color: #6f7287;
 }
 
-
-
 .ButtonGreen {
   height: 40px;
   width: calc(100% - 20px);
-  background-color: #00A300;
+  background-color: #00a300;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonGreen:hover {
-  background-color: #007A00;
+  background-color: #007a00;
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -116,18 +114,12 @@
 .ButtonGreenOpac {
   height: 40px;
   width: calc(100% - 20px);
-  background-color: #00A300;
+  background-color: #00a300;
   opacity: 0.3;
   color: white;
   font-weight: 500;
   border: 1px solid black;
 }
-
-
-
-
-
-
 
 .Date {
   font-size: 18px;

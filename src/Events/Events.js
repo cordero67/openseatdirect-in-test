@@ -1,13 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Redirect } from "react-router-dom";
 
 import { API } from "../config";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
-import EventsModal from "./Modals/EventsModal";
-
-import { getAllEventData, getEventImage } from "./apiEvents";
+import { getAllEventData } from "./apiEvents";
 
 import classes from "./Events.module.css";
 import Event from "./EventTombstone";
@@ -17,7 +14,6 @@ const Events = () => {
   const [showModal, setShowModal] = useState(false);
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
   const [isSuccessfull, setIsSuccessfull] = useState(false);
-  const [dontAskAgain, setDontAskAgain] = useState(false);
 
   useEffect(() => {
     eventData();
@@ -26,7 +22,6 @@ const Events = () => {
 
   const handleErrors = (response) => {
     console.log("Inside 'apiCore' 'handleErrors()'", response);
-    //console.log("json response: ", expandedLog(response, 1));
     if (!response.ok) {
       console.log("response was false!");
       console.log("response.status: ", response.status);
@@ -90,32 +85,11 @@ const Events = () => {
         res.map((item, index) => {
           console.log("new res event num: ", res[index].eventNum);
           res[index]["url"] = `${API}/event/photo/e/${res[index].eventNum}`;
-          //res[index].url = index;
           item.url = "";
         });
         console.log("res: ", res);
         return res;
       })
-      /*
-    .then(res => {
-      res.forEach ((item, index) => {
-        console.log("Event Title: ", item.eventTitle)
-        getEventImage(item.eventNum)
-          .then(image => {
-            console.log("Event Image: ", image);
-            res[index].image = image;
-            console.log("Event Image: ", res);
-            return res;
-          })
-          .catch(err => {
-            console.log("Error: No image was returned")
-            res[index].image = "";
-          });
-        console.log("SUCCESS");
-        console.log("New Image for event ",index, " - ",res[index].image);
-      })
-      return res;
-    })*/
       .then((res) => {
         setEventDescriptions(res);
         setIsSuccessfull(true);

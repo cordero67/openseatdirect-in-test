@@ -12,59 +12,121 @@ const Authentication = (props) => {
     password: "",
     temporary: "",
     reissued: false,
+    expired: false,
     confirmation: "",
     resent: false,
     username: "",
     vendorIntent: props.vendorIntent,
     resetToken: "",
     sessionToken: "",
-    userId: ""
+    userId: "",
   });
 
   // transaction status variable
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
-    error: false
+    error: false,
   });
 
-  const [modalSetting, setModalSetting] = useState(props.start) // signin, forgot, temporary, signup, confirmation, password, username, error
+  const [modalSetting, setModalSetting] = useState(props.start); // signin, forgot, temporary, signup, confirmation, password, username, error
 
-  const { name, email, password, temporary, reissued, confirmation, resent, username, vendorIntent, resetToken, sessionToken, userId } = values;
+  const {
+    name,
+    email,
+    password,
+    temporary,
+    reissued,
+    expired,
+    confirmation,
+    resent,
+    username,
+    vendorIntent,
+    resetToken,
+    sessionToken,
+    userId,
+  } = values;
 
   const { message, error } = submissionStatus;
 
-  const getStatus= (user) => { 
-    if ('accountId' in user && 'status' in user.accountId ) {
-      return user.accountId.status
+  const getStatus = () => {
+    let tempData = JSON.parse(localStorage.getItem("user"));
+    if ("user" in tempData && "accountId" in tempData.user) {
+      let tempAccountId = tempData.user.accountId;
+      let hasLinkIds = false;
+      let hasPaid = false;
+      if (tempAccountId.ticketPlan === "free") {
+        return 7;
+      }
+      if (tempAccountId.ticketPlan === "comp") {
+        hasPaid = true;
+      }
+      if (
+        "paymentGatewayType" in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalExpress" &&
+        "paypalExpress_client_id" in tempAccountId &&
+        "string" === typeof tempAccountId.paypalExpress_client_id
+      ) {
+        hasLinkIds = true;
+      }
+      if (
+        "paymentGatewayType" in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
+        "paypal_merchant_id" in tempAccountId &&
+        "string" === typeof tempAccountId.paypal_merchant_id
+      ) {
+        hasLinkIds = true;
+      }
+      if (
+        "paypal_plan_id" in tempAccountId &&
+        "string" === typeof tempAccountId.paypal_plan_id &&
+        "accountPaymentStatus" in tempAccountId &&
+        tempAccountId.accountPaymentStatus === "good"
+      ) {
+        hasPaid = true;
+      }
+      if (!hasPaid && !hasLinkIds) {
+        return 4;
+      }
+      if (!hasPaid && hasLinkIds) {
+        return 5;
+      }
+      if (hasPaid && !hasLinkIds) {
+        return 6;
+      }
+      if (hasPaid && hasLinkIds) {
+        return 8;
+      }
+      return 4;
     } else {
       return 0;
-    } 
-  }
-  
+    }
+  };
+
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
-    let tempUser = JSON.parse(localStorage.getItem("user"));
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
       if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
-        window.location.href = "/myaccount";
+        window.location.href = "/vendor";
       } else if (
         getStatus(tempUser.user) === 4 ||
         getStatus(tempUser.user) === 5 ||
         getStatus(tempUser.user) === 6 ||
         ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
       ) {
-        console.log("user 4, 5 or 6 and vendorIntent true");
         window.location.href = "/personal";
       } else {
-        console.log("user 4, 5 or 6 and vendorIntent false");
         window.location.href = "/events";
       }
     }
   }, []);
 
-  const handleErrors = response => {
-    console.log ("inside handleErrors ", response);
+  const handleErrors = (response) => {
+    console.log("inside handleErrors ", response);
     if (!response.ok) {
-        throw Error(response.status);
+      throw Error(response.status);
     }
     return response;
   };
@@ -73,7 +135,7 @@ const Authentication = (props) => {
   const submitSignIn = () => {
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
@@ -81,398 +143,379 @@ const Authentication = (props) => {
     let url = `${API}/auth/signin_email`;
     let information = {
       email: email,
-      password: password
-    }
-    let fetchBody ={
-        method: "POST",
-        headers: myHeaders,
-        body:JSON.stringify (information),
+      password: password,
+    };
+    let fetchBody = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleSignIn(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server down please try again",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleSignIn(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server down please try again",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
 
   // LOOKS GOOD
   const submitForgot = () => {
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    // PROD HAS DIFFERENT API: `${API}/auth/send_access_code2`
     let url = `${API}/auth/send_access_code2`;
+    //let url = `${API}/auth​/signin​/sendcode`;
     let information = {
-      email: email
-    }
-    let fetchBody ={
+      email: email,
+    };
+    let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify(information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleForgot(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleForgot(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
 
   // LOOKS GOOD
   const submitTemporary = () => {
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    // PROD HAS DIFFERENT API: `${API}/auth/confirm_access_code2`
     let url = `${API}/auth/confirm_access_code2`;
+    //let url = `${API}/auth/signin/confirmcode`;
     let information = {
       email: email,
       confirm_code: temporary,
-    }
-    let fetchBody ={
+    };
+    let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleTemporary(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleTemporary(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
 
   // LOOKS GOOD
   const submitReissue = () => {
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    // PROD HAS DIFFERENT API: `${API}/auth/send_access_code2`
     let url = `${API}/auth/send_access_code2`;
+    //let url = `${API}/auth/signin/sendcode`;
     let information = {
-      email: email
-    }
-    let fetchBody ={
+      email: email,
+    };
+    let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleReissue(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleReissue(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
 
   // LOOKS GOOD
   const submitSignUp = () => {
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    // PROD HAS DIFFERENT API: `${API}/auth/signup1_email`
     let url = `${API}/auth/signup1_email`;
+    //let url = `${API}/auth/signup/email`;
     let information = {
       email: email,
-      vendorIntent: props.vendorIntent
-    }
-    let fetchBody ={
+      vendorIntent: props.vendorIntent,
+    };
+    let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleSignUp(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleSignUp(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
 
   // LOOKS GOOD
   const submitConfirmation = () => {
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    // PROD HAS DIFFERENT API: `${API}/auth/signup2_confirm`
     let url = `${API}/auth/signup2_confirm`;
+    //let url = `${API}/auth​/signup​/confirmcode`;
     let information = {
       email: email,
       confirm_code: confirmation,
-      vendorIntent: props.vendorIntent
-    }
-    let fetchBody ={
+      vendorIntent: props.vendorIntent,
+    };
+    let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleConfirmation(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleConfirmation(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
 
   // LOOKS GOOD
   const submitPassword = () => {
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    // PROD HAS DIFFERENT API: `${API}/auth/signup3_password`
     let url = `${API}/auth/signup3_password`;
+    //let url = `${API}/auth/signup/password`;
     let information = {
       email: email,
       resetPasswordToken: resetToken,
       password: password,
-      vendorIntent: props.vendorIntent
-    }
-    let fetchBody ={
+      vendorIntent: props.vendorIntent,
+    };
+    let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handlePassword(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handlePassword(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
-  // LOOKS GOOD
-  const submitExpired = () => {
-    console.log("values: ", values)
-    setSubmissionStatus({
-      message: "",
-      error: false
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup1_email`;
-    let information = {
-      email: email,
-      vendorIntent: props.vendorIntent
-    }
-    let fetchBody ={
-      method: "POST",
-      headers: myHeaders,
-      body:JSON.stringify (information),
-    };
-    console.log("url: ", url)
-    console.log("fetcharg: ", fetchBody)
-
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      console.log("ALL GOOD")
-      handleExpired(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
-      });
-      setModalSetting("error")
-    })
-  }
+  };
 
   // LOOKS GOOD
   const submitUsername = () => {
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
+    // PROD HAS DIFFERENT API: `${API}/auth/update_username/${userId}`
     let url = `${API}/auth/update_username/${userId}`;
+    //let url = `${API}/user/${userId}`;
     let information = {
       email: email,
-      username: username
-    }
-    console.log("myHeaders: ", myHeaders)
-    let fetchBody ={
-      method: "POST",
+      username: username,
+    };
+    console.log("myHeaders: ", myHeaders);
+    let fetchBody = {
+      method: "PATCH",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleUsername(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleUsername(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
-
+  };
   // LOOKS GOOD
   const submitResend = () => {
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    // PROD HAS DIFFERENT API: `${API}/auth/resend_confirm_code`
     let url = `${API}/auth/resend_confirm_code`;
+    //let url = `${API}/auth/signup/resendcode`;
     let information = {
-      email: email
-    }
-    let fetchBody ={
+      email: email,
+    };
+    let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleResend(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleResend(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
-
+  };
   // LOOKS GOOD
   const handleSignIn = (data) => {
     if (data.status) {
@@ -483,24 +526,25 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
         vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
-        userId: ""
+        userId: "",
       });
-      console.log("SUCCESS")
+      console.log("SUCCESS");
       props.submit();
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
 
   // LOOKS GOOD
   const handleForgot = (data) => {
@@ -511,24 +555,25 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
         vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
-        userId: ""
+        userId: "",
       });
-      console.log("SUCCESS")
-      setModalSetting("temporary")
+      console.log("SUCCESS");
+      setModalSetting("temporary");
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
 
   // LOOKS GOOD
   const handleTemporary = (data) => {
@@ -540,25 +585,25 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
         vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
-        userId: ""
+        userId: "",
       });
-      console.log("SUCCESS")
+      console.log("SUCCESS");
       props.submit();
-
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
 
   // LOOKS GOOD
   const handleReissue = (data) => {
@@ -570,23 +615,24 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: true,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
         vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
-        userId: ""
+        userId: "",
       });
-      console.log("SUCCESS")
+      console.log("SUCCESS");
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
 
   // LOOKS GOOD
   const handleSignUp = (data) => {
@@ -597,25 +643,25 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: data.user.username,
         vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: "",
-        userId: ""
+        userId: "",
       });
-      console.log("SUCCESS")
-      setModalSetting("confirmation")
+      console.log("SUCCESS");
+      setModalSetting("confirmation");
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
-
+  };
   // LOOKS GOOD
   const handleConfirmation = (data) => {
     if (data.status) {
@@ -625,24 +671,25 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: data.user.username,
         vendorIntent: data.user.vendorIntent,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
-        userId: ""
+        userId: "",
       });
-      console.log("SUCCESS")
-      setModalSetting("password")
+      console.log("SUCCESS");
+      setModalSetting("password");
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
 
   // LOOKS GOOD
   const handlePassword = (data) => {
@@ -654,46 +701,38 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: data.user.username,
         vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: data.token,
-        userId: data.user._id
+        userId: data.user._id,
       });
-      console.log("SUCCESS")
-      setModalSetting("username")
+      console.log("SUCCESS");
+      setModalSetting("username");
     } else {
-      if (data.code === 202){
-        console.log("Status 202 Error")
-        setModalSetting("expired")
+      if (data.code === 1401) {
+        console.log("Status 1401 Error");
+        let tempValues = { ...values };
+        tempValues.email = "";
+        tempValues.expired = true;
+        setValues(tempValues);
+        setModalSetting("signup");
       } else {
         setSubmissionStatus({
           message: data.error,
-          error: true
+          error: true,
         });
-        console.log("ERROR: ", data.error)
+        console.log("ERROR: ", data.error);
       }
     }
-  }
-  const handleExpired = (data) => {
-    if (data.status) {
-      //resetValues();
-      console.log("SUCCESS");
-      setModalSetting("confirmation");
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true
-      });
-      console.log("ERROR: ", data.error)
-    }
-  }
+  };
 
   // LOOKS GOOD
   const handleUsername = (data) => {
-    console.log("Inside handleUsername")
+    console.log("Inside handleUsername");
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       tempUser.user = data.user;
@@ -704,24 +743,25 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: "",
         vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
-        userId: ""
+        userId: "",
       });
-      console.log("SUCCESS")
+      console.log("SUCCESS");
       props.submit();
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
 
   // LOOKS GOOD
   const resetValues = () => {
@@ -731,15 +771,16 @@ const Authentication = (props) => {
       password: "",
       temporary: "",
       reissued: false,
+      expired: false,
       confirmation: "",
       resent: false,
       username: "",
       vendorIntent: props.vendorIntent,
       resetToken: "",
       sessionToken: "",
-      userId: ""
-    })
-  }
+      userId: "",
+    });
+  };
 
   // LOOKS GOOD
   const handleResend = (data) => {
@@ -751,29 +792,30 @@ const Authentication = (props) => {
         password: "",
         temporary: "",
         reissued: false,
+        expired: false,
         confirmation: "",
         resent: true,
         username: data.user.username,
         vendorIntent: props.vendorIntent,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
-        userId: ""
+        userId: "",
       });
-      console.log("SUCCESS")
+      console.log("SUCCESS");
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
 
   // LOOKS GOOD
   const handleChange = (event) => {
     setValues({
       ...values,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
@@ -781,56 +823,71 @@ const Authentication = (props) => {
   const showError = () => {
     if (error) {
       return (
-        <div style={{color: "red", fontSize: "14px", paddingBottom: "20px"}}>{message}</div>
-      )
-    } else if (modalSetting === "signin" || modalSetting === "forgot"|| modalSetting === "signup" || modalSetting === "password") {  
-      return null
-    } else if (modalSetting === "temporary" && !reissued) {
-      console.log("modalSetting === 'temporary' && !reissued")
-      console.log("values: ", values)
+        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
+          {message}
+        </div>
+      );
+    } else if (modalSetting === "signup" && expired) {
       return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>
+        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
+          Timer has expired, please resubmit your email:
+        </div>
+      );
+    } else if (
+      modalSetting === "signin" ||
+      modalSetting === "forgot" ||
+      modalSetting === "signup" ||
+      modalSetting === "password"
+    ) {
+      return null;
+    } else if (modalSetting === "temporary" && !reissued) {
+      console.log("modalSetting === 'temporary' && !reissued");
+      console.log("values: ", values);
+      return (
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           Enter the 6-digit code sent to:
           <br></br>
           {email}
         </div>
-      )
+      );
     } else if (modalSetting === "temporary" && reissued) {
-      console.log("modalSetting === 'temporary' && reissued")
-      console.log("values: ", values)
+      console.log("modalSetting === 'temporary' && reissued");
+      console.log("values: ", values);
       return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           Confirmation code resent to your email.
         </div>
-      )
+      );
     } else if (modalSetting === "confirmation" && !resent) {
       return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>Enter the 6-digit code sent to your email:</div>
-      )
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+          Enter the 6-digit code sent to your email:
+        </div>
+      );
     } else if (modalSetting === "confirmation" && resent) {
       return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           A new 6-digit code was sent to your email,
           <br></br>
           please enter it below:
         </div>
-      )
+      );
     } else if (modalSetting === "username") {
       return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           Default username provided below.
           <br></br>
           Submit a new username if desired:
         </div>
-      )
+      );
     }
   };
 
   // LOOKS GOOD
   const signInForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>E-mail Address</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>E-mail Address</label>
         <input
           className={classes.InputBox}
           type="email"
@@ -840,8 +897,8 @@ const Authentication = (props) => {
         />
       </div>
 
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>Password</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>Password</label>
         <input
           className={classes.InputBox}
           type="password"
@@ -850,11 +907,11 @@ const Authentication = (props) => {
           value={password}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            submitSignIn()
+            submitSignIn();
           }}
         >
           SIGN IN TO YOUR ACCOUNT
@@ -866,8 +923,8 @@ const Authentication = (props) => {
   // LOOKS GOOD
   const forgotForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>E-mail Address</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>E-mail Address</label>
         <input
           className={classes.InputBox}
           type="email"
@@ -876,12 +933,13 @@ const Authentication = (props) => {
           value={email}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            submitForgot()
-        }}>
+            submitForgot();
+          }}
+        >
           SUBMIT YOUR EMAIL
         </button>
       </div>
@@ -891,8 +949,8 @@ const Authentication = (props) => {
   // LOOKS GOOD
   const temporaryForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>Confirmation Code</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>Confirmation Code</label>
         <input
           className={classes.InputBox}
           type="text"
@@ -901,12 +959,13 @@ const Authentication = (props) => {
           value={temporary}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
             submitTemporary();
-        }}>
+          }}
+        >
           SUBMIT CONFIRMATION CODE
         </button>
       </div>
@@ -916,8 +975,8 @@ const Authentication = (props) => {
   // LOOKS GOOD
   const signUpForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>E-mail Address</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>E-mail Address</label>
         <input
           className={classes.InputBox}
           type="email"
@@ -926,12 +985,13 @@ const Authentication = (props) => {
           value={email}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            submitSignUp()
-        }}>
+            submitSignUp();
+          }}
+        >
           SUBMIT YOUR EMAIL
         </button>
       </div>
@@ -941,8 +1001,8 @@ const Authentication = (props) => {
   // LOOKS GOOD
   const confirmationForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>Confirmation Number</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>Confirmation Number</label>
         <input
           className={classes.InputBox}
           type="text"
@@ -951,12 +1011,13 @@ const Authentication = (props) => {
           value={confirmation}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
             submitConfirmation();
-        }}>
+          }}
+        >
           SUBMIT YOUR CODE
         </button>
       </div>
@@ -966,8 +1027,8 @@ const Authentication = (props) => {
   // LOOKS GOOD
   const passwordForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>Password</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>Password</label>
         <input
           className={classes.InputBox}
           type="text"
@@ -976,13 +1037,13 @@ const Authentication = (props) => {
           value={password}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            console.log("clicked submit button")
             submitPassword();
-        }}>
+          }}
+        >
           REGISTER YOUR PASSWORD
         </button>
       </div>
@@ -992,8 +1053,8 @@ const Authentication = (props) => {
   // LOOKS GOOD
   const usernameForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>Username</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>Username</label>
         <input
           className={classes.InputBox}
           type="text"
@@ -1002,67 +1063,49 @@ const Authentication = (props) => {
           value={username}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            console.log("clicked submit button")
             submitUsername();
-        }}>
+          }}
+        >
           CHANGE YOUR USERNAME
         </button>
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.CancelButton}
           onClick={() => {
-            console.log("clicked skip button")
             props.submit();
-        }}>
+          }}
+        >
           CHANGE IT LATER
         </button>
       </div>
     </Fragment>
   );
-
-  const expiredForm = (
-    <Fragment>
-      <div style={{width: "100%", paddingBottom: "10px", fontSize: "16px"}}>
-        Would you still like to set your password?
-      </div>
-      <div style={{paddingTop: "10px"}}>
-        <button
-          className={classes.OSDBlueButton}
-          onClick={() => {
-            submitExpired();
-        }}>
-          YES RESEND CODE
-        </button>
-      </div>
-      <div style={{paddingTop: "10px"}}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            closeModal();
-        }}>
-          NOT AT THIS TIME
-        </button>
-      </div>
-    </Fragment>
-  );
-
   // LOOKS GOOD
   const errorForm = (
     <Fragment>
-      <div style={{fontSize: "16px", color: "red", paddingBottom: "20px", width: "340px", height: "40px"}}>
+      <div
+        style={{
+          fontSize: "16px",
+          color: "red",
+          paddingBottom: "20px",
+          width: "340px",
+          height: "40px",
+        }}
+      >
         Please try again later
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            closeModal()
-        }}>
+            closeModal();
+          }}
+        >
           CONTINUE
         </button>
       </div>
@@ -1072,7 +1115,7 @@ const Authentication = (props) => {
   // LOOKS GOOD
   const alternateSignInInputs = (
     <div className={classes.Alternates}>
-      <div style={{textAlign: "left"}}>
+      <div style={{ textAlign: "left" }}>
         <button
           className={classes.BlueText}
           onClick={() => {
@@ -1083,69 +1126,68 @@ const Authentication = (props) => {
           Forgot password?
         </button>
       </div>
-      <div style={{textAlign: "right"}}>
+      <div style={{ textAlign: "right" }}>
         <button
           className={classes.BlueText}
           onClick={() => {
             resetValues();
-            setModalSetting("signup")
+            setModalSetting("signup");
           }}
         >
           Create account
         </button>
       </div>
     </div>
-  )
+  );
 
   // LOOKS GOOD
   const alternateTemporaryInputs = (
     <div className={classes.Alternates}>
-      <div style={{textAlign: "left"}}>
+      <div style={{ textAlign: "left" }}>
         <button
           className={classes.BlueText}
           onClick={() => {
-            console.log("clicked resend button")
             submitReissue();
           }}
         >
           Resend code
         </button>
       </div>
-      <div style={{textAlign: "right"}}>
+      <div style={{ textAlign: "right" }}>
         Back to{" "}
         <button
           className={classes.BlueText}
           onClick={() => {
-            setModalSetting("signin")
+            setModalSetting("signin");
           }}
         >
           Sign In
         </button>
       </div>
     </div>
-  )
+  );
 
   // LOOKS GOOD
   const alternateSignUpInputs = (
     <div className={classes.Alternates}>
-      <div style={{textAlign: "left"}}>
+      <div style={{ textAlign: "left" }}>
         Back to{" "}
         <button
           className={classes.BlueText}
           onClick={() => {
-            setModalSetting("signin")
+            setModalSetting("signin");
           }}
         >
           Sign In
         </button>
       </div>
     </div>
-  )
+  );
 
   // LOOKS GOOD
   const alternateConfirmationInputs = (
     <div className={classes.Alternates}>
-      <div style={{textAlign: "left"}}>
+      <div style={{ textAlign: "left" }}>
         <button
           className={classes.BlueText}
           onClick={() => {
@@ -1156,18 +1198,18 @@ const Authentication = (props) => {
         </button>
       </div>
     </div>
-  )
+  );
 
   // LOOKS GOOD
   const closeModal = () => {
     resetValues();
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
     setModalSetting(props.start);
-    props.closeModal()
-  }
+    props.closeModal();
+  };
 
   // LOOKS GOOD
   const signInDisplay = () => {
@@ -1176,13 +1218,18 @@ const Authentication = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Welcome back</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black", paddingBottom: "5px"}}
+                style={{
+                  fontWeight: "600",
+                  fontSize: "28px",
+                  color: "black",
+                  paddingBottom: "5px",
+                }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
@@ -1193,11 +1240,11 @@ const Authentication = (props) => {
             {alternateSignInInputs}
           </div>
         </div>
-      )
+      );
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
   // LOOKS GOOD
   const forgotDisplay = () => {
@@ -1206,13 +1253,13 @@ const Authentication = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Trouble logging in?</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
@@ -1223,11 +1270,11 @@ const Authentication = (props) => {
             {alternateSignUpInputs}
           </div>
         </div>
-      )
+      );
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
   // LOOKS GOOD
   const temporaryDisplay = () => {
@@ -1236,13 +1283,13 @@ const Authentication = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
@@ -1253,11 +1300,11 @@ const Authentication = (props) => {
             {alternateTemporaryInputs}
           </div>
         </div>
-      )
+      );
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
   // LOOKS GOOD
   const signUpDisplay = () => {
@@ -1266,13 +1313,18 @@ const Authentication = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Tell us about yourself</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black", paddingBottom: "5px"}}
+                style={{
+                  fontWeight: "600",
+                  fontSize: "28px",
+                  color: "black",
+                  paddingBottom: "5px",
+                }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
@@ -1283,9 +1335,9 @@ const Authentication = (props) => {
             {props.start === "signin" ? alternateSignUpInputs : null}
           </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   // LOOKS GOOD
   const confirmationDisplay = () => {
@@ -1294,13 +1346,13 @@ const Authentication = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
@@ -1311,11 +1363,11 @@ const Authentication = (props) => {
             {alternateConfirmationInputs}
           </div>
         </div>
-      )
+      );
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
   // LOOKS GOOD
   const passwordDisplay = () => {
@@ -1324,13 +1376,13 @@ const Authentication = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Create your password</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
@@ -1340,28 +1392,11 @@ const Authentication = (props) => {
             {passwordForm}
           </div>
         </div>
-      )
+      );
     } else {
-      return null
+      return null;
     }
-  }
-
-  const expiredDisplay = () => {
-    if (modalSetting === "expired") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Time expired</div>
-          </div>
-          <div>
-            {showError()}
-            {expiredForm}
-          </div>
-        </div>
-      )
-    } else return null
-  }
-
+  };
   // LOOKS GOOD
   const usernameDisplay = () => {
     if (modalSetting === "username") {
@@ -1369,13 +1404,13 @@ const Authentication = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Change your username</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
@@ -1385,11 +1420,11 @@ const Authentication = (props) => {
             {usernameForm}
           </div>
         </div>
-      )
+      );
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
   // LOOKS GOOD
   const errorDisplay = () => {
@@ -1398,26 +1433,24 @@ const Authentication = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>System Error</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
           </div>
-          <div>
-            {errorForm}
-          </div>
+          <div>{errorForm}</div>
         </div>
-      )
+      );
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
   // LOOKS GOOD
   return (
@@ -1427,7 +1460,7 @@ const Authentication = (props) => {
         style={{
           transform: props.show ? "translateY(0)" : "translateY(-100vh)",
           opacity: props.show ? "1" : "0",
-          fontSize: "20px"
+          fontSize: "20px",
         }}
         className={classes.Modal}
       >
@@ -1437,7 +1470,6 @@ const Authentication = (props) => {
         {signUpDisplay()}
         {confirmationDisplay()}
         {passwordDisplay()}
-        {expiredDisplay()}
         {usernameDisplay()}
         {errorDisplay()}
       </div>

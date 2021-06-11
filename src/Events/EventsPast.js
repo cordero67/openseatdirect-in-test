@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../config";
-import { getAllPastEventData, getEventImage } from "./apiEvents";
+import { getAllPastEventData } from "./apiEvents";
 
 import classes from "./Events.module.css";
 import Event from "./EventTombstone";
@@ -28,32 +28,11 @@ const EventsPasts = () => {
           console.log("new res");
           console.log("new res event num: ", res[index].eventNum);
           res[index]["url"] = `${API}/event/photo/e/${res[index].eventNum}`;
-          //res[index].url = index;
           item.url = "";
         });
         console.log("res: ", res);
         return res;
       })
-      /*
-    .then(res => {
-      res.forEach ((item, index) => {
-        console.log("Event Title: ", item.eventTitle)
-        getEventImage(item.eventNum)
-          .then(image => {
-            console.log("Event Image: ", image);
-            res[index].image = image;
-            console.log("Event Image: ", res);
-            return res;
-          })
-          .catch(err => {
-            console.log("Error: No image was returned")
-            res[index].image = "";
-          });
-        console.log("SUCCESS");
-        console.log("New Image for event ",index, " - ",res[index].image);
-      })
-      return res;
-    })*/
       .then((res) => {
         setEventDescriptions(res);
         setIsSuccessfull(true);

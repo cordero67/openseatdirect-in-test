@@ -25,7 +25,6 @@ const EventDetail = () => {
 
   useEffect(() => {
     eventData(queryString.parse(window.location.search).eventID);
-    console.log("window.location.search: ", window.location.search);
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
 
@@ -69,58 +68,34 @@ const EventDetail = () => {
     let ticketStatus;
     ticketStatus = false;
 
-    console.log("now: ", Date.now());
     let d = Date.parse(event.startDateTime) + 86400;
-    console.log("d: ", d);
-    console.log("d+: ", d + 86400);
-    console.log("event.tickets: ", event.tickets);
 
-    if ("tickets" in event && event.tickets.length > 0 && Date.now() < d) {
+    if ("tickets" in event && event.tickets.length > 0) {
       ticketStatus = true;
     }
 
-    // defines the eniter "eventDetails" variable
     eventDetails = {
       eventNum: event.eventNum, //
       eventTitle: event.eventTitle, //
       eventType: event.eventType, //
-      isDraft: event.isDarft, //
-      eventCategory: event.eventCategory, //
-      facebookLink: event.facebookLink, //
-      twitterLink: event.twitterLink, //
-      instagramLink: event.instagramLink, //
-      linkedinLink: event.linkedinLink, //
       organizer: "", // Need to add this field to "Event" object from server
-      organizerEmail: event.accountId.accountEmail, //
       startDateTime: event.startDateTime, //
       endDateTime: event.endDateTime, //
-      timeZone: event.timeZone, //
       eventUrl: event.eventUrl, //
-      refundPolicy: event.refundPolicy, //
       locationVenueName: event.locationVenueName, //
       locationAddress1: event.locationAddress1, //
       locationAddress2: event.locationAddress2, //
       locationCity: event.locationCity, //
       locationState: event.locationState, //
-      locationZipPostalCode: event.locationZipPostalCode, //
       locationCountryCode: event.locationCountryCode, //
       locationNote: event.locationNote, //
-      tbaInformation: event.tbaInformation, //
-      webinarLink: event.webinarLink, //
-      onlineInformation: event.onlineInformation, //
-      shortDescription: event.shortDescription, //
       longDescription: event.longDescription, //
       tickets: event.tickets,
-      //forSale: ticketStatus,
     };
-    console.log(
-      "EVENT DETAILS variable in 'loadEventDetails()': ",
-      eventDetails
-    );
+    console.log("EVENT DETAILS: ", eventDetails);
   };
 
   const stylingUpdate = (inWidth) => {
-    console.log("width is ", inWidth);
     // based on window width, displays one or two panes
     if (inWidth < 800) {
       setShowLargerDoublePane(false);
@@ -156,7 +131,7 @@ const EventDetail = () => {
       console.log("Inside ticketPriceRange");
       console.log("eventDetails: ", eventDetails);
       let priceArray = [];
-      if ("tickets" in eventDetails && eventDetails.tickets) {
+      if (eventDetails.ticket !== null && eventDetails.tickets) {
         console.log("We have tickets");
         eventDetails.tickets.map((item) => {
           priceArray.push(item.currentTicketPrice);
@@ -179,8 +154,6 @@ const EventDetail = () => {
       }
 
       if (priceArray.length > 1) {
-        //console.log("Currency: ", eventDetails.tickets[0].currency);
-        //let ticketCurrency = eventDetails.tickets[0].currency;
         return (
           <div>
             {ticketCurrency}
@@ -189,8 +162,6 @@ const EventDetail = () => {
           </div>
         );
       } else if (priceArray.length === 1) {
-        //console.log("Currency: ", eventDetails.tickets[0].currency);
-        //let ticketCurrency = eventDetails.tickets[0].currency;
         return (
           <div>
             {ticketCurrency}
@@ -198,7 +169,7 @@ const EventDetail = () => {
           </div>
         );
       } else {
-        return <div>No tickets</div>;
+        return <div>No tickets available</div>;
       }
     } else {
       return null;
@@ -310,7 +281,7 @@ const EventDetail = () => {
       );
     }
   };
-
+  // ***** DID NOT CHANGE FROM DEV
   const ticketButton = () => {
     console.log("eventDetails: ", eventDetails);
     if (
@@ -321,7 +292,7 @@ const EventDetail = () => {
       return (
         <div className={styles.ButtonContainer}>
           <button disabled={true} className={styles.ButtonGreenOpac}>
-            FIND TICKETS
+            NO TICKETS AVAILABLE
           </button>
         </div>
       );

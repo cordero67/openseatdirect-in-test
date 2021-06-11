@@ -1,12 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Link } from "react-router-dom";
 import YouTube from "react-youtube";
 
 import AuthenticationModal from "../../TicketPurchases/Modals/AuthenticationModal";
-
-import { useOurApi } from "./apiUsers";
-import { API } from "../../config";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -18,11 +13,8 @@ import {
 
 import AfroGirlShort from "../../assets/KobeShort.jpg";
 
-//import DemoCarousel from "./DemoCarousel.js";
-
 import CashInHand from "../../assets/CashInHand.png";
 import ZeroFee from "../../assets/ZeroFee.png";
-import OSDImage from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 import DataLock from "../../assets/DataLock.png";
 
 import classes from "./HomePage.module.css";
@@ -39,9 +31,9 @@ const Home = () => {
     email: "",
     password: "",
   });
-
-  const { name, email, password } = values;
-
+  //
+  //
+  //
   const [youTubeDimensions, setYouTubeDimensions] = useState({
     width: "640",
     height: "360",
@@ -81,22 +73,10 @@ const Home = () => {
       rel: 0,
     },
   };
-
-  let myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-
-  const url1 = `${API}/signup`;
-  const method1 = "POST";
-  const body1 = null;
-  const initialData1 = { status: true, message: "hi first time" };
-
-  const { isLoading, hasError, setUrl, setBody, data, networkError } =
-    useOurApi(method1, url1, myHeaders, body1, initialData1);
-
-  const sysmessage = networkError
-    ? "NetworkError...please check your connectivity"
-    : "SYSTEM ERROR - please try again";
-
+  //
+  //
+  //
+  //
   const stylingUpdate = (inWidth) => {
     console.log("stylingUpdate");
     setIsResizing(true);
@@ -136,74 +116,6 @@ const Home = () => {
     resetOpts(width, height);
   };
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  //let topContainer;
-  /*
-    let tagLine = () => {
-      if (screenSize >= 800) {
-        topContainer = classes.TopContainerLarge;
-        return (
-          <div style={{paddingTop: "20px"}}>
-            <div style={{fontSize: "58px", fontFamily: "Helvetica, sans-serif", lineHeight: "72px", textAlign: "center"}}>
-              DIY TICKETING
-              <br></br>
-              MADE EASY!
-            </div>
-            <div style={{fontSize: "22px", fontFamily: "Helvetica, sans-serif", lineHeight: "42px", textAlign: "center"}}>
-              Eliminate the middle-man.
-            </div>
-            <br></br>
-            <button
-              style={{
-                border: "1px solid white",
-                backgroundColor: "none",
-                color: "white",
-                fontSize: "14px",
-                width: "240px",
-                height: "40px"
-              }}
-              onClick={() => {
-                console.log("Clicking button");
-                scrollToSignUp()
-              }}
-            >
-              SIGN UP NOW
-            </button>
-          </div>
-        ) 
-      } else if (screenSize >= 650 && screenSize < 800) {
-        topContainer = classes.TopContainerLarge;
-        return (
-          <div style={{paddingTop: "20px"}}>
-            <div style={{fontSize: "52px", lineHeight: "94px", textAlign: "center"}}>
-              DIY TICKETING
-              <br></br>
-              MADE EASY!
-            </div>
-            <div style={{fontSize: "22px", fontFamily: "Helvetica, sans-serif", lineHeight: "54px", textAlign: "center"}}>
-              Eliminate the middle-man.
-            </div>
-          </div>
-        ) 
-      } else {
-        topContainer = classes.TopContainer;
-        return (
-          <div style={{fontSize: "48px", lineHeight: "64px", textAlign: "center"}}>
-            DIY TICKETING
-            <br></br>
-            MADE EASY!
-          </div>
-        ) 
-      }
-    }
-    */
-
   const getStatus = (user) => {
     if ("accountId" in user && "status" in user.accountId) {
       return user.accountId.status;
@@ -235,14 +147,6 @@ const Home = () => {
   };
 
   const signUpRef = React.useRef();
-  //const videosRef = React.useRef();
-
-  const scrollToSignUp = () => {
-    console.log("Inside scrollToSignUp");
-    signUpRef.current.scrollIntoView({
-      behavior: "smooth",
-    });
-  };
 
   let tagLines = () => {
     if (screenWidth >= 1100) {
@@ -275,7 +179,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -312,7 +239,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -349,7 +299,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -386,7 +359,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -423,7 +419,30 @@ const Home = () => {
             }}
             onClick={() => {
               console.log("Clicking button");
-              setModalStatus(true);
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("user") !== null
+              ) {
+                let tempUser = JSON.parse(localStorage.getItem("user"));
+                if (
+                  getStatus(tempUser.user) === 7 ||
+                  getStatus(tempUser.user) === 8
+                ) {
+                  window.location.href = "/vendor";
+                } else if (
+                  getStatus(tempUser.user) === 4 ||
+                  getStatus(tempUser.user) === 5 ||
+                  getStatus(tempUser.user) === 6 ||
+                  ("vendorIntent" in tempUser.user &&
+                    tempUser.user.vendorIntent === true)
+                ) {
+                  window.location.href = "/personal";
+                } else {
+                  window.location.href = "/events";
+                }
+              } else {
+                setModalStatus(true);
+              }
             }}
           >
             SIGN UP NOW
@@ -531,7 +550,7 @@ const Home = () => {
       <br></br>
       <div
         style={{
-          color: "black",
+          color: "#000",
           fontSize: "30px",
           fontWeight: "400",
           lineHeight: "40px",
@@ -927,37 +946,109 @@ const Home = () => {
   let signUpText = () => {
     if (screenSize >= 1050) {
       return (
-        <div
-          style={{ fontSize: "22px", fontWeight: "600", lineHeight: "52px" }}
-        >
-          Sign up for a free trial or a subscription for as low as $7 a month.
-        </div>
+        <Fragment>
+          <div
+            style={{
+              color: "#000",
+              fontSize: "30px",
+              fontWeight: "400",
+              lineHeight: "40px",
+              paddingBottom: "30px",
+            }}
+          >
+            Create Your First Event
+          </div>
+          <div
+            style={{
+              color: "#000",
+              fontSize: "22px",
+              fontWeight: "400",
+              lineHeight: "52px",
+            }}
+          >
+            Sign up for a free trial or a subscription.
+          </div>
+        </Fragment>
       );
     } else if (screenSize >= 900 && screenSize < 1050) {
       return (
-        <div
-          style={{ fontSize: "22px", fontWeight: "600", lineHeight: "32px" }}
-        >
-          Sign up for a free trial or a subscription for as low as $7 a month.
-        </div>
+        <Fragment>
+          <div
+            style={{
+              color: "#000",
+              fontSize: "30px",
+              fontWeight: "400",
+              lineHeight: "40px",
+              paddingBottom: "30px",
+            }}
+          >
+            Create Your First Event
+          </div>
+          <div
+            style={{
+              color: "#000",
+              fontSize: "22px",
+              fontWeight: "600",
+              lineHeight: "32px",
+            }}
+          >
+            Sign up for a free trial or a subscription.
+          </div>
+        </Fragment>
       );
     } else if (screenSize >= 650 && screenSize < 900) {
       return (
-        <div
-          style={{ fontSize: "22px", fontWeight: "600", lineHeight: "36px" }}
-        >
-          Sign up for a free trial or a<br></br>
-          subscription for as low as $7 a month.
-        </div>
+        <Fragment>
+          <div
+            style={{
+              color: "#000",
+              fontSize: "30px",
+              fontWeight: "400",
+              lineHeight: "40px",
+              paddingBottom: "30px",
+            }}
+          >
+            Create Your First Event
+          </div>
+          <div
+            style={{
+              color: "#000",
+              fontSize: "22px",
+              fontWeight: "600",
+              lineHeight: "36px",
+            }}
+          >
+            Sign up for a free trial or a<br></br>
+            subscription.
+          </div>
+        </Fragment>
       );
     } else {
       return (
-        <div
-          style={{ fontSize: "20px", fontWeight: "600", lineHeight: "30px" }}
-        >
-          Sign up for a free trial or a<br></br>
-          subscription for as low as $7 a month.
-        </div>
+        <Fragment>
+          <div
+            style={{
+              color: "#000",
+              fontSize: "30px",
+              fontWeight: "400",
+              lineHeight: "40px",
+              paddingBottom: "30px",
+            }}
+          >
+            Create Your First Event
+          </div>
+          <div
+            style={{
+              color: "#000",
+              fontSize: "20px",
+              fontWeight: "600",
+              lineHeight: "30px",
+            }}
+          >
+            Sign up for a free trial or a<br></br>
+            subscription.
+          </div>
+        </Fragment>
       );
     }
   };
@@ -966,7 +1057,12 @@ const Home = () => {
     if (screenSize >= 1050) {
       return (
         <div
-          style={{ fontSize: "22px", fontWeight: "600", lineHeight: "36px" }}
+          style={{
+            color: "#000",
+            fontSize: "22px",
+            fontWeight: "400",
+            lineHeight: "36px",
+          }}
         >
           Talk one-on-one with an onboarding specialist
         </div>
@@ -974,7 +1070,12 @@ const Home = () => {
     } else if (screenSize >= 900 && screenSize < 1050) {
       return (
         <div
-          style={{ fontSize: "22px", fontWeight: "600", lineHeight: "32px" }}
+          style={{
+            color: "#000",
+            fontSize: "22px",
+            fontWeight: "600",
+            lineHeight: "32px",
+          }}
         >
           Talk one-on-one with an onboarding specialist
         </div>
@@ -982,7 +1083,12 @@ const Home = () => {
     } else if (screenSize >= 650 && screenSize < 900) {
       return (
         <div
-          style={{ fontSize: "22px", fontWeight: "600", lineHeight: "36px" }}
+          style={{
+            color: "#000",
+            fontSize: "22px",
+            fontWeight: "600",
+            lineHeight: "36px",
+          }}
         >
           Talk one-on-one with
           <br></br>
@@ -992,7 +1098,12 @@ const Home = () => {
     } else {
       return (
         <div
-          style={{ fontSize: "20px", fontWeight: "600", lineHeight: "30px" }}
+          style={{
+            color: "#000",
+            fontSize: "20px",
+            fontWeight: "600",
+            lineHeight: "30px",
+          }}
         >
           Talk one-on-one with
           <br></br>
@@ -1013,7 +1124,7 @@ const Home = () => {
             "https://calendly.com/dahday/openseatdirect-connect?back=1&month=2020-10";
         }}
       >
-        SCHEDULE AN APPOINTMENT
+        SCHEDULE A DEMO
       </button>
     </Fragment>
   );
@@ -1102,6 +1213,94 @@ const Home = () => {
     }
   };
 
+  let ourClients = () => {
+    if (screenSize <= 700) {
+      //if (true) {
+      return (
+        <Fragment>
+          <br></br>
+          <div
+            style={{
+              fontSize: "28px",
+              fontWeight: "400",
+              lineHeight: "20px",
+              paddingBottom: "30px",
+            }}
+          >
+            Our Clients
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <img
+              src="https://static.wixstatic.com/media/d66757_afa3532ae942431b912f7311fe6401ed~mv2.jpg/v1/fill/w_399,h_135,al_c,lg_1,q_80/Aspira%20nj%20logo.webp"
+              style={{ width: "200px" }}
+            />
+            <br></br>
+            <br></br>
+            <img
+              src="https://storage.googleapis.com/ff-storage-p01/festivals/logos/000/003/681/large/OfficialSelectionPIFF.jpg?1460061339"
+              style={{ width: "130px" }}
+            />
+            <br></br>
+            <br></br>
+            <img
+              src="https://ncjar.com/templates/t3-ncjar/img/theme/ncjar-logo-5-x2.png"
+              style={{ width: "200px" }}
+            />
+          </div>
+        </Fragment>
+      );
+    } else {
+      return (
+        <Fragment>
+          <br></br>
+          <div
+            style={{
+              fontSize: "30px",
+              fontWeight: "400",
+              lineHeight: "38px",
+              paddingBottom: "10px",
+            }}
+          >
+            Our Clients
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "230px 140px 220px",
+              columnGap: "20px",
+              paddingLeft: "calc((100vw - 630px)/2)",
+              paddingRight: "calc((100vw - 630px)/2)",
+            }}
+          >
+            <div
+              style={{
+                textAlign: "left",
+                paddingTop: "30px",
+              }}
+            >
+              <img
+                src="https://static.wixstatic.com/media/d66757_afa3532ae942431b912f7311fe6401ed~mv2.jpg/v1/fill/w_399,h_135,al_c,lg_1,q_80/Aspira%20nj%20logo.webp"
+                style={{ width: "200px" }}
+              />
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <img
+                src="https://storage.googleapis.com/ff-storage-p01/festivals/logos/000/003/681/large/OfficialSelectionPIFF.jpg?1460061339"
+                style={{ width: "130px" }}
+              />
+            </div>
+            <div style={{ textAlign: "right", paddingTop: "40px" }}>
+              <img
+                src="https://ncjar.com/templates/t3-ncjar/img/theme/ncjar-logo-5-x2.png"
+                style={{ width: "200px" }}
+              />
+            </div>
+          </div>
+        </Fragment>
+      );
+    }
+  };
+
   return (
     <div className={classes.MainContainer}>
       {isResizing ? null : (
@@ -1121,15 +1320,43 @@ const Home = () => {
 
             <div
               className={classes.SectionContainer}
-              style={{ backgroundColor: "white" }}
+              style={{ backgroundColor: "#fff" }}
             >
-              <div className={classes.DescriptionText}>{signUpText()}</div>
+              <div
+                className={classes.DescriptionText}
+                style={{ color: "#000" }}
+              >
+                {signUpText()}
+              </div>
               <br></br>
               <button
                 className={classes.SubmitButton}
                 onClick={() => {
                   console.log("Clicking button");
-                  setModalStatus(true);
+                  if (
+                    typeof window !== "undefined" &&
+                    localStorage.getItem("user") !== null
+                  ) {
+                    let tempUser = JSON.parse(localStorage.getItem("user"));
+                    if (
+                      getStatus(tempUser.user) === 7 ||
+                      getStatus(tempUser.user) === 8
+                    ) {
+                      window.location.href = "/vendor";
+                    } else if (
+                      getStatus(tempUser.user) === 4 ||
+                      getStatus(tempUser.user) === 5 ||
+                      getStatus(tempUser.user) === 6 ||
+                      ("vendorIntent" in tempUser.user &&
+                        tempUser.user.vendorIntent === true)
+                    ) {
+                      window.location.href = "/personal";
+                    } else {
+                      window.location.href = "/events";
+                    }
+                  } else {
+                    setModalStatus(true);
+                  }
                 }}
               >
                 SIGN UP NOW
@@ -1137,14 +1364,14 @@ const Home = () => {
             </div>
             <div
               className={classes.SectionContainer}
-              style={{ backgroundColor: "white" }}
+              style={{ backgroundColor: "#fff" }}
             >
               {appointmentDisplay}
             </div>
           </div>
           <div
             className={classes.SectionContainer}
-            style={{ backgroundColor: "#0B1423" }}
+            style={{ backgroundColor: "#0B1423", color: "#fff" }}
           >
             <div className={classes.Header}>
               <a>
@@ -1172,9 +1399,31 @@ const Home = () => {
                 />
               </a>
             </div>
-            <br></br>
             <div className={classes.CopyRight} style={{ color: "white" }}>
               Copyright &copy; 2021 Open Seat Direct LLC | All Rights Reserved
+            </div>
+            <div>
+              <button
+                className={classes.Button}
+                styles={{ border: "none", outline: "none" }}
+                onClick={() => {
+                  window.location.href = `/privacy-policy`;
+                }}
+              >
+                Privacy Policy
+              </button>
+              |
+              <button
+                className={classes.Button}
+                styles={{ border: "none", outline: "none" }}
+                onClick={() => {
+                  window.location.href = `/terms-and-conditions`;
+                }}
+              >
+                Terms and Conditions
+              </button>
+              |{" "}
+              <span style={{ fontSize: "10px", fontWeight: "600" }}>v1.0</span>
             </div>
           </div>
         </div>
@@ -1196,144 +1445,3 @@ const Home = () => {
 };
 
 export default Home;
-/*
-
-    return (
-      <div className={classes.MainContainer}>
-        {isResizing ? null : (
-          <div>
-            {topImage()}
-            <div className={classes.TextContainer}>
-              <div className={classes.DescriptionText}>
-                {marketingPhrase()}
-              </div>
-              
-              <div className={classes.SectionContainer}>
-                {marketingPoints()}
-              </div>
-              
-
-              <div
-                className={classes.SectionContainer}
-                style={{paddingBottom: "60px"}}
-              >
-                {videoSection()}
-              </div>
-
-        <div
-          className={classes.SectionContainer}
-          style={{backgroundColor: "#2F5596"}}
-        >
-          {testimonials()}
-
-          
-          <div style={{
-            fontSize: "17px",
-            textAlign: "center",
-            color: "white"
-          }}
-          >
-            Mike Salvi, HaHaForHire
-          </div>
-          <br></br>
-          <div
-            style={{
-              margin: "auto",
-              width: "700px",
-              fontSize: "24px",
-              fontWeight: "400",
-              lineHeight: "36px",
-              textAlign: "center",
-              color: "white",
-              paddingLeft: "30px",
-              paddingRight: "30px"
-            }}
-          >
-            "OpenSeatDirect really helped when one of my events was unfortunately cancelled. Since I controlled the cash from ticket sales, I was able to quickly issue my ticket buyers a refund. This would not have happened with other ticketing systems. Priceless!"
-          </div>
-          
-          <div ref={signUpRef}></div>
-          <br></br>
-        </div>
-            </div>
-          </div>
-        )}
-
-        <div
-          className={classes.SectionContainer}
-          style={{backgroundColor: "white"}}
-          //#E2EDFA
-        >
-          <div className={classes.DescriptionText}>
-            {signUpText()}
-          </div>
-
-          {screenSize >= 500 ? (
-            <div className={classes.SignUpForm}>
-              <div>
-                {mainDisplay()}
-              </div>
-            </div>
-            ) :  (
-              <div className={classes.SignUpFormTight}>
-                <div>
-                  {mainDisplay()}
-                </div>
-              </div>
-            )
-          }
-        </div>
-        
-      <div
-        className={classes.SectionContainer}
-        style={{backgroundColor: "white"}}
-        //#ECF7FE
-      >
-        <div className={classes.DescriptionText}>
-          {appointment()}
-        </div>
-        <br></br>
-        <button
-          style={{
-            border: "1px solid black",
-            backgroundColor: "#2F5596",
-            color: "#fff",
-            fontSize: "14px",
-            width: "340px",
-            height: "40px",
-            fontWeight: "500"
-            }}
-          href="https://calendly.com/dahday/openseatdirect-connect?back=1&month=2020-10">
-          SCHEDULE AN APPOINTMENT
-        </button>
-        <br></br>
-        <br></br>
-      </div>
-
-      <div
-        className={classes.SectionContainer}
-        style={{backgroundColor: "#0B1423"}}
-      >
-        <div className={classes.Header}>
-          <a>
-            <FontAwesomeIcon className={classes.faFacebook} icon={faFacebook} />
-          </a>
-          <a href="https://www.youtube.com/channel/UCTC0aLCktp-DoI_FSmp_b4w/videos">
-            <FontAwesomeIcon className={classes.faYoutube} icon={faYoutube} />
-          </a>
-          <a href="https://twitter.com/openseatdirect">
-            <FontAwesomeIcon className={classes.faTwitter} icon={faTwitter} />
-          </a>
-          <a href="https://www.instagram.com/openseatdirect/">
-            <FontAwesomeIcon className={classes.faInstagram} icon={faInstagram} />
-          </a>
-        </div>
-        <br></br>
-        <div className={classes.CopyRight} style={{color: "white"}}>Copyright &copy; 2019 OpenSeatDirect LLC | All Rights Reserved</div>
-      </div>
-
-
-      </div>
-    )
-
-*/
