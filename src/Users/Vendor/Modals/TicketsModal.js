@@ -5,18 +5,7 @@ import Backdrop from "../../../components/UI/Backdrop/Backdrop";
 import classes from "./TicketsModal.module.css";
 
 const TicketsModal = (props) => {
-  
-  console.log("Ticket Modal props: ", props)
-
-  let allTotal = 0;
-  let payPalExpressTotal = 0;
-  let cashTotal = 0;
-  let cashAppTotal = 0;
-  let venmoTotal = 0;
-  let paypalTotal = 0;
-  let bitcoinTotal = 0;
-  let ethereumTotal = 0;
-  let otherTotal = 0;
+  console.log("Ticket Modal props: ", props);
 
   let longDateTime;
   [longDateTime] = getLongStartDate(props.details.startDateTime);
@@ -28,29 +17,29 @@ const TicketsModal = (props) => {
         style={{
           width: "530px",
           textAlign: "center",
-          paddingLeft: "35px"
+          paddingLeft: "35px",
         }}
       >
-        <button className={classes.ButtonGrey}
+        <button
+          className={classes.ButtonGrey}
           onClick={() => {
-            props.close()
+            props.close();
           }}
         >
           CLOSE
         </button>
       </div>
-    )
-  }
+    );
+  };
 
   const ticketsList = () => {
-    return (
-      props.details.tickets.map((ticket, index) => {
-        console.log("ticket: ", ticket);
+    return props.details.tickets.map((ticket, index) => {
+      console.log("ticket: ", ticket);
 
-        let adjustedTicketName;
-        let num = 40;
+      let adjustedTicketName;
+      let num = 40;
 
-        /*
+      /*
         //if (ticket.ticketName.length <= num) {
           if (true) {
           adjustedTicketName = ticket.ticketName;
@@ -69,26 +58,31 @@ const TicketsModal = (props) => {
         }
         */
 
-        return (
-          <Fragment>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "360px 80px 70px",
-                gridGap: "10px",
-                width: "530px",
-                height: "28px",
-                paddingTop: "10px"
-              }}
-            > <div></div>
-              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.fullPrice).toFixed(2)}</div>
-              <div style={{textAlign: "right", paddingRight: "10px"}}>{parseFloat(ticket.sellingPrice).toFixed(2)}</div>
+      return (
+        <Fragment>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "360px 80px 70px",
+              gridGap: "10px",
+              width: "530px",
+              height: "28px",
+              paddingTop: "10px",
+            }}
+          >
+            {" "}
+            <div></div>
+            <div style={{ textAlign: "right", paddingRight: "10px" }}>
+              {parseFloat(ticket.fullPrice).toFixed(2)}
             </div>
-          </Fragment>
-        )
-      })
-    )
-  }
+            <div style={{ textAlign: "right", paddingRight: "10px" }}>
+              {parseFloat(ticket.sellingPrice).toFixed(2)}
+            </div>
+          </div>
+        </Fragment>
+      );
+    });
+  };
 
   return (
     <Fragment>
@@ -110,14 +104,14 @@ const TicketsModal = (props) => {
         >
           {props.details.eventTitle}
         </div>
-        
+
         <div
           style={{
             fontSize: "16px",
             textAlign: "left",
             textAlign: "center",
             fontWeight: "400",
-            paddingTop: "5px"
+            paddingTop: "5px",
           }}
         >
           {longDateTime}
@@ -127,9 +121,9 @@ const TicketsModal = (props) => {
             fontSize: "16px",
             textAlign: "left",
             paddingLeft: "80px",
-            paddingBottom: "10px"
-          }}>
-        </div>
+            paddingBottom: "10px",
+          }}
+        ></div>
         <br></br>
 
         <div
@@ -140,21 +134,23 @@ const TicketsModal = (props) => {
             width: "530px",
             borderBottom: "1px solid black",
             fontWeight: "600",
-            paddingBottom: "10px"
+            paddingBottom: "10px",
           }}
         >
-          <div style={{textAlign: "left"}}>Ticket Type</div>
-          <div style={{textAlign: "center"}}>Full<br></br>Price</div>
-          <div style={{textAlign: "center"}}>Purchase Price</div>
+          <div style={{ textAlign: "left" }}>Ticket Type</div>
+          <div style={{ textAlign: "center" }}>
+            Full<br></br>Price
+          </div>
+          <div style={{ textAlign: "center" }}>Purchase Price</div>
         </div>
 
         <div
           style={{
             width: "530px",
             borderBottom: "1px solid black",
-            paddingBottom: "10px"
-            }}
-          >
+            paddingBottom: "10px",
+          }}
+        >
           {ticketsList()}
         </div>
         <br></br>

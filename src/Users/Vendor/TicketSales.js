@@ -2,73 +2,27 @@ import React, { useEffect, useState, Fragment } from "react";
 
 import { getDate } from "./Resources/VendorFunctions";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faReceipt } from "@fortawesome/free-solid-svg-icons";
-
 import classes from "./TicketSales.module.css";
-import ReceiptModal from "./Modals/ReceiptModal";
-import Spinner from "../../components/UI/Spinner/Spinner";
+import ReceiptModal from "../Modals/ReceiptModalVendor";
+//
 
 const TicketSales = (props) => {
-  const [display, setDisplay] = useState("spinner"); //main, spinner
+  console.log("PROPS: ", props);
+
   const [modalView, setModalView] = useState(false); // defines appearance of ReceiptModal
 
   const [eventOrders, setEventOrders] = useState([]);
-  const [selectedEventTitle, setSelectedEventTitle] = useState("");
+
   const [selectedOrder, setSelectedOrder] = useState({});
 
   const [sortParameters, setSortParameters] = useState({
-    label: "order_createdAt",
+    label: "createdAt",
     direction: "asc",
   });
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      if (
-        localStorage.getItem(`orders`) !== null &&
-        localStorage.getItem(`events`) !== null &&
-        localStorage.getItem(`eventNum`) !== null
-      ) {
-        let storedEvents = JSON.parse(localStorage.getItem("events"));
-        let storedOrders = JSON.parse(localStorage.getItem("orders"));
-        console.log("STORED ORDERS: ", storedOrders);
-        let storedEventNum = JSON.parse(localStorage.getItem("eventNum"));
-
-        storedEvents.forEach((event) => {
-          if (event.eventNum === storedEventNum) {
-            loadEventTitle(storedEventNum);
-          }
-        });
-
-        let tempEventOrders = [];
-        storedOrders.forEach((order) => {
-          if (order.eventNum === storedEventNum) {
-            order.key = Math.floor(Math.random() * 1000000000000000);
-            order.view = false;
-            tempEventOrders.push(order);
-          }
-        });
-        setEventOrders(tempEventOrders);
-      } else {
-        props.clicked("events");
-      }
-    } else {
-      window.location.href = "/auth";
-    }
-    setDisplay("main");
-  }, []);
-
-  const loadEventTitle = (eventNum) => {
-    let tempEvents = JSON.parse(localStorage.getItem("events"));
-    tempEvents.forEach((event, index) => {
-      if (event.eventNum === eventNum) {
-        setSelectedEventTitle(event.eventTitle);
-      }
-    });
-  };
+    setEventOrders(props.orders);
+  }, [props]);
 
   const compareValues = (key, order) => {
     return function innerSort(a, b) {
@@ -105,27 +59,42 @@ const TicketSales = (props) => {
   };
 
   const mainDisplay = () => {
-    if (display === "main" && eventOrders.length > 0) {
+    if (props.orders.length > 0) {
+      let oddOrder = "true";
+      let styling = {};
       return (
         <Fragment>
           {eventOrders.map((item, index) => {
+            console.log("ORDER: ", item);
             let shortDateTime;
-            [shortDateTime] = getDate(item);
+            [shortDateTime] = getDate(item.order_createdAt);
+            if (oddOrder) {
+              styling = {
+                backgroundColor: "#F0F0F0",
+              };
+            } else {
+              styling = {
+                backgroundColor: "#fff",
+              };
+            }
+            oddOrder = !oddOrder;
+
             return (
-              <div key={index} className={classes.Orders}>
+              <div key={index} className={classes.Orders} style={styling}>
                 <div style={{ textAlign: "left" }}>{shortDateTime}</div>
                 <div style={{ textAlign: "left" }}>
                   {item.order_lastName}, {item.order_firstName}
                 </div>
                 <div style={{ textAlign: "left" }}>{item.order_email}</div>
                 <div>{item.order_qrTickets.length}</div>
-                <div style={{ textAlign: "right", paddingRight: "20px" }}>
-                  {item.order_totalAmount}
+                <div style={{ textAlign: "right" }}>
+                  {item.order_totalAmount.toFixed(2)}
                 </div>
                 <div style={{ fontSize: "22px", textAlign: "center" }}>
-                  <button className={classes.EventButton}>
+                  <button className={classes.EventButton} style={styling}>
                     <ion-icon
                       style={{ fontSize: "24px", color: "blue" }}
+                      style={styling}
                       name="receipt-outline"
                       onClick={() => {
                         setSelectedOrder(item);
@@ -139,19 +108,20 @@ const TicketSales = (props) => {
           })}
         </Fragment>
       );
-    } else if (display === "main") {
+      //
+    } else {
       return (
         <div className={classes.NoTicketsText}>
           There are no past orders associated with this event.
         </div>
       );
-    } else return null;
+    }
   };
 
   const loadPreviousOrder = () => {
     let newPosition;
-    eventOrders.map((order, index) => {
-      if (order.key === selectedOrder.key) {
+    eventOrders.forEach((order, index) => {
+      if (order.osdOrderId === selectedOrder.osdOrderId) {
         if (index === 0) {
           newPosition = eventOrders.length - 1;
         } else {
@@ -164,8 +134,8 @@ const TicketSales = (props) => {
 
   const loadNextOrder = () => {
     let newPosition;
-    eventOrders.map((order, index) => {
-      if (order.key === selectedOrder.key) {
+    eventOrders.forEach((order, index) => {
+      if (order.osdOrderId === selectedOrder.osdOrderId) {
         if (index === eventOrders.length - 1) {
           newPosition = 0;
         } else {
@@ -183,6 +153,8 @@ const TicketSales = (props) => {
           <ReceiptModal
             show={modalView}
             details={selectedOrder}
+            event={props.event}
+            numberOrders={props.orders.length}
             close={() => {
               setModalView(false);
             }}
@@ -200,10 +172,8 @@ const TicketSales = (props) => {
 
   const tabTitle = (
     <div className={classes.DisplayPanelTitle}>
-      {display === "main" && selectedEventTitle !== "" ? (
-        <div style={{ fontSize: "26px", fontWeight: "600" }}>
-          {selectedEventTitle}
-        </div>
+      {props.event.eventTitle !== "" ? (
+        <div className={classes.TabTitle}>{props.event.eventTitle}</div>
       ) : (
         <div>{null}</div>
       )}
@@ -211,7 +181,7 @@ const TicketSales = (props) => {
         <button
           className={classes.SwitchButton}
           onClick={() => {
-            props.clicked("events");
+            props.toEvents("events");
           }}
         >
           Switch Event
@@ -234,7 +204,7 @@ const TicketSales = (props) => {
               updateValues(e.target.name);
             }}
           >
-            Order Date
+            Order Dates
           </button>
         </div>
         <div>
@@ -272,7 +242,7 @@ const TicketSales = (props) => {
         <div style={{ textAlign: "center" }}>
           <button
             className={classes.SortButton}
-            name="order_qty"
+            name="order_numTickets"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -280,7 +250,7 @@ const TicketSales = (props) => {
             Tickets
           </button>
         </div>
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "right" }}>
           <button
             className={classes.SortButton}
             name="order_totalAmount"
@@ -296,26 +266,11 @@ const TicketSales = (props) => {
     </div>
   );
 
-  const loadingSpinner = () => {
-    if (display === "spinner") {
-      return (
-        <div style={{ paddingTop: "60px" }}>
-          <Spinner />
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
-
   return (
     <div>
       {tabTitle}
       {displayHeader}
-      <div className={classes.DisplayPanel}>
-        {loadingSpinner()}
-        {mainDisplay()}
-      </div>
+      <div className={classes.DisplayPanel}>{mainDisplay()}</div>
       {receiptModalDisplay()}
     </div>
   );

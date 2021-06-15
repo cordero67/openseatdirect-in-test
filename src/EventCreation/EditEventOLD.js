@@ -13,7 +13,7 @@ import EventDetails from "./Components/EventDetails";
 import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./Components/AdditionalSettings";
 
-import classes from "./EditEvent.module.css";
+import classes from "./EditEventOLD.module.css";
 
 // holds sign-in information
 let vendorInfo = {};
@@ -28,15 +28,13 @@ const EventEdit = (props) => {
   const [pageErrors, setPageErrors] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
-
-  const [windowWidth, setWindowWidth] = useState([]);
   //
-  // LOOKS GOOD
-  // determines resized width and height of window
-  window.onresize = function (event) {
-    console.log(window.innerWidth, window.innerHeight);
-    setWindowWidth(window.innerWidth);
-  };
+  //
+  //
+  //
+  //
+  //
+  //
   //
   // stores all original Event Description variables
   const [originalEventDescription, setOriginalEventDescription] = useState({});
@@ -171,7 +169,6 @@ const EventEdit = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
-      /*
       //start section not in "createEvent"
       if (localStorage.getItem(`eventNum`) !== null) {
         console.log("found a valid event to edit");
@@ -197,13 +194,6 @@ const EventEdit = (props) => {
       } else {
         console.log("Did not find a valid event to edit");
       }
-      */
-      initPhotoData(props.event.photo);
-
-      const [tempTicketArray, tempDescription] = loadEventInfo(props.event);
-      setTicketDetails(tempTicketArray);
-      setEventDescription(tempDescription);
-      setOriginalEventDescription(tempDescription);
     } else {
       window.location.href = "/auth";
     }
@@ -231,7 +221,6 @@ const EventEdit = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
-      vendorInfo.vendorAccount = tempUser.user.accountId.accountNum;
     } else {
       window.location.href = "/auth";
     }
@@ -597,7 +586,6 @@ const EventEdit = (props) => {
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
-      //
       apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
 
       fetch(apiurl, {
@@ -612,7 +600,6 @@ const EventEdit = (props) => {
           return response.json();
         })
         .then((res) => {
-          console.log("Event was saved/went live");
           console.log("res: ", res);
           if (!res.status) {
             if (res.message) {
@@ -658,10 +645,6 @@ const EventEdit = (props) => {
           ></SavedModal>
         </Fragment>
       );
-      //
-      //
-      //
-      //
     } else if (
       eventStatus.status === "saved" ||
       eventStatus.status === "live"
@@ -1176,90 +1159,46 @@ const EventEdit = (props) => {
       liveStatus = "UPDATE LIVE";
     }
 
-    if (true) {
-      //if (windowWidth >= 420) {
-      return (
-        <Fragment>
-          <div>
-            <button
-              className={classes.ButtonRed}
-              onClick={() => {
-                let tempDescription = { ...eventDescription };
-                tempDescription.isDraft = true;
-                setEventDescription(tempDescription);
-                saveEvent("saved");
-              }}
-            >
-              {draftStatus}
-            </button>
-          </div>
-          <div>
-            <button
-              className={classes.ButtonGreen}
-              onClick={() => {
-                let tempDescription = { ...eventDescription };
-                tempDescription.isDraft = false;
-                setEventDescription(tempDescription);
-                saveEvent("live");
-              }}
-            >
-              {liveStatus}
-            </button>
-          </div>
-          <div>
-            <button
-              className={classes.ButtonGrey}
-              onClick={() => {
-                window.location.href = `/myaccount`;
-              }}
-            >
-              CANCEL EDIT
-            </button>
-          </div>
-        </Fragment>
-      );
-    } else {
-      return (
-        <Fragment>
-          <div>
-            <button
-              className={classes.ButtonRedTight}
-              onClick={() => {
-                let tempDescription = { ...eventDescription };
-                tempDescription.isDraft = true;
-                setEventDescription(tempDescription);
-                saveEvent("saved");
-              }}
-            >
-              {draftStatus}
-            </button>
-          </div>
-          <div>
-            <button
-              className={classes.ButtonGreenTight}
-              onClick={() => {
-                let tempDescription = { ...eventDescription };
-                tempDescription.isDraft = false;
-                setEventDescription(tempDescription);
-                saveEvent("live");
-              }}
-            >
-              {liveStatus}
-            </button>
-          </div>
-          <div>
-            <button
-              className={classes.ButtonGreyTight}
-              onClick={() => {
-                window.location.href = `/myaccount`;
-              }}
-            >
-              CANCEL EDIT
-            </button>
-          </div>
-        </Fragment>
-      );
-    }
+    return (
+      <Fragment>
+        <div>
+          <button
+            className={classes.ButtonRed}
+            onClick={() => {
+              let tempDescription = { ...eventDescription };
+              tempDescription.isDraft = true;
+              setEventDescription(tempDescription);
+              saveEvent("saved");
+            }}
+          >
+            {draftStatus}
+          </button>
+        </div>
+        <div>
+          <button
+            className={classes.ButtonGreen}
+            onClick={() => {
+              let tempDescription = { ...eventDescription };
+              tempDescription.isDraft = false;
+              setEventDescription(tempDescription);
+              saveEvent("live");
+            }}
+          >
+            {liveStatus}
+          </button>
+        </div>
+        <div>
+          <button
+            className={classes.ButtonGrey}
+            onClick={() => {
+              window.location.href = `/myaccount`;
+            }}
+          >
+            CANCEL EDIT
+          </button>
+        </div>
+      </Fragment>
+    );
   };
 
   const displayHeader = (

@@ -18,6 +18,7 @@ import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Authentication from "../../Users/Authentication/Authentication";
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
+//import VendorAccountOLD from "../../Users/Vendor/VendorAccountOLD";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
 
 import Header from "../Headers/Header";
@@ -316,20 +317,20 @@ export default Routes;
 
 /*
 
-      <Route
-        path="/er-NCJAR/"
-        render={(routeProps) => (
-          <React.Fragment>
-            <RegistrationNCJAR />
-          </React.Fragment>
-        )}
-      />
 
       <Route
-        path="/er-COA/"
+        path="/myaccountOLD"
+        exact
         render={(routeProps) => (
           <React.Fragment>
-            <RegistrationCOA />
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <VendorAccountOLD />
+            <Footer></Footer>
           </React.Fragment>
         )}
       />

@@ -49,7 +49,6 @@ const TicketCreation = (props) => {
             item.nameWarning = false;
           } else {
             item.nameWarning = !nameRegex.test(item.ticketName);
-            console.log("nameWarning: ", !nameRegex.test(item.ticketName));
           }
 
           if (!item.remainingQuantity) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { Fragment } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
@@ -6,6 +6,74 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import classes from "./VendorNavigation.module.css";
 
 const VendorNavigation = (props) => {
+  let accountSettings = (
+    <li>
+      <button
+        className={
+          props.pane === "account"
+            ? classes.NavigationButtonActive
+            : classes.NavigationButton
+        }
+        name="account"
+        onClick={props.clicked}
+      >
+        Account Settings
+      </button>
+    </li>
+  );
+  let myTickets = (
+    <li>
+      <button
+        className={
+          props.pane === "wallet"
+            ? classes.NavigationButtonActive
+            : classes.NavigationButton
+        }
+        name="wallet"
+        onClick={props.clicked}
+      >
+        My Tickets
+      </button>
+    </li>
+  );
+
+  let myEvents = (
+    <li>
+      <button
+        className={
+          props.pane === "events" ||
+          props.pane === "salesAnalytics" ||
+          props.pane === "ticketSales" ||
+          props.pane === "issueTickets" ||
+          props.pane === "editEvent"
+            ? classes.NavigationButtonActive
+            : classes.NavigationButton
+        }
+        name="events"
+        onClick={props.clicked}
+      >
+        My Events
+      </button>
+    </li>
+  );
+
+  let createEvent = (
+    <li>
+      <button
+        className={
+          props.pane === "create"
+            ? classes.NavigationButtonActive
+            : classes.NavigationButton
+        }
+        name="create"
+        onClick={props.clicked}
+      >
+        Create Event
+      </button>
+    </li>
+  );
+  //}
+
   return (
     <Fragment>
       <div className={classes.DashboardTitle}>
@@ -15,51 +83,11 @@ const VendorNavigation = (props) => {
 
       <ul className={classes.NavigationBar}>
         <div className={classes.NavigationItems}>
-          <li>
-            <button
-              className={
-                props.pane === "events" ||
-                props.pane === "salesAnalytics" ||
-                props.pane === "ticketSales" ||
-                props.pane === "issueTickets" ||
-                props.pane === "editEvent"
-                  ? classes.NavigationButtonActive
-                  : classes.NavigationButton
-              }
-              name="events"
-              onClick={props.clicked}
-            >
-              My Events
-            </button>
-          </li>
-
-          <li>
-            <button
-              className={
-                props.pane === "create"
-                  ? classes.NavigationButtonActive
-                  : classes.NavigationButton
-              }
-              name="create"
-              onClick={props.clicked}
-            >
-              Create Event
-            </button>
-          </li>
-
-          <li>
-            <button
-              className={
-                props.pane === "account"
-                  ? classes.NavigationButtonActive
-                  : classes.NavigationButton
-              }
-              name="account"
-              onClick={props.clicked}
-            >
-              Account Settings
-            </button>
-          </li>
+          {myEvents}
+          {createEvent}
+          {accountSettings}
+          <hr className={classes.HorizontalDivider} />
+          {/*myTickets*/}
         </div>
       </ul>
     </Fragment>
@@ -67,21 +95,3 @@ const VendorNavigation = (props) => {
 };
 
 export default VendorNavigation;
-
-/*
-
-
-          <hr className={classes.HorizontalDivider}/>
-
-          <li>
-            <button
-              className={(props.pane === "myTickets") ?
-                classes.NavigationButtonActive :
-                classes.NavigationButton
-              }
-              name="myTickets"
-              onClick={props.clicked}>
-              My Tickets
-            </button>
-          </li>
-          */

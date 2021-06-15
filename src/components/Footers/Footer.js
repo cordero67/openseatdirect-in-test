@@ -57,7 +57,7 @@ const Footer = () => {
             >
               Terms and Conditions
             </button>
-            | v1.1
+            | v1.2
           </div>
         </div>
       </div>
@@ -92,7 +92,7 @@ const Footer = () => {
             >
               Terms and Conditions
             </button>
-            | v1.1
+            | v1.2
           </div>
         </div>
       </div>

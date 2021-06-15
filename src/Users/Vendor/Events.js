@@ -1,197 +1,58 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 
-import { API } from "../../config";
 import WarningModal from "./Modals/WarningModal";
-import Spinner from "../../components/UI/Spinner/Spinner";
 
 import classes from "./Events.module.css";
-import { compareValues, getDates } from "./Resources/VendorFunctions";
+import { getDates } from "./Resources/VendorFunctions";
 
 const Events = (props) => {
-  const [display, setDisplay] = useState("spinner"); //main, spinner, connection
   const [warningModal, setWarningModal] = useState({
     status: false,
     type: "",
   });
 
-  const [eventDescriptions, setEventDescriptions] = useState(); //
-  const [eventOrders, setEventOrders] = useState(); //
-
-  const handleErrors = (response) => {
-    if (!response.ok) {
-      console.log("error in 'handleErrors()'");
-      throw Error(response.status);
-    }
-    return response;
-  };
-
-  // *** NEED TO LOOK AT RESTRICTING WHEN THE API IS TRIGGERED TO NOT HAVE REDUNDANT PINGS TO THE BACK END
-  const loadServerData = () => {
-    let tempUser = JSON.parse(localStorage.getItem("user"));
-    let vendorToken = tempUser.token;
-    let vendorId = tempUser.user._id;
-    let accountNum = tempUser.user.accountId.accountNum;
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + vendorToken);
-    let requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    let fetchstr = `${API}/event/alluser/${vendorId}`;
-
-    fetch(fetchstr, requestOptions)
-      .then(handleErrors)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log("result: ", JSON.parse(result));
-        // LOOK TO NOT STORE IN LOCAL STORAGE
-        localStorage.setItem("events", result);
-        let jsEvents = JSON.parse(result);
-        jsEvents.sort(compareValues("startDateTime", "asc"));
-        setEventDescriptions(jsEvents);
-        fetchstr = `${API}/order/${vendorId}`;
-        //fetchstr = `${API}/accounts/${accountNum}/orders?pending=false`;
-        fetch(fetchstr, requestOptions)
-          .then(handleErrors)
-          .then((response) => response.text())
-          .then((result) => {
-            // LOOK TO NOT STORE IN LOCAL STORAGE
-            localStorage.setItem("orders", result);
-            let jsOrders = JSON.parse(result);
-            //jsOrders.sort(compareValues("order_createdAt", "asc"));
-            console.log("ORDERS FROM SERVER:", jsOrders);
-            setEventOrders(jsOrders);
-            setDisplay("main");
-          });
-        return jsEvents;
-      })
-      .catch((error) => {
-        console.log("error", error);
-        setDisplay("connection");
-      });
-  };
-
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      loadServerData();
-    } else {
-      window.location.href = "/auth";
-    }
-  }, []);
-
-  const setEventNum = (item) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
-    } else {
-      window.location.href = "/auth";
-    }
-  };
-
-  const switchTabNEW = (name, item) => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      if (name === "analytics") {
-        console.log("item.eventNum: ", item.eventNum);
-        let tempOrders = [];
-        eventOrders.forEach((order) => {
-          if (order.eventNum === item.eventNum) {
-            tempOrders.push(order);
-          }
-        });
-        console.log("ORDERS: ", tempOrders);
-        if (tempOrders.length > 0) {
-          props.salesAnalytics(item, tempOrders);
-        } else {
-          setWarningModal({
-            status: true,
-            type: "analytics",
-          });
-        }
-      }
-    } else {
-      window.location.href = "/auth";
-    }
-  };
-
   const switchTab = (name, item) => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      localStorage.setItem("eventNum", JSON.stringify(item.eventNum));
-
-      if (
-        localStorage.getItem(`orders`) !== null &&
-        localStorage.getItem(`events`) !== null
-      ) {
-        let storedEvents = JSON.parse(localStorage.getItem("events"));
-        let storedOrders = JSON.parse(localStorage.getItem("orders"));
-
-        if (name === "analytics") {
-          console.log("item.eventNum: ", item.eventNum);
-          let tempOrders = [];
-          eventOrders.forEach((order) => {
-            if (order.eventNum === item.eventNum) {
-              tempOrders.push(order);
-            }
-          });
-          console.log("ORDERS: ", tempOrders);
-          if (tempOrders.length > 0) {
-            props.salesAnalytics(item, tempOrders);
-          } else {
-            setWarningModal({
-              status: true,
-              type: "analytics",
-            });
-          }
-        } else if (name === "orders") {
-          let ordersExist = false;
-          storedOrders.forEach((order) => {
-            if (order.eventNum === item.eventNum) {
-              ordersExist = true;
-            }
-          });
-          if (ordersExist) {
-            props.ticketSales();
-          } else {
-            setWarningModal({
-              status: true,
-              type: "orders",
-            });
-          }
-        } else if (name === "tickets") {
-          let ticketsExist = false;
-          storedEvents.forEach((event) => {
-            if (
-              event.eventNum === item.eventNum &&
-              "tickets" in event &&
-              event.tickets.length > 0
-            ) {
-              ticketsExist = true;
-            }
-          });
-          if (ticketsExist) {
-            props.issueTickets();
-          } else {
-            setWarningModal({
-              status: true,
-              type: "tickets",
-            });
-          }
+    console.log("NAME: ", name);
+    console.log("ITEM: ", item);
+    if (name === "analytics") {
+      let tempOrders = [];
+      props.eventOrders.forEach((order) => {
+        if (order.eventNum === item.eventNum) {
+          tempOrders.push(order);
         }
+      });
+      if (tempOrders.length > 0) {
+        props.salesAnalytics(item, tempOrders);
       } else {
-        loadServerData();
+        setWarningModal({
+          status: true,
+          type: "analytics",
+        });
       }
-    } else {
-      window.location.href = "/auth";
+    } else if (name === "orders") {
+      let tempOrders = [];
+      props.eventOrders.forEach((order) => {
+        if (order.eventNum === item.eventNum) {
+          tempOrders.push(order);
+        }
+      });
+      if (tempOrders.length > 0) {
+        props.ticketSales(item, tempOrders);
+      } else {
+        setWarningModal({
+          status: true,
+          type: "orders",
+        });
+      }
+    } else if (name === "tickets") {
+      if ("tickets" in item && item.tickets.length > 0) {
+        props.issueTickets(item);
+      } else {
+        setWarningModal({
+          status: true,
+          type: "tickets",
+        });
+      }
     }
   };
 
@@ -211,14 +72,26 @@ const Events = (props) => {
   );
 
   const mainDisplay = () => {
-    if (display === "main" && eventDescriptions.length !== 0) {
+    if (props.eventDescriptions.length > 0) {
+      let oddOrder = true;
+      let styling = {};
       return (
         <div>
-          {eventDescriptions.map((item, index) => {
+          {props.eventDescriptions.map((item, index) => {
             let shortMonth, dayDate, longDateTime;
             [shortMonth, dayDate, longDateTime] = getDates(item.startDateTime);
+            if (!oddOrder) {
+              styling = {
+                backgroundColor: "#F0F0F0",
+              };
+            } else {
+              styling = {
+                backgroundColor: "#fff",
+              };
+            }
+            oddOrder = !oddOrder;
             return (
-              <div key={index} className={classes.Events}>
+              <div key={index} className={classes.Events} style={styling}>
                 <div style={{ textAlign: "center" }}>
                   <div
                     style={{
@@ -264,16 +137,16 @@ const Events = (props) => {
                     <span style={{ color: "#008F00" }}>LIVE</span>
                   )}
                 </div>
-                <button className={classes.EventButton}>
+                <button className={classes.EventButton} style={styling}>
                   <ion-icon
                     style={{ fontSize: "28px", color: "blue" }}
                     name="analytics"
                     onClick={() => {
-                      switchTabNEW("analytics", item);
+                      switchTab("analytics", item);
                     }}
                   />
                 </button>
-                <button className={classes.EventButton}>
+                <button className={classes.EventButton} style={styling}>
                   <ion-icon
                     style={{ fontSize: "24px", color: "blue" }}
                     name="receipt-outline"
@@ -282,7 +155,7 @@ const Events = (props) => {
                     }}
                   />
                 </button>
-                <button className={classes.EventButton}>
+                <button className={classes.EventButton} style={styling}>
                   <ion-icon
                     style={{ fontSize: "26px", color: "blue" }}
                     name="ticket-outline"
@@ -291,13 +164,12 @@ const Events = (props) => {
                     }}
                   />
                 </button>
-                <button className={classes.EventButton}>
+                <button className={classes.EventButton} style={styling}>
                   <ion-icon
                     style={{ fontSize: "26px", color: "blue" }}
                     name="create-outline"
                     onClick={() => {
-                      setEventNum(item);
-                      props.editEvent();
+                      props.editEvent(item);
                     }}
                   />
                 </button>
@@ -306,14 +178,12 @@ const Events = (props) => {
           })}
         </div>
       );
-    } else if (display === "main") {
+    } else {
       return (
         <div className={classes.NoEventsText}>
           You currently have no events.
         </div>
       );
-    } else {
-      return null;
     }
   };
 
@@ -346,38 +216,11 @@ const Events = (props) => {
     </div>
   );
 
-  const loadingSpinner = () => {
-    if (display === "spinner") {
-      return (
-        <div style={{ paddingTop: "60px" }}>
-          <Spinner />
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const connectionStatus = () => {
-    if (display === "connection") {
-      return (
-        <div className={classes.ConnectionText}>
-          There is a problem with the OSD Server in retrieving your events.
-          Please try again later.
-        </div>
-      );
-    } else return null;
-  };
-
   return (
     <div>
       {tabTitle}
       {displayHeader}
-      <div className={classes.DisplayPanel}>
-        {loadingSpinner()}
-        {mainDisplay()}
-        {connectionStatus()}
-      </div>
+      <div className={classes.DisplayPanel}>{mainDisplay()}</div>
       {warningModalDisplay}
     </div>
   );

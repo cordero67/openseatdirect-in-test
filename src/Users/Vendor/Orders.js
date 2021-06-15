@@ -32,7 +32,7 @@ const Orders = (props) => {
       //vendorInfo.name = tempUser.user.name
       //console.log("vendorInfo.name: ", tempUser.user.name)
     } else {
-      //window.location.href = "/auth";
+      window.location.href = "/signin";
     }
 
     if (
@@ -55,6 +55,7 @@ const Orders = (props) => {
       redirect: "follow",
     };
 
+    // *** NEED TO LOOK AT RESTRICTING WHEN THE API IS TRIGGERED TO NOT HAVE REDUNDANT PINGS TO THE BACK END
     let fetchstr = `${API}/order/${vendorInfo.id}`;
 
     fetch(fetchstr, requestOptions)
@@ -83,7 +84,6 @@ const Orders = (props) => {
     console.log("ticketOrders: ", ticketOrders);
     if (!isLoading && isSuccessfull && ticketOrders.length !== 0) {
       console.log("SUCCESS");
-      //if (false) {
       return (
         <div>
           <br></br>

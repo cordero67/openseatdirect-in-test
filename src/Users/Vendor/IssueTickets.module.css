@@ -39,34 +39,34 @@
 }
 
 .FirstNameBox {
-  background-color: #EFF3FA;
+  background-color: #eff3fa;
   width: 325px;
   height: 40px;
-  border: 1px solid #8DADD4;
+  border: 1px solid #8dadd4;
   padding-left: 10px;
   font-size: 14px;
 }
 
 .LastNameBox {
-  background-color: #EFF3FA;
+  background-color: #eff3fa;
   width: 325px;
   height: 40px;
-  border: 1px solid #8DADD4;
+  border: 1px solid #8dadd4;
   padding-left: 10px;
   font-size: 14px;
 }
 
 .EmailBox {
-  background-color: #EFF3FA;
+  background-color: #eff3fa;
   width: 660px;
   height: 40px;
-  border: 1px solid #8DADD4;
+  border: 1px solid #8dadd4;
   padding-left: 10px;
   font-size: 14px;
 }
 
 .EmailBoxWarning {
-  background-color: #EFF3FA;
+  background-color: #eff3fa;
   width: 660px;
   height: 40px;
   border: 1px solid red;
@@ -82,12 +82,12 @@
 }
 
 .MessageBox {
-  background-color: #EFF3FA;
+  background-color: #eff3fa;
   width: 660px;
   height: 40px;
-  border: 1px solid #8DADD4;
+  border: 1px solid #8dadd4;
   font-size: 14px;
-  padding-left: 10px
+  padding-left: 10px;
 }
 
 .CartDisplay {
@@ -197,13 +197,13 @@
 .ButtonGreen {
   height: 40px;
   width: 180px;
-  background-color: #00A300;
+  background-color: #00a300;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonGreen:hover {
-  background-color: #007A00;
+  background-color: #007a00;
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -218,19 +218,19 @@
 .ButtonBlue {
   height: 40px;
   width: 180px;
-  background-color: #0000F5;
+  background-color: #0000f5;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonBlue:hover {
-  background-color: #0000CC;
+  background-color: #0000cc;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonBlue:active {
-  background-color: #0000A3;
+  background-color: #0000a3;
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -238,7 +238,7 @@
 .ButtonBlueOpac {
   height: 40px;
   width: 180px;
-  background-color: #0000F5;
+  background-color: #0000f5;
   opacity: 0.5;
   color: #fff;
   border: 1px solid black;
@@ -272,8 +272,16 @@
   padding-left: 0px;
   color: blue;
   border: none;
-  background-color: #E7E7E7;
+  background-color: #e7e7e7;
   cursor: pointer;
   display: inline-block;
+  outline: none;
+}
+.SwitchButton:focus {
+  border: none;
+  outline: none;
+}
+.SwitchButton:active {
+  border: none;
   outline: none;
 }

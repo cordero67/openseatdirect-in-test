@@ -2,28 +2,35 @@ import React, { useState, Fragment } from "react";
 
 import QRCode from "qrcode.react";
 
-import { getLongStartDate } from "../Resources/VendorFunctions";
-import Backdrop from "../../../components/UI/Backdrop/Backdrop";
+import { getLongStartDate } from "../Vendor/Resources/VendorFunctions";
+import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import classes from "./QRCodesModal.module.css";
 
 const ReceiptModal = (props) => {
-  console.log("selected order: ", props);
-  console.log(props.details.tickets[0].uuid);
-  //const [ticketQRCode, setTicketQRCode] = useState(props.details.tickets[0].uuid);
+  console.log("QRCodes Modal props: ", props);
+
   const [ticketIndex, setTicketIndex] = useState(0);
+
+  let ticketDetails = []; // stores all individual ticket information
+
+  props.details.tickets.forEach((qrTix) => {
+    props.event.tickets.forEach((ticket) => {
+      if (ticket._id === qrTix.ticketId) {
+        ticketDetails.push({
+          ticketId: ticket._id,
+          ticketName: ticket.ticketName,
+          ticketUuid: qrTix.uuid,
+        });
+      }
+    });
+  });
 
   let longDateTime;
   [longDateTime] = getLongStartDate(props.details.startDateTime);
 
-  // LOOKS GOOD: 1/21/21
   const modalButtons = () => {
     return (
-      <div
-        style={{
-          width: "330px",
-          textAlign: "center",
-        }}
-      >
+      <div className={classes.ButtonDisplay}>
         <button
           className={classes.ButtonGrey}
           onClick={() => {
@@ -44,7 +51,6 @@ const ReceiptModal = (props) => {
       newPosition = ticketIndex - 1;
     }
     setTicketIndex(newPosition);
-    console.log("newPosition: ,", newPosition);
   };
 
   const loadNextTicket = () => {
@@ -55,12 +61,11 @@ const ReceiptModal = (props) => {
       newPosition = ticketIndex + 1;
     }
     setTicketIndex(newPosition);
-    console.log("newPosition: ,", newPosition);
   };
 
   return (
     <Fragment>
-      <Backdrop show={props.show}></Backdrop>
+      <Backdrop show={props.show} />
       <div
         style={{
           transform: props.show ? "translateY(0)" : "translateY(-100vh)",
@@ -68,38 +73,9 @@ const ReceiptModal = (props) => {
         }}
         className={classes.Modal}
       >
-        <br></br>
-        <div
-          style={{
-            width: "330px",
-            fontWeight: "600",
-            fontSize: "18px",
-            textAlign: "center",
-          }}
-        >
-          {props.details.eventTitle}
-        </div>
-        <div
-          style={{
-            width: "330px",
-            fontSize: "16px",
-            textAlign: "center",
-            fontWeight: "400",
-            paddingTop: "5px",
-          }}
-        >
-          {longDateTime}
-        </div>
-        <br></br>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "42px 246px 42px",
-            width: "330px",
-            height: "220px",
-            paddingTop: "10px",
-          }}
-        >
+        <div className={classes.EventTitle}>{props.details.eventTitle}</div>
+        <div className={classes.DateTime}>{longDateTime}</div>
+        <div className={classes.QRCodeGrid}>
           <ion-icon
             style={{
               paddingTop: "80px",
@@ -136,14 +112,12 @@ const ReceiptModal = (props) => {
             }}
           />
         </div>
-        <br></br>
+
+        <div>{ticketDetails[ticketIndex].ticketName}</div>
         <div>
           Ticket #{ticketIndex + 1} of {props.details.tickets.length}
         </div>
-        <br></br>
         {modalButtons()}
-
-        <br></br>
       </div>
     </Fragment>
   );

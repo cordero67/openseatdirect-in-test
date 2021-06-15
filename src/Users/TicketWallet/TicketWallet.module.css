@@ -1,3 +1,122 @@
+.OrdersGrid {
+  display: grid;
+  grid-template-columns: 140px 80px 500px 60px 70px 80px;
+  grid-gap: 10px;
+  position: fixed;
+  top: 140px;
+  height: 30px;
+  width: 1030px;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+  font-weight: 600;
+  vertical-align: center;
+  padding-top: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.OrdersInnerGrid {
+  display: grid;
+  grid-template-columns: 140px 80px 500px 60px 70px 80px;
+  grid-gap: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.FutureGrid {
+  display: grid;
+  grid-template-columns: 60px 80px 500px 60px 80px;
+  grid-gap: 10px;
+  position: fixed;
+  top: 140px;
+  height: 30px;
+  width: 1030px;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+  font-weight: 600;
+  vertical-align: center;
+  padding-top: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.FutureInnerGrid {
+  display: grid;
+  grid-template-columns: 60px 80px 500px 60px 80px;
+  grid-gap: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.PastGrid {
+  display: grid;
+  grid-template-columns: 60px 80px 500px 60px;
+  grid-gap: 10px;
+  position: fixed;
+  top: 140px;
+  height: 30px;
+  width: 1030px;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+  font-weight: 600;
+  vertical-align: center;
+  padding-top: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.PastInnerGrid {
+  display: grid;
+  grid-template-columns: 60px 80px 500px 60px 80px;
+  grid-gap: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.InvisibleButton {
+  background-color: #fff;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+
+.IconButton {
+  text-align: center;
+  color: blue;
+  font-weight: 600;
+  width: 80px;
+  padding-left: 5px;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.IconButton:focus {
+  border: none;
+  outline: none;
+}
+
+.DateRed {
+  font-size: 12px;
+  font-weight: 400;
+  color: red;
+}
+
+.DateBlack {
+  font-size: 18px;
+  color: black;
+  font-weight: 600;
+}
+
 .DashboardContainer {
   font-family: "Roboto", sans-serif;
   background-color: #2f5596;
@@ -40,6 +159,96 @@
   box-sizing: border-box;
 }
 
+.DisplayView {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+  position: fixed;
+  top: 110px;
+  width: 1030px;
+  background-color: white;
+  height: 30px;
+  padding-right: 215px;
+  padding-left: 215px;
+  font-size: 14px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.DisplayButton {
+  background-color: #fff;
+  border-bottom: 1px solid grey;
+  border: none;
+  outline: none;
+  height: 30px;
+  text-align: center;
+}
+
+.ButtonGrey {
+  height: auto;
+  border-radius: 0px;
+  background-color: #999999;
+  color: white;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+}
+.ButtonGrey:hover {
+  border: none;
+  outline: none;
+}
+.ButtonGrey:active {
+  border: none;
+  outline: none;
+}
+.ButtonGrey:focus {
+  border: none;
+  outline: none;
+}
+.ButtonClear {
+  height: auto;
+  border-radius: 0px;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+}
+.ButtonClear:hover {
+  background-color: #ebebeb;
+  color: #000;
+  border: none;
+  outline: none;
+}
+.ButtonClear:active {
+  background-color: #cccccc;
+  color: #000;
+  border: none;
+  outline: none;
+}
+.ButtonClear:focus {
+  border: none;
+  outline: none;
+}
+
+.DisplayButtonActive {
+  background-color: blue;
+  color: white;
+  border: none;
+  outline: none;
+  width: 200px;
+  height: 30px;
+  font-weight: 500;
+  text-align: center;
+}
+
 .EventPanelTitle {
   display: grid;
   grid-template-columns: 200px 390px 95px 95px 95px 95px;
@@ -61,26 +270,9 @@
   background-color: white;
   font-size: 15px;
   width: 1030px;
-  height: calc(100vh - 167px);
-  margin-top: 50px;
-  padding-top: 10px;
-  padding-bottom: 15px;
-  padding-left: 20px;
-  padding-right: 20px;
-  box-sizing: border-box;
-  scrollbar-width: thin;
-  overflow-y: auto;
-}
-
-.DisplayPanel2 {
-  background-color: white;
-  font-size: 15px;
-  width: 1030px;
   height: calc(100vh - 227px);
   margin-top: 110px;
-  padding-top: 0px;
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-bottom: 15px;
   box-sizing: border-box;
   scrollbar-width: thin;
   overflow-y: auto;
@@ -95,21 +287,6 @@
   margin-top: 66px;
   width: 930px;
   border: 1px solid grey;
-}
-
-.DisplayPanel {
-  background-color: white;
-  font-size: 15px;
-  width: 1030px;
-  height: calc(100vh - 167px);
-  margin-top: 50px;
-  padding-top: 10px;
-  padding-bottom: 15px;
-  padding-left: 20px;
-  padding-right: 20px;
-  box-sizing: border-box;
-  scrollbar-width: thin;
-  overflow-y: auto;
 }
 
 .NavigationTitle {
@@ -262,13 +439,15 @@
 }
 
 .BlankCanvas {
-  background-color: #e7e7e7;
-  margin: auto;
-  width: 500px;
-  padding-top: 30px;
+  background-color: #fff;
+  margin: 0px;
+  width: 1030px;
+  padding-top: 100px;
   padding-left: 80px;
   padding-right: 80px;
-  text-align: left;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -492,40 +671,3 @@
   border: 0.5px solid grey;
   padding-left: 10px;
 }
-
-.PasswordButton {
-  font-size: 16px;
-  text-align: left;
-  font-weight: 400;
-  padding-left: 0px;
-  color: blue;
-  border: none;
-  background-color: #fff;
-  cursor: pointer;
-  display: inline-block;
-  outline: none;
-}
-.PasswordButton:focus {
-  border: none;
-  outline: none;
-}
-.PasswordButton:active {
-  border: none;
-  outline: none;
-}
-
-/*
-.SystemDownMessage {
-  z-index: 200;
-  position: fixed;
-  top: 195px;
-  text-align: center;
-  background-color: #fff;
-  color: red;
-  height: calc(100vh - 255px);
-  width: 1030px;
-  font-size: 20px;
-  font-weight: 400;
-  padding-top: 40px;
-}
-*/

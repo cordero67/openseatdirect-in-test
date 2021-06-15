@@ -49,19 +49,19 @@
 .ButtonRed {
   height: 40px;
   width: 180px;
-  background-color: #CC0000;
+  background-color: #cc0000;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonRed:hover {
-  background-color: #A30000;
+  background-color: #a30000;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonRed:active {
-  background-color: #7A0000;
+  background-color: #7a0000;
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -70,13 +70,13 @@
 .ButtonGreen {
   height: 40px;
   width: 180px;
-  background-color: #00A300;
+  background-color: #00a300;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonGreen:hover {
-  background-color: #007A00;
+  background-color: #007a00;
   color: #fff;
   border: 1px solid black;
   outline: none;

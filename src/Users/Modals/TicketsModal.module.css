@@ -1,0 +1,156 @@
+.Modal {
+  position: fixed;
+  z-index: 700;
+  background-color: white;
+  width: 90%;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px black;
+  padding: 16px;
+  left: 15%;
+  top: 10%;
+  text-align: center;
+  box-sizing: border-box;
+  transition: all 0.3s ease-out;
+}
+
+.EventTitle {
+  font-weight: 600;
+  font-size: 18px;
+  text-align: left;
+  padding-top: 20px;
+}
+
+.DateTime {
+  font-size: 16px;
+  text-align: left;
+  font-weight: 400;
+  padding-top: 5px;
+}
+
+.TicketsHeader {
+  display: grid;
+  grid-template-columns: 420px 70px;
+  grid-gap: 10px;
+  width: 520px;
+  border-bottom: 1px solid black;
+  font-weight: 600;
+  padding-top: 30px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.TicketsDisplay {
+  width: 520px;
+  max-height: 180px;
+  scrollbar-width: thin;
+  overflow-y: auto;
+  border-bottom: 1px solid black;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.TicketsGrid {
+  display: grid;
+  grid-template-columns: 420px 70px;
+  grid-gap: 10px;
+  width: 520px;
+  height: 28px;
+  padding-top: 10px;
+  box-sizing: border-box;
+}
+
+.ButtonDisplayGrid {
+  display: grid;
+  grid-template-columns: 160px 160px 160px;
+  grid-gap: 20px;
+  width: 520px;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  padding-left: 0px;
+  box-sizing: border-box;
+}
+
+.ButtonDisplay {
+  width: 520px;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  padding-left: 0px;
+  box-sizing: border-box;
+}
+
+.ButtonGrey {
+  height: 40px;
+  width: 160px;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+  box-sizing: border-box;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonGreen {
+  height: 40px;
+  width: 160px;
+  background-color: #00a300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  box-sizing: border-box;
+}
+.ButtonGreen:hover {
+  background-color: #007a00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonBlue {
+  height: 40px;
+  width: 160px;
+  background-color: #0000f5;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+  box-sizing: border-box;
+}
+.ButtonBlue:hover {
+  background-color: #0000cc;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlue:active {
+  background-color: #0000a3;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+@media (min-width: 740px) {
+  .Modal {
+    width: 580px;
+    padding-left: 30px;
+    padding-right: 30px;
+    left: calc(50% - 290px);
+  }
+}
