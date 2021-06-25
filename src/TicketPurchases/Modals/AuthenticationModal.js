@@ -131,7 +131,6 @@ const Authentication = (props) => {
     return response;
   };
 
-  // LOOKS GOOD
   const submitSignIn = () => {
     setSubmissionStatus({
       message: "",
@@ -172,7 +171,6 @@ const Authentication = (props) => {
       });
   };
 
-  // LOOKS GOOD
   const submitForgot = () => {
     setSubmissionStatus({
       message: "",
@@ -214,7 +212,6 @@ const Authentication = (props) => {
       });
   };
 
-  // LOOKS GOOD
   const submitTemporary = () => {
     setSubmissionStatus({
       message: "",
@@ -257,7 +254,6 @@ const Authentication = (props) => {
       });
   };
 
-  // LOOKS GOOD
   const submitReissue = () => {
     setSubmissionStatus({
       message: "",
@@ -299,7 +295,6 @@ const Authentication = (props) => {
       });
   };
 
-  // LOOKS GOOD
   const submitSignUp = () => {
     setSubmissionStatus({
       message: "",
@@ -342,7 +337,6 @@ const Authentication = (props) => {
       });
   };
 
-  // LOOKS GOOD
   const submitConfirmation = () => {
     setSubmissionStatus({
       message: "",
@@ -386,7 +380,6 @@ const Authentication = (props) => {
       });
   };
 
-  // LOOKS GOOD
   const submitPassword = () => {
     setSubmissionStatus({
       message: "",
@@ -431,7 +424,6 @@ const Authentication = (props) => {
       });
   };
 
-  // LOOKS GOOD
   const submitUsername = () => {
     setSubmissionStatus({
       message: "",
@@ -475,7 +467,7 @@ const Authentication = (props) => {
         setModalSetting("error");
       });
   };
-  // LOOKS GOOD
+
   const submitResend = () => {
     setSubmissionStatus({
       message: "",
@@ -516,7 +508,7 @@ const Authentication = (props) => {
         setModalSetting("error");
       });
   };
-  // LOOKS GOOD
+
   const handleSignIn = (data) => {
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data));
@@ -546,7 +538,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const handleForgot = (data) => {
     if (data.status) {
       setValues({
@@ -575,7 +566,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const handleTemporary = (data) => {
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data));
@@ -605,7 +595,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const handleReissue = (data) => {
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data));
@@ -634,7 +623,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const handleSignUp = (data) => {
     if (data.status) {
       setValues({
@@ -662,7 +650,7 @@ const Authentication = (props) => {
       console.log("ERROR: ", data.error);
     }
   };
-  // LOOKS GOOD
+
   const handleConfirmation = (data) => {
     if (data.status) {
       setValues({
@@ -691,7 +679,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const handlePassword = (data) => {
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data));
@@ -730,7 +717,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const handleUsername = (data) => {
     console.log("Inside handleUsername");
     if (data.status) {
@@ -763,7 +749,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const resetValues = () => {
     setValues({
       name: "",
@@ -782,7 +767,6 @@ const Authentication = (props) => {
     });
   };
 
-  // LOOKS GOOD
   const handleResend = (data) => {
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data));
@@ -811,7 +795,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -819,7 +802,6 @@ const Authentication = (props) => {
     });
   };
 
-  // LOOKS GOOD
   const showError = () => {
     if (error) {
       return (
@@ -883,7 +865,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const signInForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -920,7 +901,6 @@ const Authentication = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const forgotForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -946,7 +926,6 @@ const Authentication = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const temporaryForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -972,7 +951,6 @@ const Authentication = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const signUpForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -998,7 +976,6 @@ const Authentication = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const confirmationForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -1024,7 +1001,6 @@ const Authentication = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const passwordForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -1050,7 +1026,6 @@ const Authentication = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const usernameForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -1085,7 +1060,7 @@ const Authentication = (props) => {
       </div>
     </Fragment>
   );
-  // LOOKS GOOD
+
   const errorForm = (
     <Fragment>
       <div
@@ -1112,7 +1087,6 @@ const Authentication = (props) => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const alternateSignInInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
@@ -1140,7 +1114,6 @@ const Authentication = (props) => {
     </div>
   );
 
-  // LOOKS GOOD
   const alternateTemporaryInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
@@ -1167,7 +1140,6 @@ const Authentication = (props) => {
     </div>
   );
 
-  // LOOKS GOOD
   const alternateSignUpInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
@@ -1184,7 +1156,6 @@ const Authentication = (props) => {
     </div>
   );
 
-  // LOOKS GOOD
   const alternateConfirmationInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
@@ -1200,7 +1171,6 @@ const Authentication = (props) => {
     </div>
   );
 
-  // LOOKS GOOD
   const closeModal = () => {
     resetValues();
     setSubmissionStatus({
@@ -1211,7 +1181,6 @@ const Authentication = (props) => {
     props.closeModal();
   };
 
-  // LOOKS GOOD
   const signInDisplay = () => {
     if (modalSetting === "signin") {
       return (
@@ -1246,7 +1215,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const forgotDisplay = () => {
     if (modalSetting === "forgot") {
       return (
@@ -1276,7 +1244,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const temporaryDisplay = () => {
     if (modalSetting === "temporary") {
       return (
@@ -1306,7 +1273,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const signUpDisplay = () => {
     if (modalSetting === "signup") {
       return (
@@ -1339,7 +1305,6 @@ const Authentication = (props) => {
     } else return null;
   };
 
-  // LOOKS GOOD
   const confirmationDisplay = () => {
     if (modalSetting === "confirmation") {
       return (
@@ -1369,7 +1334,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const passwordDisplay = () => {
     if (modalSetting === "password") {
       return (
@@ -1397,7 +1361,7 @@ const Authentication = (props) => {
       return null;
     }
   };
-  // LOOKS GOOD
+
   const usernameDisplay = () => {
     if (modalSetting === "username") {
       return (
@@ -1426,7 +1390,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   const errorDisplay = () => {
     if (modalSetting === "error") {
       return (
@@ -1452,7 +1415,6 @@ const Authentication = (props) => {
     }
   };
 
-  // LOOKS GOOD
   return (
     <Fragment>
       <Backdrop show={props.show} clicked={props.modalClosed}></Backdrop>

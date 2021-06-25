@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Redirect, Fragment, Link } from "react-router-dom";
-
-import { API } from "../../config";
 
 import BuyerNavigation from "./BuyerNavigation";
 import Profile from "../ComponentPages/Profile";
 import MyTickets from "../ComponentPages/MyTickets";
-import Preferences from "./Preferences";
-import Onboarding from "./Onboarding";
+//import Onboarding from "./Onboarding";
+import Onboarding from "./OnboardingNEW";
 import classes from "./BuyerAccount.module.css";
 
 const BuyerAccount = () => {

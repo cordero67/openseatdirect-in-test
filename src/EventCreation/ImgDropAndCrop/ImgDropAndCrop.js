@@ -22,21 +22,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 
 const imageMaxSize = 3000000; // bytes
-//const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
-
-// see https://github.com/jshttp/mime-db
-// types from: http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types
-
-// 'image/bmp, image/cgm, image/g3fax,image/gif,image/ief,image/jpeg,image/ktx,image/png,
-// image/prs.btif, image/sgi, image/svg+xml, image/tiff,image/vnd.adobe.photoshop,
-// mime type                                    extension
-//  image/gif                                        gif;
-//  image/jpeg                                       jpeg jpg;
-//  image/png                                        png;
-//  image/svg+xml                                    svg svgz;
-//  image/tiff                                       tif tiff;
-//  image/vnd.wap.wbmp                               wbmp;
-//  image/webp                                       webp;
 const acceptedFileTypes =
   "image/gif, image/jpeg, image/png, image/svg+xml, image/webp";
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => {
@@ -192,10 +177,6 @@ class ImgDropAndCrop extends Component {
     const canvasRef = this.imagePreviewCanvasRef.current;
     const { imgSrc } = this.state;
     image64toCanvasRef2(canvasRef, imgSrc, percentCrop);
-
-    // https://www.npmjs.com/package/react-image-crop return false as per documentation
-    // must return false in this callback if you are changing the crop object.
-    // return false;  /this works without false!!
   };
 
   handleOnCropChange = (crop) => {
@@ -221,7 +202,6 @@ class ImgDropAndCrop extends Component {
       const imageBlob = await new Promise((resolve) =>
         canvasRef.toBlob(resolve, "image/png")
       );
-      //            this.setState({newimageData64: tempImage});
       this.setState({ newimageData64: tempImage });
       this.props.change(imageBlob); // sends imageBlob to parent using change prop
     }

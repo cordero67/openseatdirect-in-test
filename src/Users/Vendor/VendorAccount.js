@@ -13,7 +13,7 @@ import Orders from "./Orders"; // CURRENTLY NOT USING THIS TAB
 import CreateEvent from "../../EventCreation/CreateEvent"; // NO CHANGE WAS MADE TO THIS COMPONENT
 import Account from "./Account"; // NEW COMPONENT COPIED FROM DEV AND UPDATED
 //import TicketWallet from "../TicketWallet/TicketWallet";
-//import MyTickets from "../ComponentPages/MyTickets";
+import MyTickets from "../ComponentPages/MyTickets";
 import VendorNavigation from "./Components/VendorNavigation"; // NEW COMPONENT COPIED FROM DEV AND UPDATED
 import Spinner from "../../components/UI/Spinner/Spinner";
 
@@ -117,11 +117,6 @@ const VendorAccount = (props) => {
         headers: myHeaders,
         redirect: "follow",
       };
-      //let requestOptionsPOST = {
-      //  method: "POST",
-      //  headers: myHeaders,
-      //  redirect: "follow",
-      //};
       //let fetchstr = `${API}/accounts/${accountNum}/events`;
       let fetchstr = `${API}/event/alluser/${userId}`;
       //let fetchstr = `${API}/accounts/${userId}/events`;
@@ -297,11 +292,9 @@ const VendorAccount = (props) => {
       return <CreateEvent />;
     } else if (display === "account") {
       return <Account />;
-      /*
     } else if (display === "wallet") {
-      return <TicketWallet />;
+      //return <TicketWallet />;
       return <MyTickets />;
-      */
     } else {
       return null;
     }

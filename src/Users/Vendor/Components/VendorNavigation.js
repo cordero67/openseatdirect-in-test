@@ -87,7 +87,7 @@ const VendorNavigation = (props) => {
           {createEvent}
           {accountSettings}
           <hr className={classes.HorizontalDivider} />
-          {/*myTickets*/}
+          {myTickets}
         </div>
       </ul>
     </Fragment>

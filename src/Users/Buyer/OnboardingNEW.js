@@ -3,8 +3,11 @@ import React, { useEffect, useState, Fragment } from "react";
 import {
   API,
   PAYPAL_USE_SANDBOX,
-  SUBSCRIPTION_PROMO_CODE_6,
-  SUBSCRIPTION_PROMO_CODE_7,
+  SUBSCRIPTION_PROMO_CODE_1,
+  SUBSCRIPTION_PROMO_CODE_2,
+  SUBSCRIPTION_PROMO_CODE_3,
+  SUBSCRIPTION_PROMO_CODE_4,
+  SUBSCRIPTION_PROMO_CODE_5,
 } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,9 +24,11 @@ import Spinner from "../../components/UI/Spinner/SpinnerNew"; // experimental..
 
 const Onboarding = (props) => {
   console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX);
-  console.log("SUBSCRIPTION_PROMO_CODE_6: ", SUBSCRIPTION_PROMO_CODE_6);
-  console.log("SUBSCRIPTION_PROMO_CODE_7: ", SUBSCRIPTION_PROMO_CODE_7);
-  console.log("API: ", API);
+  console.log("SUBSCRIPTION_PROMO_CODE_1: ", SUBSCRIPTION_PROMO_CODE_1);
+  console.log("SUBSCRIPTION_PROMO_CODE_2: ", SUBSCRIPTION_PROMO_CODE_2);
+  console.log("SUBSCRIPTION_PROMO_CODE_3: ", SUBSCRIPTION_PROMO_CODE_3);
+  console.log("SUBSCRIPTION_PROMO_CODE_4: ", SUBSCRIPTION_PROMO_CODE_4);
+  console.log("SUBSCRIPTION_PROMO_CODE_5: ", SUBSCRIPTION_PROMO_CODE_5);
 
   // UPDATE WHEN A NEW PLAN IS INTRODUCED
   const [values, setValues] = useState({
@@ -33,10 +38,13 @@ const Onboarding = (props) => {
     accountUrl: "",
     ticketPlan: "tbd",
     inputError: "",
-    paypal_plan_id: "P-38K11886GW041664JL5JHRNA", // default value is production quarterly plan
-    paypal_plan_id_full: "",
-    paypal_plan_id_discount: "",
-    paypal_plan_id_year_free: "",
+    paypal_plan_id: "P-38K11886GW041664JL5JHRNA", // default value is production monthly plan
+    paypal_plan_id_full: "", // default plan for "FULL" ticket plan selection view
+    paypal_plan_id_discount: "", // default plan for "DISCOUNT" ticket plan selection view
+    paypal_plan_id_forFree: "", // default plan for "FORFREE" ticket plan selection view
+    paypal_plan_id_old: "", // default plan for "OLD" ticket plan selection view
+    paypal_plan_id_oldDiscounted: "", // default plan for "OLDDISCOUNTED" ticket plan selection view
+
     paypalExpress_client_id: "", // vendor's clientID not OSD's
     paypalExpress_client_secret: "", // vendor's secret not OSD's
   });
@@ -52,7 +60,13 @@ const Onboarding = (props) => {
     inputtedPromoValue: "",
     lastInvalidPromoCode: "",
     // UPDATE WHEN A NEW PROMO CODE IS CREATED
-    eventPromoCodes: [SUBSCRIPTION_PROMO_CODE_6, SUBSCRIPTION_PROMO_CODE_7],
+    eventPromoCodes: [
+      SUBSCRIPTION_PROMO_CODE_1,
+      SUBSCRIPTION_PROMO_CODE_2,
+      SUBSCRIPTION_PROMO_CODE_3,
+      SUBSCRIPTION_PROMO_CODE_4,
+      SUBSCRIPTION_PROMO_CODE_5,
+    ],
   });
 
   // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
@@ -69,8 +83,12 @@ const Onboarding = (props) => {
     ticketPlan,
     paypal_plan_id,
     paypal_plan_id_full,
+
     paypal_plan_id_discount,
-    paypal_plan_id_year_free,
+    paypal_plan_id_forFree,
+    paypal_plan_id_old,
+    paypal_plan_id_oldDiscounted,
+
     paypalExpress_client_id,
     paypalExpress_client_secret,
   } = values;
@@ -101,59 +119,84 @@ const Onboarding = (props) => {
     // SANBOX subscription plans
     console.log("sandbox subscription plans");
     subscriptions = {
-      quarterly: {
-        name: "$20 quarterly (1 quarter free trial)",
+      monthly: {
+        name: "$15 monthly ($180 annually)",
         id: "P-5DT364104U926810EL5FRXSY",
       },
       annually: {
-        name: "$70 annually",
+        name: "$169 annually",
         id: "P-5YA13382D9271245EL5FRXTA",
       },
-      quarterlyDiscounted: {
-        name: "$10 quarterly (1 quarter free trial): discounted",
-        id: "P-3U3085871T847894PL5FRXTI",
+      monthlyDiscounted: {
+        name: "$15 monthly ($180 annually): 6 weeks free",
+        id: "P-5YA13382D9271245EL5FRXTA",
       },
       annuallyDiscounted: {
-        name: "$35 annually: discounted",
+        name: "$149 annually: discounted",
         id: "P-6UY26644UT426184FL5FRXTI",
       },
-      // THIS HAS BEEN UPDATED
-      yearFreeDiscount: {
-        name: "$70 annually (first year free)",
+      monthlyFreeTrial: {
+        name: "$15 monthly ($180 annually): 3 months free",
+        id: "P-3U3085871T847894PL5FRXTI",
+      },
+      annuallyOldPrice: {
+        name: "$70 annually",
+        id: "P-6UY26644UT426184FL5FRXTI",
+      },
+      annuallyOldPriceDiscounted: {
+        name: "$50 annually",
+        id: "P-3YH13849H69051131MAIHPGY",
+      },
+      freeSubscription: {
+        name: "FREE SUBSCRIPTION",
         id: "P-3YH13849H69051131MAIHPGY",
       },
       // OSD Sandbox Client ID
       clientId:
-        "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",
+        //"AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7",// DahDay sandbox ClientId
+        //"AaXjVndGopEsST9M_5HeMF7j3UUHrQ4kEEXRoMuAUAFidZjoxgck6dzi_1BcXoishDOt1GV0SNDS9IZf", // PayPal sandbox
+        "Ae0EfkmDQwVAXVPVeH0jswzRGMCKTraKA8XqMSUXuhbv2pm54MyWEkaXnvxCd9xzucnlwlVfbpQO4bAe", // PayPal sandbox Default Application
     };
   } else {
     // PRODUCTION subscription plans
     console.log("production subscription plans");
     subscriptions = {
-      quarterly: {
-        name: "$25 quarterly (1 quarter free trial)",
+      monthly: {
+        name: "$15 monthly ($180 annually)",
         id: "P-38K11886GW041664JL5JHRNA",
       },
       annually: {
-        name: "$70 annually",
+        name: "$169 annually",
         id: "P-1TJ77997J0051064ML5JHRNI",
       },
-      quarterlyDiscounted: {
-        name: "$20 quarterly (1 quarter free trial): discounted",
+      monthlyDiscounted: {
+        name: "$15 monthly ($180 annually): 6 weeks free",
         id: "P-0J204573U8254533LL5JHRNI",
       },
       annuallyDiscounted: {
-        name: "$50 annually: discounted",
+        name: "$149 annually: discounted",
         id: "P-0CX6745565737532ML5JHRNQ",
       },
-      // THIS HAS BEEN UPDATED
-      yearFreeDiscount: {
+      monthlyFreeTrial: {
+        name: "$15 monthly ($180 annually): 3 months free",
+        id: "P-6UY26644UT426184FL5FRXTI",
+      },
+      annuallyOldPrice: {
+        name: "$70 annually",
+        id: "P-6UY26644UT426184FL5FRXTI",
+      },
+      annuallyOldPriceDiscounted: {
+        name: "$50 annually",
+        id: "P-6UY26644UT426184FL5FRXTI",
+      },
+      freeSubscription: {
         name: "$70 annually (first year free)",
         id: "P-63K58503XA985310EMAYZN3Y",
       },
       // OSD Production Client ID
       clientId:
-        "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
+        //"AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k", // DahDay PayPal ClientId
+        "ATOAhgR1qrhz7xQRVHyyyBnj73Ckga6swyGU-8gxFhyJRrkZgEYzaUhTwQx3BmF71lM-oiJC9VelNZDw", // OSD PayPal ClientId
     };
   }
 
@@ -183,36 +226,44 @@ const Onboarding = (props) => {
       // populates the "tempBuyerInfo" (and "values") object with "user" object info
       if (tempUser.user.accountId.accountName)
         tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
+
       if (tempUser.user.accountId.accountEmail)
         tempBuyerInfo.accountEmail = tempUser.user.accountId.accountEmail;
+
       if (tempUser.user.accountId.accountPhone)
         tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
+
       if (tempUser.user.accountId.accountUrl)
         tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
+
       if (tempUser.user.accountId.status)
         tempBuyerInfo.status = tempUser.user.accountId.status;
+
       if (tempUser.user.accountId.ticketPlan)
         tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
+
       if (tempUser.user.accountId.paypalExpress_client_id)
         tempBuyerInfo.paypalExpress_client_id =
           tempUser.user.accountId.paypalExpress_client_id;
+
       if (tempUser.user.accountId.paypalExpress_client_secret)
         tempBuyerInfo.paypalExpress_client_secret =
           tempUser.user.accountId.paypalExpress_client_secret;
 
-      // UPDATE WHEN A NEW PLAN IS INTRODUCED
       if (PAYPAL_USE_SANDBOX === true) {
         console.log(
           "PAYPAL_USE_SANDBOX is ",
           PAYPAL_USE_SANDBOX,
           " Sandbox true"
         );
-        tempBuyerInfo.paypal_plan_id_full = "P-5DT364104U926810EL5FRXSY"; // sandbox quarterly full price
-        tempBuyerInfo.paypal_plan_id_discount = "P-3U3085871T847894PL5FRXTI"; // sandbox quarterly discounted price
-        // THIS HAS BEEN UPDATED
-        tempBuyerInfo.paypal_plan_id_year_free = "P-3YH13849H69051131MAIHPGY"; // sandbox one year free
+        tempBuyerInfo.paypal_plan_id_full = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
+        tempBuyerInfo.paypal_plan_id_discount = "P-5YA13382D9271245EL5FRXTA"; // sandbox monthly discounted price
+        tempBuyerInfo.paypal_plan_id_forFree = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly discounted price
+        tempBuyerInfo.paypal_plan_id_old = "P-6UY26644UT426184FL5FRXTI"; // sandbox monthly discounted price
+        tempBuyerInfo.paypal_plan_id_oldDiscounted =
+          "P-3YH13849H69051131MAIHPGY"; // sandbox monthly discounted price
         if (!tempUser.user.accountId.paypal_plan_id) {
-          tempBuyerInfo.paypal_plan_id = "P-5DT364104U926810EL5FRXSY"; // sandbox quarterly full price
+          tempBuyerInfo.paypal_plan_id = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
         } else {
           tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
         }
@@ -222,12 +273,14 @@ const Onboarding = (props) => {
           PAYPAL_USE_SANDBOX,
           " Sandbox false"
         );
-        tempBuyerInfo.paypal_plan_id_full = "P-38K11886GW041664JL5JHRNA"; // production quarterly full price
-        tempBuyerInfo.paypal_plan_id_discount = "P-0J204573U8254533LL5JHRNI"; // production quarterly discounted price
-        // NEED TO UPDATE THIS
-        tempBuyerInfo.paypal_plan_id_year_free = "P-0J204573U8254533LL5JHRNI"; // production one year free
+        tempBuyerInfo.paypal_plan_id_full = "P-38K11886GW041664JL5JHRNA"; // production monthly full price
+        tempBuyerInfo.paypal_plan_id_discount = "P-0J204573U8254533LL5JHRNI"; // production monthly discounted price
+        tempBuyerInfo.paypal_plan_id_forFree = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly discounted price
+        tempBuyerInfo.paypal_plan_id_old = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly discounted price
+        tempBuyerInfo.paypal_plan_id_oldDiscounted =
+          "P-3YH13849H69051131MAIHPGY"; // sandbox monthly discounted price
         if (!tempUser.user.accountId.paypal_plan_id) {
-          tempBuyerInfo.paypal_plan_id = "P-38K11886GW041664JL5JHRNA"; // production quarterly full price
+          tempBuyerInfo.paypal_plan_id = "P-38K11886GW041664JL5JHRNA"; // production monthly full price
         } else {
           tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
         }
@@ -281,21 +334,7 @@ const Onboarding = (props) => {
     tempValues[name] = value.value;
     tempValues.paypal_plan_id = value.value;
     console.log("tempValues: ", tempValues);
-    console.log("tempValues.paypal_plan_id: ", tempValues.paypal_plan_id);
-    console.log(
-      "tempValues.paypal_plan_id_full: ",
-      tempValues.paypal_plan_id_full
-    );
-    console.log(
-      "tempValues.paypal_plan_id_discount: ",
-      tempValues.paypal_plan_id_discount
-    );
-    console.log(
-      "tempValues.paypal_plan_id_year_free: ",
-      tempValues.paypal_plan_id_year_free
-    );
     setValues(tempValues);
-    console.log("values: ", values);
   };
 
   const ticketPlans = [
@@ -306,19 +345,19 @@ const Onboarding = (props) => {
     },
   ];
 
-  // UPDATE WHEN A NEW PLAN IS INTRODUCED BY ADDING THE NEW PLAN CODE
-
+  // UPDATED FROM HERE
+  // Detailed definition of subscription plans based on promo code entered
+  // No promo code plans: DEFAULT SUBSCRIPTIONS
   const paymentPlans = [
-    // No promo code
-    { label: subscriptions.quarterly.name, value: subscriptions.quarterly.id },
+    { label: subscriptions.monthly.name, value: subscriptions.monthly.id },
     { label: subscriptions.annually.name, value: subscriptions.annually.id },
   ];
 
+  // OSD20 promo code plans
   const discountPlans = [
-    // CASHNOW promo code
     {
-      label: subscriptions.quarterlyDiscounted.name,
-      value: subscriptions.quarterlyDiscounted.id,
+      label: subscriptions.monthlyDiscounted.name,
+      value: subscriptions.monthlyDiscounted.id,
     },
     {
       label: subscriptions.annuallyDiscounted.name,
@@ -326,35 +365,67 @@ const Onboarding = (props) => {
     },
   ];
 
-  // THIS HAS BEEN UPDATED
-  const yearlyPlans = [
-    // MADEEASY promo code
-    { label: subscriptions.quarterly.name, value: subscriptions.quarterly.id },
+  // TRYFORFREE promo code plans
+  const tryForFreePlan = [
     {
-      label: subscriptions.yearFreeDiscount.name,
-      value: subscriptions.yearFreeDiscount.id,
+      label: subscriptions.monthlyFreeTrial.name,
+      value: subscriptions.monthlyFreeTrial.id,
     },
   ];
-  // THIS LOOKS GOOD
+
+  // OSD70 promo code plans
+  const oldAnnualPlan = [
+    {
+      label: subscriptions.annuallyOldPrice.name,
+      value: subscriptions.annuallyOldPrice.id,
+    },
+  ];
+
+  // OSD50 promo code plans
+  const oldAnnualDiscountedPlan = [
+    {
+      label: subscriptions.annuallyOldPriceDiscounted.name,
+      value: subscriptions.annuallyOldPriceDiscounted.id,
+    },
+  ];
+
+  // OSDFREE promo code plans
+  const freeSubscriptionPlan = [
+    {
+      label: subscriptions.freeSubscription.name,
+      value: subscriptions.freeSubscription.id,
+    },
+  ];
+
+  // Determines pricing plans details to display based on promo code entered
   const shownPlans = () => {
-    // UPDATE WHEN A NEW PROMO CODE IS CREATED
-    if (promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_6) {
+    if (promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_1) {
       return discountPlans;
-      // UPDATE WHEN A NEW PROMO CODE IS CREATED
     } else if (
-      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_7
+      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_2
     ) {
-      return yearlyPlans;
+      return tryForFreePlan;
+    } else if (
+      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_3
+    ) {
+      return oldAnnualPlan;
+    } else if (
+      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_4
+    ) {
+      return oldAnnualDiscountedPlan;
+    } else if (
+      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_5
+    ) {
+      return freeSubscriptionPlan;
     } else return paymentPlans;
   };
-  // THIS LOOKS GOOD
+  // UPDATED TO HERE
+
+  // UPDATE WHEN A NEW PLAN IS INTRODUCED BY ADDING A NEW '<RadioForm>' CODE
+  // Displays subscription pricing options section based on promo code entered
   const paymentPanel = () => {
     console.log("Values info: ", values);
-
-    // UPDATE WHEN A NEW PLAN IS INTRODUCED BY ADDING A NEW '<RadioForm>' CODE
-
-    if (promoCodeDetails.appliedPromoCode === "CASHNOW") {
-      console.log("PayPal info");
+    if (promoCodeDetails.appliedPromoCode === "OSD20") {
       return (
         <Fragment>
           <RadioForm
@@ -362,7 +433,7 @@ const Onboarding = (props) => {
             group="eventTypeGroup"
             current={paypal_plan_id_discount}
             change={(event, value) => {
-              console.log("Inside DISCOUNT Radio");
+              console.log("Inside DISCOUNT Radio View");
               radioChangePayment(event, value, "paypal_plan_id_discount");
             }}
           />
@@ -370,17 +441,49 @@ const Onboarding = (props) => {
           {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
         </Fragment>
       );
-    } else if (promoCodeDetails.appliedPromoCode === "MADEEASY") {
-      console.log("PayPal info");
+    } else if (promoCodeDetails.appliedPromoCode === "TRYFORFREE") {
+      console.log("paypal_plan_id_forFree: ", paypal_plan_id_forFree);
       return (
         <Fragment>
           <RadioForm
             details={shownPlans()}
             group="eventTypeGroup"
-            current={paypal_plan_id_year_free}
+            current={paypal_plan_id_forFree}
             change={(event, value) => {
-              console.log("Inside YEARLY Radio");
-              radioChangePayment(event, value, "paypal_plan_id_year_free");
+              console.log("Inside FORFREE Radio View");
+              radioChangePayment(event, value, "paypal_plan_id_forFree");
+            }}
+          />
+          <br></br>
+          {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
+        </Fragment>
+      );
+    } else if (promoCodeDetails.appliedPromoCode === "OSD70") {
+      return (
+        <Fragment>
+          <RadioForm
+            details={shownPlans()}
+            group="eventTypeGroup"
+            current={paypal_plan_id_old}
+            change={(event, value) => {
+              console.log("Inside OLD Radio View");
+              radioChangePayment(event, value, "paypal_plan_id_old");
+            }}
+          />
+          <br></br>
+          {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
+        </Fragment>
+      );
+    } else if (promoCodeDetails.appliedPromoCode === "OSD50") {
+      return (
+        <Fragment>
+          <RadioForm
+            details={shownPlans()}
+            group="eventTypeGroup"
+            current={paypal_plan_id_oldDiscounted}
+            change={(event, value) => {
+              console.log("Inside OLDDISCOUNTED Radio View");
+              radioChangePayment(event, value, "paypal_plan_id_oldDiscounted");
             }}
           />
           <br></br>
@@ -388,7 +491,6 @@ const Onboarding = (props) => {
         </Fragment>
       );
     } else {
-      console.log("Values info: ", values);
       return (
         <Fragment>
           <RadioForm
@@ -396,7 +498,7 @@ const Onboarding = (props) => {
             group="eventTypeGroup"
             current={paypal_plan_id_full}
             change={(event, value) => {
-              console.log("Inside FULL Radio");
+              console.log("Inside FULL Radio View");
               radioChangePayment(event, value, "paypal_plan_id_full");
             }}
           />
@@ -895,20 +997,26 @@ const Onboarding = (props) => {
     return tempPromoCodeDetails;
   };
 
-  // THIS LOOKS GOOD
   // updates "promoCodeDetails", "ticketInfo" and "orderTotals" based on promo code change
   const applyPromoCodeHandler = (event, inputtedPromoCode) => {
+    // first check if promo code is valid
     if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
       console.log("valid code");
       setPromoCodeDetails(
         amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails)
       );
       let tempValues = { ...values };
-      // UPDATE WHEN A NEW PLAN AND PROMO CODE ARE INTRODUCED
-      if (inputtedPromoCode === "CASHNOW") {
+      // set "paypal_plan_id" to default value of that particular promo code
+      if (inputtedPromoCode === "OSD20") {
         tempValues.paypal_plan_id = tempValues.paypal_plan_id_discount;
-      } else if (inputtedPromoCode === "MADEEASY") {
-        tempValues.paypal_plan_id = tempValues.paypal_plan_id_year_free;
+      } else if (inputtedPromoCode === "TRYFORFREE") {
+        tempValues.paypal_plan_id = tempValues.paypal_plan_id_forFree;
+      } else if (inputtedPromoCode === "OSD70") {
+        tempValues.paypal_plan_id = tempValues.paypal_plan_id_old;
+      } else if (inputtedPromoCode === "OSD50") {
+        tempValues.paypal_plan_id = tempValues.paypal_plan_id_oldDiscounted;
+      } else {
+        tempValues.paypal_plan_id = tempValues.paypal_plan_id_full;
       }
       setValues(tempValues);
     } else {
@@ -1074,7 +1182,7 @@ const Onboarding = (props) => {
     }
   };
 
-  // LOOKS GOOD FROM HERE TO END OF CODE
+  // Displays the entire subscription payment panel
   const paymentPage = () => {
     return (
       <div className={classes.DisplayPanel}>

@@ -3,8 +3,6 @@ import React, { Fragment } from "react";
 import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import classes from "./TicketModal.module.css";
 
-import { Button } from "semantic-ui-react";
-
 const TicketModal = (props) => {
   console.log("item", props.details, props.details.ticketName);
   console.log("ticketName", props.details.ticketName);

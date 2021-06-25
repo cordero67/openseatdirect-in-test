@@ -17,8 +17,6 @@ import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Authentication from "../../Users/Authentication/Authentication";
 import BuyerAccount from "../../Users/Buyer/BuyerAccount";
-import PaypalOnboarding from "../../Users/Buyer/PaypalOnboarding";
-//import VendorAccountOLD from "../../Users/Vendor/VendorAccountOLD";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
 
 import Header from "../Headers/Header";
@@ -135,12 +133,6 @@ const Routes = () => {
             <Footer></Footer>
           </React.Fragment>
         )}
-      />
-
-      <Route
-        path="/paypalonboarding"
-        exact
-        render={(routeProps) => <PaypalOnboarding />}
       />
 
       <Route
@@ -314,24 +306,3 @@ const Routes = () => {
 };
 
 export default Routes;
-
-/*
-
-
-      <Route
-        path="/myaccountOLD"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <VendorAccountOLD />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-      */

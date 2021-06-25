@@ -58,6 +58,8 @@ const MyTickets = () => {
       .then((response) => response.text())
       .then((result) => {
         let js = JSON.parse(result);
+        // clear "js" to elimiate orders without both "eventId" and "totalPaidAmount" fields
+        //parseOrders(js);
         setOrders(js);
         console.log("result: ", js);
         createEventArrays(js);
@@ -75,7 +77,15 @@ const MyTickets = () => {
     let tempFutureArray = []; // an array of tickets within each past event
     let tempEvents = []; // an array of just the eventNum's
 
+    // removes older orders without proper fields
+    let tempOrders = [];
     orders.map((order) => {
+      if (order.eventId !== null && "totalPaidAmount" in order) {
+        tempOrders.push(order);
+      }
+    });
+
+    tempOrders.map((order) => {
       console.log("ORDER: ", order);
       let adjusted = order.eventId.startDateTime.replace("T", " ");
 
@@ -87,15 +97,18 @@ const MyTickets = () => {
         let tempElement = {
           eventNum: order.eventNum,
           eventTitle: order.eventId.eventTitle,
+          //eventTitle: "EVENT TITLE",
           startDateTime: order.eventId.startDateTime,
+          //startDateTime: "START DATE & TIME",
           endDateTime: adjusted,
+          //endDateTime: "END DATE & TIME",
           tickets: [],
         };
         tempArray.push(tempElement);
       }
     });
 
-    orders.map((order) => {
+    tempOrders.map((order) => {
       let position = tempEvents.indexOf(order.eventNum);
       order.qrTickets.map((ticket) => {
         tempArray[position].tickets.push(ticket);
@@ -135,10 +148,19 @@ const MyTickets = () => {
   const orderItems = () => {
     if (display === "orders") {
       console.log("INSIDE orderItems");
+
+      // removes older orders without proper fields
+      let tempOrders = [];
+      orders.map((order) => {
+        if (order.eventId !== null && "totalPaidAmount" in order) {
+          tempOrders.push(order);
+        }
+      });
+
       return (
         <Fragment>
           <div>
-            {orders.map((order, index) => {
+            {tempOrders.map((order, index) => {
               console.log("ORDER: ", order);
               let longDateTime = getLongStartDate(order.eventId.startDateTime);
               let orderDate = getStartDate(order.createdAt);
@@ -180,7 +202,9 @@ const MyTickets = () => {
                       {order.qrTickets.length}
                     </div>
                     <div style={{ textAlign: "right", paddingRight: "10px" }}>
-                      {order.totalPaidAmount.toFixed(2)}
+                      {"totalPaidAmount" in order
+                        ? order.totalPaidAmount.toFixed(2)
+                        : order.totalReserveAmount.toFixed(2)}
                     </div>
                     <button className={classes.EventButton}>
                       <ion-icon
