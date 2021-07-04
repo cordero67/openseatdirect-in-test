@@ -12,11 +12,14 @@ const Header = ({ history, logo, positioning, clicked }) => {
   let headerDisplay;
 
   const [isResizing, setIsResizing] = useState(false);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
 
-  const stylingUpdate = () => {
+  const stylingUpdate = (inWidth) => {
     console.log("stylingUpdate in Header");
     setIsResizing(true);
+    setScreenSize(inWidth);
     setIsResizing(false);
+    console.log("screenSize in Header: ", screenSize);
   };
 
   window.onresize = function (event) {
@@ -27,19 +30,10 @@ const Header = ({ history, logo, positioning, clicked }) => {
   console.log("Inside Header");
 
   headerDisplay = (
-    <div className={classes.Header} style={{ position: positioning }}>
-      <div className={classes.Toggle} onClick={clicked}>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-      <div>
-        <Nav style={{ textAlign: "left" }}>
-          <Logo
-            style={{ textAlign: "left" }}
-            source={logo}
-            placement="header"
-          />
+    <header className={classes.Header} style={{ position: positioning }}>
+      <div style={{ paddingLeft: "10px" }}>
+        <Nav>
+          <Logo source={logo} placement="header" />
         </Nav>
       </div>
       <div className={classes.Navigation}>
@@ -54,7 +48,12 @@ const Header = ({ history, logo, positioning, clicked }) => {
           />
         </Nav>
       </div>
-    </div>
+      <div className={classes.Toggle} onClick={clicked}>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </header>
   );
 
   return <div>{headerDisplay}</div>;

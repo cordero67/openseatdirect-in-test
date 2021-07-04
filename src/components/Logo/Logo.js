@@ -13,6 +13,8 @@ const Logo = (props) => {
   } else if (props.placement === "footer") {
     styleName = styles.Footer;
   }
+
+  //https://openseatdirdev.wpengine.com/
   return (
     <NavLink to="/" exact>
       <img src={props.source} alt="OpenSeatDirect Logo" className={styleName} />
