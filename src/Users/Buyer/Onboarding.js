@@ -23,13 +23,6 @@ import classes from "./BuyerAccount.module.css";
 import Spinner from "../../components/UI/Spinner/SpinnerNew"; // experimental..
 
 const Onboarding = (props) => {
-  //console.log("PAYPAL_USE_SANDBOX: ", PAYPAL_USE_SANDBOX);
-  //console.log("SUBSCRIPTION_PROMO_CODE_1: ", SUBSCRIPTION_PROMO_CODE_1);
-  //console.log("SUBSCRIPTION_PROMO_CODE_2: ", SUBSCRIPTION_PROMO_CODE_2);
-  //console.log("SUBSCRIPTION_PROMO_CODE_3: ", SUBSCRIPTION_PROMO_CODE_3);
-  //console.log("SUBSCRIPTION_PROMO_CODE_4: ", SUBSCRIPTION_PROMO_CODE_4);
-  //console.log("SUBSCRIPTION_PROMO_CODE_5: ", SUBSCRIPTION_PROMO_CODE_5);
-
   // UPDATE WHEN A NEW PLAN IS INTRODUCED
   const [values, setValues] = useState({
     accountName: "",
@@ -93,26 +86,6 @@ const Onboarding = (props) => {
     paypalExpress_client_id,
     paypalExpress_client_secret,
   } = values;
-
-  /*
-  const getStatus = () => {
-    let tempData = JSON.parse(localStorage.getItem("user"));
-    console.log("tempData: ", tempData);
-    if (
-      "user" in tempData &&
-      "accountId" in tempData.user &&
-      "status" in tempData.user.accountId
-    ) {
-      console.log(
-        "tempData.data.accountId.status: ",
-        tempData.user.accountId.status
-      );
-      return tempData.user.accountId.status;
-    } else {
-      return 0;
-    }
-  };
-*/
 
   // THIS FUNCTION LOOKS GOOD BUT NOT 100% CONFIRMED
   const getStatus = () => {
@@ -256,7 +229,7 @@ const Onboarding = (props) => {
         id: "P-74091125HK783123JMDOLLEA", // OSD PayPal Production subscription
       },
       freeSubscription: {
-        name: "$70 annually (first year free)",
+        name: "FREE SUBSCRIPTION",
         id: "", // OSD PayPal subscription
       },
       clientId:
