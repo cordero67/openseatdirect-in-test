@@ -21,6 +21,7 @@ const VendorNavigation = (props) => {
       </button>
     </li>
   );
+
   let myTickets = (
     <li>
       <button
@@ -33,6 +34,22 @@ const VendorNavigation = (props) => {
         onClick={props.clicked}
       >
         My Tickets
+      </button>
+    </li>
+  );
+
+  let upgrade = (
+    <li>
+      <button
+        className={
+          props.pane === "upgrade"
+            ? classes.NavigationButtonActive
+            : classes.NavigationButton
+        }
+        name="upgrade"
+        onClick={props.clicked}
+      >
+        Upgrade Subscription
       </button>
     </li>
   );
@@ -86,6 +103,7 @@ const VendorNavigation = (props) => {
           {myEvents}
           {createEvent}
           {accountSettings}
+          {upgrade}
           <hr className={classes.HorizontalDivider} />
           {myTickets}
         </div>

@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import BuyerNavigation from "./BuyerNavigation";
 import Profile from "../ComponentPages/Profile";
 import MyTickets from "../ComponentPages/MyTickets";
-//import Onboarding from "./Onboarding";
-import Onboarding from "./OnboardingNEW";
+import Onboarding from "./Onboarding";
 import classes from "./BuyerAccount.module.css";
 
 const BuyerAccount = () => {
