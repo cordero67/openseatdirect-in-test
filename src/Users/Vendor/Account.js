@@ -93,12 +93,6 @@ const Account = () => {
           Change Password
         </button>
         <br></br>
-        <br></br>
-        <div>Subscription: Free Tickets Plan</div>
-        <br></br>
-        <button className={classes.PasswordButton} onClick={() => {}}>
-          Upgrade Subscription
-        </button>
       </div>
 
       <ResetModal

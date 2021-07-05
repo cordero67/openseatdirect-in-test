@@ -38,22 +38,6 @@ const VendorNavigation = (props) => {
     </li>
   );
 
-  let upgrade = (
-    <li>
-      <button
-        className={
-          props.pane === "upgrade"
-            ? classes.NavigationButtonActive
-            : classes.NavigationButton
-        }
-        name="upgrade"
-        onClick={props.clicked}
-      >
-        Upgrade Subscription
-      </button>
-    </li>
-  );
-
   let myEvents = (
     <li>
       <button
@@ -103,7 +87,6 @@ const VendorNavigation = (props) => {
           {myEvents}
           {createEvent}
           {accountSettings}
-          {upgrade}
           <hr className={classes.HorizontalDivider} />
           {myTickets}
         </div>
