@@ -256,7 +256,7 @@ const Onboarding = (props) => {
         id: "P-74091125HK783123JMDOLLEA", // OSD PayPal Production subscription
       },
       freeSubscription: {
-        name: "$70 annually (first year free)",
+        name: "FREE SUBSCRIPTION",
         id: "", // OSD PayPal subscription
       },
       clientId:
