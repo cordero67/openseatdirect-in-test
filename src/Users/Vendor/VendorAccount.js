@@ -12,6 +12,7 @@ import EditEvent from "../../EventCreation/EditEvent"; // NEW COMPONENT COPIED F
 import Orders from "./Orders"; // CURRENTLY NOT USING THIS TAB
 import CreateEvent from "../../EventCreation/CreateEvent"; // NO CHANGE WAS MADE TO THIS COMPONENT
 import Account from "./Account"; // NEW COMPONENT COPIED FROM DEV AND UPDATED
+import Upgrade from "./Upgrade";
 //import TicketWallet from "../TicketWallet/TicketWallet";
 import MyTickets from "../ComponentPages/MyTickets";
 import VendorNavigation from "./Components/VendorNavigation"; // NEW COMPONENT COPIED FROM DEV AND UPDATED
@@ -27,6 +28,8 @@ const VendorAccount = (props) => {
   const [eventOrders, setEventOrders] = useState(); //
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedOrders, setSelectedOrders] = useState([]);
+
+  const [buyerInfo, setBuyerInfo] = useState(); //
 
   const [accountType, setAccountType] = useState();
 
@@ -105,20 +108,29 @@ const VendorAccount = (props) => {
         window.location.href = "/personal";
       }
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      let vendorToken = tempUser.token;
-      let userId = tempUser.user._id;
-      let accountNum = tempUser.user.accountId.accountNum;
+
+      let tempBuyerInfo = {};
+      tempBuyerInfo.token = tempUser.token;
+      tempBuyerInfo.email = tempUser.user.email;
+      tempBuyerInfo.name = tempUser.user.name;
+      tempBuyerInfo.role = tempUser.user.role;
+      tempBuyerInfo.id = tempUser.user._id;
+      setBuyerInfo(tempBuyerInfo);
+
+      //let vendorToken = tempUser.token;
+      //let userId = tempUser.user._id;
+      //let accountNum = tempUser.user.accountId.accountNum;
 
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", "Bearer " + vendorToken);
+      myHeaders.append("Authorization", "Bearer " + tempBuyerInfo.token);
       let requestOptions = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
       };
       //let fetchstr = `${API}/accounts/${accountNum}/events`;
-      let fetchstr = `${API}/event/alluser/${userId}`;
+      let fetchstr = `${API}/event/alluser/${tempUser.user._id}`;
       //let fetchstr = `${API}/accounts/${userId}/events`;
 
       fetch(fetchstr, requestOptions)
@@ -130,7 +142,7 @@ const VendorAccount = (props) => {
           jsEvents.sort(compareValues("startDateTime", "asc"));
           setEventDescriptions(jsEvents);
           //fetchstr = `${API}/accounts/${accountNum}/orders`;
-          fetchstr = `${API}/order/${userId}`;
+          fetchstr = `${API}/order/${tempUser.user._id}`;
           //fetchstr = `${API}/reports/organizer`;
           fetch(fetchstr, requestOptions)
             .then(handleErrors)
@@ -292,6 +304,8 @@ const VendorAccount = (props) => {
       return <CreateEvent />;
     } else if (display === "account") {
       return <Account />;
+    } else if (display === "upgrade") {
+      return <Upgrade userid={buyerInfo.id} token={buyerInfo.token} />;
     } else if (display === "wallet") {
       //return <TicketWallet />;
       return <MyTickets />;

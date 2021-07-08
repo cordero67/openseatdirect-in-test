@@ -1,6 +1,11 @@
 import React, { useEffect, useState, Fragment } from "react";
 
+import { CSVLink } from "react-csv";
+
 import { getDate } from "./Resources/VendorFunctions";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt, faFileCsv } from "@fortawesome/free-solid-svg-icons";
 
 import classes from "./TicketSales.module.css";
 import ReceiptModal from "../Modals/ReceiptModalVendor";
@@ -190,10 +195,43 @@ const TicketSales = (props) => {
     </div>
   );
 
+  const headers = [
+    { label: "First Name", key: "firstname" },
+    { label: "Last Name", key: "lastname" },
+    { label: "Email", key: "email" },
+    { label: "Ticket Type", key: "email" },
+    { label: "Email", key: "email" },
+  ];
+
+  const data = [
+    { firstname: "Ahmed", lastname: "Tomi", email: "ah@smthing.co.com" },
+    { firstname: "Raed", lastname: "Labes", email: "rl@smthing.co.com" },
+    { firstname: "Yezzi", lastname: "Min l3b", email: "ymin@cocococo.com" },
+  ];
+
   const displayHeader = (
     <div className={classes.DisplayHeader}>
-      <div style={{ fontWeight: "600", fontSize: "18px", paddingLeft: "30px" }}>
-        Ticket Orders
+      <div
+        style={{
+          fontWeight: "600",
+          fontSize: "18px",
+          paddingLeft: "30px",
+        }}
+      >
+        Ticket Orders{" "}
+        <CSVLink
+          data={data}
+          headers={headers}
+          filename={"Attendee List.csv"}
+          target="_blank"
+        >
+          <FontAwesomeIcon
+            style={{ fontSize: "20px" }}
+            color="blue"
+            cursor="pointer"
+            icon={faFileCsv}
+          />
+        </CSVLink>
       </div>
       <div className={classes.OrdersHeader}>
         <div>
@@ -204,7 +242,7 @@ const TicketSales = (props) => {
               updateValues(e.target.name);
             }}
           >
-            Order Dates
+            Order Date
           </button>
         </div>
         <div>
