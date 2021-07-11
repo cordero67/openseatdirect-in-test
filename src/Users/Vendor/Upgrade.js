@@ -67,6 +67,7 @@ const Onboarding = (props) => {
   const [pageView, setPageView] = useState("summary");
   const [preFetchView, setPreFetchView] = useState("");
   const [loading, setLoading] = useState("false");
+  const [firstTime, setFirstTime] = useState(true);
 
   //const [isDisabled, setIsDisabled] = useState(true)
   const {
@@ -92,10 +93,12 @@ const Onboarding = (props) => {
     console.log("Entering 'getStatus'");
     let tempData = JSON.parse(localStorage.getItem("user"));
     if ("user" in tempData && "accountId" in tempData.user) {
+      let tempUser = tempData.user;
       let tempAccountId = tempData.user.accountId;
       console.log("accountId: ", tempAccountId);
       let isFree = false;
       let hasAccountName = false;
+      let hasMatchingUserName = false;
       let hasLinkIds = false;
       let hasPaid = false;
       if (tempAccountId.ticketPlan === "free") {
@@ -106,6 +109,15 @@ const Onboarding = (props) => {
       }
       if ("accountName" in tempAccountId && tempAccountId.accountName !== "") {
         hasAccountName = true;
+      }
+      if (
+        "username" in tempUser &&
+        "accountName" in tempAccountId &&
+        tempUser.username === tempAccountId.accountName &&
+        firstTime
+      ) {
+        hasMatchingUserName = true;
+        setFirstTime(false);
       }
       if (
         "paymentGatewayType" in tempAccountId &&
@@ -135,7 +147,7 @@ const Onboarding = (props) => {
       ) {
         hasPaid = true;
       }
-      if (!hasAccountName) {
+      if (!hasAccountName || hasMatchingUserName) {
         console.log("RETURNING A 1");
         return 1;
       }
@@ -167,7 +179,7 @@ const Onboarding = (props) => {
       },
       annually: {
         name: "$169 annually",
-        id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
+        id: "P-5YA13382D9271245EL5FRXTA", // Bondirectly PayPal Sandbox subscription
       },
       monthlyDiscounted: {
         name: "$15 monthly: 6 weeks free",
@@ -175,19 +187,19 @@ const Onboarding = (props) => {
       },
       annuallyDiscounted: {
         name: "$149 annually: discounted",
-        id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
+        id: "P-5YA13382D9271245EL5FRXTA", // Bondirectly PayPal Sandbox subscription
       },
       monthlyFreeTrial: {
         name: "$15 monthly: 3 months free",
-        id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
+        id: "P-3U3085871T847894PL5FRXTI", // Bondirectly PayPal Sandbox subscription
       },
       annuallyOldPrice: {
         name: "$70 annually",
-        id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
+        id: "P-6UY26644UT426184FL5FRXTI", // Bondirectly PayPal Sandbox subscription
       },
       annuallyOldPriceDiscounted: {
         name: "$50 annually",
-        id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
+        id: "P-3YH13849H69051131MAIHPGY", // Bondirectly PayPal Sandbox subscription
       },
       freeSubscription: {
         name: "FREE SUBSCRIPTION",
@@ -258,31 +270,51 @@ const Onboarding = (props) => {
     if ("user" in tempUser && "accountId" in tempUser.user) {
       let tempBuyerInfo = {};
       // populates the "tempBuyerInfo" (and "values") object with "user" object info
-      if (tempUser.user.accountId.accountName)
+      console.log("Account Name: ", tempUser.user.accountId.accountName);
+      console.log("User Name: ", tempUser.user.username);
+      console.log(
+        tempUser.user.accountId.accountName === tempUser.user.username
+      );
+      /*
+      if (
+        tempUser.user.accountId.accountName &&
+        tempUser.user.username &&
+        tempUser.user.accountId.accountName === tempUser.user.username
+      ) {
+        tempBuyerInfo.accountName = "";
+      } else */ if (tempUser.user.accountId.accountName) {
         tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
+      }
 
-      if (tempUser.user.accountId.accountEmail)
+      if (tempUser.user.accountId.accountEmail) {
         tempBuyerInfo.accountEmail = tempUser.user.accountId.accountEmail;
+      }
 
-      if (tempUser.user.accountId.accountPhone)
+      if (tempUser.user.accountId.accountPhone) {
         tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
+      }
 
-      if (tempUser.user.accountId.accountUrl)
+      if (tempUser.user.accountId.accountUrl) {
         tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
+      }
 
-      if (tempUser.user.accountId.status)
+      if (tempUser.user.accountId.status) {
         tempBuyerInfo.status = tempUser.user.accountId.status;
+      }
 
-      if (tempUser.user.accountId.ticketPlan)
+      if (tempUser.user.accountId.ticketPlan) {
         tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
+      }
 
-      if (tempUser.user.accountId.paypalExpress_client_id)
+      if (tempUser.user.accountId.paypalExpress_client_id) {
         tempBuyerInfo.paypalExpress_client_id =
           tempUser.user.accountId.paypalExpress_client_id;
+      }
 
-      if (tempUser.user.accountId.paypalExpress_client_secret)
+      if (tempUser.user.accountId.paypalExpress_client_secret) {
         tempBuyerInfo.paypalExpress_client_secret =
           tempUser.user.accountId.paypalExpress_client_secret;
+      }
 
       if (PAYPAL_USE_SANDBOX === true) {
         console.log(
@@ -290,15 +322,15 @@ const Onboarding = (props) => {
           PAYPAL_USE_SANDBOX,
           " Sandbox true"
         );
-        tempBuyerInfo.paypal_plan_id_full = "P-3E209303AY287713HMDN3PLQ"; // sandbox monthly full price
-        tempBuyerInfo.paypal_plan_id_discount = "P-3E209303AY287713HMDN3PLQ"; // sandbox monthly full price
-        tempBuyerInfo.paypal_plan_id_forFree = "P-3E209303AY287713HMDN3PLQ"; // sandbox monthly full price
-        tempBuyerInfo.paypal_plan_id_old = "P-3E209303AY287713HMDN3PLQ"; // sandbox monthly full price
+        tempBuyerInfo.paypal_plan_id_full = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
+        tempBuyerInfo.paypal_plan_id_discount = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
+        tempBuyerInfo.paypal_plan_id_forFree = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly full price
+        tempBuyerInfo.paypal_plan_id_old = "P-6UY26644UT426184FL5FRXTI"; // sandbox monthly full price
         tempBuyerInfo.paypal_plan_id_oldDiscounted =
-          "P-3E209303AY287713HMDN3PLQ"; // sandbox monthly full price
+          "P-3YH13849H69051131MAIHPGY"; // sandbox monthly full price
         tempBuyerInfo.paypal_plan_id_freeSubscription = ""; // production FREE SUBSCRIPTION no PayPal
         if (!tempUser.user.accountId.paypal_plan_id) {
-          tempBuyerInfo.paypal_plan_id = "P-3E209303AY287713HMDN3PLQ"; // sandbox monthly full price
+          tempBuyerInfo.paypal_plan_id = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
         } else {
           tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
         }
@@ -461,6 +493,8 @@ const Onboarding = (props) => {
   const paymentPanel = () => {
     console.log("Values info: ", values);
     if (promoCodeDetails.appliedPromoCode === "OSD20") {
+      console.log("ticketPlan: ", ticketPlan);
+      console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
           <RadioForm
@@ -476,6 +510,8 @@ const Onboarding = (props) => {
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "TRYFORFREE") {
+      console.log("ticketPlan: ", ticketPlan);
+      console.log("paypal_plan_id: ", paypal_plan_id);
       console.log("paypal_plan_id_forFree: ", paypal_plan_id_forFree);
       return (
         <Fragment>
@@ -488,10 +524,12 @@ const Onboarding = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
+          {ticketPlan === "free" && paypal_plan_id ? showPayPal : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSD70") {
+      console.log("ticketPlan: ", ticketPlan);
+      console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
           <RadioForm
@@ -503,10 +541,12 @@ const Onboarding = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
+          {ticketPlan === "free" && paypal_plan_id ? showPayPal : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSD50") {
+      console.log("ticketPlan: ", ticketPlan);
+      console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
           <RadioForm
@@ -518,10 +558,12 @@ const Onboarding = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
+          {ticketPlan === "free" && paypal_plan_id ? showPayPal : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSDFREE") {
+      console.log("ticketPlan: ", ticketPlan);
+      console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
           <RadioForm
@@ -537,7 +579,7 @@ const Onboarding = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan !== "free" && paypal_plan_id ? (
+          {ticketPlan === "free" && paypal_plan_id ? (
             showPayPal
           ) : (
             <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -555,6 +597,8 @@ const Onboarding = (props) => {
         </Fragment>
       );
     } else {
+      console.log("ticketPlan: ", ticketPlan);
+      console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
           <RadioForm
@@ -762,7 +806,7 @@ const Onboarding = (props) => {
             fontWeight: "600",
           }}
         >
-          Step 1: Basic Information about your Organization
+          Step 1 of 3: Complete Organization Information
         </div>
         <div className={classes.VendorCanvas}>
           <div
@@ -1238,7 +1282,7 @@ const Onboarding = (props) => {
               fontWeight: "600",
             }}
           >
-            Step 2: Select a Subscription Plan
+            Step 2 of 3: Select a Subscription Plan
           </div>
           <div className={classes.PaymentCanvas}>
             {paymentInstructions()}
@@ -1272,7 +1316,7 @@ const Onboarding = (props) => {
               fontWeight: "600",
             }}
           >
-            Step 2: Payment Confirmation
+            Step 2 of 3: Payment Confirmation
           </div>
           <br></br>
           {successStatement()}
@@ -1303,7 +1347,7 @@ const Onboarding = (props) => {
               fontWeight: "600",
             }}
           >
-            Step 2: Payment Confirmation
+            Step 2 of 3: Payment Confirmation
           </div>
           <br></br>
           <div
@@ -1354,7 +1398,7 @@ const Onboarding = (props) => {
               fontWeight: "600",
             }}
           >
-            Step 2: Link Your Paypal Merchant Account
+            Step 3 of 3: Link Your Paypal Business Account
           </div>
 
           <div className={classes.PaypalCanvas}>
@@ -1571,7 +1615,7 @@ const Onboarding = (props) => {
             fontWeight: "600",
           }}
         >
-          Step 3: Create an Event with Paid Tickets
+          Completed
         </div>
         <div className={classes.CompleteCanvas}>
           <div className={classes.CompleteHeaderLine}>

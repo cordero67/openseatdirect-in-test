@@ -6,7 +6,7 @@ import ResetModal from "./Modals/ResetModal";
 
 import classes from "./Account.module.css";
 
-const Account = () => {
+const Account = (props) => {
   const [userInfo, setUserInfo] = useState({
     firstName: "",
     lastName: "",
@@ -14,6 +14,7 @@ const Account = () => {
     token: "",
   });
   const [modalStatus, setModalStatus] = useState(false);
+  const [subscriptionType, setSubscriptionType] = useState("free");
 
   useEffect(() => {
     //
@@ -22,6 +23,7 @@ const Account = () => {
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
+      let tempAccountId = tempUser.user.accountId;
       let tempUserInfo = {
         email: tempUser.user.email,
         firstname: tempUser.user.firstname,
@@ -31,6 +33,21 @@ const Account = () => {
       };
       console.log("tempUserInfo: ", tempUserInfo);
       setUserInfo(tempUserInfo);
+      if (
+        "accountName" in tempAccountId &&
+        tempAccountId.accountName !== "" &&
+        "paymentGatewayType" in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalExpress" &&
+        "paypalExpress_client_id" in tempAccountId &&
+        "string" === typeof tempAccountId.paypalExpress_client_id &&
+        "paypalExpress_client_secret" in tempAccountId &&
+        "string" === typeof tempAccountId.paypalExpress_client_secret &&
+        (tempAccountId.accountPaymentStatus === "good" ||
+          tempAccountId.ticketPlan === "comp")
+      ) {
+        setSubscriptionType("paid");
+        console.log("PAID");
+      } else console.log("STILL FREE");
     } else {
       window.location.href = "/auth";
     }
@@ -74,6 +91,22 @@ const Account = () => {
       });
   };
 
+  const subscription = () => {
+    if (subscriptionType === "free") {
+      return "Free ticket plan";
+    } else if (subscriptionType === "paid") {
+      return "Free and Paid ticket plan";
+    }
+  };
+
+  const upgrade = () => {
+    if (subscriptionType === "free") {
+      return "Upgrade Subscription";
+    } else if (subscriptionType === "paid") {
+      return null;
+    }
+  };
+
   return (
     <div>
       <div className={classes.DisplayPanelTitle}>Account Settings</div>
@@ -94,10 +127,10 @@ const Account = () => {
         </button>
         <br></br>
         <br></br>
-        <div>Subscription: Free Tickets Plan</div>
+        <div>Subscription: {subscription()}</div>
         <br></br>
-        <button className={classes.PasswordButton} onClick={() => {}}>
-          Upgrade Subscription
+        <button className={classes.PasswordButton} onClick={props.upgrade}>
+          {upgrade()}
         </button>
       </div>
 

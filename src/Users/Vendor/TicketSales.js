@@ -208,17 +208,8 @@ const TicketSales = (props) => {
     { firstname: "Raed", lastname: "Labes", email: "rl@smthing.co.com" },
     { firstname: "Yezzi", lastname: "Min l3b", email: "ymin@cocococo.com" },
   ];
-
-  const displayHeader = (
-    <div className={classes.DisplayHeader}>
-      <div
-        style={{
-          fontWeight: "600",
-          fontSize: "18px",
-          paddingLeft: "30px",
-        }}
-      >
-        Ticket Orders{" "}
+  /*
+  
         <CSVLink
           data={data}
           headers={headers}
@@ -232,6 +223,18 @@ const TicketSales = (props) => {
             icon={faFileCsv}
           />
         </CSVLink>
+        */
+
+  const displayHeader = (
+    <div className={classes.DisplayHeader}>
+      <div
+        style={{
+          fontWeight: "600",
+          fontSize: "18px",
+          paddingLeft: "30px",
+        }}
+      >
+        Ticket Orders{" "}
       </div>
       <div className={classes.OrdersHeader}>
         <div>

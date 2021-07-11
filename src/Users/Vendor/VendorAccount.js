@@ -28,6 +28,7 @@ const VendorAccount = (props) => {
   const [eventOrders, setEventOrders] = useState(); //
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedOrders, setSelectedOrders] = useState([]);
+  const [subscriptionType, setSubscriptionType] = useState("free");
 
   const [buyerInfo, setBuyerInfo] = useState(); //
 
@@ -109,6 +110,7 @@ const VendorAccount = (props) => {
       }
       let tempUser = JSON.parse(localStorage.getItem("user"));
 
+      let tempAccountId = tempUser.user.accountId;
       let tempBuyerInfo = {};
       tempBuyerInfo.token = tempUser.token;
       tempBuyerInfo.email = tempUser.user.email;
@@ -116,6 +118,22 @@ const VendorAccount = (props) => {
       tempBuyerInfo.role = tempUser.user.role;
       tempBuyerInfo.id = tempUser.user._id;
       setBuyerInfo(tempBuyerInfo);
+
+      if (
+        "accountName" in tempAccountId &&
+        tempAccountId.accountName !== "" &&
+        "paymentGatewayType" in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalExpress" &&
+        "paypalExpress_client_id" in tempAccountId &&
+        "string" === typeof tempAccountId.paypalExpress_client_id &&
+        "paypalExpress_client_secret" in tempAccountId &&
+        "string" === typeof tempAccountId.paypalExpress_client_secret &&
+        (tempAccountId.accountPaymentStatus === "good" ||
+          tempAccountId.ticketPlan === "comp")
+      ) {
+        setSubscriptionType("paid");
+        console.log("PAID");
+      } else console.log("STILL FREE");
 
       //let vendorToken = tempUser.token;
       //let userId = tempUser.user._id;
@@ -303,7 +321,13 @@ const VendorAccount = (props) => {
     } else if (display === "create") {
       return <CreateEvent />;
     } else if (display === "account") {
-      return <Account />;
+      return (
+        <Account
+          upgrade={(event) => {
+            setDisplay("upgrade");
+          }}
+        ></Account>
+      );
     } else if (display === "upgrade") {
       return <Upgrade userid={buyerInfo.id} token={buyerInfo.token} />;
     } else if (display === "wallet") {
@@ -318,6 +342,7 @@ const VendorAccount = (props) => {
     <VendorNavigation
       pane={display}
       accountType={accountType}
+      subscriptionType={subscriptionType}
       clicked={(event) => {
         setDisplay(event.target.name);
         // *****THIS NEEDS TO BE INCOPORATED ONCE "Routs.js" HAS BEEN UPDATED

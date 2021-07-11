@@ -6,6 +6,7 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import classes from "./VendorNavigation.module.css";
 
 const VendorNavigation = (props) => {
+  console.log("props: ", props);
   let accountSettings = (
     <li>
       <button
@@ -38,21 +39,29 @@ const VendorNavigation = (props) => {
     </li>
   );
 
-  let upgrade = (
-    <li>
-      <button
-        className={
-          props.pane === "upgrade"
-            ? classes.NavigationButtonActive
-            : classes.NavigationButton
-        }
-        name="upgrade"
-        onClick={props.clicked}
-      >
-        Upgrade Subscription
-      </button>
-    </li>
-  );
+  let upgrade;
+
+  if (props.subscriptionType === "free") {
+    console.log("FREE");
+    upgrade = (
+      <li>
+        <button
+          className={
+            props.pane === "upgrade"
+              ? classes.NavigationButtonActive
+              : classes.NavigationButton
+          }
+          name="upgrade"
+          onClick={props.clicked}
+        >
+          Upgrade Subscription
+        </button>
+      </li>
+    );
+  } else {
+    console.log("PAID");
+    upgrade = null;
+  }
 
   let myEvents = (
     <li>
