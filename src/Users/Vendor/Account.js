@@ -93,9 +93,9 @@ const Account = (props) => {
 
   const subscription = () => {
     if (subscriptionType === "free") {
-      return "Free ticket plan";
+      return "Community Plan";
     } else if (subscriptionType === "paid") {
-      return "Free and Paid ticket plan";
+      return "Pro-Plan";
     }
   };
 

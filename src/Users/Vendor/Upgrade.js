@@ -506,7 +506,7 @@ const Onboarding = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan !== "free" && paypal_plan_id ? showPayPal : null}
+          {ticketPlan === "free" && paypal_plan_id ? showPayPal : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "TRYFORFREE") {
