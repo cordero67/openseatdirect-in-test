@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Redirect } from "react-router-dom";
+import queryString from "query-string";
 
 import { API } from "../../config";
 
@@ -55,6 +56,11 @@ const Authentication = () => {
   };
 
   useEffect(() => {
+    let startingView = queryString.parse(window.location.search).new;
+    if (startingView) {
+      setModalSetting("signup");
+    }
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null

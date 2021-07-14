@@ -16,9 +16,13 @@ const Logo = (props) => {
 
   //https://openseatdirdev.wpengine.com/
   return (
-    <NavLink to="/" exact>
+    <button
+      onClick={() => {
+        window.location.href = "https://openseatdirdev.wpengine.com/";
+      }}
+    >
       <img src={props.source} alt="OpenSeatDirect Logo" className={styleName} />
-    </NavLink>
+    </button>
   );
 };
 

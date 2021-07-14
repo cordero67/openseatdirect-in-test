@@ -5,11 +5,10 @@ import { CSVLink } from "react-csv";
 import { getDate } from "./Resources/VendorFunctions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt, faFileCsv } from "@fortawesome/free-solid-svg-icons";
+import { faFileCsv } from "@fortawesome/free-solid-svg-icons";
 
 import classes from "./TicketSales.module.css";
 import ReceiptModal from "../Modals/ReceiptModalVendor";
-//
 
 const TicketSales = (props) => {
   console.log("PROPS: ", props);
@@ -17,6 +16,7 @@ const TicketSales = (props) => {
   const [modalView, setModalView] = useState(false); // defines appearance of ReceiptModal
 
   const [eventOrders, setEventOrders] = useState([]);
+  const [exportOrders, setExportOrders] = useState([]);
 
   const [selectedOrder, setSelectedOrder] = useState({});
 
@@ -25,9 +25,35 @@ const TicketSales = (props) => {
     direction: "asc",
   });
 
+  const createExportOrders = (eventOrders) => {
+    let tempArray = [];
+    eventOrders.map((order, index) => {
+      let shortDateTime;
+      [shortDateTime] = getDate(order.order_createdAt);
+      order.order_qrTickets.map((ticket, index) => {
+        let tempElement = {
+          order: index + 1,
+          date: shortDateTime,
+          firstName: order.order_firstName,
+          lastName: order.order_lastName,
+          totalTickets: order.order_numTickets,
+          amount: order.order_totalAmount,
+          tickets: index + 1,
+          type: ticket.ticketId,
+        };
+        tempArray.push(tempElement);
+      });
+    });
+    console.log(tempArray);
+    setExportOrders(tempArray);
+  };
+
   useEffect(() => {
     setEventOrders(props.orders);
+    createExportOrders(props.orders);
   }, [props]);
+
+  console.log("ORDERS: ", props.orders);
 
   const compareValues = (key, order) => {
     return function innerSort(a, b) {
@@ -196,17 +222,103 @@ const TicketSales = (props) => {
   );
 
   const headers = [
+    { label: "Order", key: "order" },
+    { label: "Date", key: "date" },
     { label: "First Name", key: "firstname" },
     { label: "Last Name", key: "lastname" },
     { label: "Email", key: "email" },
-    { label: "Ticket Type", key: "email" },
-    { label: "Email", key: "email" },
+    { label: "tickets", key: "tickets" },
+    { label: "amount", key: "amount" },
+    { label: "number", key: "number" },
+    { label: "type", key: "type" },
   ];
 
   const data = [
-    { firstname: "Ahmed", lastname: "Tomi", email: "ah@smthing.co.com" },
-    { firstname: "Raed", lastname: "Labes", email: "rl@smthing.co.com" },
+    {
+      order: 1,
+      date: "September 1",
+      firstname: "Ahmed",
+      lastname: "Tomi",
+      email: "ah@smthing.co.com",
+      tickets: 3,
+      amount: 30,
+      number: 1,
+      type: "general admission",
+    },
+    {
+      order: 1,
+      date: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      tickets: "",
+      amount: "",
+      number: 1,
+      type: "VIP",
+    },
+    {
+      order: 1,
+      date: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      tickets: "",
+      amount: "",
+      number: 1,
+      type: "Box Seats",
+    },
+    {
+      order: 2,
+      date: "September 1",
+      firstname: "Raed",
+      lastname: "Labes",
+      email: "rl@smthing.co.com",
+    },
+    {
+      order: 2,
+      date: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      tickets: "",
+      amount: "",
+      number: 1,
+      type: "VIP",
+    },
+    {
+      order: 2,
+      date: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      tickets: "",
+      amount: "",
+      number: 1,
+      type: "Box Seats",
+    },
     { firstname: "Yezzi", lastname: "Min l3b", email: "ymin@cocococo.com" },
+    {
+      order: 3,
+      date: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      tickets: "",
+      amount: "",
+      number: 1,
+      type: "VIP",
+    },
+    {
+      order: 3,
+      date: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      tickets: "",
+      amount: "",
+      number: 1,
+      type: "Box Seats",
+    },
   ];
   /*
   
