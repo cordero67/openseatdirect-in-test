@@ -31,6 +31,7 @@ const SignIn = () => {
 
   const getStatus = (user) => {
     if ("accountId" in user && "status" in user.accountId) {
+      console.log("Status: ", user.accountId.status);
       return user.accountId.status;
     } else {
       return 0;
@@ -73,7 +74,12 @@ const SignIn = () => {
   ) {
     localStorage.setItem("user", JSON.stringify(data));
     let tempUser = JSON.parse(localStorage.getItem("user"));
-    if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
+    if (
+      getStatus(tempUser.user) === 7 ||
+      getStatus(tempUser.user) === 8 ||
+      getStatus(tempUser.user) === 10 ||
+      true
+    ) {
       return <Redirect to="/myaccount" />;
     } else if (
       getStatus(tempUser.user) === 4 ||

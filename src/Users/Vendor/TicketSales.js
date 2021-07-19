@@ -29,15 +29,15 @@ const TicketSales = (props) => {
     let tempArray = [];
     eventOrders.map((order, index) => {
       let shortDateTime;
-      [shortDateTime] = getDate(order.order_createdAt);
-      order.order_qrTickets.map((ticket, index) => {
+      [shortDateTime] = getDate(order.createdAt);
+      order.qrTickets.map((ticket, index) => {
         let tempElement = {
           order: index + 1,
           date: shortDateTime,
-          firstName: order.order_firstName,
-          lastName: order.order_lastName,
-          totalTickets: order.order_numTickets,
-          amount: order.order_totalAmount,
+          firstName: order.firstName,
+          lastName: order.lastName,
+          totalTickets: order.qty,
+          amount: order.totalPaidAmount,
           tickets: index + 1,
           type: ticket.ticketId,
         };
@@ -98,7 +98,7 @@ const TicketSales = (props) => {
           {eventOrders.map((item, index) => {
             console.log("ORDER: ", item);
             let shortDateTime;
-            [shortDateTime] = getDate(item.order_createdAt);
+            [shortDateTime] = getDate(item.createdAt);
             if (oddOrder) {
               styling = {
                 backgroundColor: "#F0F0F0",
@@ -114,12 +114,12 @@ const TicketSales = (props) => {
               <div key={index} className={classes.Orders} style={styling}>
                 <div style={{ textAlign: "left" }}>{shortDateTime}</div>
                 <div style={{ textAlign: "left" }}>
-                  {item.order_lastName}, {item.order_firstName}
+                  {item.lastname}, {item.firstname}
                 </div>
-                <div style={{ textAlign: "left" }}>{item.order_email}</div>
-                <div>{item.order_qrTickets.length}</div>
+                <div style={{ textAlign: "left" }}>{item.email}</div>
+                <div>{item.qrTickets.length}</div>
                 <div style={{ textAlign: "right" }}>
-                  {item.order_totalAmount.toFixed(2)}
+                  {item.totalPaidAmount.toFixed(2)}
                 </div>
                 <div style={{ fontSize: "22px", textAlign: "center" }}>
                   <button className={classes.EventButton} style={styling}>
@@ -353,7 +353,7 @@ const TicketSales = (props) => {
         <div>
           <button
             className={classes.SortButton}
-            name="order_createdAt"
+            name="createdAt"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -364,7 +364,7 @@ const TicketSales = (props) => {
         <div>
           <button
             className={classes.SortButton}
-            name="order_lastName"
+            name="lastname"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -374,7 +374,7 @@ const TicketSales = (props) => {
           ,{" "}
           <button
             className={classes.SortButton}
-            name="order_firstName"
+            name="firstname"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -385,7 +385,7 @@ const TicketSales = (props) => {
         <div>
           <button
             className={classes.SortButton}
-            name="order_email"
+            name="email"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -396,7 +396,7 @@ const TicketSales = (props) => {
         <div style={{ textAlign: "center" }}>
           <button
             className={classes.SortButton}
-            name="order_numTickets"
+            name="qty"
             onClick={(e) => {
               updateValues(e.target.name);
             }}
@@ -407,7 +407,7 @@ const TicketSales = (props) => {
         <div style={{ textAlign: "right" }}>
           <button
             className={classes.SortButton}
-            name="order_totalAmount"
+            name="totalPaidAmount"
             onClick={(e) => {
               updateValues(e.target.name);
             }}

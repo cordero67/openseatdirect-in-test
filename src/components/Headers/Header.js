@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 
+import { HOST } from "../../config";
 import { signout } from "../../Users/apiUsers";
 import Logo from "../Logo/Logo";
 import HeaderItems from "./HeaderItems";
@@ -10,6 +11,8 @@ import classes from "./Header.module.css";
 
 const Header = ({ history, logo, positioning, clicked }) => {
   let headerDisplay;
+
+  console.log("HOST: ", `${HOST}`);
 
   const [isResizing, setIsResizing] = useState(false);
   const [screenSize, setScreenSize] = useState(window.innerWidth);

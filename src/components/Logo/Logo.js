@@ -1,10 +1,13 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+
+import { HOST } from "../../config";
 
 import styles from "./Logo.module.css";
 
 const Logo = (props) => {
   let styleName = styles.Header;
+
+  console.log("HOST: ", HOST);
 
   if (props.placement === "header") {
     styleName = styles.Header;
@@ -14,11 +17,10 @@ const Logo = (props) => {
     styleName = styles.Footer;
   }
 
-  //https://openseatdirdev.wpengine.com/
   return (
     <button
       onClick={() => {
-        window.location.href = "https://openseatdirdev.wpengine.com/";
+        window.location.href = HOST;
       }}
     >
       <img src={props.source} alt="OpenSeatDirect Logo" className={styleName} />

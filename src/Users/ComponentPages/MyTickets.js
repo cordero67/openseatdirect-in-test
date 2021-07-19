@@ -46,7 +46,10 @@ const MyTickets = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
 
-    let url = `${API}/tixorder/get_wallet/${tempUser.user._id}`;
+    ///user/{userId}/orders
+
+    //let url = `${API}/tixorder/get_wallet/${tempUser.user._id}`;
+    let url = `${API}/user/${tempUser.user._id}/orders`;
     let fetcharg = {
       method: "GET",
       headers: myHeaders,

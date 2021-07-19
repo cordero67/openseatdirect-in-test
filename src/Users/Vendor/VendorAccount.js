@@ -22,6 +22,7 @@ import classes from "./VendorAccount.module.css";
 
 const VendorAccount = (props) => {
   console.log("VENDOR PROPS: ", props);
+
   // spinner, events, salesAnalytics, ticketSales, issueTickets, editEvent, wallet, account, create, orders
   const [display, setDisplay] = useState("spinner");
   const [eventDescriptions, setEventDescriptions] = useState(); //
@@ -105,9 +106,6 @@ const VendorAccount = (props) => {
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
-      if (!(getStatus() === 7) && !(getStatus() === 8)) {
-        window.location.href = "/personal";
-      }
       let tempUser = JSON.parse(localStorage.getItem("user"));
 
       let tempAccountId = tempUser.user.accountId;
@@ -147,9 +145,8 @@ const VendorAccount = (props) => {
         headers: myHeaders,
         redirect: "follow",
       };
-      //let fetchstr = `${API}/accounts/${accountNum}/events`;
-      let fetchstr = `${API}/event/alluser/${tempUser.user._id}`;
-      //let fetchstr = `${API}/accounts/${userId}/events`;
+
+      let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/events`;
 
       fetch(fetchstr, requestOptions)
         .then(handleErrors)
@@ -159,8 +156,8 @@ const VendorAccount = (props) => {
           let jsEvents = JSON.parse(result);
           jsEvents.sort(compareValues("startDateTime", "asc"));
           setEventDescriptions(jsEvents);
-          //fetchstr = `${API}/accounts/${accountNum}/orders`;
-          fetchstr = `${API}/order/${tempUser.user._id}`;
+          fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
+          //fetchstr = `${API}/order/${tempUser.user._id}`;
           //fetchstr = `${API}/reports/organizer`;
           fetch(fetchstr, requestOptions)
             .then(handleErrors)

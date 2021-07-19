@@ -36,6 +36,8 @@ const IssueTickets = (props) => {
     "cash",
     "CashApp",
     "Venmo",
+    "Zelle",
+    "Stripe",
     "Paypal",
     "Bitcoin",
     "Ethereum",

@@ -1,9 +1,9 @@
 import { API } from "../config";
 
-const handleErrors = response => {
+const handleErrors = (response) => {
   console.log("Inside 'apiUsers' 'handleErrors()'", response);
   if (!response.ok) {
-    console.log("response: ", response)
+    console.log("response: ", response);
     throw Error(response.status);
   }
   return response;
@@ -25,12 +25,12 @@ export const signup = (user) => {
     //  "Content-Type": "application/json",
     //},
     body: JSON.stringify(user),
-    redirect: "follow"
+    redirect: "follow",
   })
     .then(handleErrors)
     .then((response) => {
       console.log("success");
-      console.log("response: ", response)
+      console.log("response: ", response);
       return response.json();
     })
     .catch((err) => {
@@ -51,7 +51,7 @@ export const signin = (user) => {
   })
     .then(handleErrors)
     .then((response) => {
-      console.log("response: ", response)
+      console.log("response: ", response);
 
       console.log("success");
       return response.json();
@@ -73,33 +73,31 @@ export const signout = (callback) => {
     return fetch(`${API}/signout`, {
       method: "GET",
     })
-    .then((response) => {
-      console.log("signout", response);
-    })
-    .catch((err) => console.log(err));
+      .then((response) => {
+        console.log("signout", response);
+      })
+      .catch((err) => console.log(err));
   }
 };
 
 export const recoverPassword = (user) => {
-  console.log("inside recoverPassword")
+  console.log("inside recoverPassword");
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   let apiurl;
   apiurl = `${API}/forgot`;
 
-  //forgotpassword?token=f349ad4b9248f991e777b0ff64d1abc7aedab365&email=gual325@gmail.com
-
   return fetch(apiurl, {
     method: "POST",
     headers: myHeaders,
     body: JSON.stringify(user),
-    redirect: "follow"
+    redirect: "follow",
   })
     .then(handleErrors)
     .then((response) => {
       console.log("success");
-      console.log("response: ", response)
+      console.log("response: ", response);
       return response.json();
     })
     .catch((err) => {
@@ -109,25 +107,19 @@ export const recoverPassword = (user) => {
     });
 };
 
-/*
-www.openseatdirect.com/api/auth/reset?
-token=7cc9fb0823099c779a64e26e93883c76fbb3b750&
-email=gual325@gmail.com
-*/
-
 export const resetPassword = (user) => {
-  console.log("inside resetPassword")
+  console.log("inside resetPassword");
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   let apiurl;
   apiurl = `${API}/auth/reset?token=${user.token}&email=${user.email}`;
-  console.log("apiurl: ", apiurl)
+  console.log("apiurl: ", apiurl);
 
   return fetch(apiurl, {
     method: "GET",
     headers: myHeaders,
-    redirect: "follow"
+    redirect: "follow",
   })
     .then(handleErrors)
     .then((response) => {
@@ -145,23 +137,22 @@ export const resetPassword = (user) => {
 export const changePassword = (user) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  console.log("user: ", user)
-  
+  console.log("user: ", user);
 
   let apiurl;
   apiurl = `${API}/updatePasswordViaEmail`;
-  console.log("apiurl: ", apiurl)
+  console.log("apiurl: ", apiurl);
 
   return fetch(apiurl, {
     method: "POST",
     headers: myHeaders,
     body: JSON.stringify(user),
-    redirect: "follow"
+    redirect: "follow",
   })
     .then(handleErrors)
     .then((response) => {
       console.log("success");
-      console.log("response: ", response)
+      console.log("response: ", response);
       return response.json();
     })
     .catch((err) => {
@@ -169,7 +160,6 @@ export const changePassword = (user) => {
       console.log(err);
       throw err;
     });
-
 };
 
 export const authenticate = (data, callback) => {
@@ -184,10 +174,7 @@ export const authenticate = (data, callback) => {
 
 export const isAuthenticated = () => {
   // checks if the "window" object exists
-  if (typeof window === "undefined") {
-    return false;
-  }
-  if (localStorage.getItem("user")) {
+  if (typeof window !== "undefined" && localStorage.getItem("user")) {
     return JSON.parse(localStorage.getItem("user"));
   } else {
     return false;

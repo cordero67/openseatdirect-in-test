@@ -77,9 +77,7 @@ export const getAllEventData = () => {
     headers: myHeaders,
     redirect: "follow", // what is this and when is it required
   };
-  // DEV API: `${API}/events`
-  // CURRENT PROD API: `${API}/event/all`
-  let fetchstr = `${API}/event/all`;
+  let fetchstr = `${API}/events`;
 
   return fetch(fetchstr, requestOptions)
     .then(handleErrors)
@@ -106,7 +104,7 @@ export const getAllPastEventData = () => {
     redirect: "follow", // what is this and when is it required
   };
 
-  let fetchstr = `${API}/event/allpast`;
+  let fetchstr = `${API}/events?past=true`;
 
   return fetch(fetchstr, requestOptions)
     .then(handleErrors)

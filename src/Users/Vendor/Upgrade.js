@@ -8,6 +8,8 @@ import {
   SUBSCRIPTION_PROMO_CODE_3,
   SUBSCRIPTION_PROMO_CODE_4,
   SUBSCRIPTION_PROMO_CODE_5,
+  SUBSCRIPTION_PROMO_CODE_6,
+  SUBSCRIPTION_PROMO_CODE_7,
 } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -60,14 +62,15 @@ const Onboarding = (props) => {
       SUBSCRIPTION_PROMO_CODE_3,
       SUBSCRIPTION_PROMO_CODE_4,
       SUBSCRIPTION_PROMO_CODE_5,
+      SUBSCRIPTION_PROMO_CODE_6,
+      SUBSCRIPTION_PROMO_CODE_7,
     ],
   });
 
   // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
-  const [pageView, setPageView] = useState("summary");
+  const [pageView, setPageView] = useState("organization");
   const [preFetchView, setPreFetchView] = useState("");
   const [loading, setLoading] = useState("false");
-  const [firstTime, setFirstTime] = useState(true);
 
   //const [isDisabled, setIsDisabled] = useState(true)
   const {
@@ -88,81 +91,11 @@ const Onboarding = (props) => {
     paypalExpress_client_secret,
   } = values;
 
-  // THIS FUNCTION LOOKS GOOD BUT NOT 100% CONFIRMED
   const getStatus = () => {
     console.log("Entering 'getStatus'");
     let tempData = JSON.parse(localStorage.getItem("user"));
-    if ("user" in tempData && "accountId" in tempData.user) {
-      let tempUser = tempData.user;
-      let tempAccountId = tempData.user.accountId;
-      console.log("accountId: ", tempAccountId);
-      let isFree = false;
-      let hasAccountName = false;
-      let hasMatchingUserName = false;
-      let hasLinkIds = false;
-      let hasPaid = false;
-      if (tempAccountId.ticketPlan === "free") {
-        isFree = true;
-      }
-      if (tempAccountId.ticketPlan === "comp") {
-        hasPaid = true;
-      }
-      if ("accountName" in tempAccountId && tempAccountId.accountName !== "") {
-        hasAccountName = true;
-      }
-      if (
-        "username" in tempUser &&
-        "accountName" in tempAccountId &&
-        tempUser.username === tempAccountId.accountName &&
-        firstTime
-      ) {
-        hasMatchingUserName = true;
-        setFirstTime(false);
-      }
-      if (
-        "paymentGatewayType" in tempAccountId &&
-        tempAccountId.paymentGatewayType === "PayPalExpress" &&
-        "paypalExpress_client_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypalExpress_client_id &&
-        "paypalExpress_client_secret" in tempAccountId &&
-        "string" === typeof tempAccountId.paypalExpress_client_secret
-      ) {
-        // has filled out paypal ClientId
-        hasLinkIds = true;
-      }
-      if (
-        "paymentGatewayType" in tempAccountId &&
-        tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
-        "paypal_merchant_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypal_merchant_id
-      ) {
-        // has filled out paypal MerchantId
-        hasLinkIds = true;
-      }
-      if (
-        "paypal_plan_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypal_plan_id &&
-        "accountPaymentStatus" in tempAccountId &&
-        tempAccountId.accountPaymentStatus === "good"
-      ) {
-        hasPaid = true;
-      }
-      if (!hasAccountName || hasMatchingUserName) {
-        console.log("RETURNING A 1");
-        return 1;
-      }
-      if (hasAccountName && !hasPaid) {
-        console.log("RETURNING A 2");
-        return 2;
-      }
-      if (hasAccountName && hasPaid && !hasLinkIds) {
-        console.log("RETURNING A 3");
-        return 3;
-      }
-      if (hasAccountName && hasPaid && hasLinkIds) {
-        console.log("RETURNING A 4");
-        return 4;
-      }
+    if ("accountId" in tempData) {
+      return tempData.accountId.status;
     } else return 0;
   };
 
@@ -249,13 +182,13 @@ const Onboarding = (props) => {
   }
 
   const updatePageView = () => {
-    if (getStatus() === 1) {
+    if (getStatus() === 0 || getStatus() === 1 || getStatus() === 2) {
       setPageView("organization");
-    } else if (getStatus() === 2) {
+    } else if (getStatus() === 4 || getStatus() === 5) {
       setPageView("payment");
-    } else if (getStatus() === 3) {
+    } else if (getStatus() === 6) {
       setPageView("paypal");
-    } else if (getStatus() === 4) {
+    } else if (getStatus() === 8) {
       setPageView("completed");
     }
   };
@@ -466,7 +399,11 @@ const Onboarding = (props) => {
 
   // Determines pricing plans details to display based on promo code entered
   const shownPlans = () => {
-    if (promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_1) {
+    if (
+      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_1 ||
+      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_6 ||
+      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_7
+    ) {
       return discountPlans;
     } else if (
       promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_2
@@ -492,7 +429,11 @@ const Onboarding = (props) => {
   // Displays subscription pricing options section based on promo code entered
   const paymentPanel = () => {
     console.log("Values info: ", values);
-    if (promoCodeDetails.appliedPromoCode === "OSD20") {
+    if (
+      promoCodeDetails.appliedPromoCode === "OSD20" ||
+      promoCodeDetails.appliedPromoCode === "HEAMEDIAGROUP" ||
+      promoCodeDetails.appliedPromoCode === "LIGHTOFGOLD"
+    ) {
       console.log("ticketPlan: ", ticketPlan);
       console.log("paypal_plan_id: ", paypal_plan_id);
       return (
@@ -695,6 +636,7 @@ const Onboarding = (props) => {
                 body: JSON.stringify({
                   data: data,
                   details: details,
+                  promoCode: promoCodeDetails.appliedPromoCode,
                 }),
               })
                 .then(handleErrors)
@@ -1018,7 +960,11 @@ const Onboarding = (props) => {
       );
       let tempValues = { ...values };
       // set "paypal_plan_id" to default value of that particular promo code
-      if (inputtedPromoCode === "OSD20") {
+      if (
+        inputtedPromoCode === "OSD20" ||
+        inputtedPromoCode === "HEAMEDIAGROUP" ||
+        inputtedPromoCode === "LIGHTOFGOLD"
+      ) {
         tempValues.paypal_plan_id = tempValues.paypal_plan_id_discount;
       } else if (inputtedPromoCode === "TRYFORFREE") {
         tempValues.paypal_plan_id = tempValues.paypal_plan_id_forFree;

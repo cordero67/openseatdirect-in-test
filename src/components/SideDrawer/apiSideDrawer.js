@@ -7,7 +7,7 @@ export const signout = (callback) => {
     localStorage.removeItem("orders");
     localStorage.removeItem("events");
     callback();
-    return fetch(`${API}/signout`, {
+    return fetch(`${API}/auth/signout`, {
       method: "GET",
     })
       .then((response) => {
