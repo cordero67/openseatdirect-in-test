@@ -1,13 +1,13 @@
 import React, { useState, Fragment } from "react";
 import { Route } from "react-router-dom";
 
-import Main from "../HomePage/HomePage";
-import Video from "../Video/Video";
+//import Main from "../HomePage/HomePage";
+//import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
 import EventDeletion from "../../EventCreation/DeleteEvent";
-import ContactUs from "../ContactUs/ContactUs";
+//import ContactUs from "../ContactUs/ContactUs";
 import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
@@ -51,22 +51,6 @@ const Routes = () => {
 
   return (
     <Fragment>
-      <Route
-        path="/"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <Main />
-          </React.Fragment>
-        )}
-      />
-
       <Route
         path="/auth"
         exact
@@ -153,40 +137,6 @@ const Routes = () => {
       />
 
       <Route
-        path="/video"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <Video />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/contactus"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <ContactUs />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
         path="/delete"
         exact
         render={(routeProps) => (
@@ -204,7 +154,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/events"
+        path="/"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -221,7 +171,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/eventspast"
+        path="/past"
         exact
         render={(routeProps) => (
           <React.Fragment>

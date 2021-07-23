@@ -56,8 +56,8 @@ const SideDrawerItems = (props) => {
 
       <li>
         <NavLink
-          to="/eventspast"
-          style={isActive(props.currentPage, "/eventspast")}
+          to="/past"
+          style={isActive(props.currentPage, "/past")}
           onClick={props.clicked}
         >
           Past Events
@@ -88,61 +88,6 @@ const SideDrawerItems = (props) => {
         </li>
       ) : null}
 
-      <li>
-        <NavLink
-          to="/"
-          style={isActive(props.currentPage, "/")}
-          onClick={props.clicked}
-          exact
-        >
-          Home
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink
-          to="/video"
-          style={isActive(props.currentPage, "/video")}
-          onClick={props.clicked}
-          exact
-        >
-          About
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink
-          to="/contactus"
-          style={isActive(props.currentPage, "/contactus")}
-          onClick={props.clicked}
-          exact
-        >
-          Contact
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink
-          to="/privacypolicy"
-          style={isActive(props.currentPage, "/privacypolicy")}
-          onClick={props.clicked}
-          exact
-        >
-          Privacy Policy
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink
-          to="/termsconditions"
-          style={isActive(props.currentPage, "/termsconditions")}
-          onClick={props.clicked}
-          exact
-        >
-          Terms of Service
-        </NavLink>
-      </li>
-
       {!isAuthenticated() && (
         <li>
           <NavLink
@@ -160,7 +105,7 @@ const SideDrawerItems = (props) => {
       {isAuthenticated() && (
         <li>
           <NavLink
-            to="/events"
+            to="/"
             style={{ color: "#0B1423" }}
             onClick={() => {
               props.clicked();

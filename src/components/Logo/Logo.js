@@ -19,6 +19,7 @@ const Logo = (props) => {
 
   return (
     <button
+      style={{ backgroundColor: "white", border: "none" }}
       onClick={() => {
         window.location.href = HOST;
       }}
