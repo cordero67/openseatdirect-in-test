@@ -20,6 +20,24 @@
   box-sizing: border-box;
 }
 
+.Button {
+  background-color: #fff;
+  outline: none;
+  border: none;
+}
+
+.Button:active {
+  background-color: #fff;
+  border: 0px solid #fff;
+  outline: none;
+}
+
+.Button:hover {
+  background-color: #fff;
+  border: 0px solid #fff;
+  outline: none;
+}
+
 @media (min-width: 550px) {
   .Footer {
     max-width: 110px;

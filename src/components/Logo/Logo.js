@@ -2,24 +2,24 @@ import React from "react";
 
 import { HOST } from "../../config";
 
-import styles from "./Logo.module.css";
+import classes from "./Logo.module.css";
 
 const Logo = (props) => {
-  let styleName = styles.Header;
+  let styleName = classes.Header;
 
   console.log("HOST: ", HOST);
 
   if (props.placement === "header") {
-    styleName = styles.Header;
+    styleName = classes.Header;
   } else if (props.placement === "side") {
-    styleName = styles.Side;
+    styleName = classes.Side;
   } else if (props.placement === "footer") {
-    styleName = styles.Footer;
+    styleName = classes.Footer;
   }
 
   return (
     <button
-      style={{ backgroundColor: "white", border: "none" }}
+      className={classes.Button}
       onClick={() => {
         window.location.href = HOST;
       }}
