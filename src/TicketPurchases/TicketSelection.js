@@ -239,7 +239,7 @@ const TicketSelection = () => {
       `Bearer ${customerInformation.sessionToken}`
     );
 
-    let url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+    let url = `${API}/tixorder/signed_place_neworder`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,

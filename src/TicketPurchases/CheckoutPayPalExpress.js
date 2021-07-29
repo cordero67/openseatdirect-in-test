@@ -213,7 +213,7 @@ const Checkout = () => {
       setTransactionInfo(
         loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
       );
-      url = `${API}/tixorder/signed_place_neworder/${customerInformation.userId}`;
+      url = `${API}/tixorder/signed_place_neworder`;
 
       console.log("signed order: ", order);
 
