@@ -29,60 +29,25 @@ const NavigationItems = (props) => {
     console.log("screenSize in Header: ", screenSize);
   };
 
-  const getStatus = () => {
-    let tempData = JSON.parse(localStorage.getItem("user"));
-    if (
-      "user" in tempData &&
-      "accountId" in tempData.user &&
-      "status" in tempData.user.accountId
-    ) {
-      return tempData.user.accountId.status;
-    } else {
-      console.log("returns 0");
-      return 0;
-    }
-  };
-
-  let userPath;
-
-  if (isAuthenticated() && getStatus() !== 7 && getStatus() !== 8) {
-    userPath = "/personal";
-  } else if (isAuthenticated()) {
-    userPath = "/myaccount";
-  }
-
   return (
     <ul className={classes.HeaderItems}>
       <li>
-        <NavLink to="/events" style={isActive(props.currentPage, "/events")}>
+        <NavLink to="/" style={isActive(props.currentPage, "/")}>
           EVENTS
         </NavLink>
       </li>
 
-      {!isAuthenticated() && (
+      {!isAuthenticated() ? (
         <li>
           <NavLink to="/auth" style={isActive(props.currentPage, "/auth")}>
             SIGN IN
           </NavLink>
         </li>
-      )}
-
-      {userPath === "/myaccount" && (
+      ) : (
         <li>
           <NavLink
             to="/myaccount"
             style={isActive(props.currentPage, "/myaccount")}
-          >
-            MY ACCOUNT
-          </NavLink>
-        </li>
-      )}
-
-      {userPath === "/personal" && (
-        <li>
-          <NavLink
-            to="/personal"
-            style={isActive(props.currentPage, "/personal")}
           >
             MY ACCOUNT
           </NavLink>

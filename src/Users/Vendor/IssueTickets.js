@@ -177,6 +177,7 @@ const IssueTickets = (props) => {
     );
 
     let url = `${API}/tixorder/offline_order/${customerInformation.userId}`;
+    //let url = `${API}/tixorder/offline_order/`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,

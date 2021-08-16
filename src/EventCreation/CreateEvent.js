@@ -7,22 +7,23 @@ import React, { useEffect, useState, useRef, Fragment } from "react";
 import dateFnsFormat from "date-fns/format";
 
 import { API } from "../config";
-//
-//
-//
-//
 
 import SavedModal from "./Modals/SavedModal";
 import EventDetails from "./Components/EventDetails";
 import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./Components/AdditionalSettings";
+import Spinner from "../components/UI/Spinner/Spinner";
 
 import classes from "./VendorDashboard.module.css";
 
 // holds sign-in information
-let vendorInfo = {};
 
 const CreateEvent = (props) => {
+  //let vendorInfo = {};
+
+  const [vendorInfo, setVendorInfo] = useState({});
+  const [display, setDisplay] = useState("spinner"); // spinner, main
+
   const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [locationVenueNameOmission, setLocationVenueNameOmission] =
     useState(false);
@@ -31,8 +32,6 @@ const CreateEvent = (props) => {
   const [pageErrors, setPageErrors] = useState(false);
 
   const [showModal, setShowModal] = useState(false); //
-  //
-  //
 
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
@@ -97,13 +96,6 @@ const CreateEvent = (props) => {
       viewModal: false,
     },
   ]);
-  //
-  //
-  //
-  //
-  //
-  //
-  //
 
   const [eventStatus, setEventStatus] = useState({
     status: "", // "saved", "live", "error", "failure"
@@ -112,44 +104,6 @@ const CreateEvent = (props) => {
     errorMessage: "", //["Please fix input errors and resubmit."],
     failureMessage: "System error please try again.",
   });
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
 
   useEffect(() => {
     // checks if 'user' exists in local storage
@@ -159,41 +113,23 @@ const CreateEvent = (props) => {
     ) {
       // loads sign-in data
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      vendorInfo.token = tempUser.token;
-      vendorInfo.id = tempUser.user._id;
+      console.log("Temp User: ", tempUser);
+      let tempVendorInfo = vendorInfo;
+      tempVendorInfo.token = tempUser.token;
+      tempVendorInfo.id = tempUser.user._id;
+      if ("accountId" in tempUser.user && "status" in tempUser.user.accountId) {
+        tempVendorInfo.status = tempUser.user.accountId.status;
+      } else {
+        tempVendorInfo.status = 0;
+      }
+      console.log("vendorInfo.status: ", tempVendorInfo.status);
+      setVendorInfo(tempVendorInfo);
+      setDisplay("main");
     } else {
       window.location.href = "/auth";
     }
   }, []);
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
+
   const saveEvent = async (newStatus) => {
     console.log("eventDescription: ", eventDescription);
     console.log("eventStatus: ", eventStatus);
@@ -1114,65 +1050,72 @@ const CreateEvent = (props) => {
     </Fragment>
   );
 
-  return (
-    <div>
-      <div className={classes.EventPanelTitle}>
-        <div style={{ paddingTop: "5px" }}>Create Event</div>
-        {subTitleDisplay()}
-        {buttonDisplay}
-      </div>
-      <div className={classes.DisplayPanel}>
-        {savedModal()}
-        <EventDetails
-          event={eventDescription}
-          titleOmission={eventTitleOmission}
-          venueOmission={locationVenueNameOmission}
-          webinarOmission={webinarLinkOmission}
-          tbaOmission={tbaInformationOmission}
-          eventImage={"new"}
-          photoData={""}
-          change={changeEventDescription}
-          radioChange={changeEventDescriptionRadio}
-          changeDate={changeEventDate}
-          changeEventField={changeEventField}
-          changeCategory={changeEventCategory}
-          changeLong={changeLongDescription}
-          changeImage={changeEventImage}
-          changeOmission={() => {
-            setEventTitleOmission(false);
-          }}
-        />
-        <br></br>
-        <TicketCreation
-          tickets={ticketDetails}
-          radioChange={changeEventDescriptionRadio}
-          changeTicket={changeTicketDetail}
-          changeSettings={switchTicketSettings}
-          showModal={activateShowModal}
-          deactivateModal={deactivateShowModal}
-          delete={deleteTicket}
-          switchSettings={switchTicketSettings}
-          changeFeature={changePriceFeature}
-          switchPriceFeature={switchPriceFeature}
-          addPromoCode={addPromoCode}
-          changeArgument={changeArgument}
-          changePromoCodesName={changePromoCodesName}
-          changePromoCodesAmount={changePromoCodesAmount}
-          changePromoCodesPercent={changePromoCodesPercent}
-          deletePromoCode={deletePromoCode}
-          createNewTicketHandler={createNewTicketHandler}
-          handleDragStart={handleDragStart}
-          handleDragEnter={handleDragEnter}
-          dragging={dragging}
-        />
-        <br></br>
-        <AdditionalSettings
-          event={eventDescription}
-          radioChange={changeEventDescriptionRadio}
-        />
-      </div>
-    </div>
-  );
+  const main = () => {
+    if (display === "main") {
+      return (
+        <Fragment>
+          <div className={classes.EventPanelTitle}>
+            <div style={{ paddingTop: "5px" }}>Create Event</div>
+            {subTitleDisplay()}
+            {buttonDisplay}
+          </div>
+          <div className={classes.DisplayPanel}>
+            {savedModal()}
+            <EventDetails
+              event={eventDescription}
+              titleOmission={eventTitleOmission}
+              venueOmission={locationVenueNameOmission}
+              webinarOmission={webinarLinkOmission}
+              tbaOmission={tbaInformationOmission}
+              eventImage={"new"}
+              photoData={""}
+              change={changeEventDescription}
+              radioChange={changeEventDescriptionRadio}
+              changeDate={changeEventDate}
+              changeEventField={changeEventField}
+              changeCategory={changeEventCategory}
+              changeLong={changeLongDescription}
+              changeImage={changeEventImage}
+              changeOmission={() => {
+                setEventTitleOmission(false);
+              }}
+            />
+            <br></br>
+            <TicketCreation
+              tickets={ticketDetails}
+              status={vendorInfo.status}
+              radioChange={changeEventDescriptionRadio}
+              changeTicket={changeTicketDetail}
+              changeSettings={switchTicketSettings}
+              showModal={activateShowModal}
+              deactivateModal={deactivateShowModal}
+              delete={deleteTicket}
+              switchSettings={switchTicketSettings}
+              changeFeature={changePriceFeature}
+              switchPriceFeature={switchPriceFeature}
+              addPromoCode={addPromoCode}
+              changeArgument={changeArgument}
+              changePromoCodesName={changePromoCodesName}
+              changePromoCodesAmount={changePromoCodesAmount}
+              changePromoCodesPercent={changePromoCodesPercent}
+              deletePromoCode={deletePromoCode}
+              createNewTicketHandler={createNewTicketHandler}
+              handleDragStart={handleDragStart}
+              handleDragEnter={handleDragEnter}
+              dragging={dragging}
+            />
+            <br></br>
+            <AdditionalSettings
+              event={eventDescription}
+              radioChange={changeEventDescriptionRadio}
+            />
+          </div>
+        </Fragment>
+      );
+    } else return null;
+  };
+
+  return <div>{main()}</div>;
 };
 
 export default CreateEvent;

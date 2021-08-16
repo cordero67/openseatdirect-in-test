@@ -6,39 +6,42 @@ import Backdrop from "./Backdrop";
 import classes from "./ResetModal.module.css";
 
 const Reset = (props) => {
-
   const [values, setValues] = useState({
     password: "",
     confirmation: "",
     resent: false,
     resetToken: "",
     sessionToken: "",
-    userId: ""
+    userId: "",
   });
 
   // transaction status variable
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
-    error: false
+    error: false,
   });
   const { message, error } = submissionStatus;
 
-  const [modalSetting, setModalSetting] = useState("confirmation") // confirmation, password, error
-  const { password, confirmation, resent, resetToken, sessionToken, userId } = values;
+  const [modalSetting, setModalSetting] = useState("confirmation"); // confirmation, password, error
+  const { password, confirmation, resent, resetToken, sessionToken, userId } =
+    values;
   // LOOKS GOOD
-  const getStatus= (user) => { 
-    if ('accountId' in user && 'status' in user.accountId ) {
-        return user.accountId.status
+  const getStatus = (user) => {
+    if ("accountId" in user && "status" in user.accountId) {
+      return user.accountId.status;
     } else {
-        return 0;
-    } 
-  }
+      return 0;
+    }
+  };
 
   // LOOKS GOOD
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem(`user`) !== null) {
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      let tempValues = {...values}
+      let tempValues = { ...values };
       tempValues.sessionToken = tempUser.token;
       tempValues.userId = tempUser.user._id;
       setValues(tempValues);
@@ -47,58 +50,59 @@ const Reset = (props) => {
     }
   }, []);
   // LOOKS GOOD
-  const handleErrors = response => {
-    console.log ("inside handleErrors ", response);
+  const handleErrors = (response) => {
+    console.log("inside handleErrors ", response);
     if (!response.ok) {
-        throw Error(response.status);
+      throw Error(response.status);
     }
     return response;
   };
   // LOOKS GOOD
   const submitConfirmation = () => {
-    console.log("values: ", values)
+    console.log("values: ", values);
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
-    let url = `${API}/auth/confirm_password_reset_code3/${values.userId}`;
+    let url = `${API}/auth/confirmcode`;
     let information = {
-      confirm_code: confirmation
-    }
+      confirm_code: confirmation,
+    };
     let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then((response) => {
-      return response.json()})
-    .then((data) => {
-      console.log ("fetch return got back data:", data);
-      handleConfirmation(data)
-    })
-    .catch((error) => {
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleConfirmation(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
   // LOOKS GOOD
   const submitPassword = () => {
-    console.log("values: ", values)
+    console.log("values: ", values);
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
@@ -108,142 +112,145 @@ const Reset = (props) => {
     let information = {
       resetPasswordToken: resetToken,
       password: password,
-    }
-    let fetchBody ={
+    };
+    let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body:JSON.stringify (information),
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url);
     console.log("fetching body: ", fetchBody);
-    console.log("Information: ", information)
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handlePassword(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handlePassword(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
   // LOOKS GOOD
   const submitExpired = () => {
-    console.log("values: ", values)
+    console.log("values: ", values);
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
-    let url = `${API}/auth/change_password/${values.userId}`
-    let fetchBody ={
-        method: "POST",
-        headers: myHeaders
+    let url = `${API}/auth/change_password/${values.userId}`;
+    let fetchBody = {
+      method: "POST",
+      headers: myHeaders,
     };
-    console.log("url: ", url)
-    console.log("fetcharg: ", fetchBody)
+    console.log("url: ", url);
+    console.log("fetcharg: ", fetchBody);
 
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleExpired(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleExpired(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
 
   // LOOKS GOOD
   const submitResend = () => {
-    console.log("values: ", values)
+    console.log("values: ", values);
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
     let url = `${API}/auth/resend_password_code3/${values.userId}`;
-    let fetchBody ={
+    let fetchBody = {
       method: "POST",
       headers: myHeaders,
       redirect: "follow",
     };
     console.log("fetching with: ", url, fetchBody);
-    fetch(url, fetchBody )
-    .then(handleErrors)
-    .then ((response)=>{
-      console.log ("then response: ", response);
-      return response.json()})
-    .then ((data)=>{
-      console.log ("fetch return got back data:", data);
-      handleResend(data)
-    })
-    .catch ((error)=>{
-      console.log("freeTicketHandler() error.message: ", error.message);
-      setSubmissionStatus({
-        message: "Server is down, please try later",
-        error: true
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleResend(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        setSubmissionStatus({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        setModalSetting("error");
       });
-      setModalSetting("error")
-    })
-  }
+  };
 
   const handleConfirmation = (data) => {
     if (data.status) {
-      let tempValues = {...values};
+      let tempValues = { ...values };
       tempValues.resetToken = data.user.resetPasswordToken;
       setValues(tempValues);
-      console.log("SUCCESS")
-      setModalSetting("password")
+      console.log("SUCCESS");
+      setModalSetting("password");
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
 
   // LOOKS GOOD
   const handlePassword = (data) => {
     if (data.status) {
-      console.log("SUCCESS")
-      closeModal()
+      console.log("SUCCESS");
+      closeModal();
     } else {
-      if (data.code === 202){
-        console.log("Status 202 Error")
-        setModalSetting("expired")
+      if (data.code === 202) {
+        console.log("Status 202 Error");
+        setModalSetting("expired");
       } else {
         setSubmissionStatus({
           message: data.error,
-          error: true
+          error: true,
         });
-        console.log("ERROR: ", data.error)
+        console.log("ERROR: ", data.error);
       }
     }
-  }
+  };
   const handleExpired = (data) => {
     if (data.status) {
       resetValues();
@@ -252,11 +259,11 @@ const Reset = (props) => {
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
   // LOOKS GOOD
   const resetValues = () => {
     let tempValues = {
@@ -265,60 +272,64 @@ const Reset = (props) => {
       resent: false,
       resetToken: "",
       sessionToken: values.sessionToken,
-      userId: values.userId
+      userId: values.userId,
     };
-    setValues(tempValues)
-  }
+    setValues(tempValues);
+  };
   // LOOKS GOOD
   const handleResend = (data) => {
     if (data.status) {
-      let tempValues = {...values};
+      let tempValues = { ...values };
       tempValues.confirmation = "";
       tempValues.resent = true;
       setValues(tempValues);
-      console.log("SUCCESS")
+      console.log("SUCCESS");
     } else {
       setSubmissionStatus({
         message: data.error,
-        error: true
+        error: true,
       });
-      console.log("ERROR: ", data.error)
+      console.log("ERROR: ", data.error);
     }
-  }
+  };
   // LOOKS GOOD
   const handleChange = (event) => {
     setValues({
       ...values,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
   // LOOKS GOOD
   const showError = () => {
     if (error) {
       return (
-        <div style={{color: "red", fontSize: "14px", paddingBottom: "20px"}}>{message}</div>
-      )
-    } else if (modalSetting === "password") {  
-      return null
+        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
+          {message}
+        </div>
+      );
+    } else if (modalSetting === "password") {
+      return null;
     } else if (modalSetting === "confirmation" && !resent) {
       return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>Enter the 6-digit code sent to your email:</div>
-      )
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+          Enter the 6-digit code sent to your email:
+        </div>
+      );
     } else if (modalSetting === "confirmation" && resent) {
       return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           A new 6-digit code was sent to your email,
           <br></br>
           please enter it below:
         </div>
-      )
+      );
     }
   };
 
   const confirmationForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>Confirmation Number</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>Confirmation Number</label>
         <input
           className={classes.InputBox}
           type="text"
@@ -327,12 +338,13 @@ const Reset = (props) => {
           value={confirmation}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.OSDBlueButton}
           onClick={() => {
             submitConfirmation();
-        }}>
+          }}
+        >
           SUBMIT YOUR CODE
         </button>
       </div>
@@ -341,8 +353,8 @@ const Reset = (props) => {
 
   const passwordForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "100%", height: "85px"}}>
-        <label style={{fontSize: "15px"}}>Password</label>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>Password</label>
         <input
           className={classes.InputBox}
           type="text"
@@ -351,13 +363,14 @@ const Reset = (props) => {
           value={password}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.OSDBlueButton}
           onClick={() => {
-            console.log("clicked submit button")
+            console.log("clicked submit button");
             submitPassword();
-        }}>
+          }}
+        >
           REGISTER YOUR PASSWORD
         </button>
       </div>
@@ -366,25 +379,27 @@ const Reset = (props) => {
 
   const expiredForm = (
     <Fragment>
-      <div style={{width: "100%", paddingBottom: "10px", fontSize: "16px"}}>
+      <div style={{ width: "100%", paddingBottom: "10px", fontSize: "16px" }}>
         Would you still like to set your password?
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.OSDBlueButton}
           onClick={() => {
             console.log("clicked yes button");
             submitExpired();
-        }}>
+          }}
+        >
           YES RESEND CODE
         </button>
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.ButtonGrey}
           onClick={() => {
             closeModal();
-        }}>
+          }}
+        >
           NOT AT THIS TIME
         </button>
       </div>
@@ -393,15 +408,24 @@ const Reset = (props) => {
 
   const errorForm = (
     <Fragment>
-      <div style={{fontSize: "16px", color: "red", paddingBottom: "20px", width: "340px", height: "40px"}}>
+      <div
+        style={{
+          fontSize: "16px",
+          color: "red",
+          paddingBottom: "20px",
+          width: "340px",
+          height: "40px",
+        }}
+      >
         Please try again later
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            closeModal()
-        }}>
+            closeModal();
+          }}
+        >
           CONTINUE
         </button>
       </div>
@@ -410,7 +434,7 @@ const Reset = (props) => {
 
   const alternateConfirmationInputs = (
     <div className={classes.Alternates}>
-      <div style={{textAlign: "left"}}>
+      <div style={{ textAlign: "left" }}>
         <button
           className={classes.BlueText}
           onClick={() => {
@@ -421,17 +445,17 @@ const Reset = (props) => {
         </button>
       </div>
     </div>
-  )
+  );
   // LOOKS GOOD
   const closeModal = () => {
     resetValues();
     setSubmissionStatus({
       message: "",
-      error: false
+      error: false,
     });
     setModalSetting(props.start);
-    props.closeModal()
-  }
+    props.closeModal();
+  };
 
   const confirmationDisplay = () => {
     if (modalSetting === "confirmation") {
@@ -439,13 +463,13 @@ const Reset = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
@@ -456,9 +480,9 @@ const Reset = (props) => {
             {alternateConfirmationInputs}
           </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   const passwordDisplay = () => {
     if (modalSetting === "password") {
@@ -466,13 +490,13 @@ const Reset = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Create your password</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
@@ -482,9 +506,9 @@ const Reset = (props) => {
             {passwordForm}
           </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   const expiredDisplay = () => {
     if (modalSetting === "expired") {
@@ -498,9 +522,9 @@ const Reset = (props) => {
             {expiredForm}
           </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   const errorDisplay = () => {
     if (modalSetting === "error") {
@@ -508,24 +532,22 @@ const Reset = (props) => {
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>System Error</div>
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
               <ion-icon
-                style={{fontWeight: "600", fontSize: "28px", color: "black"}}
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal()
+                  closeModal();
                 }}
               />
             </div>
           </div>
-          <div>
-            {errorForm}
-          </div>
+          <div>{errorForm}</div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   return (
     <Fragment>
@@ -534,7 +556,7 @@ const Reset = (props) => {
         style={{
           transform: props.show ? "translateY(0)" : "translateY(-100vh)",
           opacity: props.show ? "1" : "0",
-          fontSize: "20px"
+          fontSize: "20px",
         }}
         className={classes.Modal}
       >

@@ -1,4 +1,5 @@
 .Header {
+  background-color: #fff;
   padding: 10px 0px 5px 0px;
   max-height: auto;
   max-width: 90px;
@@ -17,6 +18,24 @@
   max-height: auto;
   max-width: 80px;
   box-sizing: border-box;
+}
+
+.Button {
+  background-color: #fff;
+  outline: none;
+  border: none;
+}
+
+.Button:active {
+  background-color: #fff;
+  border: 0px solid #fff;
+  outline: none;
+}
+
+.Button:hover {
+  background-color: #fff;
+  border: 0px solid #fff;
+  outline: none;
 }
 
 @media (min-width: 550px) {

@@ -1,11 +1,15 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Redirect } from "react-router-dom";
+import queryString from "query-string";
+
+import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../../config";
 
 import classes from "./AuthenticationNEW.module.css";
 
 const Authentication = () => {
+  // LOOKS GOOD
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -15,7 +19,6 @@ const Authentication = () => {
     confirmation: "",
     resent: false,
     username: "",
-    vendorIntent: false,
     resetToken: "",
     sessionToken: "",
     userId: "",
@@ -27,8 +30,9 @@ const Authentication = () => {
     error: false,
   });
 
-  const [modalSetting, setModalSetting] = useState("signin"); // signin, forgot, temporary, signup, confirmation, password, username, error
+  const [modalSetting, setModalSetting] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
 
+  // LOOKS GOOD
   const {
     name,
     email,
@@ -38,7 +42,6 @@ const Authentication = () => {
     confirmation,
     resent,
     username,
-    vendorIntent,
     resetToken,
     sessionToken,
     userId,
@@ -46,37 +49,30 @@ const Authentication = () => {
 
   const { message, error } = submissionStatus;
 
-  const getStatus = (user) => {
-    if ("accountId" in user && "status" in user.accountId) {
-      return user.accountId.status;
-    } else {
-      return 0;
-    }
-  };
-
+  // LOOKS GOOD
   useEffect(() => {
+    let startingView = queryString.parse(window.location.search).new;
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
+      if ("user" in tempUser && "token" in tempUser) {
         window.location.href = "/myaccount";
-      } else if (
-        getStatus(tempUser.user) === 4 ||
-        getStatus(tempUser.user) === 5 ||
-        getStatus(tempUser.user) === 6 ||
-        ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
-      ) {
-        console.log("user 4, 5 or 6 and vendorIntent true");
-        window.location.href = "/personal";
       } else {
-        console.log("user 4, 5 or 6 and vendorIntent false");
-        window.location.href = "/events";
+        {
+          startingView ? setModalSetting("signup") : setModalSetting("signin");
+        }
+      }
+    } else {
+      {
+        startingView ? setModalSetting("signup") : setModalSetting("signin");
       }
     }
   }, []);
 
+  // LOOKS GOOD
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -87,6 +83,7 @@ const Authentication = () => {
 
   // LOOKS GOOD
   const submitSignIn = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -94,7 +91,7 @@ const Authentication = () => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin_email`;
+    let url = `${API}/auth/signin/email`;
     let information = {
       email: email,
       password: password,
@@ -128,6 +125,7 @@ const Authentication = () => {
 
   // LOOKS GOOD
   const submitForgot = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -135,7 +133,7 @@ const Authentication = () => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/send_access_code2`;
+    let url = `${API}/auth/signin/sendcode`;
     let information = {
       email: email,
     };
@@ -145,7 +143,6 @@ const Authentication = () => {
       body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
     fetch(url, fetchBody)
       .then(handleErrors)
       .then((response) => {
@@ -168,6 +165,7 @@ const Authentication = () => {
 
   // LOOKS GOOD
   const submitTemporary = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -175,7 +173,7 @@ const Authentication = () => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/confirm_access_code2`;
+    let url = `${API}/auth/signin/confirmcode`;
     let information = {
       email: email,
       confirm_code: temporary,
@@ -216,7 +214,7 @@ const Authentication = () => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/send_access_code2`;
+    let url = `${API}/auth/signin/sendcode`;
     let information = {
       email: email,
     };
@@ -249,6 +247,7 @@ const Authentication = () => {
 
   // LOOKS GOOD
   const submitSignUp = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -256,10 +255,9 @@ const Authentication = () => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup1_email`;
+    let url = `${API}/auth/signup/email`;
     let information = {
       email: email,
-      vendorIntent: vendorIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -290,6 +288,7 @@ const Authentication = () => {
 
   // LOOKS GOOD
   const submitConfirmation = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -297,11 +296,10 @@ const Authentication = () => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup2_confirm`;
+    let url = `${API}/auth/signup/confirmcode`;
     let information = {
       email: email,
       confirm_code: confirmation,
-      vendorIntent: vendorIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -332,6 +330,7 @@ const Authentication = () => {
 
   // LOOKS GOOD
   const submitPassword = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -339,12 +338,11 @@ const Authentication = () => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup3_password`;
+    let url = `${API}/auth/signup/password`;
     let information = {
       email: email,
       resetPasswordToken: resetToken,
       password: password,
-      vendorIntent: vendorIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -375,6 +373,7 @@ const Authentication = () => {
 
   // LOOKS GOOD
   const submitUsername = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -383,9 +382,8 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
-    let url = `${API}/auth/update_username/${userId}`;
+    let url = `${API}/user/${userId}`;
     let information = {
-      email: email,
       username: username,
     };
     console.log("myHeaders: ", myHeaders);
@@ -425,7 +423,7 @@ const Authentication = () => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/resend_confirm_code`;
+    let url = `${API}/auth/signup/resendcode`;
     let information = {
       email: email,
     };
@@ -459,7 +457,8 @@ const Authentication = () => {
   // LOOKS GOOD
   const handleSignIn = (data) => {
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
+      console.log("MADE IT TO HERE");
+      localStorage.setItem("user", JSON.stringify(data)); // KEEP
       setValues({
         name: "",
         email: "",
@@ -473,14 +472,13 @@ const Authentication = () => {
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
-      console.log("about to finalize signin");
       redirectUser();
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      setModalSetting("signin");
       console.log("ERROR: ", data.error);
     }
   };
@@ -497,18 +495,17 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
       setModalSetting("temporary");
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      setModalSetting("forgot");
       console.log("ERROR: ", data.error);
     }
   };
@@ -516,7 +513,7 @@ const Authentication = () => {
   // LOOKS GOOD
   const handleTemporary = (data) => {
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
+      localStorage.setItem("user", JSON.stringify(data)); // KEEP
       setValues({
         name: "",
         email: "",
@@ -526,27 +523,25 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
-      console.log("about to finalize temp signin");
       redirectUser();
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      setModalSetting("temporary");
       console.log("ERROR: ", data.error);
     }
   };
 
   // LOOKS GOOD
   const handleReissue = (data) => {
+    console.log("Inside handleReissue");
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
       setValues({
         name: "",
         email: data.user.email,
@@ -556,12 +551,10 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -583,7 +576,6 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: data.user.username,
-        vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
@@ -595,6 +587,7 @@ const Authentication = () => {
         message: data.error,
         error: true,
       });
+      setModalSetting("signup");
       console.log("ERROR: ", data.error);
     }
   };
@@ -602,6 +595,7 @@ const Authentication = () => {
   // LOOKS GOOD
   const handleConfirmation = (data) => {
     if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data)); // KEEP
       setValues({
         name: "",
         email: data.user.email,
@@ -611,7 +605,6 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: data.user.username,
-        vendorIntent: data.user.vendorIntent,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
         userId: "",
@@ -619,28 +612,33 @@ const Authentication = () => {
       console.log("SUCCESS");
       setModalSetting("password");
     } else {
+      console.log("Inside handleConfirmation false");
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      setModalSetting("confirmation");
       console.log("ERROR: ", data.error);
     }
   };
 
   // LOOKS GOOD
   const handlePassword = (data) => {
+    console.log("Inside handlePassword");
+    console.log("STATUS: ", data.status);
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      tempUser.token = data.token;
+      localStorage.setItem("user", JSON.stringify(tempUser));
       setValues({
         name: "",
-        email: data.user.email,
+        email: email,
         password: "",
         temporary: "",
         reissued: false,
         confirmation: "",
         resent: false,
-        username: data.user.username,
-        vendorIntent: data.user.vendorIntent,
+        username: username,
         resetToken: "",
         sessionToken: data.token,
         userId: data.user._id,
@@ -652,16 +650,16 @@ const Authentication = () => {
         message: data.error,
         error: true,
       });
+      setModalSetting("password");
       console.log("ERROR: ", data.error);
     }
   };
 
   // LOOKS GOOD
   const handleUsername = (data) => {
-    console.log("Inside handleUsername");
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      tempUser.user = data.user;
+      tempUser.user.username = data.result.username;
       localStorage.setItem("user", JSON.stringify(tempUser));
       setValues({
         name: "",
@@ -672,19 +670,17 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: false,
         resetToken: "",
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
-      console.log("about to finalize username signup");
       redirectUser();
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      setModalSetting("username");
       console.log("ERROR: ", data.error);
     }
   };
@@ -700,7 +696,6 @@ const Authentication = () => {
       confirmation: "",
       resent: false,
       username: "",
-      vendorIntent: false,
       resetToken: "",
       sessionToken: "",
       userId: "",
@@ -710,7 +705,6 @@ const Authentication = () => {
   // LOOKS GOOD
   const handleResend = (data) => {
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
       setValues({
         name: "",
         email: data.user.email,
@@ -719,9 +713,8 @@ const Authentication = () => {
         reissued: false,
         confirmation: "",
         resent: true,
-        username: data.user.username,
-        vendorIntent: false,
-        resetToken: data.user.resetPasswordToken,
+        username: username,
+        resetToken: "",
         sessionToken: "",
         userId: "",
       });
@@ -743,13 +736,7 @@ const Authentication = () => {
     });
   };
 
-  const changeIntent = () => {
-    setValues({
-      ...values,
-      ["vendorIntent"]: !vendorIntent,
-    });
-  };
-
+  // LOOKS GOOD
   const redirectUser = () => {
     console.log("Redirect user");
     if (
@@ -757,18 +744,25 @@ const Authentication = () => {
       localStorage.getItem("user") !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
-        window.location.href = "/myaccount";
-      } else if (
-        getStatus(tempUser.user) === 4 ||
-        getStatus(tempUser.user) === 5 ||
-        getStatus(tempUser.user) === 6 ||
-        ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
+      if (
+        "token" in tempUser &&
+        "user" in tempUser // &&
+        //"accountId" in tempUser.user
       ) {
-        window.location.href = "/personal";
+        window.location.href = "/myaccount";
       } else {
-        window.location.href = "/events";
+        setSubmissionStatus({
+          message: "Server error please try again",
+          error: true,
+        });
+        setModalSetting("error");
       }
+    } else {
+      setSubmissionStatus({
+        message: "Server error please try again",
+        error: true,
+      });
+      setModalSetting("error");
     }
   };
 
@@ -788,7 +782,6 @@ const Authentication = () => {
     ) {
       return null;
     } else if (modalSetting === "temporary" && !reissued) {
-      console.log("modalSetting === 'temporary' && !reissued");
       console.log("values: ", values);
       return (
         <Fragment>
@@ -799,7 +792,6 @@ const Authentication = () => {
         </Fragment>
       );
     } else if (modalSetting === "temporary" && reissued) {
-      console.log("modalSetting === 'temporary' && reissued");
       console.log("values: ", values);
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
@@ -923,29 +915,6 @@ const Authentication = () => {
   // LOOKS GOOD
   const signUpForm = (
     <Fragment>
-      <div style={{ paddingBottom: "20px", width: "340px", height: "60px" }}>
-        <div className={classes.InputCheckbox}>
-          <input
-            type="checkbox"
-            id="vendorIntent"
-            name="vendorIntent"
-            value={false}
-            onChange={() => {
-              console.log("Changed checkbox");
-              changeIntent();
-            }}
-          />
-          <span></span>
-          <label style={{ paddingLeft: "10px" }} for="vendorIntent">
-            {" "}
-            Sign Up to also{" "}
-            <span style={{ color: "#008F00", fontWeight: "600" }}>
-              Create Events
-            </span>
-          </label>
-        </div>
-      </div>
-
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
         <label style={{ fontSize: "15px" }}>E-mail Address</label>
         <input
@@ -1022,42 +991,43 @@ const Authentication = () => {
   );
 
   // LOOKS GOOD
-  const usernameForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Username</label>
-        <input
-          className={classes.InputBox}
-          type="text"
-          name="username"
-          onChange={handleChange}
-          value={username}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.SubmitButton}
-          onClick={() => {
-            submitUsername();
-          }}
-        >
-          CHANGE YOUR USERNAME
-        </button>
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.CancelButton}
-          onClick={() => {
-            redirectUser();
-          }}
-        >
-          CHANGE IT LATER
-        </button>
-      </div>
-    </Fragment>
-  );
+  const usernameForm = () => {
+    return (
+      <Fragment>
+        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+          <label style={{ fontSize: "15px" }}>Username</label>
+          <input
+            className={classes.InputBox}
+            type="text"
+            name="username"
+            onChange={handleChange}
+            value={username}
+          />
+        </div>
+        <div style={{ paddingTop: "10px" }}>
+          <button
+            className={classes.SubmitButton}
+            onClick={() => {
+              submitUsername();
+            }}
+          >
+            CHANGE YOUR USERNAME
+          </button>
+        </div>
+        <div style={{ paddingTop: "10px" }}>
+          <button
+            className={classes.CancelButton}
+            onClick={() => {
+              redirectUser();
+            }}
+          >
+            CHANGE IT LATER
+          </button>
+        </div>
+      </Fragment>
+    );
+  };
 
-  // LOOKS GOOD
   const errorForm = (
     <Fragment>
       <div
@@ -1075,7 +1045,7 @@ const Authentication = () => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            window.location.href = "/events";
+            window.location.href = "/";
           }}
         >
           CONTINUE
@@ -1173,14 +1143,18 @@ const Authentication = () => {
   );
 
   // LOOKS GOOD
-  const closeModal = () => {
-    resetValues();
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
-    setModalSetting("signin");
-    return <Redirect to="/events" />;
+  const spinnerDisplay = () => {
+    if (modalSetting === "spinner") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <Spinner />
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
   };
 
   // LOOKS GOOD
@@ -1304,6 +1278,7 @@ const Authentication = () => {
 
   // LOOKS GOOD
   const usernameDisplay = () => {
+    let originalUserName = username;
     if (modalSetting === "username") {
       return (
         <div className={classes.BlankCanvas}>
@@ -1312,7 +1287,7 @@ const Authentication = () => {
           </div>
           <div>
             {showError()}
-            {usernameForm}
+            {usernameForm(originalUserName)}
           </div>
         </div>
       );
@@ -1337,10 +1312,10 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   return (
     <div className={classes.MainContainer}>
       <div className={classes.Modal}>
+        {spinnerDisplay()}
         {signInDisplay()}
         {forgotDisplay()}
         {temporaryDisplay()}

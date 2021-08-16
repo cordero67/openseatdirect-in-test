@@ -17,9 +17,11 @@ import {
   faChevronUp,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { Button, Popup } from "semantic-ui-react";
+import { Popup } from "semantic-ui-react";
 
 const TicketCreation = (props) => {
+  console.log("Props: ", props);
+  console.log("Status: ", props.status);
   const ticketTypeDisplay = (index) => {
     let display = (
       <Fragment>
@@ -85,13 +87,13 @@ const TicketCreation = (props) => {
             nameWarningText = "";
           }
 
-          if (item.priceWarning) {
+          if (item.priceWarning && props.status === 8) {
             tempPriceBox = classes.PriceBoxWarning;
             priceWarningText = "Not a valid price";
-          } else if (item.currentTicketPrice) {
+          } else if (item.currentTicketPrice && props.status === 8) {
             tempPriceBox = classes.PriceBox;
             priceWarningText = "";
-          } else if (item.reqWarning) {
+          } else if (item.reqWarning && props.status === 8) {
             tempPriceBox = classes.PriceBoxWarning;
             priceWarningText = "Required field";
           } else {
@@ -197,24 +199,39 @@ const TicketCreation = (props) => {
                   >
                     {item.currency === "" ? "USD $" : item.currency}
                   </div>
-                  <input
-                    style={{
-                      backgroundColor: "fff",
-                      padding: "9px 5px 9px 0px",
-                      textAlign: "right",
-                      borderStyle: "none",
-                      outline: "none",
-                      boxSizing: "borderBox",
-                    }}
-                    type="text"
-                    id="currentTicketPrice"
-                    placeholder="10.00"
-                    name="currentTicketPrice"
-                    value={item.currentTicketPrice}
-                    onChange={(event) => {
-                      props.changeTicket(event, item.key);
-                    }}
-                  ></input>
+                  {props.status === 8 ? (
+                    <input
+                      style={{
+                        backgroundColor: "fff",
+                        padding: "9px 5px 9px 0px",
+                        textAlign: "right",
+                        borderStyle: "none",
+                        outline: "none",
+                        boxSizing: "borderBox",
+                      }}
+                      type="text"
+                      id="currentTicketPrice"
+                      placeholder="10.00"
+                      name="currentTicketPrice"
+                      value={item.currentTicketPrice}
+                      onChange={(event) => {
+                        props.changeTicket(event, item.key);
+                      }}
+                    ></input>
+                  ) : (
+                    <div
+                      style={{
+                        backgroundColor: "#E7E7E7",
+                        padding: "9px 5px 9px 0px",
+                        textAlign: "right",
+                        borderStyle: "none",
+                        outline: "none",
+                        boxSizing: "borderBox",
+                      }}
+                    >
+                      0.000
+                    </div>
+                  )}
                 </div>
 
                 <div

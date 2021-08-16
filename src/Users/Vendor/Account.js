@@ -6,7 +6,8 @@ import ResetModal from "./Modals/ResetModal";
 
 import classes from "./Account.module.css";
 
-const Account = () => {
+const Account = (props) => {
+  console.log("PROPS ACCOUNT: ", props);
   const [userInfo, setUserInfo] = useState({
     firstName: "",
     lastName: "",
@@ -14,6 +15,7 @@ const Account = () => {
     token: "",
   });
   const [modalStatus, setModalStatus] = useState(false);
+  const [subscriptionType, setSubscriptionType] = useState("free");
 
   useEffect(() => {
     //
@@ -22,6 +24,7 @@ const Account = () => {
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
+      let tempAccountId = tempUser.user.accountId;
       let tempUserInfo = {
         email: tempUser.user.email,
         firstname: tempUser.user.firstname,
@@ -31,6 +34,22 @@ const Account = () => {
       };
       console.log("tempUserInfo: ", tempUserInfo);
       setUserInfo(tempUserInfo);
+      if (
+        tempAccountId &&
+        "accountName" in tempAccountId &&
+        tempAccountId.accountName !== "" &&
+        "paymentGatewayType" in tempAccountId &&
+        tempAccountId.paymentGatewayType === "PayPalExpress" &&
+        "paypalExpress_client_id" in tempAccountId &&
+        "string" === typeof tempAccountId.paypalExpress_client_id &&
+        "paypalExpress_client_secret" in tempAccountId &&
+        "string" === typeof tempAccountId.paypalExpress_client_secret &&
+        (tempAccountId.accountPaymentStatus === "good" ||
+          tempAccountId.ticketPlan === "comp")
+      ) {
+        setSubscriptionType("paid");
+        console.log("PAID");
+      } else console.log("STILL FREE");
     } else {
       window.location.href = "/auth";
     }
@@ -48,9 +67,7 @@ const Account = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${userInfo.token}`);
-    // NEW FUTE api
-    //let url = `${API}/auth/password/sendcode`;
-    let url = `${API}/auth/change_password/${userInfo.id}`;
+    let url = `${API}/auth/password/sendcode`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
@@ -74,6 +91,22 @@ const Account = () => {
       });
   };
 
+  const subscription = () => {
+    if (subscriptionType === "free") {
+      return "Community Plan";
+    } else if (subscriptionType === "paid") {
+      return "Pro-Plan";
+    }
+  };
+
+  const upgrade = () => {
+    if (subscriptionType === "free") {
+      return "Upgrade Subscription";
+    } else if (subscriptionType === "paid") {
+      return null;
+    }
+  };
+
   return (
     <div>
       <div className={classes.DisplayPanelTitle}>Account Settings</div>
@@ -93,6 +126,12 @@ const Account = () => {
           Change Password
         </button>
         <br></br>
+        <br></br>
+        <div>Subscription: {subscription()}</div>
+        <br></br>
+        <button className={classes.PasswordButton} onClick={props.upgrade}>
+          {upgrade()}
+        </button>
       </div>
 
       <ResetModal

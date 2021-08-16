@@ -1,13 +1,10 @@
 import React, { useState, Fragment } from "react";
 import { Route } from "react-router-dom";
 
-import Main from "../HomePage/HomePage";
-import Video from "../Video/Video";
 import Events from "../../Events/Events";
 import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
 import EventDeletion from "../../EventCreation/DeleteEvent";
-import ContactUs from "../ContactUs/ContactUs";
 import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
@@ -49,24 +46,10 @@ const Routes = () => {
     stylingUpdate(window.innerWidth);
   };
 
+  const [userObject, setUserObject] = useState({});
+
   return (
     <Fragment>
-      <Route
-        path="/"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <Main />
-          </React.Fragment>
-        )}
-      />
-
       <Route
         path="/auth"
         exact
@@ -78,7 +61,35 @@ const Routes = () => {
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <Authentication />
+            <Authentication
+              user={userObject}
+              updateUser={(data) => {
+                console.log("AND TO HERE");
+                console.log("USER: ", userObject);
+                setUserObject(data);
+              }}
+            />
+            <Footer></Footer>
+          </React.Fragment>
+        )}
+      />
+
+      <Route
+        path="/myaccount"
+        exact
+        render={(routeProps) => (
+          <React.Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <VendorAccount
+              user={userObject}
+              buyer={"ANOTHER"}
+              owner={"SOMETHING"}
+            />
             <Footer></Footer>
           </React.Fragment>
         )}
@@ -136,57 +147,6 @@ const Routes = () => {
       />
 
       <Route
-        path="/myaccount"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <VendorAccount />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/video"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <Video />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
-        path="/contactus"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <ContactUs />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-
-      <Route
         path="/delete"
         exact
         render={(routeProps) => (
@@ -204,7 +164,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/events"
+        path="/"
         exact
         render={(routeProps) => (
           <React.Fragment>
@@ -221,7 +181,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/eventspast"
+        path="/past"
         exact
         render={(routeProps) => (
           <React.Fragment>

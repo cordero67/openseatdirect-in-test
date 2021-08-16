@@ -224,7 +224,7 @@ const CustomerInfo = (props) => {
       console.log("signed free ticket order: ", order);
 
       myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
-      url = `${API}/tixorder/signed_place_neworder/${tempUser.user._id}`;
+      url = `${API}/tixorder/signed_place_neworder`;
     }
 
     let fetcharg = {

@@ -8,6 +8,7 @@ import classes from "./SalesAnalytics.module.css";
 const SalesAnalytics = (props) => {
   console.log("PROPS: ", props);
 
+  // LOOKS GOOD
   const [salesTotals, setSalesTotals] = useState({
     ticketsSold: 0,
     ticketsRemaining: 0,
@@ -16,6 +17,8 @@ const SalesAnalytics = (props) => {
     orders: 0,
   });
 
+  // LOOKS GOOD
+  // sets up array with first empty object
   const [ticketTotals, setTicketTotals] = useState([
     {
       ticketName: "",
@@ -29,10 +32,12 @@ const SalesAnalytics = (props) => {
     },
   ]);
 
+  // LOOKS GOOD
   const [onlinePayments, setOnlinePayments] = useState({
     online: 0,
   });
 
+  // LOOKS GOOD
   const [offlinePayments, setOfflinePayments] = useState({
     cash: 0,
     CashApp: 0,
@@ -44,6 +49,8 @@ const SalesAnalytics = (props) => {
     other: 0,
   });
 
+  // LOOKS GOOD
+  // sets up array with first empty object
   const [codes, setCodes] = useState([
     {
       postalCode: "",
@@ -52,6 +59,8 @@ const SalesAnalytics = (props) => {
     },
   ]);
 
+  // LOOKS GOOD
+  // sets up array with first empty object
   const [buyers, setBuyers] = useState([
     {
       email: "",
@@ -62,6 +71,8 @@ const SalesAnalytics = (props) => {
     },
   ]);
 
+  // LOOKS GOOD
+  // sets up array with first empty object
   const [dateSales, setDateSales] = useState([
     {
       date: 0,
@@ -75,8 +86,10 @@ const SalesAnalytics = (props) => {
     },
   ]);
 
+  // LOOKS GOOD
   const [selectedWedge, setSelectedWedge] = useState();
 
+  // LOOKS GOOD
   let colorSpec = [
     "#FFC921",
     "#FFFF00",
@@ -101,7 +114,8 @@ const SalesAnalytics = (props) => {
     label: "salesRevenues",
     direction: "asc",
   });
-  // *****SEEMS CORRECT*****
+
+  // LOOKS GOOD
   // simply creates an array about individual ticket details
   const populateEventTickets = (tickets) => {
     const tempArray = [];
@@ -122,41 +136,46 @@ const SalesAnalytics = (props) => {
   };
 
   useEffect(() => {
+    // LOOKS GOOD
     let tempTicketTotals = []; // temp hold of specifc event's ticket details
-    let tempRemaining = 0; // temp hold of tickets remaining
-    let tempTicketsSold = 0; // temp hold of tickets sold
-    let tempGrossRevenues = 0; // temp hold of gross revenues
-    let tempNetRevenues = 0; // temp hold of net revenues
+    let tempRemaining = 0; // temp hold of all tickets remaining
+    let tempTicketsSold = 0; // temp hold of all tickets sold
+    let tempGrossRevenues = 0; // temp hold of all gross revenues
+    let tempNetRevenues = 0; // temp hold of all net revenues
 
     // populates intial values in "ticketTotals" variables
     tempTicketTotals = populateEventTickets(props.event.tickets);
 
+    // LOOKS GOOD
     // detemines the total number of tickets remaining for entire event
     props.event.tickets.forEach((ticket) => {
       tempRemaining += ticket.remainingQuantity;
     });
+    console.log("Remaining Tickets: ", tempRemaining);
 
-    // populates temp "ticketTotals" and temp "salesTotals" variableswith information from "props.orders"
+    // populates temp "ticketTotals" and temp "salesTotals" variables with information from "props.orders"
     props.orders.forEach((order) => {
-      if ("order_qrTickets" in order) {
-        order.order_qrTickets.forEach((ticketOrder) => {
+      console.log("NEW ORDER: ", order);
+      if ("qrTickets" in order) {
+        order.qrTickets.forEach((ticketOrder) => {
           tempTicketsSold += 1;
           tempGrossRevenues += ticketOrder.fullPrice;
 
           tempTicketTotals.forEach((ticket, index) => {
+            //console.log("ticketId: ", ticket.ticketId);
+            //console.log("ticketId: ", ticketOrder.ticketId);
             if (ticket.ticketId === ticketOrder.ticketId) {
               tempTicketTotals[index].ticketsSold += 1;
               tempTicketTotals[index].grossRevenues += ticketOrder.fullPrice;
-              // RIGHT NOW "netRevenues" ONLY AGGREGATES GROS AMOUNTS
-              // NEED TO DETERMINE IF "sellingPrice" FIELD EXISTS FOR ALL "order_qrTickets" FIELD
               tempTicketTotals[index].netRevenues += ticketOrder.fullPrice;
             }
           });
         });
-        console.log("order.order_totalAmount: ", order.order_totalAmount);
+        //console.log("order.totalPaidAmount: ", order.totalPaidAmount);
       }
-      tempNetRevenues += order.order_totalAmount;
+      tempNetRevenues += order.totalPaidAmount;
     });
+    console.log("tempTicketTotals: ", tempTicketTotals);
 
     setSalesTotals({
       ...salesTotals,
@@ -192,12 +211,12 @@ const SalesAnalytics = (props) => {
       if (!match) {
         tempCodes.push({
           postalCode: newCode,
-          ticketsPurchased: order.order_numTickets,
-          salesRevenues: order.order_totalAmount,
+          ticketsPurchased: order.qty,
+          salesRevenues: order.totalPaidAmount,
         });
       } else {
-        tempCodes[matchIndex].ticketsPurchased += order.order_numTickets;
-        tempCodes[matchIndex].salesRevenues += order.order_totalAmount;
+        tempCodes[matchIndex].ticketsPurchased += order.qty;
+        tempCodes[matchIndex].salesRevenues += order.totalPaidAmount;
       }
     });
     console.log("CODES ARRAY: ", tempCodes);
@@ -209,7 +228,7 @@ const SalesAnalytics = (props) => {
     props.orders.forEach((order) => {
       let match = false;
       let matchIndex;
-      let newEmail = order.order_email;
+      let newEmail = order.email;
 
       tempBuyers.forEach((extBuyer, index) => {
         if (extBuyer.email === newEmail) {
@@ -220,15 +239,15 @@ const SalesAnalytics = (props) => {
 
       if (!match) {
         tempBuyers.push({
-          email: order.order_email,
-          firstname: order.order_firstName,
-          lastname: order.order_lastName,
-          ticketsPurchased: order.order_numTickets,
-          salesRevenues: order.order_totalAmount,
+          email: order.email,
+          firstname: order.firstname,
+          lastname: order.lastname,
+          ticketsPurchased: order.qty,
+          salesRevenues: order.totalPaidAmount,
         });
       } else {
-        tempBuyers[matchIndex].ticketsPurchased += order.order_numTickets;
-        tempBuyers[matchIndex].salesRevenues += order.order_totalAmount;
+        tempBuyers[matchIndex].ticketsPurchased += order.qty;
+        tempBuyers[matchIndex].salesRevenues += order.totalPaidAmount;
       }
     });
     console.log("temp buyers: ", tempBuyers);
@@ -260,13 +279,13 @@ const SalesAnalytics = (props) => {
 
     // populates "dateSales" array
     props.orders.forEach((order) => {
-      let orderTime = new Date(order.order_createdAt).getTime(); // "orderTime" of each individual order
+      let orderTime = new Date(order.createdAt).getTime(); // "orderTime" of each individual order
 
       tempDateSales.forEach((date, index) => {
         if (orderTime >= date.startTime && orderTime < date.endTime) {
-          tempDateSales[index].ticketsSold += order.order_numTickets;
+          tempDateSales[index].ticketsSold += order.qty;
           tempDateSales[index].orders += 1;
-          tempDateSales[index].netRevenues += order.order_totalAmount;
+          tempDateSales[index].netRevenues += order.totalPaidAmount;
         }
       });
     });
@@ -304,7 +323,7 @@ const SalesAnalytics = (props) => {
           }
         });
       } else {
-        tempOnlinePayments.online += parseFloat(order.order_totalAmount);
+        tempOnlinePayments.online += parseFloat(order.totalPaidAmount);
       }
     });
     setOnlinePayments(tempOnlinePayments);
@@ -397,6 +416,7 @@ const SalesAnalytics = (props) => {
   };
 
   const tickets = () => {
+    console.log("TicketTotals: ", ticketTotals);
     return (
       <div>
         {ticketTotals.map((ticket, index) => {
@@ -582,6 +602,8 @@ const SalesAnalytics = (props) => {
   };
 
   const postalCodes = () => {
+    console.log("POSTAL CODES: ", codes);
+    console.log("CODES: ", codes);
     return (
       <div>
         {codes.map((code, index) => {
@@ -656,6 +678,7 @@ const SalesAnalytics = (props) => {
     return (
       <div>
         {buyers.map((buyer, index) => {
+          console.log("Buyer: ", buyer);
           return (
             <div key={index} className={classes.CustomersGrid}>
               <div style={{ textAlign: "left" }}>{buyer.email}</div>

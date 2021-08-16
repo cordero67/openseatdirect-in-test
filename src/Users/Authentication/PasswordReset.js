@@ -11,34 +11,36 @@ const PasswordReset = () => {
   const [values, setValues] = useState({
     token: "",
     email: "",
-    newpassword: ""
+    newpassword: "",
   });
 
   const { token, email, newpassword } = values;
 
   useEffect(() => {
-    let tokenNum = (queryString.parse(window.location.search).token);
-    let emailAddress = (queryString.parse(window.location.search).email);
+    let tokenNum = queryString.parse(window.location.search).token;
+    let emailAddress = queryString.parse(window.location.search).email;
     setValues({
       ...values,
       token: tokenNum,
       email: emailAddress,
-      newpassword: ""
+      newpassword: "",
     });
-
   }, []);
 
-  let  myHeaders = new Headers();
+  let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   const url1 = `${API}/updatePasswordViaEmail`;
   const method1 = "POST";
-  const body1  = null;
-  const initialData1 ={status: true, message:"hi first time"};
+  const body1 = null;
+  const initialData1 = { status: true, message: "hi first time" };
 
-  const { isLoading, hasError, setUrl, setBody, data, networkError} = useOurApi(method1, url1,myHeaders,body1, initialData1);
+  const { isLoading, hasError, setUrl, setBody, data, networkError } =
+    useOurApi(method1, url1, myHeaders, body1, initialData1);
 
-  const sysmessage = networkError ? "NetworkError...please check your connectivity" : "SYSTEM ERROR - please try again";
+  const sysmessage = networkError
+    ? "NetworkError...please check your connectivity"
+    : "SYSTEM ERROR - please try again";
 
   const handleChange = (event) => {
     setValues({
@@ -50,29 +52,38 @@ const PasswordReset = () => {
   const showError = () => {
     if (hasError) {
       return (
-        <div style={{color: "red", paddingBottom: "20px"}}> {sysmessage}</div>
-      )
+        <div style={{ color: "red", paddingBottom: "20px" }}> {sysmessage}</div>
+      );
     } else if (data.status) {
       return (
-        <div style={{fontSize: "16px", paddingBottom: "20px"}}>Please enter your new password:</div>
-      )
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+          Please enter your new password:
+        </div>
+      );
     } else {
       return (
-        <div style={{color: "red", paddingBottom: "20px"}}> {data.error}</div>
-      )
+        <div style={{ color: "red", paddingBottom: "20px" }}> {data.error}</div>
+      );
     }
   };
 
   const showSuccess = (
-    <div style={{paddingBottom: "20px", width: "340px"}}>
-      <div style={{lineHeight: "20px", paddingBottom: "20px"}}>Your password has been reset.</div>
-      <div>Back to <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>Signin</Link></div>
+    <div style={{ paddingBottom: "20px", width: "340px" }}>
+      <div style={{ lineHeight: "20px", paddingBottom: "20px" }}>
+        Your password has been reset.
+      </div>
+      <div>
+        Back to{" "}
+        <Link to="/signin" style={{ fontWeight: "600", color: "blue" }}>
+          Signin
+        </Link>
+      </div>
     </div>
   );
 
   const passwordForm = (
     <Fragment>
-      <div style={{paddingBottom: "20px", width: "340px", height: "60px"}}>
+      <div style={{ paddingBottom: "20px", width: "340px", height: "60px" }}>
         <input
           className={classes.InputBox}
           type="text"
@@ -82,27 +93,28 @@ const PasswordReset = () => {
           value={newpassword}
         />
       </div>
-      <div style={{paddingTop: "10px"}}>
+      <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            console.log("clicked button",{
+            console.log("clicked button", {
               token: values.token,
               email: values.email,
-              newpassword: values.newpassword
+              newpassword: values.newpassword,
             });
             setBody({
               token: values.token,
               email: values.email,
-              newpassword: values.newpassword
-            })
-        }}>
+              newpassword: values.newpassword,
+            });
+          }}
+        >
           SUBMIT YOUR NEW PASSWORD
         </button>
       </div>
     </Fragment>
   );
-  
+
   const alternateInputs = (
     <Fragment>
       <div className={classes.Alternates}>
@@ -110,7 +122,7 @@ const PasswordReset = () => {
       </div>
       <div className={classes.Section}>
         Go back to{" "}
-        <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>
+        <Link to="/signin" style={{ fontWeight: "600", color: "blue" }}>
           Sign In.
         </Link>
       </div>
@@ -122,11 +134,7 @@ const PasswordReset = () => {
     //without "data.message !== "hi first time it places the data object into local storage with every keystroke
     //this then generates an error in navigation component when it is looking for "role"
     if (data.status && data.message !== "hi first time") {
-      return (
-        <Fragment>
-          {showSuccess}
-        </Fragment>
-      )
+      return <Fragment>{showSuccess}</Fragment>;
     } else {
       return (
         <div>
@@ -136,22 +144,18 @@ const PasswordReset = () => {
           </div>
           {alternateInputs}
         </div>
-      )
+      );
     }
-  }
+  };
 
   return (
     <div className={classes.MainContainer}>
-      <div className={classes.BlankCanvas} style={{height: "330px"}}>
-        <div className={classes.Header}>
-          Reset Password
-        </div>
-        <div className={classes.Section}>
-          {mainDisplay()}
-        </div>
+      <div className={classes.BlankCanvas} style={{ height: "330px" }}>
+        <div className={classes.Header}>Reset Password</div>
+        <div className={classes.Section}>{mainDisplay()}</div>
       </div>
     </div>
   );
-}
+};
 
 export default PasswordReset;

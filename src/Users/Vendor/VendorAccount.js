@@ -12,6 +12,7 @@ import EditEvent from "../../EventCreation/EditEvent"; // NEW COMPONENT COPIED F
 import Orders from "./Orders"; // CURRENTLY NOT USING THIS TAB
 import CreateEvent from "../../EventCreation/CreateEvent"; // NO CHANGE WAS MADE TO THIS COMPONENT
 import Account from "./Account"; // NEW COMPONENT COPIED FROM DEV AND UPDATED
+import Upgrade from "./Upgrade";
 //import TicketWallet from "../TicketWallet/TicketWallet";
 import MyTickets from "../ComponentPages/MyTickets";
 import VendorNavigation from "./Components/VendorNavigation"; // NEW COMPONENT COPIED FROM DEV AND UPDATED
@@ -21,72 +22,16 @@ import classes from "./VendorAccount.module.css";
 
 const VendorAccount = (props) => {
   console.log("VENDOR PROPS: ", props);
+
   // spinner, events, salesAnalytics, ticketSales, issueTickets, editEvent, wallet, account, create, orders
   const [display, setDisplay] = useState("spinner");
-  const [eventDescriptions, setEventDescriptions] = useState(); //
-  const [eventOrders, setEventOrders] = useState(); //
+  const [eventDescriptions, setEventDescriptions] = useState({}); //
+  const [eventOrders, setEventOrders] = useState({}); //
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedOrders, setSelectedOrders] = useState([]);
+  const [subscriptionType, setSubscriptionType] = useState("free");
 
-  const [accountType, setAccountType] = useState();
-
-  // THIS FUNCTION LOOKS GOOD BUT NOT 100% CONFIRMED
-  const getStatus = () => {
-    let tempData = JSON.parse(localStorage.getItem("user"));
-    if ("user" in tempData && "accountId" in tempData.user) {
-      let tempAccountId = tempData.user.accountId;
-      let hasLinkIds = false;
-      let hasPaid = false;
-      if (tempAccountId.ticketPlan === "free") {
-        return 7;
-      }
-      if (tempAccountId.ticketPlan === "comp") {
-        hasPaid = true;
-      }
-      if (
-        "paymentGatewayType" in tempAccountId &&
-        tempAccountId.paymentGatewayType === "PayPalExpress" &&
-        "paypalExpress_client_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypalExpress_client_id
-      ) {
-        hasLinkIds = true;
-      }
-      if (
-        "paymentGatewayType" in tempAccountId &&
-        tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
-        "paypal_merchant_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypal_merchant_id
-      ) {
-        hasLinkIds = true;
-      }
-      if (
-        "paypal_plan_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypal_plan_id &&
-        "accountPaymentStatus" in tempAccountId &&
-        tempAccountId.accountPaymentStatus === "good"
-      ) {
-        hasPaid = true;
-      }
-      if (!hasPaid && !hasLinkIds) {
-        setAccountType("buyer");
-        return 4;
-      }
-      if (!hasPaid && hasLinkIds) {
-        setAccountType("buyer");
-        return 5;
-      }
-      if (hasPaid && !hasLinkIds) {
-        setAccountType("buyer");
-        return 6;
-      }
-      if (hasPaid && hasLinkIds) {
-        setAccountType("issuer");
-        return 8;
-      }
-      setAccountType("buyer");
-      return 4;
-    } else return 0;
-  };
+  const [userInfo, setUserInfo] = useState(); //
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -97,63 +42,84 @@ const VendorAccount = (props) => {
   };
 
   useEffect(() => {
+    console.log("INSIDE USEFFECT");
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
-      if (!(getStatus() === 7) && !(getStatus() === 8)) {
-        window.location.href = "/personal";
-      }
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      let vendorToken = tempUser.token;
-      let userId = tempUser.user._id;
-      let accountNum = tempUser.user.accountId.accountNum;
+      console.log("INSIDE IF");
+
+      if (!("user" in tempUser && "token" in tempUser)) {
+        window.location.href = "/auth";
+      }
+
+      let tempUserInfo = {};
+      tempUserInfo.token = tempUser.token;
+      tempUserInfo.email = tempUser.user.email;
+      tempUserInfo.name = tempUser.user.name;
+      tempUserInfo.role = tempUser.user.role;
+      tempUserInfo.id = tempUser.user._id;
+      tempUserInfo.account = tempUser.user.accountId;
+
+      setUserInfo(tempUserInfo);
+
+      if (
+        tempUserInfo.account &&
+        "status" in tempUserInfo.account &&
+        tempUserInfo.account.status === 8
+      ) {
+        console.log("INSIDE ANOTHER IF");
+        setSubscriptionType("paid");
+      }
 
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", "Bearer " + vendorToken);
+      myHeaders.append("Authorization", "Bearer " + tempUserInfo.token);
       let requestOptions = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
       };
-      //let fetchstr = `${API}/accounts/${accountNum}/events`;
-      let fetchstr = `${API}/event/alluser/${userId}`;
-      //let fetchstr = `${API}/accounts/${userId}/events`;
 
-      fetch(fetchstr, requestOptions)
-        .then(handleErrors)
-        .then((response) => response.text())
-        .then((result) => {
-          console.log("VENDOR EVENTS api result: ", JSON.parse(result));
-          let jsEvents = JSON.parse(result);
-          jsEvents.sort(compareValues("startDateTime", "asc"));
-          setEventDescriptions(jsEvents);
-          //fetchstr = `${API}/accounts/${accountNum}/orders`;
-          fetchstr = `${API}/order/${userId}`;
-          //fetchstr = `${API}/reports/organizer`;
-          fetch(fetchstr, requestOptions)
-            .then(handleErrors)
-            .then((response) => response.text())
-            .then((result) => {
-              let jsOrders = JSON.parse(result);
-              console.log("ORDERS: ", jsOrders);
-              jsOrders.sort(compareValues("createdAt", "asc"));
-              setEventOrders(jsOrders);
-              // THIS IS FOR THE NEW IMPLEMENTATION WHEN THE TAB SETTING IS COMING FORM "Routes.js"
-              //setDisplay(props.myAccountTab);
-              setDisplay("events");
-            })
-            .catch((error) => {
-              console.log("error", error);
-              setDisplay("connection");
-            });
-          return jsEvents;
-        })
-        .catch((error) => {
-          console.log("error", error);
-          setDisplay("connection");
-        });
+      if (tempUserInfo.account) {
+        console.log("INSIDE EVENT FETCH");
+        let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/events`;
+
+        fetch(fetchstr, requestOptions)
+          .then(handleErrors)
+          .then((response) => response.text())
+          .then((result) => {
+            console.log("VENDOR EVENTS api result: ", JSON.parse(result));
+            let jsEvents = JSON.parse(result);
+            jsEvents.sort(compareValues("startDateTime", "asc"));
+            setEventDescriptions(jsEvents);
+            fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
+            fetch(fetchstr, requestOptions)
+              .then(handleErrors)
+              .then((response) => response.text())
+              .then((result) => {
+                let jsOrders = JSON.parse(result);
+                console.log("ORDERS: ", jsOrders);
+                jsOrders.sort(compareValues("createdAt", "asc"));
+                setEventOrders(jsOrders);
+                // THIS IS FOR THE NEW IMPLEMENTATION WHEN THE TAB SETTING IS COMING FORM "Routes.js"
+                //setDisplay(props.myAccountTab);
+                setDisplay("events");
+              })
+              .catch((error) => {
+                console.log("error", error);
+                setDisplay("connection");
+              });
+            return jsEvents;
+          })
+          .catch((error) => {
+            console.log("error", error);
+            setDisplay("connection");
+          });
+      } else {
+        setDisplay("events");
+      }
     } else {
       window.location.href = "/auth";
     }
@@ -165,15 +131,15 @@ const VendorAccount = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + vendorToken);
-
+    myHeaders.append("Authorization", "Bearer " + tempUser.token);
     let requestOptions = {
-      method: "POST",
+      method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
 
-    let fetchstr = `${API}/reports/organizer`;
+    console.log("Temp User: ", tempUser);
+    let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
     fetch(fetchstr, requestOptions)
       .then(handleErrors)
       .then((response) => response.text())
@@ -291,9 +257,22 @@ const VendorAccount = (props) => {
     } else if (display === "create") {
       return <CreateEvent />;
     } else if (display === "account") {
-      return <Account />;
+      return (
+        <Account
+          upgrade={(event) => {
+            setDisplay("upgrade");
+          }}
+        ></Account>
+      );
+    } else if (display === "upgrade") {
+      return (
+        <Upgrade
+          userid={userInfo.id}
+          token={userInfo.token}
+          accountNum={userInfo.accountNum}
+        />
+      );
     } else if (display === "wallet") {
-      //return <TicketWallet />;
       return <MyTickets />;
     } else {
       return null;
@@ -303,7 +282,7 @@ const VendorAccount = (props) => {
   const Navigation = (
     <VendorNavigation
       pane={display}
-      accountType={accountType}
+      subscriptionType={subscriptionType}
       clicked={(event) => {
         setDisplay(event.target.name);
         // *****THIS NEEDS TO BE INCOPORATED ONCE "Routs.js" HAS BEEN UPDATED

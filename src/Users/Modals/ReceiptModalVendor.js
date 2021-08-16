@@ -24,7 +24,7 @@ const ReceiptModal = (props) => {
   console.log("UPDATED");
 
   // populate this ticketOrder array
-  props.details.order_qrTickets.forEach((qrTix) => {
+  props.details.qrTickets.forEach((qrTix) => {
     orderDetails.forEach((ticketType, index) => {
       if (ticketType.ticketId === qrTix.ticketId) {
         orderDetails[index].ticketsSold += 1;
@@ -42,7 +42,7 @@ const ReceiptModal = (props) => {
   [longDateTime] = getStartDate(props.details.startDateTime);
 
   let shortDateTime;
-  [shortDateTime] = getStartDate(props.details.order_createdAt);
+  [shortDateTime] = getStartDate(props.details.createdAt);
 
   // LOOKS GOOD: 1/21/21
   const modalButtons = () => {
@@ -232,9 +232,9 @@ const ReceiptModal = (props) => {
         >
           <div style={{ fontWeight: "600" }}>Recipient:</div>
           <div>
-            {props.details.order_firstName}
+            {props.details.firstname}
             {", "}
-            {props.details.order_lastName}
+            {props.details.lastname}
           </div>
         </div>
         <div
@@ -245,7 +245,7 @@ const ReceiptModal = (props) => {
             paddingBottom: "10px",
           }}
         >
-          {props.details.order_email}
+          {props.details.email}
         </div>
         <div
           style={{

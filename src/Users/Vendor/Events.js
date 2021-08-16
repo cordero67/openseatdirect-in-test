@@ -6,6 +6,7 @@ import classes from "./Events.module.css";
 import { getDates } from "./Resources/VendorFunctions";
 
 const Events = (props) => {
+  console.log("EVENT props: ", props);
   const [warningModal, setWarningModal] = useState({
     status: false,
     type: "",

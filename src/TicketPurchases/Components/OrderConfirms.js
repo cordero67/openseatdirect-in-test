@@ -170,7 +170,7 @@ export const OrderConfirm = (props) => {
         <button
           className={classes.ButtonBlue}
           onClick={() => {
-            window.location.href = "/events";
+            window.location.href = "/";
           }}
         >
           CONTINUE

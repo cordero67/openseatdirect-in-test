@@ -1,24 +1,31 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 
-import styles from "./Logo.module.css";
+import { HOST } from "../../config";
+
+import classes from "./Logo.module.css";
 
 const Logo = (props) => {
-  let styleName = styles.Header;
+  let styleName = classes.Header;
+
+  console.log("HOST: ", HOST);
 
   if (props.placement === "header") {
-    styleName = styles.Header;
+    styleName = classes.Header;
   } else if (props.placement === "side") {
-    styleName = styles.Side;
+    styleName = classes.Side;
   } else if (props.placement === "footer") {
-    styleName = styles.Footer;
+    styleName = classes.Footer;
   }
 
-  //https://openseatdirdev.wpengine.com/
   return (
-    <NavLink to="/" exact>
+    <button
+      className={classes.Button}
+      onClick={() => {
+        window.location.href = HOST;
+      }}
+    >
       <img src={props.source} alt="OpenSeatDirect Logo" className={styleName} />
-    </NavLink>
+    </button>
   );
 };
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment } from "react";
-import dateFormat from "dateformat";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
