@@ -190,7 +190,7 @@ const Reset = (props) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
-    let url = `${API}/auth/resend_password_code3/${values.userId}`;
+    let url = `${API}/auth/password/sendcode`;
     let fetchBody = {
       method: "POST",
       headers: myHeaders,
