@@ -38,7 +38,6 @@ const Upgrade = (props) => {
     accountEmail: "",
     accountPhone: "",
     accountUrl: "",
-    ticketPlan: "tbd",
     inputError: "",
     paypal_plan_id: "P-3E209303AY287713HMDN3PLQ", // default value is production monthly plan
     paypal_plan_id_full: "", // default plan for "FULL" ticket plan selection view
@@ -85,7 +84,6 @@ const Upgrade = (props) => {
     accountEmail,
     accountPhone,
     accountUrl,
-    ticketPlan,
     paypal_plan_id,
     paypal_plan_id_full,
 
@@ -249,10 +247,6 @@ const Upgrade = (props) => {
 
       if (tempUser.user.accountId.status) {
         tempBuyerInfo.status = tempUser.user.accountId.status;
-      }
-
-      if (tempUser.user.accountId.ticketPlan) {
-        tempBuyerInfo.ticketPlan = tempUser.user.accountId.ticketPlan;
       }
 
       if (tempUser.user.accountId.paypalExpress_client_id) {
@@ -450,7 +444,7 @@ const Upgrade = (props) => {
       promoCodeDetails.appliedPromoCode === "HEAMEDIAGROUP" ||
       promoCodeDetails.appliedPromoCode === "LIGHTOFGOLD"
     ) {
-      console.log("ticketPlan: ", ticketPlan);
+      console.log("OSD20");
       console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
@@ -463,11 +457,11 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan === "free" && paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "TRYFORFREE") {
-      console.log("ticketPlan: ", ticketPlan);
+      console.log("TRYFORFREE");
       console.log("paypal_plan_id: ", paypal_plan_id);
       console.log("paypal_plan_id_forFree: ", paypal_plan_id_forFree);
       return (
@@ -481,11 +475,11 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan === "free" && paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSD70") {
-      console.log("ticketPlan: ", ticketPlan);
+      console.log("OSD70");
       console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
@@ -498,11 +492,11 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan === "free" && paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSD50") {
-      console.log("ticketPlan: ", ticketPlan);
+      console.log("OSD50");
       console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
@@ -515,11 +509,11 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan === "free" && paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSDFREE") {
-      console.log("ticketPlan: ", ticketPlan);
+      console.log("OSDFREE");
       console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
@@ -536,7 +530,7 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {ticketPlan === "free" && paypal_plan_id ? (
+          {paypal_plan_id ? (
             showPayPal
           ) : (
             <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -554,7 +548,7 @@ const Upgrade = (props) => {
         </Fragment>
       );
     } else {
-      console.log("ticketPlan: ", ticketPlan);
+      console.log("NO PROMOS");
       console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
