@@ -41,38 +41,48 @@ const VendorAccount = (props) => {
     return response;
   };
 
+  // LOOKS GOOD
   useEffect(() => {
-    console.log("INSIDE USEFFECT");
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("INSIDE IF");
+      console.log("tempUser: ", tempUser);
 
       if (!("user" in tempUser && "token" in tempUser)) {
         window.location.href = "/auth";
       }
 
+      // LOOKS GOOD
       let tempUserInfo = {};
       tempUserInfo.token = tempUser.token;
       tempUserInfo.email = tempUser.user.email;
-      tempUserInfo.name = tempUser.user.name;
-      tempUserInfo.role = tempUser.user.role;
-      tempUserInfo.id = tempUser.user._id;
+      tempUserInfo.firstname = tempUser.user.firstname;
+      tempUserInfo.lastname = tempUser.user.lastname;
+      tempUserInfo.status = tempUser.user.accountId.status;
+      tempUserInfo.id = tempUser.user.accountId._id;
       tempUserInfo.account = tempUser.user.accountId;
+      tempUserInfo.accountNum = tempUser.user.accountId.accountNum;
+      console.log("tempUserInfo: ", tempUserInfo);
 
       setUserInfo(tempUserInfo);
 
+      // LOOKS GOOD
+      // determines if client has a paid account
       if (
         tempUserInfo.account &&
         "status" in tempUserInfo.account &&
         tempUserInfo.account.status === 8
       ) {
-        console.log("INSIDE ANOTHER IF");
+        console.log("PAID CLIENT");
         setSubscriptionType("paid");
+      } else {
+        console.log("UNPAID CLIENT");
       }
 
+      // LOOKS GOOD
+      // sets api variables
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("Authorization", "Bearer " + tempUserInfo.token);
@@ -82,6 +92,8 @@ const VendorAccount = (props) => {
         redirect: "follow",
       };
 
+      // LOOKS GOOD
+      // if "accountID" field exists than all event and order information is requested
       if (tempUserInfo.account) {
         console.log("INSIDE EVENT FETCH");
         let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/events`;
@@ -118,6 +130,7 @@ const VendorAccount = (props) => {
             setDisplay("connection");
           });
       } else {
+        // account does not exist
         setDisplay("events");
       }
     } else {
@@ -156,8 +169,8 @@ const VendorAccount = (props) => {
       });
   };
 
+  // LOOKS GOOD
   const loadingSpinner = () => {
-    //if (true) {
     if (display === "spinner") {
       return (
         <div style={{ paddingTop: "60px" }}>
@@ -169,6 +182,7 @@ const VendorAccount = (props) => {
     }
   };
 
+  // LOOKS GOOD
   const connectionStatus = () => {
     if (display === "connection") {
       return (
@@ -267,6 +281,7 @@ const VendorAccount = (props) => {
     } else if (display === "upgrade") {
       return (
         <Upgrade
+          userInfo={userInfo}
           userid={userInfo.id}
           token={userInfo.token}
           accountNum={userInfo.accountNum}

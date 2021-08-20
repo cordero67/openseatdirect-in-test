@@ -15,7 +15,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { Button, Popup } from "semantic-ui-react";
-
 import { PayPalButton } from "react-paypal-button-v2";
 
 import RadioForm from "./RadioForm";
@@ -24,7 +23,14 @@ import classes from "./Upgrade.module.css";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew"; // experimental..
 
-const Onboarding = (props) => {
+const Upgrade = (props) => {
+  /*
+    userInfo={userInfo}
+    userid={userInfo.id}
+    token={userInfo.token}
+    accountNum={userInfo.accountNum}
+  */
+
   console.log("PROPS: ", props);
   // UPDATE WHEN A NEW PLAN IS INTRODUCED
   const [values, setValues] = useState({
@@ -41,13 +47,12 @@ const Onboarding = (props) => {
     paypal_plan_id_old: "", // default plan for "OLD" ticket plan selection view
     paypal_plan_id_oldDiscounted: "", // default plan for "OLDDISCOUNTED" ticket plan selection view
     paypal_plan_id_freeSubscription: "", // default plan for "FREESUBSCRIPTION" ticket plan selection view
-
     paypalExpress_client_id: "", // vendor's clientID not OSD's
     paypalExpress_client_secret: "", // vendor's secret not OSD's
   });
-
   console.log("values: ", values);
 
+  // LOOKS GOOD
   const [promoCodeDetails, setPromoCodeDetails] = useState({
     available: false,
     applied: false,
@@ -73,7 +78,8 @@ const Onboarding = (props) => {
   const [preFetchView, setPreFetchView] = useState("");
   const [loading, setLoading] = useState("false");
 
-  //const [isDisabled, setIsDisabled] = useState(true)
+  // LOOKS GOOD
+  // object deconstruction
   const {
     accountName,
     accountEmail,
@@ -92,11 +98,13 @@ const Onboarding = (props) => {
     paypalExpress_client_secret,
   } = values;
 
+  // LOOKS GOOD
   const getStatus = () => {
-    console.log("Entering 'getStatus'");
+    //console.log("Entering 'getStatus'");
     let tempData = JSON.parse(localStorage.getItem("user"));
-    if ("accountId" in tempData) {
-      return tempData.accountId.status;
+    //console.log("tempData: ", tempData);
+    if ("accountId" in tempData.user) {
+      return tempData.user.accountId.status;
     } else return 0;
   };
 
@@ -182,14 +190,20 @@ const Onboarding = (props) => {
     };
   }
 
+  // LOOKS GOOD
   const updatePageView = () => {
+    console.log("inside updatePageView");
     if (getStatus() === 0 || getStatus() === 1 || getStatus() === 2) {
+      console.log("organization");
       setPageView("organization");
     } else if (getStatus() === 4 || getStatus() === 5) {
+      console.log("payment");
       setPageView("payment");
     } else if (getStatus() === 6) {
+      console.log("paypaln");
       setPageView("paypal");
     } else if (getStatus() === 8) {
+      console.log("completed");
       setPageView("completed");
     }
   };
@@ -216,7 +230,8 @@ const Onboarding = (props) => {
         tempUser.user.accountId.accountName === tempUser.user.username
       ) {
         tempBuyerInfo.accountName = "";
-      } else */ if (tempUser.user.accountId.accountName) {
+      } else */
+      if (tempUser.user.accountId.accountName) {
         tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
       }
 
@@ -561,8 +576,11 @@ const Onboarding = (props) => {
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
+      console.log("STATUS IS NOT GOOD");
       throw Error(response.status);
     }
+    console.log("STATUS IS GOOD");
+    console.log("response: ", response);
     return response;
   };
 
@@ -572,7 +590,8 @@ const Onboarding = (props) => {
     console.log("tempData: ", tempData);
     const authstring = `Bearer ${props.token}`;
     //"/accounts/:accountNum/subscription/payosd"
-    fetch(`${API}/accounts/${accountNum}/subscription/payosd`, {
+    //accounts​/{accountNum}​/subscription​/nopay
+    fetch(`${API}/accounts/${accountNum}/subscription/nopay`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -585,6 +604,7 @@ const Onboarding = (props) => {
     })
       .then(handleErrors)
       .then((response) => {
+        console.log("MADE IT PAST handleErrors");
         return response.json();
       })
       .then((response) => {
@@ -597,10 +617,12 @@ const Onboarding = (props) => {
           localStorage.setItem("user", JSON.stringify(tempData));
           setPageView("receipt");
         } else {
+          console.log("error in if then else");
           setPageView("receiptErrorPage");
         }
       }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
       .catch((err) => {
+        console.log("error in .then .catch");
         setPageView("receiptErrorPage");
       });
   };
@@ -627,24 +649,31 @@ const Onboarding = (props) => {
               console.log("details: ", details);
               const authstring = `Bearer ${props.token}`;
               console.log("about to send paypal object to server");
-              return fetch(`${API}/paypal/subscription/${props.userid}`, {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  Authorization: authstring,
-                },
-                body: JSON.stringify({
-                  data: data,
-                  details: details,
-                  promoCode: promoCodeDetails.appliedPromoCode,
-                }),
-              })
+              //return fetch(`${API}/paypal/subscription/${props.userid}`, {
+              return fetch(
+                `${API}/accounts/${props.accountNum}/subscription/paypal-express/subscribe`,
+                {
+                  method: "POST",
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization: authstring,
+                  },
+                  body: JSON.stringify({
+                    data: data,
+                    details: details,
+                    promoCode: promoCodeDetails.appliedPromoCode,
+                  }),
+                }
+              )
                 .then(handleErrors)
                 .then((response) => {
+                  console.log("MADE IT PAST handleErrors");
+                  console.log("response: ", response);
                   return response.json();
                 })
                 .then((response) => {
+                  console.log("response: ", response);
                   // first show a success model with a continue button to go to paypal clientId model
                   if (response.status) {
                     console.log(
@@ -657,14 +686,17 @@ const Onboarding = (props) => {
                     localStorage.setItem("user", JSON.stringify(tempData));
                     setPageView("receipt");
                   } else {
+                    console.log("inside else");
                     setPageView("receiptErrorPage");
                   }
                 }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
                 .catch((err) => {
+                  console.log("Inside inner .catch");
                   setPageView("receiptErrorPage");
                 });
             })
             .catch((err) => {
+              console.log("Inside outer .catch");
               window.alert("Problem with Paypal.");
             });
         }}
@@ -869,8 +901,9 @@ const Onboarding = (props) => {
                   methodType = "POST";
                 }
                 console.log("methodType: ", methodType);
-                let url = `${API}/user/${props.userid}/accounts`;
+                //let url = `${API}/user/${props.userid}/accounts`;
                 //let url = `${API}/user/${props.userid}/accounts/${props.accountNum}`;
+                let url = `${API}/accounts/${props.accountNum}`;
                 let fetcharg = {
                   method: methodType,
                   headers: myHeaders,
@@ -900,6 +933,9 @@ const Onboarding = (props) => {
                     tempData.user.accountId = data.result;
                     localStorage.setItem("user", JSON.stringify(tempData));
                     if (data.status) {
+                      console.log("INSIDE data.status");
+                      updatePageView();
+                      /*
                       switch (getStatus()) {
                         case 1:
                           setPageView("organization");
@@ -916,6 +952,7 @@ const Onboarding = (props) => {
                         default:
                           setPageView("organization");
                       }
+                      */
                     } else {
                       // this is a friendly error
                       let errmsg = "DEFAULT MESSAGE - Please try again";
@@ -1480,9 +1517,10 @@ const Onboarding = (props) => {
                   !paypalExpress_client_id || !paypalExpress_client_secret
                 }
                 onClick={() => {
-                  let url = `${API}/account/${props.userid}`;
+                  //let url = `${API}/account/${props.userid}`;
+                  let url = `${API}/accounts/${props.accountNum}`;
                   let fetcharg = {
-                    method: "PATCH",
+                    method: "POST",
                     headers: myHeaders,
                     body: JSON.stringify({
                       useSandbox: PAYPAL_USE_SANDBOX,
@@ -1510,22 +1548,8 @@ const Onboarding = (props) => {
                       localStorage.setItem("user", JSON.stringify(tempData));
 
                       if (data.status) {
-                        switch (getStatus()) {
-                          case 1:
-                            setPageView("organization");
-                            break;
-                          case 2:
-                            setPageView("payment");
-                            break;
-                          case 3:
-                            setPageView("paypal");
-                            break;
-                          case 4:
-                            setPageView("completed");
-                            break;
-                          default:
-                            setPageView("organization");
-                        }
+                        console.log("INSIDE data.status");
+                        updatePageView();
                       } else {
                         // this is a frieldly error
                         let errmsg =
@@ -1667,4 +1691,4 @@ const Onboarding = (props) => {
   );
 };
 
-export default Onboarding;
+export default Upgrade;

@@ -110,7 +110,7 @@ const Reset = (props) => {
     myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
     let url = `${API}/auth/password/new`;
     let information = {
-      resetPasswordToken: resetToken,
+      passwordToken: resetToken,
       password: password,
     };
     let fetchBody = {
@@ -220,7 +220,7 @@ const Reset = (props) => {
   const handleConfirmation = (data) => {
     if (data.status) {
       let tempValues = { ...values };
-      tempValues.resetToken = data.user.resetPasswordToken;
+      tempValues.resetToken = data.user.passwordToken;
       setValues(tempValues);
       console.log("SUCCESS");
       setModalSetting("password");

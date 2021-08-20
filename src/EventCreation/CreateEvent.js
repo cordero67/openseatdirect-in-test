@@ -509,6 +509,7 @@ const CreateEvent = (props) => {
       //
       //
       let userid = vendorInfo.id;
+      console.log("vendorInfo: ", vendorInfo);
 
       let token = vendorInfo.token;
       const authstring = `Bearer ${token}`;

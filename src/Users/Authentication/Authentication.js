@@ -341,7 +341,7 @@ const Authentication = () => {
     let url = `${API}/auth/signup/password`;
     let information = {
       email: email,
-      resetPasswordToken: resetToken,
+      passwordToken: resetToken,
       password: password,
     };
     let fetchBody = {
@@ -605,7 +605,7 @@ const Authentication = () => {
         confirmation: "",
         resent: false,
         username: data.user.username,
-        resetToken: data.user.resetPasswordToken,
+        resetToken: data.user.passwordToken,
         sessionToken: "",
         userId: "",
       });
@@ -1028,6 +1028,7 @@ const Authentication = () => {
     );
   };
 
+  // LOOKS GOOD
   const errorForm = (
     <Fragment>
       <div

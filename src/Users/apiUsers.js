@@ -70,6 +70,20 @@ export const signout = (callback) => {
     localStorage.removeItem("orders");
     localStorage.removeItem("events");
     callback();
+
+    /*
+      // LOOKS GOOD
+      // sets api variables
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", "Bearer " + tempUserInfo.token);
+      let requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+*/
+
     return fetch(`${API}/signout`, {
       method: "GET",
     })
