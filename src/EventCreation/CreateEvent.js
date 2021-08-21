@@ -520,7 +520,7 @@ const CreateEvent = (props) => {
 
       let apiurl;
       //apiurl = `${API}/eventix/${userid}`;
-      apiurl = `${API}/accounts​/{accountNum}​/events`;
+      apiurl = `${API}/accounts​/${accountNum}​/events`;
 
       fetch(apiurl, {
         method: "POST",
