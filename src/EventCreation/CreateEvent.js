@@ -117,6 +117,7 @@ const CreateEvent = (props) => {
       let tempVendorInfo = vendorInfo;
       tempVendorInfo.token = tempUser.token;
       tempVendorInfo.id = tempUser.user._id;
+      tempVendorInfo.accountNum = tempUser.user.accountId.accountNum;
       if ("accountId" in tempUser.user && "status" in tempUser.user.accountId) {
         tempVendorInfo.status = tempUser.user.accountId.status;
       } else {
@@ -509,6 +510,7 @@ const CreateEvent = (props) => {
       //
       //
       let userid = vendorInfo.id;
+      let accountNum = vendorInfo.accountNum;
       console.log("vendorInfo: ", vendorInfo);
 
       let token = vendorInfo.token;
@@ -517,7 +519,8 @@ const CreateEvent = (props) => {
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
-      apiurl = `${API}/eventix/${userid}`;
+      //apiurl = `${API}/eventix/${userid}`;
+      apiurl = `${API}/accounts​/{accountNum}​/events`;
 
       fetch(apiurl, {
         method: "POST",
