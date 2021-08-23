@@ -199,7 +199,8 @@ const TicketCreation = (props) => {
                   >
                     {item.currency === "" ? "USD $" : item.currency}
                   </div>
-                  {props.status === 8 ? (
+                  {true ? (
+                    //{props.status === 8 ? (
                     <input
                       style={{
                         backgroundColor: "fff",

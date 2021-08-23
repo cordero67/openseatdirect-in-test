@@ -171,6 +171,7 @@ const EventEdit = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       vendorInfo.token = tempUser.token;
       vendorInfo.id = tempUser.user._id;
+      vendorInfo.accountNum = tempUser.user.accountId.accountNum;
       /*
       //start section not in "createEvent"
       if (localStorage.getItem(`eventNum`) !== null) {
@@ -590,6 +591,7 @@ const EventEdit = (props) => {
       }
 
       let userid = vendorInfo.id;
+      let accountNum = vendorInfo.accountNum;
 
       let token = vendorInfo.token;
       const authstring = `Bearer ${token}`;
@@ -598,7 +600,9 @@ const EventEdit = (props) => {
 
       let apiurl;
       //
-      apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
+
+      apiurl = `${API}/accounts/${accountNum}/events/${eventDescription.eventNum}`;
+      //apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
 
       fetch(apiurl, {
         method: "post",

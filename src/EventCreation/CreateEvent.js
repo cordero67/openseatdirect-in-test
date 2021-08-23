@@ -512,6 +512,7 @@ const CreateEvent = (props) => {
       let userid = vendorInfo.id;
       let accountNum = vendorInfo.accountNum;
       console.log("vendorInfo: ", vendorInfo);
+      console.log("accountNum: ", accountNum);
 
       let token = vendorInfo.token;
       const authstring = `Bearer ${token}`;
@@ -520,7 +521,7 @@ const CreateEvent = (props) => {
 
       let apiurl;
       //apiurl = `${API}/eventix/${userid}`;
-      apiurl = `${API}/accounts​/${accountNum}​/events`;
+      apiurl = `${API}/accounts/${accountNum}/events`;
 
       fetch(apiurl, {
         method: "POST",

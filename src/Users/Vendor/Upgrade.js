@@ -583,8 +583,6 @@ const Upgrade = (props) => {
     let accountNum = tempData.user.accountId.accountNum;
     console.log("tempData: ", tempData);
     const authstring = `Bearer ${props.token}`;
-    //"/accounts/:accountNum/subscription/payosd"
-    //accounts​/{accountNum}​/subscription​/nopay
     fetch(`${API}/accounts/${accountNum}/subscription/nopay`, {
       method: "POST",
       headers: {
