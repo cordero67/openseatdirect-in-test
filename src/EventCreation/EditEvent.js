@@ -16,10 +16,12 @@ import AdditionalSettings from "./Components/AdditionalSettings";
 import classes from "./EditEvent.module.css";
 
 // holds sign-in information
-let vendorInfo = {};
+//let vendorInfo = {};
 
 const EventEdit = (props) => {
   console.log("props.event: ", props.event);
+  const [vendorInfo, setVendorInfo] = useState({});
+  const [display, setDisplay] = useState("spinner"); // spinner, main
   const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [locationVenueNameOmission, setLocationVenueNameOmission] =
     useState(false);
@@ -161,50 +163,30 @@ const EventEdit = (props) => {
   };
 
   useEffect(() => {
-    //
-    // checks if 'user' exists in local storage
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
       // loads sign-in data
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      vendorInfo.token = tempUser.token;
-      vendorInfo.id = tempUser.user._id;
-      vendorInfo.accountNum = tempUser.user.accountId.accountNum;
-      /*
-      //start section not in "createEvent"
-      if (localStorage.getItem(`eventNum`) !== null) {
-        console.log("found a valid event to edit");
-        let tempEventNum = JSON.parse(localStorage.getItem("eventNum"));
-        let tempEvents = JSON.parse(localStorage.getItem("events"));
-        let tempEventPosition;
-        tempEvents.forEach((event, index) => {
-          if (event.eventNum === tempEventNum) {
-            console.log("Found a match");
-            tempEventPosition = index;
-          }
-        });
-
-        initPhotoData(tempEvents[tempEventPosition].photo);
-
-        const [tempTicketArray, tempDescription] = loadEventInfo(
-          tempEvents[tempEventPosition]
-        );
-
-        setTicketDetails(tempTicketArray);
-        setEventDescription(tempDescription);
-        setOriginalEventDescription(tempDescription);
+      let tempVendorInfo = vendorInfo;
+      tempVendorInfo.token = tempUser.token;
+      tempVendorInfo.id = tempUser.user._id;
+      tempVendorInfo.accountNum = tempUser.user.accountId.accountNum;
+      if ("accountId" in tempUser.user && "status" in tempUser.user.accountId) {
+        tempVendorInfo.status = tempUser.user.accountId.status;
       } else {
-        console.log("Did not find a valid event to edit");
+        tempVendorInfo.status = 0;
       }
-      */
+      console.log("vendorInfo.status: ", tempVendorInfo.status);
+      setVendorInfo(tempVendorInfo);
       initPhotoData(props.event.photo);
 
       const [tempTicketArray, tempDescription] = loadEventInfo(props.event);
       setTicketDetails(tempTicketArray);
       setEventDescription(tempDescription);
       setOriginalEventDescription(tempDescription);
+      setDisplay("main");
     } else {
       window.location.href = "/auth";
     }
@@ -224,19 +206,6 @@ const EventEdit = (props) => {
     setLocationVenueNameOmission(false);
     setWebinarLinkOmission(false);
     setTbaInformationOmission(false);
-
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      vendorInfo.token = tempUser.token;
-      vendorInfo.id = tempUser.user._id;
-      vendorInfo.vendorAccount = tempUser.user.accountId.accountNum;
-    } else {
-      window.location.href = "/auth";
-    }
-
     let tempStatus = { ...eventStatus };
     tempStatus.status = newStatus;
 
@@ -479,23 +448,12 @@ const EventEdit = (props) => {
           }
 
           ticketDetailsFields.forEach((field) => {
-            console.log(
-              "1) FORM APPENDING>> if ",
-              ticket[field],
-              `tickets[${index}][${field}]`,
-              ticket[field]
-            );
-            if (
-              field in ticket &&
+            if (field === "currentTicketPrice" && vendorInfo.status !== 8) {
+              formData.append(`tickets[${index}][${field}]`, 0);
+            } else if (
               ticket[field] !== "" &&
               "undefined" !== typeof ticket[field]
             ) {
-              console.log(
-                "2) FORM APPENDING>> if ",
-                ticket[field],
-                `tickets[${index}][${field}]`,
-                ticket[field]
-              );
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
           });
@@ -1282,74 +1240,77 @@ const EventEdit = (props) => {
   );
 
   const mainDisplay = () => {
-    return (
-      <div
-        style={{
-          backgroundColor: "white",
-          height: "calc(100vh - 193px)",
-          scrollbarWidth: "thin",
-          overflowY: "auto",
-          fontSize: "15px",
-          width: "1030px",
-          marginTop: "76px",
-          paddingTop: "10px",
-          paddingBotton: "15px",
-          paddingLeft: "20px",
-          paddingRight: "20px",
-        }}
-      >
-        <div>
-          <EventDetails
-            event={eventDescription}
-            titleOmission={eventTitleOmission}
-            venueOmission={locationVenueNameOmission}
-            webinarOmission={webinarLinkOmission}
-            tbaOmission={tbaInformationOmission}
-            eventImage={"existing"}
-            photoData={photoData}
-            change={changeEventDescription}
-            radioChange={changeEventDescriptionRadio}
-            changeDate={changeEventDate}
-            changeEventField={changeEventField}
-            changeCategory={changeEventCategory}
-            changeLong={changeLongDescription}
-            changeImage={changeEventImage}
-            changeOmission={() => {
-              setEventTitleOmission(false);
-            }}
-          />
-          <br></br>
-          <TicketCreation
-            tickets={ticketDetails}
-            radioChange={changeEventDescriptionRadio}
-            changeTicket={changeTicketDetail}
-            changeSettings={switchTicketSettings}
-            showModal={activateShowModal}
-            deactivateModal={deactivateShowModal}
-            delete={deleteTicket}
-            switchSettings={switchTicketSettings}
-            changeFeature={changePriceFeature}
-            switchPriceFeature={switchPriceFeature}
-            addPromoCode={addPromoCode}
-            changeArgument={changeArgument}
-            changePromoCodesName={changePromoCodesName}
-            changePromoCodesAmount={changePromoCodesAmount}
-            changePromoCodesPercent={changePromoCodesPercent}
-            deletePromoCode={deletePromoCode}
-            createNewTicketHandler={createNewTicketHandler}
-            handleDragStart={handleDragStart}
-            handleDragEnter={handleDragEnter}
-            dragging={dragging}
-          />
-          <br></br>
-          <AdditionalSettings
-            event={eventDescription}
-            radioChange={changeEventDescriptionRadio}
-          />
-          <br></br>
+    if (display === "main") {
+      return (
+        <div
+          style={{
+            backgroundColor: "white",
+            height: "calc(100vh - 193px)",
+            scrollbarWidth: "thin",
+            overflowY: "auto",
+            fontSize: "15px",
+            width: "1030px",
+            marginTop: "76px",
+            paddingTop: "10px",
+            paddingBotton: "15px",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+          }}
+        >
+          <div>
+            <EventDetails
+              event={eventDescription}
+              titleOmission={eventTitleOmission}
+              venueOmission={locationVenueNameOmission}
+              webinarOmission={webinarLinkOmission}
+              tbaOmission={tbaInformationOmission}
+              eventImage={"existing"}
+              photoData={photoData}
+              change={changeEventDescription}
+              radioChange={changeEventDescriptionRadio}
+              changeDate={changeEventDate}
+              changeEventField={changeEventField}
+              changeCategory={changeEventCategory}
+              changeLong={changeLongDescription}
+              changeImage={changeEventImage}
+              changeOmission={() => {
+                setEventTitleOmission(false);
+              }}
+            />
+            <br></br>
+            <TicketCreation
+              tickets={ticketDetails}
+              status={vendorInfo.status}
+              radioChange={changeEventDescriptionRadio}
+              changeTicket={changeTicketDetail}
+              changeSettings={switchTicketSettings}
+              showModal={activateShowModal}
+              deactivateModal={deactivateShowModal}
+              delete={deleteTicket}
+              switchSettings={switchTicketSettings}
+              changeFeature={changePriceFeature}
+              switchPriceFeature={switchPriceFeature}
+              addPromoCode={addPromoCode}
+              changeArgument={changeArgument}
+              changePromoCodesName={changePromoCodesName}
+              changePromoCodesAmount={changePromoCodesAmount}
+              changePromoCodesPercent={changePromoCodesPercent}
+              deletePromoCode={deletePromoCode}
+              createNewTicketHandler={createNewTicketHandler}
+              handleDragStart={handleDragStart}
+              handleDragEnter={handleDragEnter}
+              dragging={dragging}
+            />
+            <br></br>
+            <AdditionalSettings
+              event={eventDescription}
+              radioChange={changeEventDescriptionRadio}
+            />
+            <br></br>
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else return null;
   };
 
   return (

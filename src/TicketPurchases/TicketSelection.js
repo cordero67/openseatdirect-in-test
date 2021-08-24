@@ -730,7 +730,7 @@ const TicketSelection = () => {
           {ticketItems()}
           <div className={classes.EventDescription}>
             Powered by{" "}
-            <NavLink to="/events" exact>
+            <NavLink to="/" exact>
               <img
                 className={classes.ImageBox}
                 src={OSDLogo}

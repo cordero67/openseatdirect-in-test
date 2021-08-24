@@ -31,7 +31,7 @@ const VendorAccount = (props) => {
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [subscriptionType, setSubscriptionType] = useState("free");
 
-  const [userInfo, setUserInfo] = useState(); //
+  const [userInfo, setUserInfo] = useState({}); //
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -67,19 +67,6 @@ const VendorAccount = (props) => {
       console.log("tempUserInfo: ", tempUserInfo);
 
       setUserInfo(tempUserInfo);
-
-      // LOOKS GOOD
-      // determines if client has a paid account
-      if (
-        tempUserInfo.account &&
-        "status" in tempUserInfo.account &&
-        tempUserInfo.account.status === 8
-      ) {
-        console.log("PAID CLIENT");
-        setSubscriptionType("paid");
-      } else {
-        console.log("UNPAID CLIENT");
-      }
 
       // LOOKS GOOD
       // sets api variables
@@ -294,10 +281,10 @@ const VendorAccount = (props) => {
     }
   };
 
-  const Navigation = (
+  const navigation = (
     <VendorNavigation
       pane={display}
-      subscriptionType={subscriptionType}
+      status={"status" in userInfo ? userInfo.status : 0}
       clicked={(event) => {
         setDisplay(event.target.name);
         // *****THIS NEEDS TO BE INCOPORATED ONCE "Routs.js" HAS BEEN UPDATED
@@ -310,7 +297,7 @@ const VendorAccount = (props) => {
   return (
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
-        {Navigation}
+        {navigation}
         {loadingSpinner()}
         {mainDisplay()}
         {connectionStatus()}

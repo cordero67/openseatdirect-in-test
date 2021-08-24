@@ -22,7 +22,9 @@ import { Popup } from "semantic-ui-react";
 const TicketCreation = (props) => {
   console.log("Props: ", props);
   console.log("Status: ", props.status);
+
   const ticketTypeDisplay = (index) => {
+    console.log("CURRENT STATUS = ", props.status);
     let display = (
       <Fragment>
         {props.tickets.map((item, index) => {
@@ -39,11 +41,16 @@ const TicketCreation = (props) => {
               item.currentTicketPrice === "") ||
             (item.ticketName !== "" &&
               item.remainingQuantity !== "" &&
-              item.currentTicketPrice !== "")
+              item.currentTicketPrice !== "") ||
+            (item.ticketName !== "" &&
+              item.remainingQuantity !== "" &&
+              props.status !== 8)
           ) {
             item.reqWarning = false;
+            console.log("No Req Warning necessary");
           } else {
             item.reqWarning = true;
+            console.log("No Req Warning IS Necessary");
           }
 
           // determines if a name, price or quantity field warning is required
@@ -58,10 +65,13 @@ const TicketCreation = (props) => {
           } else {
             item.quantityWarning = !quantityRegex.test(item.remainingQuantity);
           }
+          console.log("CURRENT STATUS = ", props.status);
 
-          if (!item.currentTicketPrice) {
+          if (!item.currentTicketPrice || props.status !== 8) {
+            console.log("NO PRICE WARNING REQUIRED");
             item.priceWarning = false;
           } else {
+            console.log("PRICE WARNING IS REQUIRED");
             item.priceWarning = !priceRegex.test(item.currentTicketPrice);
           }
 
@@ -87,21 +97,28 @@ const TicketCreation = (props) => {
             nameWarningText = "";
           }
 
-          if (item.priceWarning && props.status === 8) {
-            tempPriceBox = classes.PriceBoxWarning;
-            priceWarningText = "Not a valid price";
-          } else if (item.currentTicketPrice && props.status === 8) {
+          if (props.status !== 8) {
+            console.log("LINE 96");
             tempPriceBox = classes.PriceBox;
             priceWarningText = "";
-          } else if (item.reqWarning && props.status === 8) {
+          } else if (item.priceWarning) {
+            console.log("LINE 96");
+            tempPriceBox = classes.PriceBoxWarning;
+            priceWarningText = "Not a valid price";
+          } else if (item.currentTicketPrice) {
+            console.log("LINE 100");
+            tempPriceBox = classes.PriceBox;
+            priceWarningText = "";
+          } else if (item.reqWarning) {
+            console.log("LINE 104");
             tempPriceBox = classes.PriceBoxWarning;
             priceWarningText = "Required field";
           } else {
+            console.log("LINE 108");
             tempPriceBox = classes.PriceBox;
             priceWarningText = "";
           }
 
-          //console.log("item.quantityWarning: ", item.quantityWarning)
           if (item.quantityWarning) {
             tempQuantityBox = classes.QuantityBoxWarning;
             quantityWarningText = "Not a whole number";
@@ -199,8 +216,7 @@ const TicketCreation = (props) => {
                   >
                     {item.currency === "" ? "USD $" : item.currency}
                   </div>
-                  {true ? (
-                    //{props.status === 8 ? (
+                  {props.status === 8 ? (
                     <input
                       style={{
                         backgroundColor: "fff",

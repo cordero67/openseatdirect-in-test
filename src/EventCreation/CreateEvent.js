@@ -19,8 +19,6 @@ import classes from "./VendorDashboard.module.css";
 // holds sign-in information
 
 const CreateEvent = (props) => {
-  //let vendorInfo = {};
-
   const [vendorInfo, setVendorInfo] = useState({});
   const [display, setDisplay] = useState("spinner"); // spinner, main
 
@@ -134,6 +132,7 @@ const CreateEvent = (props) => {
   const saveEvent = async (newStatus) => {
     console.log("eventDescription: ", eventDescription);
     console.log("eventStatus: ", eventStatus);
+    console.log("vendorInfo: ", vendorInfo);
     let tempPageErrors = false;
     let tempEventTitleOmission = false;
     let tempLocationVenueNameOmission = false;
@@ -144,7 +143,7 @@ const CreateEvent = (props) => {
     setLocationVenueNameOmission(false);
     setWebinarLinkOmission(false);
     setTbaInformationOmission(false);
-
+    /*
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -155,6 +154,7 @@ const CreateEvent = (props) => {
     } else {
       window.location.href = "/auth";
     }
+    */
 
     let tempStatus = { ...eventStatus };
     tempStatus.status = newStatus;
@@ -359,12 +359,6 @@ const CreateEvent = (props) => {
       formData.append("startDateTime", tempStartDateTime);
       formData.append("endDateTime", tempEndDateTime);
 
-      //
-      //
-      //
-      //
-      //
-
       // eliminate empty ticket types
       let tempTicketDetails = [...ticketDetails];
 
@@ -379,6 +373,7 @@ const CreateEvent = (props) => {
       ];
 
       tempTicketDetails.forEach((ticket, index) => {
+        console.log("NEXT TICKET TO SEND: ", ticket);
         if (
           "ticketName" in ticket &&
           ticket.ticketName.length &&
@@ -398,23 +393,12 @@ const CreateEvent = (props) => {
           }
 
           ticketDetailsFields.forEach((field) => {
-            console.log(
-              "1) FORM APPENDING>> if ",
-              ticket[field],
-              `tickets[${index}][${field}]`,
-              ticket[field]
-            );
-            if (
-              field in ticket &&
+            if (field === "currentTicketPrice" && vendorInfo.status !== 8) {
+              formData.append(`tickets[${index}][${field}]`, 0);
+            } else if (
               ticket[field] !== "" &&
               "undefined" !== typeof ticket[field]
             ) {
-              console.log(
-                "2) FORM APPENDING>> if ",
-                ticket[field],
-                `tickets[${index}][${field}]`,
-                ticket[field]
-              );
               formData.append(`tickets[${index}][${field}]`, ticket[field]);
             }
           });
@@ -502,14 +486,6 @@ const CreateEvent = (props) => {
         console.log(pair[0] + ", " + pair[1]);
       }
 
-      //
-      //
-      //
-      //
-      //
-      //
-      //
-      let userid = vendorInfo.id;
       let accountNum = vendorInfo.accountNum;
       console.log("vendorInfo: ", vendorInfo);
       console.log("accountNum: ", accountNum);
@@ -520,7 +496,6 @@ const CreateEvent = (props) => {
       myHeaders.append("Authorization", authstring);
 
       let apiurl;
-      //apiurl = `${API}/eventix/${userid}`;
       apiurl = `${API}/accounts/${accountNum}/events`;
 
       fetch(apiurl, {
@@ -1088,26 +1063,26 @@ const CreateEvent = (props) => {
             <br></br>
             <TicketCreation
               tickets={ticketDetails}
-              status={vendorInfo.status}
-              radioChange={changeEventDescriptionRadio}
-              changeTicket={changeTicketDetail}
-              changeSettings={switchTicketSettings}
-              showModal={activateShowModal}
-              deactivateModal={deactivateShowModal}
-              delete={deleteTicket}
-              switchSettings={switchTicketSettings}
-              changeFeature={changePriceFeature}
-              switchPriceFeature={switchPriceFeature}
-              addPromoCode={addPromoCode}
-              changeArgument={changeArgument}
-              changePromoCodesName={changePromoCodesName}
-              changePromoCodesAmount={changePromoCodesAmount}
-              changePromoCodesPercent={changePromoCodesPercent}
-              deletePromoCode={deletePromoCode}
+              status={vendorInfo.status} //
               createNewTicketHandler={createNewTicketHandler}
-              handleDragStart={handleDragStart}
-              handleDragEnter={handleDragEnter}
-              dragging={dragging}
+              changeTicket={changeTicketDetail}
+              radioChange={changeEventDescriptionRadio} // does not exist in TicketCreation
+              changeSettings={switchTicketSettings} //
+              showModal={activateShowModal} //
+              deactivateModal={deactivateShowModal} //
+              delete={deleteTicket} //
+              switchSettings={switchTicketSettings} //
+              changeFeature={changePriceFeature} //
+              switchPriceFeature={switchPriceFeature} //
+              addPromoCode={addPromoCode} //
+              changeArgument={changeArgument} //
+              changePromoCodesName={changePromoCodesName} //
+              changePromoCodesAmount={changePromoCodesAmount} //
+              changePromoCodesPercent={changePromoCodesPercent} //
+              deletePromoCode={deletePromoCode} //
+              handleDragStart={handleDragStart} //
+              handleDragEnter={handleDragEnter} //
+              dragging={dragging} //
             />
             <br></br>
             <AdditionalSettings
