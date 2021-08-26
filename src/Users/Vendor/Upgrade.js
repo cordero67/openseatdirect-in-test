@@ -1534,13 +1534,12 @@ const Upgrade = (props) => {
                         data
                       );
 
-                      let tempData = JSON.parse(localStorage.getItem("user"));
-                      console.log("tempData: ", tempData);
-                      tempData.user.accountId = data.result;
-                      localStorage.setItem("user", JSON.stringify(tempData));
-
                       if (data.status) {
                         console.log("INSIDE data.status");
+                        let tempData = JSON.parse(localStorage.getItem("user"));
+                        console.log("tempData: ", tempData);
+                        tempData.user.accountId = data.result;
+                        localStorage.setItem("user", JSON.stringify(tempData));
                         updatePageView();
                       } else {
                         // this is a frieldly error
