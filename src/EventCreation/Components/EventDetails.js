@@ -515,7 +515,7 @@ const EventDetails = (props) => {
         <div className={classes.TinyMice}>
           <Editor
             apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
-            //onEditorChange={props.changeLong}
+            onEditorChange={props.changeLong}
             initialValue={props.event.longDescription}
             plugins="wordcount autoresize"
             onInit={(evt, editor) => (editorRef.current = editor)}

@@ -82,7 +82,7 @@ export const signout = (callback) => {
         headers: myHeaders,
         redirect: "follow",
       };
-*/
+    */
 
     return fetch(`${API}/signout`, {
       method: "GET",

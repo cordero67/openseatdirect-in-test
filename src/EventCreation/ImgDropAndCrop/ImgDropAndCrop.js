@@ -205,7 +205,6 @@ class ImgDropAndCrop extends Component {
       this.setState({ newimageData64: tempImage });
       this.props.change(imageBlob); // sends imageBlob to parent using change prop
     }
-
     this.setState({ isCropping: false });
   };
 
