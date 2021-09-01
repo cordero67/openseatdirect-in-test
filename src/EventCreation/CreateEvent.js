@@ -66,6 +66,8 @@ const CreateEvent = (props) => {
     refundPolicy: "noRefunds",
   });
 
+  const [eventLongDescription, setEventLongDescription] = useState("Hello");
+
   // stores all Ticket Details values
   const [ticketDetails, setTicketDetails] = useState([
     {
@@ -642,11 +644,15 @@ const CreateEvent = (props) => {
     tempDescription[name] = value.value;
     setEventDescription(tempDescription);
   };
-
+  /*
   const changeLongDescription = (editorContent) => {
     let tempDescription = { ...eventDescription };
     tempDescription.longDescription = editorContent;
     setEventDescription(tempDescription);
+  };
+*/
+  const changeLongDescription = (editorContent) => {
+    setEventLongDescription({ longDescription: editorContent });
   };
 
   // TICKET DETAILS HANDLERS
@@ -1043,6 +1049,7 @@ const CreateEvent = (props) => {
             {savedModal()}
             <EventDetails
               event={eventDescription}
+              longDescription={eventLongDescription}
               titleOmission={eventTitleOmission}
               venueOmission={locationVenueNameOmission}
               webinarOmission={webinarLinkOmission}
