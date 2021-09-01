@@ -1,9 +1,8 @@
 //ENTIRE CODE HAS BEEN CHECKED VERSUS ORIGINAL
-import React, { useState, Fragment } from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
 
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 import { Editor } from "@tinymce/tinymce-react";
-//import TinyMCE from "react-tinymce";
 import DateSelector from "../DateSelector";
 import CountrySelector from "../Selectors/CountrySelector";
 import TimeSelector from "../Selectors/TimeSelector";
@@ -39,6 +38,23 @@ const EventDetails = (props) => {
   const [twitterWarning, setTwitterWarning] = useState(false);
   const [shortDescriptionWarning, setShortDescriptionWarning] = useState(false);
   const [vanityWarning, setVanityWarning] = useState(false);
+
+  const editorRef = useRef(null);
+  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    setDirty(false);
+  }, []);
+
+  const save = () => {
+    if (editorRef.current) {
+      const content = editorRef.current.getContent();
+      setDirty(false);
+      editorRef.current.setDirty(false);
+      props.changeLong(content);
+      console.log(content);
+    }
+  };
 
   const eventTypeList = [
     { label: "Live Event", value: "live" },
@@ -486,15 +502,24 @@ const EventDetails = (props) => {
         </div>
         <div className={classes.SectionTitleTight}>Event Image</div>
         <div className={classes.ImageBox}>{imageCanvas()}</div>
-        <div className={classes.SectionTitleTight}>
-          Detailed Event Description
+        <div className={classes.SectionTitleTall}>
+          Detailed Event Description{" "}
+          <button
+            className={dirty ? classes.ButtonGreen : classes.ButtonGreenOpac}
+            onClick={save}
+            disabled={!dirty}
+          >
+            Save Description
+          </button>
         </div>
         <div className={classes.TinyMice}>
           <Editor
             apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
-            onEditorChange={props.changeLong}
+            //onEditorChange={props.changeLong}
             value={props.event.longDescription}
             plugins="wordcount autoresize"
+            onInit={(evt, editor) => (editorRef.current = editor)}
+            onDirty={() => setDirty(true)}
             init={{
               toolbar:
                 "undo redo | fontsizeselect fontselect | bold italic underline | forecolor ",

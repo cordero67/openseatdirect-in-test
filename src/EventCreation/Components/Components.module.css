@@ -11,6 +11,16 @@
   color: white;
 }
 
+.SectionTitleTall {
+  padding: 10px 10px 0px 25px;
+  height: 40px;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: #e7e7e7;
+  border-top: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+
 .SectionTitle {
   padding: 10px 10px 0px 25px;
   height: 35px;
@@ -119,19 +129,19 @@
 }
 
 .ImageBox {
-    height: 227px;
-    font-size: 16px;
-    padding: 5px 10px 10px 25px;
-    box-sizing: borderBox;
-    background-color: #E7E7E7;
+  height: 227px;
+  font-size: 16px;
+  padding: 5px 10px 10px 25px;
+  box-sizing: borderBox;
+  background-color: #e7e7e7;
 }
 
 .TinyMice {
-    padding: 5px 270px 10px 25px;
-    border: 0px solid green;
-    box-sizing: borderBox;
-    height: auto;
-    background-color: #E7E7E7;
+  padding: 5px 270px 10px 25px;
+  border: 0px solid green;
+  box-sizing: borderBox;
+  height: auto;
+  background-color: #e7e7e7;
 }
 
 .SocialMediaDescription {
@@ -151,15 +161,45 @@
   font-size: 16px;
   padding: 5px 10px 10px 35px;
   box-sizing: borderBox;
-  background-color: #E7E7E7;
+  background-color: #e7e7e7;
 }
 
 .VanityGridBoxGrid {
-    display: grid;
-    grid-template-columns: 220px 500px;
-    height: 18px;
-    font-size: 10px;
-    padding: 0px 10px 0px 35px;
-    box-sizing: borderBox;
-    background-color: #E7E7E7
+  display: grid;
+  grid-template-columns: 220px 500px;
+  height: 18px;
+  font-size: 10px;
+  padding: 0px 10px 0px 35px;
+  box-sizing: borderBox;
+  background-color: #e7e7e7;
+}
+
+.ButtonGreen {
+  height: 30px;
+  width: 130px;
+  background-color: #00a300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:hover {
+  background-color: #007a00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreenOpac {
+  height: 30px;
+  width: 130px;
+  background-color: grey;
+  opacity: 0.5;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
 }
