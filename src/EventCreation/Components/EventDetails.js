@@ -3,6 +3,7 @@ import React, { useState, Fragment } from "react";
 
 import ImgDropAndCrop from "../ImgDropAndCrop/ImgDropAndCrop";
 import { Editor } from "@tinymce/tinymce-react";
+//import TinyMCE from "react-tinymce";
 import DateSelector from "../DateSelector";
 import CountrySelector from "../Selectors/CountrySelector";
 import TimeSelector from "../Selectors/TimeSelector";
@@ -661,6 +662,36 @@ const EventDetails = (props) => {
             ? displayMessage(140, props.event.shortDescription)
             : null}
         </div>
+      </div>
+    </Fragment>
+  );
+};
+
+export default EventDetails; /*
+
+
+
+          <TinyMCE
+            apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
+            onEditorChange={props.changeLong}
+            initialValue={props.event.longDescription}
+            plugins="wordcount autoresize"
+            init={{
+              toolbar:
+                "undo redo | fontsizeselect fontselect | bold italic underline | forecolor ",
+              toolbar_items_size: "small",
+              autoresize_bottom_margin: 0,
+              padding: "0 0 0 0",
+              min_height: 250,
+              max_height: 400,
+              icons: "jam",
+              skin: "fabric",
+              resize: true,
+              menubar: "edit format",
+            }}
+          />
+
+
         <div className={classes.SectionTitleTight}>
           Customize OpenSeatDirect Vanity URL
         </div>
@@ -688,9 +719,4 @@ const EventDetails = (props) => {
           <div> </div>
           {vanityWarning ? displayMessage(75, props.event.vanityLink) : null}
         </div>
-      </div>
-    </Fragment>
-  );
-};
-
-export default EventDetails;
+        */

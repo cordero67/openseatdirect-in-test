@@ -12,7 +12,6 @@ import CategorySelector from "./Selectors/CategorySelector";
 import RadioForm from "./RadioForm";
 
 import classes from "./EventCreation.module.css";
-Fragment;
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -39,7 +38,7 @@ const EventDetails = (props) => {
   const [linkedinWarning, setLinkedinWarning] = useState(false);
   const [twitterWarning, setTwitterWarning] = useState(false);
   const [shortDescriptionWarning, setShortDescriptionWarning] = useState(false);
-  const [vanityWarning, setVanityWarning] = useState(false);
+  //const [vanityWarning, setVanityWarning] = useState(false);
 
   const eventTypeList = [
     { label: "Live Event", value: "live" },
@@ -505,9 +504,11 @@ const EventDetails = (props) => {
         >
           <Editor
             apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
-            onEditorChange={props.changeLong}
-            initialValue={props.event.longDescription}
-            plugins="wordcount autoresize"
+            //initialValue={props.event.longDescription}
+            value={props.event.longDescription}
+            //plugins="wordcount autoresize"
+            /*
+
             init={{
               toolbar:
                 "undo redo | fontsizeselect fontselect | bold italic underline | forecolor ",
@@ -521,6 +522,25 @@ const EventDetails = (props) => {
               resize: true,
               menubar: "edit format",
             }}
+            */
+
+            init={{
+              height: 600,
+              menubar: "insert tools",
+              menu: {
+                format: { title: "Format", items: "forecolor backcolor" },
+              },
+              plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table paste code help wordcount",
+              ],
+              toolbar:
+                "undo redo | formatselect | bold italic backcolor forecolor |" +
+                "alignleft aligncenter alignright alignjustify |" +
+                "bullist numlist outdent indent | removeformat | help",
+            }}
+            onEditorChange={props.changeLong}
           />
         </div>
 
@@ -694,6 +714,14 @@ const EventDetails = (props) => {
             ? displayMessage(140, props.event.shortDescription)
             : null}
         </div>
+      </div>
+    </Fragment>
+  );
+};
+
+export default EventDetails;
+
+/*
 
         <div className={classes.SectionTitleTight}>
           Customize OpenSeatDirect Vanity URL
@@ -728,7 +756,7 @@ const EventDetails = (props) => {
             }}
           />
         </div>
-
+        
         <div
           style={{
             display: `grid`,
@@ -743,9 +771,4 @@ const EventDetails = (props) => {
           <div> </div>
           {vanityWarning ? displayMessage(75, props.event.vanityLink) : null}
         </div>
-      </div>
-    </Fragment>
-  );
-};
-
-export default EventDetails;
+        */
