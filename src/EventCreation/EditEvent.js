@@ -733,7 +733,7 @@ const EventEdit = (props) => {
   };
 */
   const changeLongDescription = (editorContent) => {
-    setEventLongDescription({ longDescription: editorContent });
+    setEventLongDescription(editorContent);
   };
 
   // TICKET DETAILS HANDLERS
