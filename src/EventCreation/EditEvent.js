@@ -79,6 +79,7 @@ const EventEdit = (props) => {
   });
 
   const [eventLongDescription, setEventLongDescription] = useState("");
+  //let eventLongDescription = "";
 
   // stores all Ticket Details variables//all duped with "createEvent"
   const [ticketDetails, setTicketDetails] = useState([
@@ -189,6 +190,7 @@ const EventEdit = (props) => {
       setTicketDetails(tempTicketArray);
       setEventDescription(tempDescription);
       setEventLongDescription(tempLongDescription);
+      //eventLongDescription = tempLongDescription;
       setOriginalEventDescription(tempDescription);
       setDisplay("main");
     } else {
@@ -734,6 +736,7 @@ const EventEdit = (props) => {
 */
   const changeLongDescription = (editorContent) => {
     setEventLongDescription(editorContent);
+    //eventLongDescription = editorContent;
   };
 
   // TICKET DETAILS HANDLERS
