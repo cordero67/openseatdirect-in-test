@@ -1060,7 +1060,7 @@ const CreateEvent = (props) => {
             {savedModal()}
             <EventDetails
               event={eventDescription}
-              longDescription={eventLongDescription}
+              longDescription={"Hello"}
               titleOmission={eventTitleOmission}
               venueOmission={locationVenueNameOmission}
               webinarOmission={webinarLinkOmission}
