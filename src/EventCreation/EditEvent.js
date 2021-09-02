@@ -68,7 +68,7 @@ const EventEdit = (props) => {
     photo: "", // ONLY USED IN CREATEEVENT
     photoChanged: false, // NOT USED IN CREATEEVENT
     shortDescription: "", //duped with "createEvent"
-    longDescription: "", //duped with "createEvent"
+    //longDescription: "", //duped with "createEvent"
     eventCategory: "", //duped with "createEvent"
     facebookLink: "", //duped with "createEvent"
     twitterLink: "", //duped with "createEvent"
@@ -77,6 +77,8 @@ const EventEdit = (props) => {
     vanityLink: "", //duped with "createEvent"
     refundPolicy: "noRefunds", //duped with "createEvent"
   });
+
+  const [eventLongDescription, setEventLongDescription] = useState("");
 
   // stores all Ticket Details variables//all duped with "createEvent"
   const [ticketDetails, setTicketDetails] = useState([
@@ -182,9 +184,11 @@ const EventEdit = (props) => {
       setVendorInfo(tempVendorInfo);
       initPhotoData(props.event.photo);
 
-      const [tempTicketArray, tempDescription] = loadEventInfo(props.event);
+      const [tempTicketArray, tempDescription, tempLongDescription] =
+        loadEventInfo(props.event);
       setTicketDetails(tempTicketArray);
       setEventDescription(tempDescription);
+      setEventLongDescription(tempLongDescription);
       setOriginalEventDescription(tempDescription);
       setDisplay("main");
     } else {
@@ -333,7 +337,7 @@ const EventEdit = (props) => {
         "tbaInformation",
         "timeZone",
         "shortDescription",
-        "longDescription",
+        //"longDescription",
         //"CreateEvent" has "photo"
         "eventCategory",
         "facebookLink",
@@ -390,6 +394,14 @@ const EventEdit = (props) => {
           formData.append(`${field}`, tempDescription[field]);
         }
       });
+
+      // does not send empty fields to server
+      //eventDescriptionFields.forEach((field) => {
+      if (eventLongDescription !== "") {
+        console.log("eventLongDescription: ", eventLongDescription);
+        formData.append("longDescription", eventLongDescription);
+      }
+      //});
 
       let startDate = dateFnsFormat(eventDescription.startDate, "yyyy-MM-dd");
       //console.log("startDate from dateFnsFormat: ", startDate);
@@ -713,12 +725,15 @@ const EventEdit = (props) => {
     tempDescription[name] = value.value;
     setEventDescription(tempDescription);
   };
-
-  // duped from createEvent
+  /*
   const changeLongDescription = (editorContent) => {
     let tempDescription = { ...eventDescription };
     tempDescription.longDescription = editorContent;
     setEventDescription(tempDescription);
+  };
+*/
+  const changeLongDescription = (editorContent) => {
+    setEventLongDescription({ longDescription: editorContent });
   };
 
   // TICKET DETAILS HANDLERS
@@ -1260,6 +1275,7 @@ const EventEdit = (props) => {
           <div>
             <EventDetails
               event={eventDescription}
+              longDescription={eventLongDescription}
               titleOmission={eventTitleOmission}
               venueOmission={locationVenueNameOmission}
               webinarOmission={webinarLinkOmission}

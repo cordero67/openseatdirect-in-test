@@ -56,7 +56,7 @@ const CreateEvent = (props) => {
     photo: "",
     photoChanged: false, // NOT USED IN CREATEEVENT
     shortDescription: "",
-    longDescription: "",
+    //longDescription: "",
     eventCategory: "",
     facebookLink: "",
     twitterLink: "",
@@ -66,7 +66,7 @@ const CreateEvent = (props) => {
     refundPolicy: "noRefunds",
   });
 
-  const [eventLongDescription, setEventLongDescription] = useState("Hello");
+  const [eventLongDescription, setEventLongDescription] = useState("");
 
   // stores all Ticket Details values
   const [ticketDetails, setTicketDetails] = useState([
@@ -285,7 +285,7 @@ const CreateEvent = (props) => {
         "tbaInformation",
         "timeZone",
         "shortDescription",
-        "longDescription",
+        //"longDescription",
         "photo",
         "eventCategory",
         "facebookLink",
@@ -342,6 +342,17 @@ const CreateEvent = (props) => {
           formData.append(`${field}`, tempDescription[field]);
         }
       });
+
+      // does not send empty fields to server
+      //eventDescriptionFields.forEach((field) => {
+      if (eventLongDescription !== "") {
+        console.log("eventLongDescription:");
+        console.log(eventLongDescription);
+        console.log("typeof: ", typeof eventLongDescription);
+        formData.append("longDescription", eventLongDescription);
+        //formData.append("longDescription", "<p>Hello</p>\n<p>LEaving</p>");
+      }
+      //});
 
       let tempStartDate = dateFnsFormat(
         tempDescription.startDate,
@@ -652,7 +663,7 @@ const CreateEvent = (props) => {
   };
 */
   const changeLongDescription = (editorContent) => {
-    setEventLongDescription({ longDescription: editorContent });
+    setEventLongDescription(editorContent);
   };
 
   // TICKET DETAILS HANDLERS

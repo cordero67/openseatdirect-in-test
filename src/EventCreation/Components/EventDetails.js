@@ -504,13 +504,6 @@ const EventDetails = (props) => {
         <div className={classes.ImageBox}>{imageCanvas()}</div>
         <div className={classes.SectionTitleTall}>
           Detailed Event Description{" "}
-          <button
-            className={dirty ? classes.ButtonGreen : classes.ButtonGreenOpac}
-            onClick={save}
-            disabled={!dirty}
-          >
-            Save Description
-          </button>
         </div>
         <div className={classes.TinyMice}>
           <Editor

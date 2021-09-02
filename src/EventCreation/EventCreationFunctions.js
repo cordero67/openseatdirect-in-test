@@ -26,7 +26,7 @@ export const loadEventInfo = (eventTix) => {
     photo: "", // ONLY USED IN CREATEEVENT
     photoChanged: false, // NOT USED IN CREATEEVENT
     shortDescription: "", //duped with "createEvent"
-    longDescription: "", //duped with "createEvent"
+    //longDescription: "", //duped with "createEvent"
     eventCategory: "", //duped with "createEvent"
     facebookLink: "", //duped with "createEvent"
     twitterLink: "", //duped with "createEvent"
@@ -35,6 +35,8 @@ export const loadEventInfo = (eventTix) => {
     vanityLink: "", //duped with "createEvent"
     refundPolicy: "noRefunds", //duped with "createEvent"
   };
+
+  let eventLongDescription = "";
 
   console.log("Inside 'loadEventInfo': ", eventTix);
 
@@ -55,7 +57,7 @@ export const loadEventInfo = (eventTix) => {
     "tbaInformation",
     "timeZone",
     "shortDescription",
-    "longDescription",
+    //"longDescription",
     "eventCategory",
     "facebookLink",
     "twitterLink",
@@ -70,6 +72,12 @@ export const loadEventInfo = (eventTix) => {
       eventDescription[field] = eventTix[field];
     }
   });
+
+  if ("longDescription" in eventTix) {
+    console.log("longDescription exists");
+    console.log("eventTix: ", eventTix);
+    eventLongDescription = eventTix.longDescription;
+  }
 
   "eventType" in eventTix
     ? (eventDescription.eventType = eventTix.eventType)
@@ -238,5 +246,5 @@ export const loadEventInfo = (eventTix) => {
     });
     console.log("ticketArray: ", ticketArray);
   }
-  return [ticketArray, eventDescription];
+  return [ticketArray, eventDescription, eventLongDescription];
 };
