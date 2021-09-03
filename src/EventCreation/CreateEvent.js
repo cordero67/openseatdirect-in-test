@@ -66,10 +66,11 @@ const CreateEvent = (props) => {
     refundPolicy: "noRefunds",
   });
 
-  const [eventLongDescription, setEventLongDescription] = useState("");
+  const [eventLongDescription, setEventLongDescription] =
+    useState("Hello world");
 
   const [initialEventDescription, setInitialEventDescription] =
-    useState("Helloooo world");
+    useState("Hello world");
 
   // stores all Ticket Details values
   const [ticketDetails, setTicketDetails] = useState([

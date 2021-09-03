@@ -81,6 +81,9 @@ const EventEdit = (props) => {
   const [eventLongDescription, setEventLongDescription] = useState("");
   //let eventLongDescription = "";
 
+  const [initialEventDescription, setInitialEventDescription] =
+    useState("Hello world");
+
   // stores all Ticket Details variables//all duped with "createEvent"
   const [ticketDetails, setTicketDetails] = useState([
     {
@@ -192,6 +195,7 @@ const EventEdit = (props) => {
       setEventLongDescription(tempLongDescription);
       //eventLongDescription = tempLongDescription;
       setOriginalEventDescription(tempDescription);
+      setInitialEventDescription(tempLongDescription);
       setDisplay("main");
     } else {
       window.location.href = "/auth";
@@ -1279,6 +1283,8 @@ const EventEdit = (props) => {
             <EventDetails
               event={eventDescription}
               longDescription={eventLongDescription}
+              //initialValue={"Hello world"}
+              initialValue={initialEventDescription}
               titleOmission={eventTitleOmission}
               venueOmission={locationVenueNameOmission}
               webinarOmission={webinarLinkOmission}
