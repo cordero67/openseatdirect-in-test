@@ -45,7 +45,7 @@ const EventDetails = (props) => {
   useEffect(() => {
     setDirty(false);
   }, []);
-
+  /*
   const save = () => {
     if (editorRef.current) {
       const content = editorRef.current.getContent();
@@ -55,6 +55,11 @@ const EventDetails = (props) => {
       console.log(content);
     }
   };
+  const save = () => {
+    let tempContent = Editor.get("myname").getContent();
+    console.log("Content: ", tempContent);
+  };
+*/
 
   const eventTypeList = [
     { label: "Live Event", value: "live" },
@@ -509,7 +514,9 @@ const EventDetails = (props) => {
           <Editor
             apiKey="ttpinnmm4af9xd288fuugwgjzwm9obqnitncxdeutyvvqhba"
             onEditorChange={props.changeLong}
-            initialValue={props.longDescription}
+            selector="myname"
+            //initialValue={props.longDescription}
+            initialValue={"Hello World"}
             plugins="wordcount autoresize"
             onInit={(evt, editor) => (editorRef.current = editor)}
             onDirty={() => setDirty(true)}
