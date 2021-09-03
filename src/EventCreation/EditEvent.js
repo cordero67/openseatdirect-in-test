@@ -81,8 +81,7 @@ const EventEdit = (props) => {
   const [eventLongDescription, setEventLongDescription] = useState("");
   //let eventLongDescription = "";
 
-  const [initialEventDescription, setInitialEventDescription] =
-    useState("Hello world");
+  const [initialEventDescription, setInitialEventDescription] = useState("");
 
   // stores all Ticket Details variables//all duped with "createEvent"
   const [ticketDetails, setTicketDetails] = useState([
