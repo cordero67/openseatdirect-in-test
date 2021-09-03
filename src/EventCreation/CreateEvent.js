@@ -68,6 +68,9 @@ const CreateEvent = (props) => {
 
   const [eventLongDescription, setEventLongDescription] = useState("");
 
+  const [initialEventDescription, setInitialEventDescription] =
+    useState("Helloooo world");
+
   // stores all Ticket Details values
   const [ticketDetails, setTicketDetails] = useState([
     {
@@ -125,6 +128,7 @@ const CreateEvent = (props) => {
       }
       console.log("vendorInfo.status: ", tempVendorInfo.status);
       setVendorInfo(tempVendorInfo);
+      setInitialEventDescription("Goodbye world");
       setDisplay("main");
     } else {
       window.location.href = "/auth";
@@ -1061,6 +1065,8 @@ const CreateEvent = (props) => {
             <EventDetails
               event={eventDescription}
               longDescription={"Hello"}
+              //initialValue={"Hello world"}
+              initialValue={initialEventDescription}
               titleOmission={eventTitleOmission}
               venueOmission={locationVenueNameOmission}
               webinarOmission={webinarLinkOmission}

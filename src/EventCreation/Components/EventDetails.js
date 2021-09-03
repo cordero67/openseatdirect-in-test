@@ -516,7 +516,8 @@ const EventDetails = (props) => {
             onEditorChange={props.changeLong}
             selector="myname"
             //initialValue={props.longDescription}
-            initialValue={"Hello World"}
+            //initialValue={"Hello World"}
+            initialValue={props.initialValue}
             plugins="wordcount autoresize"
             onInit={(evt, editor) => (editorRef.current = editor)}
             onDirty={() => setDirty(true)}
