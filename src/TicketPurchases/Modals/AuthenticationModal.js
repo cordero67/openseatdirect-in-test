@@ -116,7 +116,7 @@ const Authentication = (props) => {
         getStatus(tempUser.user) === 6 ||
         ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
       ) {
-        window.location.href = "/personal";
+        window.location.href = "/myaccount";
       } else {
         window.location.href = "/events";
       }
