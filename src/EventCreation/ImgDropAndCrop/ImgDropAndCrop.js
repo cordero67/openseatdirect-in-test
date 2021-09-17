@@ -8,7 +8,9 @@ import Backdrop from "./Backdrop";
 
 import classes from "./Backdrop.module.css";
 
+
 import {
+  base64DatatoBlob,
   extractImageFileExtensionFromBase64,
   image64toCanvasRef2
 } from "./ResuableUtils";
@@ -297,11 +299,13 @@ class ImgDropAndCrop extends Component {
     let imgurl = "http://localhost:8000/media/upload";
 
     let formData = new FormData();
-    formData.append("imgPctX",   percentCrop.x);
-    formData.append("imgPctY",   percentCrop.y);
-    formData.append("imgPctW",   percentCrop.width);
-    formData.append("imgPctH",   percentCrop.height);
- //   formData.append("imgSrc", imgSrc);        
+    formData.append("imgPctX",   "44");
+
+//    formData.append("imgPctX",   percentCrop.x);
+//    formData.append("imgPctY",   percentCrop.y);
+//    formData.append("imgPctW",   percentCrop.width);
+//    formData.append("imgPctH",   percentCrop.height);
+//    formData.append("imgSrc", base64DatatoBlob (imgSrc));
 
          // Display the key/value pairs
     console.log ("formData ...>")
@@ -317,8 +321,8 @@ class ImgDropAndCrop extends Component {
 
     let arg1 = {method: "POST",
                 headers: myHeaders,
-//                body: formData,
-                redirect: "follow"
+                body: formData,
+//                redirect: "follow"
     };
 
 
