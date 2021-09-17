@@ -10,10 +10,7 @@ import classes from "./Backdrop.module.css";
 
 import {
   extractImageFileExtensionFromBase64,
-  image64toCanvasRef4,
-  image64toCanvasRef2,
-  image64toCanvasRef3,
-  imagetoNaturalCanvas,
+  image64toCanvasRef2
 } from "./ResuableUtils";
 
 import { Button } from "semantic-ui-react";
@@ -202,6 +199,11 @@ class ImgDropAndCrop extends Component {
       const imageBlob = await new Promise((resolve) =>
         canvasRef.toBlob(resolve, "image/png")
       );
+
+      let mediaresult = await this.uploadImage(imgSrc,percentCrop);
+
+      console.log (mediaresult);
+
       this.setState({ newimageData64: tempImage });
       this.props.change(imageBlob); // sends imageBlob to parent using change prop
     }
@@ -285,6 +287,65 @@ class ImgDropAndCrop extends Component {
       }
     }
   };
+
+
+  uploadImage = async (imgSrc, percentCrop) =>  {
+    let tempUser = JSON.parse(localStorage.getItem("user"));
+    let token = tempUser.token;
+
+    //  let imgurl = "https://api.openseatdirect.com/upload";
+    let imgurl = "http://localhost:8000/media/upload";
+
+    let formData = new FormData();
+    formData.append("imgPctX",   percentCrop.x);
+    formData.append("imgPctY",   percentCrop.y);
+    formData.append("imgPctW",   percentCrop.width);
+    formData.append("imgPctH",   percentCrop.height);
+ //   formData.append("imgSrc", imgSrc);        
+
+         // Display the key/value pairs
+    console.log ("formData ...>")
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ", " + pair[1]);
+      }
+ 
+    const authstring = `Bearer ${token}`;
+    console.log ("authstring=", authstring);
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", authstring);
+
+    let arg1 = {method: "POST",
+                headers: myHeaders,
+//                body: formData,
+                redirect: "follow"
+    };
+
+
+    console.log ("about to fetch:", imgurl, arg1);
+
+    fetch(imgurl, arg1)
+    .then(response =>{
+      if (!response.ok) {
+        throw Error(response.status);
+      }
+      return response;
+    })
+    .then((response) => {
+        console.log("response in imgpost", response);
+        return response.json();
+    })
+    .then((res) => {
+      console.log ("res=", res);
+      return res;
+    })
+    .catch((err) => {
+      console.log ("err");
+      return {status: false};
+    });
+  }
+
+
 
   static getDerivedStateFromProps(nextProps, prevState) {
     //lifecycle function to update child state with props set by parent

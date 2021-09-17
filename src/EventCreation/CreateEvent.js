@@ -53,7 +53,8 @@ const CreateEvent = (props) => {
     endDate: new Date(new Date().toDateString()),
     endTime: "20:00:00",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    photo: "",
+//    photo: "",
+    media_id:"",
     photoChanged: false, // NOT USED IN CREATEEVENT
     shortDescription: "",
     //longDescription: "",
@@ -290,7 +291,8 @@ const CreateEvent = (props) => {
         "timeZone",
         "shortDescription",
         //"longDescription",
-        "photo",
+//        "photo",
+        "media_id",
         "eventCategory",
         "facebookLink",
         "twitterLink",
@@ -1003,9 +1005,11 @@ const CreateEvent = (props) => {
     setEventDescription(tempDescription);
   };
 
-  const changeEventImage = (image) => {
+//  const changeEventImage = (image) => {
+  const changeEventImage = (media_id) => {
     let tempDescription = { ...eventDescription };
-    tempDescription.photo = image;
+    tempDescription.media_id = media_id;
+//    tempDescription.photo = image;
     setEventDescription(tempDescription);
   };
   //START CODE REPLICATION CHECK

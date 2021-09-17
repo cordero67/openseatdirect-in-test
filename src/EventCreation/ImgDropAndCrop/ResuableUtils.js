@@ -195,3 +195,64 @@ export function imagetoNaturalCanvas(canvasRef, imageSrc, percentCrop) {
 
   image.src = imageSrc;
 }
+
+
+const handleErrors = (response) => {
+  if (!response.ok) {
+    throw Error(response.status);
+  }
+  return response;
+};
+
+
+
+export function uploadImage1 (imgSrc, percentCrop) {
+  //  let imgurl = "https://api.openseatdirect.com/upload";
+  let imgurl = "http://localhost:8000/media/upload";
+  //      percentCrop.x * W * 0.01,
+  //      percentCrop.y * H * 0.01,
+  //     percentCrop.width * W * 0.01,
+  //     percentCrop.height * H * 0.01,
+  let body = {
+          imgPctX:   percentCrop.x,
+          imgPctY:   percentCrop.y,
+          imgPctW:   percentCrop.w,
+          imgPctH:   percentCrop.h,
+          imgSrc: imgSrc
+  };        
+  console.log ("about to fetch ", 
+    imgurl,
+    { method: "POST",
+    //              headers: myHeaders,
+      body: JSON.stringify(body),
+      redirect: "follow",
+    });
+    
+  let myHeaders2 = new Headers();
+  myHeaders2.append("Content-Type", "application/json");
+
+  fetch(imgurl, {
+      method: "POST",
+      headers: myHeaders2,
+      body: JSON.stringify(body)
+  //              redirect: "follow",
+  })
+  .then(handleErrors)
+  .then((response) => {
+      console.log("response in imgpost", response);
+      return response.json();
+  })
+  .then((res) => {
+    console.log ("res=", res);
+  })
+  .catch((err) => {
+    console.log ("err")
+  });
+}
+
+
+
+//export function  base64toBlob  (base64Data, contentType)  {
+//from  https://newbedev.com/creating-a-blob-from-a-base64-string-in-javascript
+// first extract file extension
+  
