@@ -10,7 +10,6 @@ import classes from "./Backdrop.module.css";
 
 
 import {
-  base64DatatoBlob,
   extractImageFileExtensionFromBase64,
   image64toCanvasRef2
 } from "./ResuableUtils";
@@ -194,20 +193,19 @@ class ImgDropAndCrop extends Component {
     const { imgSrc, percentCrop } = this.state;
     const canvasRef = this.imagePreviewCanvasRef.current;
     if (canvasRef && imgSrc) {
-      const { imgSrcExt } = this.state;
+//      const { imgSrcExt } = this.state;
       await image64toCanvasRef2(canvasRef, imgSrc, percentCrop);
       const tempImage = canvasRef.toDataURL("image/png");
 
-      const imageBlob = await new Promise((resolve) =>
-        canvasRef.toBlob(resolve, "image/png")
-      );
+//      const imageBlob = await new Promise((resolve) =>
+ //       canvasRef.toBlob(resolve, "image/png")
+ //     );
 
-      let mediaresult = await this.uploadImage(imgSrc,percentCrop);
-
-      console.log (mediaresult);
+//      let mediaresult = await this.uploadImage(imgSrc,percentCrop);
+ //     console.log (mediaresult);
 
       this.setState({ newimageData64: tempImage });
-      this.props.change(imageBlob); // sends imageBlob to parent using change prop
+      this.props.change({imgSrc: imgSrc, percentCrop: percentCrop}); // sends imageBlob to parent using change prop
     }
     this.setState({ isCropping: false });
   };
@@ -290,64 +288,6 @@ class ImgDropAndCrop extends Component {
     }
   };
 
-
-  uploadImage = async (imgSrc, percentCrop) =>  {
-    let tempUser = JSON.parse(localStorage.getItem("user"));
-    let token = tempUser.token;
-
-    //  let imgurl = "https://api.openseatdirect.com/upload";
-    let imgurl = "http://localhost:8000/media/upload";
-
-    let formData = new FormData();
-    formData.append("imgPctX",   "44");
-
-//    formData.append("imgPctX",   percentCrop.x);
-//    formData.append("imgPctY",   percentCrop.y);
-//    formData.append("imgPctW",   percentCrop.width);
-//    formData.append("imgPctH",   percentCrop.height);
-//    formData.append("imgSrc", base64DatatoBlob (imgSrc));
-
-         // Display the key/value pairs
-    console.log ("formData ...>")
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
- 
-    const authstring = `Bearer ${token}`;
-    console.log ("authstring=", authstring);
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", authstring);
-
-    let arg1 = {method: "POST",
-                headers: myHeaders,
-                body: formData,
-//                redirect: "follow"
-    };
-
-
-    console.log ("about to fetch:", imgurl, arg1);
-
-    fetch(imgurl, arg1)
-    .then(response =>{
-      if (!response.ok) {
-        throw Error(response.status);
-      }
-      return response;
-    })
-    .then((response) => {
-        console.log("response in imgpost", response);
-        return response.json();
-    })
-    .then((res) => {
-      console.log ("res=", res);
-      return res;
-    })
-    .catch((err) => {
-      console.log ("err");
-      return {status: false};
-    });
-  }
 
 
 

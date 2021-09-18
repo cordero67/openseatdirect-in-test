@@ -16,6 +16,8 @@ import Spinner from "../components/UI/Spinner/Spinner";
 
 import classes from "./VendorDashboard.module.css";
 
+import {uploadImage } from "./ImgDropAndCrop/ResuableUtils";
+
 // holds sign-in information
 
 const CreateEvent = (props) => {
@@ -30,6 +32,9 @@ const CreateEvent = (props) => {
   const [pageErrors, setPageErrors] = useState(false);
 
   const [showModal, setShowModal] = useState(false); //
+
+  
+  const [eventImage, setEventImage] = useState ({imgSrc:"",percentCrop:{}});  // special case 
 
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
@@ -135,6 +140,11 @@ const CreateEvent = (props) => {
       window.location.href = "/auth";
     }
   }, []);
+
+
+
+
+
 
   const saveEvent = async (newStatus) => {
     console.log("eventDescription: ", eventDescription);
@@ -500,11 +510,7 @@ const CreateEvent = (props) => {
         }
       });
 
-      // Display the key/value pairs
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
-
+  
       let accountNum = vendorInfo.accountNum;
       console.log("vendorInfo: ", vendorInfo);
       console.log("accountNum: ", accountNum);
@@ -517,40 +523,75 @@ const CreateEvent = (props) => {
       let apiurl;
       apiurl = `${API}/accounts/${accountNum}/events`;
 
-      fetch(apiurl, {
-        method: "POST",
-        headers: myHeaders,
-        body: formData,
-        redirect: "follow",
-      })
-        .then(handleErrors)
-        .then((response) => {
-          console.log("response in create", response);
-          return response.json();
-        })
-        .then((res) => {
-          console.log("res: ", res);
-          if (!res.status) {
-            if (res.message) {
-              tempStatus.status = "error";
-              tempStatus.errorMessage = "input error";
-            } else {
-              tempStatus.status = "failure";
-              tempStatus.failureMessage = res.error;
+
+      console.log ("eventImage = ", eventImage);
+
+
+      let imgError= false;
+      if (eventImage.imgSrc){
+        let headers1 = new Headers();
+        headers1.append("Authorization", `Bearer ${token}`);
+        //  let imgurl = "https://api.openseatdirect.com/upload";
+        let imgurl = "http://localhost:8000/media/upload";
+        const res = await uploadImage  (imgurl, headers1, eventImage.imgSrc, eventImage.percentCrop);
+        console.log ("upload result = ", res);
+        if (res.status) {
+            const media_id =  res.data  ? res.data.media_id: null ;
+            if (media_id) {
+              formData.append ("media_id", media_id);
             }
-          }
-          setEventStatus(tempStatus);
-          return res;
-        })
-        .catch((err) => {
-          console.log("Inside the .catch");
-          console.log("**ERROR THROWN", err);
+        } else {
+          imgError = true;
+        }
+      };
+
+        // Display the key/value pairs
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ", " + pair[1]);
+      };
+
+      if (imgError ) {
           tempStatus.status = "failure";
           setEventStatus(tempStatus);
-        })
-        .finally(() => {
           setShowModal(true);
-        });
+      } else {
+          fetch(apiurl, {
+            method: "POST",
+            headers: myHeaders,
+            body: formData,
+            redirect: "follow",
+          })
+            .then(handleErrors)
+            .then((response) => {
+              console.log("response in create", response);
+              return response.json();
+            })
+            .then((res) => {
+              console.log("res: ", res);
+              if (!res.status) {
+                if (res.message) {
+                  tempStatus.status = "error";
+                  tempStatus.errorMessage = "input error";
+                } else {
+                  tempStatus.status = "failure";
+                  tempStatus.failureMessage = res.error;
+                }
+              }
+              setEventStatus(tempStatus);
+              return res;
+            })
+            .catch((err) => {
+              console.log("Inside the .catch");
+              console.log("**ERROR THROWN", err);
+              tempStatus.status = "failure";
+              setEventStatus(tempStatus);
+            })
+            .finally(() => {
+              setShowModal(true);
+            });
+            // end fetch
+    }
+
     }
   };
 
@@ -1006,11 +1047,12 @@ const CreateEvent = (props) => {
   };
 
 //  const changeEventImage = (image) => {
-  const changeEventImage = (media_id) => {
-    let tempDescription = { ...eventDescription };
-    tempDescription.media_id = media_id;
+  const changeEventImage = (imgData) => {
+    let tempImage = { ...eventImage };
+    tempImage.imgSrc = imgData.imgSrc;
+    tempImage.percentCrop = imgData.percentCrop;
 //    tempDescription.photo = image;
-    setEventDescription(tempDescription);
+    setEventImage(tempImage);
   };
   //START CODE REPLICATION CHECK
 

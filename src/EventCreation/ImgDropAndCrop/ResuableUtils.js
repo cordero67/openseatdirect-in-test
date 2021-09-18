@@ -269,7 +269,7 @@ export function uploadImage1 (imgSrc, percentCrop) {
 
 
 
-export function base64DatatoBlob (base64Data) {
+const  base64DatatoBlob = (base64Data) =>  {
   // converts base64 with header to blob
   // first extract header
   
@@ -303,3 +303,55 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
   const blob = new Blob(byteArrays, {type: contentType});
   return blob;
 }
+
+
+
+export const  uploadImage =  async (url, header, imgSrc, percentCrop) =>  {
+  // uploads images to cdn, givel url and header 
+    console.log("in uploadImage....");
+
+
+    let formData = new FormData();
+
+    formData.append("imgPctX",   percentCrop.x);
+    formData.append("imgPctY",   percentCrop.y);
+    formData.append("imgPctW",   percentCrop.width);
+    formData.append("imgPctH",   percentCrop.height);
+    formData.append("imgSrc", base64DatatoBlob (imgSrc));
+
+    // Display the key/value pairs
+    console.log ("formData ...>")
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ", " + pair[1]);
+      }
+ 
+    let arg1 = {method: "POST",
+                headers:header,
+               body: formData
+    };
+ 
+    console.log ("about to fetch:", url, arg1);
+    return fetch(url, arg1)
+    .then(response =>{
+      if (!response.ok) {
+        throw Error(response.status);
+      }
+      return response;
+    })
+    .then((response) => {
+        if (!response.ok){
+          throw new Error ("NOT_OK")
+        }
+        console.log("response in imgpost", response);
+        return response.json();
+    })
+    .then((res) => {
+      console.log ("exiting uploadImage with res=", res);
+      return res;
+    })
+    .catch((err) => {
+      console.log ("err in updateload Image", err);
+      return {status: false};
+    });
+  }
+
