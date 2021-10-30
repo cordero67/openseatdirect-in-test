@@ -4,6 +4,8 @@ import { API } from "../config";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
+import AdSense from "react-adsense";
+
 import { getAllEventData } from "./apiEvents";
 
 import classes from "./Events.module.css";
@@ -17,6 +19,7 @@ const Events = () => {
 
   useEffect(() => {
     eventData();
+    //(window.adsbygoogle = window.adsbygoogle || []).push({});
     setShowModal(false);
   }, []);
 
@@ -146,6 +149,7 @@ const Events = () => {
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
+        <AdSense.Google client="ca-pub-5202710098076883" slot="7806394673" />
         <section className={classes.Events}>
           {!isLoadingEvents ? eventsNew() : <Spinner />}
         </section>

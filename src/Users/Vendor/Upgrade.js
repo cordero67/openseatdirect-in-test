@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Fragment } from "react";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 
 import {
   API,
@@ -10,6 +11,7 @@ import {
   SUBSCRIPTION_PROMO_CODE_5,
   SUBSCRIPTION_PROMO_CODE_6,
   SUBSCRIPTION_PROMO_CODE_7,
+  SUBSCRIPTION_PROMO_CODE_8,
 } from "../../config";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,13 +26,6 @@ import classes from "./Upgrade.module.css";
 import Spinner from "../../components/UI/Spinner/SpinnerNew"; // experimental..
 
 const Upgrade = (props) => {
-  /*
-    userInfo={userInfo}
-    userid={userInfo.id}
-    token={userInfo.token}
-    accountNum={userInfo.accountNum}
-  */
-
   console.log("PROPS: ", props);
   // UPDATE WHEN A NEW PLAN IS INTRODUCED
   const [values, setValues] = useState({
@@ -43,6 +38,7 @@ const Upgrade = (props) => {
     paypal_plan_id_full: "", // default plan for "FULL" ticket plan selection view
     paypal_plan_id_discount: "", // default plan for "DISCOUNT" ticket plan selection view
     paypal_plan_id_forFree: "", // default plan for "FORFREE" ticket plan selection view
+    paypal_plan_id_growPR: "", // default plan for "FORFREE" ticket plan selection view
     paypal_plan_id_old: "", // default plan for "OLD" ticket plan selection view
     paypal_plan_id_oldDiscounted: "", // default plan for "OLDDISCOUNTED" ticket plan selection view
     paypal_plan_id_freeSubscription: "", // default plan for "FREESUBSCRIPTION" ticket plan selection view
@@ -69,6 +65,7 @@ const Upgrade = (props) => {
       SUBSCRIPTION_PROMO_CODE_5,
       SUBSCRIPTION_PROMO_CODE_6,
       SUBSCRIPTION_PROMO_CODE_7,
+      SUBSCRIPTION_PROMO_CODE_8,
     ],
   });
 
@@ -86,9 +83,9 @@ const Upgrade = (props) => {
     accountUrl,
     paypal_plan_id,
     paypal_plan_id_full,
-
     paypal_plan_id_discount,
     paypal_plan_id_forFree,
+    paypal_plan_id_growPR,
     paypal_plan_id_old,
     paypal_plan_id_oldDiscounted,
     paypal_plan_id_freeSubscription,
@@ -133,6 +130,10 @@ const Upgrade = (props) => {
         name: "$15 monthly: 3 months free",
         id: "P-3U3085871T847894PL5FRXTI", // Bondirectly PayPal Sandbox subscription
       },
+      annualGrowPR: {
+        name: "$169 annually: $149 first year",
+        id: "P-3U3085871T847894PL5FRXTI", // Bondirectly PayPal Sandbox subscription
+      },
       annuallyOldPrice: {
         name: "$70 annually",
         id: "P-6UY26644UT426184FL5FRXTI", // Bondirectly PayPal Sandbox subscription
@@ -170,6 +171,10 @@ const Upgrade = (props) => {
       monthlyFreeTrial: {
         name: "$15 monthly: 3 months free",
         id: "P-0VY95999WV5246104MDOLPKI", // OSD PayPal Production subscription
+      },
+      annualGrowPR: {
+        name: "$169 annually: $149 first year",
+        id: "P-8T757325FM2761033MF5677Y", // Bondirectly PayPal Sandbox subscription
       },
       annuallyOldPrice: {
         name: "$70 annually",
@@ -268,6 +273,7 @@ const Upgrade = (props) => {
         tempBuyerInfo.paypal_plan_id_full = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
         tempBuyerInfo.paypal_plan_id_discount = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
         tempBuyerInfo.paypal_plan_id_forFree = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly full price
+        tempBuyerInfo.paypal_plan_id_growPR = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly full price
         tempBuyerInfo.paypal_plan_id_old = "P-6UY26644UT426184FL5FRXTI"; // sandbox monthly full price
         tempBuyerInfo.paypal_plan_id_oldDiscounted =
           "P-3YH13849H69051131MAIHPGY"; // sandbox monthly full price
@@ -286,6 +292,7 @@ const Upgrade = (props) => {
         tempBuyerInfo.paypal_plan_id_full = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
         tempBuyerInfo.paypal_plan_id_discount = "P-3MM32159H2853152CMDN3T6Q"; // production monthly discounted price
         tempBuyerInfo.paypal_plan_id_forFree = "P-0VY95999WV5246104MDOLPKI"; // production monthly 3 months free
+        tempBuyerInfo.paypal_plan_id_growPR = "P-8T757325FM2761033MF5677Y"; // production monthly 3 months free
         tempBuyerInfo.paypal_plan_id_old = "P-2K587859D1613454MMDOIAHA"; // production old annually full price
         tempBuyerInfo.paypal_plan_id_oldDiscounted =
           "P-74091125HK783123JMDOLLEA"; // production monthly full price
@@ -329,15 +336,6 @@ const Upgrade = (props) => {
     });
   };
 
-  const radioChange = (event, value, name) => {
-    let tempValues = { ...values };
-    tempValues[name] = value.value;
-    console.log("tempValues: ", tempValues);
-    console.log("tempValues.paypal_plan_id: ", tempValues.paypal_plan_id);
-    setValues(tempValues);
-    console.log("values: ", values);
-  };
-
   // THIS ASSIGNS THE "paypal_plan_id" VARIABLE TO THE SELECTED PLAN
   const radioChangePayment = (event, value, name) => {
     let tempValues = { ...values };
@@ -346,14 +344,6 @@ const Upgrade = (props) => {
     console.log("tempValues: ", tempValues);
     setValues(tempValues);
   };
-
-  const ticketPlans = [
-    { label: "Free Tickets: up to 500 free tickets per month", value: "free" },
-    {
-      label: "Paid Tickets: unlimited amount of paid and free tickets",
-      value: "basicPaidQuarter",
-    },
-  ];
 
   // UPDATED FROM HERE
   // Detailed definition of subscription plans based on promo code entered
@@ -380,6 +370,14 @@ const Upgrade = (props) => {
     {
       label: subscriptions.monthlyFreeTrial.name,
       value: subscriptions.monthlyFreeTrial.id,
+    },
+  ];
+
+  // GROWPR promo code plans
+  const growPRPlan = [
+    {
+      label: subscriptions.annualGrowPR.name,
+      value: subscriptions.annualGrowPR.id,
     },
   ];
 
@@ -423,6 +421,10 @@ const Upgrade = (props) => {
       promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_3
     ) {
       return oldAnnualPlan;
+    } else if (
+      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_8
+    ) {
+      return growPRPlan;
     } else if (
       promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_4
     ) {
@@ -472,6 +474,24 @@ const Upgrade = (props) => {
             current={paypal_plan_id_forFree}
             change={(event, value) => {
               radioChangePayment(event, value, "paypal_plan_id_forFree");
+            }}
+          />
+          <br></br>
+          {paypal_plan_id ? showPayPal : null}
+        </Fragment>
+      );
+    } else if (promoCodeDetails.appliedPromoCode === "GROWPR") {
+      console.log("GROWPR");
+      console.log("paypal_plan_id: ", paypal_plan_id);
+      console.log("paypal_plan_id_growPR: ", paypal_plan_id_growPR);
+      return (
+        <Fragment>
+          <RadioForm
+            details={shownPlans()}
+            group="eventTypeGroup"
+            current={paypal_plan_id_growPR}
+            change={(event, value) => {
+              radioChangePayment(event, value, "paypal_plan_id_growPR");
             }}
           />
           <br></br>
@@ -927,24 +947,6 @@ const Upgrade = (props) => {
                     if (data.status) {
                       console.log("INSIDE data.status");
                       updatePageView();
-                      /*
-                      switch (getStatus()) {
-                        case 1:
-                          setPageView("organization");
-                          break;
-                        case 2:
-                          setPageView("payment");
-                          break;
-                        case 3:
-                          setPageView("paypal");
-                          break;
-                        case 4:
-                          setPageView("completed");
-                          break;
-                        default:
-                          setPageView("organization");
-                      }
-                      */
                     } else {
                       // this is a friendly error
                       let errmsg = "DEFAULT MESSAGE - Please try again";
@@ -999,6 +1001,8 @@ const Upgrade = (props) => {
         tempValues.paypal_plan_id = tempValues.paypal_plan_id_discount;
       } else if (inputtedPromoCode === "TRYFORFREE") {
         tempValues.paypal_plan_id = tempValues.paypal_plan_id_forFree;
+      } else if (inputtedPromoCode === "GROWPR") {
+        tempValues.paypal_plan_id = tempValues.paypal_plan_id_growPR;
       } else if (inputtedPromoCode === "OSD70") {
         tempValues.paypal_plan_id = tempValues.paypal_plan_id_old;
       } else if (inputtedPromoCode === "OSD50") {
@@ -1176,6 +1180,7 @@ const Upgrade = (props) => {
     if (
       promoCodeDetails.appliedPromoCode === "OSD50" ||
       promoCodeDetails.appliedPromoCode === "OSD70" ||
+      promoCodeDetails.appliedPromoCode === "GROWPR" ||
       promoCodeDetails.appliedPromoCode === "TRYFORFREE"
     ) {
       return (
@@ -1385,8 +1390,8 @@ const Upgrade = (props) => {
             </div>
             <div style={{ fontSize: "16px", paddingTop: "20px" }}>
               These items are located in the "My Apps & Credentials" section of
-              your
-              <button
+              your{" "}
+              <a
                 style={{
                   fontSize: "16px",
                   color: "blue",
@@ -1396,22 +1401,21 @@ const Upgrade = (props) => {
                   display: "inlineBlock",
                   outline: "none",
                 }}
-                onClick={() => {
-                  window.location.href =
-                    "https://developer.paypal.com/developer/applications/";
-                }}
+                href="https://developer.paypal.com/developer/applications/"
+                target="_blank"
+                rel="noreferrer"
               >
                 PayPal Dashboard.
-              </button>
+              </a>
             </div>
             <div
               style={{
                 fontSize: "16px",
                 paddingTop: "20px",
-                paddingBottom: "40px",
+                paddingBottom: "20px",
               }}
             >
-              <button
+              <a
                 style={{
                   fontSize: "16px",
                   color: "blue",
@@ -1422,13 +1426,37 @@ const Upgrade = (props) => {
                   display: "inlineBlock",
                   outline: "none",
                 }}
-                onClick={() => {
-                  window.location.href =
-                    "https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing";
-                }}
+                href="https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
               >
                 Additional instructions.
-              </button>
+              </a>
+            </div>
+            <div
+              style={{
+                fontSize: "16px",
+                paddingTop: "0px",
+                paddingBottom: "40px",
+              }}
+            >
+              <a
+                style={{
+                  fontSize: "16px",
+                  color: "blue",
+                  border: "none",
+                  backgroundColor: "white",
+                  paddingLeft: "0px",
+                  cursor: "pointer",
+                  display: "inlineBlock",
+                  outline: "none",
+                }}
+                href="https://www.youtube.com/watch?v=gXAsubSL-1I"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Instructional Video.
+              </a>
             </div>
 
             <div
@@ -1438,7 +1466,7 @@ const Upgrade = (props) => {
                 Paypal Client ID <span style={{ color: "red" }}>* </span>
                 <Popup
                   position="right center"
-                  content="Your ID will only be used..."
+                  content="Your ID will only be used to route payments directly to your PayPal account."
                   header="Paypal Client ID"
                   trigger={
                     <FontAwesomeIcon
@@ -1472,7 +1500,7 @@ const Upgrade = (props) => {
                 Paypal Secret <span style={{ color: "red" }}>* </span>
                 <Popup
                   position="right center"
-                  content="Your Paypal Secret will only be used..."
+                  content="Your Paypal Secret will only be used to validate PayPal payments made to your account."
                   header="Paypal Secret"
                   trigger={
                     <FontAwesomeIcon

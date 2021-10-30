@@ -1,6 +1,20 @@
 import React, { Component } from "react";
 import { BrowserRouter } from "react-router-dom";
 
+import Routes from "./components/Routes/Routes";
+
+class App extends Component {
+  render() {
+    return (
+      <BrowserRouter>
+        <Routes></Routes>
+      </BrowserRouter>
+    );
+  }
+}
+
+export default App;
+
 // Polo Blue (OSD light blue): #8DADD4 rgb(141,173,212)
 // lightest blue complement: #E1EAF4 rgb(225,234,244)
 
@@ -140,17 +154,3 @@ import { BrowserRouter } from "react-router-dom";
   font-weight: 600;
 }
 */
-
-import Routes from "./components/Routes/Routes";
-
-class App extends Component {
-  render() {
-    return (
-      <BrowserRouter>
-        <Routes></Routes>
-      </BrowserRouter>
-    );
-  }
-}
-
-export default App;
