@@ -3,14 +3,22 @@ import React, { Fragment } from "react";
 import styles from "./TicketItem.module.css";
 
 const TicketItem = (props) => {
+  console.log("props: ", props);
+  console.log(props.name.minTicketsAllowedPerOrder);
+  console.log(props.name.maxTicketsAllowedPerOrder);
+
   const ticketTypeDisplay = () => {
     let options;
-    let ticketsAvailableArray = [];
+    let ticketsArray = [0];
     let i;
-    let maxAmount;
+    let available = props.name.ticketsAvailable;
+    let minimum = props.name.minTicketsAllowedPerOrder;
+    let maximum = props.name.maxTicketsAllowedPerOrder;
     let priceDeal;
     let ticketPrice;
     let adjTicketPrice;
+    console.log("avail, min, max: ", available, minimum, maximum);
+
     if (props.name.ticketCurrency === "¥") {
       ticketPrice = props.name.ticketPrice.toFixed(0);
       adjTicketPrice = props.name.adjustedTicketPrice.toFixed(0);
@@ -29,7 +37,11 @@ const TicketItem = (props) => {
       priceDeal = `(buy ${props.name.ticketPriceFunction.args.buy} for $${props.name.ticketPriceFunction.args.for})`;
     }
 
-    if (props.name.ticketsAvailable < 1) {
+    // define "ticketArray[]" and "options"
+    // check for soldout conditions
+    if (available < 1 || (minimum && available < minimum)) {
+      console.log("sold out");
+      // soldout conditions
       options = (
         <Fragment>
           <div className={styles.LeftGrid}>
@@ -68,17 +80,31 @@ const TicketItem = (props) => {
       );
       return options;
     } else {
-      if (props.name.maxTicketsAllowedPerOrder) {
-        maxAmount = Math.min(
-          props.name.maxTicketsAllowedPerOrder,
-          props.name.ticketsAvailable
-        );
+      console.log("not sold out");
+      // not sold-out options
+      let start;
+      let end;
+      if (minimum) {
+        start = minimum;
+        if (maximum) {
+          end = Math.min(maximum, available);
+        } else if (minimum > 25) {
+          end = Math.min(minimum, available);
+        } else {
+          end = Math.min(25, available);
+        }
       } else {
-        maxAmount = Math.min(25, props.name.ticketsAvailable);
+        start = 1;
+        if (maximum) {
+          end = Math.min(maximum, available);
+        } else {
+          end = Math.min(25, available);
+        }
       }
-      for (i = 0; i <= maxAmount; i++) {
-        ticketsAvailableArray.push(i);
+      for (i = start; i <= end; i++) {
+        ticketsArray.push(i);
       }
+
       options = (
         <Fragment>
           <div className={styles.LeftGrid}>
@@ -110,7 +136,7 @@ const TicketItem = (props) => {
                 className={styles.SelectionBox}
                 onChange={props.onChange}
               >
-                {ticketsAvailableArray.map((opt, index) => (
+                {ticketsArray.map((opt, index) => (
                   <option key={index}>{opt}</option>
                 ))}
               </select>
