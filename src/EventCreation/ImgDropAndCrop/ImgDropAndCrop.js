@@ -10,10 +10,7 @@ import classes from "./Backdrop.module.css";
 
 import {
   extractImageFileExtensionFromBase64,
-  image64toCanvasRef4,
   image64toCanvasRef2,
-  image64toCanvasRef3,
-  imagetoNaturalCanvas,
 } from "./ResuableUtils";
 
 import { Button } from "semantic-ui-react";
@@ -195,15 +192,16 @@ class ImgDropAndCrop extends Component {
     const { imgSrc, percentCrop } = this.state;
     const canvasRef = this.imagePreviewCanvasRef.current;
     if (canvasRef && imgSrc) {
-      const { imgSrcExt } = this.state;
+      //const { imgSrcExt } = this.state;
       await image64toCanvasRef2(canvasRef, imgSrc, percentCrop);
-      const tempImage = canvasRef.toDataURL("image/png");
+      const tempImage = canvasRef.toDataURL("image/png"); // convert display to png always
 
-      const imageBlob = await new Promise((resolve) =>
-        canvasRef.toBlob(resolve, "image/png")
-      );
+//      no need to create blob. now we send original image plus coordinats
+//      const imageBlob = await new Promise((resolve) =>
+//        canvasRef.toBlob(resolve, "image/png")
+//      );
       this.setState({ newimageData64: tempImage });
-      this.props.change(imageBlob); // sends imageBlob to parent using change prop
+      this.props.change({imgSrc: imgSrc, percentCrop: percentCrop}); // sends imageBlob to parent using change prop
     }
     this.setState({ isCropping: false });
   };
