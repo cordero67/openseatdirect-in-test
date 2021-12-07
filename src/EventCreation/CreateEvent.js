@@ -16,6 +16,8 @@ import Spinner from "../components/UI/Spinner/Spinner";
 
 import classes from "./VendorDashboard.module.css";
 
+import {uploadImage } from "./ImgDropAndCrop/ResuableUtils";
+
 // holds sign-in information
 
 const CreateEvent = (props) => {
@@ -30,6 +32,8 @@ const CreateEvent = (props) => {
   const [pageErrors, setPageErrors] = useState(false);
 
   const [showModal, setShowModal] = useState(false); //
+
+  const [eventImage, setEventImage] = useState ({imgSrc:"",percentCrop:{}});  // special case 
 
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
@@ -53,7 +57,8 @@ const CreateEvent = (props) => {
     endDate: new Date(new Date().toDateString()),
     endTime: "20:00:00",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    photo: "",
+    //photo: "",
+    media_id:"",
     photoChanged: false, // NOT USED IN CREATEEVENT
     shortDescription: "",
     //longDescription: "",
@@ -290,7 +295,8 @@ const CreateEvent = (props) => {
         "timeZone",
         "shortDescription",
         //"longDescription",
-        "photo",
+        //"photo",
+        "media_id",
         "eventCategory",
         "facebookLink",
         "twitterLink",
@@ -499,9 +505,9 @@ const CreateEvent = (props) => {
       });
 
       // Display the key/value pairs
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
+      //      for (var pair of formData.entries()) {
+      //        console.log(pair[0] + ", " + pair[1]);
+      //     }
 
       let accountNum = vendorInfo.accountNum;
       console.log("vendorInfo: ", vendorInfo);
@@ -514,13 +520,43 @@ const CreateEvent = (props) => {
 
       let apiurl;
       apiurl = `${API}/accounts/${accountNum}/events`;
+      console.log ("eventImage = ", eventImage);
 
-      fetch(apiurl, {
-        method: "POST",
-        headers: myHeaders,
-        body: formData,
-        redirect: "follow",
-      })
+      let imgError= false;    // catch errors in image upload
+      if (eventImage.imgSrc){
+        let headers1 = new Headers();
+        headers1.append("Authorization", `Bearer ${token}`);
+        let imgurl = "https://api.bondirectly.com/media/upload";
+        //let imgurl = "http://localhost:8000/media/upload";
+
+        const res = await uploadImage  (imgurl, headers1, eventImage.imgSrc, eventImage.percentCrop);
+        console.log ("upload result = ", res);
+        if (res.status) {
+            const media_id =  res.data  ? res.data.media_id: null ;
+            if (media_id) {
+              formData.append ("media_id", media_id);
+            }
+        } else {
+          imgError = true;
+        }
+      };
+
+        // Display the key/value pairs
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ", " + pair[1]);
+      };
+
+      if (imgError ) {  // update upload failed. here 
+        tempStatus.status = "failure";
+        setEventStatus(tempStatus);
+        setShowModal(true);
+      } else {
+        fetch(apiurl, {
+          method: "POST",
+          headers: myHeaders,
+          body: formData,
+          redirect: "follow",
+        })
         .then(handleErrors)
         .then((response) => {
           console.log("response in create", response);
@@ -536,9 +572,9 @@ const CreateEvent = (props) => {
               tempStatus.status = "failure";
               tempStatus.failureMessage = res.error;
             }
-          }
+          };
           setEventStatus(tempStatus);
-          return res;
+            return res;
         })
         .catch((err) => {
           console.log("Inside the .catch");
@@ -549,8 +585,11 @@ const CreateEvent = (props) => {
         .finally(() => {
           setShowModal(true);
         });
+        // end fetch
+      }
     }
   };
+  
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -1003,11 +1042,15 @@ const CreateEvent = (props) => {
     setEventDescription(tempDescription);
   };
 
-  const changeEventImage = (image) => {
-    let tempDescription = { ...eventDescription };
-    tempDescription.photo = image;
-    setEventDescription(tempDescription);
+//  const changeEventImage = (image) => {
+ const changeEventImage = (imgData) => {
+    let tempImage = { ...eventImage };
+    tempImage.imgSrc = imgData.imgSrc;
+    tempImage.percentCrop = imgData.percentCrop;
+    // tempDescription.photo = image;
+    setEventImage(tempImage);
   };
+
   //START CODE REPLICATION CHECK
 
   const buttonDisplay = (
