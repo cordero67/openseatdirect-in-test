@@ -92,7 +92,6 @@ class ImgDropAndCrop extends Component {
     if (rejectedFiles && rejectedFiles.length > 0) {
       this.verifyFile(rejectedFiles);
     }
-    console.log("props: ", this.props);
 
     if (files && files.length > 0) {
       const isVerified = this.verifyFile(files);
