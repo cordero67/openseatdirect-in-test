@@ -92,6 +92,7 @@ class ImgDropAndCrop extends Component {
     if (rejectedFiles && rejectedFiles.length > 0) {
       this.verifyFile(rejectedFiles);
     }
+    console.log("props: ", this.props);
 
     if (files && files.length > 0) {
       const isVerified = this.verifyFile(files);
@@ -196,12 +197,12 @@ class ImgDropAndCrop extends Component {
       await image64toCanvasRef2(canvasRef, imgSrc, percentCrop);
       const tempImage = canvasRef.toDataURL("image/png"); // convert display to png always
 
-//      no need to create blob. now we send original image plus coordinats
-//      const imageBlob = await new Promise((resolve) =>
-//        canvasRef.toBlob(resolve, "image/png")
-//      );
+      //      no need to create blob. now we send original image plus coordinats
+      //      const imageBlob = await new Promise((resolve) =>
+      //        canvasRef.toBlob(resolve, "image/png")
+      //      );
       this.setState({ newimageData64: tempImage });
-      this.props.change({imgSrc: imgSrc, percentCrop: percentCrop}); // sends imageBlob to parent using change prop
+      this.props.change({ imgSrc: imgSrc, percentCrop: percentCrop }); // sends imageBlob to parent using change prop
     }
     this.setState({ isCropping: false });
   };
