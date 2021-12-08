@@ -189,7 +189,11 @@ const EventEdit = (props) => {
 
       const [tempTicketArray, tempDescription, tempLongDescription] =
         loadEventInfo(props.event);
+      tempTicketArray.forEach((ticket) => {
+        ticket.originalTicket = true;
+      });
       setTicketDetails(tempTicketArray);
+      console.log("upon loading, ticket type details: ", tempTicketArray);
       setEventDescription(tempDescription);
       setEventLongDescription(tempLongDescription);
       //eventLongDescription = tempLongDescription;
@@ -446,12 +450,14 @@ const EventEdit = (props) => {
       ];
 
       tempTicketDetails.forEach((ticket, index) => {
+        console.log("ticket type details: ", ticket);
         if (
           "ticketName" in ticket &&
           ticket.ticketName.length &&
           ticket.ticketName.length > 0 &&
           "remainingQuantity" in ticket &&
-          ticket.remainingQuantity > 0 &&
+          (("originalTicket" in ticket && ticket.originalTicket) ||
+            (!("originalTicket" in ticket) && ticket.remainingQuantity > 0)) &&
           "currentTicketPrice" in ticket &&
           ticket.currentTicketPrice >= 0
         ) {
