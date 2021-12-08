@@ -20,7 +20,7 @@ const Events = () => {
   useEffect(() => {
     eventData();
     setShowModal(false);
-  }, []);
+  }, []);git status
 
   const eventData = () => {
     getAllEventData()
