@@ -19,64 +19,8 @@ const Events = () => {
 
   useEffect(() => {
     eventData();
-    //(window.adsbygoogle = window.adsbygoogle || []).push({});
     setShowModal(false);
   }, []);
-
-  const handleErrors = (response) => {
-    console.log("Inside 'apiCore' 'handleErrors()'", response);
-    if (!response.ok) {
-      console.log("response was false!");
-      console.log("response.status: ", response.status);
-      throw Error(response.status);
-    }
-    return response;
-  };
-
-  const updateUser = () => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      let vendorToken = tempUser.token;
-      let vendorId = tempUser.user._id;
-
-      console.log("loading event and order data");
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", "Bearer " + vendorToken);
-
-      let requestOptions = {
-        method: "PATCH",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-
-      requestOptions.body = JSON.stringify({ askAgain: false });
-
-      console.log("requestOptions: ", requestOptions);
-
-      // updates user information
-      let fetchstr = `${API}/user/${vendorId}`;
-
-      fetch(fetchstr, requestOptions)
-        .then(handleErrors)
-        .then((response) => response.text())
-        .then((result) => {
-          let tempResult = JSON.parse(result);
-          console.log("new user object: ", tempResult);
-          tempUser.user.askAgain = false;
-          localStorage.setItem("user", JSON.stringify(tempUser));
-          //tempUser.sort(compareValues("startDateTime", "asc"));
-          //console.log("eventDescriptions ordered: ", tempUser);
-          //localStorage.setItem("events", JSON.stringify(tempUser));
-        })
-        .catch((error) => {
-          console.log("error in event information retrieval", error);
-        });
-    }
-  };
 
   const eventData = () => {
     getAllEventData()
@@ -87,9 +31,32 @@ const Events = () => {
       .then((res) => {
         res.map((item, index) => {
           console.log("new res event num: ", res[index].eventNum);
-          res[index]["url"] = `${API}/event/photo/e/${res[index].eventNum}`;
-          item.url = "";
+
+          if ("photoUrl1" in item) {
+            console.log("the 'photoUrl1' field exists");
+          } else {
+            console.log("the 'photoUrl1' field DOES NOT exist");
+            item["photoUrl1"] =
+              "https://craftofcoding.files.wordpress.com/2017/02/lena.jpg";
+          }
+
+          if ("photoUrl2" in item) {
+            console.log("the 'photoUrl2' field exists");
+          } else {
+            console.log("the 'photoUrl2' field DOES NOT exist");
+            item["photoUrl2"] =
+              "https://craftofcoding.files.wordpress.com/2017/02/lena.jpg";
+          }
+
+          if ("photoUrl3" in item) {
+            console.log("the 'photoUrl3' field exists");
+          } else {
+            console.log("the 'photoUrl3' field DOES NOT exist");
+            item["photoUrl3"] =
+              "https://craftofcoding.files.wordpress.com/2017/02/lena.jpg";
+          }
         });
+
         console.log("res: ", res);
         return res;
       })
@@ -125,7 +92,7 @@ const Events = () => {
                   date={eventItem.startDateTime}
                   location={eventItem.locationVenueName}
                   description={eventItem.description}
-                  url={eventItem.url}
+                  url={eventItem.photoUrl2}
                   clicked={(event) => eventSelectionHandler(event, eventItem)}
                 />
               );
