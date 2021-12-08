@@ -4,8 +4,10 @@ import styles from "./TicketItem.module.css";
 
 const TicketItem = (props) => {
   console.log("props: ", props);
-  console.log(props.name.minTicketsAllowedPerOrder);
-  console.log(props.name.maxTicketsAllowedPerOrder);
+  console.log("name: ", props.name.ticketName);
+  console.log("availilable: ", props.name.ticketsAvailable);
+  console.log("minimum: ", props.name.minTicketsAllowedPerOrder);
+  console.log("maximum: ", props.name.maxTicketsAllowedPerOrder);
 
   const ticketTypeDisplay = () => {
     let options;
@@ -17,7 +19,6 @@ const TicketItem = (props) => {
     let priceDeal;
     let ticketPrice;
     let adjTicketPrice;
-    console.log("avail, min, max: ", available, minimum, maximum);
 
     if (props.name.ticketCurrency === "¥") {
       ticketPrice = props.name.ticketPrice.toFixed(0);

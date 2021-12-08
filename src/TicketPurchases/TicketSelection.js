@@ -624,6 +624,8 @@ const TicketSelection = () => {
       return (
         <div>
           {ticketInfo.map((ticket, index) => {
+            console.log("ticketInfo length: ", ticketInfo.length);
+            console.log("Another ticket: ", ticket);
             return (
               <div key={index}>
                 <TicketItem
