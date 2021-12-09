@@ -1,63 +1,38 @@
 import React, { useState, useEffect, Fragment } from "react";
 
-import { API } from "../config";
-
-import Spinner from "../components/UI/Spinner/SpinnerNew";
-
-import AdSense from "react-adsense";
-
 import { getAllEventData } from "./apiEvents";
 
-import classes from "./Events.module.css";
 import Event from "./EventTombstone";
+import Spinner from "../components/UI/Spinner/SpinnerNew";
+
+import classes from "./Events.module.css";
 
 const Events = () => {
   const [eventDescriptions, setEventDescriptions] = useState();
-  const [showModal, setShowModal] = useState(false);
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
   const [isSuccessfull, setIsSuccessfull] = useState(false);
 
   useEffect(() => {
     eventData();
-    setShowModal(false);
-  }, []);git status
+  }, []);
 
   const eventData = () => {
+    // retrieves event json for every event
     getAllEventData()
       .then((res) => {
         console.log("EVENT DATA from 'getAllEventData()': ", res);
         return res;
       })
       .then((res) => {
+        // populates "photoUrl2" fields if not contained in event json
+
         res.map((item, index) => {
-          console.log("new res event num: ", res[index].eventNum);
-
-          if ("photoUrl1" in item) {
-            console.log("the 'photoUrl1' field exists");
-          } else {
-            console.log("the 'photoUrl1' field DOES NOT exist");
-            item["photoUrl1"] =
-              "https://craftofcoding.files.wordpress.com/2017/02/lena.jpg";
-          }
-
-          if ("photoUrl2" in item) {
-            console.log("the 'photoUrl2' field exists");
-          } else {
-            console.log("the 'photoUrl2' field DOES NOT exist");
+          if (!("photoUrl2" in item)) {
             item["photoUrl2"] =
-              "https://craftofcoding.files.wordpress.com/2017/02/lena.jpg";
-          }
-
-          if ("photoUrl3" in item) {
-            console.log("the 'photoUrl3' field exists");
-          } else {
-            console.log("the 'photoUrl3' field DOES NOT exist");
-            item["photoUrl3"] =
-              "https://craftofcoding.files.wordpress.com/2017/02/lena.jpg";
+              "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public";
           }
         });
 
-        console.log("res: ", res);
         return res;
       })
       .then((res) => {
@@ -84,15 +59,11 @@ const Events = () => {
         return (
           <Fragment>
             {eventDescriptions.map((eventItem, index) => {
+              console.log("Event item: ", eventItem);
               return (
                 <Event
                   key={index}
-                  eventNum={eventItem.eventNum}
-                  title={eventItem.eventTitle}
-                  date={eventItem.startDateTime}
-                  location={eventItem.locationVenueName}
-                  description={eventItem.description}
-                  url={eventItem.photoUrl2}
+                  event={eventItem}
                   clicked={(event) => eventSelectionHandler(event, eventItem)}
                 />
               );
@@ -116,7 +87,6 @@ const Events = () => {
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
-        <AdSense.Google client="ca-pub-5202710098076883" slot="7806394673" />
         <section className={classes.Events}>
           {!isLoadingEvents ? eventsNew() : <Spinner />}
         </section>

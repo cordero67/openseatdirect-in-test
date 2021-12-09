@@ -1,0 +1,26 @@
+.Modal {
+  position: fixed;
+  z-index: 700;
+  background-color: red;
+  /*
+  width: 80%;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px black;
+  padding: 16px;
+  left: 10%;
+  top: 10%;
+  text-align: center;
+  box-sizing: border-box;
+  */
+  transition: all 0.3s ease-out;
+}
+
+/*
+fontFamily: "'Roboto', sans-serif",
+backgroundColor: `#2f5596`,
+height: `${inHeight}px`,
+paddingTop: `0px`,
+paddingLeft: `0px`,
+paddingRight: `0px`,
+paddingBottom: `0px`,
+*/

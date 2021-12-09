@@ -16,7 +16,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 
 import classes from "./VendorDashboard.module.css";
 
-import {uploadImage } from "./ImgDropAndCrop/ResuableUtils";
+import { uploadImage } from "./ImgDropAndCrop/ResuableUtils";
 
 // holds sign-in information
 
@@ -33,7 +33,10 @@ const CreateEvent = (props) => {
 
   const [showModal, setShowModal] = useState(false); //
 
-  const [eventImage, setEventImage] = useState ({imgSrc:"",percentCrop:{}});  // special case 
+  const [eventImage, setEventImage] = useState({
+    imgFile: "",
+    percentCrop: {},
+  }); // special case
 
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
@@ -58,7 +61,7 @@ const CreateEvent = (props) => {
     endTime: "20:00:00",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     //photo: "",
-    media_id:"",
+    media_id: "",
     photoChanged: false, // NOT USED IN CREATEEVENT
     shortDescription: "",
     //longDescription: "",
@@ -520,33 +523,40 @@ const CreateEvent = (props) => {
 
       let apiurl;
       apiurl = `${API}/accounts/${accountNum}/events`;
-      console.log ("eventImage = ", eventImage);
+      console.log("eventImage = ", eventImage);
 
-      let imgError= false;    // catch errors in image upload
-      if (eventImage.imgSrc){
-        let headers1 = new Headers();
-        headers1.append("Authorization", `Bearer ${token}`);
-        let imgurl = "https://api.bondirectly.com/media/upload";
-        //let imgurl = "http://localhost:8000/media/upload";
+      let imgError = false; // catch errors in image upload
 
-        const res = await uploadImage  (imgurl, headers1, eventImage.imgSrc, eventImage.percentCrop);
-        console.log ("upload result = ", res);
-        if (res.status) {
-            const media_id =  res.data  ? res.data.media_id: null ;
-            if (media_id) {
-              formData.append ("media_id", media_id);
+      if (eventImage.imgFile) {
+        const urlres = await getOneTimeUploadUrl();
+        console.log("onetimeurlres = ", urlres);
+        if (urlres.status) {
+          const uploadurl = urlres.result ? urlres.result.uploadURL : null;
+          const uploadres = await uploadImage(
+            uploadurl,
+            eventImage.imgFile,
+            eventImage.percentCrop
+          );
+          console.log("upload result = ", uploadres);
+          if (uploadres.status) {
+            formData.append("media_id", uploadres.id);
+            if (uploadres.image_path) {
+              formData.append("photoUrl1", uploadres.image_path);
+              formData.append("photoUrl2", uploadres.image_path);
             }
+          }
         } else {
           imgError = true;
         }
-      };
+      }
 
-        // Display the key/value pairs
+      // Display the key/value pairs
       for (var pair of formData.entries()) {
         console.log(pair[0] + ", " + pair[1]);
-      };
+      }
 
-      if (imgError ) {  // update upload failed. here 
+      if (imgError) {
+        // update upload failed. here
         tempStatus.status = "failure";
         setEventStatus(tempStatus);
         setShowModal(true);
@@ -557,39 +567,38 @@ const CreateEvent = (props) => {
           body: formData,
           redirect: "follow",
         })
-        .then(handleErrors)
-        .then((response) => {
-          console.log("response in create", response);
-          return response.json();
-        })
-        .then((res) => {
-          console.log("res: ", res);
-          if (!res.status) {
-            if (res.message) {
-              tempStatus.status = "error";
-              tempStatus.errorMessage = "input error";
-            } else {
-              tempStatus.status = "failure";
-              tempStatus.failureMessage = res.error;
+          .then(handleErrors)
+          .then((response) => {
+            console.log("response in create", response);
+            return response.json();
+          })
+          .then((res) => {
+            console.log("res: ", res);
+            if (!res.status) {
+              if (res.message) {
+                tempStatus.status = "error";
+                tempStatus.errorMessage = "input error";
+              } else {
+                tempStatus.status = "failure";
+                tempStatus.failureMessage = res.error;
+              }
             }
-          };
-          setEventStatus(tempStatus);
+            setEventStatus(tempStatus);
             return res;
-        })
-        .catch((err) => {
-          console.log("Inside the .catch");
-          console.log("**ERROR THROWN", err);
-          tempStatus.status = "failure";
-          setEventStatus(tempStatus);
-        })
-        .finally(() => {
-          setShowModal(true);
-        });
+          })
+          .catch((err) => {
+            console.log("Inside the .catch");
+            console.log("**ERROR THROWN", err);
+            tempStatus.status = "failure";
+            setEventStatus(tempStatus);
+          })
+          .finally(() => {
+            setShowModal(true);
+          });
         // end fetch
       }
     }
   };
-  
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -1042,10 +1051,10 @@ const CreateEvent = (props) => {
     setEventDescription(tempDescription);
   };
 
-//  const changeEventImage = (image) => {
- const changeEventImage = (imgData) => {
+  //  const changeEventImage = (image) => {
+  const changeEventImage = (imgData) => {
     let tempImage = { ...eventImage };
-    tempImage.imgSrc = imgData.imgSrc;
+    tempImage.imgFile = imgData.imgFile;
     tempImage.percentCrop = imgData.percentCrop;
     // tempDescription.photo = image;
     setEventImage(tempImage);
@@ -1093,6 +1102,88 @@ const CreateEvent = (props) => {
       </div>
     </Fragment>
   );
+
+  //   get uril
+
+  const getOneTimeUploadUrl = () => {
+    //   const  apiurl = "https://api.bondirectly.com/media/uimgurl";
+
+    const apiurl = `${API}/media/uimgurl`;
+
+    const token = vendorInfo.token;
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Context-Type", "application/json");
+
+    return fetch(apiurl, {
+      method: "POST",
+      headers: myHeaders,
+    })
+      .then(handleErrors)
+      .then((response) => {
+        console.log("response in upload url fetch ", response);
+        return response.json();
+      })
+      .then((res) => {
+        console.log("res: ", res);
+        if (res.status) {
+          return res;
+        } else {
+          console.log("Cloudflare ERR:", res);
+          return { status: false };
+        }
+      })
+      .catch((err) => {
+        console.log("Inside the .catch");
+        console.log("**ERROR THROWN", err);
+        return { status: false };
+      });
+  };
+
+  const uploadImage = (uploadurl1, imageFile, crops) => {
+    // uploads images to cdn, givel url and header
+    //https://developers.cloudflare.com/stream/uploading-videos/direct-creator-uploads#using-tus-recommended-for-videos-over-200mb
+    console.log("in uploadImage....");
+    ///  const video = videoInput.files[0];
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    //  const uploadResult = await
+    return fetch(uploadurl1, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.status);
+        }
+        return response;
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("NOT_OK");
+        }
+        return response.json();
+      })
+      .then((res) => {
+        console.log("exiting uploadImage with res=", res);
+        let z = { status: false };
+        if (res.success && res.result && res.result.id) {
+          z.status = true;
+          z.id = res.result.id;
+          if (
+            Array.isArray(res.result.variants) &&
+            res.result.variants.length > 0
+          ) {
+            z.image_path = res.result.variants[0];
+          }
+        }
+        return z;
+      })
+      .catch((err) => {
+        console.log("err in updateload Image", err);
+        return { status: false };
+      });
+  };
 
   const main = () => {
     if (display === "main") {

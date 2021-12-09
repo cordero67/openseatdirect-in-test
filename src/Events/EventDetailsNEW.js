@@ -8,9 +8,11 @@ import { getEventData } from "./apiEvents";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import classes from "./EventDetails.module.css";
+import modals from "./OrderModal.module.css";
 
 // defines an event's NON ticket type specific information
 let eventDetails;
+let MainContainer = {};
 
 const EventDetail = () => {
   // defines data loading control variables
@@ -18,10 +20,12 @@ const EventDetail = () => {
   const [isSuccessfull, setIsSuccessfull] = useState(true);
   const [showLargerDoublePane, setShowLargerDoublePane] = useState(false);
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     eventData(queryString.parse(window.location.search).eventID);
-    stylingUpdate(window.innerWidth, window.innerHeight);
+    stylingUpdate(window.innerWidth);
+    stylingUpdate2(window.innerWidth, window.innerHeight);
   }, []);
 
   const eventData = (eventID) => {
@@ -31,6 +35,7 @@ const EventDetail = () => {
           "EVENT DATA OBJECT received from Server in 'getEventData()': ",
           res
         );
+
         // populates "photoUrl1" and "photoUrl2" fields with default images if not contained in event json
         if (!("photoUrl1" in res)) {
           res["photoUrl1"] =
@@ -96,6 +101,7 @@ const EventDetail = () => {
 
   window.onresize = function (event) {
     stylingUpdate(window.innerWidth);
+    stylingUpdate2(window.innerWidth, window.innerHeight);
   };
 
   let image = () => {
@@ -112,7 +118,8 @@ const EventDetail = () => {
 
   // link to "ticketSelection" page
   const ticketsHandler = () => {
-    window.location.href = `/et/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`;
+    //window.location.href = `/et/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`;
+    setShowModal(!showModal);
   };
 
   const ticketPriceRange = () => {
@@ -289,7 +296,7 @@ const EventDetail = () => {
       return (
         <div className={classes.ButtonContainer}>
           <button onClick={ticketsHandler} className={classes.ButtonGreen}>
-            FIND TICKETS
+            FIND TICKETS NEW
           </button>
         </div>
       );
@@ -489,7 +496,115 @@ const EventDetail = () => {
     }
   };
 
-  return <div className={classes.MainContainer}>{mainDisplay()}</div>;
+  const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
+
+  const orderModal = () => {
+    if (showModal) {
+      return <div style={MainContainer}>modal top</div>;
+    } else return null;
+  };
+
+  // LOOKS GOOD
+  const stylingUpdate2 = (inWidth, inHeight) => {
+    setIsRestyling(true);
+    if (inWidth < 790) {
+      //setShowDoublePane(false);
+    } else {
+      //setShowDoublePane(true);
+    }
+    // sets styling parameters
+    MainContainer = MainContainerStyling(inWidth, inHeight);
+    //MainGrid = MainGridStyling(inWidth, inHeight);
+    //EventTicketSection = EventTicketSectionStyling(inWidth, inHeight);
+    //OrderSummarySection = OrderSummarySectionStyling(inWidth, inHeight);
+    //OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
+    setIsRestyling(false);
+  };
+
+  // LOOKS GOOD
+  // determines resized width and height of window
+  //window.onresize = function (event) {
+  //  stylingUpdate2(window.innerWidth, window.innerHeight);
+  //};
+
+  const MainContainerStyling = (inWidth, inHeight) => {
+    //let MainContainer = {};
+
+    //position: fixed;
+    //z-index: 700;
+    //background-color: red;
+
+    if (inWidth < 660) {
+      MainContainer = {
+        fontFamily: "'Roboto', sans-serif",
+        position: "fixed",
+        left: "200px",
+        zIndex: "700",
+        backgroundColor: `#2f5596`,
+        height: `${inHeight}px`,
+        width: "400px",
+        paddingTop: `0px`,
+        paddingLeft: `0px`,
+        paddingRight: `0px`,
+        paddingBottom: `0px`,
+      };
+    } else if (inHeight < 760) {
+      MainContainer = {
+        fontFamily: "'Roboto', sans-serif",
+        position: "fixed",
+        left: "200px",
+        top: "60px",
+        zIndex: "700",
+        backgroundColor: `#2f5596`,
+        backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
+        height: `${inHeight}px`,
+        width: "400px",
+        paddingTop: `0px`,
+        paddingLeft: `25px`,
+        paddingRight: `25px`,
+        paddingBottom: `0px`,
+      };
+    } else {
+      MainContainer = {
+        fontFamily: "'Roboto', sans-serif",
+        position: "fixed",
+        left: "200px",
+        top: `calc((${inHeight}px - 700px) / 2)`,
+        zIndex: "700",
+        //backgroundColor: `#2f5596`,
+        backgroundColor: `red`,
+        //backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
+        backgroundImage: `linear-gradient(180deg, red 0%, #fff 100%)`,
+        width: "400px",
+        //height: `${inHeight}px`,
+        height: "700px",
+        //paddingTop: `calc((${inHeight}px - 825px) / 2)`,
+        paddingTop: `100px`,
+        paddingLeft: `250px`,
+        paddingRight: `25px`,
+        paddingBottom: `calc((${inHeight}px - 700px) / 2)`,
+      };
+    }
+
+    return MainContainer;
+  };
+
+  return (
+    <div className={classes.MainContainer}>
+      {orderModal()}
+      {mainDisplay()}
+    </div>
+  );
 };
 
 export default EventDetail;
+
+/*
+<div className={classes.MainContainer}>
+  <div className={classes.MainGrid}>
+    <section className={classes.Events}>
+      {!isLoadingEvents ? eventsNew() : <Spinner />}
+    </section>
+  </div>
+</div>
+*/

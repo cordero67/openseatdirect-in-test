@@ -31,6 +31,7 @@ class ImgDropAndCrop extends Component {
     this.imagePreviewCanvasRef = React.createRef();
     this.fileInputRef = React.createRef();
     this.state = {
+      imgFile: null,
       imgSrc: null,
       imgSrcExt: null,
       imgSrcLoaded: false,
@@ -103,6 +104,7 @@ class ImgDropAndCrop extends Component {
           () => {
             const myResult = myFileItemReader.result;
             this.setState({
+              imgFile: currentFile,
               imgSrc: myResult,
               imgSrcExt: extractImageFileExtensionFromBase64(myResult),
               isCropping: true,
@@ -189,7 +191,7 @@ class ImgDropAndCrop extends Component {
 
   handleCreateCroppedImage = async (event) => {
     event.preventDefault();
-    const { imgSrc, percentCrop } = this.state;
+    const { imgSrc, imgFile, percentCrop } = this.state;
     const canvasRef = this.imagePreviewCanvasRef.current;
     if (canvasRef && imgSrc) {
       //const { imgSrcExt } = this.state;
@@ -201,7 +203,8 @@ class ImgDropAndCrop extends Component {
       //        canvasRef.toBlob(resolve, "image/png")
       //      );
       this.setState({ newimageData64: tempImage });
-      this.props.change({ imgSrc: imgSrc, percentCrop: percentCrop }); // sends imageBlob to parent using change prop
+      //      this.props.change({ imgSrc: imgSrc, percentCrop: percentCrop }); // sends imageBlob to parent using change prop
+      this.props.change({ imgFile: imgFile, percentCrop: percentCrop }); // sends image file handle to parent using change prop
     }
     this.setState({ isCropping: false });
   };

@@ -643,10 +643,6 @@ const EventEdit = (props) => {
           ></SavedModal>
         </Fragment>
       );
-      //
-      //
-      //
-      //
     } else if (
       eventStatus.status === "saved" ||
       eventStatus.status === "live"
