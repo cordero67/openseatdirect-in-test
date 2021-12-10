@@ -6,13 +6,13 @@ import ReactHtmlParser from "react-html-parser";
 import { getEventData } from "./apiEvents";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
+import TicketOrderModal from "./TicketSelectionModal";
 
 import classes from "./EventDetails.module.css";
 import modals from "./OrderModal.module.css";
 
 // defines an event's NON ticket type specific information
 let eventDetails;
-let MainContainer = {};
 
 const EventDetail = () => {
   // defines data loading control variables
@@ -25,7 +25,6 @@ const EventDetail = () => {
   useEffect(() => {
     eventData(queryString.parse(window.location.search).eventID);
     stylingUpdate(window.innerWidth);
-    stylingUpdate2(window.innerWidth, window.innerHeight);
   }, []);
 
   const eventData = (eventID) => {
@@ -101,7 +100,6 @@ const EventDetail = () => {
 
   window.onresize = function (event) {
     stylingUpdate(window.innerWidth);
-    stylingUpdate2(window.innerWidth, window.innerHeight);
   };
 
   let image = () => {
@@ -496,102 +494,25 @@ const EventDetail = () => {
     }
   };
 
-  const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
-
-  const orderModal = () => {
+  const ticketOrder = () => {
     if (showModal) {
-      return <div style={MainContainer}>modal top</div>;
-    } else return null;
-  };
-
-  // LOOKS GOOD
-  const stylingUpdate2 = (inWidth, inHeight) => {
-    setIsRestyling(true);
-    if (inWidth < 790) {
-      //setShowDoublePane(false);
-    } else {
-      //setShowDoublePane(true);
+      return (
+        <Fragment>
+          <TicketOrderModal
+            show={showModal}
+            //details={eventStatus}
+            closeModal={() => {
+              setShowModal(false);
+            }}
+          ></TicketOrderModal>
+        </Fragment>
+      );
     }
-    // sets styling parameters
-    MainContainer = MainContainerStyling(inWidth, inHeight);
-    //MainGrid = MainGridStyling(inWidth, inHeight);
-    //EventTicketSection = EventTicketSectionStyling(inWidth, inHeight);
-    //OrderSummarySection = OrderSummarySectionStyling(inWidth, inHeight);
-    //OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
-    setIsRestyling(false);
-  };
-
-  // LOOKS GOOD
-  // determines resized width and height of window
-  //window.onresize = function (event) {
-  //  stylingUpdate2(window.innerWidth, window.innerHeight);
-  //};
-
-  const MainContainerStyling = (inWidth, inHeight) => {
-    //let MainContainer = {};
-
-    //position: fixed;
-    //z-index: 700;
-    //background-color: red;
-
-    if (inWidth < 660) {
-      MainContainer = {
-        fontFamily: "'Roboto', sans-serif",
-        position: "fixed",
-        left: "200px",
-        zIndex: "700",
-        backgroundColor: `#2f5596`,
-        height: `${inHeight}px`,
-        width: "400px",
-        paddingTop: `0px`,
-        paddingLeft: `0px`,
-        paddingRight: `0px`,
-        paddingBottom: `0px`,
-      };
-    } else if (inHeight < 760) {
-      MainContainer = {
-        fontFamily: "'Roboto', sans-serif",
-        position: "fixed",
-        left: "200px",
-        top: "60px",
-        zIndex: "700",
-        backgroundColor: `#2f5596`,
-        backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
-        height: `${inHeight}px`,
-        width: "400px",
-        paddingTop: `0px`,
-        paddingLeft: `25px`,
-        paddingRight: `25px`,
-        paddingBottom: `0px`,
-      };
-    } else {
-      MainContainer = {
-        fontFamily: "'Roboto', sans-serif",
-        position: "fixed",
-        left: "200px",
-        top: `calc((${inHeight}px - 700px) / 2)`,
-        zIndex: "700",
-        //backgroundColor: `#2f5596`,
-        backgroundColor: `red`,
-        //backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
-        backgroundImage: `linear-gradient(180deg, red 0%, #fff 100%)`,
-        width: "400px",
-        //height: `${inHeight}px`,
-        height: "700px",
-        //paddingTop: `calc((${inHeight}px - 825px) / 2)`,
-        paddingTop: `100px`,
-        paddingLeft: `250px`,
-        paddingRight: `25px`,
-        paddingBottom: `calc((${inHeight}px - 700px) / 2)`,
-      };
-    }
-
-    return MainContainer;
   };
 
   return (
     <div className={classes.MainContainer}>
-      {orderModal()}
+      {ticketOrder()}
       {mainDisplay()}
     </div>
   );
