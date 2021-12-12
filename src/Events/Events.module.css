@@ -1,16 +1,20 @@
 .MainContainer {
   font-family: "Roboto", sans-serif;
   background-color: #fff;
-  min-height: calc(100vh - 60px);
+  z-index: 100;
+  height: calc(100vh - 60px);
   padding-top: 60px;
   padding-bottom: 40px;
   padding-right: 10px;
   padding-left: 10px;
   box-sizing: border-box;
+
+  overflow: hidden; /* Hide scrollbars */
 }
 
 .MainGrid {
-  background-color: #fff;
+  /*background-color: #fff;*/
+  background-color: red;
   vertical-align: center;
   width: auto;
   padding-top: 30px;

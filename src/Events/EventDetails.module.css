@@ -9,6 +9,8 @@
   padding-right: 0px;
   padding-bottom: 40px;
   margin: auto;
+
+  overflow: hidden; /* Hide scrollbars */
   box-sizing: border-box;
 }
 

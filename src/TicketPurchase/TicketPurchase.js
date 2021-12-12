@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 //import queryString from "query-string";
-//import ReactHtmlParser from "react-html-parser";
+import ReactHtmlParser from "react-html-parser";
 
 //import { API } from "../config.js";
 //import { getEventData, getEventImage } from "./Resources/apiCore";
@@ -51,6 +51,7 @@ import Backdrop from "./Modals/Backdrop";
 //let OrderSummarySectionAlt = {};
 
 const TicketPurchase = (props) => {
+  console.log("Event props: ", props.event);
   const [display, setDisplay] = useState("main"); // defines panel displayed: main, registration, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
@@ -73,7 +74,7 @@ const TicketPurchase = (props) => {
   const [ticketInfo, setTicketInfo] = useState([]); // ticket order specific ticket information
   const [orderTotals, setOrderTotals] = useState([]); // ticket order general info
   //const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
-  //const [registrationIndex, setRegistrationIndex] = useState(0);
+  const [registrationIndex, setRegistrationIndex] = useState(0);
   const [customerInformation, setCustomerInformation] = useState({
     // defines contact information sent to server
     name: "",
@@ -474,7 +475,7 @@ const TicketPurchase = (props) => {
         </button>
       );
     } else if (
-      // there is a registration requirement & total purchase amount > zero
+      // there is a registration requirement & total purchase amount = zero
       props.event.register &&
       "buttonLabel" in props.event.register &&
       "content" in props.event.register &&
@@ -486,6 +487,7 @@ const TicketPurchase = (props) => {
         </button>
       );
     } else if (
+      // there is NOT a registration requirement & a signed order of positive tickets and a zero total value
       orderTotals.finalPurchaseAmount === 0 &&
       orderTotals.ticketsPurchased > 0 &&
       customerInformation.sessionToken !== ""
@@ -499,7 +501,7 @@ const TicketPurchase = (props) => {
       orderTotals.finalPurchaseAmount > 0 &&
       customerInformation.sessionToken !== ""
     ) {
-      // signed paid order
+      // there is NOT a registration requirement & a signed order of positive tickets and a positive total value
       return (
         <button
           onClick={() => {
@@ -511,7 +513,7 @@ const TicketPurchase = (props) => {
         </button>
       );
     } else if (orderTotals.ticketsPurchased > 0) {
-      // unsigned paid order
+      // there is NOT a registration requirement & a unsigned order of positive tickets and a positive total value
       return (
         <button
           onClick={() => {
@@ -523,6 +525,7 @@ const TicketPurchase = (props) => {
         </button>
       );
     } else {
+      // there is NOT a registration requirement & a unsigned order of no tickets
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
           PROCEED TO CHECKOUT
@@ -530,30 +533,30 @@ const TicketPurchase = (props) => {
       );
     }
   };
-
+  // NEED TO ADD LINKS TO EITHER GATEWAY OR GUEST CHECKOUT FORM
   // stores order and event information into "localStorage"
   const storeOrder = (/*orderId*/) => {
-    /*
     let signedIn = false;
     console.log("Inside 'storeOrder'");
+    console.log("Event details: ", props.event);
 
     if (typeof window !== "undefined") {
-      localStorage.setItem(
-        `image_${eventDetails.eventNum}`,
-        JSON.stringify(eventLogo)
-      );
-      localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
+      //localStorage.setItem(
+      //  `image_${eventDetails.eventNum}`,
+      //  JSON.stringify(eventLogo)
+      //);
+      //localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
 
-      localStorage.setItem(
-        `cart_${eventDetails.eventNum}`,
-        JSON.stringify({
-          eventDetails: eventDetails,
-          promoCodeDetails: promoCodeDetails,
-          ticketInfo: ticketInfo,
-          orderTotals: orderTotals,
-          orderExpiration: new Date(+new Date() + 7 * 60000),
-        })
-      );
+      //localStorage.setItem(
+      //  `cart_${eventDetails.eventNum}`,
+      //  JSON.stringify({
+      //eventDetails: eventDetails,
+      //promoCodeDetails: promoCodeDetails,
+      //ticketInfo: ticketInfo,
+      //orderTotals: orderTotals,
+      //    orderExpiration: new Date(+new Date() + 7 * 60000),
+      //  })
+      //);
       if (localStorage.getItem(`user`) !== null) {
         signedIn = true;
       }
@@ -561,21 +564,40 @@ const TicketPurchase = (props) => {
 
     if (signedIn === true) {
       // user is signed in therefore skip guest info page
-      console.log("eventDetails.gateway: ", eventDetails.gateway);
-      if (eventDetails.gateway === "PayPalExpress") {
-        window.location.href = "/checkout-paypalexpress";
-      } else if (eventDetails.gateway === "PayPalMarketplace") {
-        window.location.href = "/checkout-paypalmerchant";
+      console.log(
+        "eventDetails.gateway: ",
+        props.event.accountId.paymentGatewayType
+      );
+      if (props.event.accountId.paymentGatewayType === "PayPalExpress") {
+        //window.location.href = "/checkout-paypalexpress";
+        console.log("Going to PayPal Express");
+        //
+        //
+      } else if (
+        props.event.accountId.paymentGatewayType === "PayPalMarketplace"
+      ) {
+        //window.location.href = "/checkout-paypalmerchant";
+        console.log("Going to PayPal Merchant");
+        //
+        //
       } else {
         // no gateway is found
-        window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+        console.log("Going to back to event details");
+        //window.location.href = `/ed/${props.event.vanityLink}?eventID=${props.event.eventNum}`;
       }
     } else if (orderTotals.finalPurchaseAmount === 0) {
-      window.location.href = "/infofree";
+      // user is NOT signed in and purchase amount is zero go to infofree form
+      //window.location.href = "/infofree";
+      console.log("Going to Info Free");
+      //
+      //
     } else {
-      window.location.href = "/infopaid";
+      // user is NOT signed in and purchase amount is positive go to infopaid form
+      //window.location.href = "/infopaid";
+      console.log("Going to Info Paid");
+      //
+      //
     }
-    */
   };
   // LOOKS GOOD
   // defines and sets "loadingSpinner" view status
@@ -606,7 +628,7 @@ const TicketPurchase = (props) => {
                 window.location.href = `/events`;
               }}
             >
-              CONTINUE
+              CONTINUEuuuu
             </button>
           </div>
         </div>
@@ -747,9 +769,6 @@ const TicketPurchase = (props) => {
       );
     }
   };
-  const ticketPane2 = () => {
-    return <div>Ticket pane</div>;
-  };
 
   // creates ticket pane with promo form and ticket sections
   const ticketPane = () => {
@@ -798,19 +817,6 @@ const TicketPurchase = (props) => {
       }
     } else return null;
   };
-
-  // defines main display with ticket and order panes
-  const mainDisplay2 = () => {
-    if (display === "main") {
-      if (showDoublePane) {
-        return <div>CONTENTS</div>;
-      } else if (!showOrderSummaryOnly) {
-        return <div style={mainGrid}>{ticketPane()}</div>;
-      } else {
-        return <div style={mainGrid}>{orderPane()}</div>;
-      }
-    } else return null;
-  };
   /*
   const purchaseConfirmation = () => {
     if (display === "confirmation") {
@@ -829,7 +835,7 @@ const TicketPurchase = (props) => {
       );
     } else return null;
   };
-
+*/
   const disagreeButton = (
     <div style={{ textAlign: "center", paddingTop: "15px" }}>
       <button
@@ -851,10 +857,7 @@ const TicketPurchase = (props) => {
           <button
             className={classes.ButtonGreenLarge}
             onClick={() => {
-              if (
-                registrationIndex <
-                eventDetails.register.content.length - 1
-              ) {
+              if (registrationIndex < props.event.register.content.length - 1) {
                 setRegistrationIndex(registrationIndex + 1);
               } else {
                 if (
@@ -910,7 +913,6 @@ const TicketPurchase = (props) => {
       );
     }
   };
-
   // LOOKS GOOD
   const registration = () => {
     if (display === "registration") {
@@ -929,14 +931,14 @@ const TicketPurchase = (props) => {
               paddingRight: "40px",
             }}
           >
-            {ReactHtmlParser(eventDetails.register.content[registrationIndex])}
+            {ReactHtmlParser(props.event.register.content[registrationIndex])}
           </div>
           {registrationButtons()}
         </div>
       );
     } else return null;
   };
-*/
+
   return (
     <Fragment>
       <Backdrop show={true}></Backdrop>
@@ -949,7 +951,7 @@ const TicketPurchase = (props) => {
       >
         {/*loadingSpinner()*/}
         {mainDisplay()}
-        {/*registration()*/}
+        {registration()}
         {/*purchaseConfirmation()*/}
         {/*connectionStatus()*/}
       </div>

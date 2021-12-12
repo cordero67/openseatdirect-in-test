@@ -114,7 +114,10 @@ const TicketSelection = () => {
   const eventData = (eventID) => {
     getEventData(eventID)
       .then((res) => {
-        console.log("EVENT DATA OBJECT from Server: ", res);
+        console.log(
+          "Current TicketSelection: EVENT DATA OBJECT from Server: in 'getEventData()': ",
+          res
+        );
         eventDetails = loadEventDetails(res);
         console.log("eventDetails: ", eventDetails);
         // checks if an order exists in local storage
@@ -486,6 +489,7 @@ const TicketSelection = () => {
         </button>
       );
     } else if (
+      // there is NOT a registration requirement & a signed order of positive tickets and a zero total value
       orderTotals.finalPurchaseAmount === 0 &&
       orderTotals.ticketsPurchased > 0 &&
       customerInformation.sessionToken !== ""
@@ -499,7 +503,7 @@ const TicketSelection = () => {
       orderTotals.finalPurchaseAmount > 0 &&
       customerInformation.sessionToken !== ""
     ) {
-      // signed paid order
+      // there is NOT a registration requirement & a signed order of positive tickets and a positive total value
       return (
         <button
           onClick={() => {
@@ -511,7 +515,7 @@ const TicketSelection = () => {
         </button>
       );
     } else if (orderTotals.ticketsPurchased > 0) {
-      // unsigned paid order
+      // there is NOT a registration requirement & a unsigned order of positive tickets and a positive total value
       return (
         <button
           onClick={() => {
@@ -523,6 +527,7 @@ const TicketSelection = () => {
         </button>
       );
     } else {
+      // there is NOT a registration requirement & a unsigned order of no tickets
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
           PROCEED TO CHECKOUT
@@ -922,6 +927,7 @@ const TicketSelection = () => {
   };
 
   return (
+    //
     //
     //
     //

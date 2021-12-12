@@ -3,10 +3,6 @@ import React, { Fragment } from "react";
 import styles from "./TicketItem.module.css";
 
 const TicketItem = (props) => {
-  console.log("props: ", props);
-  console.log(props.name.minTicketsAllowedPerOrder);
-  console.log(props.name.maxTicketsAllowedPerOrder);
-
   const ticketTypeDisplay = () => {
     let options;
     let ticketsArray = [0];
@@ -17,7 +13,6 @@ const TicketItem = (props) => {
     let priceDeal;
     let ticketPrice;
     let adjTicketPrice;
-    console.log("avail, min, max: ", available, minimum, maximum);
 
     if (props.name.ticketCurrency === "¥") {
       ticketPrice = props.name.ticketPrice.toFixed(0);
@@ -40,7 +35,7 @@ const TicketItem = (props) => {
     // define "ticketArray[]" and "options"
     // check for soldout conditions
     if (available < 1 || (minimum && available < minimum)) {
-      console.log("sold out");
+      //console.log("sold out");
       // soldout conditions
       options = (
         <Fragment>

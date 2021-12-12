@@ -55,7 +55,7 @@ const Routes = () => {
         path="/auth"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <Header
               positioning="fixed"
               logo={LogoC}
@@ -71,7 +71,7 @@ const Routes = () => {
               }}
             />
             <Footer></Footer>
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -79,7 +79,7 @@ const Routes = () => {
         path="/myaccount"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <Header
               positioning="fixed"
               logo={LogoC}
@@ -92,7 +92,7 @@ const Routes = () => {
               owner={"SOMETHING"}
             />
             <Footer></Footer>
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -100,7 +100,7 @@ const Routes = () => {
         path="/privacypolicy"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <Header
               positioning="fixed"
               logo={LogoC}
@@ -109,7 +109,7 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <PrivacyPolicy />
             <Footer></Footer>
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -117,7 +117,7 @@ const Routes = () => {
         path="/termsconditions"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <Header
               positioning="fixed"
               logo={LogoC}
@@ -126,7 +126,7 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <TermsConditions />
             <Footer></Footer>
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -134,7 +134,7 @@ const Routes = () => {
         path="/delete"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <Header
               positioning="fixed"
               logo={LogoC}
@@ -143,7 +143,7 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDeletion />
             <Footer></Footer>
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -151,7 +151,7 @@ const Routes = () => {
         path="/"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <Header
               positioning="fixed"
               logo={LogoC}
@@ -160,7 +160,7 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Events />
             <Footer></Footer>
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -168,7 +168,7 @@ const Routes = () => {
         path="/past"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <Header
               positioning="fixed"
               logo={LogoC}
@@ -177,7 +177,7 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventsPast />
             <Footer></Footer>
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -185,9 +185,9 @@ const Routes = () => {
         path="/infopaid"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <CustomerInfoPaid />
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -195,9 +195,9 @@ const Routes = () => {
         path="/infofree"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <CustomerInfoFree />
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -205,9 +205,9 @@ const Routes = () => {
         path="/checkout-paypalexpress"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <CheckoutPayPalExpress />
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
@@ -215,16 +215,16 @@ const Routes = () => {
         path="/checkout-paypalmerchant"
         exact
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <CheckoutPayPalMerchant />
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
       <Route
         path="/ed/"
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <Header
               positioning="fixed"
               logo={LogoC}
@@ -233,14 +233,14 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDetails />
             <Footer></Footer>
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
       <Route
         path="/edNEW/"
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <Header
               positioning="fixed"
               logo={LogoC}
@@ -249,16 +249,16 @@ const Routes = () => {
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDetailsNEW />
             <Footer></Footer>
-          </React.Fragment>
+          </Fragment>
         )}
       />
 
       <Route
         path="/et/"
         render={(routeProps) => (
-          <React.Fragment>
+          <Fragment>
             <TicketSelection />
-          </React.Fragment>
+          </Fragment>
         )}
       />
     </Fragment>

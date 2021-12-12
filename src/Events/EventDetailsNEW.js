@@ -30,7 +30,7 @@ const EventDetail = () => {
     getEventData(eventID)
       .then((res) => {
         console.log(
-          "EVENT DATA OBJECT received from Server in 'getEventData()': ",
+          "EventDetailsNEW: EVENT DATA OBJECT received from Server in 'getEventData()': ",
           res
         );
 
@@ -61,6 +61,7 @@ const EventDetail = () => {
 
   const loadEventDetails = (event) => {
     eventDetails = {
+      accountId: event.accountId,
       eventNum: event.eventNum, //
       eventTitle: event.eventTitle, //
       eventType: event.eventType, //
@@ -79,6 +80,7 @@ const EventDetail = () => {
       locationNote: event.locationNote, //
       longDescription: event.longDescription, //
       tickets: event.tickets,
+      register: event.register,
     };
     console.log("EVENT DETAILS: ", eventDetails);
   };
@@ -498,7 +500,6 @@ const EventDetail = () => {
           <TicketPurchase
             show={showModal}
             event={eventDetails}
-            //details={eventStatus}
             closeModal={() => {
               setShowModal(false);
             }}
