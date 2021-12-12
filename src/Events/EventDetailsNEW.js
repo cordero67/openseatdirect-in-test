@@ -6,10 +6,9 @@ import ReactHtmlParser from "react-html-parser";
 import { getEventData } from "./apiEvents";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
-import TicketOrderModal from "./TicketSelectionModal";
+import TicketPurchase from "../TicketPurchase/TicketPurchase";
 
 import classes from "./EventDetails.module.css";
-import modals from "./OrderModal.module.css";
 
 // defines an event's NON ticket type specific information
 let eventDetails;
@@ -114,9 +113,8 @@ const EventDetail = () => {
     } else return <div>Waiting for image</div>;
   };
 
-  // link to "ticketSelection" page
+  // activates the ticket purchase modal
   const ticketsHandler = () => {
-    //window.location.href = `/et/${eventDetails.eventUrl}?eventID=${eventDetails.eventNum}`;
     setShowModal(!showModal);
   };
 
@@ -126,7 +124,6 @@ const EventDetail = () => {
       console.log("eventDetails: ", eventDetails);
       let priceArray = [];
       if (eventDetails.ticket !== null && eventDetails.tickets) {
-        console.log("We have tickets");
         eventDetails.tickets.map((item) => {
           priceArray.push(item.currentTicketPrice);
         });
@@ -498,13 +495,14 @@ const EventDetail = () => {
     if (showModal) {
       return (
         <Fragment>
-          <TicketOrderModal
+          <TicketPurchase
             show={showModal}
+            event={eventDetails}
             //details={eventStatus}
             closeModal={() => {
               setShowModal(false);
             }}
-          ></TicketOrderModal>
+          ></TicketPurchase>
         </Fragment>
       );
     }

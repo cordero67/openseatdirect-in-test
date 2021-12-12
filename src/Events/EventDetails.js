@@ -6,6 +6,7 @@ import ReactHtmlParser from "react-html-parser";
 import { getEventData } from "./apiEvents";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
+//
 
 import classes from "./EventDetails.module.css";
 
@@ -18,6 +19,7 @@ const EventDetail = () => {
   const [isSuccessfull, setIsSuccessfull] = useState(true);
   const [showLargerDoublePane, setShowLargerDoublePane] = useState(false);
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
+  //
 
   useEffect(() => {
     eventData(queryString.parse(window.location.search).eventID);
@@ -31,6 +33,7 @@ const EventDetail = () => {
           "EVENT DATA OBJECT received from Server in 'getEventData()': ",
           res
         );
+
         // populates "photoUrl1" and "photoUrl2" fields with default images if not contained in event json
         if (!("photoUrl1" in res)) {
           res["photoUrl1"] =
@@ -121,7 +124,6 @@ const EventDetail = () => {
       console.log("eventDetails: ", eventDetails);
       let priceArray = [];
       if (eventDetails.ticket !== null && eventDetails.tickets) {
-        console.log("We have tickets");
         eventDetails.tickets.map((item) => {
           priceArray.push(item.currentTicketPrice);
         });

@@ -1,148 +1,169 @@
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
 export const MainContainerStyling = (inWidth, inHeight) => {
-  let MainContainer = {};
-
+  let mainContainer = {};
   if (inWidth < 660) {
-    MainContainer = {
+    console.log("width < 660");
+    mainContainer = {
       fontFamily: "'Roboto', sans-serif",
-      backgroundColor: `#2f5596`,
+      position: "fixed",
+      zIndex: "700",
+      backgroundColor: `white`,
+      //border: "2px solid #ccc",
       height: `${inHeight}px`,
-      paddingTop: `0px`,
-      paddingLeft: `0px`,
-      paddingRight: `0px`,
-      paddingBottom: `0px`,
+      top: "0px",
+      left: "0px",
+      //paddingTop: `0px`,
+      //paddingLeft: `0px`,
+      //paddingRight: `0px`,
+      //paddingBottom: `0px`,
+      boxSizing: "border-box",
+      transition: "all 0.3s ease-out",
+    };
+  } else if (inWidth < 1140) {
+    console.log("width > 720");
+    mainContainer = {
+      fontFamily: "'Roboto', sans-serif",
+      position: "fixed",
+      zIndex: "700",
+      backgroundColor: `white`,
+      //border: "2px solid #ccc",
+      height: "720px",
+      top: `calc((${inHeight}px - 720px) / 2)`,
+      left: "25px",
+      //paddingLeft: `25px`,
+      //paddingRight: `25px`,
+      //paddingBottom: `calc((${inHeight}px - 720px) / 2)`,
+      boxSizing: "border-box",
+      transition: "all 0.3s ease-out",
     };
   } else if (inHeight < 720) {
-    MainContainer = {
+    console.log("height < 720");
+    mainContainer = {
       fontFamily: "'Roboto', sans-serif",
-      backgroundColor: `#2f5596`,
-      backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
+      position: "fixed",
+      zIndex: "700",
+      backgroundColor: `white`,
+      //border: "2px solid #ccc",
       height: `${inHeight}px`,
-      paddingTop: `0px`,
-      paddingLeft: `25px`,
-      paddingRight: `25px`,
-      paddingBottom: `0px`,
+      top: "0px",
+      left: `calc((${inWidth}px - 1080px) / 2)`,
+      //paddingTop: `0px`,
+      //paddingLeft: `25px`,
+      //paddingRight: `25px`,
+      //paddingBottom: `0px`,
+      boxSizing: "border-box",
+      transition: "all 0.3s ease-out",
     };
   } else {
-    MainContainer = {
+    console.log("width > 720");
+    mainContainer = {
       fontFamily: "'Roboto', sans-serif",
-      backgroundColor: `#2f5596`,
-      backgroundImage: `linear-gradient(180deg, #2f5596 0%, #000000 100%)`,
-      paddingTop: `calc((${inHeight}px - 720px) / 2)`,
-      paddingLeft: `25px`,
-      paddingRight: `25px`,
-      paddingBottom: `calc((${inHeight}px - 720px) / 2)`,
+      position: "fixed",
+      zIndex: "700",
+      backgroundColor: `white`,
+      //border: "2px solid #ccc",
+      height: "720px",
+      top: `calc((${inHeight}px - 720px) / 2)`,
+      left: `calc((${inWidth}px - 1080px) / 2)`,
+      //paddingLeft: `25px`,
+      //paddingRight: `25px`,
+      //paddingBottom: `calc((${inHeight}px - 720px) / 2)`,
+      boxSizing: "border-box",
+      transition: "all 0.3s ease-out",
     };
   }
 
-  return MainContainer;
+  return mainContainer;
 };
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+
+// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
 export const MainGridStyling = (inWidth, inHeight) => {
-  let MainGrid;
+  let mainGrid = {};
 
   if (inWidth < 660) {
     // width < 660px, height does not matter
-    MainGrid = {
+    mainGrid = {
       backgroundColor: `#fff`,
       margin: `auto`,
       height: `${inHeight}px`,
       display: `grid`,
-      gridTemplateColumns: `auto`,
+      //gridTemplateColumns: `auto`,
+      gridTemplateColumns: `${inWidth}px`,
     };
   } else if (inWidth < 790) {
     // width < 790px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
       // height < 720px
-      MainGrid = {
+      mainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
         height: `${inHeight}px`,
         display: `grid`,
-        gridTemplateColumns: `auto`,
+        //gridTemplateColumns: `auto`,
+        gridTemplateColumns: `calc(${inWidth}px - 50px)`,
       };
     } else {
       // height >= 720px
-      MainGrid = {
+      mainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
         height: `720px`,
         display: `grid`,
-        gridTemplateColumns: `auto`,
+        //gridTemplateColumns: `auto`,
+        gridTemplateColumns: `calc(${inWidth}px - 50px)`,
       };
     }
   } else if (inWidth < 960) {
     // width < 960px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
       // height < 720px
-      MainGrid = {
+      mainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
         height: `${inHeight}px`,
         display: `grid`,
-        gridTemplateColumns: `auto 320px`,
+        //gridTemplateColumns: `auto 320px`,
+        gridTemplateColumns: `calc(${inWidth}px - 410px) 360px`,
       };
     } else {
       // height >= 720px
-      MainGrid = {
+      mainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
         height: `720px`,
         display: `grid`,
-        gridTemplateColumns: `auto 320px`,
+        //gridTemplateColumns: `auto 320px`,
+        gridTemplateColumns: `calc(${inWidth}px - 410px) 360px`,
       };
     }
   } else if (inWidth < 1140) {
     // width < 1140px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
       // height < 720px
-      MainGrid = {
+      mainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
         height: `${inHeight}px`,
         display: `grid`,
-        gridTemplateColumns: `auto 360px`,
+        //gridTemplateColumns: `auto 360px`,
+        gridTemplateColumns: `calc(${inWidth}px - 410px) 360px`,
       };
     } else {
       // height >= 720px
-      MainGrid = {
+      mainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
         height: `720px`,
         display: `grid`,
-        gridTemplateColumns: `auto 360px`,
+        //gridTemplateColumns: `auto 360px`,
+        gridTemplateColumns: `calc(${inWidth}px - 410px) 360px`,
       };
     }
   } else {
     // width >= 1140px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
       // height < 720px
-      MainGrid = {
+      mainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
         height: `${inHeight}px`,
@@ -152,7 +173,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
       };
     } else {
       // height >= 720px
-      MainGrid = {
+      mainGrid = {
         backgroundColor: `#fff`,
         margin: `auto`,
         height: `720px`,
@@ -162,17 +183,16 @@ export const MainGridStyling = (inWidth, inHeight) => {
       };
     }
   }
-
-  return MainGrid;
+  return mainGrid;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
 export const EventTicketSectionStyling = (inWidth, inHeight) => {
-  let EventTicketSection;
+  let eventTicketSection = {};
 
   if (inWidth < 480) {
     // width < 480px, height does not matter
-    EventTicketSection = {
+    eventTicketSection = {
       backgroundColor: `#fff`,
       height: `calc(${inHeight}px - 140px)`,
       paddingTop: `30px`,
@@ -184,7 +204,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
     };
   } else if (inWidth < 660) {
     // width < 660px, height does not matter
-    EventTicketSection = {
+    eventTicketSection = {
       backgroundColor: `#fff`,
       height: `calc(${inHeight}px - 140px)`,
       paddingTop: `30px`,
@@ -198,7 +218,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
     // width >= 1140px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
       // height < 720px
-      EventTicketSection = {
+      eventTicketSection = {
         backgroundColor: `#fff`,
         height: `calc(${inHeight}px - 140px)`,
         paddingTop: `30px`,
@@ -210,7 +230,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
       };
     } else {
       // height >= 720px
-      EventTicketSection = {
+      eventTicketSection = {
         backgroundColor: `#fff`,
         height: `580px`,
         paddingTop: `30px`,
@@ -223,15 +243,16 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
     }
   }
 
-  return EventTicketSection;
+  return eventTicketSection;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
 export const OrderSummarySectionStyling = (inWidth, inHeight) => {
-  let OrderSummarySection;
+  let orderSummarySection = {};
+
   if (inWidth < 660) {
     // width < 660px, height does not matter
-    OrderSummarySection = {
+    orderSummarySection = {
       backgroundColor: `#E7E7E7`,
       fontSize: `14px`,
       height: `calc(${inHeight}px - 160px)`,
@@ -244,7 +265,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
     // width < 960px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
       // height < 720px
-      OrderSummarySection = {
+      orderSummarySection = {
         backgroundColor: `#E7E7E7`,
         fontSize: `14px`,
         height: `calc(${inHeight}px - 160px)`,
@@ -255,7 +276,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
       };
     } else {
       // height >= 720px
-      OrderSummarySection = {
+      orderSummarySection = {
         backgroundColor: `#E7E7E7`,
         fontSize: `14px`,
         height: `560px`,
@@ -269,7 +290,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
     // width >= 960px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
       // height < 720px
-      OrderSummarySection = {
+      orderSummarySection = {
         backgroundColor: `#E7E7E7`,
         fontSize: `14px`,
         height: `calc(${inHeight}px - 180px)`,
@@ -280,7 +301,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
       };
     } else {
       // height >= 720px
-      OrderSummarySection = {
+      orderSummarySection = {
         backgroundColor: `#E7E7E7`,
         fontSize: `14px`,
         height: `540px`,
@@ -292,16 +313,16 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
     }
   }
 
-  return OrderSummarySection;
+  return orderSummarySection;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
 export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
-  let OrderSummarySectionAlt;
+  let orderSummarySectionAlt = {};
 
   if (inWidth < 660) {
     // width < 660px, height does not matter
-    OrderSummarySectionAlt = {
+    orderSummarySectionAlt = {
       backgroundColor: `#E7E7E7`,
       fontSize: `14px`,
       height: `calc(${inHeight}px - 80px)`,
@@ -314,7 +335,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
     // width < 960px, NEED TO CHECK HEIGHT
     if (inHeight < 720) {
       // height < 720px
-      OrderSummarySectionAlt = {
+      orderSummarySectionAlt = {
         backgroundColor: `#E7E7E7`,
         fontSize: `15px`,
         height: `calc(${inHeight}px - 80px)`,
@@ -325,7 +346,7 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
       };
     } else {
       // height >= 720px
-      OrderSummarySectionAlt = {
+      orderSummarySectionAlt = {
         backgroundColor: `#E7E7E7`,
         fontSize: `15px`,
         height: `640px`,
@@ -337,5 +358,5 @@ export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
     }
   }
 
-  return OrderSummarySectionAlt;
+  return orderSummarySectionAlt;
 };
