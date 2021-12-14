@@ -150,11 +150,18 @@ class ImgDropAndCrop extends Component {
     crop.y = ya;
     crop.width = wa;
     crop.height = ha;
-    this.setState({ crop: crop });
+    this.setState({ crop: crop});
   };
 
   handleImageLoaded = (image) => {
     let { percentCrop } = this.state;
+      const w = image.width;
+      const h = image.height;
+      let {imgDim} = this.state;
+      imgDim.W = w;
+      imgDim.H = h;
+      this.setState ({imgDim:imgDim});    // same original image dimensions
+
     if (
       !(
         percentCrop.x === null ||
@@ -163,12 +170,6 @@ class ImgDropAndCrop extends Component {
         percentCrop.width === null
       )
     ) {
-      const w = image.width;
-      const h = image.height;
-      let {imgDim} = this.state;
-      imgDim.W = w;
-      imgDim.H = h;
-      this.setState ({imgDim:imgDim});    // same original image dimensions
 
       let { crop } = this.state;
       crop.aspect = 2;
@@ -213,8 +214,8 @@ class ImgDropAndCrop extends Component {
       this.setState({ newimageData64: tempImage });
       //      this.props.change({ imgSrc: imgSrc, percentCrop: percentCrop }); // sends imageBlob to parent using change prop
       let photoMetaData ={W:imgDim.W, H:imgDim.H ,
-                          xp0: percentCrop.x, yp0:percentCrop.y,
-                          wp:percentCrop.width, hp:percentCrop.height};
+                          xp0: .01*percentCrop.x, yp0:.01*percentCrop.y,
+                          wp:.01*percentCrop.width, hp:.01*percentCrop.height};
       this.props.change({ imgFile: imgFile, percentCrop: percentCrop, photoMetaData:photoMetaData }); // sends image file handle to parent using change prop
     }
     this.setState({ isCropping: false });
