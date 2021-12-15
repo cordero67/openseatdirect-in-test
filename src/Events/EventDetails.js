@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
 import dateFormat from "dateformat";
-import ReactHtmlParser from "react-html-parser";
+import ReactHtmlParser from "html-react-parser";
 
 import { getEventData } from "./apiEvents";
 

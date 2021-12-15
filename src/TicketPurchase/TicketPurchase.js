@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 //import queryString from "query-string";
-import ReactHtmlParser from "react-html-parser";
+import ReactHtmlParser from "html-react-parser";
 
 //import { API } from "../config.js";
 //import { getEventData, getEventImage } from "./Resources/apiCore";
