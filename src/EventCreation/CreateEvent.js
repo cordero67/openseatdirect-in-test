@@ -572,8 +572,8 @@ const CreateEvent = (props) => {
             eventImage.percentCrop
           );
           console.log("upload result = ", uploadres);
-          if (uploadres.status) {
-            bodyData["media_id"] =uploadres.id;
+          if (uploadres.status && uploadres.id) {
+            eventImage.photoMetaData.id = uploadres.id;     
             if (uploadres.image_path) {
               eventImage.photoMetaData.url= uploadres.image_path;
               bodyData["photoMetaData"]=eventImage.photoMetaData;
