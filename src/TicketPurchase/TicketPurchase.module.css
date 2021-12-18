@@ -142,6 +142,26 @@
   border: 1px solid black;
   outline: none;
 }
+.ButtonRed {
+  height: 40px;
+  width: 200px;
+  background-color: #cc0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRed:hover {
+  background-color: #a30000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRed:active {
+  background-color: #7a0000;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
 .ButtonGreenLarge {
   height: 40px;
   width: 180px;
