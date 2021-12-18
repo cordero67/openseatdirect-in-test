@@ -25,7 +25,6 @@ const Events = () => {
       })
       .then((res) => {
         // populates "photoUrl2" fields if not contained in event json
-
         res.map((item, index) => {
           if (!("photoUrl2" in item)) {
             item["photoUrl2"] =
