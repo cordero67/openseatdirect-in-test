@@ -1,0 +1,176 @@
+.BlankCanvas {
+  background-color: #fff;
+  margin: auto;
+  vertical-align: center;
+  height: 100vh;
+  padding-top: 30px;
+  text-align: left;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+.Spinner {
+  background-color: #fff;
+  margin: auto;
+  vertical-align: center;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: auto;
+}
+.EventHeader {
+  text-align: center;
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 50px;
+  border-bottom: 1px solid lightgrey;
+}
+.EventTitle {
+  font-size: 12px;
+  font-weight: 600;
+}
+.EventDate {
+  font-size: 10px;
+  font-weight: 400;
+}
+.MainItemLeft {
+  background-color: #f9f9f9;
+  border-right: 1px solid lightgrey;
+}
+.TicketType {
+  font-size: 16px;
+  font-weight: 600;
+  padding-bottom: 15px;
+}
+.Image {
+  height: auto;
+  width: 100%;
+}
+.ButtonGreen {
+  height: 40px;
+  width: 200px;
+  background-color: #008f00;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+}
+.ButtonGreen:hover {
+  background-color: #006600;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+}
+.ButtonGreen:active {
+  background-color: #fff;
+  color: #008f00;
+  border: 2px solid #008f00;
+  font-weight: 600;
+}
+.ButtonGreenOpac {
+  height: 40px;
+  width: 200px;
+  background-color: #008f00;
+  opacity: 0.3;
+  color: white;
+  font-weight: 500;
+  border: 1px solid black;
+}
+.BlueText {
+  color: blue;
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+  text-align: left;
+  padding-left: 0px;
+  font-weight: 600;
+}
+.faShoppingCart {
+  font-size: 1.5rem;
+  vertical-align: center;
+}
+.faShoppingCart:hover {
+  border-color: transparent;
+  cursor: pointer;
+}
+.TotalAmount {
+  text-align: right;
+  padding-right: 10px;
+  padding-top: 8px;
+  font-size: 20px;
+  font-weight: 600;
+}
+.CartLink {
+  padding-top: 8px;
+  font-size: 20px;
+  font-weight: 600;
+}
+.EventFooter {
+  display: grid;
+  grid-template-columns: auto 80px 200px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  border-top: 1px solid lightgrey;
+  height: 80px;
+}
+
+@media (min-width: 400px) {
+  .EventHeader {
+    height: 60px;
+  }
+  .EventTitle {
+    font-size: 14px;
+  }
+  .EventDate {
+    font-size: 12px;
+  }
+  .EventFooter {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .BlankCanvas {
+    padding-left: 15px;
+    padding-right: 10px;
+  }
+}
+
+@media (min-width: 480px) {
+  .BlankCanvas {
+    padding-top: 30px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .EventTitle {
+    font-size: 16px;
+  }
+  .EventDate {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 660px) {
+  @media (min-height: 720px) {
+    .BlankCanvas {
+      height: 720px;
+    }
+    .Spinner {
+      height: 720px;
+    }
+  }
+}
+
+@media (min-width: 1140px) {
+  .BlankCanvas {
+    width: 1080px;
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+  .Spinner {
+    width: 1080px;
+  }
+}

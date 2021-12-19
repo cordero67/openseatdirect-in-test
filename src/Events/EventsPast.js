@@ -24,13 +24,14 @@ const EventsPasts = () => {
         return res;
       })
       .then((res) => {
+        // populates "photoUrl2" fields if not contained in event json
         res.map((item, index) => {
-          console.log("new res");
-          console.log("new res event num: ", res[index].eventNum);
-          res[index]["url"] = `${API}/event/photo/e/${res[index].eventNum}`;
-          item.url = "";
+          if (!("photoUrl2" in item)) {
+            item["photoUrl2"] =
+              "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public";
+          }
         });
-        console.log("res: ", res);
+
         return res;
       })
       .then((res) => {
@@ -60,12 +61,13 @@ const EventsPasts = () => {
               return (
                 <Event
                   key={index}
-                  eventNum={eventItem.eventNum}
-                  title={eventItem.eventTitle}
-                  date={eventItem.startDateTime}
-                  location={eventItem.locationVenueName}
-                  description={eventItem.description}
-                  url={eventItem.url}
+                  event={eventItem}
+                  //={eventItem.eventNum}
+                  //title={eventItem.eventTitle}
+                  //date={eventItem.startDateTime}
+                  //location={eventItem.locationVenueName}
+                  //description={eventItem.description}
+                  //url={eventItem.url}
                   clicked={(event) => eventSelectionHandler(event, eventItem)}
                 />
               );

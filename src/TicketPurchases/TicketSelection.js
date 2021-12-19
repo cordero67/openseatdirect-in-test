@@ -852,6 +852,7 @@ const TicketSelection = () => {
                   customerInformation.sessionToken !== ""
                 ) {
                   // signed free order
+                  // NEED TO DETERMINE IF A USER OR A GUEST
                   freeTicketHandler();
                 } else if (
                   (orderTotals.finalPurchaseAmount > 0 &&
