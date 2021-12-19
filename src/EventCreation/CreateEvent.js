@@ -16,7 +16,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 
 import classes from "./VendorDashboard.module.css";
 
-import { uploadImage } from "./ImgDropAndCrop/ResuableUtils";
+//import { uploadImage } from "./ImgDropAndCrop/ResuableUtils";
 
 // holds sign-in information
 
@@ -345,12 +345,12 @@ const CreateEvent = (props) => {
       if (newStatus === "saved") {
         tempDescription.isDraft = true;
         formData.append("isDraft", "true");
-        bodyData["isDraft"]=true;
+        bodyData["isDraft"]="true";
         console.log("event will be saved");
       } else if (newStatus === "live") {
         tempDescription.isDraft = false;
         formData.append("isDraft", "false");
-         bodyData["isDraft"]=false;
+         bodyData["isDraft"]="false";
         console.log("event will be live");
       }
 
@@ -359,7 +359,7 @@ const CreateEvent = (props) => {
       // does not send empty fields to server
       eventDescriptionFields.forEach((field) => {
         if (tempDescription[field] !== "") {
-          console.log("eventDescription[field]: ", tempDescription[field]);
+          console.log("eventDescription[field]: ", field, tempDescription[field]);
           formData.append(`${field}`, tempDescription[field]);
           bodyData[`${field}`]=tempDescription[field];
         }
@@ -425,13 +425,14 @@ const CreateEvent = (props) => {
           ticket.remainingQuantity > 0 &&
           "currentTicketPrice" in ticket &&
           ticket.currentTicketPrice >= 0) {
-          let atLeast1Tix = true;
-
+            atLeast1Tix = true;
+            console.log("atLeast1Tix:",atLeast1Tix);
 
             formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
             //     bodyData[`tickets[${index}][sort]`] = 10 + 10 * index;
             ticketData[index]['sort'] = 10 + 10 * index;
-          
+            console.log("atLeast1Tix:",atLeast1Tix, ">>", ticketData);
+       
             if (ticket.currency) {
               formData.append(
                 `tickets[${index}][currency]`,
@@ -530,7 +531,7 @@ const CreateEvent = (props) => {
               let promoArray =[];
 
               let npromos = (ticket.promoCodes.length)? ticket.promoCodes.length: 0;
-              for (let i = 0; i < npromos; i++){promoArray[i]={key:i}};  // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
+              for (let i = 0; i < npromos; i++){promoArray[i]={x:i}};  // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
               // promoArray    = [{key:0},{key:1},{key:2} ...]
 
               formData.append(`tickets[${index}][priceFunction][form]`, "promo");
@@ -574,8 +575,8 @@ const CreateEvent = (props) => {
                 );
               });
               ticketData[index]['priceFunction']={
-                form:"promocodes",
-                args:promoArray
+                form:"promo",
+                args:{promocodes:promoArray}
               }
             }
           }  else {
@@ -583,6 +584,7 @@ const CreateEvent = (props) => {
           };
       });
 
+      console.log("atLeast1Tix:",atLeast1Tix, ">>", ticketData);
 
       if (atLeast1Tix && ticketData){
         bodyData.tickets=ticketData;
@@ -646,9 +648,9 @@ const CreateEvent = (props) => {
 
         console.log ("about to fetch w", {
           headers:myHeaders,
-          body: JSON.stringify(bodyData),
+//          body: JSON.stringify(bodyData),
+          body: bodyData,
         });
-
         fetch(apiurl, {
           method: "POST",
           headers: myHeaders,
@@ -1230,7 +1232,7 @@ const CreateEvent = (props) => {
   };
 
   const uploadImage = (uploadurl1, imageFile, crops) => {
-    // uploads images to cdn, givel url and header
+    // uploads images to cdn, given url and header
     //https://developers.cloudflare.com/stream/uploading-videos/direct-creator-uploads#using-tus-recommended-for-videos-over-200mb
     console.log("in uploadImage...w .",uploadurl1, imageFile, crops);
     ///  const video = videoInput.files[0];
