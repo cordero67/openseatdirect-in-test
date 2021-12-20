@@ -31,6 +31,7 @@ const EventEdit = (props) => {
 
   const [showModal, setShowModal] = useState(false);
 
+
   const [windowWidth, setWindowWidth] = useState([]);
   //
   // LOOKS GOOD
@@ -65,7 +66,8 @@ const EventEdit = (props) => {
     endDate: new Date(new Date().toDateString()), //duped with "createEvent"
     endTime: "20:00:00", //duped with "createEvent"
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, //duped with "createEvent"
-    photo: "", // ONLY USED IN CREATEEVENT
+    media_id: "",
+////    photo: "", // ONLY USED IN CREATEEVENT
     photoChanged: false, // NOT USED IN CREATEEVENT
     shortDescription: "", //duped with "createEvent"
     //longDescription: "", //duped with "createEvent"
@@ -112,11 +114,19 @@ const EventEdit = (props) => {
     },
   ]);
 
-  const [photoData, setPhotoData] = useState({
+  const [eventImage, setEventImage] = useState({
     imgSrc: null,
-    imgSrcExt: null,
+    imgFile: "",
+    percentCrop: {},
+    photoMetaData:{},
     isLoaded: false,
-  });
+  }); // special case
+
+//  const [photoData, setPhotoData] = useState({
+//    imgSrc: null,
+//    imgSrcExt: null,
+//    isLoaded: false,
+//  });
 
   //START MATCHES "CreateEvent"
   const [eventStatus, setEventStatus] = useState({
@@ -129,42 +139,18 @@ const EventEdit = (props) => {
   });
   //
 
-  const initPhotoData = (resPhotoData) => {
+  const initPhotoData = async (photoMetaData) => {
     // converts data from server fetch call to photodata for image display
-
+  
+    let eventImg = (photoMetaData.url) ? await  getEventImage(photoMetaData.url):null;
+        //eventImg  = {status:true, image: imgSrc};
     // check for required fields
-    if (!(resPhotoData && resPhotoData.data && resPhotoData.data.data)) {
-      setPhotoData({ imgSrc: null, imgSrcExt: null, isLoaded: true });
+    if (!(photoMetaData && photoMetaData.url && eventImg.status)) {
+      setEventImage({ photoMetaData: null, isLoaded: true });
+    } else {
+      setEventImage({photoMetaData:photoMetaData, imgSrc: eventImg.image, isLoaded: true });
+    };
       return;
-    }
-
-    if (!resPhotoData.contentType) {
-      setPhotoData({ imgSrc: null, imgSrcExt: null, isLoaded: true });
-      return;
-    }
-
-    const ext = resPhotoData.contentType;
-
-    let header = "data:image/png;base64,"; // hard codes image/png by default
-    if (ext === "image/png") {
-      header = "data:image/png;base64,";
-    } else if (ext === "image/jpeg") {
-      header = "data:image/jpeg;base64,";
-    }
-
-    const uint8 = new Uint8Array(resPhotoData.data.data);
-    const len = uint8.byteLength;
-    if (len == 0) {
-      // no photo data
-      setPhotoData({ imgSrc: null, imgSrcExt: null, isLoaded: true });
-      return;
-    }
-    let bin = "";
-    for (let i = 0; i < len; i++) bin += String.fromCharCode(uint8[i]);
-    const photodat = header + window.btoa(bin);
-    const srcExt = extractImageFileExtensionFromBase64(photodat);
-    //console.log ("found photo> setting PhotoData:", photodat);
-    setPhotoData({ imgSrc: photodat, imgSrcExt: srcExt, isLoaded: true });
   };
 
   useEffect(() => {
@@ -185,7 +171,7 @@ const EventEdit = (props) => {
       }
       console.log("vendorInfo.status: ", tempVendorInfo.status);
       setVendorInfo(tempVendorInfo);
-      initPhotoData(props.event.photo);
+      initPhotoData(props.event.photoMetaData);
 
       const [tempTicketArray, tempDescription, tempLongDescription] =
         loadEventInfo(props.event);
@@ -221,6 +207,9 @@ const EventEdit = (props) => {
     setTbaInformationOmission(false);
     let tempStatus = { ...eventStatus };
     tempStatus.status = newStatus;
+
+    let bodyData = {};  ///new for
+    let ticketData =null;
 
     console.log("ticketDetails: ", ticketDetails);
 
@@ -382,17 +371,18 @@ const EventEdit = (props) => {
         tempDescription.onlineInformation = "";
       }
 
-      var formData = new FormData();
+      ticketData =[];
 
       if (newStatus === "saved") {
         tempDescription.isDraft = true;
-        formData.append("isDraft", "true");
+        bodyData["isDraft"]="true";
         console.log("event will be saved");
       } else if (newStatus === "live") {
         tempDescription.isDraft = false;
-        formData.append("isDraft", "false");
+         bodyData["isDraft"]="false";
         console.log("event will be live");
       }
+
 
       setEventDescription(tempDescription);
 
@@ -400,7 +390,7 @@ const EventEdit = (props) => {
       eventDescriptionFields.forEach((field) => {
         if (tempDescription[field] || originalEventDescription[field]) {
           console.log("eventDescription[field]: ", tempDescription[field]);
-          formData.append(`${field}`, tempDescription[field]);
+          bodyData[field]=tempDescription[field];
         }
       });
 
@@ -408,7 +398,7 @@ const EventEdit = (props) => {
       //eventDescriptionFields.forEach((field) => {
       if (eventLongDescription !== "") {
         console.log("eventLongDescription: ", eventLongDescription);
-        formData.append("longDescription", eventLongDescription);
+        bodyData["longDescription"] =eventLongDescription;
       }
       //});
 
@@ -423,12 +413,13 @@ const EventEdit = (props) => {
 
       let endDateTime = `${endDate} ${eventDescription.endTime}Z`;
       //console.log("endDateTime: ", endDateTime);
-
-      formData.append("startDateTime", startDateTime);
-      formData.append("endDateTime", endDateTime);
+      bodyData["startDateTime"]=startDateTime;
+      bodyData["endDateTime" ]=endDateTime;
 
       if (eventDescription.photoChanged) {
-        formData.append("photo", eventDescription.photo);
+        //   formData.append("photo", eventDescription.photo);
+
+
         console.log("eventDescription.photo: ", eventDescription.photo);
         console.log(
           "eventDescription.photoChanged: ",
@@ -449,6 +440,11 @@ const EventEdit = (props) => {
         "_id",
       ];
 
+      let ntix = (tempTicketDetails.length)? tempTicketDetails.length: 0;
+      let atLeast1Tix = false;
+      for (let i = 0; i < ntix; i++){ticketData[i]={idx:i}};  // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
+      // ticketData    = [{idx:0},{idx:1},{idx:2} ...]
+
       tempTicketDetails.forEach((ticket, index) => {
         console.log("ticket type details: ", ticket);
         if (
@@ -459,167 +455,181 @@ const EventEdit = (props) => {
           (("originalTicket" in ticket && ticket.originalTicket) ||
             (!("originalTicket" in ticket) && ticket.remainingQuantity > 0)) &&
           "currentTicketPrice" in ticket &&
-          ticket.currentTicketPrice >= 0
-        ) {
-          formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
+          ticket.currentTicketPrice >= 0) 
+          {
 
-          if (ticket.currency) {
-            formData.append(
-              `tickets[${index}][currency]`,
-              ticket.currency.slice(0, 3)
-            );
-          }
+            atLeast1Tix = true;
+            console.log("atLeast1Tix:",atLeast1Tix);
+            ticketData[index]['sort'] = 10 + 10 * index;
+                  if (ticket.currency) {
+              ticketData[index]['currency']=ticket.currency.slice(0, 3);
+            };
 
-          ticketDetailsFields.forEach((field) => {
-            if (field === "currentTicketPrice" && vendorInfo.status !== 8) {
-              formData.append(`tickets[${index}][${field}]`, 0);
-            } else if (
-              ticket[field] !== "" &&
-              "undefined" !== typeof ticket[field]
-            ) {
-              formData.append(`tickets[${index}][${field}]`, ticket[field]);
-            }
-          });
-
-          // {form: "bogo",   args: {buy:5, get:4, discount:.90}}
-          // for "bogod" and "bogof"
-          if (
-            ticket.priceFeature === "bogod" ||
-            ticket.priceFeature === "bogof"
-          ) {
-            formData.append(`tickets[${index}][priceFunction][form]`, "bogo");
-            formData.append(
-              `tickets[${index}][priceFunction][args][buy]`,
-              ticket.functionArgs.buy
-            );
-            formData.append(
-              `tickets[${index}][priceFunction][args][get]`,
-              ticket.functionArgs.get
-            );
-            formData.append(
-              `tickets[${index}][priceFunction][args][discount]`,
-              ticket.functionArgs.discount / 100
-            );
-          }
-
-          // {form: "twofer", args: {buy:2,  for:15}}
-          // for "twofer"
-          if (ticket.priceFeature === "twofer") {
-            formData.append(`tickets[${index}][priceFunction][form]`, "twofer");
-            formData.append(
-              `tickets[${index}][priceFunction][args][buy]`,
-              ticket.functionArgs.buy
-            );
-            formData.append(
-              `tickets[${index}][priceFunction][args][for]`,
-              ticket.functionArgs.for
-            );
-          }
-
-          // {form: "promo",  args: {
-          //    promocodes:  [
-          //      {name:"flyers", discount: .20, pct: true} ,  // 20% off
-          //      {name:"eagles", discount:10,  pct: false }    // $10 off
-          //    ]}
-          // }
-          // for "promo"
-          if (ticket.priceFeature === "promo") {
-            formData.append(`tickets[${index}][priceFunction][form]`, "promo");
-            ticket.promoCodes.forEach((item, number) => {
-              formData.append(
-                `tickets[${index}][priceFunction][args][promocodes][${number}][key]`,
-                item.key
-              );
-              formData.append(
-                `tickets[${index}][priceFunction][args][promocodes][${number}][name]`,
-                item.name
-              );
-              if (item.percent) {
-                formData.append(
-                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`,
-                  item.amount / 100
-                );
-              } else {
-                formData.append(
-                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`,
-                  item.amount
-                );
+            ticketDetailsFields.forEach((field) => {
+              if (field === "currentTicketPrice" && vendorInfo.status !== 8) {
+                  ticketData[index][field]=0
+              } else if (
+                ticket[field] !== "" &&
+                "undefined" !== typeof ticket[field]
+              ) {
+                ticketData[index][field]=ticket[field];
               }
-              formData.append(
-                `tickets[${index}][priceFunction][args][promocodes][${number}][percent]`,
-                item.percent
-              );
-              console.log(
-                "New promo details: key-",
-                item.key,
-                ", name-",
-                item.name,
-                ", amount-",
-                item.amount,
-                ", percent-",
-                item.percent
-              );
             });
-          }
-        } else {
-          console.log("skipped ticket ", index);
-        }
+
+            // Price Funcitons
+            // for "bogod" and "bogof"  {form: "bogo",   args: {buy:5, get:4, discount:.90}}
+            if (
+              ticket.priceFeature === "bogod" ||
+              ticket.priceFeature === "bogof"
+            ) {
+                ticketData[index]['priceFunction']={
+                    form:"bogo",
+                    args:{  buy:ticket.functionArgs.buy,
+                            get: ticket.functionArgs.get,
+                            discount:ticket.functionArgs.discount / 100
+                    }
+                  };
+            }; 
+          
+            // for "twofer"     {form: "twofer", args: {buy:2,  for:15}}
+            if (ticket.priceFeature === "twofer") {
+                ticketData[index]['priceFunction']={
+                  form:"twofer",
+                  args:{  buy:ticket.functionArgs.buy,
+                          for: ticket.functionArgs.for
+                  }
+                };
+            };
+
+          
+            // {form: "promo",  args: {
+            //    promocodes:  [
+            //      {name:"flyers", discount: .20, pct: true} ,  // 20% off
+            //      {name:"eagles", discount:10,  pct: false }    // $10 off
+            //    ]}
+            // }
+            // for "promo"
+          
+            if (ticket.priceFeature === "promo") {
+              let promoArray =[];
+              let npromos = (ticket.promoCodes.length)? ticket.promoCodes.length: 0;
+              for (let i = 0; i < npromos; i++){promoArray[i]={x:i}};  // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
+              // promoArray    = [{key:0},{key:1},{key:2} ...]
+
+              ticket.promoCodes.forEach((item, number) => {
+                  promoArray[number]= { key:item.key, 
+                                        name:item.name,
+                                        amount:item.amount,
+                                        percent: item.percent
+                                        };
+                  console.log(
+                    "New promo details: key-",
+                    item.key,
+                    ", name-",
+                    item.name,
+                    ", amount-",
+                    item.amount,
+                    ", percent-",
+                    item.percent
+                  );
+              });
+              ticketData[index]['priceFunction']={
+                form:"promo",
+                args:{promocodes:promoArray}
+              }
+            };
+          } else {
+            console.log("skipped ticket ", index);
+          };
       });
 
-      // Display the key/value pairs
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
+      console.log("atLeast1Tix:",atLeast1Tix, ">>", ticketData);
 
-      let userid = vendorInfo.id;
+      if (atLeast1Tix && ticketData){
+        bodyData.tickets=ticketData;
+      };
+
       let accountNum = vendorInfo.accountNum;
-
+      console.log("vendorInfo: ", vendorInfo);
+      console.log("accountNum: ", accountNum);
       let token = vendorInfo.token;
       const authstring = `Bearer ${token}`;
       var myHeaders = new Headers();
       myHeaders.append("Authorization", authstring);
+      myHeaders.append("content-type", 'application/json');
 
       let apiurl;
-      //
-
       apiurl = `${API}/accounts/${accountNum}/events/${eventDescription.eventNum}`;
-      //apiurl = `${API}/eventix/${userid}/${eventDescription.eventNum}`;
+      let imgError = false; // catch errors in image upload
 
-      fetch(apiurl, {
-        method: "post",
-        headers: myHeaders,
-        body: formData,
-        redirect: "follow",
-      })
-        .then(handleErrors)
-        .then((response) => {
-          console.log("response in event/create", response);
-          return response.json();
-        })
-        .then((res) => {
-          console.log("Event was saved/went live");
-          console.log("res: ", res);
-          if (!res.status) {
-            if (res.message) {
-              tempStatus.status = "error";
-              tempStatus.errorMessage = "input error";
-            } else {
-              tempStatus.status = "failure";
-              tempStatus.failureMessage = res.error;
+      if (eventImage.imgFile && eventImage.photoMetaData && eventDescription.photoChanged) {
+        const urlres = await getOneTimeUploadUrl();
+        console.log("onetimeurlres = ", urlres);
+        if (urlres.status) {
+          const uploadurl = urlres.result ? urlres.result.uploadURL : null;
+          const uploadres = await uploadImage(
+            uploadurl,
+            eventImage.imgFile,
+            eventImage.percentCrop
+          );
+          console.log("upload result = ", uploadres);
+          if (uploadres.status && uploadres.id) {
+            eventImage.photoMetaData.id = uploadres.id;     
+            if (uploadres.image_path) {
+              eventImage.photoMetaData.url= uploadres.image_path;
+              bodyData["photoMetaData"]=eventImage.photoMetaData;
             }
-          }
-          setEventStatus(tempStatus);
-          return res;
+          };
+        } else {
+          imgError = true;
+        }
+      } else if (eventImage.photoMetaData ){
+        bodyData["photoMetaData"]=eventImage.photoMetaData;
+      };
+
+      if (imgError) {
+        // update upload failed. here
+        tempStatus.status = "failure";
+        setEventStatus(tempStatus);
+        setShowModal(true);
+      } else {
+
+        fetch(apiurl, {
+          method: "post",
+          headers: myHeaders,
+          body: bodyData,
+          redirect: "follow",
         })
-        .catch((err) => {
-          console.log("Inside the .catch");
-          console.log("**ERROR THROWN", err);
-          tempStatus.status = "failure";
-          setEventStatus(tempStatus);
-        })
-        .finally(() => {
-          setShowModal(true);
-        });
+          .then(handleErrors)
+          .then((response) => {
+            console.log("response in event/create", response);
+            return response.json();
+          })
+          .then((res) => {
+            console.log("Event was saved/went live");
+            console.log("res: ", res);
+            if (!res.status) {
+              if (res.message) {
+                tempStatus.status = "error";
+                tempStatus.errorMessage = "input error";
+              } else {
+                tempStatus.status = "failure";
+                tempStatus.failureMessage = res.error;
+              }
+            }
+            setEventStatus(tempStatus);
+            return res;
+          })
+          .catch((err) => {
+            console.log("Inside the .catch");
+            console.log("**ERROR THROWN", err);
+            tempStatus.status = "failure";
+            setEventStatus(tempStatus);
+          })
+          .finally(() => {
+            setShowModal(true);
+          });
+      };
     }
   };
 
@@ -1110,12 +1120,124 @@ const EventEdit = (props) => {
   };
 
   // duped from createEvent
-  const changeEventImage = (image) => {
+  const changeEventImage = (photoMetaData) => {
     let tempDescription = { ...eventDescription };
-    tempDescription.photo = image;
-    tempDescription.photoChanged = true;
+  // check if underlying original image changed (not just crop parameters)
+    if (tempDescription.photoMetaData && 
+        tempDescription.photoMetaData.url &&
+        photoMetaData.url &&
+        (tempDescription.photoMetaData  == photoMetaData.url))
+      {
+        tempDescription.photoChanged = false;            
+      } else {
+        tempDescription.photoChanged = true;   
+      }
+    tempDescription.photoMetaData = photoMetaData;
     setEventDescription(tempDescription);
   };
+
+  //   get uril
+
+
+  const getEventImage = (url) => {
+    //   const  apiurl = "https://api.bondirectly.com/media/uimgurl";
+
+    return fetch(url,{
+         method: 'GET',
+         encoding: null 
+    })
+    .then(result => {
+        let imageBuffer  = Buffer.from(result);
+        let imageBase64  = imageBuffer.toString('base64');
+        return {status: true, image: imageBase64}
+    })
+    .catch ((err)=>{
+      return {status:false}
+    })
+  }
+
+
+
+  const getOneTimeUploadUrl = () => {
+    //   const  apiurl = "https://api.bondirectly.com/media/uimgurl";
+
+    const apiurl = `${API}/media/uimgurl`;
+
+    const token = vendorInfo.token;
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Context-Type", "application/json");
+
+    return fetch(apiurl, {
+      method: "POST",
+      headers: myHeaders,
+    })
+      .then(handleErrors)
+      .then((response) => {
+        console.log("response in upload url fetch ", response);
+        return response.json();
+      })
+      .then((res) => {
+        console.log("res: ", res);
+        if (res.status) {
+          return res;
+        } else {
+          console.log("Cloudflare ERR:", res);
+          return { status: false };
+        }
+      })
+      .catch((err) => {
+        console.log("Inside the .catch");
+        console.log("**ERROR THROWN", err);
+        return { status: false };
+      });
+  };
+
+  const uploadImage = (uploadurl1, imageFile, crops) => {
+    // uploads images to cdn, given url and header
+    //https://developers.cloudflare.com/stream/uploading-videos/direct-creator-uploads#using-tus-recommended-for-videos-over-200mb
+    console.log("in uploadImage...w .",uploadurl1, imageFile, crops);
+    ///  const video = videoInput.files[0];
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    //  const uploadResult = await
+    return fetch(uploadurl1, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.status);
+        }
+        return response;
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("NOT_OK");
+        }
+        return response.json();
+      })
+      .then((res) => {
+        console.log("exiting uploadImage with res=", res);
+        let z = { status: false };
+        if (res.success && res.result && res.result.id) {
+          z.status = true;
+          z.id = res.result.id;
+          if (
+            Array.isArray(res.result.variants) &&
+            res.result.variants.length > 0
+          ) {
+            z.image_path = res.result.variants[0];
+          }
+        }
+        return z;
+      })
+      .catch((err) => {
+        console.log("err in updateload Image", err);
+        return { status: false };
+      });
+  };
+
 
   const currentStatus = () => {
     if (eventDescription.isDraft) {
@@ -1291,7 +1413,7 @@ const EventEdit = (props) => {
               webinarOmission={webinarLinkOmission}
               tbaOmission={tbaInformationOmission}
               eventImage={"existing"}
-              photoData={photoData}
+              photoData={eventImage}
               change={changeEventDescription}
               radioChange={changeEventDescriptionRadio}
               changeDate={changeEventDate}

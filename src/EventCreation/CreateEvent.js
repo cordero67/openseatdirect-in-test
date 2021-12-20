@@ -36,7 +36,7 @@ const CreateEvent = (props) => {
   const [eventImage, setEventImage] = useState({
     imgFile: "",
     percentCrop: {},
-    photoMetaData: {},
+    photoMetaData:{}
   }); // special case
 
   // stores all Event Description values
@@ -174,8 +174,9 @@ const CreateEvent = (props) => {
     let tempStatus = { ...eventStatus };
     tempStatus.status = newStatus;
 
+
     let bodyData = {};
-    let ticketData = null;
+    let ticketData =null;
 
     console.log("ticketDetails: ", ticketDetails);
 
@@ -338,17 +339,14 @@ const CreateEvent = (props) => {
         tempDescription.onlineInformation = "";
       }
 
-      var formData = new FormData();
-      ticketData = [];
+      ticketData =[];
 
       if (newStatus === "saved") {
         tempDescription.isDraft = true;
-        formData.append("isDraft", "true");
         bodyData["isDraft"]="true";
         console.log("event will be saved");
       } else if (newStatus === "live") {
         tempDescription.isDraft = false;
-        formData.append("isDraft", "false");
          bodyData["isDraft"]="false";
         console.log("event will be live");
       }
@@ -359,43 +357,27 @@ const CreateEvent = (props) => {
       eventDescriptionFields.forEach((field) => {
         if (tempDescription[field] !== "") {
           console.log("eventDescription[field]: ", field, tempDescription[field]);
-          formData.append(`${field}`, tempDescription[field]);
-          bodyData[`${field}`] = tempDescription[field];
+          bodyData[field]=tempDescription[field];
         }
       });
 
       // does not send empty fields to server
       //eventDescriptionFields.forEach((field) => {
       if (eventLongDescription !== "") {
-        console.log("eventLongDescription:");
-        console.log(eventLongDescription);
-        console.log("typeof: ", typeof eventLongDescription);
-        formData.append("longDescription", eventLongDescription);
-        bodyData["longDescription"] = eventLongDescription;
-        //formData.append("longDescription", "<p>Hello</p>\n<p>LEaving</p>");
+        bodyData["longDescription"] =eventLongDescription;
       }
-      //});
 
       let tempStartDate = dateFnsFormat(
         tempDescription.startDate,
         "yyyy-MM-dd"
       );
-      //console.log("startDate from dateFnsFormat: ", tempStartDate);
 
       let tempEndDate = dateFnsFormat(tempDescription.endDate, "yyyy-MM-dd");
-      //console.log("endDate from dateFnsFormat: ", tempEndDate);
-
       let tempStartDateTime = `${tempStartDate} ${tempDescription.startTime}Z`;
-      //console.log("startDateTime: ", tempStartDateTime);
-
       let tempEndDateTime = `${tempEndDate} ${tempDescription.endTime}Z`;
-      //console.log("endDateTime: ", tempEndDateTime);
 
-      formData.append("startDateTime", tempStartDateTime);
-      formData.append("endDateTime", tempEndDateTime);
-
-      bodyData["startDateTime"] = tempStartDateTime;
-      bodyData["endDateTime"] = tempEndDateTime;
+      bodyData["startDateTime"]=tempStartDateTime;
+      bodyData["endDateTime" ]=tempEndDateTime;
 
       // eliminate empty ticket types
       let tempTicketDetails = [...ticketDetails];
@@ -410,11 +392,9 @@ const CreateEvent = (props) => {
         "_id",
       ];
 
-      let ntix = tempTicketDetails.length ? tempTicketDetails.length : 0;
+      let ntix = (tempTicketDetails.length)? tempTicketDetails.length: 0;
       let atLeast1Tix = false;
-      for (let i = 0; i < ntix; i++) {
-        ticketData[i] = { idx: i };
-      } // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
+      for (let i = 0; i < ntix; i++){ticketData[i]={idx:i}};  // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
       // ticketData    = [{idx:0},{idx:1},{idx:2} ...]
       tempTicketDetails.forEach((ticket, index) => {
         console.log("NEXT TICKET TO SEND: ", ticket);
@@ -425,138 +405,70 @@ const CreateEvent = (props) => {
           "remainingQuantity" in ticket &&
           ticket.remainingQuantity > 0 &&
           "currentTicketPrice" in ticket &&
-          ticket.currentTicketPrice >= 0
-        ) {
-          let atLeast1Tix = true;
+          ticket.currentTicketPrice >= 0) {
+            atLeast1Tix = true;
 
-          formData.append(`tickets[${index}][sort]`, 10 + 10 * index);
-          //     bodyData[`tickets[${index}][sort]`] = 10 + 10 * index;
-          ticketData[index]["sort"] = 10 + 10 * index;
+            console.log("atLeast1Tix:",atLeast1Tix);
 
-          if (ticket.currency) {
-            formData.append(
-              `tickets[${index}][currency]`,
-              ticket.currency.slice(0, 3)
-            );
-            //  bodyData[`tickets[${index}][currency]`]=ticket.currency.slice(0, 3);
-            ticketData[index]["currency"] = ticket.currency.slice(0, 3);
-          }
-
-          ticketDetailsFields.forEach((field) => {
-            if (field === "currentTicketPrice" && vendorInfo.status !== 8) {
-              formData.append(`tickets[${index}][${field}]`, 0);
-              //          bodyData[`tickets[${index}][${field}]`]=0
-              ticketData[index][field] = 0;
-            } else if (
-              ticket[field] !== "" &&
-              "undefined" !== typeof ticket[field]
+            ticketData[index]['sort'] = 10 + 10 * index;
+            console.log("atLeast1Tix:",atLeast1Tix, ">>", ticketData);
+       
+            if (ticket.currency) {
+              ticketData[index]['currency']=ticket.currency.slice(0, 3);
+            };
+          
+            ticketDetailsFields.forEach((field) => {
+              if (field === "currentTicketPrice" && vendorInfo.status !== 8) {
+                ticketData[index][field]=0
+      
+              } else if (
+                ticket[field] !== "" &&
+                "undefined" !== typeof ticket[field]
+              ) {
+                ticketData[index][field]=ticket[field];
+              }
+            });    
+  
+            // for "bogod" and "bogof"  {form: "bogo",   args: {buy:5, get:4, discount:.90}}
+            if (
+              ticket.priceFeature === "bogod" ||
+              ticket.priceFeature === "bogof"
             ) {
-              formData.append(`tickets[${index}][${field}]`, ticket[field]);
-              // bodyData[`tickets[${index}][${field}]`]=ticket[field];
-              ticketData[index][field] = ticket[field];
-            }
-          });
-          // {form: "bogo",   args: {buy:5, get:4, discount:.90}}
-          // for "bogod" and "bogof"
-          if (
-            ticket.priceFeature === "bogod" ||
-            ticket.priceFeature === "bogof"
-          ) {
-            formData.append(`tickets[${index}][priceFunction][form]`, "bogo");
-            formData.append(
-              `tickets[${index}][priceFunction][args][buy]`,
-              ticket.functionArgs.buy
-            );
-            formData.append(
-              `tickets[${index}][priceFunction][args][get]`,
-              ticket.functionArgs.get
-            );
-            formData.append(
-              `tickets[${index}][priceFunction][args][discount]`,
-              ticket.functionArgs.discount / 100
-            );
-            //
-            //  bodyData[`tickets[${index}][priceFunction][form]`]="bogo";
-            //  bodyData[`tickets[${index}][priceFunction][args][buy]`]=ticket.functionArgs.buy;
-            //  bodyData[ `tickets[${index}][priceFunction][args][get]`]= ticket.functionArgs.get;
-
-            //  bodyData[`tickets[${index}][priceFunction][args][discount]`]= ticket.functionArgs.discount / 100;
-
-            ticketData[index]["priceFunction"] = {
-              form: "bogo",
-              args: {
-                buy: ticket.functionArgs.buy,
-                get: ticket.functionArgs.get,
-                discount: ticket.functionArgs.discount / 100,
-              },
+                ticketData[index]['priceFunction']={
+                    form:"bogo",
+                    args:{  buy:ticket.functionArgs.buy,
+                            get: ticket.functionArgs.get,
+                            discount:ticket.functionArgs.discount / 100
+                    }
+                  };
+            }; 
+          
+            // for "twofer"     {form: "twofer", args: {buy:2,  for:15}}
+            if (ticket.priceFeature === "twofer") {
+                ticketData[index]['priceFunction']={
+                  form:"twofer",
+                  args:{  buy:ticket.functionArgs.buy,
+                          for: ticket.functionArgs.for
+                  }
+                };
             };
-          }
 
-          // {form: "twofer", args: {buy:2,  for:15}}
-          // for "twofer"
-          if (ticket.priceFeature === "twofer") {
-            formData.append(`tickets[${index}][priceFunction][form]`, "twofer");
-            formData.append(
-              `tickets[${index}][priceFunction][args][buy]`,
-              ticket.functionArgs.buy
-            );
-            formData.append(
-              `tickets[${index}][priceFunction][args][for]`,
-              ticket.functionArgs.for
-            );
-
-            //  bodyData[`tickets[${index}][priceFunction][form]`]="twofer";
-            //  bodyData[`tickets[${index}][priceFunction][args][buy]`]= ticket.functionArgs.buy;
-            //  bodyData[`tickets[${index}][priceFunction][args][for]`]=ticket.functionArgs.for;
-
-            ticketData[index]["priceFunction"] = {
-              form: "twofer",
-              args: {
-                buy: ticket.functionArgs.buy,
-                for: ticket.functionArgs.for,
-              },
-            };
-          }
-
-          // {form: "promo",  args: {
-          //    promocodes:  [
-          //      {name:"flyers", discount: .20, pct: true} ,  // 20% off
-          //      {name:"eagles", discount:10,  pct: false }    // $10 off
-          //    ]}
-          // }
-          // for "promo"
-
+          
+            // {form: "promo",  args: {
+            //    promocodes:  [
+            //      {name:"flyers", discount: .20, pct: true} ,  // 20% off
+            //      {name:"eagles", discount:10,  pct: false }    // $10 off
+            //    ]}
+            // }
+            // for "promo"
+          
             if (ticket.priceFeature === "promo") {
-
               let promoArray =[];
-
               let npromos = (ticket.promoCodes.length)? ticket.promoCodes.length: 0;
               for (let i = 0; i < npromos; i++){promoArray[i]={x:i}};  // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
               // promoArray    = [{key:0},{key:1},{key:2} ...]
 
-              formData.append(`tickets[${index}][priceFunction][form]`, "promo");
               ticket.promoCodes.forEach((item, number) => {
-                formData.append(
-                  `tickets[${index}][priceFunction][args][promocodes][${number}][key]`,
-                  item.key
-                );
-                formData.append(
-                  `tickets[${index}][priceFunction][args][promocodes][${number}][name]`,
-                  item.name
-                );
-                formData.append(
-                  `tickets[${index}][priceFunction][args][promocodes][${number}][amount]`,
-                  item.amount
-                );
-                formData.append(
-                  `tickets[${index}][priceFunction][args][promocodes][${number}][percent]`,
-                  item.percent
-                );
-                ////
-                //              bodyData[`tickets[${index}][priceFunction][args][promocodes][${number}][key]`]=item.key;
-                //              bodyData[`tickets[${index}][priceFunction][args][promocodes][${number}][name]`]= item.name;
-                //              bodyData[`tickets[${index}][priceFunction][args][promocodes][${number}][amount]`]= item.amount;
-                //              bodyData[`tickets[${index}][priceFunction][args][promocodes][${number}][percent]`]= item.percent;
                 promoArray[number]= { key:item.key, 
                                       name:item.name,
                                       amount:item.amount,
@@ -590,10 +502,6 @@ const CreateEvent = (props) => {
         bodyData.tickets=ticketData;
       };
 
-      // Display the key/value pairs
-      //      for (var pair of formData.entries()) {
-      //        console.log(pair[0] + ", " + pair[1]);
-      //     }
 
       let accountNum = vendorInfo.accountNum;
       console.log("vendorInfo: ", vendorInfo);
@@ -603,7 +511,7 @@ const CreateEvent = (props) => {
       const authstring = `Bearer ${token}`;
       var myHeaders = new Headers();
       myHeaders.append("Authorization", authstring);
-      myHeaders.append("content-type", "application/json");
+      myHeaders.append("content-type", 'application/json');
 
       let apiurl;
       apiurl = `${API}/accounts/${accountNum}/events`;
@@ -623,14 +531,12 @@ const CreateEvent = (props) => {
           );
           console.log("upload result = ", uploadres);
           if (uploadres.status && uploadres.id) {
-            eventImage.photoMetaData.id = uploadres.id;
+            eventImage.photoMetaData.id = uploadres.id;     
             if (uploadres.image_path) {
-              eventImage.photoMetaData.url = uploadres.image_path;
-              bodyData["photoMetaData"] = eventImage.photoMetaData;
-              //formData.append("photoUrl1", uploadres.image_path);
-              // formData.append("photoUrl2", uploadres.image_path);
+              eventImage.photoMetaData.url= uploadres.image_path;
+              bodyData["photoMetaData"]=eventImage.photoMetaData;
             }
-          }
+          };
         } else {
           imgError = true;
         }
@@ -686,7 +592,7 @@ const CreateEvent = (props) => {
         // end fetch
       }
     }
-  };
+  }
 
   const handleErrors = (response) => {
     if (!response.ok) {
@@ -1232,7 +1138,7 @@ const CreateEvent = (props) => {
   const uploadImage = (uploadurl1, imageFile, crops) => {
     // uploads images to cdn, given url and header
     //https://developers.cloudflare.com/stream/uploading-videos/direct-creator-uploads#using-tus-recommended-for-videos-over-200mb
-    console.log("in uploadImage...w .", uploadurl1, imageFile, crops);
+    console.log("in uploadImage...w .",uploadurl1, imageFile, crops);
     ///  const video = videoInput.files[0];
     const formData = new FormData();
     formData.append("file", imageFile);
