@@ -140,15 +140,17 @@ const EventEdit = (props) => {
   //
 
   const initPhotoData = async (photoMetaData) => {
+    console.log ("in initPhotoData w ", photoMetaData);
     // converts data from server fetch call to photodata for image display
   
-    let eventImg = (photoMetaData.url) ? await  getEventImage(photoMetaData.url):null;
+    let eventImg = (photoMetaData.url) ? await  urlContentToDataUri(photoMetaData.url):null;
         //eventImg  = {status:true, image: imgSrc};
     // check for required fields
+    console.log ("got eventImg>>", eventImg);
     if (!(photoMetaData && photoMetaData.url && eventImg.status)) {
       setEventImage({ photoMetaData: null, isLoaded: true });
     } else {
-      setEventImage({photoMetaData:photoMetaData, imgSrc: eventImg.image, isLoaded: true });
+      setEventImage({photoMetaData:photoMetaData, imgSrc: eventImg.data, isLoaded: true });
     };
       return;
   };
@@ -1138,6 +1140,25 @@ const EventEdit = (props) => {
 
   //   get uril
 
+
+
+  const urlContentToDataUri=(url)=>{
+    console.log (" in urlContentToDataUri");
+    return  fetch(url)
+            .then( response => response.blob() )
+            .then( blob => new Promise( callback =>{
+                let reader = new FileReader() ;
+                reader.onload = function(){ callback(this.result) } ;
+                return reader.readAsDataURL(blob)
+            }))
+            .then (res=>{
+              return {status:true, data:res};
+            })
+            .catch ((err)=>{
+              console.log ("Failed to read: ", url, " with error: ", err);
+              return {status:false, error:err}
+              });
+  }
 
   const getEventImage = (url) => {
     //   const  apiurl = "https://api.bondirectly.com/media/uimgurl";

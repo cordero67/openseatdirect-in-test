@@ -154,6 +154,7 @@ class ImgDropAndCrop extends Component {
   };
 
   handleImageLoaded = (image) => {
+    console.log (">>>>>>>>>>in handleImageLoaded", image);
     let { percentCrop } = this.state;
       const w = image.width;
       const h = image.height;
