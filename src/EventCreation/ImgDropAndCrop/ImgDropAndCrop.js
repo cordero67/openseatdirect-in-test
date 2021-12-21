@@ -122,6 +122,26 @@ class ImgDropAndCrop extends Component {
     }
   };
 
+
+
+  inputCrop = (image, percentCrop) => {
+    // on editEvent, retrieve historical crop values
+    // and restore then back 
+
+    const w = image.width;
+    const h = image.height;
+
+    let { crop } = this.state;
+    crop.aspect = 2;
+    crop.ruleOfThirds = true;
+    crop.x = percentCrop.x * w * 0.01;
+    crop.y = percentCrop.y * h * 0.01;
+    crop.width = percentCrop.width * w * 0.01;
+    crop.height = percentCrop.height * h * 0.01;
+    this.setState({ crop: crop });
+  }
+
+
   defaultCrop = (image) => {
     // sets the default crop. Centered and maximized space subject aspect ratio of 2
     const ASPECT_RATIO = 2 / 1;
@@ -314,10 +334,11 @@ class ImgDropAndCrop extends Component {
       nextProps.imagein.isLoaded !== prevState.imgSrcLoaded ||
       nextProps.imagein.imgSrc !== prevState.imgSrc
     ) {
+
       return {
         imgSrc: nextProps.imagein.imgSrc,
         imgSrcLoaded: nextProps.imagein.isLoaded,
-        newimageData64: nextProps.imagein.imgSrc,
+        newimageData64: nextProps.imagein.imgSrc
       };
     } else return null;
   }

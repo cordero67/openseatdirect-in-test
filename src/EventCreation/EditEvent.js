@@ -139,18 +139,18 @@ const EventEdit = (props) => {
   });
   //
 
-  const initPhotoData = async (photoMetaData) => {
-    console.log ("in initPhotoData w ", photoMetaData);
+  const initPhotoData = async (photoUrl) => {
+    console.log ("in initPhotoData w ", photoUrl);
     // converts data from server fetch call to photodata for image display
   
-    let eventImg = (photoMetaData.url) ? await  urlContentToDataUri(photoMetaData.url):null;
+    let eventImg = (photoUrl) ? await  urlContentToDataUri(photoUrl):null;
         //eventImg  = {status:true, image: imgSrc};
     // check for required fields
     console.log ("got eventImg>>", eventImg);
-    if (!(photoMetaData && photoMetaData.url && eventImg.status)) {
-      setEventImage({ photoMetaData: null, isLoaded: true });
+    if (!(photoUrl && eventImg.status)) {
+      setEventImage({ isLoaded: true });
     } else {
-      setEventImage({photoMetaData:photoMetaData, imgSrc: eventImg.data, isLoaded: true });
+      setEventImage({imgSrc: eventImg.data, isLoaded: true });
     };
       return;
   };
@@ -173,7 +173,7 @@ const EventEdit = (props) => {
       }
       console.log("vendorInfo.status: ", tempVendorInfo.status);
       setVendorInfo(tempVendorInfo);
-      initPhotoData(props.event.photoMetaData);
+      initPhotoData(props.event.photoUrl1);
 
       const [tempTicketArray, tempDescription, tempLongDescription] =
         loadEventInfo(props.event);
@@ -599,7 +599,7 @@ const EventEdit = (props) => {
         fetch(apiurl, {
           method: "post",
           headers: myHeaders,
-          body: bodyData,
+          body: JSON.stringify(bodyData),
           redirect: "follow",
         })
           .then(handleErrors)
@@ -1159,24 +1159,6 @@ const EventEdit = (props) => {
               return {status:false, error:err}
               });
   }
-
-  const getEventImage = (url) => {
-    //   const  apiurl = "https://api.bondirectly.com/media/uimgurl";
-
-    return fetch(url,{
-         method: 'GET',
-         encoding: null 
-    })
-    .then(result => {
-        let imageBuffer  = Buffer.from(result);
-        let imageBase64  = imageBuffer.toString('base64');
-        return {status: true, image: imageBase64}
-    })
-    .catch ((err)=>{
-      return {status:false}
-    })
-  }
-
 
 
   const getOneTimeUploadUrl = () => {
