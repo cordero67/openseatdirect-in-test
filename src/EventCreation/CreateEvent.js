@@ -562,6 +562,7 @@ const CreateEvent = (props) => {
       if (imgError) {
         // update upload failed. here
         tempStatus.status = "failure";
+        setEventStatus(tempStatus);
       } else {
         console.log("about to fetch w", {
           headers: myHeaders,

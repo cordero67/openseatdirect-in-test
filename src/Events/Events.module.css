@@ -2,20 +2,22 @@
   font-family: "Roboto", sans-serif;
   background-color: #fff;
   z-index: 100;
-  height: calc(100vh - 60px);
+  /*height: calc(100vh - 60px);*/
+  min-height: calce(100vh - 60px);
   padding-top: 60px;
   padding-bottom: 40px;
   padding-right: 10px;
   padding-left: 10px;
   box-sizing: border-box;
-
-  overflow: hidden; /* Hide scrollbars */
+  /* overflow: hidden; Hide scrollbars */
 }
 
 .MainGrid {
-  /*background-color: #fff;*/
-  background-color: red;
+  background-color: #fff;
+  /*background-color: red;*/
+  z-index: 0;
   vertical-align: center;
+  min-height: calce(100vh - 60px);
   width: auto;
   padding-top: 30px;
   padding-bottom: 30px;
