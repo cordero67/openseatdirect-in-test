@@ -51,6 +51,7 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const TicketSelection = () => {
+  console.log("You are in Ticket Selection");
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, registration, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
@@ -82,12 +83,6 @@ const TicketSelection = () => {
     userId: "",
   });
 
-  //
-  //
-  //
-  //
-  //
-
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
@@ -103,9 +98,6 @@ const TicketSelection = () => {
     }
 
     eventData(queryString.parse(window.location.search).eventID);
-    //
-    //
-    //
 
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
@@ -118,8 +110,29 @@ const TicketSelection = () => {
           "Current TicketSelection: EVENT DATA OBJECT from Server: in 'getEventData()': ",
           res
         );
+        //eventDetails = loadEventDetails(res);
+        console.log("res.photoUrl2: ", res.photoUrl2);
+
+        console.log("res.photoUrl1: ", res.photoUrl1);
+        // asks for image if event is successfully imported
+        // populates "photoUrl1" and "photoUrl2" fields with default images if not contained in event json
+        if (!("photoUrl1" in res)) {
+          res["photoUrl1"] =
+            "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public";
+        }
+
+        if (!("photoUrl2" in res)) {
+          res["photoUrl2"] =
+            "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public";
+        }
+        console.log("res.photoUrl2: ", res.photoUrl2);
+
+        console.log("res.photoUrl1: ", res.photoUrl1);
+
+        console.log("res: ", res);
+
         eventDetails = loadEventDetails(res);
-        console.log("eventDetails: ", eventDetails);
+        //eventDetails = loadEventDetails(res);
         // checks if an order exists in local storage
         if (
           typeof window !== "undefined" &&
@@ -140,7 +153,7 @@ const TicketSelection = () => {
           setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
           setOrderTotals(loadOrderTotals(res));
         }
-        // asks for image if event is successfully imported
+
         getEventImage(eventID)
           .then((res) => {
             eventLogo = res;
@@ -545,7 +558,7 @@ const TicketSelection = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem(
         `image_${eventDetails.eventNum}`,
-        JSON.stringify(eventLogo)
+        JSON.stringify(eventDetails.photoUrl2)
       );
       localStorage.setItem(`eventNum`, JSON.stringify(eventDetails.eventNum));
 
@@ -710,12 +723,17 @@ const TicketSelection = () => {
   // LOOKS GOOD
   // creates order pane with image and order summary sections
   const orderPane = () => {
+    console.log("eventDetails.photoUrl2: ", eventDetails.photoUrl2);
+    console.log("eventDetails: ", eventDetails);
     if (showDoublePane) {
       return (
         <div>
           <img
             className={classes.Image}
-            src={eventLogo}
+            src={eventDetails.photoUrl2}
+            //src={
+            //   "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public"
+            //}
             alt="Event Logo Coming Soon!!!"
           />
           <div style={OrderSummarySection}>{orderSummary()}</div>

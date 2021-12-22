@@ -39,6 +39,8 @@ export const loadEventDetails = (event) => {
     endDateTime: event.endDateTime,
     timeZone: event.timeZone,
     eventUrl: event.eventUrl,
+    photoUrl1: event.photoUrl1,
+    photoUrl2: event.photoUrl2,
     locationVenueName: event.locationVenueName,
     locationAddress1: event.locationAddress1,
     locationAddress2: event.locationAddress2,
