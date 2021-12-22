@@ -6,7 +6,7 @@ import classes from "./OrderConfirms.module.css";
 export const OrderConfirm = (props) => {
   console.log("order status: ", props.orderStatus);
   // look to delete all ticket, guest and customer information
-  props.clearOrder();
+  //props.clearOrder();
   const response = () => {
     if (props.orderStatus) {
       return (

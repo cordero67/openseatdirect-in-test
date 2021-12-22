@@ -130,11 +130,7 @@ const Checkout = (props) => {
     let url;
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // POTENTIALLY REFACTOR SO USER IS DETERMINED BY "props"
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("user") !== null
-    ) {
+    if (props.customerInformation.sessionToken !== "") {
       url = `${API}/tixorder/signed_place_neworder`;
 
       console.log("signed order: ", order);
@@ -146,9 +142,9 @@ const Checkout = (props) => {
     } else {
       url = `${API}/tixorder/unsigned_place_neworder`;
 
-      order.guestFirstname = props.guestInformation.firstname;
-      order.guestLastname = props.guestInformation.lastname;
-      order.guestEmail = props.guestInformation.email;
+      order.guestFirstname = props.customerInformation.firstname;
+      order.guestLastname = props.customerInformation.lastname;
+      order.guestEmail = props.customerInformation.email;
 
       console.log("unsigned order: ", order);
     }

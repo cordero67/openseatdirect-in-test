@@ -15,6 +15,7 @@ import {
   changeOrderTotals,
   changeTicketInfo,
   amendPromoCodeDetails,
+  resetPromoDetails,
   amendTicketInfo,
   clearPromoDetails,
   clearTicketInfo,
@@ -47,9 +48,45 @@ import Backdrop from "./Modals/Backdrop";
 
 const TicketPurchase = (props) => {
   console.log("Event props: ", props.event);
-  const [display, setDisplay] = useState("selection"); // defines panel displayed: main, selection, registration, infofree, infopaid, payment, spinner, confirmation, connection
-  const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
-  const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
+  // defines panel displayed: main, selection, registration, infofree, infopaid, payment, spinner, confirmation, connection
+  const [display, setDisplay] = useState("selection");
+  // defines single or double panel display on main page
+  const [showDoublePane, setShowDoublePane] = useState(false);
+  // defines panel display for a single panel display on main page
+  const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false);
+
+  //const [guestInformation, setGuestInformation] = useState({
+  // defines guest information sent to server
+  //  firstname: "",
+  //  lastname: "",
+  //  email: "",
+  //});
+  /*
+  const [customerInformation, setCustomerInformation] = useState({
+    // defines contact information sent to server
+    name: "",
+    email: "",
+    sessionToken: "",
+    userId: "",
+  });
+*/
+  // defines customer information sent to server for either a guest or user
+  const [customerInformation2, setCustomerInformation2] = useState({
+    type: "guest",
+    firstname: "",
+    lastname: "",
+    name: "",
+    email: "",
+    sessionToken: "",
+    userId: "",
+  });
+
+  // defines styling for various components
+  const [mainContainer, setMainContainer] = useState({});
+  const [mainGrid, setMainGrid] = useState({});
+  const [eventTicketSection, setEventTicketSection] = useState({});
+  const [orderSummarySection, setOrderSummarySection] = useState({});
+  const [orderSummarySectionAlt, setOrderSummarySectionAlt] = useState({});
 
   const [orderStatus, setOrderStatus] = useState(true); // defines if PayPal order was validated by server
 
@@ -65,56 +102,16 @@ const TicketPurchase = (props) => {
     eventPromoCodes: [],
   });
   const [ticketInfo, setTicketInfo] = useState([]); // ticket order specific ticket information
-  // variables to reset on "Cancel Order" button in paypalStatus screen
-  /*
-  promoCodeDetails;
-  orderTotals;
-  orderStatus; // ???
-
-  setPromoCodeDetails(clearPromoDetails(promoCodeDetails));
-  setTicketInfo(clearTicketInfo(ticketInfo));
-  setOrderTotals(clearOrderTotals(ticketInfo, orderTotals));
-
-  //orderExpiration;
-  setOrderExpiration();
-  //transactionInfo;
-  setTransactionInfo({});
-  //guestInformation;
-  setGuestInformation({
-    // defines guest information sent to server
-    firstname: "",
-    lastname: "",
-    email: "",
-  });
-  */
-
   // order specific
   const [orderTotals, setOrderTotals] = useState([]); // ticket order general info
   // order specific
   const [orderExpiration, setOrderExpiration] = useState();
   // order specific
+  // used to capture transaction information to oass to confirmation page
   const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
   // order specific
-  const [guestInformation, setGuestInformation] = useState({
-    // defines guest information sent to server
-    firstname: "",
-    lastname: "",
-    email: "",
-  });
-  const [customerInformation, setCustomerInformation] = useState({
-    // defines contact information sent to server
-    name: "",
-    email: "",
-    sessionToken: "",
-    userId: "",
-  });
-  const [registrationIndex, setRegistrationIndex] = useState(0);
 
-  const [mainContainer, setMainContainer] = useState({});
-  const [mainGrid, setMainGrid] = useState({});
-  const [eventTicketSection, setEventTicketSection] = useState({});
-  const [orderSummarySection, setOrderSummarySection] = useState({});
-  const [orderSummarySectionAlt, setOrderSummarySectionAlt] = useState({});
+  const [registrationIndex, setRegistrationIndex] = useState(0);
 
   useEffect(() => {
     if (
@@ -122,7 +119,18 @@ const TicketPurchase = (props) => {
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
+      /*
       setCustomerInformation({
+        name: tempUser.user.name,
+        email: tempUser.user.email,
+        sessionToken: tempUser.token,
+        userId: tempUser.user._id,
+      });
+      */
+      setCustomerInformation2({
+        type: "user",
+        firstname: "",
+        lastname: "",
         name: tempUser.user.name,
         email: tempUser.user.email,
         sessionToken: tempUser.token,
@@ -132,55 +140,12 @@ const TicketPurchase = (props) => {
 
     //eventData(queryString.parse(window.location.search).eventID);
     setTicketInfo(loadTicketInfo(props.event));
+    // starts with an empty "promoCodeDetails" and populates it with event promo codes
     setPromoCodeDetails(loadPromoCodeDetails(props.event, promoCodeDetails));
     setOrderTotals(loadOrderTotals(props.event));
 
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
-
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
 
   const stylingUpdate = (inWidth, inHeight) => {
     if (inWidth < 790) {
@@ -256,15 +221,19 @@ const TicketPurchase = (props) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    if (customerInformation.sessionToken !== "") {
+    //if (customerInformation.sessionToken !== "") {
+    if (customerInformation2.sessionToken !== "") {
       console.log("Signed user inside freeTicketHandler");
       // this assumes a checked-in user and zero purchase amount
       myHeaders.append(
         "Authorization",
-        `Bearer ${customerInformation.sessionToken}`
+        //`Bearer ${customerInformation.sessionToken}`
+        `Bearer ${customerInformation2.sessionToken}`
       );
-      let email = customerInformation.email;
-      let name = customerInformation.name;
+      //let email = customerInformation.email;
+      let email = customerInformation2.email;
+      //let name = customerInformation.name;
+      let name = customerInformation2.name;
 
       setTransactionInfo(
         loadTransactionInfo(props.event, orderTotals, ticketInfo, email, name)
@@ -273,15 +242,21 @@ const TicketPurchase = (props) => {
     } else {
       // this assumes a guest and zero purchase amount
       console.log("Guest user inside freeTicketHandler");
-      let email = guestInformation.email;
-      let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
+      //let email = guestInformation.email;
+      let email = customerInformation2.email;
+
+      //let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
+      let name = `${customerInformation2.firstname} ${customerInformation2.lastname}`;
       setTransactionInfo(
         loadTransactionInfo(props.event, orderTotals, ticketInfo, email, name)
       );
 
-      order.guestFirstname = guestInformation.firstname;
-      order.guestLastname = guestInformation.lastname;
-      order.guestEmail = guestInformation.email;
+      //order.guestFirstname = guestInformation.firstname;
+      order.guestFirstname = customerInformation2.firstname;
+      //order.guestLastname = guestInformation.lastname;
+      order.guestLastname = customerInformation2.lastname;
+      //order.guestEmail = guestInformation.email;
+      order.guestEmail = customerInformation2.email;
 
       url = `${API}/tixorder/unsigned_place_neworder`;
     }
@@ -490,13 +465,18 @@ const TicketPurchase = (props) => {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   // LOOKS GOOD
   const detailsMinimal = () => {
-    console.log("guestInformation: ", guestInformation);
+    //console.log("guestInformation: ", guestInformation);
+    console.log("customerInformation2: ", customerInformation2);
 
     if (
-      guestInformation.firstname &&
-      guestInformation.lastname &&
-      guestInformation.email &&
-      regsuper.test(guestInformation.email)
+      //guestInformation.firstname &&
+      customerInformation2.firstname &&
+      //guestInformation.lastname &&
+      customerInformation2.lastname &&
+      //guestInformation.email &&
+      customerInformation2.email &&
+      //regsuper.test(guestInformation.email)
+      regsuper.test(customerInformation2.email)
     ) {
       return true;
     } else {
@@ -507,6 +487,11 @@ const TicketPurchase = (props) => {
   // creates checkout/submit order button
   // THIS IS NOT IN PRODUCTION CODE
   const checkoutButton = () => {
+    console.log("ticketInfo: ", ticketInfo);
+    console.log("transactionInfo: ", transactionInfo);
+    console.log("orderTotals: ", orderTotals);
+    console.log("promoCodeDetails: ", promoCodeDetails);
+    console.log("customerInformation2: ", customerInformation2);
     if (
       // there is a registration requirement & total ticket amount > zero
       props.event.register &&
@@ -546,7 +531,8 @@ const TicketPurchase = (props) => {
       // there is NOT a registration requirement & a signed order of positive tickets and a zero total value
       orderTotals.finalPurchaseAmount === 0 &&
       orderTotals.ticketsPurchased > 0 &&
-      customerInformation.sessionToken !== "" &&
+      //customerInformation.sessionToken !== "" &&
+      customerInformation2.sessionToken !== "" &&
       display === "selection"
     ) {
       return (
@@ -562,7 +548,8 @@ const TicketPurchase = (props) => {
       );
     } else if (
       orderTotals.finalPurchaseAmount > 0 &&
-      customerInformation.sessionToken !== "" &&
+      //customerInformation.sessionToken !== "" &&
+      customerInformation2.sessionToken !== "" &&
       display === "selection"
     ) {
       // there is NOT a registration requirement & a signed order of positive tickets and a positive total value
@@ -701,10 +688,12 @@ const TicketPurchase = (props) => {
   // LOOKS GOOD
   const changeGuestInfo = (event) => {
     console.log("A change was detected");
-    let tempInformation = { ...guestInformation };
+    //let tempInformation = { ...guestInformation };
+    let tempInformation = { ...customerInformation2 };
     tempInformation[event.target.name] = event.target.value;
     console.log("New guest information: ", tempInformation);
-    setGuestInformation(tempInformation);
+    //setGuestInformation(tempInformation);
+    setCustomerInformation2(tempInformation);
   };
 
   // LOOKS GOOD
@@ -939,7 +928,8 @@ const TicketPurchase = (props) => {
             clicked={() => {
               setDisplay("selection");
             }}
-            guestInformation={guestInformation}
+            //guestInformation={guestInformation}
+            guestInformation={customerInformation2}
             orderExpiration={orderExpiration}
             changeField={changeGuestInfo}
           />
@@ -954,16 +944,20 @@ const TicketPurchase = (props) => {
             event={props.event}
             ticketInfo={ticketInfo}
             orderTotals={orderTotals}
-            customerInformation={customerInformation}
-            guestInformation={guestInformation}
+            //customerInformation={customerInformation}
+            customerInformation={customerInformation2}
+            //guestInformation={guestInformation}
+            //guestInformation={customerInformation2}
             orderExpiration={orderExpiration}
             display={(display) => {
               console.log("IN TicketPurchase: SUCCESS");
               console.log("status: ", display);
               if (display === false || display === true) {
                 setOrderStatus(display);
-                let email = customerInformation.email;
-                let name = customerInformation.name;
+                //let email = customerInformation.email;
+                let email = customerInformation2.email;
+                //let name = customerInformation.name;
+                let name = customerInformation2.name;
 
                 setTransactionInfo(
                   loadTransactionInfo(
@@ -983,13 +977,17 @@ const TicketPurchase = (props) => {
               // NEED TO ADD THIS OPTION
               /*
               let email = guestInformation.email;
+              let email = customerInformation2.email;
               let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
+              let name = `${customerInformation2.firstname} ${customerInformation2.lastname}`;
               setTransactionInfo(
                 loadTransactionInfo(props.event, orderTotals, ticketInfo, email, name)
 
                 
               let email = props.guestInformation.email;
+              let email = props.customerInformation2.email;
               let name = `${props.guestInformation.firstname} ${props.guestInformation.lastname}`;
+              let name = `${props.customerInformation2.firstname} ${props.customerInformation2.lastname}`;
               );
 */
             }}
@@ -1031,94 +1029,73 @@ const TicketPurchase = (props) => {
               <button
                 className={classes.ButtonRed}
                 onClick={() => {
-                  console.log("clicked try again");
-                  // NEED TO CLEAR TICKET
-                  // NEED TO CLEAR GUEST INFORMATION
+                  console.log("inside paypalStatus");
+                  console.log("clicked cancel order");
+                  // variables to reset on "Cancel Order" button in paypalStatus screen
+
+                  //orderStatus;
+                  setOrderStatus(true);
+                  console.log("orderStatus: ", orderStatus);
+
+                  //promoCodeDetails;
+                  setPromoCodeDetails(resetPromoDetails(promoCodeDetails));
+                  console.log("promoCodeDetails: ", promoCodeDetails);
+
+                  //orderTotals;
+                  setOrderTotals(loadOrderTotals(props.event));
+                  console.log("orderTotals: ", orderTotals);
+
+                  //orderExpiration;
+                  setOrderExpiration();
+
+                  //transactionInfo;
+                  setTransactionInfo({});
+                  console.log("transactionInfo: ", transactionInfo);
+
+                  //ticketInfo
+                  setTicketInfo(loadTicketInfo(props.event));
+                  console.log("ticketInfo: ", ticketInfo);
+
+                  //customerInformation2
+                  if (
+                    typeof window !== "undefined" &&
+                    localStorage.getItem(`user`) !== null
+                  ) {
+                    console.log("I'm still a user");
+                    let tempUser = JSON.parse(localStorage.getItem("user"));
+                    setCustomerInformation2({
+                      type: "user",
+                      firstname: "",
+                      lastname: "",
+                      name: tempUser.user.name,
+                      email: tempUser.user.email,
+                      sessionToken: tempUser.token,
+                      userId: tempUser.user._id,
+                    });
+                  } else {
+                    console.log("I'm now a guest");
+                    setCustomerInformation2({
+                      type: "guest",
+                      firstname: "",
+                      lastname: "",
+                      name: "",
+                      email: "",
+                      sessionToken: "",
+                      userId: "",
+                    });
+                  }
+                  console.log("customerInformation2: ", customerInformation2);
+
                   setDisplay("selection");
                 }}
               >
-                CANCEL ORDER
+                CANCEL OR
               </button>
             </div>
           </div>
         </div>
       );
     } else return null;
-  };
-
-  // LOOKS GOOD 12/15/2021
-  const paypalStatus = () => {
-    console.log("inside paypalStatus");
-    console.log("ticketInfo: ", ticketInfo);
-    console.log("ticketInfo: ", ticketInfo);
-    console.log("ticketInfo: ", ticketInfo);
-    console.log("ticketInfo: ", ticketInfo);
-    console.log("ticketInfo: ", ticketInfo);
-    // variables to reset on "Cancel Order" button in paypalStatus screen
-    /*
-  promoCodeDetails;
-  orderTotals;
-  orderStatus; // ???
-
-  setPromoCodeDetails(clearPromoDetails(promoCodeDetails));
-  setTicketInfo(clearTicketInfo(ticketInfo));
-  setOrderTotals(clearOrderTotals(ticketInfo, orderTotals));
-
-  //orderExpiration;
-  setOrderExpiration();
-  //transactionInfo;
-  setTransactionInfo({});
-  //guestInformation;
-  setGuestInformation({
-    // defines guest information sent to server
-    firstname: "",
-    lastname: "",
-    email: "",
-  });
-  */
-
-    if (display === "paypal") {
-      return (
-        <Fragment>
-          <div style={{ textAlign: "center" }}>
-            <div
-              style={{
-                fontSize: "20px",
-                lineHeight: "36px",
-                paddingBottom: "10px",
-                color: "red",
-              }}
-            >
-              PayPal cannot process you order at this time.
-              <br></br>
-              Please try again later.
-            </div>
-            <div style={{ paddingTop: "20px", paddingBottom: "10px" }}>
-              <button
-                className={classes.ButtonGreen}
-                onclick={() => {
-                  setDisplay("payment");
-                }}
-              >
-                TRY AGAIN
-              </button>
-            </div>
-            <div style={{ paddingTop: "20px" }}>
-              <button
-                className={classes.ButtonRed}
-                onclick={() => {
-                  setDisplay("selection");
-                }}
-              >
-                CANCEL ORDER
-              </button>
-            </div>
-          </div>
-        </Fragment>
-      );
-    } else {
-      return null;
-    }
   };
 
   // creates ticket pane with promo form and ticket sections
@@ -1213,7 +1190,8 @@ const TicketPurchase = (props) => {
                 if (
                   orderTotals.finalPurchaseAmount === 0 &&
                   orderTotals.ticketsPurchased > 0 &&
-                  customerInformation.sessionToken !== ""
+                  // customerInformation.sessionToken !== ""
+                  customerInformation2.sessionToken !== ""
                 ) {
                   // signed free order => go to freeTicket Handler
                   console.log(
@@ -1221,9 +1199,10 @@ const TicketPurchase = (props) => {
                   );
                   freeTicketHandler();
                 } else if (
-                  orderTotals.finalPurchaseAmount === 0 &&
+                  orderTotals.finalPurchaseAmount > 0 &&
                   orderTotals.ticketsPurchased > 0 &&
-                  customerInformation.sessionToken !== ""
+                  //customerInformation.sessionToken !== ""
+                  customerInformation2.sessionToken !== ""
                 ) {
                   // signed paid order => go to payment gateway
                   console.log(
@@ -1232,7 +1211,8 @@ const TicketPurchase = (props) => {
                 } else if (
                   orderTotals.finalPurchaseAmount === 0 &&
                   orderTotals.ticketsPurchased > 0 &&
-                  customerInformation.sessionToken === ""
+                  //customerInformation.sessionToken === ""
+                  customerInformation2.sessionToken === ""
                 ) {
                   // guest free order => go to guestInfoFree
                   console.log(
@@ -1244,7 +1224,8 @@ const TicketPurchase = (props) => {
                 } else if (
                   orderTotals.finalPurchaseAmount > 0 &&
                   orderTotals.ticketsPurchased > 0 &&
-                  customerInformation.sessionToken === ""
+                  //customerInformation.sessionToken === ""
+                  customerInformation2.sessionToken === ""
                 ) {
                   // guest paid order => go to guestInfoPaid
                   console.log(

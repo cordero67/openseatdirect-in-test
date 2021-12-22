@@ -309,6 +309,19 @@ export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "promoCodeDetails" with removed promo code
 export const clearPromoDetails = (promoCodeDetails) => {
+/*
+    available: false,
+    //applied: false,
+    //input: false,
+    //errorMessage: "",
+    //appliedPromoCode: "",
+    //inputtedPromoValue: "",
+    //lastInvalidPromoCode: "",
+    eventPromoCodes: [],
+    */
+
+
+
   let tempPromoCodeDetails;
   tempPromoCodeDetails = { ...promoCodeDetails };
   tempPromoCodeDetails.applied = false;
@@ -320,6 +333,19 @@ export const clearPromoDetails = (promoCodeDetails) => {
   console.log("UPDATED 'promoCodeDetails': ", tempPromoCodeDetails);
   return tempPromoCodeDetails;
 };
+
+export const resetPromoDetails = (promoCodeDetails) => {
+  let tempPromoCodeDetails;
+  tempPromoCodeDetails = { ...promoCodeDetails };
+  tempPromoCodeDetails.applied = false;
+  tempPromoCodeDetails.input = false;
+  tempPromoCodeDetails.errorMessage = "";
+  tempPromoCodeDetails.appliedPromoCode = "";
+  tempPromoCodeDetails.inputtedPromoValue = "";
+  tempPromoCodeDetails.lastInvalidPromoCode = "";
+  console.log("RESET 'promoCodeDetails': ", tempPromoCodeDetails);
+  return tempPromoCodeDetails;
+}
 
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "ticketInfo" with removed promo code

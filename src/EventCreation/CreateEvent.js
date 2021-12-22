@@ -9,6 +9,7 @@ import dateFnsFormat from "date-fns/format";
 import { API } from "../config";
 
 import SavedModal from "./Modals/SavedModal";
+import CreateModal from "./Modals/CreateModal";
 import EventDetails from "./Components/EventDetails";
 import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./Components/AdditionalSettings";
@@ -32,6 +33,8 @@ const CreateEvent = (props) => {
   const [pageErrors, setPageErrors] = useState(false);
 
   const [showModal, setShowModal] = useState(false); //
+
+  const [showEventCrationModal, setShowEventCreationModal] = useState(false); //
 
   const [eventImage, setEventImage] = useState({
     imgFile: "",
@@ -110,7 +113,7 @@ const CreateEvent = (props) => {
   ]);
 
   const [eventStatus, setEventStatus] = useState({
-    status: "", // "saved", "live", "error", "failure"
+    status: "", // "processing", "saved", "live", "error", "failure"
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
     errorMessage: "", //["Please fix input errors and resubmit."],
@@ -172,7 +175,7 @@ const CreateEvent = (props) => {
     */
 
     let tempStatus = { ...eventStatus };
-    tempStatus.status = newStatus;
+    //tempStatus.status = newStatus;
 
     let bodyData = {};
     let ticketData = null;
@@ -588,6 +591,15 @@ const CreateEvent = (props) => {
         }
       });
 
+      // NEED TO START MODAL AT THIS POINT
+      // NEED TO START MODAL AT THIS POINT
+      // NEED TO START MODAL AT THIS POINT
+      // NEED TO START MODAL AT THIS POINT
+
+      tempStatus.status = "processing";
+      console.log("Setting it to processing");
+      setEventStatus(tempStatus);
+
       if (atLeast1Tix && ticketData) {
         bodyData.tickets = ticketData;
       }
@@ -642,13 +654,11 @@ const CreateEvent = (props) => {
         // update upload failed. here
         tempStatus.status = "failure";
         setEventStatus(tempStatus);
-        setShowModal(true);
       } else {
         console.log("about to fetch w", {
           headers: myHeaders,
           body: JSON.stringify(bodyData),
         });
-
         fetch(apiurl, {
           method: "POST",
           headers: myHeaders,
@@ -671,6 +681,9 @@ const CreateEvent = (props) => {
                 tempStatus.failureMessage = res.error;
               }
             }
+            console.log(".then setting either failure or error");
+            tempStatus.status = newStatus;
+            console.log("tempStatus: ", tempStatus);
             setEventStatus(tempStatus);
             return res;
           })
@@ -678,12 +691,13 @@ const CreateEvent = (props) => {
             console.log("Inside the .catch");
             console.log("**ERROR THROWN", err);
             tempStatus.status = "failure";
+            console.log(".catch setting to failure");
+            console.log("tempStatus: ", tempStatus);
             setEventStatus(tempStatus);
           })
           .finally(() => {
             setShowModal(true);
           });
-        // end fetch
       }
     }
   };
@@ -697,7 +711,13 @@ const CreateEvent = (props) => {
   // END STRAIGHT COPY FROM ORIGINAL
 
   const savedModal = () => {
-    if (eventStatus.status === "failure" || eventStatus.status === "error") {
+    console.log("eventStatus.status ", eventStatus.status);
+    if (eventStatus.status === "processing") {
+      console.log("PROCESSING");
+    } else if (
+      eventStatus.status === "failure" ||
+      eventStatus.status === "error"
+    ) {
       return (
         <Fragment>
           <SavedModal
@@ -722,6 +742,42 @@ const CreateEvent = (props) => {
               window.location.href = `/myaccount`;
             }}
           ></SavedModal>
+        </Fragment>
+      );
+    } else return null;
+  };
+
+  const createModal = () => {
+    if (eventStatus.status === "processing") {
+      console.log("PROCESSING");
+    } else if (
+      eventStatus.status === "failure" ||
+      eventStatus.status === "error"
+    ) {
+      return (
+        <Fragment>
+          <CreateModal
+            show={showModal}
+            details={eventStatus}
+            closeModal={() => {
+              setShowModal(false);
+            }}
+          ></CreateModal>
+        </Fragment>
+      );
+    } else if (
+      eventStatus.status === "saved" ||
+      eventStatus.status === "live"
+    ) {
+      return (
+        <Fragment>
+          <CreateModal
+            show={showModal}
+            details={eventStatus}
+            toDashboard={() => {
+              window.location.href = `/myaccount`;
+            }}
+          ></CreateModal>
         </Fragment>
       );
     } else return null;
@@ -1274,6 +1330,12 @@ const CreateEvent = (props) => {
       });
   };
 
+  const spinner = () => {
+    if (display === "spinner") {
+      return <Spinner />;
+    } else return null;
+  };
+
   const main = () => {
     if (display === "main") {
       return (
@@ -1285,6 +1347,7 @@ const CreateEvent = (props) => {
           </div>
           <div className={classes.DisplayPanel}>
             {savedModal()}
+            {/*createModal()*/}
             <EventDetails
               event={eventDescription}
               longDescription={"Hello"}
@@ -1342,7 +1405,12 @@ const CreateEvent = (props) => {
     } else return null;
   };
 
-  return <div>{main()}</div>;
+  return (
+    <div>
+      {main()}
+      {spinner()}
+    </div>
+  );
 };
 
 export default CreateEvent;

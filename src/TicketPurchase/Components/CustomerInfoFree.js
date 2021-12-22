@@ -9,15 +9,6 @@ import GuestForm from "./GuestForm";
 import { loadTransactionInfo } from "../Resources/TicketSelectionFunctions";
 import classes from "./CustomerInfo.module.css";
 
-// defines the variables contained in the "cart_" data from "localStorage"
-let eventDetails = {};
-let ticketInfo = {};
-let orderTotals = {};
-let osdOrderId;
-let orderExpiration;
-
-let EventTicketSection = {};
-
 const CustomerInfoFree = (props) => {
   //console.log("props: ", props);
   //const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, connection
@@ -26,34 +17,9 @@ const CustomerInfoFree = (props) => {
 
   //const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
 
-  const [guestInformation, setGuestInformation] = useState({
-    // defines guest information sent to server
-    firstname: "",
-    lastname: "",
-    email: "",
-  });
-
   //const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
 
   //const [orderStatus, setOrderStatus] = useState(false); // defines if order was successful
-
-  // LOOKS GOOD
-  // determines what "contact information" has been filled out by the ticket buyer
-  const regsuper =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  // LOOKS GOOD
-  let detailsMinimal = () => {
-    if (
-      guestInformation.firstname &&
-      guestInformation.lastname &&
-      guestInformation.email &&
-      regsuper.test(guestInformation.email)
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
 
   // LOOKS GOOD
   const handleErrors = (response) => {
@@ -64,100 +30,6 @@ const CustomerInfoFree = (props) => {
     return response;
   };
 
-  const freeTicketHandler = (user) => {
-    let order = {
-      eventNum: eventDetails.eventNum,
-      totalAmount: orderTotals.finalPurchaseAmount,
-    };
-
-    if (orderTotals.finalPurchaseAmount === 0) {
-      order.isFree = true;
-    } else {
-      order.isFree = false;
-    }
-
-    let tickets = [];
-    ticketInfo.map((item) => {
-      if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
-        let tempObject = {};
-        tempObject.ticketID = item.ticketID;
-        tempObject.ticketsSelected = item.ticketsSelected;
-        tickets.push(tempObject);
-        if (
-          item.ticketsSelected > 0 &&
-          "form" in item.ticketPriceFunction &&
-          item.ticketPriceFunction.form === "promo" &&
-          item.adjustedTicketPrice !== item.ticketPrice
-        ) {
-          order.promo = item.ticketPriceFunction.args[0].name;
-        }
-      }
-    });
-
-    order.tickets = tickets;
-
-    let url;
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    if (user) {
-      //
-      myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
-      //
-      // following code runs if user signs up rather than proceed with guest checkout
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      let email = tempUser.user.email;
-      let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
-
-      //setTransactionInfo(
-      //  loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
-      //);
-      url = `tixorder/signed_place_neworder`;
-    } else {
-      //
-      let email = guestInformation.email;
-      let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
-      //setTransactionInfo(
-      //  loadTransactionInfo(props.event, orderTotals, ticketInfo, email, name)
-      //);
-
-      order.guestFirstname = props.guestInformation.firstname;
-      order.guestLastname = props.guestInformation.lastname;
-      order.guestEmail = props.guestInformation.email;
-
-      //url = `${API}/tixorder/unsigned_place_neworder`;
-    }
-
-    let fetcharg = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(order),
-    };
-    console.log("fetching with: ", url, fetcharg);
-    console.log("Free ticket order: ", order);
-    //
-    fetch(url, fetcharg)
-      .then(handleErrors)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        //setOrderStatus(data.status);
-        //setDisplay("confirmation");
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        //setDisplay("connection");
-      })
-      .finally(() => {
-        //purchaseConfirmHandler();
-        if (user) {
-          setModalStatus(false);
-        }
-      });
-  };
   /*
   // creates submit button to send free ticket information to server
   const checkoutButton = () => {
