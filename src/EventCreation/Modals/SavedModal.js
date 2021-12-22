@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 
 import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import classes from "./SavedModal.module.css";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 const SavedModal = (props) => {
   console.log("item", props.details);
@@ -75,6 +76,45 @@ const SavedModal = (props) => {
     );
   }
 
+  const spinner = () => {
+    if (props.details.status === "processing") {
+      return <Spinner />;
+    } else return null;
+  };
+
+  const mainBody = () => {
+    if (props.details.status !== "processing") {
+      return (
+        <Fragment>
+          <br></br>
+          <div
+            style={{
+              fontSize: "24px",
+              textAlign: "center",
+              paddingTop: "5px",
+              paddingBottom: "10px",
+            }}
+          >
+            {titleText}
+          </div>
+          <div
+            style={{
+              fontSize: "16px",
+              textAlign: "center",
+              color: "red",
+              paddingTop: "5px",
+              paddingBottom: "10px",
+            }}
+          >
+            {errorMessage}
+          </div>
+          {buttonSelection}
+          <br></br>
+        </Fragment>
+      );
+    } else return null;
+  };
+
   return (
     <Fragment>
       <Backdrop show={props.show}></Backdrop>
@@ -85,30 +125,8 @@ const SavedModal = (props) => {
         }}
         className={classes.Modal}
       >
-        <br></br>
-        <div
-          style={{
-            fontSize: "24px",
-            textAlign: "center",
-            paddingTop: "5px",
-            paddingBottom: "10px",
-          }}
-        >
-          {titleText}
-        </div>
-        <div
-          style={{
-            fontSize: "16px",
-            textAlign: "center",
-            color: "red",
-            paddingTop: "5px",
-            paddingBottom: "10px",
-          }}
-        >
-          {errorMessage}
-        </div>
-        {buttonSelection}
-        <br></br>
+        {spinner()}
+        {mainBody()}
       </div>
     </Fragment>
   );

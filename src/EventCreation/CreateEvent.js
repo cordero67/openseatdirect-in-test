@@ -174,9 +174,6 @@ const CreateEvent = (props) => {
     }
     */
 
-    let tempStatus = { ...eventStatus };
-    //tempStatus.status = newStatus;
-
     let bodyData = {};
     let ticketData = null;
 
@@ -511,13 +508,12 @@ const CreateEvent = (props) => {
       });
 
       // NEED TO START MODAL AT THIS POINT
-      // NEED TO START MODAL AT THIS POINT
-      // NEED TO START MODAL AT THIS POINT
-      // NEED TO START MODAL AT THIS POINT
 
+      let tempStatus = { ...eventStatus };
       tempStatus.status = "processing";
       console.log("Setting it to processing");
       setEventStatus(tempStatus);
+      setShowModal(true);
 
       if (atLeast1Tix && ticketData) {
         bodyData.tickets = ticketData;
@@ -562,14 +558,14 @@ const CreateEvent = (props) => {
         }
       }
 
+      tempStatus = { ...eventStatus };
       if (imgError) {
         // update upload failed. here
         tempStatus.status = "failure";
-        setEventStatus(tempStatus);
       } else {
         console.log("about to fetch w", {
           headers: myHeaders,
-          //          body: JSON.stringify(bodyData),
+          //body: JSON.stringify(bodyData),
           body: bodyData,
         });
         fetch(apiurl, {
@@ -593,11 +589,11 @@ const CreateEvent = (props) => {
                 tempStatus.status = "failure";
                 tempStatus.failureMessage = res.error;
               }
+            } else {
+              console.log(".then setting either live or draft");
+              tempStatus.status = newStatus;
             }
-            console.log(".then setting either failure or error");
-            tempStatus.status = newStatus;
             console.log("tempStatus: ", tempStatus);
-            setEventStatus(tempStatus);
             return res;
           })
           .catch((err) => {
@@ -606,10 +602,9 @@ const CreateEvent = (props) => {
             tempStatus.status = "failure";
             console.log(".catch setting to failure");
             console.log("tempStatus: ", tempStatus);
-            setEventStatus(tempStatus);
           })
           .finally(() => {
-            setShowModal(true);
+            setEventStatus(tempStatus);
           });
       }
     }
@@ -627,10 +622,26 @@ const CreateEvent = (props) => {
     console.log("eventStatus.status ", eventStatus.status);
     if (eventStatus.status === "processing") {
       console.log("PROCESSING");
+      console.log("showModal: ", showModal);
+      console.log("eventStatus: ", eventStatus);
+      return (
+        <Fragment>
+          <SavedModal
+            show={showModal}
+            details={eventStatus}
+            closeModal={() => {
+              setShowModal(false);
+            }}
+          ></SavedModal>
+        </Fragment>
+      );
     } else if (
       eventStatus.status === "failure" ||
       eventStatus.status === "error"
     ) {
+      console.log("Failue or error");
+      console.log("showModal: ", showModal);
+      console.log("eventStatus: ", eventStatus);
       return (
         <Fragment>
           <SavedModal
@@ -646,6 +657,9 @@ const CreateEvent = (props) => {
       eventStatus.status === "saved" ||
       eventStatus.status === "live"
     ) {
+      console.log("saved or live");
+      console.log("showModal: ", showModal);
+      console.log("eventStatus: ", eventStatus);
       return (
         <Fragment>
           <SavedModal
@@ -657,7 +671,12 @@ const CreateEvent = (props) => {
           ></SavedModal>
         </Fragment>
       );
-    } else return null;
+    } else {
+      console.log("null");
+      console.log("showModal: ", showModal);
+      console.log("eventStatus: ", eventStatus);
+      return null;
+    }
   };
 
   const createModal = () => {
