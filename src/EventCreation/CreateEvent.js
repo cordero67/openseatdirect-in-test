@@ -19,8 +19,6 @@ import classes from "./VendorDashboard.module.css";
 
 //import { uploadImage } from "./ImgDropAndCrop/ResuableUtils";
 
-// holds sign-in information
-
 const CreateEvent = (props) => {
   const [vendorInfo, setVendorInfo] = useState({});
   const [display, setDisplay] = useState("spinner"); // spinner, main
@@ -33,8 +31,6 @@ const CreateEvent = (props) => {
   const [pageErrors, setPageErrors] = useState(false);
 
   const [showModal, setShowModal] = useState(false); //
-
-  const [showEventCrationModal, setShowEventCreationModal] = useState(false); //
 
   const [eventImage, setEventImage] = useState({
     imgFile: "",
@@ -161,18 +157,6 @@ const CreateEvent = (props) => {
     setLocationVenueNameOmission(false);
     setWebinarLinkOmission(false);
     setTbaInformationOmission(false);
-    /*
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      vendorInfo.token = tempUser.token;
-      vendorInfo.id = tempUser.user._id;
-    } else {
-      window.location.href = "/auth";
-    }
-    */
 
     let bodyData = {};
     let ticketData = null;
@@ -339,6 +323,7 @@ const CreateEvent = (props) => {
       }
 
       ticketData = [];
+      //var formData = new FormData();
 
       if (newStatus === "saved") {
         tempDescription.isDraft = true;
@@ -350,6 +335,7 @@ const CreateEvent = (props) => {
         console.log("event will be live");
       }
 
+      console.log("tempDescription: ", tempDescription);
       setEventDescription(tempDescription);
 
       // does not send empty fields to server
@@ -384,6 +370,7 @@ const CreateEvent = (props) => {
 
       // eliminate empty ticket types
       let tempTicketDetails = [...ticketDetails];
+      console.log("tempTicketDetails: ", tempTicketDetails);
 
       let ticketDetailsFields = [
         "ticketName",

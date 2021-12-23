@@ -43,8 +43,8 @@ const SideDrawerItems = (props) => {
     <ul className={classes.SideItems}>
       <li>
         <NavLink
-          to="/events"
-          style={isActive(props.currentPage, "/events")}
+          to="/"
+          style={isActive(props.currentPage, "/")}
           onClick={props.clicked}
         >
           Events
