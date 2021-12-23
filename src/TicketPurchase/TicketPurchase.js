@@ -139,6 +139,7 @@ const TicketPurchase = (props) => {
     }
 
     //eventData(queryString.parse(window.location.search).eventID);
+    console.log("ticketInfo: ", loadTicketInfo(props.event));
     setTicketInfo(loadTicketInfo(props.event));
     // starts with an empty "promoCodeDetails" and populates it with event promo codes
     setPromoCodeDetails(loadPromoCodeDetails(props.event, promoCodeDetails));

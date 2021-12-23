@@ -74,8 +74,7 @@ const CreateEvent = (props) => {
     refundPolicy: "noRefunds",
   });
 
-  const [eventLongDescription, setEventLongDescription] =
-    useState("Hello world");
+  const [eventLongDescription, setEventLongDescription] = useState("");
 
   const [initialEventDescription, setInitialEventDescription] = useState("");
 

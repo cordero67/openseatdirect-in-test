@@ -149,6 +149,7 @@ const TicketSelection = () => {
           if (res.tickets.length === 0) {
             window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
           }
+          console.log("ticketInfo: ", loadTicketInfo(res));
           setTicketInfo(loadTicketInfo(res));
           setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
           setOrderTotals(loadOrderTotals(res));

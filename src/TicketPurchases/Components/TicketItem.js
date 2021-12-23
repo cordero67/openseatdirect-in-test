@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 import styles from "./TicketItem.module.css";
 
 const TicketItem = (props) => {
-  //console.log("props: ", props);
+  console.log("props: ", props);
   //console.log(props.name.minTicketsAllowedPerOrder);
   //console.log(props.name.maxTicketsAllowedPerOrder);
 
