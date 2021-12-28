@@ -111,9 +111,7 @@ export const loadTicketInfo = (event) => {
         let tempArgs = {
           buy: parseInt(item.priceFunction.args.buy),
           get: parseInt(item.priceFunction.args.get),
-          discount: parseFloat(
-            (item.priceFunction.args.discount * 100).toFixed(2)
-          ),
+          discount: parseFloat(item.priceFunction.args.discount),
         };
         priceFunction = {
           form: "bogo",
@@ -289,12 +287,17 @@ export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
     if (item.ticketPriceFunction.form === "promo") {
       item.ticketPriceFunction.args.forEach((element) => {
         if (element.name === inputtedPromoCode) {
-          if (element.percent === "false") {
+          if (!element.percent) {
+            console.log("element.amount: ", element.amount);
+            console.log("element: ", element);
+            console.log("percent is false");
             item.adjustedTicketPrice = item.ticketPrice - element.amount;
-            item.ticketPricingCodeApplied = inputtedPromoCode;
           } else {
+            console.log("element.amount: ", element.amount);
+            console.log("element: ", element);
+            console.log("percent is true");
             item.adjustedTicketPrice = parseFloat(
-              (item.ticketPrice * (1 - element.amount)).toFixed(2)
+              (item.ticketPrice * (1 - element.amount / 100)).toFixed(2)
             );
           }
           item.ticketPricingCodeApplied = inputtedPromoCode;
@@ -309,7 +312,7 @@ export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "promoCodeDetails" with removed promo code
 export const clearPromoDetails = (promoCodeDetails) => {
-/*
+  /*
     available: false,
     //applied: false,
     //input: false,
@@ -319,8 +322,6 @@ export const clearPromoDetails = (promoCodeDetails) => {
     //lastInvalidPromoCode: "",
     eventPromoCodes: [],
     */
-
-
 
   let tempPromoCodeDetails;
   tempPromoCodeDetails = { ...promoCodeDetails };
@@ -345,7 +346,7 @@ export const resetPromoDetails = (promoCodeDetails) => {
   tempPromoCodeDetails.lastInvalidPromoCode = "";
   console.log("RESET 'promoCodeDetails': ", tempPromoCodeDetails);
   return tempPromoCodeDetails;
-}
+};
 
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "ticketInfo" with removed promo code

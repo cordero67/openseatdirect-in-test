@@ -370,7 +370,11 @@ const EventDetail = () => {
       return (
         <div className={classes.LowerGrid}>
           <div className={classes.LeftLowerGrid}>
-            <div>{ReactHtmlParser(eventDetails.longDescription)}</div>
+            <div>
+              {eventDetails.longDescription
+                ? ReactHtmlParser(eventDetails.longDescription)
+                : null}
+            </div>
           </div>
           <div className={classes.RightLowerGrid}>
             <div className={classes.TitleRight}>Date and Time</div>
@@ -386,7 +390,11 @@ const EventDetail = () => {
             <div className={classes.TitleLeft}>Date and Time</div>
             {dateRange()}
             {locationInfo()}
-            <div>{ReactHtmlParser(eventDetails.longDescription)}</div>
+            <div>
+              {eventDetails.longDescription
+                ? ReactHtmlParser(eventDetails.longDescription)
+                : null}
+            </div>
           </div>
         </div>
       );

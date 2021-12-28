@@ -365,10 +365,18 @@ const EventDetail = () => {
 
   const bottomDisplay = () => {
     if (showSmallerDoublePane && !isLoadingEvent) {
+      console.log(
+        "eventDetails.longDescription: ",
+        eventDetails.longDescription
+      );
       return (
         <div className={classes.LowerGrid}>
           <div className={classes.LeftLowerGrid}>
-            <div>{ReactHtmlParser(eventDetails.longDescription)}</div>
+            <div>
+              {eventDetails.longDescription
+                ? ReactHtmlParser(eventDetails.longDescription)
+                : null}
+            </div>
           </div>
           <div className={classes.RightLowerGrid}>
             <div className={classes.TitleRight}>Date and Time</div>
@@ -378,13 +386,21 @@ const EventDetail = () => {
         </div>
       );
     } else if (!isLoadingEvent) {
+      console.log(
+        "eventDetails.longDescription: ",
+        eventDetails.longDescription
+      );
       return (
         <div className={classes.LowerGrid}>
           <div className={classes.LeftLowerGrid}>
             <div className={classes.TitleLeft}>Date and Time</div>
             {dateRange()}
             {locationInfo()}
-            <div>{ReactHtmlParser(eventDetails.longDescription)}</div>
+            <div>
+              {eventDetails.longDescription
+                ? ReactHtmlParser(eventDetails.longDescription)
+                : null}
+            </div>
           </div>
         </div>
       );
@@ -491,7 +507,7 @@ const EventDetail = () => {
     }
   };
 
-  return <div className={classes.MainContainer}>{mainDisplay()}</div>;
+  return <div className={classes.MainContainer}>{mainDisplay()}HELLO</div>;
 };
 
 export default EventDetail;

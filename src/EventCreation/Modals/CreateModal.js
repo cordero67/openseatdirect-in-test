@@ -18,8 +18,8 @@ const CreateModal = (props) => {
     if (!props.details.failureMessage) {
       titleText = "Please fix input errors and resubmit.";
     } else {
-      titleText = "Please fix following input error";
-      errorMessage = props.details.failureMessage;
+      titleText = "Please fix following input error"; // FIX TO MAKE MORE GENERIC
+      errorMessage = props.details.failureMessage; // FIX TO MAKE MORE GENERIC
     }
   }
 

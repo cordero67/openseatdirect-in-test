@@ -114,7 +114,8 @@ export const loadTicketInfo = (event) => {
           buy: parseInt(item.priceFunction.args.buy),
           get: parseInt(item.priceFunction.args.get),
           discount: parseFloat(
-            (item.priceFunction.args.discount * 100).toFixed(2)
+            //(item.priceFunction.args.discount * 100).toFixed(2)
+            item.priceFunction.args.discount
           ),
         };
         priceFunction = {
@@ -124,6 +125,7 @@ export const loadTicketInfo = (event) => {
         pricingCode = "bogo";
       }
     }
+    console.log("Pricefunction: ", priceFunction);
     let minOrder = "";
     let maxOrder = "";
     if ("maxTicketsAllowedPerOrder" in item) {
@@ -291,12 +293,17 @@ export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
     if (item.ticketPriceFunction.form === "promo") {
       item.ticketPriceFunction.args.forEach((element) => {
         if (element.name === inputtedPromoCode) {
-          if (element.percent === "false") {
+          if (!element.percent) {
+            console.log("element.amount: ", element.amount);
+            console.log("element: ", element);
+            console.log("percent is false");
             item.adjustedTicketPrice = item.ticketPrice - element.amount;
-            item.ticketPricingCodeApplied = inputtedPromoCode;
           } else {
+            console.log("element.amount: ", element.amount);
+            console.log("element: ", element);
+            console.log("percent is true");
             item.adjustedTicketPrice = parseFloat(
-              (item.ticketPrice * (1 - element.amount)).toFixed(2)
+              (item.ticketPrice * (1 - element.amount / 100)).toFixed(2)
             );
           }
           item.ticketPricingCodeApplied = inputtedPromoCode;

@@ -39,8 +39,6 @@ import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackgroun
 import TicketItem from "./Components/TicketItem";
 import classes from "./TicketSelection.module.css";
 
-//
-
 let eventDetails; // defines an event's NON ticket type specific information
 let eventLogo = ""; // defines an event's image
 
@@ -241,6 +239,7 @@ const TicketSelection = () => {
 
     let tickets = [];
     ticketInfo.map((item) => {
+      console.log("item: ", item);
       if (item.adjustedTicketPrice === 0 && item.ticketsSelected > 0) {
         let tempObject = {};
         tempObject.ticketID = item.ticketID;

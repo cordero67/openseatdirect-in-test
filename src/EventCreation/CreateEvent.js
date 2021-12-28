@@ -9,7 +9,6 @@ import dateFnsFormat from "date-fns/format";
 import { API } from "../config";
 
 import SavedModal from "./Modals/SavedModal";
-import CreateModal from "./Modals/CreateModal";
 import EventDetails from "./Components/EventDetails";
 import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./Components/AdditionalSettings";
@@ -430,7 +429,7 @@ const CreateEvent = (props) => {
               args: {
                 buy: ticket.functionArgs.buy,
                 get: ticket.functionArgs.get,
-                discount: ticket.functionArgs.discount / 100,
+                discount: ticket.functionArgs.discount,
               },
             };
           }
@@ -562,6 +561,33 @@ const CreateEvent = (props) => {
           redirect: "follow",
         })
           .then(handleErrors)
+
+          .then((response) => {
+            console.log("response in create", response);
+            return response.json();
+          })
+          .then((res) => {
+            if (res.status) {
+              // all good
+              console.log(".then setting either live or draft");
+              tempStatus.status = newStatus;
+            } else {
+              tempStatus.status = "error";
+              tempStatus.errorMessage = res.error;
+            }
+          })
+          .catch((err) => {
+            console.log("Inside the .catch");
+            console.log("**ERROR THROWN", err);
+            tempStatus.status = "failure";
+            console.log(".catch setting to failure");
+            console.log("tempStatus: ", tempStatus);
+          })
+          .finally(() => {
+            setEventStatus(tempStatus);
+          });
+
+        /*
           .then((response) => {
             console.log("response in create", response);
             return response.json();
@@ -593,6 +619,7 @@ const CreateEvent = (props) => {
           .finally(() => {
             setEventStatus(tempStatus);
           });
+          */
       }
     }
   };
@@ -664,42 +691,6 @@ const CreateEvent = (props) => {
       console.log("eventStatus: ", eventStatus);
       return null;
     }
-  };
-
-  const createModal = () => {
-    if (eventStatus.status === "processing") {
-      console.log("PROCESSING");
-    } else if (
-      eventStatus.status === "failure" ||
-      eventStatus.status === "error"
-    ) {
-      return (
-        <Fragment>
-          <CreateModal
-            show={showModal}
-            details={eventStatus}
-            closeModal={() => {
-              setShowModal(false);
-            }}
-          ></CreateModal>
-        </Fragment>
-      );
-    } else if (
-      eventStatus.status === "saved" ||
-      eventStatus.status === "live"
-    ) {
-      return (
-        <Fragment>
-          <CreateModal
-            show={showModal}
-            details={eventStatus}
-            toDashboard={() => {
-              window.location.href = `/myaccount`;
-            }}
-          ></CreateModal>
-        </Fragment>
-      );
-    } else return null;
   };
 
   // garuantees that only one ticket has a "true" "viewModal" value
@@ -1266,7 +1257,6 @@ const CreateEvent = (props) => {
           </div>
           <div className={classes.DisplayPanel}>
             {savedModal()}
-            {/*createModal()*/}
             <EventDetails
               event={eventDescription}
               longDescription={"Hello"}
