@@ -134,9 +134,9 @@ export const loadEventInfo = (eventTix) => {
           tempPromoCodes.map((promo, index) => {
             let tempPercent;
             let tempAmount;
-            if ("percent" in promo && promo.percent === "true") {
+            if ("percent" in promo && promo.percent === true) {
               tempPercent = true;
-              tempAmount = promo.amount * 100;
+              tempAmount = promo.amount;
               console.log("percent is true");
             } else {
               tempPercent = false;
@@ -157,7 +157,7 @@ export const loadEventInfo = (eventTix) => {
             buyWarning: false,
             get: tix.priceFunction.args.get,
             getWarning: false,
-            discount: tix.priceFunction.args.discount * 100,
+            discount: tix.priceFunction.args.discount,
             discountWarning: false,
             reqWarning: false,
           };

@@ -31,7 +31,6 @@ const EventEdit = (props) => {
 
   const [showModal, setShowModal] = useState(false);
 
-
   const [windowWidth, setWindowWidth] = useState([]);
   //
   // LOOKS GOOD
@@ -67,7 +66,7 @@ const EventEdit = (props) => {
     endTime: "20:00:00", //duped with "createEvent"
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, //duped with "createEvent"
     media_id: "",
-////    photo: "", // ONLY USED IN CREATEEVENT
+    ////    photo: "", // ONLY USED IN CREATEEVENT
     photoChanged: false, // NOT USED IN CREATEEVENT
     shortDescription: "", //duped with "createEvent"
     //longDescription: "", //duped with "createEvent"
@@ -118,15 +117,15 @@ const EventEdit = (props) => {
     imgSrc: null,
     imgFile: "",
     percentCrop: {},
-    photoMetaData:{},
+    photoMetaData: {},
     isLoaded: false,
   }); // special case
 
-//  const [photoData, setPhotoData] = useState({
-//    imgSrc: null,
-//    imgSrcExt: null,
-//    isLoaded: false,
-//  });
+  //  const [photoData, setPhotoData] = useState({
+  //    imgSrc: null,
+  //    imgSrcExt: null,
+  //    isLoaded: false,
+  //  });
 
   //START MATCHES "CreateEvent"
   const [eventStatus, setEventStatus] = useState({
@@ -140,19 +139,19 @@ const EventEdit = (props) => {
   //
 
   const initPhotoData = async (photoUrl) => {
-    console.log ("in initPhotoData w ", photoUrl);
+    console.log("in initPhotoData w ", photoUrl);
     // converts data from server fetch call to photodata for image display
-  
-    let eventImg = (photoUrl) ? await  urlContentToDataUri(photoUrl):null;
-        //eventImg  = {status:true, image: imgSrc};
+
+    let eventImg = photoUrl ? await urlContentToDataUri(photoUrl) : null;
+    //eventImg  = {status:true, image: imgSrc};
     // check for required fields
-    console.log ("got eventImg>>", eventImg);
+    console.log("got eventImg>>", eventImg);
     if (!(photoUrl && eventImg.status)) {
       setEventImage({ isLoaded: true });
     } else {
-      setEventImage({imgSrc: eventImg.data, isLoaded: true });
-    };
-      return;
+      setEventImage({ imgSrc: eventImg.data, isLoaded: true });
+    }
+    return;
   };
 
   useEffect(() => {
@@ -210,8 +209,8 @@ const EventEdit = (props) => {
     let tempStatus = { ...eventStatus };
     tempStatus.status = newStatus;
 
-    let bodyData = {};  ///new for
-    let ticketData =null;
+    let bodyData = {}; ///new for
+    let ticketData = null;
 
     console.log("ticketDetails: ", ticketDetails);
 
@@ -373,18 +372,17 @@ const EventEdit = (props) => {
         tempDescription.onlineInformation = "";
       }
 
-      ticketData =[];
+      ticketData = [];
 
       if (newStatus === "saved") {
         tempDescription.isDraft = true;
-        bodyData["isDraft"]="true";
+        bodyData["isDraft"] = "true";
         console.log("event will be saved");
       } else if (newStatus === "live") {
         tempDescription.isDraft = false;
-         bodyData["isDraft"]="false";
+        bodyData["isDraft"] = "false";
         console.log("event will be live");
       }
-
 
       setEventDescription(tempDescription);
 
@@ -392,7 +390,7 @@ const EventEdit = (props) => {
       eventDescriptionFields.forEach((field) => {
         if (tempDescription[field] || originalEventDescription[field]) {
           console.log("eventDescription[field]: ", tempDescription[field]);
-          bodyData[field]=tempDescription[field];
+          bodyData[field] = tempDescription[field];
         }
       });
 
@@ -400,7 +398,7 @@ const EventEdit = (props) => {
       //eventDescriptionFields.forEach((field) => {
       if (eventLongDescription !== "") {
         console.log("eventLongDescription: ", eventLongDescription);
-        bodyData["longDescription"] =eventLongDescription;
+        bodyData["longDescription"] = eventLongDescription;
       }
       //});
 
@@ -415,12 +413,11 @@ const EventEdit = (props) => {
 
       let endDateTime = `${endDate} ${eventDescription.endTime}Z`;
       //console.log("endDateTime: ", endDateTime);
-      bodyData["startDateTime"]=startDateTime;
-      bodyData["endDateTime" ]=endDateTime;
+      bodyData["startDateTime"] = startDateTime;
+      bodyData["endDateTime"] = endDateTime;
 
       if (eventDescription.photoChanged) {
         //   formData.append("photo", eventDescription.photo);
-
 
         console.log("eventDescription.photo: ", eventDescription.photo);
         console.log(
@@ -442,9 +439,11 @@ const EventEdit = (props) => {
         "_id",
       ];
 
-      let ntix = (tempTicketDetails.length)? tempTicketDetails.length: 0;
+      let ntix = tempTicketDetails.length ? tempTicketDetails.length : 0;
       let atLeast1Tix = false;
-      for (let i = 0; i < ntix; i++){ticketData[i]={idx:i}};  // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
+      for (let i = 0; i < ntix; i++) {
+        ticketData[i] = { idx: i };
+      } // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
       // ticketData    = [{idx:0},{idx:1},{idx:2} ...]
 
       tempTicketDetails.forEach((ticket, index) => {
@@ -457,99 +456,104 @@ const EventEdit = (props) => {
           (("originalTicket" in ticket && ticket.originalTicket) ||
             (!("originalTicket" in ticket) && ticket.remainingQuantity > 0)) &&
           "currentTicketPrice" in ticket &&
-          ticket.currentTicketPrice >= 0) 
-          {
+          ticket.currentTicketPrice >= 0
+        ) {
+          atLeast1Tix = true;
+          console.log("atLeast1Tix:", atLeast1Tix);
+          ticketData[index]["sort"] = 10 + 10 * index;
+          if (ticket.currency) {
+            ticketData[index]["currency"] = ticket.currency.slice(0, 3);
+          }
 
-            atLeast1Tix = true;
-            console.log("atLeast1Tix:",atLeast1Tix);
-            ticketData[index]['sort'] = 10 + 10 * index;
-                  if (ticket.currency) {
-              ticketData[index]['currency']=ticket.currency.slice(0, 3);
-            };
-
-            ticketDetailsFields.forEach((field) => {
-              if (field === "currentTicketPrice" && vendorInfo.status !== 8) {
-                  ticketData[index][field]=0
-              } else if (
-                ticket[field] !== "" &&
-                "undefined" !== typeof ticket[field]
-              ) {
-                ticketData[index][field]=ticket[field];
-              }
-            });
-
-            // Price Funcitons
-            // for "bogod" and "bogof"  {form: "bogo",   args: {buy:5, get:4, discount:.90}}
-            if (
-              ticket.priceFeature === "bogod" ||
-              ticket.priceFeature === "bogof"
+          ticketDetailsFields.forEach((field) => {
+            if (field === "currentTicketPrice" && vendorInfo.status !== 8) {
+              ticketData[index][field] = 0;
+            } else if (
+              ticket[field] !== "" &&
+              "undefined" !== typeof ticket[field]
             ) {
-                ticketData[index]['priceFunction']={
-                    form:"bogo",
-                    args:{  buy:ticket.functionArgs.buy,
-                            get: ticket.functionArgs.get,
-                            discount:ticket.functionArgs.discount / 100
-                    }
-                  };
-            }; 
-          
-            // for "twofer"     {form: "twofer", args: {buy:2,  for:15}}
-            if (ticket.priceFeature === "twofer") {
-                ticketData[index]['priceFunction']={
-                  form:"twofer",
-                  args:{  buy:ticket.functionArgs.buy,
-                          for: ticket.functionArgs.for
-                  }
-                };
-            };
+              ticketData[index][field] = ticket[field];
+            }
+          });
 
-          
-            // {form: "promo",  args: {
-            //    promocodes:  [
-            //      {name:"flyers", discount: .20, pct: true} ,  // 20% off
-            //      {name:"eagles", discount:10,  pct: false }    // $10 off
-            //    ]}
-            // }
-            // for "promo"
-          
-            if (ticket.priceFeature === "promo") {
-              let promoArray =[];
-              let npromos = (ticket.promoCodes.length)? ticket.promoCodes.length: 0;
-              for (let i = 0; i < npromos; i++){promoArray[i]={x:i}};  // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
-              // promoArray    = [{key:0},{key:1},{key:2} ...]
-
-              ticket.promoCodes.forEach((item, number) => {
-                  promoArray[number]= { key:item.key, 
-                                        name:item.name,
-                                        amount:item.amount,
-                                        percent: item.percent
-                                        };
-                  console.log(
-                    "New promo details: key-",
-                    item.key,
-                    ", name-",
-                    item.name,
-                    ", amount-",
-                    item.amount,
-                    ", percent-",
-                    item.percent
-                  );
-              });
-              ticketData[index]['priceFunction']={
-                form:"promo",
-                args:{promocodes:promoArray}
-              }
+          // Price Funcitons
+          // for "bogod" and "bogof"  {form: "bogo",   args: {buy:5, get:4, discount:.90}}
+          if (
+            ticket.priceFeature === "bogod" ||
+            ticket.priceFeature === "bogof"
+          ) {
+            ticketData[index]["priceFunction"] = {
+              form: "bogo",
+              args: {
+                buy: ticket.functionArgs.buy,
+                get: ticket.functionArgs.get,
+                discount: ticket.functionArgs.discount,
+              },
             };
-          } else {
-            console.log("skipped ticket ", index);
-          };
+          }
+
+          // for "twofer"     {form: "twofer", args: {buy:2,  for:15}}
+          if (ticket.priceFeature === "twofer") {
+            ticketData[index]["priceFunction"] = {
+              form: "twofer",
+              args: {
+                buy: ticket.functionArgs.buy,
+                for: ticket.functionArgs.for,
+              },
+            };
+          }
+
+          // {form: "promo",  args: {
+          //    promocodes:  [
+          //      {name:"flyers", discount: .20, pct: true} ,  // 20% off
+          //      {name:"eagles", discount:10,  pct: false }    // $10 off
+          //    ]}
+          // }
+          // for "promo"
+
+          if (ticket.priceFeature === "promo") {
+            let promoArray = [];
+            let npromos = ticket.promoCodes.length
+              ? ticket.promoCodes.length
+              : 0;
+            for (let i = 0; i < npromos; i++) {
+              promoArray[i] = { x: i };
+            } // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
+            // promoArray    = [{key:0},{key:1},{key:2} ...]
+
+            ticket.promoCodes.forEach((item, number) => {
+              promoArray[number] = {
+                key: item.key,
+                name: item.name,
+                amount: item.amount,
+                percent: item.percent,
+              };
+              console.log(
+                "New promo details: key-",
+                item.key,
+                ", name-",
+                item.name,
+                ", amount-",
+                item.amount,
+                ", percent-",
+                item.percent
+              );
+            });
+            ticketData[index]["priceFunction"] = {
+              form: "promo",
+              args: { promocodes: promoArray },
+            };
+          }
+        } else {
+          console.log("skipped ticket ", index);
+        }
       });
 
-      console.log("atLeast1Tix:",atLeast1Tix, ">>", ticketData);
+      console.log("atLeast1Tix:", atLeast1Tix, ">>", ticketData);
 
-      if (atLeast1Tix && ticketData){
-        bodyData.tickets=ticketData;
-      };
+      if (atLeast1Tix && ticketData) {
+        bodyData.tickets = ticketData;
+      }
 
       let accountNum = vendorInfo.accountNum;
       console.log("vendorInfo: ", vendorInfo);
@@ -558,13 +562,17 @@ const EventEdit = (props) => {
       const authstring = `Bearer ${token}`;
       var myHeaders = new Headers();
       myHeaders.append("Authorization", authstring);
-      myHeaders.append("content-type", 'application/json');
+      myHeaders.append("content-type", "application/json");
 
       let apiurl;
       apiurl = `${API}/accounts/${accountNum}/events/${eventDescription.eventNum}`;
       let imgError = false; // catch errors in image upload
 
-      if (eventImage.imgFile && eventImage.photoMetaData && eventDescription.photoChanged) {
+      if (
+        eventImage.imgFile &&
+        eventImage.photoMetaData &&
+        eventDescription.photoChanged
+      ) {
         const urlres = await getOneTimeUploadUrl();
         console.log("onetimeurlres = ", urlres);
         if (urlres.status) {
@@ -576,18 +584,18 @@ const EventEdit = (props) => {
           );
           console.log("upload result = ", uploadres);
           if (uploadres.status && uploadres.id) {
-            eventImage.photoMetaData.id = uploadres.id;     
+            eventImage.photoMetaData.id = uploadres.id;
             if (uploadres.image_path) {
-              eventImage.photoMetaData.url= uploadres.image_path;
-              bodyData["photoMetaData"]=eventImage.photoMetaData;
+              eventImage.photoMetaData.url = uploadres.image_path;
+              bodyData["photoMetaData"] = eventImage.photoMetaData;
             }
-          };
+          }
         } else {
           imgError = true;
         }
-      } else if (eventImage.photoMetaData ){
-        bodyData["photoMetaData"]=eventImage.photoMetaData;
-      };
+      } else if (eventImage.photoMetaData) {
+        bodyData["photoMetaData"] = eventImage.photoMetaData;
+      }
 
       if (imgError) {
         // update upload failed. here
@@ -595,7 +603,6 @@ const EventEdit = (props) => {
         setEventStatus(tempStatus);
         setShowModal(true);
       } else {
-
         fetch(apiurl, {
           method: "post",
           headers: myHeaders,
@@ -631,7 +638,7 @@ const EventEdit = (props) => {
           .finally(() => {
             setShowModal(true);
           });
-      };
+      }
     }
   };
 
@@ -1124,42 +1131,45 @@ const EventEdit = (props) => {
   // duped from createEvent
   const changeEventImage = (photoMetaData) => {
     let tempDescription = { ...eventDescription };
-  // check if underlying original image changed (not just crop parameters)
-    if (tempDescription.photoMetaData && 
-        tempDescription.photoMetaData.url &&
-        photoMetaData.url &&
-        (tempDescription.photoMetaData  == photoMetaData.url))
-      {
-        tempDescription.photoChanged = false;            
-      } else {
-        tempDescription.photoChanged = true;   
-      }
+    // check if underlying original image changed (not just crop parameters)
+    if (
+      tempDescription.photoMetaData &&
+      tempDescription.photoMetaData.url &&
+      photoMetaData.url &&
+      tempDescription.photoMetaData == photoMetaData.url
+    ) {
+      tempDescription.photoChanged = false;
+    } else {
+      tempDescription.photoChanged = true;
+    }
     tempDescription.photoMetaData = photoMetaData;
     setEventDescription(tempDescription);
   };
 
   //   get uril
 
-
-
-  const urlContentToDataUri=(url)=>{
-    console.log (" in urlContentToDataUri");
-    return  fetch(url)
-            .then( response => response.blob() )
-            .then( blob => new Promise( callback =>{
-                let reader = new FileReader() ;
-                reader.onload = function(){ callback(this.result) } ;
-                return reader.readAsDataURL(blob)
-            }))
-            .then (res=>{
-              return {status:true, data:res};
-            })
-            .catch ((err)=>{
-              console.log ("Failed to read: ", url, " with error: ", err);
-              return {status:false, error:err}
-              });
-  }
-
+  const urlContentToDataUri = (url) => {
+    console.log(" in urlContentToDataUri");
+    return fetch(url)
+      .then((response) => response.blob())
+      .then(
+        (blob) =>
+          new Promise((callback) => {
+            let reader = new FileReader();
+            reader.onload = function () {
+              callback(this.result);
+            };
+            return reader.readAsDataURL(blob);
+          })
+      )
+      .then((res) => {
+        return { status: true, data: res };
+      })
+      .catch((err) => {
+        console.log("Failed to read: ", url, " with error: ", err);
+        return { status: false, error: err };
+      });
+  };
 
   const getOneTimeUploadUrl = () => {
     //   const  apiurl = "https://api.bondirectly.com/media/uimgurl";
@@ -1199,7 +1209,7 @@ const EventEdit = (props) => {
   const uploadImage = (uploadurl1, imageFile, crops) => {
     // uploads images to cdn, given url and header
     //https://developers.cloudflare.com/stream/uploading-videos/direct-creator-uploads#using-tus-recommended-for-videos-over-200mb
-    console.log("in uploadImage...w .",uploadurl1, imageFile, crops);
+    console.log("in uploadImage...w .", uploadurl1, imageFile, crops);
     ///  const video = videoInput.files[0];
     const formData = new FormData();
     formData.append("file", imageFile);
@@ -1240,7 +1250,6 @@ const EventEdit = (props) => {
         return { status: false };
       });
   };
-
 
   const currentStatus = () => {
     if (eventDescription.isDraft) {
