@@ -12,6 +12,7 @@ import SavedModal from "./Modals/SavedModal";
 import EventDetails from "./Components/EventDetails";
 import TicketCreation from "./TicketCreation";
 import AdditionalSettings from "./Components/AdditionalSettings";
+import Spinner from "../components/UI/Spinner/Spinner";
 
 import classes from "./EditEvent.module.css";
 
@@ -19,9 +20,9 @@ import classes from "./EditEvent.module.css";
 //let vendorInfo = {};
 
 const EventEdit = (props) => {
-  console.log("props.event: ", props.event);
   const [vendorInfo, setVendorInfo] = useState({});
   const [display, setDisplay] = useState("spinner"); // spinner, main
+
   const [eventTitleOmission, setEventTitleOmission] = useState(false);
   const [locationVenueNameOmission, setLocationVenueNameOmission] =
     useState(false);
@@ -33,12 +34,13 @@ const EventEdit = (props) => {
 
   const [windowWidth, setWindowWidth] = useState([]);
   //
-  // LOOKS GOOD
   // determines resized width and height of window
   window.onresize = function (event) {
     console.log(window.innerWidth, window.innerHeight);
     setWindowWidth(window.innerWidth);
   };
+  //
+  //
   //
   // stores all original Event Description variables
   const [originalEventDescription, setOriginalEventDescription] = useState({});
@@ -80,7 +82,6 @@ const EventEdit = (props) => {
   });
 
   const [eventLongDescription, setEventLongDescription] = useState("");
-  //let eventLongDescription = "";
 
   const [initialEventDescription, setInitialEventDescription] = useState("");
 
@@ -120,7 +121,6 @@ const EventEdit = (props) => {
     photoMetaData: {},
     isLoaded: false,
   }); // special case
-
   //  const [photoData, setPhotoData] = useState({
   //    imgSrc: null,
   //    imgSrcExt: null,
@@ -129,8 +129,7 @@ const EventEdit = (props) => {
 
   //START MATCHES "CreateEvent"
   const [eventStatus, setEventStatus] = useState({
-    //all duped with "createEvent"
-    status: "", // "saved", "live", "error", "failure"
+    status: "", // "processing", "saved", "live", "error", "failure"
     savedMessage: "Congratulations, your event was saved!",
     liveMessage: "Congratulations, your event is live!",
     errorMessage: "", //["Please fix input errors and resubmit."],
@@ -183,7 +182,6 @@ const EventEdit = (props) => {
       console.log("upon loading, ticket type details: ", tempTicketArray);
       setEventDescription(tempDescription);
       setEventLongDescription(tempLongDescription);
-      //eventLongDescription = tempLongDescription;
       setOriginalEventDescription(tempDescription);
       setInitialEventDescription(tempLongDescription);
       setDisplay("main");
@@ -206,8 +204,9 @@ const EventEdit = (props) => {
     setLocationVenueNameOmission(false);
     setWebinarLinkOmission(false);
     setTbaInformationOmission(false);
-    let tempStatus = { ...eventStatus };
-    tempStatus.status = newStatus;
+    // LOOK TO DELETE THESE TWO LINES
+    //let tempStatus = { ...eventStatus };
+    //tempStatus.status = newStatus;
 
     let bodyData = {}; ///new for
     let ticketData = null;
@@ -338,6 +337,7 @@ const EventEdit = (props) => {
         "shortDescription",
         //"longDescription",
         //"CreateEvent" has "photo"
+        //
         "eventCategory",
         "facebookLink",
         "twitterLink",
@@ -373,6 +373,7 @@ const EventEdit = (props) => {
       }
 
       ticketData = [];
+      //
 
       if (newStatus === "saved") {
         tempDescription.isDraft = true;
@@ -400,11 +401,12 @@ const EventEdit = (props) => {
         console.log("eventLongDescription: ", eventLongDescription);
         bodyData["longDescription"] = eventLongDescription;
       }
-      //});
 
       let startDate = dateFnsFormat(eventDescription.startDate, "yyyy-MM-dd");
       //console.log("startDate from dateFnsFormat: ", startDate);
-
+      //
+      //
+      //
       let endDate = dateFnsFormat(eventDescription.endDate, "yyyy-MM-dd");
       //console.log("endDate from dateFnsFormat: ", endDate);
 
@@ -428,7 +430,8 @@ const EventEdit = (props) => {
 
       // eliminate empty ticket types
       let tempTicketDetails = [...ticketDetails];
-
+      //
+      //
       let ticketDetailsFields = [
         "ticketName",
         "remainingQuantity",
@@ -459,8 +462,12 @@ const EventEdit = (props) => {
           ticket.currentTicketPrice >= 0
         ) {
           atLeast1Tix = true;
+          //
           console.log("atLeast1Tix:", atLeast1Tix);
+          //
           ticketData[index]["sort"] = 10 + 10 * index;
+          //
+          //
           if (ticket.currency) {
             ticketData[index]["currency"] = ticket.currency.slice(0, 3);
           }
@@ -528,6 +535,7 @@ const EventEdit = (props) => {
                 amount: item.amount,
                 percent: item.percent,
               };
+
               console.log(
                 "New promo details: key-",
                 item.key,
@@ -549,6 +557,14 @@ const EventEdit = (props) => {
         }
       });
 
+      // NEED TO START MODAL AT THIS POINT
+
+      let tempStatus = { ...eventStatus };
+      tempStatus.status = "processing";
+      console.log("Setting it to processing");
+      setEventStatus(tempStatus);
+      setShowModal(true);
+
       console.log("atLeast1Tix:", atLeast1Tix, ">>", ticketData);
 
       if (atLeast1Tix && ticketData) {
@@ -558,6 +574,7 @@ const EventEdit = (props) => {
       let accountNum = vendorInfo.accountNum;
       console.log("vendorInfo: ", vendorInfo);
       console.log("accountNum: ", accountNum);
+
       let token = vendorInfo.token;
       const authstring = `Bearer ${token}`;
       var myHeaders = new Headers();
@@ -566,6 +583,8 @@ const EventEdit = (props) => {
 
       let apiurl;
       apiurl = `${API}/accounts/${accountNum}/events/${eventDescription.eventNum}`;
+      //
+      //
       let imgError = false; // catch errors in image upload
 
       if (
@@ -597,10 +616,12 @@ const EventEdit = (props) => {
         bodyData["photoMetaData"] = eventImage.photoMetaData;
       }
 
+      tempStatus = { ...eventStatus };
       if (imgError) {
         // update upload failed. here
         tempStatus.status = "failure";
         setEventStatus(tempStatus);
+        // LOOK TO DELETE THIS
         setShowModal(true);
       } else {
         fetch(apiurl, {
@@ -610,33 +631,30 @@ const EventEdit = (props) => {
           redirect: "follow",
         })
           .then(handleErrors)
+
           .then((response) => {
-            console.log("response in event/create", response);
+            console.log("response in create", response);
             return response.json();
           })
           .then((res) => {
-            console.log("Event was saved/went live");
-            console.log("res: ", res);
-            if (!res.status) {
-              if (res.message) {
-                tempStatus.status = "error";
-                tempStatus.errorMessage = "input error";
-              } else {
-                tempStatus.status = "failure";
-                tempStatus.failureMessage = res.error;
-              }
+            if (res.status) {
+              // all good
+              console.log(".then setting either live or draft");
+              tempStatus.status = newStatus;
+            } else {
+              tempStatus.status = "error";
+              tempStatus.errorMessage = res.error;
             }
-            setEventStatus(tempStatus);
-            return res;
           })
           .catch((err) => {
             console.log("Inside the .catch");
             console.log("**ERROR THROWN", err);
             tempStatus.status = "failure";
-            setEventStatus(tempStatus);
+            console.log(".catch setting to failure");
+            console.log("tempStatus: ", tempStatus);
           })
           .finally(() => {
-            setShowModal(true);
+            setEventStatus(tempStatus);
           });
       }
     }
@@ -650,7 +668,22 @@ const EventEdit = (props) => {
   };
 
   const savedModal = () => {
-    if (eventStatus.status === "failure" || eventStatus.status === "error") {
+    if (eventStatus.status === "processing") {
+      return (
+        <Fragment>
+          <SavedModal
+            show={showModal}
+            details={eventStatus}
+            closeModal={() => {
+              setShowModal(false);
+            }}
+          ></SavedModal>
+        </Fragment>
+      );
+    } else if (
+      eventStatus.status === "failure" ||
+      eventStatus.status === "error"
+    ) {
       return (
         <Fragment>
           <SavedModal
@@ -721,7 +754,6 @@ const EventEdit = (props) => {
     console.log("Event Description: ", tempDescription);
   };
 
-  // duped from createEvent
   const changeEventDate = (day, fieldName) => {
     console.log("day from Date selector: ", day);
     let tempDescription = { ...eventDescription };
@@ -745,26 +777,17 @@ const EventEdit = (props) => {
     console.log("tempDescription: ", tempDescription);
   };
 
-  // duped from createEvent
   const changeEventDescriptionRadio = (event, value, name) => {
     let tempDescription = { ...eventDescription };
     tempDescription[name] = value.value;
     setEventDescription(tempDescription);
   };
-  /*
-  const changeLongDescription = (editorContent) => {
-    let tempDescription = { ...eventDescription };
-    tempDescription.longDescription = editorContent;
-    setEventDescription(tempDescription);
-  };
-*/
+
   const changeLongDescription = (editorContent) => {
     setEventLongDescription(editorContent);
-    //eventLongDescription = editorContent;
   };
 
   // TICKET DETAILS HANDLERS
-  // duped from createEvent
   const changeTicketDetail = (event, id) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -776,7 +799,6 @@ const EventEdit = (props) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // duped from createEvent
   const switchTicketSettings = (event, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -788,7 +810,6 @@ const EventEdit = (props) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // duped from createEvent
   const changeArgument = (event, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -800,7 +821,6 @@ const EventEdit = (props) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // duped from createEvent
   const changePriceFeature = (event, value, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -825,7 +845,6 @@ const EventEdit = (props) => {
     console.log("Ticket Details: ", ticketDetails);
   };
 
-  // duped from createEvent
   const createNewTicketHandler = () => {
     let newTicketKey = Math.floor(Math.random() * 1000000000000000);
     let newPromoKey = Math.floor(Math.random() * 1000000000000000);
@@ -859,7 +878,6 @@ const EventEdit = (props) => {
     setTicketDetails(tempDetails);
   };
 
-  // duped from createEvent
   const deleteTicket = (id) => {
     if (ticketDetails.length === 1) {
       setTicketDetails([
@@ -901,7 +919,6 @@ const EventEdit = (props) => {
     }
   };
 
-  // duped from createEvent
   const deletePromoCode = (event, ticket, promoKey) => {
     if (ticket.promoCodes.length === 1) {
       // delete all promoCode info and set back to default in this specific ticket
@@ -932,7 +949,6 @@ const EventEdit = (props) => {
     }
   };
 
-  // duped from createEvent
   const switchPriceFeature = (event, key) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -948,7 +964,6 @@ const EventEdit = (props) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // duped from createEvent
   const addPromoCode = (event, key) => {
     let newPromoKey = Math.floor(Math.random() * 1000000000000000);
     let tempDetails = [...ticketDetails];
@@ -967,7 +982,6 @@ const EventEdit = (props) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // duped from createEvent
   const changePromoCodesName = (event, ticketKey, promoKey) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -985,7 +999,6 @@ const EventEdit = (props) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // duped from createEvent
   const changePromoCodesPercent = (event, ticketKey, promoKey) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1004,7 +1017,6 @@ const EventEdit = (props) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // duped from createEvent
   const changePromoCodesAmount = (event, ticketKey, promoKey) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1023,7 +1035,6 @@ const EventEdit = (props) => {
     console.log("Ticket Details: ", tempDetails);
   };
 
-  // duped from createEvent
   const subTitleDisplay = () => {
     if (
       pageErrors ||
@@ -1072,14 +1083,11 @@ const EventEdit = (props) => {
     }
   };
 
-  // duped from createEvent
   const [dragging, setDragging] = useState(false);
 
-  // duped from createEvent
   const dragItem = useRef();
   const dragNode = useRef();
 
-  // duped from createEvent
   const handleDragStart = (event, index) => {
     dragItem.current = index;
     dragNode.current = event.target;
@@ -1089,7 +1097,6 @@ const EventEdit = (props) => {
     }, 0);
   };
 
-  // duped from createEvent
   const handleDragEnd = () => {
     dragNode.current.removeEventListener("dragend", handleDragEnd);
     setDragging(false);
@@ -1097,7 +1104,6 @@ const EventEdit = (props) => {
     dragNode.current = null;
   };
 
-  // duped from createEvent
   const handleDragEnter = (event, index) => {
     if (index !== dragItem.current) {
       const currentItem = dragItem.current;
@@ -1112,7 +1118,6 @@ const EventEdit = (props) => {
     }
   };
 
-  // duped from createEvent
   const changeEventField = (value, field) => {
     let tempDescription = { ...eventDescription };
     tempDescription[field] = value;
@@ -1120,7 +1125,6 @@ const EventEdit = (props) => {
     setEventDescription(tempDescription);
   };
 
-  // duped from createEvent
   const changeEventCategory = (value) => {
     let tempDescription = { ...eventDescription };
     tempDescription.eventCategory = value;
@@ -1128,7 +1132,6 @@ const EventEdit = (props) => {
     setEventDescription(tempDescription);
   };
 
-  // duped from createEvent
   const changeEventImage = (photoMetaData) => {
     let tempDescription = { ...eventDescription };
     // check if underlying original image changed (not just crop parameters)
@@ -1145,8 +1148,6 @@ const EventEdit = (props) => {
     tempDescription.photoMetaData = photoMetaData;
     setEventDescription(tempDescription);
   };
-
-  //   get uril
 
   const urlContentToDataUri = (url) => {
     console.log(" in urlContentToDataUri");
@@ -1173,7 +1174,6 @@ const EventEdit = (props) => {
 
   const getOneTimeUploadUrl = () => {
     //   const  apiurl = "https://api.bondirectly.com/media/uimgurl";
-
     const apiurl = `${API}/media/uimgurl`;
 
     const token = vendorInfo.token;
@@ -1251,36 +1251,10 @@ const EventEdit = (props) => {
       });
   };
 
-  const currentStatus = () => {
-    if (eventDescription.isDraft) {
-      return (
-        <div
-          style={{
-            paddingTop: "6px",
-            fontSize: "20px",
-            color: "#B80000",
-            fontWeight: "400",
-            textAlign: "center",
-          }}
-        >
-          STATUS DRAFT
-        </div>
-      );
-    } else {
-      return (
-        <div
-          style={{
-            paddingTop: "6px",
-            fontSize: "20px",
-            color: "#008F00",
-            fontWeight: "400",
-            textAlign: "center",
-          }}
-        >
-          STATUS LIVE
-        </div>
-      );
-    }
+  const spinner = () => {
+    if (display === "spinner") {
+      return <Spinner />;
+    } else return null;
   };
 
   const buttonDisplay = () => {
@@ -1295,8 +1269,7 @@ const EventEdit = (props) => {
       liveStatus = "UPDATE LIVE";
     }
 
-    if (true) {
-      //if (windowWidth >= 420) {
+    if (windowWidth >= 420) {
       return (
         <Fragment>
           <div>
@@ -1377,6 +1350,38 @@ const EventEdit = (props) => {
             </button>
           </div>
         </Fragment>
+      );
+    }
+  };
+
+  const currentStatus = () => {
+    if (eventDescription.isDraft) {
+      return (
+        <div
+          style={{
+            paddingTop: "6px",
+            fontSize: "20px",
+            color: "#B80000",
+            fontWeight: "400",
+            textAlign: "center",
+          }}
+        >
+          STATUS DRAFT
+        </div>
+      );
+    } else {
+      return (
+        <div
+          style={{
+            paddingTop: "6px",
+            fontSize: "20px",
+            color: "#008F00",
+            fontWeight: "400",
+            textAlign: "center",
+          }}
+        >
+          STATUS LIVE
+        </div>
       );
     }
   };

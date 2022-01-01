@@ -256,7 +256,13 @@ const VendorAccount = (props) => {
       // CURRENTLY NOT USING THIS TAB
       return <Orders />;
     } else if (display === "create") {
-      return <CreateEvent />;
+      return (
+        <CreateEvent
+          toEvents={() => {
+            setDisplay("events");
+          }}
+        />
+      );
     } else if (display === "account") {
       return (
         <Account

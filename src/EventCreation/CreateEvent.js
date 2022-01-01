@@ -1,13 +1,13 @@
-//CODE MARKED HAS BEEN CHECKED VERSUS ORIGINAL
-//EXCEPT FOR SMALL STYLING SECTION LABELED BELOW
-//EXCEPT FOR <TicketCreation/>, <AdditionalSettings/>,  SECTIONS NOT LABELED BELOW
-
 import React, { useEffect, useState, useRef, Fragment } from "react";
 
 import dateFnsFormat from "date-fns/format";
 
 import { API } from "../config";
-
+//
+//
+//
+//
+//
 import SavedModal from "./Modals/SavedModal";
 import EventDetails from "./Components/EventDetails";
 import TicketCreation from "./TicketCreation";
@@ -17,6 +17,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import classes from "./VendorDashboard.module.css";
 
 //import { uploadImage } from "./ImgDropAndCrop/ResuableUtils";
+//
 
 const CreateEvent = (props) => {
   const [vendorInfo, setVendorInfo] = useState({});
@@ -31,12 +32,19 @@ const CreateEvent = (props) => {
 
   const [showModal, setShowModal] = useState(false); //
 
+  // const [windowWidth, setWindowWidth] = useState([]);
+  //
+  //
+  //window.onresize = function (event) {
+  //  console.log(window.innerWidth, window.innerHeight);
+  //  setWindowWidth(window.innerWidth);
+  //};
+  //
   const [eventImage, setEventImage] = useState({
     imgFile: "",
     percentCrop: {},
     photoMetaData: {},
   }); // special case
-
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
     //
@@ -105,7 +113,21 @@ const CreateEvent = (props) => {
       viewModal: false,
     },
   ]);
-
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
   const [eventStatus, setEventStatus] = useState({
     status: "", // "processing", "saved", "live", "error", "failure"
     savedMessage: "Congratulations, your event was saved!",
@@ -113,16 +135,31 @@ const CreateEvent = (props) => {
     errorMessage: "", //["Please fix input errors and resubmit."],
     failureMessage: "System error please try again.",
   });
-
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
   useEffect(() => {
-    // checks if 'user' exists in local storage
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
       // loads sign-in data
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("Temp User: ", tempUser);
       let tempVendorInfo = vendorInfo;
       tempVendorInfo.token = tempUser.token;
       tempVendorInfo.id = tempUser.user._id;
@@ -134,17 +171,29 @@ const CreateEvent = (props) => {
       }
       console.log("vendorInfo.status: ", tempVendorInfo.status);
       setVendorInfo(tempVendorInfo);
-      //setInitialEventDescription("");
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
       setDisplay("main");
     } else {
       window.location.href = "/auth";
     }
   }, []);
-
+  //
+  //
   const saveEvent = async (newStatus) => {
     console.log("eventDescription: ", eventDescription);
     console.log("eventStatus: ", eventStatus);
-    console.log("vendorInfo: ", vendorInfo);
     let tempPageErrors = false;
     let tempEventTitleOmission = false;
     let tempLocationVenueNameOmission = false;
@@ -155,7 +204,10 @@ const CreateEvent = (props) => {
     setLocationVenueNameOmission(false);
     setWebinarLinkOmission(false);
     setTbaInformationOmission(false);
-
+    //
+    //
+    //
+    //
     let bodyData = {};
     let ticketData = null;
 
@@ -333,17 +385,12 @@ const CreateEvent = (props) => {
         console.log("event will be live");
       }
 
-      console.log("tempDescription: ", tempDescription);
       setEventDescription(tempDescription);
 
       // does not send empty fields to server
       eventDescriptionFields.forEach((field) => {
         if (tempDescription[field] !== "") {
-          console.log(
-            "eventDescription[field]: ",
-            field,
-            tempDescription[field]
-          );
+          console.log("eventDescription[field]: ", tempDescription[field]);
           bodyData[field] = tempDescription[field];
         }
       });
@@ -351,6 +398,7 @@ const CreateEvent = (props) => {
       // does not send empty fields to server
       //eventDescriptionFields.forEach((field) => {
       if (eventLongDescription !== "") {
+        //
         bodyData["longDescription"] = eventLongDescription;
       }
 
@@ -360,12 +408,26 @@ const CreateEvent = (props) => {
       );
 
       let tempEndDate = dateFnsFormat(tempDescription.endDate, "yyyy-MM-dd");
+      //
+      //
       let tempStartDateTime = `${tempStartDate} ${tempDescription.startTime}Z`;
+      //
+      //
       let tempEndDateTime = `${tempEndDate} ${tempDescription.endTime}Z`;
 
       bodyData["startDateTime"] = tempStartDateTime;
       bodyData["endDateTime"] = tempEndDateTime;
-
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
+      //
       // eliminate empty ticket types
       let tempTicketDetails = [...ticketDetails];
       console.log("tempTicketDetails: ", tempTicketDetails);
@@ -386,6 +448,7 @@ const CreateEvent = (props) => {
         ticketData[i] = { idx: i };
       } // this  forces unique elements in each cell instead of all cells with same  pointer, hence we can assign each individually.
       // ticketData    = [{idx:0},{idx:1},{idx:2} ...]
+
       tempTicketDetails.forEach((ticket, index) => {
         console.log("NEXT TICKET TO SEND: ", ticket);
         if (
@@ -393,6 +456,7 @@ const CreateEvent = (props) => {
           ticket.ticketName.length &&
           ticket.ticketName.length > 0 &&
           "remainingQuantity" in ticket &&
+          //
           ticket.remainingQuantity > 0 &&
           "currentTicketPrice" in ticket &&
           ticket.currentTicketPrice >= 0
@@ -419,6 +483,7 @@ const CreateEvent = (props) => {
             }
           });
 
+          //
           // for "bogod" and "bogof"  {form: "bogo",   args: {buy:5, get:4, discount:.90}}
           if (
             ticket.priceFeature === "bogod" ||
@@ -499,7 +564,9 @@ const CreateEvent = (props) => {
       console.log("Setting it to processing");
       setEventStatus(tempStatus);
       setShowModal(true);
-
+      //
+      //
+      //
       if (atLeast1Tix && ticketData) {
         bodyData.tickets = ticketData;
       }
@@ -521,6 +588,10 @@ const CreateEvent = (props) => {
       let imgError = false; // catch errors in image upload
 
       if (eventImage.imgFile && eventImage.photoMetaData) {
+        //
+        //
+        //
+        //
         const urlres = await getOneTimeUploadUrl();
         console.log("onetimeurlres = ", urlres);
         if (urlres.status) {
@@ -542,18 +613,17 @@ const CreateEvent = (props) => {
           imgError = true;
         }
       }
-
+      //
+      //
+      //
       tempStatus = { ...eventStatus };
       if (imgError) {
         // update upload failed. here
         tempStatus.status = "failure";
         setEventStatus(tempStatus);
+        //
+        //
       } else {
-        console.log("about to fetch w", {
-          headers: myHeaders,
-          //body: JSON.stringify(bodyData),
-          body: bodyData,
-        });
         fetch(apiurl, {
           method: "POST",
           headers: myHeaders,
@@ -586,40 +656,6 @@ const CreateEvent = (props) => {
           .finally(() => {
             setEventStatus(tempStatus);
           });
-
-        /*
-          .then((response) => {
-            console.log("response in create", response);
-            return response.json();
-          })
-          .then((res) => {
-            console.log("res: ", res);
-            if (!res.status) {
-              if (res.message) {
-                tempStatus.status = "error";
-                tempStatus.errorMessage = "input error";
-              } else {
-                tempStatus.status = "failure";
-                tempStatus.failureMessage = res.error;
-              }
-            } else {
-              console.log(".then setting either live or draft");
-              tempStatus.status = newStatus;
-            }
-            console.log("tempStatus: ", tempStatus);
-            return res;
-          })
-          .catch((err) => {
-            console.log("Inside the .catch");
-            console.log("**ERROR THROWN", err);
-            tempStatus.status = "failure";
-            console.log(".catch setting to failure");
-            console.log("tempStatus: ", tempStatus);
-          })
-          .finally(() => {
-            setEventStatus(tempStatus);
-          });
-          */
       }
     }
   };
@@ -630,14 +666,9 @@ const CreateEvent = (props) => {
     }
     return response;
   };
-  // END STRAIGHT COPY FROM ORIGINAL
 
   const savedModal = () => {
-    console.log("eventStatus.status ", eventStatus.status);
     if (eventStatus.status === "processing") {
-      console.log("PROCESSING");
-      console.log("showModal: ", showModal);
-      console.log("eventStatus: ", eventStatus);
       return (
         <Fragment>
           <SavedModal
@@ -653,9 +684,6 @@ const CreateEvent = (props) => {
       eventStatus.status === "failure" ||
       eventStatus.status === "error"
     ) {
-      console.log("Failue or error");
-      console.log("showModal: ", showModal);
-      console.log("eventStatus: ", eventStatus);
       return (
         <Fragment>
           <SavedModal
@@ -671,26 +699,19 @@ const CreateEvent = (props) => {
       eventStatus.status === "saved" ||
       eventStatus.status === "live"
     ) {
-      console.log("saved or live");
-      console.log("showModal: ", showModal);
-      console.log("eventStatus: ", eventStatus);
       return (
         <Fragment>
           <SavedModal
             show={showModal}
             details={eventStatus}
             toDashboard={() => {
+              setShowModal(false);
               window.location.href = `/myaccount`;
             }}
           ></SavedModal>
         </Fragment>
       );
-    } else {
-      console.log("null");
-      console.log("showModal: ", showModal);
-      console.log("eventStatus: ", eventStatus);
-      return null;
-    }
+    } else return null;
   };
 
   // garuantees that only one ticket has a "true" "viewModal" value
@@ -761,19 +782,12 @@ const CreateEvent = (props) => {
     tempDescription[name] = value.value;
     setEventDescription(tempDescription);
   };
-  /*
-  const changeLongDescription = (editorContent) => {
-    let tempDescription = { ...eventDescription };
-    tempDescription.longDescription = editorContent;
-    setEventDescription(tempDescription);
-  };
-*/
+
   const changeLongDescription = (editorContent) => {
     setEventLongDescription(editorContent);
   };
 
   // TICKET DETAILS HANDLERS
-
   const changeTicketDetail = (event, id) => {
     let tempDetails = [...ticketDetails];
     tempDetails.forEach((item) => {
@@ -1054,7 +1068,21 @@ const CreateEvent = (props) => {
       );
     }
   };
-
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
   const [dragging, setDragging] = useState(false);
 
   const dragItem = useRef();
@@ -1090,7 +1118,6 @@ const CreateEvent = (props) => {
     }
   };
 
-  //END CODE REPLICATION CHECK
   const changeEventField = (value, field) => {
     let tempDescription = { ...eventDescription };
     tempDescription[field] = value;
@@ -1105,7 +1132,6 @@ const CreateEvent = (props) => {
     setEventDescription(tempDescription);
   };
 
-  //  const changeEventImage = (image) => {
   const changeEventImage = (imgData) => {
     let tempImage = { ...eventImage };
     tempImage.imgFile = imgData.imgFile;
@@ -1114,55 +1140,40 @@ const CreateEvent = (props) => {
     // tempDescription.photo = image;
     setEventImage(tempImage);
   };
-
-  //START CODE REPLICATION CHECK
-
-  const buttonDisplay = (
-    <Fragment>
-      <div>
-        <button
-          className={classes.ButtonRed}
-          onClick={() => {
-            let tempDescription = { ...eventDescription };
-            tempDescription.isDraft = true;
-            setEventDescription(tempDescription);
-            saveEvent("saved");
-          }}
-        >
-          SAVE AS DRAFT
-        </button>
-      </div>
-      <div>
-        <button
-          className={classes.ButtonGreen}
-          onClick={() => {
-            let tempDescription = { ...eventDescription };
-            tempDescription.isDraft = false;
-            setEventDescription(tempDescription);
-            saveEvent("live");
-          }}
-        >
-          GO LIVE NOW
-        </button>
-      </div>
-      <div>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            window.location.href = `/myaccount`;
-          }}
-        >
-          CANCEL CREATE
-        </button>
-      </div>
-    </Fragment>
-  );
-
-  //   get uril
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   const getOneTimeUploadUrl = () => {
     //   const  apiurl = "https://api.bondirectly.com/media/uimgurl";
-
     const apiurl = `${API}/media/uimgurl`;
 
     const token = vendorInfo.token;
@@ -1246,7 +1257,136 @@ const CreateEvent = (props) => {
     } else return null;
   };
 
-  const main = () => {
+  const buttonDisplay = (
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    <Fragment>
+      <div>
+        <button
+          className={classes.ButtonRed}
+          onClick={() => {
+            let tempDescription = { ...eventDescription };
+            tempDescription.isDraft = true;
+            setEventDescription(tempDescription);
+            saveEvent("saved");
+          }}
+        >
+          SAVE AS DRAFT
+        </button>
+      </div>
+      <div>
+        <button
+          className={classes.ButtonGreen}
+          onClick={() => {
+            let tempDescription = { ...eventDescription };
+            tempDescription.isDraft = false;
+            setEventDescription(tempDescription);
+            saveEvent("live");
+          }}
+        >
+          GO LIVE NOW
+        </button>
+      </div>
+      <div>
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            window.location.href = `/myaccount`;
+          }}
+        >
+          CANCEL CREATE
+        </button>
+      </div>
+    </Fragment>
+  );
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  const mainDisplay = () => {
     if (display === "main") {
       return (
         <Fragment>
@@ -1316,7 +1456,7 @@ const CreateEvent = (props) => {
 
   return (
     <div>
-      {main()}
+      {mainDisplay()}
       {spinner()}
     </div>
   );

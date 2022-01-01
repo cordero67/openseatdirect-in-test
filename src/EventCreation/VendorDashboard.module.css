@@ -30,7 +30,7 @@
   background-color: white;
   display: grid;
   grid-template-columns: 170px auto;
-  border: 1px solid #3D3D3D;
+  border: 1px solid #3d3d3d;
   width: 1200px;
   height: 100%;
   margin: auto;
@@ -56,8 +56,6 @@
   box-sizing: border-box;
 }
 
-
-
 .DisplayPanel {
   background-color: white;
   font-size: 15px;
@@ -73,8 +71,6 @@
   overflow-y: auto;
 }
 
-
-
 .DisplayPanel {
   background-color: white;
   font-size: 15px;
@@ -89,7 +85,6 @@
   scrollbar-width: thin;
   overflow-y: auto;
 }
-
 
 .MainEventGrid {
   background-color: white;
@@ -106,7 +101,6 @@
 grid-template-columns: 200px 395px 95px 95px 95px;
 column-gap: 5px;*/
 
-
 .NavigationTitle {
   position: fixed;
   top: 60px;
@@ -114,9 +108,9 @@ column-gap: 5px;*/
   height: 50px;
   line-height: 50px;
   color: white;
-  background-color: #3D3D3D;
-  border-top: 1px solid #3D3D3D;
-  border-bottom: 1px solid #3D3D3D;
+  background-color: #3d3d3d;
+  border-top: 1px solid #3d3d3d;
+  border-bottom: 1px solid #3d3d3d;
   font-size: 14px;
   font-weight: 600;
   padding: 0px 5px;
@@ -131,8 +125,8 @@ column-gap: 5px;*/
   height: 30px;
   line-height: 30px;
   color: white;
-  background-color: #3D3D3D;
-  border: 1px solid #3D3D3D;
+  background-color: #3d3d3d;
+  border: 1px solid #3d3d3d;
   box-sizing: border-box;
   text-align: center;
 }
@@ -141,8 +135,8 @@ column-gap: 5px;*/
   background-color: #b8b8b8;
   height: calc(100vh - 196px);
   width: 170px;
-  border-top: 1px solid #3D3D3D;
-  border-right: 1px solid #3D3D3D;
+  border-top: 1px solid #3d3d3d;
+  border-right: 1px solid #3d3d3d;
   font-size: 16px;
   font-weight: 600;
   margin-top: 79px;
@@ -211,7 +205,7 @@ column-gap: 5px;*/
 }
 
 .BlankCanvas {
-  background-color: #E7E7E7;
+  background-color: #e7e7e7;
   margin: auto;
   width: 500px;
   padding-top: 30px;
@@ -257,18 +251,30 @@ column-gap: 5px;*/
   box-sizing: border-box;
 }
 
+.SwitchButton {
+  font-size: 14px;
+  text-align: left;
+  font-weight: 400;
+  padding-left: 15px;
+  color: blue;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
 
 .ButtonGreen {
   height: 30px;
   width: 120px;
-  background-color: #00A300;
+  background-color: #00a300;
   color: #fff;
   border: 1px solid black;
   outline: none;
   font-size: 12px;
 }
 .ButtonGreen:hover {
-  background-color: #007A00;
+  background-color: #007a00;
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -283,25 +289,24 @@ column-gap: 5px;*/
 .ButtonRed {
   height: 30px;
   width: 120px;
-  background-color: #CC0000;
+  background-color: #cc0000;
   color: #fff;
   border: 1px solid black;
   outline: none;
   font-size: 12px;
 }
 .ButtonRed:hover {
-  background-color: #A30000;
+  background-color: #a30000;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonRed:active {
-  background-color: #7A0000;
+  background-color: #7a0000;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
-
 
 .ButtonGrey {
   height: 30px;
