@@ -31,11 +31,28 @@ const CreateEvent = (props) => {
 
   const [showModal, setShowModal] = useState(false); //
 
-  const [eventImage, setEventImage] = useState({
+//  const [eventImage, setEventImage] = useState({
+//    imgFile: "",
+//    percentCrop: {},
+//    photoMetaData: {},
+//  }); // special case
+
+  const [photoData, setPhotoData] = useState({
+    imgSrc: null,
     imgFile: "",
     percentCrop: {},
     photoMetaData: {},
+    isLoaded: false,
   }); // special case
+
+  //  const [photoData, setPhotoData] = useState({
+  //    imgSrc: null,
+  //    imgSrcExt: null,
+  //    isLoaded: false,
+  //  });
+
+
+
 
   // stores all Event Description values
   const [eventDescription, setEventDescription] = useState({
@@ -516,33 +533,32 @@ const CreateEvent = (props) => {
 
       let apiurl;
       apiurl = `${API}/accounts/${accountNum}/events`;
-      console.log("eventImage = ", eventImage);
+      console.log("photoData = ", photoData);
 
       let imgError = false; // catch errors in image upload
-
-      if (eventImage.imgFile && eventImage.photoMetaData) {
+      if (photoData.imgFile &&  photoData.percentCrop && photoData.photoMetaData) {   // new file and new data
         const urlres = await getOneTimeUploadUrl();
         console.log("onetimeurlres = ", urlres);
         if (urlres.status) {
           const uploadurl = urlres.result ? urlres.result.uploadURL : null;
           const uploadres = await uploadImage(
             uploadurl,
-            eventImage.imgFile,
-            eventImage.percentCrop
+            photoData.imgFile,
+            photoData.percentCrop
           );
           console.log("upload result = ", uploadres);
           if (uploadres.status && uploadres.id) {
-            eventImage.photoMetaData.id = uploadres.id;
+            photoData.photoMetaData.id = uploadres.id;
             if (uploadres.image_path) {
-              eventImage.photoMetaData.url = uploadres.image_path;
-              bodyData["photoMetaData"] = eventImage.photoMetaData;
+              photoData.photoMetaData.url = uploadres.image_path;
+              photoData.photoMetaData.isNewUrl= true;
+              bodyData["photoMetaData"] =photoData.photoMetaData;
             }
           }
         } else {
           imgError = true;
         }
       }
-
       tempStatus = { ...eventStatus };
       if (imgError) {
         // update upload failed. here
@@ -1106,13 +1122,13 @@ const CreateEvent = (props) => {
   };
 
   //  const changeEventImage = (image) => {
-  const changeEventImage = (imgData) => {
-    let tempImage = { ...eventImage };
+  const changeEventPhoto = (imgData) => {
+    let tempImage = { ...photoData };
     tempImage.imgFile = imgData.imgFile;
     tempImage.percentCrop = imgData.percentCrop;
     tempImage.photoMetaData = imgData.photoMetaData;
     // tempDescription.photo = image;
-    setEventImage(tempImage);
+    setPhotoData(tempImage);
   };
 
   //START CODE REPLICATION CHECK
@@ -1246,6 +1262,10 @@ const CreateEvent = (props) => {
     } else return null;
   };
 
+//      isCreateEvent={true}
+ //            eventImage={"new"}
+ //             photoData={""}
+ 
   const main = () => {
     if (display === "main") {
       return (
@@ -1266,15 +1286,14 @@ const CreateEvent = (props) => {
               venueOmission={locationVenueNameOmission}
               webinarOmission={webinarLinkOmission}
               tbaOmission={tbaInformationOmission}
-              eventImage={"new"}
-              photoData={""}
+              isCreateEvent={true}
+              changePhoto={changeEventPhoto}
               change={changeEventDescription}
               radioChange={changeEventDescriptionRadio}
               changeDate={changeEventDate}
               changeEventField={changeEventField}
               changeCategory={changeEventCategory}
               changeLong={changeLongDescription}
-              changeImage={changeEventImage}
               changeOmission={() => {
                 setEventTitleOmission(false);
               }}

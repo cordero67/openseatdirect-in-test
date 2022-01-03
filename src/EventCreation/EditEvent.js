@@ -113,13 +113,22 @@ const EventEdit = (props) => {
     },
   ]);
 
-  const [eventImage, setEventImage] = useState({
+//  const [eventImage, setEventImage] = useState({
+//    imgSrc: null,
+//    imgFile: "",
+//    percentCrop: {},
+//    photoMetaData: {},
+//    isLoaded: false,
+//  }); // special case
+
+  const [photoData, setPhotoData] = useState({
     imgSrc: null,
     imgFile: "",
     percentCrop: {},
     photoMetaData: {},
     isLoaded: false,
   }); // special case
+
 
   //  const [photoData, setPhotoData] = useState({
   //    imgSrc: null,
@@ -138,18 +147,21 @@ const EventEdit = (props) => {
   });
   //
 
-  const initPhotoData = async (photoUrl) => {
-    console.log("in initPhotoData w ", photoUrl);
+  const initPhotoData = async (photoMetaData) => {
+    console.log("in initPhotoData w ", photoMetaData);
     // converts data from server fetch call to photodata for image display
 
-    let eventImg = photoUrl ? await urlContentToDataUri(photoUrl) : null;
+    let eventImg = photoMetaData?.url ? await urlContentToDataUri(photoMetaData.url) : null;
     //eventImg  = {status:true, image: imgSrc};
     // check for required fields
     console.log("got eventImg>>", eventImg);
-    if (!(photoUrl && eventImg.status)) {
-      setEventImage({ isLoaded: true });
+    if (!(eventImg && eventImg.status)) {
+      setPhotoData({ isLoaded: true });
     } else {
-      setEventImage({ imgSrc: eventImg.data, isLoaded: true });
+      let percentCrop ={
+            x: photoMetaData.xp0, y: photoMetaData.yp0,
+            width: photoMetaData.wp,height:photoMetaData.hp};
+      setPhotoData({ imgSrc: eventImg.data, isLoaded: true, percentCrop:percentCrop });
     }
     return;
   };
@@ -172,7 +184,7 @@ const EventEdit = (props) => {
       }
       console.log("vendorInfo.status: ", tempVendorInfo.status);
       setVendorInfo(tempVendorInfo);
-      initPhotoData(props.event.photoUrl1);
+      initPhotoData(props.event?.photoMetaData);
 
       const [tempTicketArray, tempDescription, tempLongDescription] =
         loadEventInfo(props.event);
@@ -416,15 +428,6 @@ const EventEdit = (props) => {
       bodyData["startDateTime"] = startDateTime;
       bodyData["endDateTime"] = endDateTime;
 
-      if (eventDescription.photoChanged) {
-        //   formData.append("photo", eventDescription.photo);
-
-        console.log("eventDescription.photo: ", eventDescription.photo);
-        console.log(
-          "eventDescription.photoChanged: ",
-          eventDescription.photoChanged
-        );
-      }
 
       // eliminate empty ticket types
       let tempTicketDetails = [...ticketDetails];
@@ -568,35 +571,40 @@ const EventEdit = (props) => {
       apiurl = `${API}/accounts/${accountNum}/events/${eventDescription.eventNum}`;
       let imgError = false; // catch errors in image upload
 
-      if (
-        eventImage.imgFile &&
-        eventImage.photoMetaData &&
-        eventDescription.photoChanged
-      ) {
+      console.log(
+        "imgFile,photoMetaData,eventDescription.photoChanged>>",
+        photoData.imgFile,photoData.photoMetaData, eventDescription.photoChanged);
+
+      // only upload new picture if necessary. not if only cropping same pic
+
+      // existence of photoData.imgFile means user dropped a new file
+      if (photoData.imgFile ) {   // new file and new data
         const urlres = await getOneTimeUploadUrl();
         console.log("onetimeurlres = ", urlres);
         if (urlres.status) {
           const uploadurl = urlres.result ? urlres.result.uploadURL : null;
           const uploadres = await uploadImage(
             uploadurl,
-            eventImage.imgFile,
-            eventImage.percentCrop
+            photoData.imgFile,
+            photoData.percentCrop
           );
           console.log("upload result = ", uploadres);
           if (uploadres.status && uploadres.id) {
-            eventImage.photoMetaData.id = uploadres.id;
+            photoData.photoMetaData.id = uploadres.id;
             if (uploadres.image_path) {
-              eventImage.photoMetaData.url = uploadres.image_path;
-              bodyData["photoMetaData"] = eventImage.photoMetaData;
+              photoData.photoMetaData.url = uploadres.image_path;
+              photoData.photoMetaData.isNewUrl= true;
+            // DO BELOW              bodyData["photoMetaData"] = photoData.photoMetaData;
             }
           }
         } else {
           imgError = true;
         }
-      } else if (eventImage.photoMetaData) {
-        bodyData["photoMetaData"] = eventImage.photoMetaData;
-      }
-
+      };
+      if (photoData?.photoMetaData){
+          bodyData["photoMetaData"] = photoData.photoMetaData;
+      };
+      tempStatus = { ...eventStatus };
       if (imgError) {
         // update upload failed. here
         tempStatus.status = "failure";
@@ -1129,22 +1137,17 @@ const EventEdit = (props) => {
   };
 
   // duped from createEvent
-  const changeEventImage = (photoMetaData) => {
-    let tempDescription = { ...eventDescription };
-    // check if underlying original image changed (not just crop parameters)
-    if (
-      tempDescription.photoMetaData &&
-      tempDescription.photoMetaData.url &&
-      photoMetaData.url &&
-      tempDescription.photoMetaData == photoMetaData.url
-    ) {
-      tempDescription.photoChanged = false;
-    } else {
-      tempDescription.photoChanged = true;
-    }
-    tempDescription.photoMetaData = photoMetaData;
-    setEventDescription(tempDescription);
+
+  //  const changeEventImage = (image) => {
+  const changeEventPhoto = (imgData) => {
+    let tempImage = { ...photoData };
+    tempImage.imgFile = imgData.imgFile;
+    tempImage.percentCrop = imgData.percentCrop;
+    tempImage.photoMetaData = imgData.photoMetaData;
+    // tempDescription.photo = image;
+    setPhotoData(tempImage);
   };
+
 
   //   get uril
 
@@ -1413,7 +1416,7 @@ const EventEdit = (props) => {
             paddingLeft: "20px",
             paddingRight: "20px",
           }}
-        >
+        > 
           <div>
             <EventDetails
               event={eventDescription}
@@ -1424,15 +1427,15 @@ const EventEdit = (props) => {
               venueOmission={locationVenueNameOmission}
               webinarOmission={webinarLinkOmission}
               tbaOmission={tbaInformationOmission}
-              eventImage={"existing"}
-              photoData={eventImage}
+              isCreateEvent={false}
+              changePhoto={changeEventPhoto}
+              photoData={photoData}
               change={changeEventDescription}
               radioChange={changeEventDescriptionRadio}
               changeDate={changeEventDate}
               changeEventField={changeEventField}
               changeCategory={changeEventCategory}
               changeLong={changeLongDescription}
-              changeImage={changeEventImage}
               changeOmission={() => {
                 setEventTitleOmission(false);
               }}
