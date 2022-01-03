@@ -1,25 +1,15 @@
 import React, { useState, useEffect, Fragment } from "react";
-
 //import { API } from "../config.js";
 
 import { DateRange } from "../Resources/PricingFunctions";
 //import Spinner from "../components/UI/Spinner/Spinner";
 import GuestForm from "./GuestForm";
 //import AuthenticationModal from "./Modals/AuthenticationModal";
-import { loadTransactionInfo } from "../Resources/TicketSelectionFunctions";
-import classes from "./CustomerInfo.module.css";
+import classes from "./GuestInfo.module.css";
 
-const CustomerInfoFree = (props) => {
-  //console.log("props: ", props);
-  //const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, connection
-
+const GuestInfo = (props) => {
+  console.log("props: ", props);
   const [modalStatus, setModalStatus] = useState(false); // defines 'authenticationModal' display status
-
-  //const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
-
-  //const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
-
-  //const [orderStatus, setOrderStatus] = useState(false); // defines if order was successful
 
   // LOOKS GOOD
   const handleErrors = (response) => {
@@ -30,71 +20,6 @@ const CustomerInfoFree = (props) => {
     return response;
   };
 
-  /*
-  // creates submit button to send free ticket information to server
-  const checkoutButton = () => {
-    if (orderTotals.ticketsPurchased > 0 && detailsMinimal()) {
-      return (
-        <button
-          onClick={() => freeTicketHandler(false)}
-          disabled={false}
-          className={classes.ButtonGreen}
-        >
-          SUBMIT ORDER
-        </button>
-      );
-    } else {
-      return (
-        <button disabled={true} className={classes.ButtonGreenOpac}>
-          SUBMIT ORDER
-        </button>
-      );
-    }
-  };
-  */
-  /*
-  // defines and sets "loadingSpinner" view status
-  const loadingSpinner = () => {
-    if (display === "spinner") {
-      return (
-        <div className={classes.Spinner}>
-          <Spinner></Spinner>;
-        </div>
-      );
-    } else return null;
-  };
-*/
-  /*
-  // CONTROLS "connectionStatus" VIEW
-  const connectionStatus = () => {
-    if (display === "connection") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div>
-            There is a problem with OSD Server in processing your tickets.
-            Please try again later.
-          </div>
-        </div>
-      );
-    } else return null;
-  };
-
-  // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
-  const purchaseConfirmation = () => {
-    if (display === "confirmation") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div style={{ paddingTop: "20px" }}>
-            <OrderConfirm
-              transactionInfo={transactionInfo}
-              orderStatus={orderStatus}
-            ></OrderConfirm>
-          </div>
-        </div>
-      );
-    } else return null;
-  };
-*/
   const calculateTimeLeft = () => {
     let timeElapsed = new Date(props.orderExpiration) - new Date();
     let elapsedTime = {
@@ -140,6 +65,7 @@ const CustomerInfoFree = (props) => {
         </div>
       );
     } else {
+      //this will cause it to error
       props.clicked();
     }
   };
@@ -180,22 +106,4 @@ const CustomerInfoFree = (props) => {
 
   return <div>{mainDisplay()}</div>;
 };
-export default CustomerInfoFree;
-
-/*
-
-    <div style={MainContainer}>
-      {connectionStatus()}
-      {loadingSpinner()}
-      {mainDisplay()}
-      {purchaseConfirmation()}
-      <AuthenticationModal
-        show={modalStatus}
-        zeroCart={false}
-        start={"signin"}
-        vendorIntent={false}
-        closeModal={() => setModalStatus(false)}
-        submit={() => freeTicketHandler(true)}
-      />
-    </div>
-    */
+export default GuestInfo;

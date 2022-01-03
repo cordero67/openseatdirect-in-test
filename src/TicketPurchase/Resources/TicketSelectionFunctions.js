@@ -1,64 +1,6 @@
 import { bogox, twofer } from "./PricingFunctions";
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
-// initial definition of "eventDetails"
-export const loadEventDetails = (event) => {
-  let tempGatewayURL;
-  // sets the checkout page url
-  // NEED TO REMOVE THIS LINE ONCE ADDITIONAL GATEWAYS ADDED
-  if (true) {
-    // NEED TO ADD THIS LINE ONCE ADDITIONAL GATEWAYS ADDED
-    //if (event.accountId.paymentGatewayType === "PayPalExpress") {
-    tempGatewayURL = "/checkout_pp";
-    // NEED TO ADD THESE LINES ONCE ADDITIONAL GATEWAYS ADDED
-    // } else if (event.accountId.paymentGatewayType === "Braintree") {
-    //   tempGatewayURL = "/checkout_bt";
-  } else {
-    tempGatewayURL = "/";
-  }
-
-  let ticketStatus;
-  ticketStatus = false;
-  let d = Date.parse(event.startDateTime) + 86400;
-
-  if (Date.now() < d) {
-    ticketStatus = true;
-  }
-  let tempEventDetails = {
-    eventNum: event.eventNum,
-    eventTitle: event.eventTitle,
-    eventType: event.eventType,
-    isDraft: event.isDraft,
-    register: event.register,
-    organizer: "",
-    gateway: event.accountId.paymentGatewayType,
-    gatewayClientID: event.accountId.paypalExpress_client_id,
-    gatewayMerchantID: event.accountId.paypal_merchant_id,
-    gatewayURL: tempGatewayURL,
-    startDateTime: event.startDateTime,
-    endDateTime: event.endDateTime,
-    timeZone: event.timeZone,
-    eventUrl: event.eventUrl,
-    locationVenueName: event.locationVenueName,
-    locationAddress1: event.locationAddress1,
-    locationAddress2: event.locationAddress2,
-    locationCity: event.locationCity,
-    locationState: event.locationState,
-    locationZipPostalCode: event.locationZipPostalCode,
-    locationCountryCode: event.locationCountryCode,
-    locationNote: event.locationNote,
-    tbaInformation: event.tbaInformation,
-    webinarLink: event.webinarLink,
-    vanityLink: event.vanityLink,
-    onlineInformation: event.onlineInformation,
-    forSale: ticketStatus,
-  };
-  console.log("INITIAL 'eventDetails': ", tempEventDetails);
-  return tempEventDetails;
-};
-
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
-// STILL NEED TO CORRECT THE usePriceFunction(true/false) ISSUE
+// EFACTORED: 1/2/22
 // initial definition of "ticketInfo"
 export const loadTicketInfo = (event) => {
   let tempTicketArray = [];
@@ -76,7 +18,6 @@ export const loadTicketInfo = (event) => {
         "args" in item.priceFunction &&
         "promocodes" in item.priceFunction.args
       ) {
-        // make all promo codes upper case
         let newPromoCodes = [];
         item.priceFunction.args.promocodes.forEach((argArray) => {
           let tempElement;
@@ -148,8 +89,7 @@ export const loadTicketInfo = (event) => {
   return tempTicketArray;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
-// STILL NEED TO CORRECT THE usePriceFunction(true/false) ISSUE
+// REFACTORED: 1/2/22
 // initial definition of "promoCodeDetails"
 export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   let tempCodesArray = [];
@@ -172,8 +112,8 @@ export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   return tempCodeDetail;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
-// i.e. IS NOT CAPABLE OF HANDLING MULTIPLE CURRENCIES
+// REFACTORED: 1/2/22
+// NOT CAPABLE OF HANDLING MULTIPLE CURRENCIES
 // initial definition of "orderTotals"
 export const loadOrderTotals = (event) => {
   let tempCurrencySym = "$";
@@ -312,17 +252,6 @@ export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
 // THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
 // updates "promoCodeDetails" with removed promo code
 export const clearPromoDetails = (promoCodeDetails) => {
-  /*
-    available: false,
-    //applied: false,
-    //input: false,
-    //errorMessage: "",
-    //appliedPromoCode: "",
-    //inputtedPromoValue: "",
-    //lastInvalidPromoCode: "",
-    eventPromoCodes: [],
-    */
-
   let tempPromoCodeDetails;
   tempPromoCodeDetails = { ...promoCodeDetails };
   tempPromoCodeDetails.applied = false;

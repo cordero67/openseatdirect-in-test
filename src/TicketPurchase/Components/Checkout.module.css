@@ -26,6 +26,17 @@
 .Blue {
   border: 1px solid blue;
 }
+.BlueText {
+  color: blue;
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+  text-align: left;
+  padding-left: 0px;
+  font-weight: 600;
+}
 .RightGrid {
   display: grid;
 }

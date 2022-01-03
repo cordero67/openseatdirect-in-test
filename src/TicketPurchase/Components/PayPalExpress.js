@@ -244,6 +244,18 @@ const Checkout = (props) => {
           </span>
           <br></br>
           <br></br>
+          <div style={{ paddingBottom: "20px" }}>
+            Back to{" "}
+            <button
+              className={classes.BlueText}
+              onClick={() => {
+                console.log("clicked cancel link");
+                props.clicked();
+              }}
+            >
+              Ticket Selection
+            </button>
+          </div>
           <span className={classes.TicketType}>Payment Information</span>
           <br></br>
           <span className={classes.TicketTypeSmall}>
