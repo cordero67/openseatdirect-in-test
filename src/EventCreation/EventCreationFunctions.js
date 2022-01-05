@@ -113,6 +113,7 @@ export const loadEventInfo = (eventTix) => {
   if ("tickets" in eventTix && eventTix.tickets.length !== 0) {
     let tempArray = [];
     eventTix.tickets.forEach((tix, index) => {
+      console.log("tix: ", tix);
       let tempPriceFeature = "none";
       let tempPromoCodes = [];
       let tempPromoCodesArray = [];
@@ -226,6 +227,7 @@ export const loadEventInfo = (eventTix) => {
         remainingQuantity: tix.remainingQuantity,
         quantityWarning: false,
         currentTicketPrice: tix.currentTicketPrice,
+        isZombie: tix.isZombie,
         priceWarning: false,
         reqWarning: false,
         currency: longCurrency(),

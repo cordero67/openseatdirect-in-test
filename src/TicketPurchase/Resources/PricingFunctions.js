@@ -36,7 +36,7 @@ export const twofer = (i, u, n, tp) => {
   return Math.min(i * u, result);
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// REFACTORED: 1/3/22
 // NEED TO ADDRESS THE TIMEZONE VALUE
 export const DateRange = (props) => {
   if (

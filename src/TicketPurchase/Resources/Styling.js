@@ -1,4 +1,4 @@
-// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
+// REFACTORED: 12/28/21
 export const MainContainerStyling = (inWidth, inHeight) => {
   let mainContainer = {};
   if (inWidth < 660) {
@@ -8,14 +8,9 @@ export const MainContainerStyling = (inWidth, inHeight) => {
       position: "fixed",
       zIndex: "700",
       backgroundColor: `white`,
-      //border: "2px solid #ccc",
       height: `${inHeight}px`,
       top: "0px",
       left: "0px",
-      //paddingTop: `0px`,
-      //paddingLeft: `0px`,
-      //paddingRight: `0px`,
-      //paddingBottom: `0px`,
       boxSizing: "border-box",
       transition: "all 0.3s ease-out",
     };
@@ -26,13 +21,9 @@ export const MainContainerStyling = (inWidth, inHeight) => {
       position: "fixed",
       zIndex: "700",
       backgroundColor: `white`,
-      //border: "2px solid #ccc",
       height: "720px",
       top: `calc((${inHeight}px - 720px) / 2)`,
       left: "25px",
-      //paddingLeft: `25px`,
-      //paddingRight: `25px`,
-      //paddingBottom: `calc((${inHeight}px - 720px) / 2)`,
       boxSizing: "border-box",
       transition: "all 0.3s ease-out",
     };
@@ -43,14 +34,9 @@ export const MainContainerStyling = (inWidth, inHeight) => {
       position: "fixed",
       zIndex: "700",
       backgroundColor: `white`,
-      //border: "2px solid #ccc",
       height: `${inHeight}px`,
       top: "0px",
       left: `calc((${inWidth}px - 1080px) / 2)`,
-      //paddingTop: `0px`,
-      //paddingLeft: `25px`,
-      //paddingRight: `25px`,
-      //paddingBottom: `0px`,
       boxSizing: "border-box",
       transition: "all 0.3s ease-out",
     };
@@ -61,13 +47,9 @@ export const MainContainerStyling = (inWidth, inHeight) => {
       position: "fixed",
       zIndex: "700",
       backgroundColor: `white`,
-      //border: "2px solid #ccc",
       height: "720px",
       top: `calc((${inHeight}px - 720px) / 2)`,
       left: `calc((${inWidth}px - 1080px) / 2)`,
-      //paddingLeft: `25px`,
-      //paddingRight: `25px`,
-      //paddingBottom: `calc((${inHeight}px - 720px) / 2)`,
       boxSizing: "border-box",
       transition: "all 0.3s ease-out",
     };
@@ -76,7 +58,7 @@ export const MainContainerStyling = (inWidth, inHeight) => {
   return mainContainer;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
+// REFACTORED: 12/28/21
 export const MainGridStyling = (inWidth, inHeight) => {
   let mainGrid = {};
 
@@ -87,7 +69,6 @@ export const MainGridStyling = (inWidth, inHeight) => {
       margin: `auto`,
       height: `${inHeight}px`,
       display: `grid`,
-      //gridTemplateColumns: `auto`,
       gridTemplateColumns: `${inWidth}px`,
     };
   } else if (inWidth < 790) {
@@ -109,7 +90,6 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `720px`,
         display: `grid`,
-        //gridTemplateColumns: `auto`,
         gridTemplateColumns: `calc(${inWidth}px - 50px)`,
       };
     }
@@ -132,7 +112,6 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `720px`,
         display: `grid`,
-        //gridTemplateColumns: `auto 320px`,
         gridTemplateColumns: `calc(${inWidth}px - 410px) 360px`,
       };
     }
@@ -145,7 +124,6 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `${inHeight}px`,
         display: `grid`,
-        //gridTemplateColumns: `auto 360px`,
         gridTemplateColumns: `calc(${inWidth}px - 410px) 360px`,
       };
     } else {
@@ -155,7 +133,6 @@ export const MainGridStyling = (inWidth, inHeight) => {
         margin: `auto`,
         height: `720px`,
         display: `grid`,
-        //gridTemplateColumns: `auto 360px`,
         gridTemplateColumns: `calc(${inWidth}px - 410px) 360px`,
       };
     }
@@ -186,7 +163,7 @@ export const MainGridStyling = (inWidth, inHeight) => {
   return mainGrid;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
+// REFACTORED: 12/28/21
 export const EventTicketSectionStyling = (inWidth, inHeight) => {
   let eventTicketSection = {};
 
@@ -246,7 +223,7 @@ export const EventTicketSectionStyling = (inWidth, inHeight) => {
   return eventTicketSection;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
+// REFACTORED: 12/28/21
 export const OrderSummarySectionStyling = (inWidth, inHeight) => {
   let orderSummarySection = {};
 
@@ -316,7 +293,7 @@ export const OrderSummarySectionStyling = (inWidth, inHeight) => {
   return orderSummarySection;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 12/28/21
+// REFACTORED: 12/28/21
 export const OrderSummarySectionAltStyling = (inWidth, inHeight) => {
   let orderSummarySectionAlt = {};
 

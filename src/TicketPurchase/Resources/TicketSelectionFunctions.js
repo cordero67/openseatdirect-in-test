@@ -1,6 +1,6 @@
 import { bogox, twofer } from "./PricingFunctions";
 
-// EFACTORED: 1/2/22
+// REVIEWED: 1/2/22
 // initial definition of "ticketInfo"
 export const loadTicketInfo = (event) => {
   let tempTicketArray = [];
@@ -75,6 +75,7 @@ export const loadTicketInfo = (event) => {
       ticketDescription: item.ticketDescription,
       ticketsAvailable: item.remainingQuantity,
       ticketPrice: item.currentTicketPrice,
+      isZombie: item.isZombie,
       ticketsSelected: 0,
       maxTicketsAllowedPerOrder: maxOrder,
       minTicketsAllowedPerOrder: minOrder,
@@ -89,7 +90,7 @@ export const loadTicketInfo = (event) => {
   return tempTicketArray;
 };
 
-// REFACTORED: 1/2/22
+// REVIEWED: 1/2/22
 // initial definition of "promoCodeDetails"
 export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   let tempCodesArray = [];
@@ -112,7 +113,7 @@ export const loadPromoCodeDetails = (res, promoCodeDetails) => {
   return tempCodeDetail;
 };
 
-// REFACTORED: 1/2/22
+// REVIEWED: 1/2/22
 // NOT CAPABLE OF HANDLING MULTIPLE CURRENCIES
 // initial definition of "orderTotals"
 export const loadOrderTotals = (event) => {
@@ -136,7 +137,7 @@ export const loadOrderTotals = (event) => {
   return tempOrderTotals;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// REVIEWED: 1/2/22
 // updates 'orderTotals" from either a promo code or ticket amount change
 export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
   let tempTicketsPurchased = 0;
@@ -164,12 +165,11 @@ export const changeOrderTotals = (ticketInfo, orderTotals, promoCode) => {
   return tempOrderTotals;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// REVIEWED: 1/2/22
 // updates "ticketInfo" after a change in tickets selected
 export const changeTicketInfo = (event, ticketType, ticketInfo) => {
   let tempTicketInfo = [...ticketInfo];
   tempTicketInfo.forEach((item) => {
-    // finds a ticketID match
     if (item.ticketID === ticketType.ticketID) {
       item.ticketsSelected = parseInt(event.target.value);
       if (item.ticketPriceFunction.form === "bogo") {
@@ -180,10 +180,10 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
           item.ticketPriceFunction.args.get,
           item.ticketPriceFunction.args.discount / 100
         );
-        {
-          event.target.value > 0
-            ? (item.adjustedTicketPrice = totalPurchase / event.target.value)
-            : (item.adjustedTicketPrice = item.ticketPrice);
+        if (event.target.value > 0) {
+          item.adjustedTicketPrice = totalPurchase / event.target.value;
+        } else {
+          item.adjustedTicketPrice = item.ticketPrice;
         }
       } else if (item.ticketPriceFunction.form === "twofer") {
         let totalPurchase = twofer(
@@ -192,10 +192,10 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
           item.ticketPriceFunction.args.buy,
           item.ticketPriceFunction.args.for
         );
-        {
-          event.target.value > 0
-            ? (item.adjustedTicketPrice = totalPurchase / event.target.value)
-            : (item.adjustedTicketPrice = item.ticketPrice);
+        if (event.target.value > 0) {
+          item.adjustedTicketPrice = totalPurchase / event.target.value;
+        } else {
+          item.adjustedTicketPrice = item.ticketPrice;
         }
       }
     }
@@ -204,7 +204,7 @@ export const changeTicketInfo = (event, ticketType, ticketInfo) => {
   return tempTicketInfo;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// REVIEWED: 1/2/22
 // updates "promoCodeDetails" with valid promo code instance
 export const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
   let tempPromoCodeDetails = { ...promoCodeDetails };
@@ -217,25 +217,17 @@ export const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
   return tempPromoCodeDetails;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// REVIEWED: 1/2/22
 // updates "ticketInfo" based on changes to promo code
 export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
-  console.log("inside amendTicket");
   let tempTicketInfo = [...ticketInfo];
-  // checks if ticket type has the code and then extracts and applies the discount amount
   tempTicketInfo.forEach((item) => {
     if (item.ticketPriceFunction.form === "promo") {
       item.ticketPriceFunction.args.forEach((element) => {
         if (element.name === inputtedPromoCode) {
           if (!element.percent) {
-            console.log("element.amount: ", element.amount);
-            console.log("element: ", element);
-            console.log("percent is false");
             item.adjustedTicketPrice = item.ticketPrice - element.amount;
           } else {
-            console.log("element.amount: ", element.amount);
-            console.log("element: ", element);
-            console.log("percent is true");
             item.adjustedTicketPrice = parseFloat(
               (item.ticketPrice * (1 - element.amount / 100)).toFixed(2)
             );
@@ -249,7 +241,7 @@ export const amendTicketInfo = (inputtedPromoCode, ticketInfo) => {
   return tempTicketInfo;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// REVIEWED: 1/2/22
 // updates "promoCodeDetails" with removed promo code
 export const clearPromoDetails = (promoCodeDetails) => {
   let tempPromoCodeDetails;
@@ -277,7 +269,7 @@ export const resetPromoDetails = (promoCodeDetails) => {
   return tempPromoCodeDetails;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// REVIEWED: 1/2/22
 // updates "ticketInfo" with removed promo code
 export const clearTicketInfo = (ticketInfo) => {
   let tempTicketInfo;
@@ -292,7 +284,7 @@ export const clearTicketInfo = (ticketInfo) => {
   return tempTicketInfo;
 };
 
-// THIS FUNCTION HAS BEEN REFACTORED: 1/15/21
+// REVIEWED: 1/2/22
 // updates "orderTotals" with removed promo code
 export const clearOrderTotals = (ticketInfo, orderTotals) => {
   let tempTicketInfo;

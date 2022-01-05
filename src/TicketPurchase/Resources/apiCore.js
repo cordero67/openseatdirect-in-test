@@ -13,7 +13,7 @@ const handleErrors = (response) => {
 // USED BY CURRENT CODE APRIL 17, 2021
 // extracts specific event data, non-transactional
 export const getEventData = (eventId) => {
-  return fetch(`${API}/event/e/${eventId}`, {
+  return fetch(`${API}/events/${eventId}`, {
     method: "GET",
   })
     .then(handleErrors)
@@ -21,24 +21,6 @@ export const getEventData = (eventId) => {
       return response.json();
     })
     .catch((err) => {
-      throw Error(err);
-    });
-};
-
-// USED BY CURRENT CODE APRIL 17, 2021
-export const getEventImage = (eventId) => {
-  console.log("Inside apiCore and the 'getEventImage' function call");
-  return fetch(`${API}/event/photo/e/${eventId}`, {
-    method: "GET",
-  })
-    .then(handleErrors)
-    .then((response) => {
-      console.log("Inside apiCore and the 'getEventImage' .then block");
-      console.log("response: ", response, " response.url: ", response.url);
-      return response.url;
-    })
-    .catch((err) => {
-      console.log("jumping here", err);
       throw Error(err);
     });
 };

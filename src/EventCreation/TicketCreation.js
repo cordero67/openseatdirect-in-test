@@ -29,6 +29,7 @@ const TicketCreation = (props) => {
       <Fragment>
         {props.tickets.map((item, index) => {
           // defines warnings for ticket name, quantity and price
+          console.log("Ticket item: ", item);
           let nameRegex = /^[a-zA-Z0-9\-\s]+$/;
           let quantityRegex = /^(0|[1-9]|[1-9][0-9]+)$/;
           let priceRegex =
@@ -139,249 +140,254 @@ const TicketCreation = (props) => {
           }       
     //XX END CODE REPLICATION REQUIRED
 */
-          return (
-            <Fragment key={index}>
-              <div className={classes.TicketLine}>
-                <div
-                  style={{
-                    padding: "10px 5px",
-                    boxSizing: "borderBox",
-                    display: `grid`,
-                    gridTemplateColumns: "20px 330px",
-                  }}
-                >
-                  <div
-                    draggable
-                    onDragStart={(event) => {
-                      props.handleDragStart(event, index);
-                    }}
-                    onDragEnter={
-                      props.dragging
-                        ? (event) => props.handleDragEnter(event, index)
-                        : null
-                    }
-                    style={{
-                      padding: "9px 0px 9px 3px",
-                      boxSizing: "borderBox",
-                    }}
-                  >
-                    <FontAwesomeIcon cursor="pointer" icon={faGripVertical} />
-                  </div>
-
-                  <input
-                    className={tempNameBox}
-                    type="text"
-                    maxLength="64"
-                    id="ticketName"
-                    placeholder="GA, VIP, etc: limit 64 characters"
-                    name="ticketName"
-                    value={item.ticketName}
-                    onChange={(event) => {
-                      props.changeTicket(event, item.key);
-                    }}
-                  ></input>
-                </div>
-
-                <div
-                  style={{
-                    padding: "10px 5px",
-                    boxSizing: "borderBox",
-                  }}
-                >
-                  <input
-                    className={tempQuantityBox}
-                    type="text"
-                    id="remainingQuantity"
-                    placeholder="100"
-                    name="remainingQuantity"
-                    value={item.remainingQuantity}
-                    onChange={(event) => {
-                      props.changeTicket(event, item.key);
-                    }}
-                  ></input>
-                </div>
-
-                <div className={tempPriceBox}>
+          if (!item.isZombie) {
+            return (
+              <Fragment key={index}>
+                <div className={classes.TicketLine}>
                   <div
                     style={{
-                      padding: "9px 0px 9px 0px",
-                      textAlign: "center",
+                      padding: "10px 5px",
                       boxSizing: "borderBox",
+                      display: `grid`,
+                      gridTemplateColumns: "20px 330px",
                     }}
                   >
-                    {item.currency === "" ? "USD $" : item.currency}
-                  </div>
-                  {props.status === 8 ? (
-                    <input
+                    <div
+                      draggable
+                      onDragStart={(event) => {
+                        props.handleDragStart(event, index);
+                      }}
+                      onDragEnter={
+                        props.dragging
+                          ? (event) => props.handleDragEnter(event, index)
+                          : null
+                      }
                       style={{
-                        backgroundColor: "fff",
-                        padding: "9px 5px 9px 0px",
-                        textAlign: "right",
-                        borderStyle: "none",
-                        outline: "none",
+                        padding: "9px 0px 9px 3px",
                         boxSizing: "borderBox",
                       }}
+                    >
+                      <FontAwesomeIcon cursor="pointer" icon={faGripVertical} />
+                    </div>
+
+                    <input
+                      className={tempNameBox}
                       type="text"
-                      id="currentTicketPrice"
-                      placeholder="10.00"
-                      name="currentTicketPrice"
-                      value={item.currentTicketPrice}
+                      maxLength="64"
+                      id="ticketName"
+                      placeholder="GA, VIP, etc: limit 64 characters"
+                      name="ticketName"
+                      value={item.ticketName}
                       onChange={(event) => {
                         props.changeTicket(event, item.key);
                       }}
                     ></input>
-                  ) : (
+                  </div>
+
+                  <div
+                    style={{
+                      padding: "10px 5px",
+                      boxSizing: "borderBox",
+                    }}
+                  >
+                    <input
+                      className={tempQuantityBox}
+                      type="text"
+                      id="remainingQuantity"
+                      placeholder="100"
+                      name="remainingQuantity"
+                      value={item.remainingQuantity}
+                      onChange={(event) => {
+                        props.changeTicket(event, item.key);
+                      }}
+                    ></input>
+                  </div>
+
+                  <div className={tempPriceBox}>
                     <div
                       style={{
-                        backgroundColor: "#E7E7E7",
-                        padding: "9px 5px 9px 0px",
-                        textAlign: "right",
-                        borderStyle: "none",
-                        outline: "none",
+                        padding: "9px 0px 9px 0px",
+                        textAlign: "center",
                         boxSizing: "borderBox",
                       }}
                     >
-                      0.000
+                      {item.currency === "" ? "USD $" : item.currency}
                     </div>
-                  )}
+                    {props.status === 8 ? (
+                      <input
+                        style={{
+                          backgroundColor: "fff",
+                          padding: "9px 5px 9px 0px",
+                          textAlign: "right",
+                          borderStyle: "none",
+                          outline: "none",
+                          boxSizing: "borderBox",
+                        }}
+                        type="text"
+                        id="currentTicketPrice"
+                        placeholder="10.00"
+                        name="currentTicketPrice"
+                        value={item.currentTicketPrice}
+                        onChange={(event) => {
+                          props.changeTicket(event, item.key);
+                        }}
+                      ></input>
+                    ) : (
+                      <div
+                        style={{
+                          backgroundColor: "#E7E7E7",
+                          padding: "9px 5px 9px 0px",
+                          textAlign: "right",
+                          borderStyle: "none",
+                          outline: "none",
+                          boxSizing: "borderBox",
+                        }}
+                      >
+                        0.000
+                      </div>
+                    )}
+                  </div>
+
+                  <div
+                    style={{
+                      padding: "20px 5px",
+                      boxSizing: "borderBox",
+                      textAlign: "center",
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      color="blue"
+                      cursor="pointer"
+                      onClick={() => {
+                        props.showModal(item);
+                        console.log("Ticket Detail: ", props.tickets);
+                      }}
+                      icon={faTrashAlt}
+                    />
+                  </div>
                 </div>
+
+                {item.viewModal ? (
+                  <Fragment>
+                    <TicketModal
+                      show={true}
+                      details={item}
+                      closeModal={() => {
+                        props.deactivateModal(item);
+                      }}
+                      deleteTicket={() => {
+                        console.log("Delete ticket", item.ticketName);
+                        console.log("Ticket key", item.key);
+                        props.delete(item.key);
+                      }}
+                    ></TicketModal>
+                  </Fragment>
+                ) : null}
+
+                {item.nameWarning ||
+                item.priceWarning ||
+                item.quantityWarning ||
+                item.reqWarning ? (
+                  <div className={classes.TicketLineWarning}>
+                    <div style={{ paddingLeft: "25px" }}>
+                      {" "}
+                      {nameWarningText}
+                    </div>
+                    <div style={{ paddingLeft: "5px" }}>
+                      {" "}
+                      {quantityWarningText}
+                    </div>
+                    <div style={{ paddingRight: "5px", textAlign: "right" }}>
+                      {" "}
+                      {priceWarningText}
+                    </div>
+                  </div>
+                ) : null}
 
                 <div
                   style={{
-                    padding: "20px 5px",
-                    boxSizing: "borderBox",
+                    padding: "5px",
+                    borderTop: "1px solid lightgrey",
+                    height: "30px",
                     textAlign: "center",
                   }}
                 >
-                  <FontAwesomeIcon
-                    color="blue"
-                    cursor="pointer"
-                    onClick={() => {
-                      props.showModal(item);
-                      console.log("Ticket Detail: ", props.tickets);
-                    }}
-                    icon={faTrashAlt}
+                  {!item.settings ? (
+                    <button
+                      style={{
+                        fontSize: "15px",
+                        color: "blue",
+                        border: "none",
+                        backgroundColor: "white",
+                        cursor: "pointer",
+                        display: "inlineBlock",
+                        outline: "none",
+                      }}
+                      onClick={(event) => {
+                        props.changeSettings(event, item.key);
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        color="blue"
+                        size="sm"
+                        cursor="pointer"
+                        onClick={() => {
+                          //let tempDisplay = {...ticketDisplay};
+                          //tempDisplay[item.eventNum] = false;
+                          //setTicketDisplay(tempDisplay);
+                        }}
+                        icon={faChevronDown}
+                      />{" "}
+                      Show additional features
+                    </button>
+                  ) : (
+                    <button
+                      style={{
+                        fontSize: "15px",
+                        color: "blue",
+                        border: "none",
+                        backgroundColor: "white",
+                        cursor: "pointer",
+                        display: "inlineBlock",
+                        outline: "none",
+                      }}
+                      onClick={(event) => {
+                        props.changeSettings(event, item.key);
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        color="blue"
+                        size="sm"
+                        cursor="pointer"
+                        onClick={() => {
+                          //let tempDisplay = {...ticketDisplay};
+                          //tempDisplay[item.eventNum] = false;
+                          //setTicketDisplay(tempDisplay);
+                        }}
+                        icon={faChevronUp}
+                      />{" "}
+                      Hide additional features
+                    </button>
+                  )}
+                </div>
+                {item.settings ? (
+                  <PriceSettings
+                    ticket={item}
+                    changeTicket={props.changeTicket}
+                    switchSettings={props.switchSettings}
+                    changeFeature={props.changeFeature}
+                    switchPriceFeature={props.switchPriceFeature}
+                    addPromoCode={props.addPromoCode}
+                    changeArgument={props.changeArgument}
+                    changePromoCodesName={props.changePromoCodesName}
+                    changePromoCodesAmount={props.changePromoCodesAmount}
+                    changePromoCodesPercent={props.changePromoCodesPercent}
+                    deletePromoCode={props.deletePromoCode}
                   />
-                </div>
-              </div>
-
-              {item.viewModal ? (
-                <Fragment>
-                  <TicketModal
-                    show={true}
-                    details={item}
-                    closeModal={() => {
-                      props.deactivateModal(item);
-                    }}
-                    deleteTicket={() => {
-                      console.log("Delete ticket", item.ticketName);
-                      console.log("Ticket key", item.key);
-                      props.delete(item.key);
-                    }}
-                  ></TicketModal>
-                </Fragment>
-              ) : null}
-
-              {item.nameWarning ||
-              item.priceWarning ||
-              item.quantityWarning ||
-              item.reqWarning ? (
-                <div className={classes.TicketLineWarning}>
-                  <div style={{ paddingLeft: "25px" }}> {nameWarningText}</div>
-                  <div style={{ paddingLeft: "5px" }}>
-                    {" "}
-                    {quantityWarningText}
-                  </div>
-                  <div style={{ paddingRight: "5px", textAlign: "right" }}>
-                    {" "}
-                    {priceWarningText}
-                  </div>
-                </div>
-              ) : null}
-
-              <div
-                style={{
-                  padding: "5px",
-                  borderTop: "1px solid lightgrey",
-                  height: "30px",
-                  textAlign: "center",
-                }}
-              >
-                {!item.settings ? (
-                  <button
-                    style={{
-                      fontSize: "15px",
-                      color: "blue",
-                      border: "none",
-                      backgroundColor: "white",
-                      cursor: "pointer",
-                      display: "inlineBlock",
-                      outline: "none",
-                    }}
-                    onClick={(event) => {
-                      props.changeSettings(event, item.key);
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      color="blue"
-                      size="sm"
-                      cursor="pointer"
-                      onClick={() => {
-                        //let tempDisplay = {...ticketDisplay};
-                        //tempDisplay[item.eventNum] = false;
-                        //setTicketDisplay(tempDisplay);
-                      }}
-                      icon={faChevronDown}
-                    />{" "}
-                    Show additional features
-                  </button>
-                ) : (
-                  <button
-                    style={{
-                      fontSize: "15px",
-                      color: "blue",
-                      border: "none",
-                      backgroundColor: "white",
-                      cursor: "pointer",
-                      display: "inlineBlock",
-                      outline: "none",
-                    }}
-                    onClick={(event) => {
-                      props.changeSettings(event, item.key);
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      color="blue"
-                      size="sm"
-                      cursor="pointer"
-                      onClick={() => {
-                        //let tempDisplay = {...ticketDisplay};
-                        //tempDisplay[item.eventNum] = false;
-                        //setTicketDisplay(tempDisplay);
-                      }}
-                      icon={faChevronUp}
-                    />{" "}
-                    Hide additional features
-                  </button>
-                )}
-              </div>
-              {item.settings ? (
-                <PriceSettings
-                  ticket={item}
-                  changeTicket={props.changeTicket}
-                  switchSettings={props.switchSettings}
-                  changeFeature={props.changeFeature}
-                  switchPriceFeature={props.switchPriceFeature}
-                  addPromoCode={props.addPromoCode}
-                  changeArgument={props.changeArgument}
-                  changePromoCodesName={props.changePromoCodesName}
-                  changePromoCodesAmount={props.changePromoCodesAmount}
-                  changePromoCodesPercent={props.changePromoCodesPercent}
-                  deletePromoCode={props.deletePromoCode}
-                />
-              ) : null}
-            </Fragment>
-          );
+                ) : null}
+              </Fragment>
+            );
+          } else return null;
         })}
       </Fragment>
     );

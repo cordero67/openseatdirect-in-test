@@ -1,4 +1,11 @@
 // THIS IS NOW A MODUL
+// freeTicketHandler
+// checkoutButton
+// detailsBody;
+// connectionStatus;
+// loadingSpinner;
+// purchaseConfirmation;
+
 import React, { useState, useEffect, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import ReactHtmlParser from "html-react-parser";
@@ -6,29 +13,29 @@ import ReactHtmlParser from "html-react-parser";
 import { API } from "../config.js";
 /// ***REVIEW ALL THESE COMPONENTS
 import {
-  loadTicketInfo, // COMPONENT REVIEWED
-  loadPromoCodeDetails, // COMPONENT REVIEWED
-  loadOrderTotals, // COMPONENT REVIEWED
-  changeOrderTotals,
-  changeTicketInfo,
-  amendPromoCodeDetails,
+  loadTicketInfo, // COMPONENT REVIEWED 1/3/22
+  loadPromoCodeDetails, // COMPONENT REVIEWED 1/3/22
+  loadOrderTotals, // COMPONENT REVIEWED 1/3/22
+  changeOrderTotals, // COMPONENT REVIEWED 1/3/22
+  changeTicketInfo, // COMPONENT REVIEWED 1/3/22
+  amendPromoCodeDetails, // COMPONENT REVIEWED 1/3/22
   resetPromoDetails,
-  amendTicketInfo,
-  clearPromoDetails,
-  clearTicketInfo,
-  clearOrderTotals,
+  amendTicketInfo, // COMPONENT REVIEWED 1/3/22
+  clearPromoDetails, // COMPONENT REVIEWED 1/3/22
+  clearTicketInfo, // COMPONENT REVIEWED 1/3/22
+  clearOrderTotals, // COMPONENT REVIEWED 1/3/22
 } from "./Resources/TicketSelectionFunctions";
-import { DateRange } from "./Resources/PricingFunctions";
+import { DateRange } from "./Resources/PricingFunctions"; // COMPONENT REVIEWED 1/3/22
 import {
-  MainContainerStyling,
-  MainGridStyling,
-  EventTicketSectionStyling,
-  OrderSummarySectionStyling,
-  OrderSummarySectionAltStyling,
+  MainContainerStyling, // COMPONENT REVIEWED 1/3/22
+  MainGridStyling, // COMPONENT REVIEWED 1/3/22
+  EventTicketSectionStyling, // COMPONENT REVIEWED 1/3/22
+  OrderSummarySectionStyling, // COMPONENT REVIEWED 1/3/22
+  OrderSummarySectionAltStyling, // COMPONENT REVIEWED 1/3/22
 } from "./Resources/Styling";
 import Spinner from "../components/UI/Spinner/Spinner";
-import CartLink from "./Components/CartLink";
-import OrderSummary from "./Components/OrderSummary";
+import CartLink from "./Components/CartLink"; // COMPONENT REVIEWED 1/3/22
+import OrderSummary from "./Components/OrderSummary"; // COMPONENT REVIEWED 1/3/22
 import GuestInfo from "./Components/GuestInfo";
 
 import PayPalExpress from "./Components/PayPalExpress";
@@ -37,7 +44,7 @@ import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
 
 import OSDLogo from "../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 
-import TicketItem from "./Components/TicketItem";
+import TicketItem from "./Components/TicketItem"; // COMPONENT REVIEWED 1/3/22
 import classes from "./TicketPurchase.module.css";
 
 import Backdrop from "./Modals/Backdrop";
@@ -267,11 +274,13 @@ const TicketPurchase = (props) => {
       });
   };
 
+  // REVIEWED 1/1/22
   // determines new "ticketsPurchased" and "totalPurchaseAmount" in "orderTotals"
   const updateOrderTotals = (promoCode) => {
     setOrderTotals(changeOrderTotals(ticketInfo, orderTotals, promoCode));
   };
 
+  // REVIEWED 1/1/22
   // updates "promoCodeDetails", "ticketInfo" and "orderTotals" based on promo code change
   const applyPromoCodeHandler = (event, inputtedPromoCode) => {
     event.preventDefault();
@@ -289,6 +298,7 @@ const TicketPurchase = (props) => {
     }
   };
 
+  // REVIEWED 1/1/22
   // updates "promoCodeDetails", "ticketInfo" and "orderTotals" based on promo code removal
   const clearPromoCodes = () => {
     setPromoCodeDetails(clearPromoDetails(promoCodeDetails));
@@ -296,6 +306,7 @@ const TicketPurchase = (props) => {
     setOrderTotals(clearOrderTotals(ticketInfo, orderTotals));
   };
 
+  // REVIEWED 1/1/22
   // creates promo code display
   const inputPromoCode = () => {
     if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
@@ -383,6 +394,7 @@ const TicketPurchase = (props) => {
     }
   };
 
+  // REVIEWED 1/1/22
   // creates contents inside promo code input form
   const promoOption = () => {
     if (!promoCodeDetails.available) {
@@ -435,17 +447,19 @@ const TicketPurchase = (props) => {
     }
   };
 
+  // REVIEWED 1/1/22
   // updates "ticketInfo" and "orderTotals" after a change in tickets selected
   const updateTicketsSelected = (event, ticketType) => {
     setTicketInfo(changeTicketInfo(event, ticketType, ticketInfo));
     updateOrderTotals();
   };
 
-  // LOOKS GOOD 1/1/22
+  // REVIEWED 1/1/22
   // determines what "contact information" has been filled out by the ticket buyer
   const regsuper =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  // LOOKS GOOD 1/1/22
+
+  // REVIEWED 1/1/22
   const detailsMinimal = () => {
     console.log("customerInformation: ", customerInformation);
 
@@ -461,6 +475,7 @@ const TicketPurchase = (props) => {
     }
   };
 
+  // **************************
   // SOME EDITS REQUIRED 1/1/22
   // creates checkout/submit order button
   const checkoutButton = () => {
@@ -604,9 +619,8 @@ const TicketPurchase = (props) => {
     }
   };
 
-  // NEED TO REVIEW AND EDIT
+  // REVIEWED 1/1/22
   const changeGuestInfo = (event) => {
-    console.log("A change was detected");
     let tempInformation = { ...customerInformation };
     tempInformation[event.target.name] = event.target.value;
     console.log("New customer information: ", tempInformation);
@@ -623,6 +637,7 @@ const TicketPurchase = (props) => {
       );
     } else return null;
   };
+
   // LOOKS GOOD
   // defines and sets "connectionStatus" view status
   const connectionStatus = () => {
@@ -650,7 +665,7 @@ const TicketPurchase = (props) => {
     */
   };
 
-  // LOOKS GOOD 1/1/22
+  // REVIEWED 1/1/22
   // creates event header with date/time range
   const eventHeader = () => {
     if (
@@ -673,30 +688,33 @@ const TicketPurchase = (props) => {
     } else return null;
   };
 
-  // LOOKS GOOD 1/1/22
+  // REVIEWED 1/1/22
   // creates list of ticket types and ticket selection functionality
   const ticketItems = () => {
     if (display === "selection") {
       return (
         <div>
           {ticketInfo.map((ticket, index) => {
-            return (
-              <div key={index}>
-                <TicketItem
-                  name={ticket}
-                  key={ticket.ticketID}
-                  onChange={(event) => {
-                    updateTicketsSelected(event, ticket);
-                  }}
-                />
-              </div>
-            );
+            if (!ticket.isZombie) {
+              return (
+                <div key={index}>
+                  <TicketItem
+                    name={ticket}
+                    key={ticket.ticketID}
+                    onChange={(event) => {
+                      updateTicketsSelected(event, ticket);
+                    }}
+                  />
+                </div>
+              );
+            } else return null;
           })}
         </div>
       );
     } else return null;
   };
 
+  // REVIEWED 1/1/22
   // determines whether or not to display purchase amount
   const totalAmount = (show) => {
     if (
@@ -716,6 +734,7 @@ const TicketPurchase = (props) => {
     } else return null;
   };
 
+  // REVIEWED 1/1/22
   // determines whether or not to display cart and arrow
   const cartLink = (show) => {
     if (
@@ -736,6 +755,7 @@ const TicketPurchase = (props) => {
     } else return null;
   };
 
+  // REVIEWED 1/1/22
   // creates order summary section
   const orderSummary = () => {
     if (
@@ -770,6 +790,7 @@ const TicketPurchase = (props) => {
     } else return null;
   };
 
+  // REVIEWED 1/1/22
   // creates order pane with image and order summary sections
   const orderPane = () => {
     if (showDoublePane) {
@@ -1012,6 +1033,7 @@ const TicketPurchase = (props) => {
     } else return null;
   };
 
+  // REVIEWED 1/1/22
   // creates ticket pane with promo form and ticket sections
   const detailsPane = () => {
     return (
@@ -1029,6 +1051,7 @@ const TicketPurchase = (props) => {
     );
   };
 
+  // REVIEWED 1/1/22
   // defines main display with ticket and order panes
   const mainDisplay = () => {
     if (
@@ -1070,7 +1093,8 @@ const TicketPurchase = (props) => {
     } else return null;
   };
 
-  // LOOKS GOOD 1/2/22
+  // *** LOOK TO MOVE ALL FOUR REGISTRATION CONSTANTS TO EXTERNAL COMPONENT
+  // REVIEWED 1/1/22
   const disagreeButton = (
     <div style={{ textAlign: "center", paddingTop: "15px" }}>
       <button
@@ -1086,7 +1110,8 @@ const TicketPurchase = (props) => {
     </div>
   );
 
-  // LOOKS GOOD 1/2/22
+  // *** LOOK TO MOVE ALL FOUR REGISTRATION CONSTANTS TO EXTERNAL COMPONENT
+  // REVIEWED 1/2/22
   const agreeButton = () => {
     if (display === "registration") {
       return (
@@ -1146,7 +1171,8 @@ const TicketPurchase = (props) => {
     }
   };
 
-  // LOOKS GOOD 1/2/22
+  // *** LOOK TO MOVE ALL FOUR REGISTRATION CONSTANTS TO EXTERNAL COMPONENT
+  // REVIEWED 1/1/22
   const registrationButtons = () => {
     if (window.innerWidth >= 500) {
       return (
@@ -1172,7 +1198,8 @@ const TicketPurchase = (props) => {
     }
   };
 
-  // LOOKS GOOD
+  // *** LOOK TO MOVE ALL FOUR REGISTRATION CONSTANTS TO EXTERNAL COMPONENT
+  // REVIEWED 1/1/22
   const registration = () => {
     if (display === "registration") {
       return (

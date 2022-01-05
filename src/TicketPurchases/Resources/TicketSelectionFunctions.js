@@ -140,6 +140,7 @@ export const loadTicketInfo = (event) => {
       ticketDescription: item.ticketDescription,
       ticketsAvailable: item.remainingQuantity,
       ticketPrice: item.currentTicketPrice,
+      isZombie: item.isZombie,
       ticketsSelected: 0,
       maxTicketsAllowedPerOrder: maxOrder,
       minTicketsAllowedPerOrder: minOrder,

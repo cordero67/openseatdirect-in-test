@@ -124,24 +124,6 @@ class ImgDropAndCrop extends Component {
 
 
 
-  inputCrop = (image, percentCrop) => {
-    // on editEvent, retrieve historical crop values
-    // and restore then back 
-
-    const w = image.width;
-    const h = image.height;
-
-    let { crop } = this.state;
-    crop.aspect = 2;
-    crop.ruleOfThirds = true;
-    crop.x = percentCrop.x * w * 0.01;
-    crop.y = percentCrop.y * h * 0.01;
-    crop.width = percentCrop.width * w * 0.01;
-    crop.height = percentCrop.height * h * 0.01;
-    this.setState({ crop: crop });
-  }
-
-
   defaultCrop = (image) => {
     // sets the default crop. Centered and maximized space subject aspect ratio of 2
     const ASPECT_RATIO = 2 / 1;
@@ -209,10 +191,13 @@ class ImgDropAndCrop extends Component {
   };
 
   handleOnCropChange = (crop) => {
+    console.log (">>>>>>>>>>in handleOnCropChange", crop);
     this.setState({ crop: crop });
   };
 
   handleOnCropComplete = (crop, percentCrop) => {
+    console.log (">>>>>>>>>>in handleOnCropComplete", crop, percentCrop);
+
     this.setState({ percentCrop: percentCrop });
     const canvasRef = this.imagePreviewCanvasRef.current;
     const { imgSrc } = this.state;
@@ -222,6 +207,10 @@ class ImgDropAndCrop extends Component {
   handleCreateCroppedImage = async (event) => {
     event.preventDefault();
     const { imgSrc, imgFile, percentCrop ,imgDim} = this.state;
+
+    console.log (">>>>>>>>>>in handleCreateCroppedImage w ", event, "imgFile=", imgFile, "pc=", percentCrop ,"imdim=",imgDim );
+
+
     const canvasRef = this.imagePreviewCanvasRef.current;
     if (canvasRef && imgSrc) {
       //const { imgSrcExt } = this.state;
@@ -235,12 +224,14 @@ class ImgDropAndCrop extends Component {
       this.setState({ newimageData64: tempImage });
       //      this.props.change({ imgSrc: imgSrc, percentCrop: percentCrop }); // sends imageBlob to parent using change prop
       let photoMetaData ={W:imgDim.W, H:imgDim.H ,
-                          xp0: .01*percentCrop.x, yp0:.01*percentCrop.y,
-                          wp:.01*percentCrop.width, hp:.01*percentCrop.height};
+                          xp0: percentCrop.x, yp0:percentCrop.y,
+                          wp:percentCrop.width, hp:percentCrop.height};
       this.props.change({ imgFile: imgFile, percentCrop: percentCrop, photoMetaData:photoMetaData }); // sends image file handle to parent using change prop
     }
     this.setState({ isCropping: false });
   };
+
+
 
   handleClearToDefault = (event) => {
     if (event) event.preventDefault();
@@ -320,25 +311,68 @@ class ImgDropAndCrop extends Component {
     }
   };
 
+  ///////////////
+
+  componentDidMount(){
+
+    // this code is copied from ReusableUtils.js  image64toCanvasRef2
+    const { imgSrc, percentCrop} = this.state;
+    const image = new Image();
+    const  canvas=document.createElement("canvas");
+    const ctx=canvas.getContext("2d");
+ 
+//    const scope = this;
+
+    image.onload = ()=> {
+      const W = image.width;
+      const H = image.height;
+      ctx.drawImage(
+        image,
+        percentCrop.x * W * 0.01,
+        percentCrop.y * H * 0.01,
+        percentCrop.width * W * 0.01,
+        percentCrop.height * H * 0.01,
+        0,
+        0, // the x an y coordinates where to place the image on the canvas
+        300, // 300 The width of the image to use (stretch or reduce the image)
+        150 // 150 The height of the image to use (stretch or reduce the image)
+      );
+
+      const tempImage = canvas.toDataURL('image/jpeg');
+      this.setState({ newimageData64: tempImage });
+    };
+    image.src = imgSrc;
+
+  }
+
+
+
+//////////////
+
   static getDerivedStateFromProps(nextProps, prevState) {
+    console.log ("in getDerivedStaeFromProps",nextProps, prevState);
     //lifecycle function to update child state with props set by parent
     if (prevState.imgSrcLoaded) {
+    console.log (">>>EXITING prevState.imgSrcLoaded in getDerivedStaeFromProps");
+
       // disable getDerivedStateFromProps after image is loaded once.
       return null; // we don't need this function in EventCreation, we need it in EventEdit
     }
-    // this check is for eventCreation startup which does not have imagein
-    if (!nextProps.imagein) {
+    // this check is for eventCreation startup which has isCreateEvent=true
+    if (nextProps.isCreateEvent) {
+      console.log (">>>EXITING nextProps.isCreateEvent in getDerivedStaeFromProps");
       return null;
     }
     if (
-      nextProps.imagein.isLoaded !== prevState.imgSrcLoaded ||
-      nextProps.imagein.imgSrc !== prevState.imgSrc
+      nextProps.photoData.isLoaded !== prevState.imgSrcLoaded ||
+      nextProps.photoData.imgSrc !== prevState.imgSrc
     ) {
 
       return {
-        imgSrc: nextProps.imagein.imgSrc,
-        imgSrcLoaded: nextProps.imagein.isLoaded,
-        newimageData64: nextProps.imagein.imgSrc
+        imgSrc:       nextProps.photoData.imgSrc,
+        imgSrcLoaded: nextProps.photoData.isLoaded,
+        percentCrop:  nextProps.photoData.percentCrop
+//        newimageData64: nextProps.photoData.imgSrc,
       };
     } else return null;
   }
@@ -412,6 +446,7 @@ class ImgDropAndCrop extends Component {
                 <img
                   className={classes.ImageBox}
                   src={this.state.newimageData64}
+                  alt=""
                 />
                 <div className={classes.ImageControls}>
                   <button

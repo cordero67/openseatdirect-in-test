@@ -35,7 +35,6 @@ const TicketItem = (props) => {
     // define "ticketArray[]" and "options"
     // check for soldout conditions
     if (available < 1 || (minimum && available < minimum)) {
-      //console.log("sold out");
       // soldout conditions
       options = (
         <Fragment>

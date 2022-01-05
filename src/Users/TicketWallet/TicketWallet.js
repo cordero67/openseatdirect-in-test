@@ -246,7 +246,7 @@ const MyTickets = () => {
     let userId = tempUser.user._id;
 
     //fetch(`${API}/events/${item.eventNum}`, {
-    fetch(`${API}/event/e/${item.eventNum}`, {
+    fetch(`${API}/events/${item.eventNum}`, {
       method: "GET",
     })
       .then(handleErrors)

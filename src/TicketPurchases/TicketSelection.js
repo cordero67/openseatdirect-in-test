@@ -153,6 +153,8 @@ const TicketSelection = () => {
           setOrderTotals(loadOrderTotals(res));
         }
 
+        setDisplay("main");
+        /*
         getEventImage(eventID)
           .then((res) => {
             eventLogo = res;
@@ -161,8 +163,8 @@ const TicketSelection = () => {
             eventLogo = DefaultLogo;
           })
           .finally(() => {
-            setDisplay("main");
           });
+          */
       })
       .catch((err) => {
         setDisplay("connection");
@@ -656,17 +658,19 @@ const TicketSelection = () => {
       return (
         <div>
           {ticketInfo.map((ticket, index) => {
-            return (
-              <div key={index}>
-                <TicketItem
-                  name={ticket}
-                  key={ticket.ticketID}
-                  onChange={(event) => {
-                    updateTicketsSelected(event, ticket);
-                  }}
-                />
-              </div>
-            );
+            if (!ticket.isZombie) {
+              return (
+                <div key={index}>
+                  <TicketItem
+                    name={ticket}
+                    key={ticket.ticketID}
+                    onChange={(event) => {
+                      updateTicketsSelected(event, ticket);
+                    }}
+                  />
+                </div>
+              );
+            } else return null;
           })}
         </div>
       );

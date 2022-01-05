@@ -28,9 +28,7 @@ const handleErrors = (response) => {
 
 // extracts specific event data, non-transactional
 export const getEventData = (eventId) => {
-  // DEV API `${API}/events/${eventId}`, {
-  // CURRENT PROD API: `${API}/event/e/${eventId}`
-  return fetch(`${API}/event/e/${eventId}`, {
+  return fetch(`${API}/events/${eventId}`, {
     method: "GET",
   })
     .then(handleErrors)
@@ -43,25 +41,6 @@ export const getEventData = (eventId) => {
         "Inside '.catch' block of 'getEventData()', this is the error:",
         err
       );
-      throw Error(err);
-    });
-};
-
-// NEED TO REFACTOR TO NEW TEMPLATE
-// retrieves image for a specific event
-export const getEventImage = (eventId) => {
-  console.log("Inside apiCore and the 'getEventImage' function call");
-  return fetch(`${API}/event/photo/e/${eventId}`, {
-    method: "GET",
-  })
-    .then(handleErrors)
-    .then((response) => {
-      console.log("Inside apiCore and the 'getEventImage' .then block");
-      console.log("response: ", response, " response.url: ", response.url);
-      return response.url;
-    })
-    .catch((err) => {
-      console.log("Inside catch", err);
       throw Error(err);
     });
 };
