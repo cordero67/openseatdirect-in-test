@@ -314,13 +314,13 @@ class ImgDropAndCrop extends Component {
   ///////////////
 
   componentDidMount(){
-
     // this code is copied from ReusableUtils.js  image64toCanvasRef2
     const { imgSrc, percentCrop} = this.state;
     const image = new Image();
     const  canvas=document.createElement("canvas");
     const ctx=canvas.getContext("2d");
- 
+
+    console.log ("in componentDidMount w imgSrc, percentCrop", imgSrc, percentCrop);
 //    const scope = this;
 
     image.onload = ()=> {
@@ -367,13 +367,19 @@ class ImgDropAndCrop extends Component {
       nextProps.photoData.isLoaded !== prevState.imgSrcLoaded ||
       nextProps.photoData.imgSrc !== prevState.imgSrc
     ) {
-
-      return {
-        imgSrc:       nextProps.photoData.imgSrc,
-        imgSrcLoaded: nextProps.photoData.isLoaded,
-        percentCrop:  nextProps.photoData.percentCrop
-//        newimageData64: nextProps.photoData.imgSrc,
-      };
+      if (nextProps.photoData.percentCrop){
+          return {
+            imgSrc:       nextProps.photoData.imgSrc,
+            imgSrcLoaded: nextProps.photoData.isLoaded,
+            percentCrop:  nextProps.photoData.percentCrop
+        //        newimageData64: nextProps.photoData.imgSrc,
+          }
+        } else {
+          return {
+            imgSrc:       nextProps.photoData.imgSrc,
+            imgSrcLoaded: nextProps.photoData.isLoaded
+          }
+        }
     } else return null;
   }
 
