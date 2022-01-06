@@ -72,7 +72,7 @@ export function image64toCanvasRef2(canvasRefPreview, image64, percentCrop) {
     const W = image.width;
     const H = image.height;
     ctx.drawImage(
-      image,
+      image, 
       percentCrop.x * W * 0.01,
       percentCrop.y * H * 0.01,
       percentCrop.width * W * 0.01,

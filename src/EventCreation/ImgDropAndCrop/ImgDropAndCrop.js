@@ -43,10 +43,10 @@ class ImgDropAndCrop extends Component {
       crop: {
         aspect: 2 / 1,
         ruleOfThirds: true,
-        x: 30,
-        y: 30,
-        width: 400,
-        height: 200,
+        unit:'px',
+        x: null,
+        y: null,
+        width: null
       },
       newimageData64: null,
       isCropping: false,
@@ -74,7 +74,7 @@ class ImgDropAndCrop extends Component {
       if (currentFileSize > imageMaxSize) {
         let showmax = (imageMaxSize / 1000).toLocaleString("en");
         alert(
-          "This file is not allowed. File size cannot exceed " +
+          "This file is too big. File size cannot exceed " +
             showmax +
             " Kbytes "
         );
@@ -126,9 +126,10 @@ class ImgDropAndCrop extends Component {
 
   defaultCrop = (image) => {
     // sets the default crop. Centered and maximized space subject aspect ratio of 2
+    console.log ("in defaultCrop w ", image);
     const ASPECT_RATIO = 2 / 1;
     const w = image.width;
-    const h = image.height;
+    const h = image.height; 
     let xa, ya, wa, ha;
     // this is for a 2 by 1 crop
     if (w > ASPECT_RATIO * h) {
@@ -144,19 +145,95 @@ class ImgDropAndCrop extends Component {
       wa = w;
       ha = w / ASPECT_RATIO;
     }
-    //console.log ("default crop: w h xa ya wa ha ", w, h, xa, ya, wa, ha);
+    console.log ("default crop: w h xa ya wa ha ", w, h, xa, ya, wa, ha);
     let { crop } = this.state;
     crop.aspect = ASPECT_RATIO;
     crop.ruleOfThirds = true;
+    crop.unit='px';      //MUST INCLUDE units if not the default to 'px'
     crop.x = xa;
     crop.y = ya;
     crop.width = wa;
-    crop.height = ha;
+    crop.height = ha; 
     this.setState({ crop: crop});
   };
 
-  handleImageLoaded = (image) => {
-    console.log (">>>>>>>>>>in handleImageLoaded", image);
+  calcPercentCrop =(crop,imgDim) =>{
+//    let {crop,imgDim} = this.state;
+    if (crop && imgDim){
+      let percentCrop ={
+        x: 100*crop.x/imgDim.W,
+        y:100*crop.y/imgDim.H,
+        width:100*crop.width/imgDim.W,
+        height:100*crop.height/imgDim.H,
+      };
+      return percentCrop
+    } else {
+      return {x:null, y:null,width:null,height:null};
+    }
+  }
+
+  handleOnImageLoaded = (image) => {
+    let { crop, percentCrop } = this.state;
+      const w = image.width;
+      const h = image.height;
+      let {imgDim} = this.state;
+      imgDim.W = w;
+      imgDim.H = h;
+      this.setState ({imgDim:imgDim});    // save original image dimensions
+    console.log (">>>>>>>>>>in handleOnImageLoaded w crop=", crop,"imgDim=", imgDim, "percentCrop=",percentCrop );
+
+    if (
+        crop.x === null ||
+        crop.y === null ||
+        crop.width === null 
+    ) {
+      // DEFAULT CROP 
+        const ASPECT_RATIO = 2 / 1;
+        const w = image.width;
+        const h = image.height; 
+        let xa, ya, wa, ha;
+        // this is for a 2 by 1 crop
+        if (w > ASPECT_RATIO * h) {
+          // extra wide image
+          ya = 0;
+          xa = (w - ASPECT_RATIO * h) / 2;
+          wa = ASPECT_RATIO * h;
+          ha = h;
+        } else {
+          // narrow image
+          xa = 0;
+          ya = (h - w / ASPECT_RATIO) / 2;
+          wa = w;
+          ha = w / ASPECT_RATIO;
+        }
+        console.log ("default crop: w h xa ya wa ha ", w, h, xa, ya, wa, ha);
+        crop.aspect = ASPECT_RATIO;
+        crop.ruleOfThirds = true;
+        crop.unit='px';      //MUST INCLUDE units beause it defaults to 'px'
+        crop.x = xa;
+        crop.y = ya;
+        crop.width = wa;
+        crop.height = ha;     // let it calcuate width based on aspect ratio
+
+        let percentCrop = this.calcPercentCrop(crop,imgDim);
+        const canvasRef = this.imagePreviewCanvasRef.current;
+        const { imgSrc } = this.state;
+        console.log (">>>22222222>>>>>>>in handleImageLoaded w FINAL crop=", crop,"imgDim=", imgDim,"percentCrop=", percentCrop );
+        image64toCanvasRef2(canvasRef, imgSrc, percentCrop);
+        //must return false https://www.npmjs.com/package/react-image-crop
+        //Note that you must return false in this callback if you are changing the crop object.
+        this.setState({ crop: crop});
+        return false; // Return false when setting crop state in here.
+    } else {
+        const canvasRef = this.imagePreviewCanvasRef.current;
+        const { imgSrc } = this.state;
+        console.log (">>>333333333333>>>>>>>in handleImageLoaded w FINAL crop=", crop,"imgDim=", imgDim );
+        image64toCanvasRef2(canvasRef, imgSrc, percentCrop);
+        // dont need to return false because we're not resetting crop
+    }
+  };
+
+  handleImageLoadedXXX = (image) => {
     let { percentCrop } = this.state;
       const w = image.width;
       const h = image.height;
@@ -164,6 +241,7 @@ class ImgDropAndCrop extends Component {
       imgDim.W = w;
       imgDim.H = h;
       this.setState ({imgDim:imgDim});    // same original image dimensions
+    console.log (">>>>>>>>>>in handleImageLoaded w percentCrop=", percentCrop,"imgDim=", imgDim );
 
     if (
       !(
@@ -188,27 +266,32 @@ class ImgDropAndCrop extends Component {
     const canvasRef = this.imagePreviewCanvasRef.current;
     const { imgSrc } = this.state;
     image64toCanvasRef2(canvasRef, imgSrc, percentCrop);
+    //must return false https://www.npmjs.com/package/react-image-crop
+    //Note that you must return false in this callback if you are changing the crop object.
+    return false; // Return false when setting crop state in here.
   };
 
-  handleOnCropChange = (crop) => {
-    console.log (">>>>>>>>>>in handleOnCropChange", crop);
+  handleOnCropChange = (crop,percentCrop) => {
+    console.log (">>>>>>>>>>in handleOnCropChange crop=", crop,"percentCrop=",percentCrop);
     this.setState({ crop: crop });
   };
 
-  handleOnCropComplete = (crop, percentCrop) => {
-    console.log (">>>>>>>>>>in handleOnCropComplete", crop, percentCrop);
+//  handleOnCropComplete = (crop, percentCrop) => {
+  handleOnCropComplete = (crop,percentCrop) => {
 
-    this.setState({ percentCrop: percentCrop });
+    console.log (">>>>>>>>>>in handleOnCropComplete", crop, "percentCrop=",percentCrop);
+
     const canvasRef = this.imagePreviewCanvasRef.current;
     const { imgSrc } = this.state;
-    image64toCanvasRef2(canvasRef, imgSrc, percentCrop);
+    image64toCanvasRef2(canvasRef, imgSrc,percentCrop);
+    this.setState({ percentCrop: percentCrop });
   };
 
   handleCreateCroppedImage = async (event) => {
     event.preventDefault();
-    const { imgSrc, imgFile, percentCrop ,imgDim} = this.state;
+    const { imgSrc, imgFile, crop,percentCrop ,imgDim} = this.state;
 
-    console.log (">>>>>>>>>>in handleCreateCroppedImage w ", event, "imgFile=", imgFile, "pc=", percentCrop ,"imdim=",imgDim );
+    console.log (">>>>>>>>>>in handleCreateCroppedImage w event", event, "imgFile=", imgFile, "crop=", crop ,"imdim=",imgDim );
 
 
     const canvasRef = this.imagePreviewCanvasRef.current;
@@ -223,6 +306,7 @@ class ImgDropAndCrop extends Component {
       //      );
       this.setState({ newimageData64: tempImage });
       //      this.props.change({ imgSrc: imgSrc, percentCrop: percentCrop }); // sends imageBlob to parent using change prop
+
       let photoMetaData ={W:imgDim.W, H:imgDim.H ,
                           xp0: percentCrop.x, yp0:percentCrop.y,
                           wp:percentCrop.width, hp:percentCrop.height};
@@ -245,6 +329,11 @@ class ImgDropAndCrop extends Component {
         imgSrcExt: null,
         crop: {
           aspect: 2 / 1,
+          unit:"px",
+          x:null,
+          y:null,
+          height:null,
+          width:null,
           ruleOfThirds: true,
         },
         percentCrop: {
@@ -267,8 +356,13 @@ class ImgDropAndCrop extends Component {
       imgSrc: null,
       imgSrcExt: null,
       crop: {
-        aspect: 2 / 1,
-        ruleOfThirds: true,
+          aspect: 2 / 1,
+          unit:"px",
+          x:null,
+          y:null,
+          height:null,
+          width:null,
+          ruleOfThirds: true
       },
       percentCrop: {
         x: null,
@@ -316,11 +410,14 @@ class ImgDropAndCrop extends Component {
   componentDidMount(){
     // this code is copied from ReusableUtils.js  image64toCanvasRef2
     const { imgSrc, percentCrop} = this.state;
+    console.log ("in componentDidMount w imgSrc=", imgSrc, " percentCrop=", percentCrop);
+    if (!imgSrc) return null;   // exist asap if no image. which is the case in CreateEvent
+
     const image = new Image();
     const  canvas=document.createElement("canvas");
     const ctx=canvas.getContext("2d");
 
-    console.log ("in componentDidMount w imgSrc, percentCrop", imgSrc, percentCrop);
+    
 //    const scope = this;
 
     image.onload = ()=> {
@@ -350,7 +447,7 @@ class ImgDropAndCrop extends Component {
 //////////////
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log ("in getDerivedStaeFromProps",nextProps, prevState);
+    console.log ("in getDerivedStaeFromProps nextProps=",nextProps, " prevState=", prevState);
     //lifecycle function to update child state with props set by parent
     if (prevState.imgSrcLoaded) {
     console.log (">>>EXITING prevState.imgSrcLoaded in getDerivedStaeFromProps");
@@ -401,7 +498,7 @@ class ImgDropAndCrop extends Component {
                   style={{ zIndex: 800, maxHeight: "400px", maxWidth: "600px" }}
                   src={imgSrc}
                   crop={this.state.crop}
-                  onImageLoaded={this.handleImageLoaded}
+                  onImageLoaded={this.handleOnImageLoaded}
                   onComplete={this.handleOnCropComplete}
                   onChange={this.handleOnCropChange}
                 />
