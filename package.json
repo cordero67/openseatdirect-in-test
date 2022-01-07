@@ -27,6 +27,7 @@
     "react-scripts": "^5.0.0",
     "react-select": "^4.3.1",
     "react-youtube": "^7.9.0",
+    "sass": "^1.46.0",
     "semantic-ui-react": "^2.0.4",
     "underscore": "^1.13.1"
   },
