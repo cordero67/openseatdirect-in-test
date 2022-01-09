@@ -16,7 +16,6 @@ const Authentication = (props) => {
     confirmation: "",
     resent: false,
     username: "",
-    vendorIntent: props.vendorIntent,
     resetToken: "",
     sessionToken: "",
     userId: "",
@@ -40,7 +39,6 @@ const Authentication = (props) => {
     confirmation,
     resent,
     username,
-    vendorIntent,
     resetToken,
     sessionToken,
     userId,
@@ -103,6 +101,8 @@ const Authentication = (props) => {
   };
 
   useEffect(() => {
+    // THE APPLICATION SHOULD NEVER RESULT IN "true" VALUE
+    // IF IT DOES IT SHOULD REDIRECT TO "selection" VIEW
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -139,7 +139,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin_email`;
+    let url = `${API}/auth/signin/email`;
     let information = {
       email: email,
       password: password,
@@ -179,9 +179,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/send_access_code2`
-    let url = `${API}/auth/send_access_code2`;
-    //let url = `${API}/auth​/signin​/sendcode`;
+    let url = `${API}/auth​/signin​/sendcode`;
     let information = {
       email: email,
     };
@@ -220,9 +218,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/confirm_access_code2`
-    let url = `${API}/auth/confirm_access_code2`;
-    //let url = `${API}/auth/signin/confirmcode`;
+    let url = `${API}/auth/signin/confirmcode`;
     let information = {
       email: email,
       confirm_code: temporary,
@@ -262,9 +258,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/send_access_code2`
-    let url = `${API}/auth/send_access_code2`;
-    //let url = `${API}/auth/signin/sendcode`;
+    let url = `${API}/auth/signin/sendcode`;
     let information = {
       email: email,
     };
@@ -303,12 +297,9 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/signup1_email`
-    let url = `${API}/auth/signup1_email`;
-    //let url = `${API}/auth/signup/email`;
+    let url = `${API}/auth/signup/email`;
     let information = {
       email: email,
-      vendorIntent: props.vendorIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -345,13 +336,10 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/signup2_confirm`
-    let url = `${API}/auth/signup2_confirm`;
-    //let url = `${API}/auth​/signup​/confirmcode`;
+    let url = `${API}/auth​/signup​/confirmcode`;
     let information = {
       email: email,
       confirm_code: confirmation,
-      vendorIntent: props.vendorIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -388,14 +376,11 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/signup3_password`
-    let url = `${API}/auth/signup3_password`;
-    //let url = `${API}/auth/signup/password`;
+    let url = `${API}/auth/signup/password`;
     let information = {
       email: email,
       resetPasswordToken: resetToken,
       password: password,
-      vendorIntent: props.vendorIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -433,11 +418,9 @@ const Authentication = (props) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
-    // PROD HAS DIFFERENT API: `${API}/auth/update_username/${userId}`
-    let url = `${API}/auth/update_username/${userId}`;
-    //let url = `${API}/user/${userId}`;
+    let url = `${API}/user/${userId}`;
     let information = {
-      email: email,
+      //email: email,
       username: username,
     };
     console.log("myHeaders: ", myHeaders);
@@ -476,9 +459,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/resend_confirm_code`
-    let url = `${API}/auth/resend_confirm_code`;
-    //let url = `${API}/auth/signup/resendcode`;
+    let url = `${API}/auth/signup/resendcode`;
     let information = {
       email: email,
     };
@@ -522,7 +503,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
@@ -550,7 +530,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
@@ -579,7 +558,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
@@ -608,7 +586,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
@@ -635,7 +612,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: data.user.username,
-        vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
@@ -663,7 +639,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: data.user.username,
-        vendorIntent: data.user.vendorIntent,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
         userId: "",
@@ -692,7 +667,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: data.user.username,
-        vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: data.token,
         userId: data.user._id,
@@ -733,7 +707,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
@@ -760,7 +733,6 @@ const Authentication = (props) => {
       confirmation: "",
       resent: false,
       username: "",
-      vendorIntent: props.vendorIntent,
       resetToken: "",
       sessionToken: "",
       userId: "",
@@ -780,7 +752,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: true,
         username: data.user.username,
-        vendorIntent: props.vendorIntent,
         resetToken: data.user.resetPasswordToken,
         sessionToken: "",
         userId: "",

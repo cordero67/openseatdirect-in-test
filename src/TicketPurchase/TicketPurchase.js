@@ -179,7 +179,6 @@ const TicketPurchase = (props) => {
   // "user" indicates if buyer is signed in or not
   // NEED TO REVIEW THIS ENTIRE FUNCTION
   // NEED TO CHECK OTHER CALLS TO THIS FUNCTION
-  // THEY NEED TO BE SENDING AN ARGUMENT AS TO WHETEHER OR NOT THE USER IS SIGNED IN
   const freeTicketHandler = () => {
     let order = {
       eventNum: props.event.eventNum,
@@ -240,7 +239,6 @@ const TicketPurchase = (props) => {
       setTransactionInfo(
         loadTransactionInfo(props.event, orderTotals, ticketInfo, email, name)
       );
-
       order.guestFirstname = customerInformation.firstname;
       order.guestLastname = customerInformation.lastname;
       order.guestEmail = customerInformation.email;
@@ -254,9 +252,7 @@ const TicketPurchase = (props) => {
       body: JSON.stringify(order),
     };
     console.log("fetching with: ", url, fetcharg);
-    console.log("Free ticket order: ", order);
     setDisplay("spinner");
-    console.log("changed display to 'spinner'");
     fetch(url, fetcharg)
       .then(handleErrors)
       .then((response) => {
@@ -907,24 +903,7 @@ const TicketPurchase = (props) => {
                 console.log("changed display to 'paypal'");
                 console.log("paypal failure display");
               }
-              // NEED TO ADD THIS OPTION
-              /*
-              let email = guestInformation.email;
-              let email = customerInformation2.email;
-              let name = `${guestInformation.firstname} ${guestInformation.lastname}`;
-              let name = `${customerInformation2.firstname} ${customerInformation2.lastname}`;
-              setTransactionInfo(
-                loadTransactionInfo(props.event, orderTotals, ticketInfo, email, name)
-
-                
-              let email = props.guestInformation.email;
-              let email = props.customerInformation2.email;
-              let name = `${props.guestInformation.firstname} ${props.guestInformation.lastname}`;
-              let name = `${props.customerInformation2.firstname} ${props.customerInformation2.lastname}`;
-              );
-*/
             }}
-            //props.clicked();
             clicked={() => {
               setDisplay("selection");
             }}

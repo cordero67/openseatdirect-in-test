@@ -4,11 +4,11 @@ import React, { useState, useEffect, Fragment } from "react";
 import { DateRange } from "../Resources/PricingFunctions";
 //import Spinner from "../components/UI/Spinner/Spinner";
 import GuestForm from "./GuestForm";
-//import AuthenticationModal from "./Modals/AuthenticationModal";
+import AuthenticationModal from "../Modals/AuthenticationModal";
 import classes from "./GuestInfo.module.css";
 
 const GuestInfo = (props) => {
-  console.log("props: ", props);
+  //console.log("props: ", props);
   const [modalStatus, setModalStatus] = useState(false); // defines 'authenticationModal' display status
 
   // LOOKS GOOD
@@ -70,6 +70,32 @@ const GuestInfo = (props) => {
     }
   };
 
+  const authenticate = () => {
+    return (
+      <AuthenticationModal
+        show={modalStatus}
+        //show={true}
+        zeroCart={false}
+        start={"signin"}
+        vendorIntent={false}
+        closeModal={() => setModalStatus(false)}
+        /*
+        submit={() => {
+          console.log("Inside submitOrder");
+          eventDetails.gateway = "PayPalMerchant";
+          if (eventDetails.gateway === "PayPalExpress") {
+            window.location.href = "/checkout-paypalexpress";
+          } else if (eventDetails.gateway === "PayPalMerchant") {
+            window.location.href = "/checkout-paypalmerchant";
+          } else {
+            window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+          }
+        }}
+        */
+      />
+    );
+  };
+
   const mainDisplay = () => {
     return (
       <div>
@@ -104,6 +130,11 @@ const GuestInfo = (props) => {
     );
   };
 
-  return <div>{mainDisplay()}</div>;
+  return (
+    <div>
+      {mainDisplay()}
+      {authenticate()}
+    </div>
+  );
 };
 export default GuestInfo;
