@@ -1241,6 +1241,7 @@ const CreateEvent = (props) => {
             Array.isArray(res.result.variants) &&
             res.result.variants.length > 0
           ) {
+            console.log ("variants =", res.result.variants[0],res.result.variants[1],res.result.variants)
             z.image_path = res.result.variants[0];
           }
         }

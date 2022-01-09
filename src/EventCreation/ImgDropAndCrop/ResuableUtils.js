@@ -72,7 +72,7 @@ export function image64toCanvasRef2(canvasRefPreview, image64, percentCrop) {
     const W = image.width;
     const H = image.height;
     ctx.drawImage(
-      image,
+      image, 
       percentCrop.x * W * 0.01,
       percentCrop.y * H * 0.01,
       percentCrop.width * W * 0.01,
@@ -81,6 +81,41 @@ export function image64toCanvasRef2(canvasRefPreview, image64, percentCrop) {
       0, // the x an y coordinates where to place the image on the canvas
       300, // 300 The width of the image to use (stretch or reduce the image)
       150 // 150 The height of the image to use (stretch or reduce the image)
+    );
+  };
+
+  image.src = image64; // must be after image.onload
+}
+
+// based on :   https://codesandbox.io/s/72py4jlll6?file=/src/index.js:1522-1726
+// Converts a Base64 Image to Canvas with a Crop MM on 2 by 1 aspect
+export function image64toCanvasRef2b(canvasRefPreview, image64, crop) {
+  const image = new Image();
+  
+  const pixelRatio = window.devicePixelRatio;
+  const scaleX = image.naturalWidth / image.width;
+  const scaleY = image.naturalHeight / image.height;
+
+  const ctx = canvasRefPreview.getContext("2d");
+ 
+  canvasRefPreview.width = crop.width * pixelRatio * scaleX;
+  canvasRefPreview.height = crop.height * pixelRatio * scaleY;
+
+  ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  ctx.imageSmoothingQuality = 'high';
+
+
+  image.onload = function () {
+    ctx.drawImage(
+      image, 
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0, // the x an y coordinates where to place the image on the canvas
+      300 * scaleX, // 300 The width of the image to use (stretch or reduce the image)
+      150 * scaleY // 150 The height of the image to use (stretch or reduce the image)
     );
   };
 
