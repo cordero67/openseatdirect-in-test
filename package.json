@@ -27,7 +27,6 @@
     "react-scripts": "^5.0.0",
     "react-select": "^4.3.1",
     "react-youtube": "^7.9.0",
-    "sass": "^1.46.0",
     "semantic-ui-react": "^2.0.4",
     "underscore": "^1.13.1"
   },
@@ -36,7 +35,8 @@
     "build_linux": "react-scripts --max_old_space_size=4096 build",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -54,6 +54,6 @@
     ]
   },
   "devDependencies": {
-    "acorn": "^7.1.1"
+    "source-map-explorer": "^2.5.2"
   }
 }
