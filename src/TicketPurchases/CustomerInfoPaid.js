@@ -2,7 +2,9 @@ import React, { useState, useEffect, Fragment } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-
+//
+//
+//
 import {
   MainContainerStyling,
   MainGridStyling,
@@ -16,14 +18,15 @@ import GuestForm from "./Components/GuestForm";
 import CartLink from "./Components/CartLink";
 import OrderSummary from "./Components/OrderSummary";
 import AuthenticationModal from "./Modals/AuthenticationModal";
-
+//
+//
 import classes from "./CustomerInfo.module.css";
 
 // defines the variables that accept the "cart_" data from "localStorage"
 let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
-let osdOrderId;
+//let osdOrderId;
 let orderExpiration;
 
 // defines an event's image
@@ -56,7 +59,10 @@ const CustomerInfo = (props) => {
     lastname: "",
     email: "",
   });
-
+  //
+  //
+  //
+  //
   useEffect(() => {
     // downloads "order" information and "image" from "localStorage" and
     if (typeof window !== "undefined" && localStorage.getItem("eventNum")) {
@@ -66,14 +72,11 @@ const CustomerInfo = (props) => {
         eventDetails = tempCart.eventDetails;
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
-        osdOrderId = tempCart.osdOrderId;
+        //osdOrderId = tempCart.osdOrderId;
         orderExpiration = tempCart.orderExpiration;
         if ("guestInfo" in tempCart) {
           setGuestInformation(tempCart.guestInfo);
-          console.log("guestInfo: ", tempCart.guestInfo);
         }
-        console.log("orderTotals: ", orderTotals);
-        console.log("ticketInfo: ", ticketInfo);
       } else {
         window.location.href = "/events";
       }
@@ -167,9 +170,7 @@ const CustomerInfo = (props) => {
           <Spinner></Spinner>;
         </div>
       );
-    } else {
-      return null;
-    }
+    } else return null;
   };
 
   // adds guest information to "order" in local storage
@@ -199,14 +200,12 @@ const CustomerInfo = (props) => {
 
   const calculateTimeLeft = () => {
     let timeElapsed = new Date(orderExpiration) - new Date();
-
     let elapsedTime = {
       days: Math.floor(timeElapsed / (1000 * 60 * 60 * 24)),
       hours: Math.floor((timeElapsed / (1000 * 60 * 60)) % 24),
       minutes: Math.floor((timeElapsed / 1000 / 60) % 60),
       seconds: Math.floor((timeElapsed / 1000) % 60),
     };
-
     return elapsedTime;
   };
 
@@ -249,7 +248,6 @@ const CustomerInfo = (props) => {
       localStorage.removeItem(`image_${event}`);
       localStorage.removeItem(`eventNum`);
       window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
-
       return (
         <div
           style={{
@@ -290,9 +288,7 @@ const CustomerInfo = (props) => {
               {orderTotals.finalPurchaseAmount}
             </div>
           );
-        } else {
-          return null;
-        }
+        } else return null;
       };
 
       let paymentPane = (

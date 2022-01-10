@@ -16,23 +16,13 @@ const OrderSummary = (props) => {
     fixedPurchaseTotal = purchaseTotal.toFixed(2);
   }
 
-  const clearOrder = () => {
-    let event = JSON.parse(localStorage.getItem("eventNum"));
-    localStorage.removeItem(`cart_${event}`);
-    localStorage.removeItem(`image_${event}`);
-    localStorage.removeItem(`eventNum`);
-    window.history.back();
-  };
-
   return (
     <Fragment>
       <div className={classes.RightGrid}>
         <div style={{ fontWeight: "600" }}>Order Summary</div>
-        {props.cancel ? (
-          <button className={classes.CancelButton} onClick={clearOrder}>
-            Cancel
-          </button>
-        ) : null}
+        <button className={classes.CancelButton} onClick={props.clear}>
+          Cancel
+        </button>
       </div>
       <br></br>
       {props.ticketOrder.map((item) => {
@@ -65,7 +55,20 @@ const OrderSummary = (props) => {
 
         return item.ticketsSelected > 0 ? (
           <Fragment key={item.ticketID}>
-            <div className={classes.RightGrid}>
+            <div className={classes.RightGridInner}>
+              <ion-icon
+                style={{
+                  fontWeight: "600",
+                  fontSize: "18px",
+                  color: "blue",
+                  //paddingBottom: "5px",
+                }}
+                name="trash-outline"
+                cursor="pointer"
+                //onClick={() => {
+                //closeModal();
+                //}}
+              />
               <div style={{ fontWeight: "400" }}>
                 {item.ticketsSelected} X {item.ticketName}
               </div>
@@ -79,7 +82,8 @@ const OrderSummary = (props) => {
             </div>
             {item.ticketPriceFunction.form === "promo" &&
             item.adjustedTicketPrice !== item.ticketPrice ? (
-              <div className={classes.RightGrid}>
+              <div className={classes.RightGridInner}>
+                <div></div>
                 <div style={{ fontWeight: "400", color: "#4BBA00" }}>
                   less Discount
                 </div>

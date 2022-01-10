@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment } from "react";
-import dateFormat from "dateformat";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
@@ -27,11 +26,13 @@ import classes from "./CustomerInfo.module.css";
 let eventDetails = {};
 let ticketInfo = {};
 let orderTotals = {};
-let osdOrderId;
+//let osdOrderId;
 let orderExpiration;
 
+// defines an event's image
 let eventLogo = "";
 
+// defines the styling variables
 let MainContainer = {};
 let MainGrid = {};
 let EventTicketSection = {};
@@ -39,27 +40,31 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const CustomerInfo = (props) => {
+  // defines panel displayed on main page
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, connection
 
+  // defines 'authenticationModal' display status
   const [modalStatus, setModalStatus] = useState(false); // defines 'authenticationModal' display status
 
+  // defines single or double pane view control variables
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
 
+  // defines styling variables
   const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
 
+  // defines guest information sent to server
   const [guestInformation, setGuestInformation] = useState({
-    // defines guest information sent to server
     firstname: "",
     lastname: "",
     email: "",
   });
 
   const [transactionInfo, setTransactionInfo] = useState({}); // ticket transaction
-
   const [orderStatus, setOrderStatus] = useState(false); // defines if order was successful
-  // LOOKS GOOD
+
   useEffect(() => {
+    // downloads "order" information and "image" from "localStorage" and
     if (typeof window !== "undefined" && localStorage.getItem("eventNum")) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
@@ -67,7 +72,7 @@ const CustomerInfo = (props) => {
         eventDetails = tempCart.eventDetails;
         ticketInfo = tempCart.ticketInfo;
         orderTotals = tempCart.orderTotals;
-        osdOrderId = tempCart.osdOrderId;
+        //osdOrderId = tempCart.osdOrderId;
         orderExpiration = tempCart.orderExpiration;
         if ("guestInfo" in tempCart) {
           setGuestInformation(tempCart.guestInfo);
@@ -84,11 +89,11 @@ const CustomerInfo = (props) => {
     stylingUpdate(window.innerWidth, window.innerHeight);
     setDisplay("main");
   }, []);
-  // LOOKS GOOD
+
   window.onresize = () => {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
-  // LOOKS GOOD
+
   const stylingUpdate = (inWidth, inHeight) => {
     setIsRestyling(true);
     if (inWidth < 790) {
@@ -103,7 +108,7 @@ const CustomerInfo = (props) => {
     OrderSummarySectionAlt = OrderSummarySectionAltStyling(inWidth, inHeight);
     setIsRestyling(false);
   };
-  // LOOKS GOOD
+
   // toggles between "order pane" views
   const switchShowOrderSummary = (event) => {
     if (showOrderSummaryOnly) {
@@ -112,11 +117,11 @@ const CustomerInfo = (props) => {
       setShowOrderSummaryOnly(true);
     }
   };
-  // LOOKS GOOD
+
   // determines what "contact information" has been filled out by the ticket buyer
   const regsuper =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  // LOOKS GOOD
+
   let detailsMinimal = () => {
     if (
       guestInformation.firstname &&
@@ -129,13 +134,13 @@ const CustomerInfo = (props) => {
       return false;
     }
   };
-  // LOOKS GOOD
+
   const changeField = (event) => {
     let tempInformation = { ...guestInformation };
     tempInformation[event.target.name] = event.target.value;
     setGuestInformation(tempInformation);
   };
-  // LOOKS GOOD
+
   // clears entire "ticketInfo" object and "eventLogo", removes "cart" and "image" from "localStorage"
   const purchaseConfirmHandler = () => {
     eventDetails = {};
@@ -257,6 +262,7 @@ const CustomerInfo = (props) => {
         }
       });
   };
+
   // creates submit button to send free ticket information to server
   const checkoutButton = () => {
     if (orderTotals.ticketsPurchased > 0 && detailsMinimal()) {

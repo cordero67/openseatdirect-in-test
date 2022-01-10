@@ -1,21 +1,21 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Redirect } from "react-router-dom";
 import queryString from "query-string";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../../config";
 
+//
 import classes from "./AuthenticationNEW.module.css";
 
 const Authentication = () => {
-  // LOOKS GOOD
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
     temporary: "",
     reissued: false,
+    //
     confirmation: "",
     resent: false,
     username: "",
@@ -32,13 +32,13 @@ const Authentication = () => {
 
   const [modalSetting, setModalSetting] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
 
-  // LOOKS GOOD
   const {
     name,
     email,
     password,
     temporary,
     reissued,
+    //
     confirmation,
     resent,
     username,
@@ -49,7 +49,6 @@ const Authentication = () => {
 
   const { message, error } = submissionStatus;
 
-  // LOOKS GOOD
   useEffect(() => {
     let startingView = queryString.parse(window.location.search).new;
 
@@ -72,7 +71,6 @@ const Authentication = () => {
     }
   }, []);
 
-  // LOOKS GOOD
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -81,7 +79,6 @@ const Authentication = () => {
     return response;
   };
 
-  // LOOKS GOOD
   const submitSignIn = () => {
     setModalSetting("spinner");
     setSubmissionStatus({
@@ -123,7 +120,6 @@ const Authentication = () => {
       });
   };
 
-  // LOOKS GOOD
   const submitForgot = () => {
     setModalSetting("spinner");
     setSubmissionStatus({
@@ -163,7 +159,6 @@ const Authentication = () => {
       });
   };
 
-  // LOOKS GOOD
   const submitTemporary = () => {
     setModalSetting("spinner");
     setSubmissionStatus({
@@ -205,7 +200,6 @@ const Authentication = () => {
       });
   };
 
-  // LOOKS GOOD
   const submitReissue = () => {
     setSubmissionStatus({
       message: "",
@@ -245,7 +239,6 @@ const Authentication = () => {
       });
   };
 
-  // LOOKS GOOD
   const submitSignUp = () => {
     setModalSetting("spinner");
     setSubmissionStatus({
@@ -286,7 +279,6 @@ const Authentication = () => {
       });
   };
 
-  // LOOKS GOOD
   const submitConfirmation = () => {
     setModalSetting("spinner");
     setSubmissionStatus({
@@ -328,14 +320,17 @@ const Authentication = () => {
       });
   };
 
-  // LOOKS GOOD
   const submitPassword = () => {
     setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
     });
-
+    //
+    //
+    //
+    //
+    //
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/password`;
@@ -371,7 +366,6 @@ const Authentication = () => {
       });
   };
 
-  // LOOKS GOOD
   const submitUsername = () => {
     setModalSetting("spinner");
     setSubmissionStatus({
@@ -414,7 +408,6 @@ const Authentication = () => {
       });
   };
 
-  // LOOKS GOOD
   const submitResend = () => {
     setSubmissionStatus({
       message: "",
@@ -454,7 +447,6 @@ const Authentication = () => {
       });
   };
 
-  // LOOKS GOOD
   const handleSignIn = (data) => {
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data)); // KEEP
@@ -464,6 +456,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        //
         confirmation: "",
         resent: false,
         username: "",
@@ -482,7 +475,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const handleForgot = (data) => {
     if (data.status) {
       setValues({
@@ -491,6 +483,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        //
         confirmation: "",
         resent: false,
         username: "",
@@ -509,7 +502,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const handleTemporary = (data) => {
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data)); // KEEP
@@ -519,6 +511,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        //
         confirmation: "",
         resent: false,
         username: "",
@@ -537,16 +530,16 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const handleReissue = (data) => {
-    console.log("Inside handleReissue");
     if (data.status) {
+      //
       setValues({
         name: "",
         email: data.user.email,
         password: "",
         temporary: "",
         reissued: true,
+        //
         confirmation: "",
         resent: false,
         username: "",
@@ -563,7 +556,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const handleSignUp = (data) => {
     if (data.status) {
       setValues({
@@ -572,6 +564,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        //
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -591,9 +584,9 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const handleConfirmation = (data) => {
     if (data.status) {
+      //
       localStorage.setItem("user", JSON.stringify(data)); // KEEP
       setValues({
         name: "",
@@ -601,6 +594,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        //
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -621,9 +615,7 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const handlePassword = (data) => {
-    console.log("Inside handlePassword");
     console.log("STATUS: ", data.status);
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
@@ -635,6 +627,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        //
         confirmation: "",
         resent: false,
         username: username,
@@ -654,8 +647,8 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const handleUsername = (data) => {
+    //
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       tempUser.user.username = data.result.username;
@@ -666,6 +659,7 @@ const Authentication = () => {
         password: "",
         temporary: "",
         reissued: false,
+        //
         confirmation: "",
         resent: false,
         username: "",
@@ -684,7 +678,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const resetValues = () => {
     setValues({
       name: "",
@@ -692,6 +685,7 @@ const Authentication = () => {
       password: "",
       temporary: "",
       reissued: false,
+      //
       confirmation: "",
       resent: false,
       username: "",
@@ -701,15 +695,16 @@ const Authentication = () => {
     });
   };
 
-  // LOOKS GOOD
   const handleResend = (data) => {
     if (data.status) {
+      //
       setValues({
         name: "",
         email: data.user.email,
         password: "",
         temporary: "",
         reissued: false,
+        //
         confirmation: "",
         resent: true,
         username: username,
@@ -727,7 +722,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -735,7 +729,6 @@ const Authentication = () => {
     });
   };
 
-  // LOOKS GOOD
   const redirectUser = () => {
     console.log("Redirect user");
     if (
@@ -765,7 +758,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const showError = () => {
     if (error) {
       return (
@@ -773,6 +765,12 @@ const Authentication = () => {
           {message}
         </div>
       );
+      //
+      //
+      //
+      //
+      //
+      //
     } else if (
       modalSetting === "signin" ||
       modalSetting === "forgot" ||
@@ -822,7 +820,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const signInForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -859,7 +856,6 @@ const Authentication = () => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const forgotForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -885,7 +881,6 @@ const Authentication = () => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const temporaryForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -911,7 +906,6 @@ const Authentication = () => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const signUpForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -937,7 +931,6 @@ const Authentication = () => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const confirmationForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -963,7 +956,6 @@ const Authentication = () => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const passwordForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -989,45 +981,41 @@ const Authentication = () => {
     </Fragment>
   );
 
-  // LOOKS GOOD
-  const usernameForm = () => {
-    return (
-      <Fragment>
-        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-          <label style={{ fontSize: "15px" }}>Username</label>
-          <input
-            className={classes.InputBox}
-            type="text"
-            name="username"
-            onChange={handleChange}
-            value={username}
-          />
-        </div>
-        <div style={{ paddingTop: "10px" }}>
-          <button
-            className={classes.SubmitButton}
-            onClick={() => {
-              submitUsername();
-            }}
-          >
-            CHANGE YOUR USERNAME
-          </button>
-        </div>
-        <div style={{ paddingTop: "10px" }}>
-          <button
-            className={classes.CancelButton}
-            onClick={() => {
-              redirectUser();
-            }}
-          >
-            CHANGE IT LATER
-          </button>
-        </div>
-      </Fragment>
-    );
-  };
+  const usernameForm = (
+    <Fragment>
+      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <label style={{ fontSize: "15px" }}>Username</label>
+        <input
+          className={classes.InputBox}
+          type="text"
+          name="username"
+          onChange={handleChange}
+          value={username}
+        />
+      </div>
+      <div style={{ paddingTop: "10px" }}>
+        <button
+          className={classes.SubmitButton}
+          onClick={() => {
+            submitUsername();
+          }}
+        >
+          CHANGE YOUR USERNAME
+        </button>
+      </div>
+      <div style={{ paddingTop: "10px" }}>
+        <button
+          className={classes.CancelButton}
+          onClick={() => {
+            redirectUser();
+          }}
+        >
+          CHANGE IT LATER
+        </button>
+      </div>
+    </Fragment>
+  );
 
-  // LOOKS GOOD
   const errorForm = (
     <Fragment>
       <div
@@ -1054,7 +1042,6 @@ const Authentication = () => {
     </Fragment>
   );
 
-  // LOOKS GOOD
   const alternateSignInInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
@@ -1082,7 +1069,6 @@ const Authentication = () => {
     </div>
   );
 
-  // LOOKS GOOD
   const alternateTemporaryInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
@@ -1109,7 +1095,6 @@ const Authentication = () => {
     </div>
   );
 
-  // LOOKS GOOD
   const alternateSignUpInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
@@ -1126,7 +1111,6 @@ const Authentication = () => {
     </div>
   );
 
-  // LOOKS GOOD
   const alternateConfirmationInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
@@ -1141,8 +1125,17 @@ const Authentication = () => {
       </div>
     </div>
   );
-
-  // LOOKS GOOD
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
   const spinnerDisplay = () => {
     if (modalSetting === "spinner") {
       return (
@@ -1157,7 +1150,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const signInDisplay = () => {
     if (modalSetting === "signin") {
       return (
@@ -1177,7 +1169,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const forgotDisplay = () => {
     if (modalSetting === "forgot") {
       return (
@@ -1197,7 +1188,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const temporaryDisplay = () => {
     if (modalSetting === "temporary") {
       return (
@@ -1217,7 +1207,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const signUpDisplay = () => {
     if (modalSetting === "signup") {
       return (
@@ -1237,7 +1226,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const confirmationDisplay = () => {
     if (modalSetting === "confirmation") {
       return (
@@ -1257,7 +1245,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const passwordDisplay = () => {
     if (modalSetting === "password") {
       return (
@@ -1276,9 +1263,7 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const usernameDisplay = () => {
-    let originalUserName = username;
     if (modalSetting === "username") {
       return (
         <div className={classes.BlankCanvas}>
@@ -1287,7 +1272,7 @@ const Authentication = () => {
           </div>
           <div>
             {showError()}
-            {usernameForm(originalUserName)}
+            {usernameForm}
           </div>
         </div>
       );
@@ -1296,7 +1281,6 @@ const Authentication = () => {
     }
   };
 
-  // LOOKS GOOD
   const errorDisplay = () => {
     if (modalSetting === "error") {
       return (

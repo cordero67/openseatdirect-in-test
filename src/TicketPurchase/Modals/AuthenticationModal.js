@@ -1,4 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
+//
+
+import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../../config";
 
@@ -16,7 +19,6 @@ const Authentication = (props) => {
     confirmation: "",
     resent: false,
     username: "",
-    vendorIntent: props.vendorIntent,
     resetToken: "",
     sessionToken: "",
     userId: "",
@@ -40,89 +42,35 @@ const Authentication = (props) => {
     confirmation,
     resent,
     username,
-    vendorIntent,
     resetToken,
     sessionToken,
     userId,
   } = values;
 
   const { message, error } = submissionStatus;
-
-  const getStatus = () => {
-    let tempData = JSON.parse(localStorage.getItem("user"));
-    if ("user" in tempData && "accountId" in tempData.user) {
-      let tempAccountId = tempData.user.accountId;
-      let hasLinkIds = false;
-      let hasPaid = false;
-      if (tempAccountId.ticketPlan === "free") {
-        return 7;
-      }
-      if (tempAccountId.ticketPlan === "comp") {
-        hasPaid = true;
-      }
-      if (
-        "paymentGatewayType" in tempAccountId &&
-        tempAccountId.paymentGatewayType === "PayPalExpress" &&
-        "paypalExpress_client_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypalExpress_client_id
-      ) {
-        hasLinkIds = true;
-      }
-      if (
-        "paymentGatewayType" in tempAccountId &&
-        tempAccountId.paymentGatewayType === "PayPalMarketplace" &&
-        "paypal_merchant_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypal_merchant_id
-      ) {
-        hasLinkIds = true;
-      }
-      if (
-        "paypal_plan_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypal_plan_id &&
-        "accountPaymentStatus" in tempAccountId &&
-        tempAccountId.accountPaymentStatus === "good"
-      ) {
-        hasPaid = true;
-      }
-      if (!hasPaid && !hasLinkIds) {
-        return 4;
-      }
-      if (!hasPaid && hasLinkIds) {
-        return 5;
-      }
-      if (hasPaid && !hasLinkIds) {
-        return 6;
-      }
-      if (hasPaid && hasLinkIds) {
-        return 8;
-      }
-      return 4;
-    } else {
-      return 0;
-    }
-  };
-
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (getStatus(tempUser.user) === 7 || getStatus(tempUser.user) === 8) {
-        window.location.href = "/myaccount";
-      } else if (
-        getStatus(tempUser.user) === 4 ||
-        getStatus(tempUser.user) === 5 ||
-        getStatus(tempUser.user) === 6 ||
-        ("vendorIntent" in tempUser.user && tempUser.user.vendorIntent === true)
-      ) {
-        window.location.href = "/myaccount";
-      } else {
-        window.location.href = "/events";
-      }
-    }
-  }, []);
-
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -132,6 +80,7 @@ const Authentication = (props) => {
   };
 
   const submitSignIn = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -139,7 +88,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin_email`;
+    let url = `${API}/auth/signin/email`;
     let information = {
       email: email,
       password: password,
@@ -172,6 +121,7 @@ const Authentication = (props) => {
   };
 
   const submitForgot = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -179,9 +129,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/send_access_code2`
-    let url = `${API}/auth/send_access_code2`;
-    //let url = `${API}/auth​/signin​/sendcode`;
+    let url = `${API}/auth/signin/sendcode`;
     let information = {
       email: email,
     };
@@ -191,7 +139,6 @@ const Authentication = (props) => {
       body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
     fetch(url, fetchBody)
       .then(handleErrors)
       .then((response) => {
@@ -213,6 +160,7 @@ const Authentication = (props) => {
   };
 
   const submitTemporary = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -220,9 +168,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/confirm_access_code2`
-    let url = `${API}/auth/confirm_access_code2`;
-    //let url = `${API}/auth/signin/confirmcode`;
+    let url = `${API}/auth/signin/confirmcode`;
     let information = {
       email: email,
       confirm_code: temporary,
@@ -262,9 +208,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/send_access_code2`
-    let url = `${API}/auth/send_access_code2`;
-    //let url = `${API}/auth/signin/sendcode`;
+    let url = `${API}/auth/signin/sendcode`;
     let information = {
       email: email,
     };
@@ -296,6 +240,7 @@ const Authentication = (props) => {
   };
 
   const submitSignUp = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -303,12 +248,9 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/signup1_email`
-    let url = `${API}/auth/signup1_email`;
-    //let url = `${API}/auth/signup/email`;
+    let url = `${API}/auth/signup/email`;
     let information = {
       email: email,
-      vendorIntent: props.vendorIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -338,6 +280,7 @@ const Authentication = (props) => {
   };
 
   const submitConfirmation = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -345,13 +288,10 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/signup2_confirm`
-    let url = `${API}/auth/signup2_confirm`;
-    //let url = `${API}/auth​/signup​/confirmcode`;
+    let url = `${API}/auth/signup/confirmcode`;
     let information = {
       email: email,
       confirm_code: confirmation,
-      vendorIntent: props.vendorIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -381,21 +321,23 @@ const Authentication = (props) => {
   };
 
   const submitPassword = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
     });
 
+    console.log("email: ", email);
+    console.log("resetToken: ", resetToken);
+    console.log("password: ", password);
+
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/signup3_password`
-    let url = `${API}/auth/signup3_password`;
-    //let url = `${API}/auth/signup/password`;
+    let url = `${API}/auth/signup/password`;
     let information = {
       email: email,
-      resetPasswordToken: resetToken,
+      passwordToken: resetToken,
       password: password,
-      vendorIntent: props.vendorIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -425,6 +367,7 @@ const Authentication = (props) => {
   };
 
   const submitUsername = () => {
+    setModalSetting("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -433,16 +376,13 @@ const Authentication = (props) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
-    // PROD HAS DIFFERENT API: `${API}/auth/update_username/${userId}`
-    let url = `${API}/auth/update_username/${userId}`;
-    //let url = `${API}/user/${userId}`;
+    let url = `${API}/user/${userId}`;
     let information = {
-      email: email,
       username: username,
     };
     console.log("myHeaders: ", myHeaders);
     let fetchBody = {
-      method: "PATCH",
+      method: "POST",
       headers: myHeaders,
       body: JSON.stringify(information),
     };
@@ -476,9 +416,7 @@ const Authentication = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // PROD HAS DIFFERENT API: `${API}/auth/resend_confirm_code`
-    let url = `${API}/auth/resend_confirm_code`;
-    //let url = `${API}/auth/signup/resendcode`;
+    let url = `${API}/auth/signup/resendcode`;
     let information = {
       email: email,
     };
@@ -522,18 +460,18 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
-      props.submit();
+      closeModal(false);
+      //props.submit();
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      setModalSetting("signin");
       console.log("ERROR: ", data.error);
     }
   };
@@ -550,18 +488,17 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
       setModalSetting("temporary");
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      setModalSetting("forgot");
       console.log("ERROR: ", data.error);
     }
   };
@@ -579,25 +516,25 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
-      props.submit();
+      closeModal(false);
+      //props.submit();
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      setModalSetting("temporary");
       console.log("ERROR: ", data.error);
     }
   };
 
   const handleReissue = (data) => {
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
+      //localStorage.setItem("user", JSON.stringify(data));
       setValues({
         name: "",
         email: data.user.email,
@@ -608,12 +545,10 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -635,7 +570,6 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: data.user.username,
-        vendorIntent: data.user.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
@@ -647,52 +581,58 @@ const Authentication = (props) => {
         message: data.error,
         error: true,
       });
+      setModalSetting("signup");
       console.log("ERROR: ", data.error);
     }
   };
 
   const handleConfirmation = (data) => {
     if (data.status) {
+      // ADDED on 1/9/22
+      localStorage.setItem("user", JSON.stringify(data)); // KEEP
       setValues({
         name: "",
         email: data.user.email,
         password: "",
         temporary: "",
         reissued: false,
-        expired: false,
+        //expired: false,
         confirmation: "",
         resent: false,
         username: data.user.username,
-        vendorIntent: data.user.vendorIntent,
-        resetToken: data.user.resetPasswordToken,
+        resetToken: data.user.passwordToken,
         sessionToken: "",
         userId: "",
       });
       console.log("SUCCESS");
       setModalSetting("password");
     } else {
+      console.log("Inside handleConfirmation false");
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      setModalSetting("confirmation");
       console.log("ERROR: ", data.error);
     }
   };
 
   const handlePassword = (data) => {
+    console.log("STATUS: ", data.status);
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      tempUser.token = data.token;
+      localStorage.setItem("user", JSON.stringify(tempUser));
       setValues({
         name: "",
-        email: data.user.email,
+        email: email,
         password: "",
         temporary: "",
         reissued: false,
         expired: false,
         confirmation: "",
         resent: false,
-        username: data.user.username,
-        vendorIntent: data.user.vendorIntent,
+        username: username,
         resetToken: "",
         sessionToken: data.token,
         userId: data.user._id,
@@ -700,20 +640,12 @@ const Authentication = (props) => {
       console.log("SUCCESS");
       setModalSetting("username");
     } else {
-      if (data.code === 1401) {
-        console.log("Status 1401 Error");
-        let tempValues = { ...values };
-        tempValues.email = "";
-        tempValues.expired = true;
-        setValues(tempValues);
-        setModalSetting("signup");
-      } else {
-        setSubmissionStatus({
-          message: data.error,
-          error: true,
-        });
-        console.log("ERROR: ", data.error);
-      }
+      setSubmissionStatus({
+        message: data.error,
+        error: true,
+      });
+      setModalSetting("password");
+      console.log("ERROR: ", data.error);
     }
   };
 
@@ -721,7 +653,7 @@ const Authentication = (props) => {
     console.log("Inside handleUsername");
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      tempUser.user = data.user;
+      tempUser.user.username = data.result.username;
       localStorage.setItem("user", JSON.stringify(tempUser));
       setValues({
         name: "",
@@ -733,18 +665,20 @@ const Authentication = (props) => {
         confirmation: "",
         resent: false,
         username: "",
-        vendorIntent: props.vendorIntent,
         resetToken: "",
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
-      props.submit();
+      console.log("You successfully hit Change now");
+      closeModal(false);
+      //props.submit();
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      console.log("You successfully hit Change now");
+      setModalSetting("username");
       console.log("ERROR: ", data.error);
     }
   };
@@ -760,7 +694,6 @@ const Authentication = (props) => {
       confirmation: "",
       resent: false,
       username: "",
-      vendorIntent: props.vendorIntent,
       resetToken: "",
       sessionToken: "",
       userId: "",
@@ -769,7 +702,7 @@ const Authentication = (props) => {
 
   const handleResend = (data) => {
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
+      //localStorage.setItem("user", JSON.stringify(data));
       setValues({
         name: "",
         email: data.user.email,
@@ -779,9 +712,8 @@ const Authentication = (props) => {
         expired: false,
         confirmation: "",
         resent: true,
-        username: data.user.username,
-        vendorIntent: props.vendorIntent,
-        resetToken: data.user.resetPasswordToken,
+        username: username,
+        resetToken: "",
         sessionToken: "",
         userId: "",
       });
@@ -801,7 +733,36 @@ const Authentication = (props) => {
       [event.target.name]: event.target.value,
     });
   };
-
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
   const showError = () => {
     if (error) {
       return (
@@ -823,17 +784,16 @@ const Authentication = (props) => {
     ) {
       return null;
     } else if (modalSetting === "temporary" && !reissued) {
-      console.log("modalSetting === 'temporary' && !reissued");
       console.log("values: ", values);
       return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Enter the 6-digit code sent to:
-          <br></br>
-          {email}
-        </div>
+        <Fragment>
+          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
+            Enter the 6-digit code sent to:
+          </div>
+          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
+        </Fragment>
       );
     } else if (modalSetting === "temporary" && reissued) {
-      console.log("modalSetting === 'temporary' && reissued");
       console.log("values: ", values);
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
@@ -1052,7 +1012,8 @@ const Authentication = (props) => {
         <button
           className={classes.CancelButton}
           onClick={() => {
-            props.submit();
+            closeModal(false);
+            //props.submit();
           }}
         >
           CHANGE IT LATER
@@ -1171,14 +1132,28 @@ const Authentication = (props) => {
     </div>
   );
 
-  const closeModal = () => {
+  const closeModal = (exit) => {
     resetValues();
     setSubmissionStatus({
       message: "",
       error: false,
     });
     setModalSetting(props.start);
-    props.closeModal();
+    props.closeModal(exit);
+  };
+
+  const spinnerDisplay = () => {
+    if (modalSetting === "spinner") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <Spinner />
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
   };
 
   const signInDisplay = () => {
@@ -1198,7 +1173,7 @@ const Authentication = (props) => {
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal();
+                  closeModal(true);
                 }}
               />
             </div>
@@ -1227,7 +1202,7 @@ const Authentication = (props) => {
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal();
+                  closeModal(true);
                 }}
               />
             </div>
@@ -1256,7 +1231,7 @@ const Authentication = (props) => {
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal();
+                  closeModal(true);
                 }}
               />
             </div>
@@ -1290,7 +1265,7 @@ const Authentication = (props) => {
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal();
+                  closeModal(true);
                 }}
               />
             </div>
@@ -1317,7 +1292,7 @@ const Authentication = (props) => {
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal();
+                  closeModal(true);
                 }}
               />
             </div>
@@ -1346,7 +1321,7 @@ const Authentication = (props) => {
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal();
+                  closeModal(true);
                 }}
               />
             </div>
@@ -1374,7 +1349,7 @@ const Authentication = (props) => {
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal();
+                  closeModal(true);
                 }}
               />
             </div>
@@ -1402,7 +1377,7 @@ const Authentication = (props) => {
                 name="close-outline"
                 cursor="pointer"
                 onClick={() => {
-                  closeModal();
+                  closeModal(true);
                 }}
               />
             </div>
@@ -1426,6 +1401,7 @@ const Authentication = (props) => {
         }}
         className={classes.Modal}
       >
+        {spinnerDisplay()}
         {signInDisplay()}
         {forgotDisplay()}
         {temporaryDisplay()}

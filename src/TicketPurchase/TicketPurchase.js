@@ -14,15 +14,15 @@ import { API } from "../config.js";
 /// ***REVIEW ALL THESE COMPONENTS
 import {
   loadTicketInfo, // COMPONENT REVIEWED 1/3/22
-  loadPromoCodeDetails, // COMPONENT REVIEWED 1/3/22
-  loadOrderTotals, // COMPONENT REVIEWED 1/3/22
-  changeOrderTotals, // COMPONENT REVIEWED 1/3/22
   changeTicketInfo, // COMPONENT REVIEWED 1/3/22
+  amendTicketInfo, // COMPONENT REVIEWED 1/3/22
+  clearTicketInfo, // COMPONENT REVIEWED 1/3/22
+  loadPromoCodeDetails, // COMPONENT REVIEWED 1/3/22
   amendPromoCodeDetails, // COMPONENT REVIEWED 1/3/22
   resetPromoDetails,
-  amendTicketInfo, // COMPONENT REVIEWED 1/3/22
   clearPromoDetails, // COMPONENT REVIEWED 1/3/22
-  clearTicketInfo, // COMPONENT REVIEWED 1/3/22
+  loadOrderTotals, // COMPONENT REVIEWED 1/3/22
+  changeOrderTotals, // COMPONENT REVIEWED 1/3/22
   clearOrderTotals, // COMPONENT REVIEWED 1/3/22
 } from "./Resources/TicketSelectionFunctions";
 import { DateRange } from "./Resources/PricingFunctions"; // COMPONENT REVIEWED 1/3/22
@@ -540,7 +540,7 @@ const TicketPurchase = (props) => {
       customerInformation.sessionToken !== "" &&
       display === "selection"
     ) {
-      // NEEDS TO NAVIGATE TO MULTIPLE GATEWAYS
+      // NEED TO NAVIGATE TO MULTIPLE GATEWAYS
       // there is NOT a registration requirement & a signed order of positive tickets and a positive total value
       return (
         <button
@@ -763,9 +763,21 @@ const TicketPurchase = (props) => {
     ) {
       return (
         <OrderSummary
-          cancel={false}
+          clear={() => {
+            setDisplay("selection");
+            // initial definition of "ticketInfo"
+            setTicketInfo(loadTicketInfo(props.event));
+            // initial definition of "promoCodeDetails", populated with event promo codes
+            clearPromoCodes();
+            //setPromoCodeDetails(
+            //  loadPromoCodeDetails(props.event, promoCodeDetails)
+            //);
+            // initial definition of "orderTotals"
+            setOrderTotals(loadOrderTotals(props.event));
+          }}
           ticketOrder={ticketInfo}
           ticketCurrency={orderTotals.currencySym}
+          delete={null}
         />
       );
     } else if (
@@ -860,6 +872,32 @@ const TicketPurchase = (props) => {
             clicked={() => {
               setDisplay("selection");
               console.log("changed display to 'selection'");
+            }}
+            submit={() => {
+              console.log("pressed submit in auth");
+              if (orderTotals.finalPurchaseAmount === 0) {
+                console.log("ordering free tickets");
+                freeTicketHandler();
+              } else {
+                console.log("ordering paid tickets");
+                setDisplay("payment");
+              }
+
+              //submit={() => props.submit()}
+              /*
+        submit={() => freeTicketHandler(true)}
+        submit={() => {
+          console.log("Inside submitOrder");
+          eventDetails.gateway = "PayPalMerchant";
+          if (eventDetails.gateway === "PayPalExpress") {
+            window.location.href = "/checkout-paypalexpress";
+          } else if (eventDetails.gateway === "PayPalMerchant") {
+            window.location.href = "/checkout-paypalmerchant";
+          } else {
+            window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+          }
+        }}
+        */
             }}
             guestInformation={customerInformation}
             orderExpiration={orderExpiration}

@@ -74,24 +74,17 @@ const GuestInfo = (props) => {
     return (
       <AuthenticationModal
         show={modalStatus}
-        //show={true}
         zeroCart={false}
         start={"signin"}
         vendorIntent={false}
-        closeModal={() => setModalStatus(false)}
-        /*
-        submit={() => {
-          console.log("Inside submitOrder");
-          eventDetails.gateway = "PayPalMerchant";
-          if (eventDetails.gateway === "PayPalExpress") {
-            window.location.href = "/checkout-paypalexpress";
-          } else if (eventDetails.gateway === "PayPalMerchant") {
-            window.location.href = "/checkout-paypalmerchant";
-          } else {
-            window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+        closeModal={(exit) => {
+          setModalStatus(false);
+          console.log("Exit requested: ", exit);
+          if (!exit) {
+            console.log("Signup/in occurred");
+            props.submit();
           }
         }}
-        */
       />
     );
   };

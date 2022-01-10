@@ -2,6 +2,10 @@
   display: grid;
   grid-template-columns: auto 80px;
 }
+.RightGridInner {
+  display: grid;
+  grid-template-columns: 20px auto 80px;
+}
 
 .CancelButton {
   font-size: 14px;
@@ -31,5 +35,8 @@
 @media (min-width: 1140px) {
   .RightGrid {
     grid-template-columns: 230px 80px;
+  }
+  .RightGridInner {
+    grid-template-columns: 20px 210px 80px;
   }
 }
