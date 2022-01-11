@@ -166,6 +166,7 @@ const Checkout = () => {
 
   // submits paypal transaction information to the server
   const payPalPurchase = (details) => {
+    console.log("details: ", details);
     setDisplay("spinner");
     let order = {
       eventNum: eventDetails.eventNum,
@@ -192,7 +193,7 @@ const Checkout = () => {
           item.ticketPriceFunction.form === "promo" &&
           item.adjustedTicketPrice !== item.ticketPrice
         ) {
-          order.promo = item.ticketPriceFunction.args[0].name;
+          order.userPromo = item.ticketPriceFunction.args[0].name;
         }
       }
     });

@@ -196,6 +196,10 @@ const EventEdit = (props) => {
 
       const [tempTicketArray, tempDescription, tempLongDescription] =
         loadEventInfo(props.event);
+      //Remove 1 element at index 3
+      //let myFish = ['angel', 'clown', 'drum', 'mandarin', 'sturgeon']
+      //let removed = myFish.splice(3, 1)
+
       tempTicketArray.forEach((ticket) => {
         ticket.originalTicket = true;
       });

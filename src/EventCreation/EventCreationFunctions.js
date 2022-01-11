@@ -113,139 +113,142 @@ export const loadEventInfo = (eventTix) => {
   if ("tickets" in eventTix && eventTix.tickets.length !== 0) {
     let tempArray = [];
     eventTix.tickets.forEach((tix, index) => {
-      console.log("tix: ", tix);
-      let tempPriceFeature = "none";
-      let tempPromoCodes = [];
-      let tempPromoCodesArray = [];
-      let tempFunctionArgs;
-      if (
-        "priceFunction" in tix &&
-        "form" in tix.priceFunction &&
-        "args" in tix.priceFunction
-      ) {
-        tempPriceFeature = tix.priceFunction.form;
-
+      if (!tix.isZombie) {
+        console.log("tix: ", tix);
+        let tempPriceFeature = "none";
+        let tempPromoCodes = [];
+        let tempPromoCodesArray = [];
+        let tempFunctionArgs;
         if (
-          tempPriceFeature === "promo" &&
-          "promocodes" in tix.priceFunction.args
+          "priceFunction" in tix &&
+          "form" in tix.priceFunction &&
+          "args" in tix.priceFunction
         ) {
-          console.log("priceFunction: ", tix.priceFunction);
-          console.log("tix.priceFunction.args: ", tix.priceFunction.args);
-          tempPromoCodes = tix.priceFunction.args.promocodes;
-          tempPromoCodes.map((promo, index) => {
-            let tempPercent;
-            let tempAmount;
-            if ("percent" in promo && promo.percent === true) {
-              tempPercent = true;
-              tempAmount = promo.amount;
-              console.log("percent is true");
-            } else {
-              tempPercent = false;
-              tempAmount = promo.amount;
-              console.log("percent is false");
-            }
-            let element = {
-              key: index,
-              name: promo.name,
-              amount: tempAmount,
-              percent: tempPercent,
+          tempPriceFeature = tix.priceFunction.form;
+
+          if (
+            tempPriceFeature === "promo" &&
+            "promocodes" in tix.priceFunction.args
+          ) {
+            console.log("priceFunction: ", tix.priceFunction);
+            console.log("tix.priceFunction.args: ", tix.priceFunction.args);
+            tempPromoCodes = tix.priceFunction.args.promocodes;
+            tempPromoCodes.map((promo, index) => {
+              let tempPercent;
+              let tempAmount;
+              if ("percent" in promo && promo.percent === true) {
+                tempPercent = true;
+                tempAmount = promo.amount;
+                console.log("percent is true");
+              } else {
+                tempPercent = false;
+                tempAmount = promo.amount;
+                console.log("percent is false");
+              }
+              let element = {
+                key: index,
+                name: promo.name,
+                amount: tempAmount,
+                percent: tempPercent,
+              };
+              tempPromoCodesArray.push(element);
+            });
+          } else if (tempPriceFeature === "bogo") {
+            tempFunctionArgs = {
+              buy: tix.priceFunction.args.buy,
+              buyWarning: false,
+              get: tix.priceFunction.args.get,
+              getWarning: false,
+              discount: tix.priceFunction.args.discount,
+              discountWarning: false,
+              reqWarning: false,
             };
-            tempPromoCodesArray.push(element);
-          });
-        } else if (tempPriceFeature === "bogo") {
-          tempFunctionArgs = {
-            buy: tix.priceFunction.args.buy,
-            buyWarning: false,
-            get: tix.priceFunction.args.get,
-            getWarning: false,
-            discount: tix.priceFunction.args.discount,
-            discountWarning: false,
-            reqWarning: false,
-          };
-          console.log("bogo tempFunctionArgs: ", tempFunctionArgs);
-          if (tempFunctionArgs.discount === 100) {
-            tempPriceFeature = "bogof";
+            console.log("bogo tempFunctionArgs: ", tempFunctionArgs);
+            if (tempFunctionArgs.discount === 100) {
+              tempPriceFeature = "bogof";
+            }
+            if (tempFunctionArgs.discount !== 100) {
+              tempPriceFeature = "bogod";
+            }
+          } else if (tempPriceFeature === "twofer") {
+            tempFunctionArgs = {
+              buy: tix.priceFunction.args.buy,
+              buyWarning: false,
+              for: tix.priceFunction.args.for,
+              forWarning: false,
+              reqWarning: false,
+            };
           }
-          if (tempFunctionArgs.discount !== 100) {
-            tempPriceFeature = "bogod";
-          }
-        } else if (tempPriceFeature === "twofer") {
-          tempFunctionArgs = {
-            buy: tix.priceFunction.args.buy,
-            buyWarning: false,
-            for: tix.priceFunction.args.for,
-            forWarning: false,
-            reqWarning: false,
-          };
         }
+
+        let currencyObject = {
+          USD: "USD $",
+          CAD: "CAD $",
+          MXN: "MXN $",
+          EUR: "EUR €",
+          GBP: "GBP £",
+          CZK: "CZK Kc",
+          DKK: "DKK kr",
+          HUF: "HUF Ft",
+          NOK: "NOK kr",
+          PLN: "PLN zl",
+          SEK: "SEK kr",
+          CHF: "CHF",
+          JPY: "JPY ¥",
+          AUD: "AUD $",
+          NZD: "NZD $",
+          HKD: "HKD $",
+          SGD: "SGD $",
+          ILS: "ILS ₪",
+          PHP: "PHP ₱",
+          TWD: "TWD NT$",
+          THB: "THB ฿",
+          RUB: "RUB ₽",
+        };
+
+        const longCurrency = () => {
+          if ("currency" in tix) {
+            console.log("tix.currency: ", tix.currency);
+            console.log(
+              "currencyObject[tix.currency]: ",
+              currencyObject[tix.currency]
+            );
+            return currencyObject[tix.currency];
+          } else {
+            return "USD $";
+          }
+        };
+
+        let newItem = {
+          key: "sort" in tix ? tix.sort : index,
+          sort: "sort" in tix ? tix.sort : index,
+          _id: tix._id,
+          ticketName: tix.ticketName,
+          nameWarning: false,
+          remainingQuantity: tix.remainingQuantity,
+          quantityWarning: false,
+          currentTicketPrice: tix.currentTicketPrice,
+          isZombie: tix.isZombie,
+          priceWarning: false,
+          reqWarning: false,
+          currency: longCurrency(),
+          settings: false,
+          ticketDescription: tix.ticketDescription,
+          minTicketsAllowedPerOrder: tix.minTicketsAllowedPerOrder,
+          minWarning: false,
+          maxTicketsAllowedPerOrder: tix.maxTicketsAllowedPerOrder,
+          maxWarning: false,
+          priceFeature: tempPriceFeature,
+          promoCodes: tempPromoCodesArray,
+          promoCodeNames: [],
+          promoCodeWarning: false,
+          functionArgs: tempFunctionArgs,
+          viewModal: false,
+        };
+        ticketArray.push(newItem);
       }
-
-      let currencyObject = {
-        USD: "USD $",
-        CAD: "CAD $",
-        MXN: "MXN $",
-        EUR: "EUR €",
-        GBP: "GBP £",
-        CZK: "CZK Kc",
-        DKK: "DKK kr",
-        HUF: "HUF Ft",
-        NOK: "NOK kr",
-        PLN: "PLN zl",
-        SEK: "SEK kr",
-        CHF: "CHF",
-        JPY: "JPY ¥",
-        AUD: "AUD $",
-        NZD: "NZD $",
-        HKD: "HKD $",
-        SGD: "SGD $",
-        ILS: "ILS ₪",
-        PHP: "PHP ₱",
-        TWD: "TWD NT$",
-        THB: "THB ฿",
-        RUB: "RUB ₽",
-      };
-
-      const longCurrency = () => {
-        if ("currency" in tix) {
-          console.log("tix.currency: ", tix.currency);
-          console.log(
-            "currencyObject[tix.currency]: ",
-            currencyObject[tix.currency]
-          );
-          return currencyObject[tix.currency];
-        } else {
-          return "USD $";
-        }
-      };
-
-      let newItem = {
-        key: "sort" in tix ? tix.sort : index,
-        sort: "sort" in tix ? tix.sort : index,
-        _id: tix._id,
-        ticketName: tix.ticketName,
-        nameWarning: false,
-        remainingQuantity: tix.remainingQuantity,
-        quantityWarning: false,
-        currentTicketPrice: tix.currentTicketPrice,
-        isZombie: tix.isZombie,
-        priceWarning: false,
-        reqWarning: false,
-        currency: longCurrency(),
-        settings: false,
-        ticketDescription: tix.ticketDescription,
-        minTicketsAllowedPerOrder: tix.minTicketsAllowedPerOrder,
-        minWarning: false,
-        maxTicketsAllowedPerOrder: tix.maxTicketsAllowedPerOrder,
-        maxWarning: false,
-        priceFeature: tempPriceFeature,
-        promoCodes: tempPromoCodesArray,
-        promoCodeNames: [],
-        promoCodeWarning: false,
-        functionArgs: tempFunctionArgs,
-        viewModal: false,
-      };
-      ticketArray.push(newItem);
     });
+
     console.log("ticketArray: ", ticketArray);
   }
   return [ticketArray, eventDescription, eventLongDescription];
