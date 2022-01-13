@@ -1,5 +1,7 @@
 import React, { useEffect, useState, Fragment } from "react";
 
+import { API } from "../../config";
+
 import { getDate } from "./Resources/VendorFunctions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -194,10 +196,21 @@ const TicketSales = (props) => {
   );
 
   const downloadEmployeeData = () => {
+    let token = props.token;
+    const authstring = `Bearer ${token}`;
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", authstring);
+    myHeaders.append("content-type", "application/json");
     console.log("I'm here");
     fetch(
-      "https://api.bondirectly.com/reports/admin?rsid=order1&eventNum=59490622550&csv=true",
-      { method: "POST" }
+      //"https://api.bondirectly.com/reports/admin?rsid=order1&eventNum=59490622550&csv=true",
+
+      `${API}/reports/admin?rsid=order1&eventNum=${props.event.eventNum}&csv=true`,
+      {
+        method: "post",
+        headers: myHeaders,
+        redirect: "follow",
+      }
     )
       .then((response) => {
         console.log("I'm here2");

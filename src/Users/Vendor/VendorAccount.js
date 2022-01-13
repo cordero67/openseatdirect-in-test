@@ -223,6 +223,7 @@ const VendorAccount = (props) => {
     } else if (display === "ticketSales") {
       return (
         <TicketSales
+          token={userInfo.token}
           event={selectedEvent}
           orders={selectedOrders}
           toEvents={() => {
