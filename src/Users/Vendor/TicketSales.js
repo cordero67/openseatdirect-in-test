@@ -201,10 +201,7 @@ const TicketSales = (props) => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", authstring);
     myHeaders.append("content-type", "application/json");
-    console.log("I'm here");
     fetch(
-      //"https://api.bondirectly.com/reports/admin?rsid=order1&eventNum=59490622550&csv=true",
-
       `${API}/reports/admin?rsid=order1&eventNum=${props.event.eventNum}&csv=true`,
       {
         method: "post",
@@ -213,17 +210,15 @@ const TicketSales = (props) => {
       }
     )
       .then((response) => {
-        console.log("I'm here2");
         return response.blob();
       })
       .then((blob) => {
         let url = window.URL.createObjectURL(blob);
         let a = document.createElement("a");
         a.href = url;
-        a.download = "event.csv";
+        a.download = `${props.event.eventTitle}.csv`;
         a.click();
         console.log("blob: ", blob);
-        console.log("blob.type: ", blob.type);
         return blob;
       })
       .then((blob) => {
