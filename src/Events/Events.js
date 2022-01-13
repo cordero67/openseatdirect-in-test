@@ -83,9 +83,45 @@ const Events = () => {
     }
   };
 
+  const downloadEmployeeData = () => {
+    console.log("I'm here");
+    fetch(
+      "https://api.bondirectly.com/reports/admin?rsid=order1&eventNum=59490622550&csv=true",
+      { method: "POST" }
+    )
+      .then((response) => {
+        console.log("I'm here2");
+        return response.blob();
+      })
+      .then((blob) => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = "event.csv";
+        a.click();
+        console.log("blob: ", blob);
+        console.log("blob.type: ", blob.type);
+        return blob;
+      })
+      .then((blob) => {
+        blob.text().then((text) => console.log("text: ", text));
+      })
+      .catch((err) => {
+        console.log("Inside the .catch");
+      });
+  };
+
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
+        <div id="container">
+          <h1>Download File using React App</h1>
+          <h3>Download Employee Data using Button</h3>
+          <button onClick={downloadEmployeeData}>Download</button>
+          <p />
+          <h3>Download Employee Data using Link</h3>
+        </div>
+
         <section className={classes.Events}>
           {!isLoadingEvents ? eventsNew() : <Spinner />}
         </section>

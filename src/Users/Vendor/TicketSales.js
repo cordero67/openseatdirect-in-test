@@ -2,6 +2,9 @@ import React, { useEffect, useState, Fragment } from "react";
 
 import { getDate } from "./Resources/VendorFunctions";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileCsv } from "@fortawesome/free-solid-svg-icons";
+
 import classes from "./TicketSales.module.css";
 import ReceiptModal from "../Modals/ReceiptModalVendor";
 //
@@ -190,10 +193,46 @@ const TicketSales = (props) => {
     </div>
   );
 
+  const downloadEmployeeData = () => {
+    console.log("I'm here");
+    fetch(
+      "https://api.bondirectly.com/reports/admin?rsid=order1&eventNum=59490622550&csv=true",
+      { method: "POST" }
+    )
+      .then((response) => {
+        console.log("I'm here2");
+        return response.blob();
+      })
+      .then((blob) => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = "event.csv";
+        a.click();
+        console.log("blob: ", blob);
+        console.log("blob.type: ", blob.type);
+        return blob;
+      })
+      .then((blob) => {
+        blob.text().then((text) => console.log("text: ", text));
+      })
+      .catch((err) => {
+        console.log("Inside the .catch");
+      });
+  };
+
   const displayHeader = (
     <div className={classes.DisplayHeader}>
       <div style={{ fontWeight: "600", fontSize: "18px", paddingLeft: "30px" }}>
-        Ticket Orders
+        Ticket Orders{" "}
+        <FontAwesomeIcon
+          color="blue"
+          cursor="pointer"
+          onClick={() => {
+            downloadEmployeeData();
+          }}
+          icon={faFileCsv}
+        />
       </div>
       <div className={classes.OrdersHeader}>
         <div>
