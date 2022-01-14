@@ -83,9 +83,34 @@ const Events = () => {
     }
   };
 
+  const downloadEmployeeData = () => {
+    /*
+    fetch(
+      "https://api.bondirectly.com/reports/admin?rsid=order1&eventNum=59490622550&csv=true",
+      { method: "POST" }
+    ).then((response) => {
+      response.blob().then((blob) => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = "employees.json";
+        a.click();
+      });
+      window.location.href = response.url;
+    });
+    */
+  };
+
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
+        <div id="container">
+          <h1>Download File using React App</h1>
+          <h3>Download Employee Data using Button</h3>
+          <p />
+          <h3>Download Employee Data using Link</h3>
+        </div>
+
         <section className={classes.Events}>
           {!isLoadingEvents ? eventsNew() : <Spinner />}
         </section>
