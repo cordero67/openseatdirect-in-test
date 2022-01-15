@@ -28,6 +28,7 @@
     "react-select": "^4.3.1",
     "react-youtube": "^7.9.0",
     "semantic-ui-react": "^2.0.4",
+    "stripe": "^8.197.0",
     "underscore": "^1.13.1"
   },
   "scripts": {
