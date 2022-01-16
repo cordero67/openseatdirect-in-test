@@ -22,6 +22,7 @@ const Authentication = () => {
     resetToken: "",
     sessionToken: "",
     userId: "",
+    accountNum: "",
   });
 
   // transaction status variable
@@ -45,6 +46,7 @@ const Authentication = () => {
     resetToken,
     sessionToken,
     userId,
+    accountNum,
   } = values;
 
   const { message, error } = submissionStatus;
@@ -377,14 +379,17 @@ const Authentication = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
 
-    let url = `${API}/accounts/${userId}/subscription/stripe/onboard1-genlink`;
+    //let url = `${API}/accounts/${accountNum}/subscription/stripe/onboard1-genlink`;
     //let url = `${API}/user/${userId}`;
+    let url = `${API}/stripetest`;
+
     let information = {
       username: username,
     };
     console.log("myHeaders: ", myHeaders);
     let fetchBody = {
-      method: "POST",
+      //method: "POST",
+      method: "GET",
       headers: myHeaders,
       //body: JSON.stringify(information),
     };
@@ -507,6 +512,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       redirectUser();
     } else {
@@ -534,6 +540,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       setModalSetting("temporary");
     } else {
@@ -562,6 +569,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       redirectUser();
     } else {
@@ -590,6 +598,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
     } else {
       setSubmissionStatus({
@@ -601,7 +610,10 @@ const Authentication = () => {
   };
 
   const handleSignUp = (data) => {
+    console.log("data: ", data);
+    console.log("data.status: ", data.status);
     if (data.status) {
+      console.log("inside true handleSignUp");
       setValues({
         name: "",
         email: data.user.email,
@@ -615,7 +627,9 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
+      console.log("inside true handleSignUp");
       console.log("SUCCESS");
       setModalSetting("confirmation");
     } else {
@@ -629,6 +643,7 @@ const Authentication = () => {
   };
 
   const handleConfirmation = (data) => {
+    console.log("data: ", data);
     if (data.status) {
       //
       localStorage.setItem("user", JSON.stringify(data)); // KEEP
@@ -644,7 +659,8 @@ const Authentication = () => {
         username: data.user.username,
         resetToken: data.user.passwordToken,
         sessionToken: "",
-        userId: "",
+        userId: data.user.accountId._id,
+        accountNum: data.user.accountId.accountNum,
       });
       console.log("SUCCESS");
       setModalSetting("password");
@@ -660,6 +676,7 @@ const Authentication = () => {
   };
 
   const handlePassword = (data) => {
+    console.log("data: ", data);
     console.log("STATUS: ", data.status);
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
@@ -677,7 +694,8 @@ const Authentication = () => {
         username: username,
         resetToken: "",
         sessionToken: data.token,
-        userId: data.user._id,
+        userId: userId,
+        accountNum: accountNum,
       });
       console.log("SUCCESS");
       setModalSetting("username");
@@ -710,6 +728,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       redirectUser();
     } else {
@@ -736,6 +755,7 @@ const Authentication = () => {
       resetToken: "",
       sessionToken: "",
       userId: "",
+      accountNum: "",
     });
   };
 
@@ -755,6 +775,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       console.log("SUCCESS");
     } else {
@@ -1051,7 +1072,7 @@ const Authentication = () => {
             redirectUser();
           }}
         >
-          CHANGE IT LATER
+          GO TO MY DASHBOARD
         </button>
       </div>
     </Fragment>

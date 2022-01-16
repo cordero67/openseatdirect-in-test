@@ -14,6 +14,7 @@ import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Authentication from "../../Users/Authentication/Authentication";
+import AuthenticationNEW from "../../Users/Authentication/AuthenticationNEW";
 //import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
 
@@ -63,6 +64,30 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Authentication
+              user={userObject}
+              updateUser={(data) => {
+                console.log("AND TO HERE");
+                console.log("USER: ", userObject);
+                setUserObject(data);
+              }}
+            />
+            <Footer></Footer>
+          </Fragment>
+        )}
+      />
+
+      <Route
+        path="/authNEW"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <AuthenticationNEW
               user={userObject}
               updateUser={(data) => {
                 console.log("AND TO HERE");
