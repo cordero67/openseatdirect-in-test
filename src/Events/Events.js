@@ -83,24 +83,6 @@ const Events = () => {
     }
   };
 
-  const downloadEmployeeData = () => {
-    /*
-    fetch(
-      "https://api.bondirectly.com/reports/admin?rsid=order1&eventNum=59490622550&csv=true",
-      { method: "POST" }
-    ).then((response) => {
-      response.blob().then((blob) => {
-        let url = window.URL.createObjectURL(blob);
-        let a = document.createElement("a");
-        a.href = url;
-        a.download = "employees.json";
-        a.click();
-      });
-      window.location.href = response.url;
-    });
-    */
-  };
-
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
