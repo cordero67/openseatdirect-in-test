@@ -379,23 +379,36 @@ const Authentication = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
 
-    //let url = `${API}/accounts/${accountNum}/subscription/stripe/onboard1-genlink`;
+    let url = `${API}/accounts/${accountNum}/subscription/stripe/onboard1-genlink`;
     //let url = `${API}/user/${userId}`;
-    let url = `${API}/stripetest`;
+    //let url = `${API}/stripetest`;
 
     let information = {
       username: username,
     };
     console.log("myHeaders: ", myHeaders);
     let fetchBody = {
-      //method: "POST",
-      method: "GET",
+      method: "POST",
+      //method: "GET",
       headers: myHeaders,
       //body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
     console.log("Information: ", information);
+
     fetch(url, fetchBody)
+      .then((response) => {
+        // HTTP 301 response
+        // HOW CAN I FOLLOW THE HTTP REDIRECT RESPONSE?
+        console.log("made it inside the .then");
+        if (response.redirected) {
+          window.location.href = response.url;
+        }
+      })
+      .catch(function (err) {
+        console.info(err + " url: " + url);
+      });
+    /*
       .then(handleErrors)
       .then((response) => {
         console.log("then response: ", response);
@@ -413,6 +426,7 @@ const Authentication = () => {
         });
         setModalSetting("error");
       });
+      */
   };
 
   const submitUsername = () => {
