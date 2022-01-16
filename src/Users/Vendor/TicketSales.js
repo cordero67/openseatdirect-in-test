@@ -202,7 +202,7 @@ const TicketSales = (props) => {
     myHeaders.append("Authorization", authstring);
     myHeaders.append("content-type", "application/json");
     fetch(
-      `${API}/reports/admin?rsid=order1&eventNum=${props.event.eventNum}&csv=true`,
+      `${API}/reports/organizer?rsid=order1&eventNum=${props.event.eventNum}&csv=true`,
       {
         method: "post",
         headers: myHeaders,

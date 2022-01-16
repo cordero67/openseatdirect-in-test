@@ -86,13 +86,6 @@ const Events = () => {
   return (
     <div className={classes.MainContainer}>
       <div className={classes.MainGrid}>
-        <div id="container">
-          <h1>Download File using React App</h1>
-          <h3>Download Employee Data using Button</h3>
-          <p />
-          <h3>Download Employee Data using Link</h3>
-        </div>
-
         <section className={classes.Events}>
           {!isLoadingEvents ? eventsNew() : <Spinner />}
         </section>
