@@ -15,6 +15,7 @@ import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Authentication from "../../Users/Authentication/Authentication";
 import AuthenticationNEW from "../../Users/Authentication/AuthenticationNEW";
+import StripeConnection from "../../Users/Authentication/StripeConnection";
 //import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
 
@@ -88,6 +89,30 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <AuthenticationNEW
+              user={userObject}
+              updateUser={(data) => {
+                console.log("AND TO HERE");
+                console.log("USER: ", userObject);
+                setUserObject(data);
+              }}
+            />
+            <Footer></Footer>
+          </Fragment>
+        )}
+      />
+
+      <Route
+        path="/stripeconnection"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <StripeConnection
               user={userObject}
               updateUser={(data) => {
                 console.log("AND TO HERE");

@@ -53,7 +53,7 @@ const Authentication = () => {
 
   useEffect(() => {
     let startingView = queryString.parse(window.location.search).new;
-
+    console.log("You are in AuthenticationNew");
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -378,25 +378,21 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
+    myHeaders.append("Access-Control-Allow-Origin", "*");
+    console.log("myHeaders: ", myHeaders);
 
     let url = `${API}/accounts/${accountNum}/subscription/stripe/onboard1-genlink`;
-    //let url = `${API}/user/${userId}`;
     //let url = `${API}/stripetest`;
+    //let url = ""
 
-    let information = {
-      username: username,
-    };
-    console.log("myHeaders: ", myHeaders);
     let fetchBody = {
       method: "POST",
-      //method: "GET",
       headers: myHeaders,
-      //body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
 
     fetch(url, fetchBody)
+      .then((res) => res.json())
       .then((response) => {
         // HTTP 301 response
         // HOW CAN I FOLLOW THE HTTP REDIRECT RESPONSE?
@@ -406,6 +402,7 @@ const Authentication = () => {
         }
       })
       .catch(function (err) {
+        //console.log("response: ", response);
         console.info(err + " url: " + url);
       });
     /*
@@ -1076,7 +1073,7 @@ const Authentication = () => {
             submitStripe();
           }}
         >
-          COONECT WITH STRIPE
+          CONNECT WITH STRIPE
         </button>
       </div>
       <div style={{ paddingTop: "10px" }}>
