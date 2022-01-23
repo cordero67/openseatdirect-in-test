@@ -30,7 +30,10 @@ const StripeConnection = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
-    myHeaders.append("Access-Control-Allow-Origin", "*");
+    myHeaders.append(
+      "Access-Control-Allow-Origin",
+      "https://connect.stripe.com/"
+    );
     console.log("myHeaders: ", myHeaders);
 
     //let url = `${API}/stripe/account/get`;
@@ -46,6 +49,7 @@ const StripeConnection = () => {
       .then((res) => res.json())
       .then((json) => {
         console.log("json: ", json);
+        /*
         const { success, message, setUpBegan } = json;
         if (success) {
           console.log("success");
@@ -62,6 +66,9 @@ const StripeConnection = () => {
             error: message,
           });
         }
+        */
+        // vconst body = res.json()
+        window.location.href = json.url;
       })
       .catch((error) => {
         console.log("fetchFieldsNeeded() error.message: ", error.message);
