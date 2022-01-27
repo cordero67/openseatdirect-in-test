@@ -13,8 +13,8 @@ import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
+import AuthenticationOLD from "../../Users/Authentication/AuthenticationOLD";
 import Authentication from "../../Users/Authentication/Authentication";
-import AuthenticationNEW from "../../Users/Authentication/AuthenticationNEW";
 import StripeConnection from "../../Users/Authentication/StripeConnection";
 //import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
@@ -88,7 +88,7 @@ const Routes = () => {
               clicked={toggleSideDrawer}
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <AuthenticationNEW
+            <AuthenticationOLD
               user={userObject}
               updateUser={(data) => {
                 console.log("AND TO HERE");

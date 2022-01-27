@@ -482,6 +482,7 @@ const EventDetail = () => {
       if (isSuccessfull) {
         return (
           <div>
+            {" "}
             {topDisplay()}
             {ticketDisplay()}
             {middleDisplay()}
@@ -507,7 +508,7 @@ const EventDetail = () => {
     }
   };
 
-  return <div className={classes.MainContainer}>{mainDisplay()}HELLO</div>;
+  return <div className={classes.MainContainer}>{mainDisplay()}</div>;
 };
 
 export default EventDetail;

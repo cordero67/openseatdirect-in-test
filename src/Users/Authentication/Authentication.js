@@ -5,14 +5,19 @@ import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../../config";
 
-//
-import classes from "./AuthenticationNEW.module.css";
+import stripeImg from "../../assets/Stripe/Stripe wordmark - blurple (small).png";
+
+import classes from "./Authentication.module.css";
 
 const Authentication = () => {
+  const [subIntent, setSubIntent] = useState();
+  console.log("subIntent: ", subIntent);
+
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
+    vendorIntent: "",
     temporary: "",
     reissued: false,
     //
@@ -22,6 +27,7 @@ const Authentication = () => {
     resetToken: "",
     sessionToken: "",
     userId: "",
+    accountNum: "",
   });
 
   // transaction status variable
@@ -30,7 +36,7 @@ const Authentication = () => {
     error: false,
   });
 
-  const [modalSetting, setModalSetting] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
+  const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
 
   const {
     name,
@@ -45,29 +51,92 @@ const Authentication = () => {
     resetToken,
     sessionToken,
     userId,
+    accountNum,
   } = values;
 
   const { message, error } = submissionStatus;
 
   useEffect(() => {
     let startingView = queryString.parse(window.location.search).new;
+    let initialView = queryString.parse(window.location.search).view;
+    console.log("initialView: ", initialView);
 
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      if ("user" in tempUser && "token" in tempUser) {
-        window.location.href = "/myaccount";
-      } else {
-        {
-          startingView ? setModalSetting("signup") : setModalSetting("signin");
+    if (initialView === "signin") {
+      console.log("going to signin");
+      setDisplay("signin");
+      //
+    } else if (initialView === "free") {
+      console.log("going to signup");
+      setSubIntent("free");
+      setDisplay("signup");
+      console.log("subIntent: ", subIntent);
+      //
+    } else if (initialView === "paid") {
+      console.log("going to signup");
+      //assign vendor intent field to paid
+      setSubIntent("paid");
+      setDisplay("signup");
+      console.log("subIntent: ", subIntent);
+      //
+    } else if (initialView === "gateway") {
+      console.log("going to gateway");
+      setSubIntent("paid");
+      if (
+        typeof window !== "undefined" &&
+        localStorage.getItem(`user`) !== null
+      ) {
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        console.log("tempUser: ", tempUser);
+        if ("user" in tempUser && "token" in tempUser) {
+          setValues({
+            name: "",
+            email: tempUser.user.email,
+            password: "",
+            vendorIntent: "",
+            temporary: "",
+            reissued: false,
+            //
+            confirmation: "",
+            resent: false,
+            username: tempUser.user.username,
+            resetToken: "",
+            sessionToken: tempUser.token,
+            userId: tempUser.user.accountId._id,
+            accountNum: tempUser.user.accountId.accountNum,
+          });
+
+          console.log("inside gtwy useEffect");
         }
+
+        setDisplay("gateway");
+      }
+
+      setDisplay("gateway");
+      //
+    } else if (initialView === "stripe") {
+      console.log("going to stripe");
+      setDisplay("paidCongrats");
+      //
+    } else if (initialView === "error") {
+      console.log("error");
+      setDisplay("error");
+      //
+    } else if (!initialView) {
+      if (
+        typeof window !== "undefined" &&
+        localStorage.getItem(`user`) !== null
+      ) {
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        if ("user" in tempUser && "token" in tempUser) {
+          window.location.href = "/myaccount";
+        }
+      } else {
+        console.log("signin");
+        setDisplay("signin");
       }
     } else {
-      {
-        startingView ? setModalSetting("signup") : setModalSetting("signin");
-      }
+      console.log("signin");
+      setDisplay("signin");
     }
   }, []);
 
@@ -80,7 +149,7 @@ const Authentication = () => {
   };
 
   const submitSignIn = () => {
-    setModalSetting("spinner");
+    setDisplay("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -116,12 +185,12 @@ const Authentication = () => {
           message: "Server down please try again",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
   };
 
   const submitForgot = () => {
-    setModalSetting("spinner");
+    setDisplay("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -155,12 +224,12 @@ const Authentication = () => {
           message: "Server is down, please try later",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
   };
 
   const submitTemporary = () => {
-    setModalSetting("spinner");
+    setDisplay("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -196,7 +265,7 @@ const Authentication = () => {
           message: "Server is down, please try later",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
   };
 
@@ -235,12 +304,12 @@ const Authentication = () => {
           message: "Server is down, please try later",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
   };
 
   const submitSignUp = () => {
-    setModalSetting("spinner");
+    setDisplay("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -251,6 +320,7 @@ const Authentication = () => {
     let url = `${API}/auth/signup/email`;
     let information = {
       email: email,
+      vendorIntent: subIntent,
     };
     let fetchBody = {
       method: "POST",
@@ -275,12 +345,12 @@ const Authentication = () => {
           message: "Server is down, please try later",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
   };
 
   const submitConfirmation = () => {
-    setModalSetting("spinner");
+    setDisplay("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -316,12 +386,12 @@ const Authentication = () => {
           message: "Server is down, please try later",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
   };
 
   const submitPassword = () => {
-    setModalSetting("spinner");
+    setDisplay("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -362,12 +432,12 @@ const Authentication = () => {
           message: "Server is down, please try later",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
   };
 
-  const submitUsername = () => {
-    setModalSetting("spinner");
+  const submitStripe = () => {
+    setDisplay("spinner");
     setSubmissionStatus({
       message: "",
       error: false,
@@ -376,19 +446,36 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
-    let url = `${API}/user/${userId}`;
-    let information = {
-      username: username,
-    };
+    //myHeaders.append("Access-Control-Allow-Origin", "*");
     console.log("myHeaders: ", myHeaders);
+
+    console.log(
+      "Account Number: ",
+      accountNum,
+      " sessionToken: ",
+      sessionToken
+    );
+
+    let url = `${API}/accounts/${accountNum}/subscription/stripe/onboard1-genlink`;
+    //let url = `${API}/stripetest`;
+    //let url = ""
+
     let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
+
     fetch(url, fetchBody)
+      .then((res) => res.json())
+      .then((response) => {
+        console.log("made it inside the .then");
+        window.location.href = response.url;
+      })
+      .catch(function (err) {
+        console.info(err + " url: " + url);
+      });
+    /*
       .then(handleErrors)
       .then((response) => {
         console.log("then response: ", response);
@@ -396,7 +483,7 @@ const Authentication = () => {
       })
       .then((data) => {
         console.log("fetch return got back data:", data);
-        handleUsername(data);
+        //handleUsername(data);
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -404,8 +491,9 @@ const Authentication = () => {
           message: "Server is down, please try later",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
+      */
   };
 
   const submitResend = () => {
@@ -443,7 +531,7 @@ const Authentication = () => {
           message: "Server is down, please try later",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
   };
 
@@ -454,6 +542,7 @@ const Authentication = () => {
         name: "",
         email: "",
         password: "",
+        vendorIntent: "",
         temporary: "",
         reissued: false,
         //
@@ -463,6 +552,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       redirectUser();
     } else {
@@ -470,7 +560,7 @@ const Authentication = () => {
         message: data.error,
         error: true,
       });
-      setModalSetting("signin");
+      setDisplay("signin");
       console.log("ERROR: ", data.error);
     }
   };
@@ -481,6 +571,7 @@ const Authentication = () => {
         name: "",
         email: data.user.email,
         password: "",
+        vendorIntent: "",
         temporary: "",
         reissued: false,
         //
@@ -490,14 +581,15 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
-      setModalSetting("temporary");
+      setDisplay("temporary");
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
-      setModalSetting("forgot");
+      setDisplay("forgot");
       console.log("ERROR: ", data.error);
     }
   };
@@ -509,6 +601,7 @@ const Authentication = () => {
         name: "",
         email: "",
         password: "",
+        vendorIntent: "",
         temporary: "",
         reissued: false,
         //
@@ -518,6 +611,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       redirectUser();
     } else {
@@ -525,7 +619,7 @@ const Authentication = () => {
         message: data.error,
         error: true,
       });
-      setModalSetting("temporary");
+      setDisplay("temporary");
       console.log("ERROR: ", data.error);
     }
   };
@@ -537,6 +631,7 @@ const Authentication = () => {
         name: "",
         email: data.user.email,
         password: "",
+        vendorIntent: "",
         temporary: "",
         reissued: true,
         //
@@ -546,6 +641,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
     } else {
       setSubmissionStatus({
@@ -557,11 +653,16 @@ const Authentication = () => {
   };
 
   const handleSignUp = (data) => {
+    console.log("data: ", data);
+    console.log("data.status: ", data.status);
     if (data.status) {
+      console.log("inside true handleSignUp");
       setValues({
         name: "",
         email: data.user.email,
         password: "",
+        // need to capture vendotIntent field from server response object
+        vendorIntent: subIntent,
         temporary: "",
         reissued: false,
         //
@@ -571,20 +672,23 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
+      console.log("inside true handleSignUp");
       console.log("SUCCESS");
-      setModalSetting("confirmation");
+      setDisplay("confirmation");
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
-      setModalSetting("signup");
+      setDisplay("signup");
       console.log("ERROR: ", data.error);
     }
   };
 
   const handleConfirmation = (data) => {
+    console.log("data: ", data);
     if (data.status) {
       //
       localStorage.setItem("user", JSON.stringify(data)); // KEEP
@@ -592,6 +696,8 @@ const Authentication = () => {
         name: "",
         email: data.user.email,
         password: "",
+        // need to capture vendotIntent field from server response object
+        vendorIntent: subIntent,
         temporary: "",
         reissued: false,
         //
@@ -600,31 +706,35 @@ const Authentication = () => {
         username: data.user.username,
         resetToken: data.user.passwordToken,
         sessionToken: "",
-        userId: "",
+        userId: data.user.accountId._id,
+        accountNum: data.user.accountId.accountNum,
       });
       console.log("SUCCESS");
-      setModalSetting("password");
+      setDisplay("password");
     } else {
       console.log("Inside handleConfirmation false");
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
-      setModalSetting("confirmation");
+      setDisplay("confirmation");
       console.log("ERROR: ", data.error);
     }
   };
 
   const handlePassword = (data) => {
+    console.log("data: ", data);
     console.log("STATUS: ", data.status);
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
+      console.log("user from local storage: ", tempUser);
       tempUser.token = data.token;
       localStorage.setItem("user", JSON.stringify(tempUser));
       setValues({
         name: "",
         email: email,
         password: "",
+        vendorIntent: "",
         temporary: "",
         reissued: false,
         //
@@ -633,16 +743,22 @@ const Authentication = () => {
         username: username,
         resetToken: "",
         sessionToken: data.token,
-        userId: data.user._id,
+        userId: userId,
+        accountNum: accountNum,
       });
       console.log("SUCCESS");
-      setModalSetting("username");
+      if (subIntent === "paid") {
+        setDisplay("gateway");
+      } else if (subIntent === "free") {
+        setDisplay("freeCongrats");
+        console.log("CONGRATULATIONS");
+      }
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
-      setModalSetting("password");
+      setDisplay("password");
       console.log("ERROR: ", data.error);
     }
   };
@@ -657,6 +773,7 @@ const Authentication = () => {
         name: "",
         email: "",
         password: "",
+        vendorIntent: "",
         temporary: "",
         reissued: false,
         //
@@ -666,6 +783,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       redirectUser();
     } else {
@@ -673,7 +791,7 @@ const Authentication = () => {
         message: data.error,
         error: true,
       });
-      setModalSetting("username");
+      setDisplay("username");
       console.log("ERROR: ", data.error);
     }
   };
@@ -683,6 +801,7 @@ const Authentication = () => {
       name: "",
       email: "",
       password: "",
+      vendorIntent: "",
       temporary: "",
       reissued: false,
       //
@@ -692,6 +811,7 @@ const Authentication = () => {
       resetToken: "",
       sessionToken: "",
       userId: "",
+      accountNum: "",
     });
   };
 
@@ -702,6 +822,7 @@ const Authentication = () => {
         name: "",
         email: data.user.email,
         password: "",
+        vendorIntent: "",
         temporary: "",
         reissued: false,
         //
@@ -711,6 +832,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       console.log("SUCCESS");
     } else {
@@ -736,29 +858,25 @@ const Authentication = () => {
       localStorage.getItem("user") !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (
-        "token" in tempUser &&
-        "user" in tempUser // &&
-        //"accountId" in tempUser.user
-      ) {
+      if ("token" in tempUser && "user" in tempUser) {
         window.location.href = "/myaccount";
       } else {
         setSubmissionStatus({
           message: "Server error please try again",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       }
     } else {
       setSubmissionStatus({
         message: "Server error please try again",
         error: true,
       });
-      setModalSetting("error");
+      setDisplay("error");
     }
   };
 
-  const showError = () => {
+  const showDetail = () => {
     if (error) {
       return (
         <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
@@ -772,13 +890,13 @@ const Authentication = () => {
       //
       //
     } else if (
-      modalSetting === "signin" ||
-      modalSetting === "forgot" ||
-      modalSetting === "signup" ||
-      modalSetting === "password"
+      display === "signin" ||
+      display === "forgot" ||
+      display === "signup" ||
+      display === "password"
     ) {
       return null;
-    } else if (modalSetting === "temporary" && !reissued) {
+    } else if (display === "temporary" && !reissued) {
       console.log("values: ", values);
       return (
         <Fragment>
@@ -788,20 +906,20 @@ const Authentication = () => {
           <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
         </Fragment>
       );
-    } else if (modalSetting === "temporary" && reissued) {
+    } else if (display === "temporary" && reissued) {
       console.log("values: ", values);
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           Confirmation code resent to your email.
         </div>
       );
-    } else if (modalSetting === "confirmation" && !resent) {
+    } else if (display === "confirmation" && !resent) {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           Enter the 6-digit code sent to your email:
         </div>
       );
-    } else if (modalSetting === "confirmation" && resent) {
+    } else if (display === "confirmation" && resent) {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           A new 6-digit code was sent to your email,
@@ -809,12 +927,17 @@ const Authentication = () => {
           please enter it below:
         </div>
       );
-    } else if (modalSetting === "username") {
+    } else if (display === "gateway") {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Default username provided below.
-          <br></br>
-          Submit a new username if desired:
+          The payment gateway determines how you will instantly receive revenues
+          from ticket sales.
+        </div>
+      );
+    } else if (display === "freeCongrats") {
+      return (
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+          You have successfully signed up for a free account.
         </div>
       );
     }
@@ -981,26 +1104,50 @@ const Authentication = () => {
     </Fragment>
   );
 
-  const usernameForm = (
+  const gatewayForm = (
     <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Username</label>
-        <input
-          className={classes.InputBox}
-          type="text"
-          name="username"
-          onChange={handleChange}
-          value={username}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
+      <div style={{ paddingTop: "10px", paddingBottom: "10px" }}>
         <button
-          className={classes.SubmitButton}
-          onClick={() => {
-            submitUsername();
+          style={{
+            background: "white",
+            width: "160",
+            border: "none",
+            cursor: "pointer",
+            outline: "none",
           }}
         >
-          CHANGE YOUR USERNAME
+          <img
+            src={stripeImg}
+            alt="STRIPE"
+            width="160"
+            height="120"
+            cursor="pointer"
+            onClick={() => {
+              console.log("selecting Stripe");
+              submitStripe();
+            }}
+          ></img>
+        </button>
+        <button
+          style={{
+            background: "white",
+            width: "160",
+            border: "none",
+            cursor: "pointer",
+            outline: "none",
+          }}
+        >
+          <img
+            src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg"
+            alt="PAYPAL"
+            width="160"
+            height="120"
+            cursor="pointer"
+            onClick={() => {
+              console.log("selecting PayPal");
+              setDisplay("paypal");
+            }}
+          ></img>
         </button>
       </div>
       <div style={{ paddingTop: "10px" }}>
@@ -1010,7 +1157,124 @@ const Authentication = () => {
             redirectUser();
           }}
         >
-          CHANGE IT LATER
+          STAY WITH COMMUNITY ACCOUNT
+        </button>
+      </div>
+    </Fragment>
+  );
+
+  const freeCongratsForm = (
+    <Fragment>
+      <div style={{ paddingTop: "10px", paddingBottom: "10px" }}></div>
+      <div style={{ paddingTop: "10px" }}>
+        <button
+          className={classes.CancelButton}
+          onClick={() => {
+            setDisplay("gateway");
+          }}
+        >
+          I WANT TO UPGRADE MY ACCOUNT
+        </button>
+        <button
+          className={classes.CancelButton}
+          onClick={() => {
+            window.location.href = "/myaccount";
+          }}
+        >
+          GO TO MY DASHBOARD
+        </button>
+      </div>
+    </Fragment>
+  );
+
+  const paidCongratsForm = (
+    <Fragment>
+      <div style={{ paddingTop: "10px", paddingBottom: "10px" }}></div>
+      <div style={{ paddingTop: "10px" }}>
+        <button
+          className={classes.CancelButton}
+          onClick={() => {
+            window.location.href = "/myaccount";
+          }}
+        >
+          GO TO MY DASHBOARD
+        </button>
+      </div>
+    </Fragment>
+  );
+
+  const paypalForm = (
+    <Fragment>
+      <div style={{ paddingTop: "10px", paddingBottom: "10px" }}></div>
+
+      <div style={{ paddingBottom: "20px", width: "700px", height: "85px" }}>
+        <label style={{ width: "700px", fontSize: "15px" }}>
+          Paypal Client ID <span style={{ color: "red" }}>* </span>
+        </label>
+        <input
+          onFocus={() => {
+            setValues({ ...values, inputError: "" });
+          }}
+          style={{
+            border: "1px solid #8DADD4",
+            borderRadius: "0px",
+            backgroundColor: "#EFF3FA",
+            width: "700px",
+            height: "40px",
+            paddingLeft: "10px",
+          }}
+          type="text"
+          name="paypalExpress_client_id"
+          onChange={handleChange}
+          //value={paypalExpress_client_id}
+        />
+      </div>
+      <div>
+        <label style={{ width: "700px", fontSize: "15px" }}>
+          Paypal Secret <span style={{ color: "red" }}>* </span>
+        </label>
+        <input
+          onFocus={() => {
+            setValues({ ...values, inputError: "" });
+          }}
+          style={{
+            border: "1px solid #8DADD4",
+            borderRadius: "0px",
+            backgroundColor: "#EFF3FA",
+            width: "700px",
+            height: "40px",
+            paddingLeft: "10px",
+          }}
+          type="text"
+          name="paypalExpress_client_secret"
+          onChange={handleChange}
+          //value={paypalExpress_client_secret}
+        />
+      </div>
+      <div style={{ paddingTop: "10px" }}>
+        <button
+          className={classes.CancelButton}
+          onClick={() => {
+            setDisplay("paidCongrats");
+          }}
+        >
+          SUBMIT PAYPAL INFORMATION
+        </button>
+      </div>
+    </Fragment>
+  );
+
+  const detailsForm = (
+    <Fragment>
+      <div style={{ paddingTop: "10px" }}>
+        <button
+          className={classes.CancelButton}
+          onClick={() => {
+            setDisplay("gateway");
+            //redirectUser();
+          }}
+        >
+          CONTINUE
         </button>
       </div>
     </Fragment>
@@ -1049,7 +1313,7 @@ const Authentication = () => {
           className={classes.BlueText}
           onClick={() => {
             resetValues();
-            setModalSetting("forgot");
+            setDisplay("forgot");
           }}
         >
           Forgot password?
@@ -1060,7 +1324,7 @@ const Authentication = () => {
           className={classes.BlueText}
           onClick={() => {
             resetValues();
-            setModalSetting("signup");
+            setDisplay("signup");
           }}
         >
           Create account
@@ -1086,7 +1350,7 @@ const Authentication = () => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            setModalSetting("signin");
+            setDisplay("signin");
           }}
         >
           Sign In
@@ -1102,7 +1366,7 @@ const Authentication = () => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            setModalSetting("signin");
+            setDisplay("signin");
           }}
         >
           Sign In
@@ -1137,7 +1401,7 @@ const Authentication = () => {
   //
   //
   const spinnerDisplay = () => {
-    if (modalSetting === "spinner") {
+    if (display === "spinner") {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
@@ -1151,14 +1415,14 @@ const Authentication = () => {
   };
 
   const signInDisplay = () => {
-    if (modalSetting === "signin") {
+    if (display === "signin") {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Welcome back</div>
           </div>
           <div>
-            {showError()}
+            {showDetail()}
             {signInForm}
             {alternateSignInInputs}
           </div>
@@ -1170,14 +1434,14 @@ const Authentication = () => {
   };
 
   const forgotDisplay = () => {
-    if (modalSetting === "forgot") {
+    if (display === "forgot") {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Trouble logging in?</div>
           </div>
           <div>
-            {showError()}
+            {showDetail()}
             {forgotForm}
             {alternateSignUpInputs}
           </div>
@@ -1189,14 +1453,14 @@ const Authentication = () => {
   };
 
   const temporaryDisplay = () => {
-    if (modalSetting === "temporary") {
+    if (display === "temporary") {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
           </div>
           <div>
-            {showError()}
+            {showDetail()}
             {temporaryForm}
             {alternateTemporaryInputs}
           </div>
@@ -1208,14 +1472,15 @@ const Authentication = () => {
   };
 
   const signUpDisplay = () => {
-    if (modalSetting === "signup") {
+    if (display === "signup") {
+      console.log("inside signup display");
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Tell us about yourself</div>
           </div>
           <div>
-            {showError()}
+            {showDetail()}
             {signUpForm}
             {alternateSignUpInputs}
           </div>
@@ -1227,14 +1492,14 @@ const Authentication = () => {
   };
 
   const confirmationDisplay = () => {
-    if (modalSetting === "confirmation") {
+    if (display === "confirmation") {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Enter confirmation code</div>
           </div>
           <div>
-            {showError()}
+            {showDetail()}
             {confirmationForm}
             {alternateConfirmationInputs}
           </div>
@@ -1246,14 +1511,14 @@ const Authentication = () => {
   };
 
   const passwordDisplay = () => {
-    if (modalSetting === "password") {
+    if (display === "password") {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
             <div>Create your password</div>
           </div>
           <div>
-            {showError()}
+            {showDetail()}
             {passwordForm}
           </div>
         </div>
@@ -1263,16 +1528,89 @@ const Authentication = () => {
     }
   };
 
-  const usernameDisplay = () => {
-    if (modalSetting === "username") {
+  const gatewayDisplay = () => {
+    if (display === "gateway") {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            <div>Change your username</div>
+            <div>Select a Payment Gateway</div>
           </div>
           <div>
-            {showError()}
-            {usernameForm}
+            {showDetail()}
+            {gatewayForm}
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const freeCongratsDisplay = () => {
+    if (display === "freeCongrats") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>Success you know have a free account</div>
+          </div>
+          <div>
+            {showDetail()}
+            {freeCongratsForm}
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const paidCongratsDisplay = () => {
+    if (display === "paidCongrats") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>Success you know have a paid account</div>
+          </div>
+          <div>
+            {showDetail()}
+            {paidCongratsForm}
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const paypalDisplay = () => {
+    if (display === "paypal") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            Please provide the ClientId and Secret from your PayPal merchant
+            account.
+          </div>
+          <div>
+            {showDetail()}
+            {paypalForm}
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const subDetailsDisplay = () => {
+    if (display === "details") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>Pro-Plan details</div>
+          </div>
+          <div>
+            {/*showDetail()*/}
+            {detailsForm}
           </div>
         </div>
       );
@@ -1282,7 +1620,7 @@ const Authentication = () => {
   };
 
   const errorDisplay = () => {
-    if (modalSetting === "error") {
+    if (display === "error") {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
@@ -1306,7 +1644,11 @@ const Authentication = () => {
         {signUpDisplay()}
         {confirmationDisplay()}
         {passwordDisplay()}
-        {usernameDisplay()}
+        {gatewayDisplay()}
+        {paypalDisplay()}
+        {subDetailsDisplay()}
+        {freeCongratsDisplay()}
+        {paidCongratsDisplay()}
         {errorDisplay()}
       </div>
     </div>

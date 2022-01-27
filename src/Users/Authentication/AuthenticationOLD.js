@@ -6,7 +6,7 @@ import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
 
 //
-import classes from "./AuthenticationNEW.module.css";
+import classes from "./Authentication.module.css";
 
 const Authentication = () => {
   const [values, setValues] = useState({
@@ -22,7 +22,6 @@ const Authentication = () => {
     resetToken: "",
     sessionToken: "",
     userId: "",
-    accountNum: "",
   });
 
   // transaction status variable
@@ -46,14 +45,13 @@ const Authentication = () => {
     resetToken,
     sessionToken,
     userId,
-    accountNum,
   } = values;
 
   const { message, error } = submissionStatus;
 
   useEffect(() => {
     let startingView = queryString.parse(window.location.search).new;
-    console.log("You are in AuthenticationNew");
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -368,64 +366,6 @@ const Authentication = () => {
       });
   };
 
-  const submitStripe = () => {
-    setModalSetting("spinner");
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${sessionToken}`);
-    myHeaders.append("Access-Control-Allow-Origin", "*");
-    console.log("myHeaders: ", myHeaders);
-
-    let url = `${API}/accounts/${accountNum}/subscription/stripe/onboard1-genlink`;
-    //let url = `${API}/stripetest`;
-    //let url = ""
-
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-    };
-    console.log("fetching with: ", url, fetchBody);
-
-    fetch(url, fetchBody)
-      .then((res) => res.json())
-      .then((response) => {
-        // HTTP 301 response
-        // HOW CAN I FOLLOW THE HTTP REDIRECT RESPONSE?
-        console.log("made it inside the .then");
-        if (response.redirected) {
-          window.location.href = response.url;
-        }
-      })
-      .catch(function (err) {
-        //console.log("response: ", response);
-        console.info(err + " url: " + url);
-      });
-    /*
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        //handleUsername(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        setModalSetting("error");
-      });
-      */
-  };
-
   const submitUsername = () => {
     setModalSetting("spinner");
     setSubmissionStatus({
@@ -523,7 +463,6 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
-        accountNum: "",
       });
       redirectUser();
     } else {
@@ -551,7 +490,6 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
-        accountNum: "",
       });
       setModalSetting("temporary");
     } else {
@@ -580,7 +518,6 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
-        accountNum: "",
       });
       redirectUser();
     } else {
@@ -609,7 +546,6 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
-        accountNum: "",
       });
     } else {
       setSubmissionStatus({
@@ -621,10 +557,7 @@ const Authentication = () => {
   };
 
   const handleSignUp = (data) => {
-    console.log("data: ", data);
-    console.log("data.status: ", data.status);
     if (data.status) {
-      console.log("inside true handleSignUp");
       setValues({
         name: "",
         email: data.user.email,
@@ -638,9 +571,7 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
-        accountNum: "",
       });
-      console.log("inside true handleSignUp");
       console.log("SUCCESS");
       setModalSetting("confirmation");
     } else {
@@ -654,7 +585,6 @@ const Authentication = () => {
   };
 
   const handleConfirmation = (data) => {
-    console.log("data: ", data);
     if (data.status) {
       //
       localStorage.setItem("user", JSON.stringify(data)); // KEEP
@@ -670,8 +600,7 @@ const Authentication = () => {
         username: data.user.username,
         resetToken: data.user.passwordToken,
         sessionToken: "",
-        userId: data.user.accountId._id,
-        accountNum: data.user.accountId.accountNum,
+        userId: "",
       });
       console.log("SUCCESS");
       setModalSetting("password");
@@ -687,7 +616,6 @@ const Authentication = () => {
   };
 
   const handlePassword = (data) => {
-    console.log("data: ", data);
     console.log("STATUS: ", data.status);
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
@@ -705,8 +633,7 @@ const Authentication = () => {
         username: username,
         resetToken: "",
         sessionToken: data.token,
-        userId: userId,
-        accountNum: accountNum,
+        userId: data.user._id,
       });
       console.log("SUCCESS");
       setModalSetting("username");
@@ -739,7 +666,6 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
-        accountNum: "",
       });
       redirectUser();
     } else {
@@ -766,7 +692,6 @@ const Authentication = () => {
       resetToken: "",
       sessionToken: "",
       userId: "",
-      accountNum: "",
     });
   };
 
@@ -786,7 +711,6 @@ const Authentication = () => {
         resetToken: "",
         sessionToken: "",
         userId: "",
-        accountNum: "",
       });
       console.log("SUCCESS");
     } else {
@@ -812,7 +736,11 @@ const Authentication = () => {
       localStorage.getItem("user") !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      if ("token" in tempUser && "user" in tempUser) {
+      if (
+        "token" in tempUser &&
+        "user" in tempUser // &&
+        //"accountId" in tempUser.user
+      ) {
         window.location.href = "/myaccount";
       } else {
         setSubmissionStatus({
@@ -1069,11 +997,10 @@ const Authentication = () => {
         <button
           className={classes.SubmitButton}
           onClick={() => {
-            //submitUsername();
-            submitStripe();
+            submitUsername();
           }}
         >
-          CONNECT WITH STRIPE
+          CHANGE YOUR USERNAME
         </button>
       </div>
       <div style={{ paddingTop: "10px" }}>
@@ -1083,7 +1010,7 @@ const Authentication = () => {
             redirectUser();
           }}
         >
-          GO TO MY DASHBOARD
+          CHANGE IT LATER
         </button>
       </div>
     </Fragment>

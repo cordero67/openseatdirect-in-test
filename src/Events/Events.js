@@ -2,6 +2,8 @@ import React, { useState, useEffect, Fragment } from "react";
 
 import { getAllEventData } from "./apiEvents";
 
+import AdSense from "react-adsense";
+
 import Event from "./EventTombstone";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 
