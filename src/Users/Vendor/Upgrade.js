@@ -557,7 +557,6 @@ const Upgrade = (props) => {
               <button
                 className={classes.ButtonGreen}
                 onClick={() => {
-                  //setPageView("paypal");
                   submitFreeSub();
                 }}
               >

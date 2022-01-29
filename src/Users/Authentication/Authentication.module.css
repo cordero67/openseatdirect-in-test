@@ -131,6 +131,16 @@
   box-sizing: border-box;
 }
 
+.EnterPromoCode {
+  color: blue;
+  width: 140px;
+}
+.EnterPromoCode:hover {
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .BlueText {
   font-size: 14px;
   text-align: left;
