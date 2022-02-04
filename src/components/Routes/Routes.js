@@ -12,6 +12,8 @@ import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
+import CheckoutStripeIndex from "../../TicketPurchases/StripeIndex";
+import CheckoutStripe from "../../TicketPurchases/CheckoutStripe";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import AuthenticationOLD from "../../Users/Authentication/AuthenticationOLD";
 import Authentication from "../../Users/Authentication/Authentication";
@@ -267,6 +269,26 @@ const Routes = () => {
         render={(routeProps) => (
           <Fragment>
             <CheckoutPayPalMerchant />
+          </Fragment>
+        )}
+      />
+
+      <Route
+        path="/checkout-stripe-index"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <CheckoutStripeIndex />
+          </Fragment>
+        )}
+      />
+
+      <Route
+        path="/checkout-stripe"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <CheckoutStripe />
           </Fragment>
         )}
       />

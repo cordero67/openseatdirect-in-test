@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 
 import Backdrop from "../../components/UI/Backdrop/Backdrop";
-import classes from "./TicketModal.module.css";
+import classes from "./StripeModal.module.css";
 
 const StripeModal = (props) => {
-  console.log("item", props.details, props.details.ticketName);
-  console.log("ticketName", props.details.ticketName);
+  //console.log("item", props.details, props.details.ticketName);
+  //console.log("ticketName", props.details.ticketName);
 
   return (
     <Fragment>
@@ -23,7 +23,7 @@ const StripeModal = (props) => {
             fontSize: "32px",
           }}
         >
-          Confirm ticket deletion
+          Unsuccessfull Order
         </div>
         <br></br>
         <br></br>
@@ -32,22 +32,12 @@ const StripeModal = (props) => {
             fontSize: "16px",
           }}
         >
-          Are you sure you want to delete the {props.details.ticketName} ticket?
+          Missing {/*props.details.ticketName*/}
         </div>
         <br></br>
-        <div
-          style={{
-            display: "grid",
-            gridGap: "40px",
-            gridTemplateColumns: "150px 150px",
-            paddingLeft: "114px",
-          }}
-        >
+        <div>
           <button className={classes.ButtonGrey} onClick={props.closeModal}>
-            CANCEL DELETE
-          </button>
-          <button className={classes.ButtonRed} onClick={props.deleteTicket}>
-            DELETE TICKET
+            CONTINUE
           </button>
         </div>
         <br></br>

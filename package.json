@@ -7,6 +7,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
     "@paypal/react-paypal-js": "^7.0.0",
+    "@stripe/react-stripe-js": "^1.7.0",
+    "@stripe/stripe-js": "^1.22.0",
     "@tinymce/tinymce-react": "^3.13.0",
     "date-fns": "^2.14.0",
     "dateformat": "^3.0.3",

@@ -33,6 +33,8 @@ export const loadEventDetails = (event) => {
     organizer: "",
     gateway: event.accountId.paymentGatewayType,
     gatewayClientID: event.accountId.paypalExpress_client_id,
+    paypalClientID: event.accountId.paypalExpress_client_id,
+    stripeAccountID: event.accountId.stripe_accountID,
     gatewayMerchantID: event.accountId.paypal_merchant_id,
     gatewayURL: tempGatewayURL,
     startDateTime: event.startDateTime,

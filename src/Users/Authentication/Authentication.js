@@ -393,12 +393,40 @@ const Authentication = () => {
 
       setDisplay("gateway");
       //
-    } else if (initialView === "stripe") {
-      console.log("going to stripe");
-      setDisplay("paidCongrats");
-      //
-    } else if (initialView === "select") {
-      console.log("going to stripe");
+    } else if (initialView === "sub") {
+      console.log("going to subscription page");
+      setSubIntent("paid");
+      updateSubValues();
+      if (
+        typeof window !== "undefined" &&
+        localStorage.getItem(`user`) !== null
+      ) {
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        console.log("tempUser: ", tempUser);
+        if ("user" in tempUser && "token" in tempUser) {
+          setAuthValues({
+            name: "",
+            email: tempUser.user.email,
+            password: "",
+            vendorIntent: "",
+            temporary: "",
+            reissued: false,
+            //
+            confirmation: "",
+            resent: false,
+            username: tempUser.user.username,
+            resetToken: "",
+            sessionToken: tempUser.token,
+            userId: tempUser.user.accountId._id,
+            accountNum: tempUser.user.accountId.accountNum,
+          });
+
+          console.log("inside gtwy useEffect");
+        }
+
+        setDisplay("selectPlan");
+      }
+
       setDisplay("selectPlan");
       //
     } else if (initialView === "error") {

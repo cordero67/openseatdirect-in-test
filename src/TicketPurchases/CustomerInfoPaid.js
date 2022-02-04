@@ -40,6 +40,7 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const CustomerInfo = (props) => {
+  //console.log("inside customre paid info");
   // defines panel displayed on main page
   const [display, setDisplay] = useState("spinner"); //main, spinner
 
@@ -189,10 +190,15 @@ const CustomerInfo = (props) => {
         JSON.stringify(user)
       );
       if (eventDetails.gateway === "PayPalExpress") {
+        console.log("window.location.href = '/checkout-paypalexpress'");
         window.location.href = "/checkout-paypalexpress";
-      } else if (eventDetails.gateway === "PayPalMarketplace") {
+      } else if (eventDetails.gateway === "Stripe") {
+        console.log("window.location.href = '/checkout-stripe'");
+        window.location.href = "/checkout-stripe";
+      } else if (eventDetails.gateway === "PayPalMerchant") {
         window.location.href = "/checkout-paypalmerchant";
       } else {
+        console.log("no gateway is found");
         window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
       }
     }
@@ -417,12 +423,17 @@ const CustomerInfo = (props) => {
         closeModal={() => setModalStatus(false)}
         submit={() => {
           console.log("Inside submitOrder");
-          eventDetails.gateway = "PayPalMerchant";
+          //eventDetails.gateway = "PayPalMerchant";
           if (eventDetails.gateway === "PayPalExpress") {
+            console.log("window.location.href = '/checkout-paypalexpress'");
             window.location.href = "/checkout-paypalexpress";
+          } else if (eventDetails.gateway === "Stripe") {
+            console.log("window.location.href = '/checkout-stripe'");
+            window.location.href = "/checkout-stripe";
           } else if (eventDetails.gateway === "PayPalMerchant") {
             window.location.href = "/checkout-paypalmerchant";
           } else {
+            console.log("no gateway is found");
             window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
           }
         }}

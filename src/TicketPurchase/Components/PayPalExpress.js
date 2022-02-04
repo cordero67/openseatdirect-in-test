@@ -9,7 +9,7 @@ import classes from "./Checkout.module.css";
 // defines the PayPal "purchase_units.items" value populated from "ticketOrder"
 let paypalArray = [];
 
-const Checkout = (props) => {
+const PayPalExpress = (props) => {
   //console.log("PayPal props guestInformation: ", props.guestInformation);
   //console.log("PayPal props customerInformation: ", props.customerInformation);
   const [display, setDisplay] = useState("main"); // defines panel displayed: main, spinner, paypal
@@ -277,4 +277,4 @@ const Checkout = (props) => {
     </div>
   );
 };
-export default Checkout;
+export default PayPalExpress;
