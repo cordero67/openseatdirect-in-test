@@ -7,7 +7,9 @@
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
     "@paypal/react-paypal-js": "^7.0.0",
-    "@tinymce/tinymce-react": "^3.5.0",
+    "@stripe/react-stripe-js": "^1.7.0",
+    "@stripe/stripe-js": "^1.22.0",
+    "@tinymce/tinymce-react": "^3.13.0",
     "date-fns": "^2.14.0",
     "dateformat": "^3.0.3",
     "html-react-parser": "^1.4.3",
@@ -15,6 +17,7 @@
     "qrcode.react": "^1.0.1",
     "query-string": "^7.0.1",
     "react": "^16.10.2",
+    "react-adsense": "^0.1.0",
     "react-bootstrap": "^1.0.0-beta.14",
     "react-datepicker": "^4.5.0",
     "react-day-picker": "^7.4.8",
@@ -28,6 +31,7 @@
     "react-select": "^4.3.1",
     "react-youtube": "^7.9.0",
     "semantic-ui-react": "^2.0.4",
+    "stripe": "^8.197.0",
     "underscore": "^1.13.1"
   },
   "scripts": {

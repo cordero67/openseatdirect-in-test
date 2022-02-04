@@ -18,6 +18,7 @@ export const getEventData = (eventId) => {
   })
     .then(handleErrors)
     .then((response) => {
+      //console.log("event detail: ", response.json());
       return response.json();
     })
     .catch((err) => {

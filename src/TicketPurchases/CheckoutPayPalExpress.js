@@ -82,13 +82,13 @@ const Checkout = () => {
         console.log("orderTotals: ", orderTotals);
         console.log("ticketInfo: ", ticketInfo);
       } else {
-        window.location.href = "/events";
+        window.location.href = "/";
       }
       if (localStorage.getItem(`image_${event}`)) {
         eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
       }
     } else {
-      window.location.href = "/events";
+      window.location.href = "/";
     }
     stylingUpdate(window.innerWidth, window.innerHeight);
     setDisplay("main");
@@ -323,18 +323,7 @@ const Checkout = () => {
   // REFACTORED TO THIS POINT 3/2/21
   // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
   // displays the "PayPalButton" or an "empty cart" error message
-  const showPayPalNEW = () => {
-    //console.log("PayPal interface date");
-    //console.log("osdOrderId: ", osdOrderId);
-    //console.log("orderTotals.currencyAbv: ", orderTotals.currencyAbv);
-    //console.log(
-    //  "orderTotals.finalPurchaseAmount.toString(): ",
-    //  orderTotals.finalPurchaseAmount.toString()
-    //);
-    //console.log("paypalArray: ", paypalArray);
-    //console.log("eventDetails.gatewayClientID: ", eventDetails.gatewayClientID);
-    //console.log("orderTotals.currencyAbv: ", orderTotals.currencyAbv);
-
+  const showPayPal = () => {
     return (
       <div>
         <PayPalButton
@@ -388,61 +377,6 @@ const Checkout = () => {
       </div>
     );
   };
-  // REFACTORED TO THIS POINT 3/2/21
-  // NEED TO DETERMINE HOW TO HANDLE ERROR FOR PAYPAL BUTTONS NOT SHOWING UP
-  // displays the "PayPalButton" or an "empty cart" error message
-  const showPayPal = (
-    <div>
-      <PayPalButton
-        onButtonReady={() => {}}
-        createOrder={(data, actions) => {
-          return actions.order.create({
-            purchase_units: [
-              {
-                reference_id: osdOrderId,
-                amount: {
-                  currency_code: orderTotals.currencyAbv,
-                  value: orderTotals.finalPurchaseAmount.toString(),
-
-                  breakdown: {
-                    item_total: {
-                      currency_code: orderTotals.currencyAbv,
-                      value: orderTotals.fullPurchaseAmount.toString(),
-                    },
-                    discount: {
-                      currency_code: orderTotals.currencyAbv,
-                      value: orderTotals.discountAmount.toString(),
-                    },
-                  },
-                },
-                items: paypalArray,
-              },
-            ],
-          });
-        }}
-        options={{
-          clientId: eventDetails.gatewayClientID,
-          currency: orderTotals.currencyAbv,
-        }}
-        onSuccess={(details, data) => {
-          console.log("inside onSuccess, paypal details: ", details);
-          payPalPurchase(details);
-        }}
-        onCancel={(data) => {
-          console.log("onCancel 'data': ", data);
-        }}
-        onError={(err) => {
-          console.log("error occurs: ", err);
-          setTransactionStatus({
-            ...transactionStatus,
-            paypalSuccess: false,
-            error: err,
-          });
-          setDisplay("paypal");
-        }}
-      />
-    </div>
-  );
   // LOOKS GOOD BUT REVIEW LOGIC
   const calculateTimeLeft = () => {
     let timeElapsed = new Date(orderExpiration) - new Date();
@@ -551,8 +485,7 @@ const Checkout = () => {
               </span>
               <br></br>
               <br></br>
-              {/*showPayPal*/}
-              {showPayPalNEW()}
+              {showPayPal()}
             </div>
             <div className={classes.EventFooterMod}>
               <div className={classes.CartLink}>{cartLink(showDoublePane)}</div>

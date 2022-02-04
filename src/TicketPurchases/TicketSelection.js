@@ -6,6 +6,10 @@ import ReactHtmlParser from "html-react-parser";
 import { API } from "../config.js";
 import { getEventData, getEventImage } from "./Resources/apiCore";
 
+//gatewayClientID: event.accountId.paypalExpress_client_id,
+//paypalClientID: event.accountId.paypalExpress_client_id,
+//stripeAccountID: event.accountId.stripe_accountID,
+
 import {
   loadEventDetails,
   loadTicketInfo,
@@ -127,9 +131,14 @@ const TicketSelection = () => {
 
         console.log("res.photoUrl1: ", res.photoUrl1);
 
+        console.log("I am here");
         console.log("res: ", res);
 
+        console.log("I am here");
         eventDetails = loadEventDetails(res);
+
+        console.log("I am here");
+        console.log("eventDetails: ", eventDetails);
         //eventDetails = loadEventDetails(res);
         // checks if an order exists in local storage
         if (
@@ -580,14 +589,20 @@ const TicketSelection = () => {
     }
 
     if (signedIn === true) {
+      console.log("eventDetails.gateway: ", eventDetails.gateway);
       // user is signed in therefore skip guest info page
       console.log("eventDetails.gateway: ", eventDetails.gateway);
       if (eventDetails.gateway === "PayPalExpress") {
+        console.log("window.location.href = '/checkout-paypalexpress'");
         window.location.href = "/checkout-paypalexpress";
+      } else if (eventDetails.gateway === "Stripe") {
+        console.log("window.location.href = '/checkout-stripe'");
+        window.location.href = "/checkout-stripe";
       } else if (eventDetails.gateway === "PayPalMarketplace") {
+        console.log("window.location.href = '/checkout-paypalmerchant'");
         window.location.href = "/checkout-paypalmerchant";
       } else {
-        // no gateway is found
+        console.log("no gateway is found");
         window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
       }
     } else if (orderTotals.finalPurchaseAmount === 0) {

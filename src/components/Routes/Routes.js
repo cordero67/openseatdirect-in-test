@@ -12,8 +12,12 @@ import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
+import CheckoutStripeIndex from "../../TicketPurchases/StripeIndex";
+import CheckoutStripe from "../../TicketPurchases/CheckoutStripe";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
+import AuthenticationOLD from "../../Users/Authentication/AuthenticationOLD";
 import Authentication from "../../Users/Authentication/Authentication";
+import StripeConnection from "../../Users/Authentication/StripeConnection";
 //import BuyerAccount from "../../Users/Buyer/BuyerAccount";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
 
@@ -63,6 +67,54 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <Authentication
+              user={userObject}
+              updateUser={(data) => {
+                console.log("AND TO HERE");
+                console.log("USER: ", userObject);
+                setUserObject(data);
+              }}
+            />
+            <Footer></Footer>
+          </Fragment>
+        )}
+      />
+
+      <Route
+        path="/authNEW"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <AuthenticationOLD
+              user={userObject}
+              updateUser={(data) => {
+                console.log("AND TO HERE");
+                console.log("USER: ", userObject);
+                setUserObject(data);
+              }}
+            />
+            <Footer></Footer>
+          </Fragment>
+        )}
+      />
+
+      <Route
+        path="/stripeconnection"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <StripeConnection
               user={userObject}
               updateUser={(data) => {
                 console.log("AND TO HERE");
@@ -217,6 +269,26 @@ const Routes = () => {
         render={(routeProps) => (
           <Fragment>
             <CheckoutPayPalMerchant />
+          </Fragment>
+        )}
+      />
+
+      <Route
+        path="/checkout-stripe-index"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <CheckoutStripeIndex />
+          </Fragment>
+        )}
+      />
+
+      <Route
+        path="/checkout-stripe"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <CheckoutStripe />
           </Fragment>
         )}
       />
