@@ -240,19 +240,23 @@ const Authentication = () => {
   // edit so that it is driven by the "status" value
   // only used by useEffect to populate the "values" object
   const updateSubValues = () => {
-    let tempUser = JSON.parse(localStorage.getItem("user"));
-    console.log("tempUser: ", tempUser);
-    console.log("tempUser.user: ", tempUser.user);
-    console.log("tempUser.user.accountId: ", tempUser.user.accountId);
-    if ("user" in tempUser && "accountId" in tempUser.user) {
-      let tempBuyerInfo = {};
-      // populates the "tempBuyerInfo" (and "values") object with "user" object info
-      console.log("Account Name: ", tempUser.user.accountId.accountName);
-      console.log("User Name: ", tempUser.user.username);
-      console.log(
-        tempUser.user.accountId.accountName === tempUser.user.username
-      );
-      /*
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("user") !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      console.log("tempUser: ", tempUser);
+      console.log("tempUser.user: ", tempUser.user);
+      console.log("tempUser.user.accountId: ", tempUser.user.accountId);
+      if ("user" in tempUser && "accountId" in tempUser.user) {
+        let tempBuyerInfo = {};
+        // populates the "tempBuyerInfo" (and "values") object with "user" object info
+        console.log("Account Name: ", tempUser.user.accountId.accountName);
+        console.log("User Name: ", tempUser.user.username);
+        console.log(
+          tempUser.user.accountId.accountName === tempUser.user.username
+        );
+        /*
       if (
         tempUser.user.accountId.accountName &&
         tempUser.user.username &&
@@ -260,78 +264,83 @@ const Authentication = () => {
       ) {
         tempBuyerInfo.accountName = "";
       } else */
-      if (tempUser.user.accountId.accountName) {
-        tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
-      }
-
-      if (tempUser.user.accountId.accountEmail) {
-        tempBuyerInfo.accountEmail = tempUser.user.accountId.accountEmail;
-      }
-
-      if (tempUser.user.accountId.accountPhone) {
-        tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
-      }
-
-      if (tempUser.user.accountId.accountUrl) {
-        tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
-      }
-
-      if (tempUser.user.accountId.status) {
-        tempBuyerInfo.status = tempUser.user.accountId.status;
-      }
-
-      if (tempUser.user.accountId.paypalExpress_client_id) {
-        tempBuyerInfo.paypalExpress_client_id =
-          tempUser.user.accountId.paypalExpress_client_id;
-      }
-
-      if (tempUser.user.accountId.paypalExpress_client_secret) {
-        tempBuyerInfo.paypalExpress_client_secret =
-          tempUser.user.accountId.paypalExpress_client_secret;
-      }
-
-      if (PAYPAL_USE_SANDBOX === true) {
-        console.log(
-          "PAYPAL_USE_SANDBOX is ",
-          PAYPAL_USE_SANDBOX,
-          " Sandbox true"
-        );
-        tempBuyerInfo.paypal_plan_id_full = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
-        tempBuyerInfo.paypal_plan_id_discount = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
-        tempBuyerInfo.paypal_plan_id_forFree = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly full price
-        tempBuyerInfo.paypal_plan_id_growPR = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly full price
-        tempBuyerInfo.paypal_plan_id_old = "P-6UY26644UT426184FL5FRXTI"; // sandbox monthly full price
-        tempBuyerInfo.paypal_plan_id_oldDiscounted =
-          "P-3YH13849H69051131MAIHPGY"; // sandbox monthly full price
-        tempBuyerInfo.paypal_plan_id_freeSubscription = ""; // production FREE SUBSCRIPTION no PayPal
-        if (!tempUser.user.accountId.paypal_plan_id) {
-          tempBuyerInfo.paypal_plan_id = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
-        } else {
-          tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
+        if (tempUser.user.accountId.accountName) {
+          tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
         }
-      } else {
-        console.log(
-          "PAYPAL_USE_SANDBOX is ",
-          PAYPAL_USE_SANDBOX,
-          " Sandbox false"
-        );
-        tempBuyerInfo.paypal_plan_id_full = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
-        tempBuyerInfo.paypal_plan_id_discount = "P-3MM32159H2853152CMDN3T6Q"; // production monthly discounted price
-        tempBuyerInfo.paypal_plan_id_forFree = "P-0VY95999WV5246104MDOLPKI"; // production monthly 3 months free
-        tempBuyerInfo.paypal_plan_id_growPR = "P-8T757325FM2761033MF5677Y"; // production monthly 3 months free
-        tempBuyerInfo.paypal_plan_id_old = "P-2K587859D1613454MMDOIAHA"; // production old annually full price
-        tempBuyerInfo.paypal_plan_id_oldDiscounted =
-          "P-74091125HK783123JMDOLLEA"; // production monthly full price
-        tempBuyerInfo.paypal_plan_id_freeSubscription = ""; // production FREE SUBSCRIPTION no PayPal
-        if (!tempUser.user.accountId.paypal_plan_id) {
-          tempBuyerInfo.paypal_plan_id = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
-        } else {
-          tempBuyerInfo.paypal_plan_id = tempUser.user.accountId.paypal_plan_id;
-        }
-      }
 
-      setSubValues(tempBuyerInfo);
-      console.log("tempBuyerInfo: ", tempBuyerInfo);
+        if (tempUser.user.accountId.accountEmail) {
+          tempBuyerInfo.accountEmail = tempUser.user.accountId.accountEmail;
+        }
+
+        if (tempUser.user.accountId.accountPhone) {
+          tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
+        }
+
+        if (tempUser.user.accountId.accountUrl) {
+          tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
+        }
+
+        if (tempUser.user.accountId.status) {
+          tempBuyerInfo.status = tempUser.user.accountId.status;
+        }
+
+        if (tempUser.user.accountId.paypalExpress_client_id) {
+          tempBuyerInfo.paypalExpress_client_id =
+            tempUser.user.accountId.paypalExpress_client_id;
+        }
+
+        if (tempUser.user.accountId.paypalExpress_client_secret) {
+          tempBuyerInfo.paypalExpress_client_secret =
+            tempUser.user.accountId.paypalExpress_client_secret;
+        }
+
+        if (PAYPAL_USE_SANDBOX === true) {
+          console.log(
+            "PAYPAL_USE_SANDBOX is ",
+            PAYPAL_USE_SANDBOX,
+            " Sandbox true"
+          );
+          tempBuyerInfo.paypal_plan_id_full = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
+          tempBuyerInfo.paypal_plan_id_discount = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
+          tempBuyerInfo.paypal_plan_id_forFree = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly full price
+          tempBuyerInfo.paypal_plan_id_growPR = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly full price
+          tempBuyerInfo.paypal_plan_id_old = "P-6UY26644UT426184FL5FRXTI"; // sandbox monthly full price
+          tempBuyerInfo.paypal_plan_id_oldDiscounted =
+            "P-3YH13849H69051131MAIHPGY"; // sandbox monthly full price
+          tempBuyerInfo.paypal_plan_id_freeSubscription = ""; // production FREE SUBSCRIPTION no PayPal
+          if (!tempUser.user.accountId.paypal_plan_id) {
+            tempBuyerInfo.paypal_plan_id = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
+          } else {
+            tempBuyerInfo.paypal_plan_id =
+              tempUser.user.accountId.paypal_plan_id;
+          }
+        } else {
+          console.log(
+            "PAYPAL_USE_SANDBOX is ",
+            PAYPAL_USE_SANDBOX,
+            " Sandbox false"
+          );
+          tempBuyerInfo.paypal_plan_id_full = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
+          tempBuyerInfo.paypal_plan_id_discount = "P-3MM32159H2853152CMDN3T6Q"; // production monthly discounted price
+          tempBuyerInfo.paypal_plan_id_forFree = "P-0VY95999WV5246104MDOLPKI"; // production monthly 3 months free
+          tempBuyerInfo.paypal_plan_id_growPR = "P-8T757325FM2761033MF5677Y"; // production monthly 3 months free
+          tempBuyerInfo.paypal_plan_id_old = "P-2K587859D1613454MMDOIAHA"; // production old annually full price
+          tempBuyerInfo.paypal_plan_id_oldDiscounted =
+            "P-74091125HK783123JMDOLLEA"; // production monthly full price
+          tempBuyerInfo.paypal_plan_id_freeSubscription = ""; // production FREE SUBSCRIPTION no PayPal
+          if (!tempUser.user.accountId.paypal_plan_id) {
+            tempBuyerInfo.paypal_plan_id = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
+          } else {
+            tempBuyerInfo.paypal_plan_id =
+              tempUser.user.accountId.paypal_plan_id;
+          }
+        }
+
+        setSubValues(tempBuyerInfo);
+        console.log("tempBuyerInfo: ", tempBuyerInfo);
+      }
+    } else {
+      console.log("no user object");
     }
   };
 
@@ -385,7 +394,7 @@ const Authentication = () => {
             accountNum: tempUser.user.accountId.accountNum,
           });
 
-          console.log("inside gtwy useEffect");
+          console.log("inside gateway useEffect");
         }
 
         setDisplay("gateway");

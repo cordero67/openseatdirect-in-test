@@ -20,7 +20,7 @@ import { DateRange } from "./Resources/PricingFunctions";
 import Spinner from "../components/UI/Spinner/Spinner";
 import CartLink from "./Components/CartLink";
 import OrderSummary from "./Components/OrderSummary";
-import { OrderConfirm } from "./Components/OrderConfirms";
+import { OrderConfirm, StripeConfirm } from "./Components/OrderConfirms";
 import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
 import classes from "./Checkout.module.css";
 
@@ -48,7 +48,7 @@ const Checkout = () => {
 
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
-  const [showStripeModal, setShowStripeModal] = useState(false);
+  const [stripeModal, setStripeModal] = useState({ display: false });
   const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
 
   const [orderStatus, setOrderStatus] = useState(false); // defines status of order sent to server
@@ -99,72 +99,37 @@ const Checkout = () => {
 
         let body;
         let url;
+        let tickets = [];
+        tempCart.ticketInfo.forEach((item) => {
+          if (item.ticketsSelected !== 0) {
+            tickets.push({
+              ticketID: item.ticketID,
+              ticketsSelected: item.ticketsSelected,
+            });
+          }
+        });
+        //let promoCode;
+        body = {
+          totalAmount: tempCart.orderTotals.finalPurchaseAmount,
+          eventNum: tempCart.eventDetails.eventNum,
+          tickets: tickets,
+        };
+
+        if (tempCart.promoCodeDetails.appliedPromoCode !== "") {
+          body.userPromo = tempCart.promoCodeDetails.appliedPromoCode;
+        }
 
         if ("guestInfo" in tempCart) {
-          //if (true) {
-          let tickets = [];
-          tempCart.ticketInfo.forEach((item) => {
-            if (item.ticketsSelected !== 0) {
-              tickets.push({
-                ticketID: item.ticketID,
-                ticketsSelected: item.ticketsSelected,
-              });
-            }
-          });
           console.log("customerInformation: ", customerInformation);
 
-          body = {
-            //guestFirstname: "Rafael",
-            guestFirstname: tempCart.guestInfo.firstname,
-            //guestLastname: "Cordero",
-            guestLastname: tempCart.guestInfo.lastname,
-            //guestEmail: "rafael.h.cordero@gmail.com",
-            guestEmail: tempCart.guestInfo.email,
-            //totalAmount: 40,
-            totalAmount: tempCart.orderTotals.finalPurchaseAmount,
-            //eventNum: 1461985635,
-            eventNum: tempCart.eventDetails.eventNum,
-            //userPromo: "string",
-            userPromo: tempCart.promoCodeDetails.appliedPromoCode,
-            tickets: tickets,
-            /*
-            tickets: [
-              {
-                ticketID: "61f6d01de9057df9b9832908",
-                ticketsSelected: 2,
-              },
-            ],
-            */
-          };
+          body.guestFirstname = tempCart.guestInfo.firstname;
+          body.guestLastname = tempCart.guestInfo.lastname;
+          body.guestEmail = tempCart.guestInfo.email;
+
           console.log("body: ", body);
           url = `${API}/tixorder/stripe/us-create-order`;
         } else {
-          let tickets = [];
-          tempCart.ticketInfo.forEach((item) => {
-            if (item.ticketsSelected !== 0) {
-              tickets.push({
-                ticketID: item.ticketID,
-                ticketsSelected: item.ticketsSelected,
-              });
-            }
-          });
           console.log("customerInformation: ", customerInformation);
-          body = {
-            totalAmount: tempCart.orderTotals.finalPurchaseAmount,
-            //eventNum: 1461985635,
-            eventNum: tempCart.eventDetails.eventNum,
-            //userPromo: "string",
-            userPromo: tempCart.promoCodeDetails.appliedPromoCode,
-            tickets: tickets,
-            /*
-            tickets: [
-              {
-                ticketID: "61f6d01de9057df9b9832908",
-                ticketsSelected: 2,
-              },
-            ],
-            */
-          };
           console.log("body: ", body);
           url = `${API}/tixorder/stripe/sn-create-order`;
 
@@ -186,22 +151,21 @@ const Checkout = () => {
           .then((data) => {
             console.log("fetch return got back data:", data);
             setClientSecret(data.client_secret);
-
-            //setOrderStatus(data.status);
-            //setDisplay("confirmation");
           })
           .catch((error) => {
             console.log("freeTicketHandler() error.message: ", error.message);
-            //setDisplay("connection");
           })
-          .finally(() => {
-            //purchaseConfirmHandler();
-          });
+          .finally(() => {});
+
+        console.log(
+          "eventDetails.stripeAccountIDDDD: ",
+          eventDetails.stripeAccountID
+        );
 
         setStripePromise(
           loadStripe(`${OSD_STRIPE_ACCOUNT_ID}`, {
-            stripeAccount: "acct_1KNPhm4DwDsj7HXk",
-            //stripeAccount: eventDetails.stripeAccountID,
+            //stripeAccount: "acct_1KNPhm4DwDsj7HXk",
+            stripeAccount: eventDetails.stripeAccountID,
           })
         );
       } else {
@@ -398,8 +362,6 @@ const Checkout = () => {
 
   // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
-    //return <div>loadingSpinner</div>;
-
     if (display === "spinner") {
       return (
         <div className={classes.Spinner}>
@@ -411,37 +373,16 @@ const Checkout = () => {
     }
   };
 
-  // controls "paypalStatus" view
-  const paypalStatus = () => {
-    return <div>paypalStatus</div>;
-    /*
-    if (display === "paypal") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div>
-            PayPal cannot process you order at this time.
-            <br></br>
-            Please try again later.
-          </div>
-          <button>Continue</button>
-        </div>
-      );
-    } else {
-      return null;
-    }
-    */
-  };
-
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   const purchaseConfirmation = () => {
     if (display === "confirmation") {
       //console.log("CONFIRMTION");
-      console.log("transactionInfo: ", transactionInfo);
-      console.log("orderStatus: ", orderStatus);
+      //console.log("transactionInfo: ", transactionInfo);
+      //console.log("orderStatus: ", orderStatus);
       return (
         <div className={classes.BlankCanvas}>
           <div style={{ paddingTop: "20px" }}>
-            <OrderConfirm
+            <StripeConfirm
               transactionInfo={transactionInfo}
               orderStatus={orderStatus}
             />
@@ -461,11 +402,13 @@ const Checkout = () => {
           <br></br>
           <CheckoutForm
             clientSecret={clientSecret}
-            orderFailure={() => {
+            orderFailure={(event) => {
               console.log("UNUCCESSFUL ORDER");
 
-              //showModal={activateShowModal} //
-              setShowStripeModal(true);
+              let tempStripeModal = { ...stripeModal };
+              tempStripeModal.display = true;
+              tempStripeModal.message = event;
+              setStripeModal(tempStripeModal);
             }}
             orderSuccess={() => {
               console.log("SUCCESSFUL ORDER");
@@ -533,7 +476,7 @@ const Checkout = () => {
       localStorage.removeItem(`cart_${event}`);
       localStorage.removeItem(`image_${event}`);
       localStorage.removeItem(`eventNum`);
-      //window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+      window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
     }
   };
   // LOOKS GOOD
@@ -680,34 +623,16 @@ const Checkout = () => {
     } else return null;
   };
 
-  /*
-  <StripeModal
-  show={true}
-  //details={item}
-  //closeModal={() => {
-  //props.deactivateModal(item);
-  //}}
-  deleteTicket={() => {
-    //console.log("Delete ticket", item.ticketName);
-    //console.log("Ticket key", item.key);
-    //props.delete(item.key);
-  }}
-></StripeModal>
-*/
-
-  const stripeModal = () => {
-    if (showStripeModal) {
+  const responseModal = () => {
+    if (stripeModal.display) {
       return (
         <StripeModal
           show={true}
-          //details={item}
+          details={stripeModal.message}
           closeModal={() => {
-            setShowStripeModal(false);
-          }}
-          deleteTicket={() => {
-            //console.log("Delete ticket", item.ticketName);
-            //console.log("Ticket key", item.key);
-            //props.delete(item.key);
+            let tempStripeModal = { ...stripeModal };
+            tempStripeModal.display = false;
+            setStripeModal(tempStripeModal);
           }}
         ></StripeModal>
       );
@@ -717,10 +642,9 @@ const Checkout = () => {
   return (
     <div style={MainContainer}>
       {loadingSpinner()}
-      {stripeModal()}
+      {responseModal()}
       {mainDisplay()}
       {purchaseConfirmation()}
-      {paypalStatus()}
     </div>
   );
 };
