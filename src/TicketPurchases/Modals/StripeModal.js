@@ -32,7 +32,7 @@ const StripeModal = (props) => {
             fontSize: "16px",
           }}
         >
-          Missing {/*props.details.ticketName*/}
+          Missing {props.details}
         </div>
         <br></br>
         <div>

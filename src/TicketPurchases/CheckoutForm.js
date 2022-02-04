@@ -31,7 +31,7 @@ export default function CheckoutForm(props) {
     if (result.error) {
       // Show error to your customer (for example, insufficient funds)
       console.log(result.error.message);
-      props.orderFailure();
+      props.orderFailure(result.error.message);
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === "succeeded") {
