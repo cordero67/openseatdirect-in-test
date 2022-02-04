@@ -158,14 +158,14 @@ const Checkout = () => {
           .finally(() => {});
 
         console.log(
-          "eventDetails.stripeAccountID: ",
+          "eventDetails.stripeAccountIDDDD: ",
           eventDetails.stripeAccountID
         );
 
         setStripePromise(
           loadStripe(`${OSD_STRIPE_ACCOUNT_ID}`, {
-            stripeAccount: "acct_1KNPhm4DwDsj7HXk",
-            //stripeAccount: eventDetails.stripeAccountID,
+            //stripeAccount: "acct_1KNPhm4DwDsj7HXk",
+            stripeAccount: eventDetails.stripeAccountID,
           })
         );
       } else {
