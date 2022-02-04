@@ -25,6 +25,10 @@ import stripeImg from "../../assets/Stripe/Stripe wordmark - blurple (small).png
 
 import classes from "./Authentication.module.css";
 
+import GoogleLogin from "./googleLogin";
+import FBLogin from "./facebookLogin";
+
+
 const Authentication = () => {
   const [subIntent, setSubIntent] = useState();
   console.log("subIntent: ", subIntent);
@@ -1337,9 +1341,12 @@ const Authentication = () => {
             submitSignIn();
           }}
         >
-          SIGN IN TO YOUR ACCOUNT
+          Sign In
         </button>
       </div>
+      <center>Or</center>
+      <GoogleLogin />
+      <FBLogin />
     </Fragment>
   );
 
@@ -2323,7 +2330,7 @@ const Authentication = () => {
             setDisplay("signup");
           }}
         >
-          Create account
+          Sign Up
         </button>
       </div>
     </div>
@@ -2415,7 +2422,7 @@ const Authentication = () => {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            <div>Welcome back</div>
+            <div>Log in to Open Seat Direct</div>
           </div>
           <div>
             {showDetail()}

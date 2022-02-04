@@ -147,7 +147,7 @@ const SignIn = () => {
   return (
     <div className={classes.MainContainer}>
       <div className={classes.BlankCanvas} style={{ height: "420px" }}>
-        <div className={classes.Header}>Welcome back</div>
+        <div className={classes.Header}>Welcome back Log In</div>
         <div>
           {showError()}
           {signInForm}
