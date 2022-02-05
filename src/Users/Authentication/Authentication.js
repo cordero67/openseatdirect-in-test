@@ -204,10 +204,7 @@ const Authentication = () => {
         id: "", // OSD PayPal subscription
       },
       clientId:
-        //"ATOAhgR1qrhz7xQRVHyyyBnj73Ckga6swyGU-8gxFhyJRrkZgEYzaUhTwQx3BmF71lM-oiJC9VelNZDw", // OSD PayPal Production ClientId
         "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
-
-      //"AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7", // Bondirectly PayPal Sandbox ClientId
     };
   }
 
@@ -741,9 +738,15 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/email`;
+    let intent;
+    if (subIntent === "paid") {
+      intent = true;
+    } else {
+      intent = false;
+    }
     let information = {
       email: email,
-      vendorIntent: subIntent,
+      vendorIntent: intent,
     };
     let fetchBody = {
       method: "POST",
@@ -752,6 +755,7 @@ const Authentication = () => {
     };
     console.log("fetching with: ", url, fetchBody);
     console.log("Information: ", information);
+
     fetch(url, fetchBody)
       .then(handleErrors)
       .then((response) => {
@@ -782,9 +786,15 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/confirmcode`;
+    let intent;
+    if (subIntent === "paid") {
+      intent = true;
+    } else {
+      intent = false;
+    }
     let information = {
       email: email,
-      vendorIntent: subIntent,
+      vendorIntent: intent,
       confirm_code: confirmation,
     };
     let fetchBody = {
@@ -829,11 +839,17 @@ const Authentication = () => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/password`;
+    let intent;
+    if (subIntent === "paid") {
+      intent = true;
+    } else {
+      intent = false;
+    }
     let information = {
       email: email,
       passwordToken: resetToken,
       password: password,
-      vendorIntent: subIntent,
+      vendorIntent: intent,
     };
     let fetchBody = {
       method: "POST",
@@ -1080,12 +1096,18 @@ const Authentication = () => {
     console.log("data.status: ", data.status);
     if (data.status) {
       console.log("inside true handleSignUp");
+      let intent;
+      if (subIntent === "paid") {
+        intent = true;
+      } else {
+        intent = false;
+      }
       setAuthValues({
         name: "",
         email: data.user.email,
         password: "",
         // need to capture vendotIntent field from server response object
-        vendorIntent: subIntent,
+        vendorIntent: intent,
         temporary: "",
         reissued: false,
         //
@@ -1115,12 +1137,18 @@ const Authentication = () => {
     if (data.status) {
       //
       localStorage.setItem("user", JSON.stringify(data)); // KEEP
+      let intent;
+      if (subIntent === "paid") {
+        intent = true;
+      } else {
+        intent = false;
+      }
       setAuthValues({
         name: "",
         email: data.user.email,
         password: "",
         // need to capture vendotIntent field from server response object
-        vendorIntent: subIntent,
+        vendorIntent: intent,
         temporary: "",
         reissued: false,
         //
@@ -1578,6 +1606,7 @@ const Authentication = () => {
         >
           I WANT TO UPGRADE MY ACCOUNT
         </button>
+        <br></br>
         <button
           className={classes.CancelButton}
           onClick={() => {
@@ -1882,7 +1911,7 @@ const Authentication = () => {
         </Fragment>
       );
     } else if (!promoCodeDetails.input) {
-      console.log("!promoCodeDetails.input");
+      //console.log("!promoCodeDetails.input");
       return (
         <Fragment>
           <div
@@ -1985,7 +2014,7 @@ const Authentication = () => {
   // UPDATE WHEN A NEW PLAN IS INTRODUCED BY ADDING A NEW '<RadioForm>' CODE
   // Displays subscription pricing options section based on promo code entered
   const paymentPanel = () => {
-    console.log("subValues info: ", subValues);
+    //console.log("subValues info: ", subValues);
     if (
       promoCodeDetails.appliedPromoCode === "OSD20" ||
       promoCodeDetails.appliedPromoCode === "HEAMEDIAGROUP" ||
@@ -2112,8 +2141,8 @@ const Authentication = () => {
         </Fragment>
       );
     } else {
-      console.log("NO PROMOS");
-      console.log("paypal_plan_id: ", paypal_plan_id);
+      //console.log("NO PROMOS");
+      //console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
           <RadioForm
@@ -2306,7 +2335,6 @@ const Authentication = () => {
           className={classes.CancelButton}
           onClick={() => {
             setDisplay("gateway");
-            //redirectUser();
           }}
         >
           CONTINUE

@@ -38,25 +38,25 @@ const Footer = () => {
             Copyright &copy; 2021 OpenSeatDirect LLC | All Rights Reserved
           </div>
           <div>
-            <button
+            <a
               className={styles.Button}
               styles={{ border: "none", outline: "none" }}
-              onClick={() => {
-                window.location.href = `/privacy-policy`;
-              }}
+              href="https://www.openseatdirect.com/privacy-policy/"
+              target="_blank"
+              rel="noreferrer"
             >
               Privacy Policy
-            </button>
+            </a>
             |
-            <button
+            <a
               className={styles.Button}
               styles={{ border: "none", outline: "none" }}
-              onClick={() => {
-                window.location.href = `/terms-and-conditions`;
-              }}
+              href="https://www.openseatdirect.com/terms-and-conditions/"
+              target="_blank"
+              rel="noreferrer"
             >
               Terms and Conditions
-            </button>
+            </a>
             | v1.3
           </div>
         </div>
