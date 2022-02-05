@@ -453,10 +453,12 @@ const Authentication = () => {
         }
       } else {
         console.log("signin");
+        setSubIntent("free");
         setDisplay("signin");
       }
     } else {
       console.log("signin");
+      setSubIntent("free");
       setDisplay("signin");
     }
   }, []);
