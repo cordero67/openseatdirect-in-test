@@ -459,7 +459,7 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "TRYFORFREE") {
@@ -477,7 +477,7 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "GROWPR") {
@@ -495,7 +495,7 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSD70") {
@@ -512,7 +512,7 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSD50") {
@@ -529,7 +529,7 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSDFREE") {
@@ -551,7 +551,7 @@ const Upgrade = (props) => {
           />
           <br></br>
           {paypal_plan_id ? (
-            showPayPal
+            showPayPal()
           ) : (
             <div style={{ textAlign: "center", paddingTop: "20px" }}>
               <button
@@ -580,7 +580,7 @@ const Upgrade = (props) => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     }
@@ -640,93 +640,97 @@ const Upgrade = (props) => {
 
   // THIS LOOKS GOOD
   // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
-  const showPayPal = (
-    <div>
-      <br></br>
-      <PayPalButton
-        onButtonReady={() => {}}
-        createSubscription={(data, actions) => {
-          return actions.subscription.create({
-            plan_id: paypal_plan_id,
-          });
-        }}
-        onCancel={(data) => {
-          console.log("onCancel 'data': ", data);
-        }}
-        onApprove={(data, actions) => {
-          return actions.subscription
-            .get()
-            .then(function (details) {
-              console.log("details: ", details);
-              const authstring = `Bearer ${props.token}`;
-              console.log("about to send paypal object to server");
-              //return fetch(`${API}/paypal/subscription/${props.userid}`, {
-              return fetch(
-                `${API}/accounts/${props.accountNum}/subscription/paypal-express/subscribe`,
-                {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: authstring,
-                  },
-                  body: JSON.stringify({
-                    data: data,
-                    details: details,
-                    promoCode: promoCodeDetails.appliedPromoCode,
-                  }),
-                }
-              )
-                .then(handleErrors)
-                .then((response) => {
-                  console.log("MADE IT PAST handleErrors");
-                  console.log("response: ", response);
-                  return response.json();
-                })
-                .then((response) => {
-                  console.log("response: ", response);
-                  // first show a success model with a continue button to go to paypal clientId model
-                  if (response.status) {
-                    console.log(
-                      "fetch return got back data on organization:",
-                      response
-                    );
-                    let tempData = JSON.parse(localStorage.getItem("user"));
-                    console.log("tempData: ", tempData);
-                    tempData.user.accountId = response.result;
-                    localStorage.setItem("user", JSON.stringify(tempData));
-                    setPageView("receipt");
-                  } else {
-                    console.log("inside else");
-                    setPageView("receiptErrorPage");
-                  }
-                }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
-                .catch((err) => {
-                  console.log("Inside inner .catch");
-                  setPageView("receiptErrorPage");
-                });
-            })
-            .catch((err) => {
-              console.log("Inside outer .catch");
-              window.alert("Problem with Paypal.");
+  const showPayPal = () => {
+    console.log("paypal_plan_id: ", paypal_plan_id);
+    console.log("subscriptions.clientId: ", subscriptions.clientId);
+    return (
+      <div>
+        <br></br>
+        <PayPalButton
+          onButtonReady={() => {}}
+          createSubscription={(data, actions) => {
+            return actions.subscription.create({
+              plan_id: paypal_plan_id,
             });
-        }}
-        onError={(err) => {
-          console.log("error occurs: ", err);
-          window.alert("Problem connecting with PayPal. Please try again.");
-        }}
-        options={{
-          clientId: subscriptions.clientId,
-          currency: "USD",
-          vault: true,
-        }}
-        catchError={(err) => {
-          console.log("error occurs: ", err);
-          window.alert("Problem connecting with PayPal. Please try again.");
-        }}
-      />
-    </div>
-  );
+          }}
+          onCancel={(data) => {
+            console.log("onCancel 'data': ", data);
+          }}
+          onApprove={(data, actions) => {
+            return actions.subscription
+              .get()
+              .then(function (details) {
+                console.log("details: ", details);
+                const authstring = `Bearer ${props.token}`;
+                console.log("about to send paypal object to server");
+                //return fetch(`${API}/paypal/subscription/${props.userid}`, {
+                return fetch(
+                  `${API}/accounts/${props.accountNum}/subscription/paypal-express/subscribe`,
+                  {
+                    method: "POST",
+                    headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json",
+                      Authorization: authstring,
+                    },
+                    body: JSON.stringify({
+                      data: data,
+                      details: details,
+                      promoCode: promoCodeDetails.appliedPromoCode,
+                    }),
+                  }
+                )
+                  .then(handleErrors)
+                  .then((response) => {
+                    console.log("MADE IT PAST handleErrors");
+                    console.log("response: ", response);
+                    return response.json();
+                  })
+                  .then((response) => {
+                    console.log("response: ", response);
+                    // first show a success model with a continue button to go to paypal clientId model
+                    if (response.status) {
+                      console.log(
+                        "fetch return got back data on organization:",
+                        response
+                      );
+                      let tempData = JSON.parse(localStorage.getItem("user"));
+                      console.log("tempData: ", tempData);
+                      tempData.user.accountId = response.result;
+                      localStorage.setItem("user", JSON.stringify(tempData));
+                      setPageView("receipt");
+                    } else {
+                      console.log("inside else");
+                      setPageView("receiptErrorPage");
+                    }
+                  }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
+                  .catch((err) => {
+                    console.log("Inside inner .catch");
+                    setPageView("receiptErrorPage");
+                  });
+              })
+              .catch((err) => {
+                console.log("Inside outer .catch");
+                window.alert("Problem with Paypal.");
+              });
+          }}
+          onError={(err) => {
+            console.log("error occurs: ", err);
+            window.alert("Problem connecting with PayPal. Please try again.");
+          }}
+          options={{
+            clientId: subscriptions.clientId,
+            currency: "USD",
+            vault: true,
+          }}
+          catchError={(err) => {
+            console.log("error occurs: ", err);
+            window.alert("Problem connecting with PayPal. Please try again.");
+          }}
+        />
+      </div>
+    );
+  };
 
   const summaryPage = () => {
     return (

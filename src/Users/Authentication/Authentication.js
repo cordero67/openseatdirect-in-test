@@ -161,8 +161,8 @@ const Authentication = () => {
         id: "", // OSD PayPal Production subscription
       },
       clientId:
-        "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
-      //"AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7", // Bondirectly PayPal Sandbox ClientId
+        //"AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
+        "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7", // Bondirectly PayPal Sandbox ClientId
     };
   } else {
     // PRODUCTION subscription plans
@@ -204,7 +204,8 @@ const Authentication = () => {
         id: "", // OSD PayPal subscription
       },
       clientId:
-        "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
+        "ATOAhgR1qrhz7xQRVHyyyBnj73Ckga6swyGU-8gxFhyJRrkZgEYzaUhTwQx3BmF71lM-oiJC9VelNZDw", // OSD PayPal Production ClientId
+      //"AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
     };
   }
 
@@ -1363,7 +1364,9 @@ const Authentication = () => {
     } else if (display === "freeCongrats") {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          You have successfully signed up for a free account.
+          You have a community account.
+          <br></br>
+          You can now issue an unlimited amount of free tickets.
         </div>
       );
     } /*else if (display === "selectPlan") {
@@ -1400,7 +1403,7 @@ const Authentication = () => {
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.SubmitButton}
+          className={classes.ButtonBlue}
           onClick={() => {
             submitSignIn();
           }}
@@ -1425,7 +1428,7 @@ const Authentication = () => {
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.SubmitButton}
+          className={classes.ButtonBlue}
           onClick={() => {
             submitForgot();
           }}
@@ -1450,7 +1453,7 @@ const Authentication = () => {
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.SubmitButton}
+          className={classes.ButtonBlue}
           onClick={() => {
             submitTemporary();
           }}
@@ -1475,7 +1478,7 @@ const Authentication = () => {
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.SubmitButton}
+          className={classes.ButtonBlue}
           onClick={() => {
             submitSignUp();
           }}
@@ -1500,7 +1503,7 @@ const Authentication = () => {
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.SubmitButton}
+          className={classes.ButtonBlue}
           onClick={() => {
             submitConfirmation();
           }}
@@ -1525,7 +1528,7 @@ const Authentication = () => {
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.SubmitButton}
+          className={classes.ButtonBlue}
           onClick={() => {
             submitPassword();
           }}
@@ -1584,7 +1587,7 @@ const Authentication = () => {
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.CancelButton}
+          className={classes.ButtonGrey}
           onClick={() => {
             redirectUser();
           }}
@@ -1597,19 +1600,19 @@ const Authentication = () => {
 
   const freeCongratsForm = (
     <Fragment>
-      <div style={{ paddingTop: "10px", paddingBottom: "10px" }}></div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.CancelButton}
+          className={classes.ButtonBlue}
           onClick={() => {
             setDisplay("gateway");
           }}
         >
-          I WANT TO UPGRADE MY ACCOUNT
+          UPGRADE MY ACCOUNT
         </button>
-        <br></br>
+      </div>
+      <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.CancelButton}
+          className={classes.ButtonGrey}
           onClick={() => {
             window.location.href = "/myaccount";
           }}
@@ -1621,96 +1624,100 @@ const Authentication = () => {
   );
   // THIS LOOKS GOOD
   // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
-  const showPayPal = (
-    <div>
-      <br></br>
-      <div>PAYPAL FORM NEW</div>
-      <PayPalButton
-        onButtonReady={() => {}}
-        createSubscription={(data, actions) => {
-          return actions.subscription.create({
-            plan_id: paypal_plan_id,
-          });
-        }}
-        onCancel={(data) => {
-          console.log("onCancel 'data': ", data);
-        }}
-        onApprove={(data, actions) => {
-          return actions.subscription
-            .get()
-            .then(function (details) {
-              console.log("details: ", details);
-              //const authstring = `Bearer ${props.token}`;
-              console.log("about to send paypal object to server");
-              //return fetch(`${API}/paypal/subscription/${props.userid}`, {
-              return fetch(
-                //`${API}/accounts/${props.accountNum}/subscription/paypal-express/subscribe`,
-                {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    //Authorization: authstring,
-                  },
-                  body: JSON.stringify({
-                    data: data,
-                    details: details,
-                    //promoCode: promoCodeDetails.appliedPromoCode,
-                  }),
-                }
-              )
-                .then(handleErrors)
-                .then((response) => {
-                  console.log("MADE IT PAST handleErrors");
-                  console.log("response: ", response);
-                  return response.json();
-                })
-                .then((response) => {
-                  console.log("response: ", response);
-                  // first show a success model with a continue button to go to paypal clientId model
-                  if (response.status) {
-                    console.log(
-                      "fetch return got back data on organization:",
-                      response
-                    );
-                    let tempData = JSON.parse(localStorage.getItem("user"));
-                    console.log("tempData: ", tempData);
-                    tempData.user.accountId = response.result;
-                    localStorage.setItem("user", JSON.stringify(tempData));
-                    //setPageView("receipt");
-                  } else {
-                    console.log("inside else");
-                    //setPageView("receiptErrorPage");
-                  }
-                }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
-                .catch((err) => {
-                  console.log("Inside inner .catch");
-                  //setPageView("receiptErrorPage");
-                });
-            })
-            .catch((err) => {
-              console.log("Inside outer .catch");
-              window.alert("Problem with Paypal.");
+  const showPayPal = () => {
+    console.log("paypal_plan_id: ", paypal_plan_id);
+    console.log("subscriptions.clientId: ", subscriptions.clientId);
+    return (
+      <div>
+        <br></br>
+        <div>PAYPAL FORM</div>
+        <PayPalButton
+          onButtonReady={() => {}}
+          createSubscription={(data, actions) => {
+            return actions.subscription.create({
+              plan_id: paypal_plan_id,
             });
-        }}
-        onError={(err) => {
-          console.log("error occurs: ", err);
-          window.alert("Problem connecting with PayPal. Please try again.");
-        }}
-        options={{
-          clientId: subscriptions.clientId,
-          //clientId:
-          //  "AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
-          currency: "USD",
-          vault: true,
-        }}
-        catchError={(err) => {
-          console.log("error occurs: ", err);
-          window.alert("Problem connecting with PayPal. Please try again.");
-        }}
-      />
-    </div>
-  );
+          }}
+          onCancel={(data) => {
+            console.log("onCancel 'data': ", data);
+          }}
+          onApprove={(data, actions) => {
+            return actions.subscription
+              .get()
+              .then(function (details) {
+                console.log("details: ", details);
+                //const authstring = `Bearer ${props.token}`;
+                console.log("about to send paypal object to server");
+                //return fetch(`${API}/paypal/subscription/${props.userid}`, {
+                return fetch(
+                  //`${API}/accounts/${props.accountNum}/subscription/paypal-express/subscribe`,
+                  {
+                    method: "POST",
+                    headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json",
+                      //Authorization: authstring,
+                    },
+                    body: JSON.stringify({
+                      data: data,
+                      details: details,
+                      //promoCode: promoCodeDetails.appliedPromoCode,
+                    }),
+                  }
+                )
+                  .then(handleErrors)
+                  .then((response) => {
+                    console.log("MADE IT PAST handleErrors");
+                    console.log("response: ", response);
+                    return response.json();
+                  })
+                  .then((response) => {
+                    console.log("response: ", response);
+                    // first show a success model with a continue button to go to paypal clientId model
+                    if (response.status) {
+                      console.log(
+                        "fetch return got back data on organization:",
+                        response
+                      );
+                      let tempData = JSON.parse(localStorage.getItem("user"));
+                      console.log("tempData: ", tempData);
+                      tempData.user.accountId = response.result;
+                      localStorage.setItem("user", JSON.stringify(tempData));
+                      //setPageView("receipt");
+                    } else {
+                      console.log("inside else");
+                      //setPageView("receiptErrorPage");
+                    }
+                  }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
+                  .catch((err) => {
+                    console.log("Inside inner .catch");
+                    //setPageView("receiptErrorPage");
+                  });
+              })
+              .catch((err) => {
+                console.log("Inside outer .catch");
+                window.alert("Problem with Paypal.");
+              });
+          }}
+          onError={(err) => {
+            console.log("error occurs: ", err);
+            window.alert("Problem connecting with PayPal. Please try again.");
+          }}
+          options={{
+            clientId: subscriptions.clientId,
+            //clientId:
+            //  "ATOAhgR1qrhz7xQRVHyyyBnj73Ckga6swyGU-8gxFhyJRrkZgEYzaUhTwQx3BmF71lM-oiJC9VelNZDw",
+            currency: "USD",
+            vault: true,
+          }}
+          catchError={(err) => {
+            console.log("error occurs: ", err);
+            window.alert("Problem connecting with PayPal. Please try again.");
+          }}
+        />
+      </div>
+    );
+  };
 
   // THIS LOOKS GOOD
   const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
@@ -2034,7 +2041,7 @@ const Authentication = () => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "TRYFORFREE") {
@@ -2052,7 +2059,7 @@ const Authentication = () => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "GROWPR") {
@@ -2070,7 +2077,7 @@ const Authentication = () => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSD70") {
@@ -2087,7 +2094,7 @@ const Authentication = () => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSD50") {
@@ -2104,7 +2111,7 @@ const Authentication = () => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     } else if (promoCodeDetails.appliedPromoCode === "OSDFREE") {
@@ -2126,7 +2133,7 @@ const Authentication = () => {
           />
           <br></br>
           {paypal_plan_id ? (
-            showPayPal
+            showPayPal()
           ) : (
             <div style={{ textAlign: "center", paddingTop: "20px" }}>
               <button
@@ -2155,7 +2162,7 @@ const Authentication = () => {
             }}
           />
           <br></br>
-          {paypal_plan_id ? showPayPal : null}
+          {paypal_plan_id ? showPayPal() : null}
         </Fragment>
       );
     }
@@ -2333,7 +2340,7 @@ const Authentication = () => {
     <Fragment>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.CancelButton}
+          className={classes.ButtonGrey}
           onClick={() => {
             setDisplay("gateway");
           }}
@@ -2359,7 +2366,7 @@ const Authentication = () => {
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.SubmitButton}
+          className={classes.ButtonBlue}
           onClick={() => {
             window.location.href = "/";
           }}
@@ -2615,7 +2622,7 @@ const Authentication = () => {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            <div>Success you know have a free account</div>
+            <div>Success</div>
           </div>
           <div>
             {showDetail()}
@@ -2633,7 +2640,7 @@ const Authentication = () => {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            <div>Select a Subscription PlanNEW</div>
+            <div>Select a Subscription Plan</div>
           </div>
           <div>
             {showDetail()}
