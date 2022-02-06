@@ -39,10 +39,7 @@ const NavigationItems = (props) => {
 
       {!isAuthenticated() ? (
         <li>
-          <NavLink
-            to="/auth?view=signin"
-            style={isActive(props.currentPage, "/auth")}
-          >
+          <NavLink to="/auth" style={isActive(props.currentPage, "/auth")}>
             SIGN IN
           </NavLink>
         </li>

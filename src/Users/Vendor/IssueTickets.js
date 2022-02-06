@@ -137,22 +137,43 @@ const IssueTickets = (props) => {
     }
     return response;
   };
+  /*
+  {
+    //"firstname": "string",
+    //"lastname": "string",
+    //"email": "user@example.com",
+    "isOffline": true,
+    // "totalAmount": 1000000,
+    "isFree": true,
+    //"eventNum": 0,
+    "userPromo": "string",
+    "tickets": [
+      {
+        //"ticketID": "5e3e358e501f0fa4b5962304",
+        //"ticketsSelected": 2
+      }
+    ]
+  }
+  */
 
   const submitOrder = (allTotal) => {
     console.log("allTotal: ", allTotal);
     let newOrder = {};
     let ticketArray = [];
-    newOrder.firstname = order.recipient.firstname;
-    newOrder.lastname = order.recipient.lastname;
-    newOrder.email = order.recipient.email;
+    newOrder.firstname = order.recipient.firstname; //
+    newOrder.lastname = order.recipient.lastname; //
+    newOrder.email = order.recipient.email; //
     newOrder.message = order.recipient.message;
-    newOrder.eventNum = eventDetails.eventNum;
+    newOrder.eventNum = eventDetails.eventNum; //
+    newOrder.isOffline = true; //
+
+    newOrder.userPromo = "";
 
     order.tickets.forEach((ticket) => {
       let tempObject = {};
       tempObject.key = ticket.key;
-      tempObject.ticketID = ticket.ticketId;
-      tempObject.ticketsSelected = ticket.numTickets;
+      tempObject.ticketID = ticket.ticketId; //
+      tempObject.ticketsSelected = ticket.numTickets; //
       tempObject.ticketName = ticket.ticketName;
       if (ticket.chargedPrice === "0.00") {
         tempObject.ticketPrice = 0;
@@ -166,7 +187,7 @@ const IssueTickets = (props) => {
       ticketArray.push(tempObject);
     });
 
-    newOrder.totalAmount = allTotal;
+    newOrder.totalAmount = allTotal; //
     newOrder.tickets = ticketArray;
     console.log("newOrder: ", newOrder);
     let myHeaders = new Headers();
@@ -176,8 +197,7 @@ const IssueTickets = (props) => {
       `Bearer ${customerInformation.sessionToken}`
     );
 
-    let url = `${API}/tixorder/offline_order/${customerInformation.userId}`;
-    //let url = `${API}/tixorder/offline_order/`;
+    let url = `${API}/tixorder/offline_order/`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
