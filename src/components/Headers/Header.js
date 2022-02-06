@@ -9,6 +9,8 @@ import Logo from "../Logo/Logo";
 import HeaderItems from "./HeaderItems";
 import classes from "./Header.module.css";
 
+
+
 const Header = ({ history, logo, positioning, clicked }) => {
   let headerDisplay;
 
