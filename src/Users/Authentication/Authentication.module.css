@@ -86,22 +86,22 @@
   padding-top: 10px;
   padding-left: 10px;
 }
-.SubmitButton {
+.ButtonBlue {
   background-color: #2f5596;
   color: #fff;
   width: 100%;
   height: 40px;
   font-size: 14px;
 }
-.SubmitButton:hover {
+.ButtonBlue:hover {
   background-color: #1d355d;
   border: 1px solid #000;
 }
-.SubmitButton:active {
+.ButtonBlue:active {
   background-color: #14233e;
   border: 1px solid #000;
 }
-.CancelButton {
+.ButtonGrey {
   border: 1px solid #000;
   border-radius: 0px;
   color: #fff;
@@ -110,11 +110,11 @@
   height: 40px;
   font-size: 14px;
 }
-.CancelButton:hover {
+.ButtonGrey:hover {
   background-color: #858585;
   border: 1px solid #000;
 }
-.CancelButton:active {
+.ButtonGrey:active {
   background-color: #707070;
   border: 1px solid #000;
 }
