@@ -1671,22 +1671,22 @@ const Authentication = () => {
               .get()
               .then(function (details) {
                 console.log("details: ", details);
-                //const authstring = `Bearer ${props.token}`;
+                const authstring = `Bearer ${authValues.sessionToken}`;
                 console.log("about to send paypal object to server");
                 //return fetch(`${API}/paypal/subscription/${props.userid}`, {
                 return fetch(
-                  //`${API}/accounts/${props.accountNum}/subscription/paypal-express/subscribe`,
+                  `${API}/accounts/${authValues.accountNum}/subscription/paypal-express/subscribe`,
                   {
                     method: "POST",
                     headers: {
                       Accept: "application/json",
                       "Content-Type": "application/json",
-                      //Authorization: authstring,
+                      Authorization: authstring,
                     },
                     body: JSON.stringify({
                       data: data,
                       details: details,
-                      //promoCode: promoCodeDetails.appliedPromoCode,
+                      promoCode: promoCodeDetails.appliedPromoCode,
                     }),
                   }
                 )
@@ -1708,7 +1708,7 @@ const Authentication = () => {
                       console.log("tempData: ", tempData);
                       tempData.user.accountId = response.result;
                       localStorage.setItem("user", JSON.stringify(tempData));
-                      //setPageView("receipt");
+                      setDisplay("paidCongrats");
                     } else {
                       console.log("inside else");
                       //setPageView("receiptErrorPage");
@@ -1730,8 +1730,6 @@ const Authentication = () => {
           }}
           options={{
             clientId: subscriptions.clientId,
-            //clientId:
-            //  "ATOAhgR1qrhz7xQRVHyyyBnj73Ckga6swyGU-8gxFhyJRrkZgEYzaUhTwQx3BmF71lM-oiJC9VelNZDw",
             currency: "USD",
             vault: true,
           }}
