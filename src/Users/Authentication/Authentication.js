@@ -348,6 +348,7 @@ const Authentication = () => {
 
     if (initialView === "signin") {
       console.log("going to signin");
+      setSubIntent("free");
       setDisplay("signin");
       //
     } else if (initialView === "free") {
