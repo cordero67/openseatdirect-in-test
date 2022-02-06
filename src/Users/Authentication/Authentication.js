@@ -28,6 +28,7 @@ import classes from "./Authentication.module.css";
 const Authentication = () => {
   const [subIntent, setSubIntent] = useState();
   console.log("subIntent: ", subIntent);
+  console.log("sandbox: ", PAYPAL_USE_SANDBOX);
 
   const [authValues, setAuthValues] = useState({
     name: "",
@@ -1369,6 +1370,14 @@ const Authentication = () => {
           You can now issue an unlimited amount of free tickets.
         </div>
       );
+    } else if (display === "paidCongrats") {
+      return (
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+          You have a pro-plan account.
+          <br></br>
+          You can now issue an unlimited amount of free and paid tickets.
+        </div>
+      );
     } /*else if (display === "selectPlan") {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
@@ -1622,6 +1631,22 @@ const Authentication = () => {
       </div>
     </Fragment>
   );
+
+  const paidCongratsForm = (
+    <Fragment>
+      <div style={{ paddingTop: "10px" }}>
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            window.location.href = "/myaccount";
+          }}
+        >
+          GO TO MY DASHBOARD
+        </button>
+      </div>
+    </Fragment>
+  );
+
   // THIS LOOKS GOOD
   // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
   const showPayPal = () => {
@@ -2635,6 +2660,24 @@ const Authentication = () => {
     }
   };
 
+  const paidCongratsDisplay = () => {
+    if (display === "paidCongrats") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>Success</div>
+          </div>
+          <div>
+            {showDetail()}
+            {paidCongratsForm}
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
   const selectPlanDisplay = () => {
     if (display === "selectPlan") {
       return (
@@ -2719,6 +2762,7 @@ const Authentication = () => {
         {selectPlanDisplay()}
         {subDetailsDisplay()}
         {freeCongratsDisplay()}
+        {paidCongratsDisplay()}
         {errorDisplay()}
       </div>
     </div>
