@@ -5,19 +5,16 @@ import { API } from "../config.js";
 
 import CheckoutForm from "./CheckoutForm";
 
-// Make sure to call `loadStripe` outside of a component's render to avoid
-// recreating the `Stripe` object on every render.
-const stripePromise = loadStripe(
-  "pk_test_51KBGMiKV3J6hQOi9xhDbtPjijhRW3oYceglEjVqR55feZPvWvXmI6PO0IAdHxuo0mFs1GUoCHEccdhGfBSiT7N8p00D6vYffDH",
-  {
-    //stripeAccount: "acct_1KL9zDQPj5AjBgFw",
-
-    stripeAccount: "acct_1KNPhm4DwDsj7HXk",
-  }
-);
-
 const Checkout = () => {
+  const [displayMain, setDisplayMain] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
+  const stripePromise = loadStripe(
+    "pk_test_51KBGMiKV3J6hQOi9xhDbtPjijhRW3oYceglEjVqR55feZPvWvXmI6PO0IAdHxuo0mFs1GUoCHEccdhGfBSiT7N8p00D6vYffDH",
+    {
+      //stripeAccount: "acct_1KL9zDQPj5AjBgFw",
+      stripeAccount: "acct_1KNPhm4DwDsj7HXk",
+    }
+  );
 
   // LOOKS GOOD
   const handleErrors = (response) => {
@@ -62,7 +59,6 @@ const Checkout = () => {
       .then((data) => {
         console.log("fetch return got back data:", data);
         setClientSecret(data.client_secret);
-
         //setOrderStatus(data.status);
         //setDisplay("confirmation");
       })
@@ -72,19 +68,43 @@ const Checkout = () => {
       })
       .finally(() => {
         //purchaseConfirmHandler();
+        setDisplayMain(true);
       });
   }, []);
 
-  return (
-    <div>
-      STRIPE INDEX COMPONENT
-      <Elements stripe={stripePromise}>
-        <br></br>
-        <br></br>
-        <br></br>
-        <CheckoutForm clientSecret={clientSecret} />
-      </Elements>
-    </div>
-  );
+  const appearance = {
+    theme: "stripe",
+
+    variables: {
+      colorPrimary: "#0570de",
+      colorBackground: "#ffffff",
+      colorText: "#30313d",
+      colorDanger: "#df1b41",
+      fontFamily: "Ideal Sans, system-ui, sans-serif",
+      spacingUnit: "2px",
+      borderRadius: "4px",
+      // See all possible variables below
+    },
+  };
+
+  const options = {
+    // passing the client secret obtained in step 2
+    clientSecret: clientSecret,
+    // Fully customizable with appearance API.
+    appearance: {
+      appearance,
+    },
+  };
+
+  if (displayMain) {
+    return (
+      <div>
+        <Elements stripe={stripePromise} options={options}>
+          <CheckoutForm clientSecret={clientSecret} />
+        </Elements>
+      </div>
+    );
+  } else return null;
 };
+
 export default Checkout;

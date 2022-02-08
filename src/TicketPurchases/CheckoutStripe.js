@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import queryString from "query-string";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -45,7 +46,7 @@ let OrderSummarySectionAlt = {};
 
 const Checkout = () => {
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
-
+  const [clientReceived, setClientReceived] = useState(false);
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
   const [stripeModal, setStripeModal] = useState({ display: false });
@@ -65,6 +66,15 @@ const Checkout = () => {
 
   useEffect(() => {
     setDisplay("spinner");
+
+    let result = queryString.parse(window.location.search).result;
+
+    if (result === "success") {
+      console.log("success");
+      setDisplay("congratulations");
+      //
+    }
+
     if (typeof window !== "undefined" && localStorage.getItem("eventNum")) {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       if (localStorage.getItem(`cart_${event}`)) {
@@ -151,6 +161,7 @@ const Checkout = () => {
           .then((data) => {
             console.log("fetch return got back data:", data);
             setClientSecret(data.client_secret);
+            setClientReceived(true);
           })
           .catch((error) => {
             console.log("freeTicketHandler() error.message: ", error.message);
@@ -158,7 +169,7 @@ const Checkout = () => {
           .finally(() => {});
 
         console.log(
-          "eventDetails.stripeAccountIDDDD: ",
+          "eventDetails.stripeAccountID: ",
           eventDetails.stripeAccountID
         );
 
@@ -375,7 +386,7 @@ const Checkout = () => {
 
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   const purchaseConfirmation = () => {
-    if (display === "confirmation") {
+    if (display === "success") {
       //console.log("CONFIRMTION");
       //console.log("transactionInfo: ", transactionInfo);
       //console.log("orderStatus: ", orderStatus);
@@ -392,44 +403,73 @@ const Checkout = () => {
     } else return null;
   };
 
+  const appearance = {
+    theme: "stripe",
+
+    variables: {
+      colorPrimary: "#0570de",
+      colorBackground: "#ffffff",
+      colorText: "#30313d",
+      colorDanger: "#df1b41",
+      fontFamily: "Ideal Sans, system-ui, sans-serif",
+      spacingUnit: "2px",
+      borderRadius: "4px",
+      // See all possible variables below
+    },
+  };
+
+  const options = () => {
+    if (display === "main" || clientReceived) {
+      console.log("inside options");
+      return {
+        // passing the client secret obtained in step 2
+        clientSecret: clientSecret,
+        // Fully customizable with appearance API.
+
+        appearance: {
+          appearance,
+        },
+      };
+    } else return null;
+  };
+
   const showStripe = () => {
-    return (
-      <div>
-        STRIPE INDEX COMPONENT
-        <Elements stripe={stripePromise}>
-          <br></br>
-          <br></br>
-          <br></br>
-          <CheckoutForm
-            clientSecret={clientSecret}
-            orderFailure={(event) => {
-              console.log("UNUCCESSFUL ORDER");
+    console.log("clientSecret: ", clientSecret);
+    if (clientSecret) {
+      return (
+        <div>
+          <Elements stripe={stripePromise} options={options()}>
+            <CheckoutForm
+              clientSecret={clientSecret}
+              orderFailure={(event) => {
+                console.log("UNUCCESSFUL ORDER");
 
-              let tempStripeModal = { ...stripeModal };
-              tempStripeModal.display = true;
-              tempStripeModal.message = event;
-              setStripeModal(tempStripeModal);
-            }}
-            orderSuccess={() => {
-              console.log("SUCCESSFUL ORDER");
-              let email = customerInformation.email;
-              let name = `${customerInformation.firstname} ${customerInformation.lastname}`;
+                let tempStripeModal = { ...stripeModal };
+                tempStripeModal.display = true;
+                tempStripeModal.message = event;
+                setStripeModal(tempStripeModal);
+              }}
+              orderSuccess={() => {
+                console.log("SUCCESSFUL ORDER");
+                let email = customerInformation.email;
+                let name = `${customerInformation.firstname} ${customerInformation.lastname}`;
 
-              setTransactionInfo(
-                loadTransactionInfo(
-                  eventDetails,
-                  orderTotals,
-                  ticketInfo,
-                  email,
-                  name
-                )
-              );
-              setDisplay("confirmation");
-            }}
-          />
-        </Elements>
-      </div>
-    );
+                setTransactionInfo(
+                  loadTransactionInfo(
+                    eventDetails,
+                    orderTotals,
+                    ticketInfo,
+                    email,
+                    name
+                  )
+                );
+                setDisplay("confirmation");
+              }}
+            />
+          </Elements>
+        </div>
+      );
+    } else return null;
   };
 
   // LOOKS GOOD BUT REVIEW LOGIC

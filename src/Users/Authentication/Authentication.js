@@ -344,7 +344,7 @@ const Authentication = () => {
   };
 
   useEffect(() => {
-    let startingView = queryString.parse(window.location.search).new;
+    //let startingView = queryString.parse(window.location.search).new;
     let initialView = queryString.parse(window.location.search).view;
     console.log("initialView: ", initialView);
 
@@ -456,6 +456,12 @@ const Authentication = () => {
         setSubIntent("free");
         setDisplay("signin");
       }
+    } else if (initialView === "payosd") {
+      console.log("going to paypal page");
+      setSubIntent("free");
+      setDisplay("paypal");
+      console.log("subIntent: ", subIntent);
+      //
     } else {
       console.log("signin");
       setSubIntent("free");
@@ -2250,11 +2256,11 @@ const Authentication = () => {
     <Fragment>
       <div style={{ paddingTop: "10px", paddingBottom: "10px" }}></div>
 
-      <div style={{ paddingBottom: "20px", width: "700px", height: "85px" }}>
-        <label style={{ width: "700px", fontSize: "15px" }}>
+      <div style={{ paddingBottom: "20px", width: "340px", height: "85px" }}>
+        <label style={{ width: "340px", fontSize: "15px" }}>
           Paypal Client ID <span style={{ color: "red" }}>* </span>
         </label>
-        <input
+        <textarea
           onFocus={() => {
             setSubValues({ ...subValues, inputError: "" });
           }}
@@ -2262,8 +2268,8 @@ const Authentication = () => {
             border: "1px solid #8DADD4",
             borderRadius: "0px",
             backgroundColor: "#EFF3FA",
-            width: "700px",
-            height: "40px",
+            width: "340px",
+            height: "60px",
             paddingLeft: "10px",
           }}
           type="text"
@@ -2273,10 +2279,10 @@ const Authentication = () => {
         />
       </div>
       <div>
-        <label style={{ width: "700px", fontSize: "15px" }}>
+        <label style={{ width: "340px", fontSize: "15px" }}>
           Paypal Secret <span style={{ color: "red" }}>* </span>
         </label>
-        <input
+        <textarea
           onFocus={() => {
             setSubValues({ ...subValues, inputError: "" });
           }}
@@ -2284,8 +2290,8 @@ const Authentication = () => {
             border: "1px solid #8DADD4",
             borderRadius: "0px",
             backgroundColor: "#EFF3FA",
-            width: "700px",
-            height: "40px",
+            width: "340px",
+            height: "60px",
             paddingLeft: "10px",
           }}
           type="text"
@@ -2296,8 +2302,8 @@ const Authentication = () => {
       </div>
       <div style={{ textAlign: "center", paddingTop: "40px" }}>
         <button
-          className={classes.ButtonGreen}
-          style={{ width: "700px" }}
+          className={classes.ButtonBlue}
+          style={{ width: "340px" }}
           disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
           onClick={() => {
             // api static variables
@@ -2317,6 +2323,9 @@ const Authentication = () => {
                 paypalExpress_client_secret: paypalExpress_client_secret,
               }),
             };
+            console.log(paypalExpress_client_id);
+            console.log(paypalExpress_client_secret);
+
             console.log("fetching with: ", url, fetcharg);
             fetch(url, fetcharg)
               .then(handleErrors)
@@ -2353,7 +2362,7 @@ const Authentication = () => {
               });
           }}
         >
-          SUBMIT YOUR PAYPAL MERCHANT INFORMATION
+          SUBMIT YOUR PAYPAL DETAILS
         </button>
       </div>
     </Fragment>
@@ -2699,7 +2708,7 @@ const Authentication = () => {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            Enter the ClientId and Secret from your PayPal merchant account.
+            Enter PayPal account ClientId and Secret.
           </div>
           <div>
             {showDetail()}
