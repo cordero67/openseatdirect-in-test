@@ -27,6 +27,7 @@ const StripeModal = (props) => {
         </div>
         <br></br>
         <br></br>
+        <br></br>
         <div
           style={{
             fontSize: "16px",
@@ -35,11 +36,15 @@ const StripeModal = (props) => {
           Missing {props.details}
         </div>
         <br></br>
+        <br></br>
+        <br></br>
         <div>
           <button className={classes.ButtonGrey} onClick={props.closeModal}>
             CONTINUE
           </button>
         </div>
+        <br></br>
+        <br></br>
         <br></br>
       </div>
     </Fragment>

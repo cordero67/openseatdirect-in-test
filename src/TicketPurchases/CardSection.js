@@ -24,12 +24,12 @@ const CARD_ELEMENT_OPTIONS = {
 function CardSection() {
   return (
     <label>
-      CARD SECTION COMPONENT
-      <br></br>Card details
-      <br></br>
-      <br></br>
-      <br></br>
-      <CardElement options={CARD_ELEMENT_OPTIONS} />
+      <div style={{ width: "600px" }}>
+        CARD SECTION COMPONENT
+        <br></br>
+        <br></br>
+        <CardElement options={CARD_ELEMENT_OPTIONS} />
+      </div>
     </label>
   );
 }
