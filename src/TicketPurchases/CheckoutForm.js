@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { PaymentElement } from "@stripe/react-stripe-js";
 
-import CardSection from "./CardSection";
-
 export default function CheckoutForm(props) {
   console.log("props: ", props);
   const stripe = useStripe();
@@ -80,16 +78,10 @@ export default function CheckoutForm(props) {
   return (
     <form onSubmit={handleSubmit2}>
       <PaymentElement />
-      <div
-        style={{ paddingTop: "20px", paddingBottom: "40px", width: "400px" }}
-      ></div>
+      <div style={{ paddingTop: "20px", paddingBottom: "40px" }}></div>
       <div>
         <button disabled={!stripe}>SUBMIT</button>
       </div>
     </form>
   );
 }
-
-/*
-<CardSection />
-*/
