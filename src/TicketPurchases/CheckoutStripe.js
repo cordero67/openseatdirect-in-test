@@ -71,125 +71,125 @@ const Checkout = () => {
 
     if (result === "success") {
       console.log("success");
-      setDisplay("congratulations");
+      setDisplay("success");
       //
-    }
-
-    if (typeof window !== "undefined" && localStorage.getItem("eventNum")) {
-      let event = JSON.parse(localStorage.getItem("eventNum"));
-      if (localStorage.getItem(`cart_${event}`)) {
-        let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
-        eventDetails = tempCart.eventDetails;
-        console.log("cart in storage: ", tempCart);
-        console.log("eventDetails: ", eventDetails);
-        ticketInfo = tempCart.ticketInfo;
-        orderTotals = tempCart.orderTotals;
-        osdOrderId = tempCart.osdOrderId;
-        orderExpiration = tempCart.orderExpiration;
-        if ("guestInfo" in tempCart) {
-          console.log("tempCart: ", tempCart);
-          setCustomerInformation(tempCart.guestInfo);
-        } else if (localStorage.getItem("user") !== null) {
-          let tempUser = JSON.parse(localStorage.getItem("user"));
-          setCustomerInformation({
-            sessionToken: tempUser.token,
-            userId: tempUser.user._id,
-            email: tempUser.user.email,
-          });
-        } else {
-          window.location.href = `/et/${tempCart.eventDetails.vanityLink}?eventID=${tempCart.eventDetails.eventNum}`;
-        }
-        populatePaypalArray();
-        console.log("orderTotals: ", orderTotals);
-        console.log("ticketInfo: ", ticketInfo);
-
-        console.log("Inside useEffect");
-        let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        let body;
-        let url;
-        let tickets = [];
-        tempCart.ticketInfo.forEach((item) => {
-          if (item.ticketsSelected !== 0) {
-            tickets.push({
-              ticketID: item.ticketID,
-              ticketsSelected: item.ticketsSelected,
+    } else {
+      if (typeof window !== "undefined" && localStorage.getItem("eventNum")) {
+        let event = JSON.parse(localStorage.getItem("eventNum"));
+        if (localStorage.getItem(`cart_${event}`)) {
+          let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
+          eventDetails = tempCart.eventDetails;
+          console.log("cart in storage: ", tempCart);
+          console.log("eventDetails: ", eventDetails);
+          ticketInfo = tempCart.ticketInfo;
+          orderTotals = tempCart.orderTotals;
+          osdOrderId = tempCart.osdOrderId;
+          orderExpiration = tempCart.orderExpiration;
+          if ("guestInfo" in tempCart) {
+            console.log("tempCart: ", tempCart);
+            setCustomerInformation(tempCart.guestInfo);
+          } else if (localStorage.getItem("user") !== null) {
+            let tempUser = JSON.parse(localStorage.getItem("user"));
+            setCustomerInformation({
+              sessionToken: tempUser.token,
+              userId: tempUser.user._id,
+              email: tempUser.user.email,
             });
+          } else {
+            window.location.href = `/et/${tempCart.eventDetails.vanityLink}?eventID=${tempCart.eventDetails.eventNum}`;
           }
-        });
-        //let promoCode;
-        body = {
-          totalAmount: tempCart.orderTotals.finalPurchaseAmount,
-          eventNum: tempCart.eventDetails.eventNum,
-          tickets: tickets,
-        };
+          populatePaypalArray();
+          console.log("orderTotals: ", orderTotals);
+          console.log("ticketInfo: ", ticketInfo);
 
-        if (tempCart.promoCodeDetails.appliedPromoCode !== "") {
-          body.userPromo = tempCart.promoCodeDetails.appliedPromoCode;
-        }
+          console.log("Inside useEffect");
+          let myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
 
-        if ("guestInfo" in tempCart) {
-          console.log("customerInformation: ", customerInformation);
+          let body;
+          let url;
+          let tickets = [];
+          tempCart.ticketInfo.forEach((item) => {
+            if (item.ticketsSelected !== 0) {
+              tickets.push({
+                ticketID: item.ticketID,
+                ticketsSelected: item.ticketsSelected,
+              });
+            }
+          });
+          //let promoCode;
+          body = {
+            totalAmount: tempCart.orderTotals.finalPurchaseAmount,
+            eventNum: tempCart.eventDetails.eventNum,
+            tickets: tickets,
+          };
 
-          body.guestFirstname = tempCart.guestInfo.firstname;
-          body.guestLastname = tempCart.guestInfo.lastname;
-          body.guestEmail = tempCart.guestInfo.email;
+          if (tempCart.promoCodeDetails.appliedPromoCode !== "") {
+            body.userPromo = tempCart.promoCodeDetails.appliedPromoCode;
+          }
 
-          console.log("body: ", body);
-          url = `${API}/tixorder/stripe/us-create-order`;
+          if ("guestInfo" in tempCart) {
+            console.log("customerInformation: ", customerInformation);
+
+            body.guestFirstname = tempCart.guestInfo.firstname;
+            body.guestLastname = tempCart.guestInfo.lastname;
+            body.guestEmail = tempCart.guestInfo.email;
+
+            console.log("body: ", body);
+            url = `${API}/tixorder/stripe/us-create-order`;
+          } else {
+            console.log("customerInformation: ", customerInformation);
+            console.log("body: ", body);
+            url = `${API}/tixorder/stripe/sn-create-order`;
+
+            let tempUser = JSON.parse(localStorage.getItem("user"));
+            myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
+          }
+
+          let fetcharg = {
+            method: "POST",
+            headers: myHeaders,
+            body: JSON.stringify(body),
+          };
+
+          fetch(url, fetcharg)
+            .then(handleErrors)
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              console.log("fetch return got back data:", data);
+              setClientSecret(data.client_secret);
+              setClientReceived(true);
+            })
+            .catch((error) => {
+              console.log("freeTicketHandler() error.message: ", error.message);
+            })
+            .finally(() => {});
+
+          console.log(
+            "eventDetails.stripeAccountID: ",
+            eventDetails.stripeAccountID
+          );
+
+          setStripePromise(
+            loadStripe(`${OSD_STRIPE_ACCOUNT_ID}`, {
+              //stripeAccount: "acct_1KNPhm4DwDsj7HXk",
+              stripeAccount: eventDetails.stripeAccountID,
+            })
+          );
         } else {
-          console.log("customerInformation: ", customerInformation);
-          console.log("body: ", body);
-          url = `${API}/tixorder/stripe/sn-create-order`;
-
-          let tempUser = JSON.parse(localStorage.getItem("user"));
-          myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
+          window.location.href = "/";
         }
-
-        let fetcharg = {
-          method: "POST",
-          headers: myHeaders,
-          body: JSON.stringify(body),
-        };
-
-        fetch(url, fetcharg)
-          .then(handleErrors)
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            console.log("fetch return got back data:", data);
-            setClientSecret(data.client_secret);
-            setClientReceived(true);
-          })
-          .catch((error) => {
-            console.log("freeTicketHandler() error.message: ", error.message);
-          })
-          .finally(() => {});
-
-        console.log(
-          "eventDetails.stripeAccountID: ",
-          eventDetails.stripeAccountID
-        );
-
-        setStripePromise(
-          loadStripe(`${OSD_STRIPE_ACCOUNT_ID}`, {
-            //stripeAccount: "acct_1KNPhm4DwDsj7HXk",
-            stripeAccount: eventDetails.stripeAccountID,
-          })
-        );
+        if (localStorage.getItem(`image_${event}`)) {
+          eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
+        }
       } else {
         window.location.href = "/";
       }
-      if (localStorage.getItem(`image_${event}`)) {
-        eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
-      }
-    } else {
-      window.location.href = "/";
+      stylingUpdate(window.innerWidth, window.innerHeight);
+      setDisplay("main");
     }
-    stylingUpdate(window.innerWidth, window.innerHeight);
-    setDisplay("main");
   }, []);
 
   window.onresize = function (event) {
@@ -387,7 +387,7 @@ const Checkout = () => {
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   const purchaseConfirmation = () => {
     if (display === "success") {
-      //console.log("CONFIRMTION");
+      console.log("CONFIRMTION");
       //console.log("transactionInfo: ", transactionInfo);
       //console.log("orderStatus: ", orderStatus);
       return (
@@ -401,6 +401,33 @@ const Checkout = () => {
         </div>
       );
     } else return null;
+  };
+
+  // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
+  const stripeSuccess = () => {
+    if (display === "success") {
+      console.log("CONFIRMTION");
+      //console.log("transactionInfo: ", transactionInfo);
+      //console.log("orderStatus: ", orderStatus);
+      return (
+        <div className={classes.BlankCanvas}>
+          <div style={{ paddingTop: "20px" }}>
+            Your order was successfully processed by Stripe
+          </div>
+          <button
+            className={classes.ButtonGreen}
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          >
+            CONTINUE
+          </button>
+        </div>
+      );
+    } else {
+      console.log("SUCCESS");
+      return null;
+    }
   };
 
   const appearance = {
@@ -684,7 +711,7 @@ const Checkout = () => {
       {loadingSpinner()}
       {responseModal()}
       {mainDisplay()}
-      {purchaseConfirmation()}
+      {stripeSuccess()}
     </div>
   );
 };
