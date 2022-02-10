@@ -425,7 +425,7 @@ const Checkout = () => {
         </div>
       );
     } else {
-      console.log("SUCCESS");
+      console.log("UNSUCCESS");
       return null;
     }
   };
@@ -511,17 +511,20 @@ const Checkout = () => {
     return elapsedTime;
   };
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  //const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   // runs the "timeLeft" hook every 1000 milliseconds === 1 second
   // this causes the page to refresh which updates the time expired numbers
   // these numbers are fed by the "calculateTimeLeft()" function
+  /*
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
   });
+  */
 
+  /*
   // LOOKS GOOD
   const timeRemaining = () => {
     if (+new Date(orderExpiration) >= +new Date()) {
@@ -546,6 +549,8 @@ const Checkout = () => {
       window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
     }
   };
+
+  */
   // LOOKS GOOD
   // determines whether or not to display the purchase amount
   const totalAmount = (show) => {
@@ -593,7 +598,6 @@ const Checkout = () => {
               </div>
             </div>
             <div style={EventTicketSection}>
-              {timeRemaining()}
               <br></br>
               <span style={{ fontSize: "18px", fontWeight: "600" }}>
                 Stripe Checkout
