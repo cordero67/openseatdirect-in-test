@@ -577,6 +577,15 @@ const Authentication = () => {
     return response;
   };
 
+  const submitPaypal = () => {
+    console.log("Inside submitPaypal");
+    setDisplay("spinner");
+    setSubmissionStatus({
+      message: "",
+      error: false,
+    });
+  };
+
   const submitSignIn = () => {
     setDisplay("spinner");
     setSubmissionStatus({
@@ -1384,13 +1393,13 @@ const Authentication = () => {
           You can now issue an unlimited amount of free and paid tickets.
         </div>
       );
-    } /*else if (display === "selectPlan") {
+    } else if (display === "paypal") {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Choose a plan and submit your payment to PayPal:
+          Your client ID sucks:
         </div>
       );
-    } */
+    }
   };
 
   const signInForm = (
@@ -2306,6 +2315,7 @@ const Authentication = () => {
           style={{ width: "340px" }}
           disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
           onClick={() => {
+            submitPaypal();
             // api static variables
             let myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
@@ -2335,7 +2345,7 @@ const Authentication = () => {
               })
               .then((data) => {
                 console.log("fetch return got back data on PayPal:", data);
-
+                //handleConfirmation
                 if (data.status) {
                   console.log("INSIDE data.status");
                   let tempData = JSON.parse(localStorage.getItem("user"));
@@ -2349,6 +2359,8 @@ const Authentication = () => {
                   let errmsg =
                     "unable to validate ClientId and secret at this time";
                   if (data.message) {
+                    console.log("data.message exist");
+                    console.log("data.message ", data.message);
                     errmsg = data.message;
                   }
                   window.alert(errmsg);

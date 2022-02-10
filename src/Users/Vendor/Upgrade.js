@@ -796,7 +796,7 @@ const Upgrade = (props) => {
             fontWeight: "600",
           }}
         >
-          Step 1 of 3: Complete Organization Information
+          Step 1 of 3: Select a Payment Gateway
         </div>
         <div className={classes.VendorCanvas}>
           <div
