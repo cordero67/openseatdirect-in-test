@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import dateFormat from "dateformat";
 
 import classes from "./OrderConfirms.module.css";
@@ -180,68 +180,40 @@ export const OrderConfirm = (props) => {
   );
 };
 
-export const StripeConfirm = (props) => {
-  console.log("props: ", props);
-  const [transactionDetails, setTransactionDetails] = useEffect({});
+export const StripeConfirm = () => {
+  const [transactionDetails, setTransactionDetails] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      let tempUser = JSON.parse(localStorage.getItem("transactionInfo"));
+      let tempUser = JSON.parse(localStorage.getItem("transaction"));
       console.log("tempUser: ", tempUser);
       setTransactionDetails(tempUser);
     }
+    setIsLoading(false);
   }, []);
 
   const response = () => {
-    if (false) {
-      return (
+    return (
+      <div style={{ paddingBottom: "20px" }}>
         <div style={{ paddingBottom: "20px" }}>
-          <div style={{ paddingBottom: "20px" }}>
-            OpenSeatDirect will be sending you a message to your email:{" "}
-            <span
-              style={{
-                color: "blue",
-                fontWeight: "600",
-                paddingBottom: "20px",
-              }}
-            >
-              {transactionDetails.email}
-            </span>
-          </div>
-          <div>
-            This email will contain a pdf of your ticket(s) to print-at-home or
-            to display on your mobile device.
-          </div>
+          OpenSeatDirect will be sending you a message to your email:{" "}
+          <span
+            style={{
+              color: "blue",
+              fontWeight: "600",
+              paddingBottom: "20px",
+            }}
+          >
+            {transactionDetails.email}
+          </span>
         </div>
-      );
-    } else {
-      return (
-        <div style={{ paddingBottom: "20px" }}>
-          <div style={{ paddingBottom: "20px" }}>
-            OpenSeatDirect is experiencing a temporary delay in creating your
-            pdf ticket(s).
-          </div>
-
-          <div style={{ paddingBottom: "20px" }}>
-            Within 48 hours, OpenSeatDirect will be sending you a message to
-            your email:{" "}
-            <span style={{ color: "blue", fontWeight: "600" }}>
-              {transactionDetails.paypalEmail}
-            </span>
-          </div>
-
-          <div style={{ paddingBottom: "20px" }}>
-            This email will contain a pdf of your ticket(s) to print-at-home or
-            to display on your mobile device.
-          </div>
-
-          <div>
-            If you do not receive this email by the end of today, please contact
-            the vendor.
-          </div>
+        <div>
+          This email will contain a pdf of your ticket(s) to print-at-home or to
+          display on your mobile device.
         </div>
-      );
-    }
+      </div>
+    );
   };
 
   let dateRange;
@@ -320,203 +292,59 @@ export const StripeConfirm = (props) => {
     );
   };
 
-  return (
-    <Fragment>
-      <div className={classes.SectionHeader}>Order Confirmation</div>
-      <div className={classes.Body}>
-        <div style={{ paddingBottom: "20px" }}>
-          Thank you, your order was received and is in process.
-        </div>
-        <div style={{ textDecoration: "underline", fontWeight: "600" }}>
-          Event Details
-        </div>
-        {eventDetails()}
-        <div
-          style={{
-            textDecoration: "underline",
-            fontWeight: "600",
-            paddingBotton: "10px",
-          }}
-        >
-          Order Details
-        </div>
-        <div style={{ paddingBottom: "20px" }}>
-          Total Number of Tickets: {transactionDetails.numTickets}
-          {/*props.transactionInfo.tickets.map((item) => {
-            return item.ticketsSelected > 0 ? (
-              <div key={item.ticketID}>
-                {item.ticketsSelected} X {item.ticketName}: $
-                {item.ticketsSelected * item.adjustedTicketPrice}
-              </div>
-            ) : null;
-          })*/}
-          {/*Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)*/}
-        </div>
-        {response()}
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            window.location.href = "/";
-          }}
-        >
-          CONTINUE
-        </button>
-      </div>
-    </Fragment>
-  );
-};
-
-export const StripeConfirmOLD = (props) => {
-  console.log("props: ", props);
-  const response = (
-    <div style={{ paddingBottom: "20px" }}>
-      <div style={{ paddingBottom: "20px" }}>
-        OpenSeatDirect will be sending you a message to your email:{" "}
-        <span
-          style={{
-            color: "blue",
-            fontWeight: "600",
-            paddingBottom: "20px",
-          }}
-        >
-          {props.transactionInfo.email}
-        </span>
-      </div>
-      <div>
-        This email will contain a pdf of your ticket(s) to print-at-home or to
-        display on your mobile device.
-      </div>
-      <div>
-        If you do not receive this email by the end of today, please contact the
-        vendor.
-      </div>
-    </div>
-  );
-
-  let dateRange;
-  if (
-    dateFormat(props.transactionInfo.startDateTime, "m d yy", true) ===
-    dateFormat(props.transactionInfo.endDateTime, "m d yy", true)
-  ) {
-    dateRange = (
-      <Fragment>
-        {dateFormat(
-          props.transactionInfo.startDateTime,
-          "ddd, mmm d, yyyy - h:MM TT",
-          true
-        )}{" "}
-        to {dateFormat(props.transactionInfo.endDateTime, "shortTime", true)}
-      </Fragment>
-    );
-  } else {
-    dateRange = (
-      <Fragment>
-        {dateFormat(
-          props.transactionInfo.startDateTime,
-          "ddd, mmm d, yyyy - h:MM TT",
-          true
-        )}{" "}
-        to{" "}
-        {dateFormat(
-          props.transactionInfo.endDateTime,
-          "ddd, mmm d, yyyy - h:MM TT",
-          true
-        )}
-      </Fragment>
-    );
-  }
-
-  const eventLocation = () => {
-    let cityState;
-    if (props.transactionInfo.city && props.transactionInfo.state) {
-      cityState = `${props.transactionInfo.city}, ${props.transactionInfo.state}`;
-    } else if (props.transactionInfo.city) {
-      cityState = `${props.transactionInfo.city}`;
-    } else if (props.transactionInfo.state) {
-      cityState = `${props.transactionInfo.state}`;
-    }
-
-    return (
-      <div style={{ paddingBottom: "20px" }}>
-        <div>{props.transactionInfo.eventTitle}</div>
-        <div>{dateRange}</div>
-        <div>{props.transactionInfo.dateTime}</div>
-        <div>{props.transactionInfo.venue}</div>
-        <div>{props.transactionInfo.address1}</div>
-        <div>{cityState}</div>
-        <div>{props.transactionInfo.zipPostalCode}</div>
-      </div>
-    );
+  const mainDisplay = () => {
+    if (!isLoading) {
+      return (
+        <Fragment>
+          <div className={classes.SectionHeader}>Order Confirmation</div>
+          <div className={classes.Body}>
+            <div style={{ paddingBottom: "20px" }}>
+              Thank you, your order was received and is in process.
+            </div>
+            <div style={{ textDecoration: "underline", fontWeight: "600" }}>
+              Event Details
+            </div>
+            {eventDetails()}
+            <div
+              style={{
+                textDecoration: "underline",
+                fontWeight: "600",
+                paddingBotton: "10px",
+              }}
+            >
+              Order Details
+            </div>
+            <div style={{ paddingBottom: "20px" }}>
+              Total Number of Tickets: {transactionDetails.numTickets}
+              {transactionDetails.tickets.map((item) => {
+                return item.ticketsSelected > 0 ? (
+                  <div key={item.ticketID}>
+                    {item.ticketsSelected} X {item.ticketName}: $
+                    {item.ticketsSelected * item.adjustedTicketPrice}
+                  </div>
+                ) : null;
+              })}
+              {/*Total Purchase Amount: ${transactionDetails.totalAmount.toFixed(2)}*/}
+              Total Purchase Amount: ${transactionDetails.totalAmount}
+            </div>
+            {response()}
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <button
+              className={classes.ButtonBlue}
+              onClick={() => {
+                window.location.href = "/";
+              }}
+            >
+              CONTINUE
+            </button>
+          </div>
+        </Fragment>
+      );
+    } else return null;
   };
 
-  const webinarLink = (
-    <div>
-      <div style={{ textDecoration: "underline", fontWeight: "600" }}>
-        Webinar Link
-      </div>
-      <div style={{ paddingBottom: "20px" }}>
-        {props.transactionInfo.webinarLink}
-      </div>
-    </div>
-  );
-
-  const eventDetails = () => {
-    return (
-      <Fragment>
-        <div>{eventLocation()}</div>
-        <div>{props.transactionInfo.webinarLink ? webinarLink : null}</div>
-      </Fragment>
-    );
-  };
-
-  return (
-    <Fragment>
-      <div className={classes.SectionHeader}>Order Confirmation</div>
-      <div className={classes.Body}>
-        <div style={{ paddingBottom: "20px" }}>
-          Thank you, your Stripe order was received and is in process.
-        </div>
-        <div style={{ textDecoration: "underline", fontWeight: "600" }}>
-          Event Details
-        </div>
-        {eventDetails()}
-        <div
-          style={{
-            textDecoration: "underline",
-            fontWeight: "600",
-            paddingBotton: "10px",
-          }}
-        >
-          Order Details
-        </div>
-        <div style={{ paddingBottom: "20px" }}>
-          Total Number of Tickets: {props.transactionInfo.numTickets}
-          {props.transactionInfo.tickets.map((item) => {
-            return item.ticketsSelected > 0 ? (
-              <div key={item.ticketID}>
-                {item.ticketsSelected} X {item.ticketName}: $
-                {item.ticketsSelected * item.adjustedTicketPrice}
-              </div>
-            ) : null;
-          })}
-          Total Purchase Amount: ${props.transactionInfo.totalAmount.toFixed(2)}
-        </div>
-        {response}
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            window.location.href = "/";
-          }}
-        >
-          CONTINUE
-        </button>
-      </div>
-    </Fragment>
-  );
+  return mainDisplay();
 };
 
 export const OrderConfirmationFF = (props) => {
