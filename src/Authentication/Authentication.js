@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
 
-import Spinner from "../../components/UI/Spinner/SpinnerNew";
+import Spinner from "../components/UI/Spinner/SpinnerNew";
 import { PayPalButton } from "react-paypal-button-v2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -17,11 +17,13 @@ import {
   SUBSCRIPTION_PROMO_CODE_6,
   SUBSCRIPTION_PROMO_CODE_7,
   SUBSCRIPTION_PROMO_CODE_8,
-} from "../../config";
+} from "../config";
 
-import RadioForm from "../Vendor/RadioForm";
+import RadioForm from "../components/Forms/RadioForm";
 
-import stripeImg from "../../assets/Stripe/Stripe wordmark - blurple (small).png";
+import stripeImg from "../assets/Stripe/Stripe wordmark - blurple (small).png";
+
+import payPalImg from "../assets/PayPal/PayPal.PNG";
 
 import classes from "./Authentication.module.css";
 
@@ -29,6 +31,8 @@ const Authentication = () => {
   const [subIntent, setSubIntent] = useState();
   console.log("subIntent: ", subIntent);
   console.log("sandbox: ", PAYPAL_USE_SANDBOX);
+
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const [authValues, setAuthValues] = useState({
     name: "",
@@ -88,6 +92,15 @@ const Authentication = () => {
       SUBSCRIPTION_PROMO_CODE_8,
     ],
   });
+
+  // transaction status variable
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    error: false,
+    redirect: "",
+  });
+
+  const { message, error, redirect } = submissionStatus;
 
   // LOOKS GOOD
   // object deconstruction
@@ -210,12 +223,6 @@ const Authentication = () => {
     };
   }
 
-  // transaction status variable
-  const [submissionStatus, setSubmissionStatus] = useState({
-    message: "",
-    error: false,
-  });
-
   const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
 
   const {
@@ -233,8 +240,6 @@ const Authentication = () => {
     userId,
     accountNum,
   } = authValues;
-
-  const { message, error } = submissionStatus;
 
   // edit so that it is driven by the "status" value
   // only used by useEffect to populate the "values" object
@@ -344,128 +349,130 @@ const Authentication = () => {
   };
 
   useEffect(() => {
-    //let startingView = queryString.parse(window.location.search).new;
     let initialView = queryString.parse(window.location.search).view;
     console.log("initialView: ", initialView);
+    let userStatus = "none";
+
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      console.log("tempUser: ", tempUser);
+      if ("user" in tempUser && "token" in tempUser) {
+        userStatus = "full";
+      } else {
+        userStatus = "partial";
+      }
+    }
 
     if (initialView === "signin") {
+      if (userStatus === "full") {
+        window.location.href = "/myaccount";
+      }
       console.log("going to signin");
       setSubIntent("free");
       setDisplay("signin");
-      //
     } else if (initialView === "free") {
-      console.log("going to signup");
-      setSubIntent("free");
-      setDisplay("signup");
-      console.log("subIntent: ", subIntent);
-      //
-    } else if (initialView === "paid") {
-      console.log("going to signup");
-      //assign vendor intent field to paid
-      setSubIntent("paid");
-      setDisplay("signup");
-      console.log("subIntent: ", subIntent);
-      //
-    } else if (initialView === "gateway") {
-      console.log("going to gateway");
-      setSubIntent("paid");
-      updateSubValues();
-      if (
-        typeof window !== "undefined" &&
-        localStorage.getItem(`user`) !== null
-      ) {
-        let tempUser = JSON.parse(localStorage.getItem("user"));
-        console.log("tempUser: ", tempUser);
-        if ("user" in tempUser && "token" in tempUser) {
-          setAuthValues({
-            name: "",
-            email: tempUser.user.email,
-            password: "",
-            vendorIntent: "",
-            temporary: "",
-            reissued: false,
-            //
-            confirmation: "",
-            resent: false,
-            username: tempUser.user.username,
-            resetToken: "",
-            sessionToken: tempUser.token,
-            userId: tempUser.user.accountId._id,
-            accountNum: tempUser.user.accountId.accountNum,
-          });
-
-          console.log("inside gateway useEffect");
-        }
-
-        setDisplay("gateway");
-      }
-
-      setDisplay("gateway");
-      //
-    } else if (initialView === "sub") {
-      console.log("going to subscription page");
-      setSubIntent("paid");
-      updateSubValues();
-      if (
-        typeof window !== "undefined" &&
-        localStorage.getItem(`user`) !== null
-      ) {
-        let tempUser = JSON.parse(localStorage.getItem("user"));
-        console.log("tempUser: ", tempUser);
-        if ("user" in tempUser && "token" in tempUser) {
-          setAuthValues({
-            name: "",
-            email: tempUser.user.email,
-            password: "",
-            vendorIntent: "",
-            temporary: "",
-            reissued: false,
-            //
-            confirmation: "",
-            resent: false,
-            username: tempUser.user.username,
-            resetToken: "",
-            sessionToken: tempUser.token,
-            userId: tempUser.user.accountId._id,
-            accountNum: tempUser.user.accountId.accountNum,
-          });
-
-          console.log("inside gtwy useEffect");
-        }
-
-        setDisplay("selectPlan");
-      }
-
-      setDisplay("selectPlan");
-      //
-    } else if (initialView === "error") {
-      console.log("error");
-      setDisplay("error");
-      //
-    } else if (!initialView) {
-      if (
-        typeof window !== "undefined" &&
-        localStorage.getItem(`user`) !== null
-      ) {
-        let tempUser = JSON.parse(localStorage.getItem("user"));
-        if ("user" in tempUser && "token" in tempUser) {
-          window.location.href = "/myaccount";
-        }
+      if (userStatus === "full") {
+        window.location.href = "/myaccount";
+      } else if (userStatus === "partial") {
+        console.log("going to signin");
+        setSubIntent("free");
+        setDisplay("signin");
       } else {
-        console.log("signin");
+        console.log("going to signup");
+        setSubIntent("free");
+        setDisplay("signup");
+      }
+    } else if (initialView === "paid") {
+      if (userStatus === "full") {
+        window.location.href = "/myaccount";
+      } else if (userStatus === "partial") {
+        console.log("going to signin");
+        setSubIntent("paid");
+        setDisplay("signin");
+      } else {
+        console.log("going to signup");
+        setSubIntent("paid");
+        setDisplay("signup");
+      }
+    } else if (initialView === "gateway") {
+      if (userStatus === "full") {
+        console.log("going to gateway");
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        setAuthValues({
+          name: "",
+          email: tempUser.user.email,
+          password: "",
+          vendorIntent: "",
+          temporary: "",
+          reissued: false,
+          //
+          confirmation: "",
+          resent: false,
+          username: tempUser.user.username,
+          resetToken: "",
+          sessionToken: tempUser.token,
+          userId: tempUser.user.accountId._id,
+          accountNum: tempUser.user.accountId.accountNum,
+        });
+        console.log("inside gateway useEffect");
+        setDisplay("gateway");
+        setSubIntent("paid");
+        updateSubValues();
+      } else if (userStatus === "partial") {
+        console.log("going to signin");
+        setSubIntent("paid");
+        setDisplay("signin");
+      } else window.location.href = "/myaccount";
+    } else if (initialView === "sub") {
+      if (userStatus === "full") {
+        console.log("going to sub");
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        setAuthValues({
+          name: "",
+          email: tempUser.user.email,
+          password: "",
+          vendorIntent: "",
+          temporary: "",
+          reissued: false,
+          //
+          confirmation: "",
+          resent: false,
+          username: tempUser.user.username,
+          resetToken: "",
+          sessionToken: tempUser.token,
+          userId: tempUser.user.accountId._id,
+          accountNum: tempUser.user.accountId.accountNum,
+        });
+        console.log("inside sub useEffect");
+        setDisplay("selectPlan");
+        setSubIntent("paid");
+        updateSubValues();
+      } else if (userStatus === "partial") {
+        console.log("going to signin");
+        setSubIntent("paid");
+        setDisplay("signin");
+      } else window.location.href = "/myaccount";
+    } else if (initialView === "congrats") {
+      setDisplay("paidCongrats");
+    } else if (!initialView) {
+      console.log("No initial");
+      if (userStatus === "full") {
+        window.location.href = "/myaccount";
+      } else {
         setSubIntent("free");
         setDisplay("signin");
       }
-    } else if (initialView === "payosd") {
-      console.log("going to paypal page");
-      setSubIntent("free");
-      setDisplay("paypal");
-      console.log("subIntent: ", subIntent);
-      //
     } else {
-      console.log("signin");
-      setSubIntent("free");
-      setDisplay("signin");
+      console.log("No initial");
+      if (userStatus === "full") {
+        window.location.href = "/myaccount";
+      } else {
+        setSubIntent("free");
+        setDisplay("signin");
+      }
     }
   }, []);
 
@@ -583,14 +590,17 @@ const Authentication = () => {
     setSubmissionStatus({
       message: "",
       error: false,
+      redirect: "",
     });
   };
 
   const submitSignIn = () => {
-    setDisplay("spinner");
+    //setDisplay("spinner");
+    setShowSpinner(true);
     setSubmissionStatus({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -622,19 +632,22 @@ const Authentication = () => {
         setSubmissionStatus({
           message: "Server down please try again",
           error: true,
+          redirect: "signin",
         });
         setDisplay("error");
       })
       .finally(() => {
-        console.log("Experiment completed");
+        setShowSpinner(false);
       });
   };
 
   const submitForgot = () => {
-    setDisplay("spinner");
+    //setDisplay("spinner");
+    setShowSpinner(true);
     setSubmissionStatus({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -662,51 +675,14 @@ const Authentication = () => {
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
         setSubmissionStatus({
-          message: "Server is down, please try later",
+          message: "Server down please try again",
           error: true,
+          redirect: "forgot",
         });
         setDisplay("error");
-      });
-  };
-
-  const submitTemporary = () => {
-    setDisplay("spinner");
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/confirmcode`;
-    let information = {
-      email: email,
-      confirm_code: temporary,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
       })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleTemporary(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        setDisplay("error");
+      .finally(() => {
+        setShowSpinner(false);
       });
   };
 
@@ -714,6 +690,7 @@ const Authentication = () => {
     setSubmissionStatus({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -742,18 +719,69 @@ const Authentication = () => {
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
         setSubmissionStatus({
-          message: "Server is down, please try later",
+          message: "Server down please try again",
           error: true,
+          redirect: "forgot",
         });
         setDisplay("error");
       });
   };
 
-  const submitSignUp = () => {
-    setDisplay("spinner");
+  const submitTemporary = () => {
+    //setDisplay("spinner");
+    setShowSpinner(true);
     setSubmissionStatus({
       message: "",
       error: false,
+      redirect: "",
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/signin/confirmcode`;
+    let information = {
+      email: email,
+      confirm_code: temporary,
+    };
+    let fetchBody = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(information),
+    };
+    console.log("fetching with: ", url, fetchBody);
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleTemporary(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+
+        setSubmissionStatus({
+          message: "Server down please try again",
+          error: true,
+          redirect: "temporary",
+        });
+        setDisplay("error");
+      })
+      .finally(() => {
+        setShowSpinner(false);
+      });
+  };
+
+  const submitSignUp = () => {
+    //setDisplay("spinner");
+    setShowSpinner(true);
+    setSubmissionStatus({
+      message: "",
+      error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -790,18 +818,24 @@ const Authentication = () => {
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
         setSubmissionStatus({
-          message: "Server is down, please try later",
+          message: "Server down please try again",
           error: true,
+          redirect: "signin",
         });
         setDisplay("error");
+      })
+      .finally(() => {
+        setShowSpinner(false);
       });
   };
 
   const submitConfirmation = () => {
-    setDisplay("spinner");
+    //setDisplay("spinner");
+    setShowSpinner(true);
     setSubmissionStatus({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -839,18 +873,24 @@ const Authentication = () => {
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
         setSubmissionStatus({
-          message: "Server is down, please try later",
+          message: "Server down please try again",
           error: true,
+          redirect: "confirmation",
         });
         setDisplay("error");
+      })
+      .finally(() => {
+        setShowSpinner(false);
       });
   };
 
   const submitPassword = () => {
-    setDisplay("spinner");
+    //setDisplay("spinner");
+    setShowSpinner(true);
     setSubmissionStatus({
       message: "",
       error: false,
+      redirect: "",
     });
     //
     //
@@ -892,24 +932,29 @@ const Authentication = () => {
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
         setSubmissionStatus({
-          message: "Server is down, please try later",
+          message: "Server down please try again",
           error: true,
+          redirect: "password",
         });
         setDisplay("error");
+      })
+      .finally(() => {
+        setShowSpinner(false);
       });
   };
 
   const submitStripe = () => {
-    setDisplay("spinner");
+    //setDisplay("spinner");
+    setShowSpinner(true);
     setSubmissionStatus({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${sessionToken}`);
-    //myHeaders.append("Access-Control-Allow-Origin", "*");
     console.log("myHeaders: ", myHeaders);
 
     console.log(
@@ -934,32 +979,20 @@ const Authentication = () => {
       })
       .catch(function (err) {
         console.info(err + " url: " + url);
-      });
-    /*
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        //handleUsername(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
         setSubmissionStatus({
-          message: "Server is down, please try later",
+          message: "Stripe connection is down, please try later",
           error: true,
+          redirect: "gateway",
         });
         setDisplay("error");
       });
-      */
   };
 
   const submitResend = () => {
     setSubmissionStatus({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -987,9 +1020,11 @@ const Authentication = () => {
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
+
         setSubmissionStatus({
-          message: "Server is down, please try later",
+          message: "Server down please try again",
           error: true,
+          redirect: "confirmation",
         });
         setDisplay("error");
       });
@@ -1019,6 +1054,7 @@ const Authentication = () => {
       setSubmissionStatus({
         message: data.error,
         error: true,
+        redirect: "",
       });
       setDisplay("signin");
       console.log("ERROR: ", data.error);
@@ -1048,6 +1084,7 @@ const Authentication = () => {
       setSubmissionStatus({
         message: data.error,
         error: true,
+        redirect: "",
       });
       setDisplay("forgot");
       console.log("ERROR: ", data.error);
@@ -1078,6 +1115,7 @@ const Authentication = () => {
       setSubmissionStatus({
         message: data.error,
         error: true,
+        redirect: "",
       });
       setDisplay("temporary");
       console.log("ERROR: ", data.error);
@@ -1107,6 +1145,7 @@ const Authentication = () => {
       setSubmissionStatus({
         message: data.error,
         error: true,
+        redirect: "",
       });
       console.log("ERROR: ", data.error);
     }
@@ -1147,6 +1186,7 @@ const Authentication = () => {
       setSubmissionStatus({
         message: data.error,
         error: true,
+        redirect: "",
       });
       setDisplay("signup");
       console.log("ERROR: ", data.error);
@@ -1188,6 +1228,7 @@ const Authentication = () => {
       setSubmissionStatus({
         message: data.error,
         error: true,
+        redirect: "",
       });
       setDisplay("confirmation");
       console.log("ERROR: ", data.error);
@@ -1229,6 +1270,7 @@ const Authentication = () => {
       setSubmissionStatus({
         message: data.error,
         error: true,
+        redirect: "",
       });
       setDisplay("password");
       console.log("ERROR: ", data.error);
@@ -1278,6 +1320,7 @@ const Authentication = () => {
       setSubmissionStatus({
         message: data.error,
         error: true,
+        redirect: "",
       });
       console.log("ERROR: ", data.error);
     }
@@ -1310,6 +1353,7 @@ const Authentication = () => {
         setSubmissionStatus({
           message: "Server error please try again",
           error: true,
+          redirect: "",
         });
         setDisplay("error");
       }
@@ -1317,6 +1361,7 @@ const Authentication = () => {
       setSubmissionStatus({
         message: "Server error please try again",
         error: true,
+        redirect: "",
       });
       setDisplay("error");
     }
@@ -1325,7 +1370,14 @@ const Authentication = () => {
   const showDetail = () => {
     if (error) {
       return (
-        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
+        <div
+          style={{
+            color: "red",
+            fontSize: "14px",
+            lineHeight: "25px",
+            paddingBottom: "20px",
+          }}
+        >
           {message}
         </div>
       );
@@ -1347,7 +1399,7 @@ const Authentication = () => {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter the 6-digit code sent to:
+            Enter 6-digit code sent to:
           </div>
           <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
         </Fragment>
@@ -1355,15 +1407,21 @@ const Authentication = () => {
     } else if (display === "temporary" && reissued) {
       console.log("authValues: ", authValues);
       return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Confirmation code resent to your email.
-        </div>
+        <Fragment>
+          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
+            Enter 6-digit code resent to
+          </div>
+          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
+        </Fragment>
       );
     } else if (display === "confirmation" && !resent) {
       return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Enter the 6-digit code sent to your email:
-        </div>
+        <Fragment>
+          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
+            Enter 6-digit code resent to
+          </div>
+          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
+        </Fragment>
       );
     } else if (display === "confirmation" && resent) {
       return (
@@ -1375,31 +1433,71 @@ const Authentication = () => {
       );
     } else if (display === "gateway") {
       return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          The payment gateway determines how you will instantly receive revenues
-          from ticket sales.
+        <div
+          style={{
+            fontSize: "16px",
+            liineHeight: "25px",
+            paddingBottom: "20px",
+          }}
+        >
+          Select the payment gateway where you will instantly receive your
+          ticket sales revenues.
         </div>
       );
     } else if (display === "freeCongrats") {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          You have a community account.
-          <br></br>
-          You can now issue an unlimited amount of free tickets.
+          <div>You now have a Free Forever Plan!</div>
+          <div style={{ lineHeight: "25px" }}>
+            You can issue an unlimited amount of free tickets.
+          </div>
+          <div>
+            More details on this plan{" "}
+            <a
+              href="https://www.openseatdirect.com/#pricing-plans"
+              target="blank"
+              rel="noreferrer"
+            >
+              here
+            </a>
+            .
+          </div>
         </div>
       );
     } else if (display === "paidCongrats") {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          You have a pro-plan account.
-          <br></br>
-          You can now issue an unlimited amount of free and paid tickets.
+          <div>You now have a Pro Plan!</div>
+          <div style={{ lineHeight: "25px" }}>
+            You can issue an unlimited amount of free tickets.
+          </div>
+          <div>
+            More details on this plan{" "}
+            <a
+              href="https://www.openseatdirect.com/#pricing-plans"
+              target="blank"
+              rel="noreferrer"
+            >
+              here
+            </a>
+            .
+          </div>
         </div>
       );
     } else if (display === "paypal") {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Your client ID sucks:
+          <div>
+            Can't find the Client ID and Secret? Click{" "}
+            <a
+              href="https://www.youtube.com/watch?v=gXAsubSL-1I"
+              target="_blank"
+              rel="noreferrer"
+            >
+              here
+            </a>
+            .
+          </div>
         </div>
       );
     }
@@ -1414,6 +1512,9 @@ const Authentication = () => {
           type="email"
           name="email"
           onChange={handleAuthValueChange}
+          onFocus={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
+          }}
           value={email}
         />
       </div>
@@ -1425,12 +1526,16 @@ const Authentication = () => {
           type="password"
           name="password"
           onChange={handleAuthValueChange}
+          onFocus={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
+          }}
           value={password}
         />
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.ButtonBlue}
+          disabled={error}
           onClick={() => {
             submitSignIn();
           }}
@@ -1441,30 +1546,60 @@ const Authentication = () => {
     </Fragment>
   );
 
-  const forgotForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>E-mail Address</label>
-        <input
-          className={classes.InputBox}
-          type="email"
-          name="email"
-          onChange={handleAuthValueChange}
-          value={email}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            submitForgot();
-          }}
-        >
-          SUBMIT YOUR EMAIL
-        </button>
-      </div>
-    </Fragment>
-  );
+  const forgotForm = () => {
+    const regsuper =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let disabled = !regsuper.test(email);
+    console.log("disabled: ", disabled);
+    let buttonClass;
+    if (disabled) {
+      buttonClass = classes.ButtonBlueOpac;
+    } else {
+      buttonClass = classes.ButtonBlue;
+    }
+
+    //style={{opacity: disabledTest() ? "0.7" : "1.0"}}
+    return (
+      <Fragment>
+        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+          <label style={{ fontSize: "15px" }}>E-mail Address</label>
+          <input
+            className={classes.InputBox}
+            type="email"
+            name="email"
+            onChange={handleAuthValueChange}
+            onFocus={() => {
+              setSubmissionStatus({
+                message: "",
+                error: false,
+                redirect: "",
+              });
+            }}
+            value={email}
+          />
+        </div>
+        <div style={{ paddingTop: "10px" }}>
+          <button
+            className={buttonClass}
+            onClick={() => {
+              console.log("Clicking");
+              if (disabled) {
+                setSubmissionStatus({
+                  message: "Invalid email address",
+                  error: true,
+                  redirect: "",
+                });
+              } else {
+                submitForgot();
+              }
+            }}
+          >
+            SUBMIT YOUR EMAIL
+          </button>
+        </div>
+      </Fragment>
+    );
+  };
 
   const temporaryForm = (
     <Fragment>
@@ -1475,6 +1610,9 @@ const Authentication = () => {
           type="text"
           name="temporary"
           onChange={handleAuthValueChange}
+          onFocus={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
+          }}
           value={temporary}
         />
       </div>
@@ -1500,6 +1638,9 @@ const Authentication = () => {
           type="email"
           name="email"
           onChange={handleAuthValueChange}
+          onFocus={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
+          }}
           value={email}
         />
       </div>
@@ -1525,6 +1666,9 @@ const Authentication = () => {
           type="text"
           name="confirmation"
           onChange={handleAuthValueChange}
+          onFocus={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
+          }}
           value={confirmation}
         />
       </div>
@@ -1550,6 +1694,9 @@ const Authentication = () => {
           type="text"
           name="password"
           onChange={handleAuthValueChange}
+          onFocus={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
+          }}
           value={password}
         />
       </div>
@@ -1568,12 +1715,20 @@ const Authentication = () => {
 
   const gatewayForm = (
     <Fragment>
-      <div style={{ paddingTop: "10px", paddingBottom: "10px" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "165px 165px",
+          columnGap: "10px",
+          paddingTop: "10px",
+          paddingBottom: "10px",
+        }}
+      >
         <button
           style={{
             background: "white",
             width: "160",
-            border: "none",
+            border: "1px solid lightgrey",
             cursor: "pointer",
             outline: "none",
           }}
@@ -1581,8 +1736,8 @@ const Authentication = () => {
           <img
             src={stripeImg}
             alt="STRIPE"
-            width="160"
-            height="120"
+            width="140px"
+            height="auto"
             cursor="pointer"
             onClick={() => {
               console.log("selecting Stripe");
@@ -1594,16 +1749,16 @@ const Authentication = () => {
           style={{
             background: "white",
             width: "160",
-            border: "none",
+            border: "1px solid lightgrey",
             cursor: "pointer",
             outline: "none",
           }}
         >
           <img
-            src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg"
+            src={payPalImg}
             alt="PAYPAL"
-            width="160"
-            height="120"
+            width="140px"
+            height="auto"
             cursor="pointer"
             onClick={() => {
               console.log("selecting PayPal");
@@ -1619,7 +1774,7 @@ const Authentication = () => {
             redirectUser();
           }}
         >
-          STAY WITH COMMUNITY ACCOUNT
+          STAY WITH FREE FOREVER PLAN
         </button>
       </div>
     </Fragment>
@@ -1634,7 +1789,7 @@ const Authentication = () => {
             setDisplay("gateway");
           }}
         >
-          UPGRADE MY ACCOUNT
+          UPGRADE TO A PRO PLAN
         </button>
       </div>
       <div style={{ paddingTop: "10px" }}>
@@ -1672,8 +1827,6 @@ const Authentication = () => {
     console.log("subscriptions.clientId: ", subscriptions.clientId);
     return (
       <div>
-        <br></br>
-        <div>PAYPAL FORM</div>
         <PayPalButton
           onButtonReady={() => {}}
           createSubscription={(data, actions) => {
@@ -1718,10 +1871,6 @@ const Authentication = () => {
                     console.log("response: ", response);
                     // first show a success model with a continue button to go to paypal clientId model
                     if (response.status) {
-                      console.log(
-                        "fetch return got back data on organization:",
-                        response
-                      );
                       let tempData = JSON.parse(localStorage.getItem("user"));
                       console.log("tempData: ", tempData);
                       tempData.user.accountId = response.result;
@@ -1729,12 +1878,12 @@ const Authentication = () => {
                       setDisplay("paidCongrats");
                     } else {
                       console.log("inside else");
-                      //setPageView("receiptErrorPage");
+                      setDisplay("paidCongrats");
                     }
-                  }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
+                  }) // need better error handling
                   .catch((err) => {
                     console.log("Inside inner .catch");
-                    //setPageView("receiptErrorPage");
+                    setDisplay("paidCongrats");
                   });
               })
               .catch((err) => {
@@ -1834,6 +1983,13 @@ const Authentication = () => {
                 tempobject.errorMessage = "";
                 setPromoCodeDetails(tempobject);
               }}
+              onFocus={() => {
+                setSubmissionStatus({
+                  message: "",
+                  error: false,
+                  redirect: "",
+                });
+              }}
             ></input>
             <button
               className={classes.PromoCodeButtonRed}
@@ -1874,6 +2030,13 @@ const Authentication = () => {
                 tempDetails.errorMessage = "";
                 console.log("promoCodeDetails: ", tempDetails);
                 setPromoCodeDetails(tempDetails);
+              }}
+              onFocus={() => {
+                setSubmissionStatus({
+                  message: "",
+                  error: false,
+                  redirect: "",
+                });
               }}
             ></input>
             <button
@@ -1980,41 +2143,6 @@ const Authentication = () => {
     }
   };
 
-  // Displays the entire subscription payment panel
-  const paymentPage = () => {
-    return (
-      <div className={classes.DisplayPanel}>
-        <div>
-          <div
-            style={{
-              paddingTop: "40px",
-              paddingLeft: "80px",
-              fontSize: "22px",
-              fontWeight: "600",
-            }}
-          >
-            Step 2 of 3: Select a Subscription Plan
-          </div>
-          <div className={classes.PaymentCanvas}>
-            {paymentInstructions()}
-            {promoOption()}
-            {paymentPanel()}
-          </div>
-          <div style={{ textAlign: "center", paddingTop: "10px" }}>
-            <button
-              className={classes.ButtonGrey}
-              onClick={() => {
-                ////setPageView("organization");
-              }}
-            >
-              BACK TO ORGANIZATION PAGE
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const paymentInstructions = () => {
     if (
       promoCodeDetails.appliedPromoCode === "OSD50" ||
@@ -2050,11 +2178,10 @@ const Authentication = () => {
         <div
           style={{
             fontSize: "16px",
-            paddingTop: "30px",
             paddingBottom: "20px",
           }}
         >
-          Choose a plan and submit your payment to PayPal:
+          Select your plan and submit payment.
         </div>
       );
     }
@@ -2242,24 +2369,34 @@ const Authentication = () => {
           ////setPageView("receipt");
         } else {
           console.log("error in if then else");
-          ////setPageView("receiptErrorPage");
+
+          setSubmissionStatus({
+            message: "Server down please try again",
+            error: true,
+            redirect: "selectPlan",
+          });
+          setDisplay("error");
         }
       }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
       .catch((err) => {
         console.log("error in .then .catch");
-        ////setPageView("receiptErrorPage");
+
+        setSubmissionStatus({
+          message: "Server down please try again",
+          error: true,
+          redirect: "selectPlan",
+        });
+        setDisplay("error");
       });
   };
 
   // Displays the entire subscription payment panel
   const selectPlanForm = (
     <div className={classes.DisplayPanel}>
-      <div>
-        <div className={classes.PaymentCanvas}>
-          {paymentInstructions()}
-          {promoOption()}
-          {paymentPanel()}
-        </div>
+      <div className={classes.PaymentCanvas}>
+        {paymentInstructions()}
+        {promoOption()}
+        {paymentPanel()}
       </div>
     </div>
   );
@@ -2268,7 +2405,7 @@ const Authentication = () => {
     <Fragment>
       <div style={{ paddingTop: "10px", paddingBottom: "10px" }}></div>
 
-      <div style={{ paddingBottom: "20px", width: "340px", height: "85px" }}>
+      <div style={{ paddingBottom: "20px", width: "340px", height: "100px" }}>
         <label style={{ width: "340px", fontSize: "15px" }}>
           Paypal Client ID <span style={{ color: "red" }}>* </span>
         </label>
@@ -2283,6 +2420,7 @@ const Authentication = () => {
             width: "340px",
             height: "60px",
             paddingLeft: "10px",
+            resize: "none",
           }}
           type="text"
           name="paypalExpress_client_id"
@@ -2305,6 +2443,7 @@ const Authentication = () => {
             width: "340px",
             height: "60px",
             paddingLeft: "10px",
+            resize: "none",
           }}
           type="text"
           name="paypalExpress_client_secret"
@@ -2366,14 +2505,26 @@ const Authentication = () => {
                     console.log("data.message ", data.message);
                     errmsg = data.message;
                   }
-                  window.alert(errmsg);
-                  setDisplay("selectPlan");
+                  //window.alert(errmsg);
+                  //setDisplay("selectPlan");
+                  console.log("errmsg: ", errmsg);
+                  setSubmissionStatus({
+                    message: errmsg,
+                    error: true,
+                    redirect: "paypal",
+                  });
+                  setDisplay("error");
                 }
               })
               .catch((err) => {
-                ////setPreFetchView(pageView);
                 console.log(err);
-                ////setPageView("error");
+
+                setSubmissionStatus({
+                  message: "Server down please try again",
+                  error: true,
+                  redirect: "paypal",
+                });
+                setDisplay("error");
               });
           }}
         >
@@ -2398,31 +2549,40 @@ const Authentication = () => {
     </Fragment>
   );
 
-  const errorForm = (
-    <Fragment>
-      <div
-        style={{
-          fontSize: "16px",
-          color: "red",
-          paddingBottom: "20px",
-          width: "340px",
-          height: "40px",
-        }}
-      >
-        Please try again later
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            window.location.href = "/";
-          }}
-        >
-          CONTINUE
-        </button>
-      </div>
-    </Fragment>
-  );
+  const errorForm = () => {
+    console.log("redirect: ", redirect);
+    return (
+      <Fragment>
+        <div style={{ paddingTop: "10px" }}>
+          <button
+            className={classes.ButtonBlue}
+            onClick={() => {
+              console.log("redirect: ", redirect);
+              let newDisplay = redirect;
+              setSubmissionStatus({
+                message: "",
+                error: false,
+                redirect: "",
+              });
+              setDisplay(newDisplay);
+            }}
+          >
+            TRY AGAIN NOW
+          </button>
+        </div>
+        <div style={{ paddingTop: "10px" }}>
+          <button
+            className={classes.ButtonGrey}
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          >
+            TRY AGAIN LATER
+          </button>
+        </div>
+      </Fragment>
+    );
+  };
 
   const alternateSignInInputs = (
     <div className={classes.Alternates}>
@@ -2431,6 +2591,7 @@ const Authentication = () => {
           className={classes.BlueText}
           onClick={() => {
             resetValues();
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
             setDisplay("forgot");
           }}
         >
@@ -2442,6 +2603,7 @@ const Authentication = () => {
           className={classes.BlueText}
           onClick={() => {
             resetValues();
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
             setDisplay("signup");
           }}
         >
@@ -2457,6 +2619,7 @@ const Authentication = () => {
         <button
           className={classes.BlueText}
           onClick={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
             submitReissue();
           }}
         >
@@ -2468,6 +2631,7 @@ const Authentication = () => {
         <button
           className={classes.BlueText}
           onClick={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
             setDisplay("signin");
           }}
         >
@@ -2484,6 +2648,7 @@ const Authentication = () => {
         <button
           className={classes.BlueText}
           onClick={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
             setDisplay("signin");
           }}
         >
@@ -2499,6 +2664,7 @@ const Authentication = () => {
         <button
           className={classes.BlueText}
           onClick={() => {
+            setSubmissionStatus({ message: "", error: false, redirect: "" });
             submitResend();
           }}
         >
@@ -2507,21 +2673,11 @@ const Authentication = () => {
       </div>
     </div>
   );
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
+
   const spinnerDisplay = () => {
     if (display === "spinner") {
       return (
-        <div className={classes.BlankCanvas}>
+        <div className={classes.BlankCanvas} style={{ height: "600px" }}>
           <div className={classes.Header}>
             <Spinner />
           </div>
@@ -2533,237 +2689,408 @@ const Authentication = () => {
   };
 
   const signInDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "340px" };
+    }
     if (display === "signin") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Welcome back</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {signInForm}
-            {alternateSignInInputs}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>Welcome back!</div>
+              </div>
+              <div>
+                {showDetail()}
+                {signInForm}
+                {alternateSignInInputs}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const forgotDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "250px" };
+    }
     if (display === "forgot") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Trouble logging in?</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {forgotForm}
-            {alternateSignUpInputs}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>Trouble logging in?</div>
+              </div>
+              <div>
+                {showDetail()}
+                {forgotForm()}
+                {alternateSignUpInputs}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const temporaryDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "310px" };
+    }
     if (display === "temporary") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Enter confirmation code</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {temporaryForm}
-            {alternateTemporaryInputs}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>Enter confirmation code.</div>
+              </div>
+              <div>
+                {showDetail()}
+                {temporaryForm}
+                {alternateTemporaryInputs}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const signUpDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "240px" };
+    }
     if (display === "signup") {
-      console.log("inside signup display");
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Tell us about yourself</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {signUpForm}
-            {alternateSignUpInputs}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>Tell us about yourself.</div>
+              </div>
+              <div>
+                {showDetail()}
+                {signUpForm}
+                {alternateSignUpInputs}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const confirmationDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "310px" };
+    }
     if (display === "confirmation") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Enter confirmation code</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {confirmationForm}
-            {alternateConfirmationInputs}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>Enter confirmation code.</div>
+              </div>
+              <div>
+                {showDetail()}
+                {confirmationForm}
+                {alternateConfirmationInputs}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const passwordDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "200px" };
+    }
     if (display === "password") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Create your password</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {passwordForm}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>Create your password</div>
+              </div>
+              <div>
+                {showDetail()}
+                {passwordForm}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const gatewayDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "350px" };
+    }
     if (display === "gateway") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Select a Payment Gateway</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {gatewayForm}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>How to Get Paid Instantly.</div>
+              </div>
+              <div>
+                {showDetail()}
+                {gatewayForm}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const freeCongratsDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "290px" };
+    }
     if (display === "freeCongrats") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Success</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {freeCongratsForm}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>Success!</div>
+              </div>
+              <div>
+                {showDetail()}
+                {freeCongratsForm}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const paidCongratsDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "240px" };
+    }
     if (display === "paidCongrats") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Success</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {paidCongratsForm}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>Success!</div>
+              </div>
+              <div>
+                {showDetail()}
+                {paidCongratsForm}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const selectPlanDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "480px" };
+    }
     if (display === "selectPlan") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Select a Subscription Plan</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {showDetail()}
-            {selectPlanForm}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>Select Your Plan!</div>
+              </div>
+              <div>
+                {showDetail()}
+                {selectPlanForm}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const paypalDisplay = () => {
-    if (display === "paypal") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            Enter PayPal account ClientId and Secret.
-          </div>
-          <div>
-            {showDetail()}
-            {paypalForm}
-          </div>
-        </div>
-      );
-    } else {
-      return null;
+    let height = {};
+    if (!error) {
+      height = { height: "420px" };
     }
-  };
-
-  const subDetailsDisplay = () => {
-    if (display === "details") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Pro-Plan details</div>
+    if (display === "paypal") {
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>
-            {/*showDetail()*/}
-            {detailsForm}
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>Enter PayPal account info.</div>
+              <div>
+                {showDetail()}
+                {paypalForm}
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       return null;
     }
   };
 
   const errorDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "340px" };
+    }
     if (display === "error") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>System Error</div>
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
           </div>
-          <div>{errorForm}</div>
-        </div>
-      );
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>
+                <div>System Error</div>
+              </div>
+              <div>{errorForm()}</div>
+            </div>
+          </div>
+        );
+      }
     } else {
       return null;
     }
@@ -2771,22 +3098,18 @@ const Authentication = () => {
 
   return (
     <div className={classes.MainContainer}>
-      <div className={classes.Modal}>
-        {spinnerDisplay()}
-        {signInDisplay()}
-        {forgotDisplay()}
-        {temporaryDisplay()}
-        {signUpDisplay()}
-        {confirmationDisplay()}
-        {passwordDisplay()}
-        {gatewayDisplay()}
-        {paypalDisplay()}
-        {selectPlanDisplay()}
-        {subDetailsDisplay()}
-        {freeCongratsDisplay()}
-        {paidCongratsDisplay()}
-        {errorDisplay()}
-      </div>
+      {signInDisplay()}
+      {forgotDisplay()}
+      {temporaryDisplay()}
+      {signUpDisplay()}
+      {confirmationDisplay()}
+      {passwordDisplay()}
+      {gatewayDisplay()}
+      {paypalDisplay()}
+      {selectPlanDisplay()}
+      {freeCongratsDisplay()}
+      {paidCongratsDisplay()}
+      {errorDisplay()}
     </div>
   );
 };
