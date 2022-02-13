@@ -225,6 +225,37 @@
   -ms-border-radius: 8px;
   -o-border-radius: 8px;
 }
+
+.StripeButton {
+  height: 40px;
+  width: 200px;
+  background-color: #00a300;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.StripeButton:hover {
+  background-color: #007a00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.StripeButton:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.StripeButtonOpac {
+  height: 40px;
+  width: 200px;
+  background-color: #00a300;
+  opacity: 0.3;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
 .ButtonGrey {
   height: 44px;
   width: 127px;

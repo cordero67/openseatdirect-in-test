@@ -66,6 +66,7 @@ const Checkout = () => {
 
   useEffect(() => {
     setDisplay("spinner");
+    let received = true;
 
     let result = queryString.parse(window.location.search).result;
 
@@ -161,9 +162,11 @@ const Checkout = () => {
               console.log("fetch return got back data:", data);
               setClientSecret(data.client_secret);
               setClientReceived(true);
+              received = true;
             })
             .catch((error) => {
               console.log("freeTicketHandler() error.message: ", error.message);
+              received = false;
             })
             .finally(() => {});
 
@@ -174,7 +177,6 @@ const Checkout = () => {
 
           setStripePromise(
             loadStripe(`${OSD_STRIPE_ACCOUNT_ID}`, {
-              //stripeAccount: "acct_1KNPhm4DwDsj7HXk",
               stripeAccount: eventDetails.stripeAccountID,
             })
           );
@@ -188,7 +190,46 @@ const Checkout = () => {
         window.location.href = "/";
       }
       stylingUpdate(window.innerWidth, window.innerHeight);
-      setDisplay("main");
+
+      if (
+        typeof window !== "undefined" &&
+        localStorage.getItem("user") !== null
+      ) {
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        let email = tempUser.user.email;
+        let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
+
+        setTransactionInfo(
+          loadTransactionInfo(
+            eventDetails,
+            orderTotals,
+            ticketInfo,
+            email,
+            name
+          )
+        );
+      } else {
+        let email = customerInformation.email;
+        let name = `${customerInformation.firstname} ${customerInformation.lastname}`;
+        console.log("customerInformation for guest: ", customerInformation);
+
+        setTransactionInfo(
+          loadTransactionInfo(
+            eventDetails,
+            orderTotals,
+            ticketInfo,
+            email,
+            name
+          )
+        );
+      }
+      if (received) {
+        console.log("Display is main");
+        setDisplay("main");
+      } else {
+        console.log("Display is error");
+        setDisplay("error");
+      }
     }
   }, []);
 
@@ -422,6 +463,10 @@ const Checkout = () => {
           >
             CONTINUE
           </button>
+          <StripeConfirm
+            transactionInfo={transactionInfo}
+            //  orderStatus={transactionInfo}
+          ></StripeConfirm>
         </div>
       );
     } else {
@@ -468,6 +513,8 @@ const Checkout = () => {
           <Elements stripe={stripePromise} options={options()}>
             <CheckoutForm
               clientSecret={clientSecret}
+              transactionInfo={transactionInfo}
+              orderStatus={clientSecret}
               orderFailure={(event) => {
                 console.log("UNUCCESSFUL ORDER");
 
@@ -534,7 +581,6 @@ const Checkout = () => {
       } else {
         twoDigitSec = calculateTimeLeft().seconds;
       }
-
       return (
         <div style={{ fontSize: "16px", textAlign: "center" }}>
           Ticket reservation expires in {calculateTimeLeft().minutes}:
@@ -549,7 +595,6 @@ const Checkout = () => {
       window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
     }
   };
-
   */
   // LOOKS GOOD
   // determines whether or not to display the purchase amount
@@ -582,7 +627,7 @@ const Checkout = () => {
   };
 
   const mainDisplay = () => {
-    if (display === "main") {
+    if (display === "main" || display === "error") {
       let paymentPane = (
         <Fragment>
           <div className={classes.MainItemLeft}>

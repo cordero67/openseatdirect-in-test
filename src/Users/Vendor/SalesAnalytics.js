@@ -618,7 +618,8 @@ const SalesAnalytics = (props) => {
               <div style={{ textAlign: "left" }}>{tempPostalCode}</div>
               <div style={{ textAlign: "center" }}>{code.ticketsPurchased}</div>
               <div style={{ textAlign: "right", paddingRight: "5px" }}>
-                {code.salesRevenues.toFixed(2)}
+                {/*code.salesRevenues.toFixed(2)*/}
+                {code.salesRevenues}
               </div>
             </div>
           );
@@ -689,7 +690,8 @@ const SalesAnalytics = (props) => {
                 {buyer.ticketsPurchased}
               </div>
               <div style={{ textAlign: "right", paddingRight: "5px" }}>
-                {buyer.salesRevenues.toFixed(2)}
+                {/*buyer.salesRevenues.toFixed(2)*/}
+                {buyer.salesRevenues}
               </div>
             </div>
           );

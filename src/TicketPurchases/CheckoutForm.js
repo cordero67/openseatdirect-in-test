@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { PaymentElement } from "@stripe/react-stripe-js";
 
+import classes from "./Checkout.module.css";
+
 export default function CheckoutForm(props) {
   console.log("props: ", props);
   const stripe = useStripe();
@@ -17,6 +19,17 @@ export default function CheckoutForm(props) {
       // Stripe.js has not yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
       return;
+    }
+
+    // load event data into local storage
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        `transaction`,
+        JSON.stringify(props.transactionInfo)
+      );
+      localStorage.setItem(`order`, JSON.stringify(props.orderStatus));
+      localStorage.setItem(`secret`, JSON.stringify(props.clientSecret));
     }
 
     const { error } = await stripe.confirmPayment({
@@ -78,9 +91,16 @@ export default function CheckoutForm(props) {
   return (
     <form onSubmit={handleSubmit2}>
       <PaymentElement />
-      <div style={{ paddingTop: "20px", paddingBottom: "40px" }}></div>
-      <div>
-        <button disabled={!stripe}>SUBMIT</button>
+      <div
+        style={{
+          textAlign: "center",
+          paddingTop: "40px",
+          paddingBottom: "40px",
+        }}
+      >
+        <button disabled={!stripe} className={classes.StripeButton}>
+          SUBMIT
+        </button>
       </div>
     </form>
   );

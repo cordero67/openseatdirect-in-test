@@ -584,16 +584,6 @@ const Authentication = () => {
     return response;
   };
 
-  const submitPaypal = () => {
-    console.log("Inside submitPaypal");
-    setDisplay("spinner");
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-  };
-
   const submitSignIn = () => {
     //setDisplay("spinner");
     setShowSpinner(true);
@@ -2457,7 +2447,16 @@ const Authentication = () => {
           style={{ width: "340px" }}
           disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
           onClick={() => {
-            submitPaypal();
+            //submitPaypal();
+
+            console.log("Inside submitPaypal");
+            //setDisplay("spinner");
+            setShowSpinner(true);
+            setSubmissionStatus({
+              message: "",
+              error: false,
+              redirect: "",
+            });
             // api static variables
             let myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
@@ -2525,25 +2524,13 @@ const Authentication = () => {
                   redirect: "paypal",
                 });
                 setDisplay("error");
+              })
+              .finally(() => {
+                setShowSpinner(false);
               });
           }}
         >
           SUBMIT YOUR PAYPAL DETAILS
-        </button>
-      </div>
-    </Fragment>
-  );
-
-  const detailsForm = (
-    <Fragment>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            setDisplay("gateway");
-          }}
-        >
-          CONTINUE
         </button>
       </div>
     </Fragment>
