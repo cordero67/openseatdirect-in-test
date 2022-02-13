@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import dateFormat from "dateformat";
 
 import classes from "./OrderConfirms.module.css";
@@ -182,6 +182,16 @@ export const OrderConfirm = (props) => {
 
 export const StripeConfirm = (props) => {
   console.log("props: ", props);
+  const [transactionDetails, setTransactionDetails] = useEffect({});
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let tempUser = JSON.parse(localStorage.getItem("transactionInfo"));
+      console.log("tempUser: ", tempUser);
+      setTransactionDetails(tempUser);
+    }
+  }, []);
+
   const response = () => {
     if (false) {
       return (
@@ -195,7 +205,7 @@ export const StripeConfirm = (props) => {
                 paddingBottom: "20px",
               }}
             >
-              {props.transactionInfo.email}
+              {transactionDetails.email}
             </span>
           </div>
           <div>
@@ -216,7 +226,7 @@ export const StripeConfirm = (props) => {
             Within 48 hours, OpenSeatDirect will be sending you a message to
             your email:{" "}
             <span style={{ color: "blue", fontWeight: "600" }}>
-              {props.transactionInfo.paypalEmail}
+              {transactionDetails.paypalEmail}
             </span>
           </div>
 
@@ -236,30 +246,30 @@ export const StripeConfirm = (props) => {
 
   let dateRange;
   if (
-    dateFormat(props.transactionInfo.startDateTime, "m d yy", true) ===
-    dateFormat(props.transactionInfo.endDateTime, "m d yy", true)
+    dateFormat(transactionDetails.startDateTime, "m d yy", true) ===
+    dateFormat(transactionDetails.endDateTime, "m d yy", true)
   ) {
     dateRange = (
       <Fragment>
         {dateFormat(
-          props.transactionInfo.startDateTime,
+          transactionDetails.startDateTime,
           "ddd, mmm d, yyyy - h:MM TT",
           true
         )}{" "}
-        to {dateFormat(props.transactionInfo.endDateTime, "shortTime", true)}
+        to {dateFormat(transactionDetails.endDateTime, "shortTime", true)}
       </Fragment>
     );
   } else {
     dateRange = (
       <Fragment>
         {dateFormat(
-          props.transactionInfo.startDateTime,
+          transactionDetails.startDateTime,
           "ddd, mmm d, yyyy - h:MM TT",
           true
         )}{" "}
         to{" "}
         {dateFormat(
-          props.transactionInfo.endDateTime,
+          transactionDetails.endDateTime,
           "ddd, mmm d, yyyy - h:MM TT",
           true
         )}
@@ -269,23 +279,23 @@ export const StripeConfirm = (props) => {
 
   const eventLocation = () => {
     let cityState;
-    if (props.transactionInfo.city && props.transactionInfo.state) {
-      cityState = `${props.transactionInfo.city}, ${props.transactionInfo.state}`;
-    } else if (props.transactionInfo.city) {
-      cityState = `${props.transactionInfo.city}`;
-    } else if (props.transactionInfo.state) {
-      cityState = `${props.transactionInfo.state}`;
+    if (transactionDetails.city && transactionDetails.state) {
+      cityState = `${transactionDetails.city}, ${transactionDetails.state}`;
+    } else if (transactionDetails.city) {
+      cityState = `${transactionDetails.city}`;
+    } else if (transactionDetails.state) {
+      cityState = `${transactionDetails.state}`;
     }
 
     return (
       <div style={{ paddingBottom: "20px" }}>
-        <div>{props.transactionInfo.eventTitle}</div>
+        <div>{transactionDetails.eventTitle}</div>
         <div>{dateRange}</div>
-        <div>{props.transactionInfo.dateTime}</div>
-        <div>{props.transactionInfo.venue}</div>
-        <div>{props.transactionInfo.address1}</div>
+        <div>{transactionDetails.dateTime}</div>
+        <div>{transactionDetails.venue}</div>
+        <div>{transactionDetails.address1}</div>
         <div>{cityState}</div>
-        <div>{props.transactionInfo.zipPostalCode}</div>
+        <div>{transactionDetails.zipPostalCode}</div>
       </div>
     );
   };
@@ -296,7 +306,7 @@ export const StripeConfirm = (props) => {
         Webinar Link
       </div>
       <div style={{ paddingBottom: "20px" }}>
-        {props.transactionInfo.webinarLink}
+        {transactionDetails.webinarLink}
       </div>
     </div>
   );
@@ -305,7 +315,7 @@ export const StripeConfirm = (props) => {
     return (
       <Fragment>
         <div>{eventLocation()}</div>
-        <div>{props.transactionInfo.webinarLink ? webinarLink : null}</div>
+        <div>{transactionDetails.webinarLink ? webinarLink : null}</div>
       </Fragment>
     );
   };
@@ -331,7 +341,7 @@ export const StripeConfirm = (props) => {
           Order Details
         </div>
         <div style={{ paddingBottom: "20px" }}>
-          Total Number of Tickets: {props.transactionInfo.numTickets}
+          Total Number of Tickets: {transactionDetails.numTickets}
           {/*props.transactionInfo.tickets.map((item) => {
             return item.ticketsSelected > 0 ? (
               <div key={item.ticketID}>
