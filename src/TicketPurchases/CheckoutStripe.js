@@ -434,10 +434,7 @@ const Checkout = () => {
       return (
         <div className={classes.BlankCanvas}>
           <div style={{ paddingTop: "20px" }}>
-            <StripeConfirm
-              transactionInfo={transactionInfo}
-              orderStatus={orderStatus}
-            />
+            <StripeConfirm />
           </div>
         </div>
       );
@@ -463,10 +460,7 @@ const Checkout = () => {
           >
             CONTINUE
           </button>
-          <StripeConfirm
-            transactionInfo={transactionInfo}
-            //  orderStatus={transactionInfo}
-          ></StripeConfirm>
+          <StripeConfirm></StripeConfirm>
         </div>
       );
     } else {

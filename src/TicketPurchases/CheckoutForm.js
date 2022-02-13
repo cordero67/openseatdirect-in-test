@@ -28,8 +28,6 @@ export default function CheckoutForm(props) {
         `transaction`,
         JSON.stringify(props.transactionInfo)
       );
-      localStorage.setItem(`order`, JSON.stringify(props.orderStatus));
-      localStorage.setItem(`secret`, JSON.stringify(props.clientSecret));
     }
 
     const { error } = await stripe.confirmPayment({
