@@ -21,7 +21,7 @@ import { DateRange } from "./Resources/PricingFunctions";
 import Spinner from "../components/UI/Spinner/Spinner";
 import CartLink from "./Components/CartLink";
 import OrderSummary from "./Components/OrderSummary";
-import { OrderConfirm, StripeConfirm } from "./Components/OrderConfirms";
+import { StripeConfirm } from "./Components/OrderConfirms";
 import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
 import classes from "./Checkout.module.css";
 
@@ -449,17 +449,6 @@ const Checkout = () => {
       //console.log("orderStatus: ", orderStatus);
       return (
         <div className={classes.BlankCanvas}>
-          <div style={{ paddingTop: "20px" }}>
-            Your order was successfully processed by Stripe
-          </div>
-          <button
-            className={classes.ButtonGreen}
-            onClick={() => {
-              window.location.href = "/";
-            }}
-          >
-            CONTINUE
-          </button>
           <StripeConfirm></StripeConfirm>
         </div>
       );
