@@ -71,6 +71,7 @@ const TicketSales = (props) => {
         <Fragment>
           {eventOrders.map((item, index) => {
             console.log("ORDER: ", item);
+            console.log("totalPaidAmount: ", item.totalPaidAmount);
             let shortDateTime;
             [shortDateTime] = getDate(item.createdAt);
             if (oddOrder) {
@@ -93,7 +94,8 @@ const TicketSales = (props) => {
                 <div style={{ textAlign: "left" }}>{item.email}</div>
                 <div>{item.qrTickets.length}</div>
                 <div style={{ textAlign: "right" }}>
-                  {item.totalPaidAmount.toFixed(2)}
+                  {item.totalPaidAmount}
+                  {/*item.totalPaidAmount.toFixed(2)*/}
                 </div>
                 <div style={{ fontSize: "22px", textAlign: "center" }}>
                   <button className={classes.EventButton} style={styling}>
