@@ -93,15 +93,21 @@ const VendorAccount = (props) => {
             let jsEvents = JSON.parse(result);
             jsEvents.sort(compareValues("startDateTime", "asc"));
             setEventDescriptions(jsEvents);
-            fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
+            requestOptions = {
+              method: "POST",
+              headers: myHeaders,
+              redirect: "follow",
+            };
+            let fetchstr = `${API}/reports/organizer?rsid=orders1`;
+            //let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
             fetch(fetchstr, requestOptions)
               .then(handleErrors)
               .then((response) => response.text())
               .then((result) => {
                 let jsOrders = JSON.parse(result);
                 console.log("ORDERS: ", jsOrders);
-                jsOrders.sort(compareValues("createdAt", "asc"));
-                setEventOrders(jsOrders);
+                //jsOrders.sort(compareValues("createdAt", "asc"));
+                setEventOrders(jsOrders.data);
                 // THIS IS FOR THE NEW IMPLEMENTATION WHEN THE TAB SETTING IS COMING FORM "Routes.js"
                 //setDisplay(props.myAccountTab);
                 setDisplay("events");
@@ -139,7 +145,8 @@ const VendorAccount = (props) => {
     };
 
     console.log("Temp User: ", tempUser);
-    let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
+    let fetchstr = `${API}/accounts/reports/organizer?rsid=orders1`;
+    //let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
     fetch(fetchstr, requestOptions)
       .then(handleErrors)
       .then((response) => response.text())
