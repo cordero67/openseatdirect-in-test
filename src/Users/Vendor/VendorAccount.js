@@ -20,11 +20,17 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 
 import classes from "./VendorAccount.module.css";
 
+
+import { useOurApi } from "../../Users/Authentication/useOurApi";
+import { useOurApi2 } from "../../Users/Authentication/useOurApi2";
+
+
+
 const VendorAccount = (props) => {
   console.log("VENDOR PROPS: ", props);
 
   // spinner, events, salesAnalytics, ticketSales, issueTickets, editEvent, wallet, account, create, orders
-  const [display, setDisplay] = useState("spinner");
+  const [display, setDisplay] = useState("events");
   const [eventDescriptions, setEventDescriptions] = useState({}); //
   const [eventOrders, setEventOrders] = useState({}); //
   const [selectedEvent, setSelectedEvent] = useState();
@@ -33,259 +39,160 @@ const VendorAccount = (props) => {
 
   const [userInfo, setUserInfo] = useState({}); //
 
-  const handleErrors = (response) => {
-    if (!response.ok) {
-      console.log("error in 'handleErrors()'");
-      throw Error(response.status);
-    }
-    return response;
-  };
+////
 
-  // LOOKS GOOD
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("tempUser: ", tempUser);
+    // sets api variables for EVENTS
+    let tmpuser  = JSON.parse(localStorage.getItem("user"));
+    let acctnum = tmpuser?.user?.accountId?.accountNum;
 
-      if (!("user" in tempUser && "token" in tempUser)) {
-        window.location.href = "/auth";
-      }
+    if (!tmpuser?.token || ! acctnum ) window.location.href = "/auth";
 
-      // LOOKS GOOD
-      let tempUserInfo = {};
-      tempUserInfo.token = tempUser.token;
-      tempUserInfo.email = tempUser.user.email;
-      tempUserInfo.firstname = tempUser.user.firstname;
-      tempUserInfo.lastname = tempUser.user.lastname;
-      tempUserInfo.status = tempUser.user.accountId.status;
-      tempUserInfo.id = tempUser.user.accountId._id;
-      tempUserInfo.account = tempUser.user.accountId;
-      tempUserInfo.accountNum = tempUser.user.accountId.accountNum;
-      console.log("tempUserInfo: ", tempUserInfo);
+    let myHeadersx = new Headers();
+    myHeadersx.append("Content-Type", "application/json");
+    myHeadersx.append("Authorization", "Bearer " + tmpuser.token);
+    const url = `${API}/accounts/${tmpuser.user.accountId.accountNum}/events`;
+    const method1 = "GET";
+    const body = null;
+    const initialData = { status: true, message: "hi first time for events" };
+    const { isLoading, hasError, setUrl, setBody, data, networkError } =
+      useOurApi(method1, url, myHeadersx, body, initialData);
 
-      setUserInfo(tempUserInfo);
+    // sets api variables for ORDERS
+    const url2 = `${API}/reports/organizer?rsid=orders1`;
+    const method2 = "POST";
+    const body2 = null;
+    const initialData2 = { status: true, message: "hi first time for orders" };
 
-      // LOOKS GOOD
-      // sets api variables
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", "Bearer " + tempUserInfo.token);
-      let requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-
-      // LOOKS GOOD
-      // if "accountID" field exists than all event and order information is requested
-      if (tempUserInfo.account) {
-        console.log("INSIDE EVENT FETCH");
-        let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/events`;
-
-        fetch(fetchstr, requestOptions)
-          .then(handleErrors)
-          .then((response) => response.text())
-          .then((result) => {
-            console.log("VENDOR EVENTS api result: ", JSON.parse(result));
-            let jsEvents = JSON.parse(result);
-            jsEvents.sort(compareValues("startDateTime", "asc"));
-            setEventDescriptions(jsEvents);
-            fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
-            fetch(fetchstr, requestOptions)
-              .then(handleErrors)
-              .then((response) => response.text())
-              .then((result) => {
-                let jsOrders = JSON.parse(result);
-                console.log("ORDERS: ", jsOrders);
-                jsOrders.sort(compareValues("createdAt", "asc"));
-                setEventOrders(jsOrders);
-                // THIS IS FOR THE NEW IMPLEMENTATION WHEN THE TAB SETTING IS COMING FORM "Routes.js"
-                //setDisplay(props.myAccountTab);
-                setDisplay("events");
-              })
-              .catch((error) => {
-                console.log("error", error);
-                setDisplay("connection");
-              });
-            return jsEvents;
-          })
-          .catch((error) => {
-            console.log("error", error);
-            setDisplay("connection");
-          });
-      } else {
-        // account does not exist
-        setDisplay("events");
-      }
-    } else {
-      window.location.href = "/auth";
-    }
-  }, []);
+    const { isLoading2 , hasError2, setUrl2, setBody2, data2, networkError2 } =
+      useOurApi2(method2, url2, myHeadersx, body2, initialData2);
 
   const reloadOrders = () => {
-    let tempUser = JSON.parse(localStorage.getItem("user"));
-    let vendorToken = tempUser.token;
+    setUrl2 (url2);
+  }
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer " + tempUser.token);
-    let requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
 
-    console.log("Temp User: ", tempUser);
-    let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
-    fetch(fetchstr, requestOptions)
-      .then(handleErrors)
-      .then((response) => response.text())
-      .then((result) => {
-        let jsOrders = JSON.parse(result);
-        console.log("ORDERS: ", jsOrders);
-        jsOrders.sort(compareValues("createdAt", "asc"));
-        setEventOrders(jsOrders);
-      })
-      .catch((error) => {
-        // no error is shown to user
-        // orders are not updated but older order information still exists
-        console.log("error", error);
-      });
-  };
-
-  // LOOKS GOOD
-  const loadingSpinner = () => {
-    if (display === "spinner") {
+  const mainDisplay = () => {
+    if  ( isLoading || isLoading2) {
       return (
         <div style={{ paddingTop: "60px" }}>
           <Spinner />
         </div>
       );
-    } else {
-      return null;
-    }
-  };
-
-  // LOOKS GOOD
-  const connectionStatus = () => {
-    if (display === "connection") {
+    };
+    if (hasError || hasError2) {
       return (
-        <div className={classes.ConnectionText}>
-          There is a problem with the OSD Server in retrieving your information.
-          Please try again later.
+          <div className={classes.ConnectionText}>
+            There is a problem in retrieving your information.
+            Please try again later.
         </div>
-      );
-    } else return null;
-  };
+      )
+    };
 
-  const mainDisplay = () => {
-    if (display === "events") {
-      return (
-        <Events
-          eventDescriptions={eventDescriptions}
-          eventOrders={eventOrders}
-          salesAnalytics={(event, orders) => {
-            setSelectedEvent(event);
-            setSelectedOrders(orders);
+        if (display === "events") {
+          return (
+            <Events
+              eventDescriptions={data}
+              eventOrders={data2.data}
+              salesAnalytics={(event, orders) => {
+                setSelectedEvent(event);
+                setSelectedOrders(orders);
 
-            setDisplay("salesAnalytics");
-          }}
-          ticketSales={(event, orders) => {
-            console.log("EVENT: ", event);
-            console.log("ORDER: ", orders);
-            setSelectedEvent(event);
-            setSelectedOrders(orders);
-            setDisplay("ticketSales");
-          }}
-          issueTickets={(event) => {
-            setSelectedEvent(event);
-            setDisplay("issueTickets");
-          }}
-          editEvent={(event) => {
-            setSelectedEvent(event);
-            setDisplay("editEvent");
-          }}
-        />
-      );
-    } else if (display === "salesAnalytics") {
-      return (
-        <SalesAnalytics
-          event={selectedEvent}
-          orders={selectedOrders}
-          toEvents={() => {
-            setDisplay("events");
-          }}
-        />
-      );
-    } else if (display === "ticketSales") {
-      return (
-        <TicketSales
-          token={userInfo.token}
-          event={selectedEvent}
-          orders={selectedOrders}
-          toEvents={() => {
-            setDisplay("events");
-          }}
-        />
-      );
-    } else if (display === "issueTickets") {
-      return (
-        <IssueTickets
-          event={selectedEvent}
-          confirmed={() => {
-            reloadOrders();
-          }}
-          toEvents={() => {
-            setDisplay("events");
-          }}
-        />
-      );
-    } else if (display === "editEvent") {
-      console.log("selectedEvent: ", selectedEvent);
-      return (
-        <EditEvent
-          event={selectedEvent}
-          toEvents={() => {
-            setDisplay("events");
-          }}
-        />
-      );
-    } else if (display === "orders") {
-      // CURRENTLY NOT USING THIS TAB
-      return <Orders />;
-    } else if (display === "create") {
-      return (
-        <CreateEvent
-          toEvents={() => {
-            setDisplay("events");
-          }}
-        />
-      );
-    } else if (display === "account") {
-      return (
-        <Account
-          upgrade={(event) => {
-            setDisplay("upgrade");
-          }}
-        ></Account>
-      );
-    } else if (display === "upgrade") {
-      return (
-        <Upgrade
-          userInfo={userInfo}
-          userid={userInfo.id}
-          token={userInfo.token}
-          accountNum={userInfo.accountNum}
-        />
-      );
-    } else if (display === "wallet") {
-      return <MyTickets />;
-    } else {
-      return null;
-    }
+                setDisplay("salesAnalytics");
+              }}
+              ticketSales={(event, orders) => {
+                console.log("EVENT: ", event);
+                console.log("ORDER: ", orders);
+                setSelectedEvent(event);
+                setSelectedOrders(orders);
+                setDisplay("ticketSales");
+              }}
+              issueTickets={(event) => {
+                setSelectedEvent(event);
+                setDisplay("issueTickets");
+              }}
+              editEvent={(event) => {
+                setSelectedEvent(event);
+                setDisplay("editEvent");
+              }}
+            />
+          );
+        } else if (display === "salesAnalytics") {
+          return (
+            <SalesAnalytics
+              event={selectedEvent}
+              orders={selectedOrders}
+              toEvents={() => {
+                setDisplay("events");
+              }}
+            />
+          );
+        } else if (display === "ticketSales") {
+          return (
+            <TicketSales
+              token={userInfo.token}
+              event={selectedEvent}
+              orders={selectedOrders}
+              toEvents={() => {
+                setDisplay("events");
+              }}
+            />
+          );
+        } else if (display === "issueTickets") {
+          return (
+            <IssueTickets
+              event={selectedEvent}
+              confirmed={() => {
+                reloadOrders();
+              }}
+              toEvents={() => {
+                setDisplay("events");
+              }}
+            />
+          );
+        } else if (display === "editEvent") {
+          console.log("selectedEvent: ", selectedEvent);
+          return (
+            <EditEvent
+              event={selectedEvent}
+              toEvents={() => {
+                setDisplay("events");
+              }}
+            />
+          );
+        } else if (display === "orders") {
+          // CURRENTLY NOT USING THIS TAB
+          return <Orders />;
+        } else if (display === "create") {
+          return (
+            <CreateEvent
+              toEvents={() => {
+                setDisplay("events");
+              }}
+            />
+          );
+        } else if (display === "account") {
+          return (
+            <Account
+              upgrade={(event) => {
+                setDisplay("upgrade");
+              }}
+            ></Account>
+          );
+        } else if (display === "upgrade") {
+          return (
+            <Upgrade
+              userInfo={userInfo}
+              userid={userInfo.id}
+              token={userInfo.token}
+              accountNum={userInfo.accountNum}
+            />
+          );
+        } else if (display === "wallet") {
+          return <MyTickets />;
+        } else {
+          return null;
+        }
+
   };
 
   const navigation = (
@@ -301,13 +208,12 @@ const VendorAccount = (props) => {
     />
   );
 
+
   return (
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
         {navigation}
-        {loadingSpinner()}
         {mainDisplay()}
-        {connectionStatus()}
       </div>
     </div>
   );
