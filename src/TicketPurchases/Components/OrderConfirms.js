@@ -343,7 +343,6 @@ export const StripeConfirm = () => {
       );
     } else return null;
   };
-
   return mainDisplay();
 };
 
