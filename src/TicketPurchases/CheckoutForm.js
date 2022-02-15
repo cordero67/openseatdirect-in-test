@@ -8,6 +8,7 @@ import classes from "./Checkout.module.css";
 
 export default function CheckoutForm(props) {
   console.log("props: ", props);
+  console.log("STRIPE_SUCCESS_URL: ", STRIPE_SUCCESS_URL);
   const stripe = useStripe();
   const elements = useElements();
 
@@ -36,9 +37,7 @@ export default function CheckoutForm(props) {
       //`Elements` instance that was used to create the Payment Element
       elements,
       confirmParams: {
-        //STRIPE_SUCCESS_URL,
-        return_url:
-          "https://app.bondirectly.com/checkout-stripe?result=success",
+        return_url: STRIPE_SUCCESS_URL,
       },
     });
 
