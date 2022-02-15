@@ -8,7 +8,7 @@ import CheckoutForm from "./CheckoutForm";
 import StripeModal from "./Modals/StripeModal";
 
 import { API, OSD_STRIPE_ACCOUNT_ID } from "../config.js";
-import { PayPalButton } from "react-paypal-button-v2";
+
 
 import {
   MainContainerStyling,
@@ -25,6 +25,9 @@ import { StripeConfirm } from "./Components/OrderConfirms";
 import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
 import classes from "./Checkout.module.css";
 
+import { useOurApi } from "../Users/useOurApi";
+
+
 // defines the variables that accept the "cart_" data from "localStorage"
 let eventDetails = {};
 let ticketInfo = {};
@@ -34,9 +37,6 @@ let orderExpiration;
 
 let eventLogo = "";
 
-// defines the PayPal "purchase_units.items" value populated from "ticketOrder"
-let paypalArray = [];
-
 // defines the styling variables
 let MainContainer = {};
 let MainGrid = {};
@@ -45,7 +45,7 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const Checkout = () => {
-  const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
+  const [display, setDisplay] = useState("main"); // defines panel displayed: main, spinner, confirmation, paypal
   const [clientReceived, setClientReceived] = useState(false);
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
@@ -61,9 +61,150 @@ const Checkout = () => {
     error: "",
   });
 
-  const [clientSecret, setClientSecret] = useState("");
-  const [stripePromise, setStripePromise] = useState();
+//  const [clientSecret, setClientSecret] = useState("");
+//  const [stripePromise, setStripePromise] = useState();
 
+////////// setup api variables
+/*
+  if ("success" === queryString.parse(window.location.search).result ){
+    setDisplay("success");
+  }
+    if (result === "success") {
+      console.log("success");
+      //
+   } else {
+      if (typeof window !== "undefined" && localStorage.getItem("eventNum")) {
+*/
+
+  let event = JSON.parse(localStorage.getItem("eventNum"));
+  let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
+  
+  if (!event || !tempCart) window.location.ref ="/events";    // go to events of missing vars
+
+  eventDetails = tempCart.eventDetails;
+  console.log("cart in storage: ", tempCart);
+  console.log("eventDetails: ", eventDetails);
+  ticketInfo = tempCart.ticketInfo;
+  orderTotals = tempCart.orderTotals;
+  osdOrderId = tempCart.osdOrderId;
+  orderExpiration = tempCart.orderExpiration;
+  let isGuest = "guestInfo" in tempCart ? true: false;
+
+
+  let email;
+  let name;
+
+  if ("guestInfo" in tempCart) {
+    console.log("tempCart: ", tempCart);
+    setCustomerInformation(tempCart.guestInfo);
+    email =  customerInformation.email;
+    name = `${customerInformation.firstname} ${customerInformation.lastname}`;
+
+  } else if (localStorage.getItem("user") !== null) {
+    let tempUser = JSON.parse(localStorage.getItem("user"));
+    setCustomerInformation({
+      sessionToken: tempUser.token,
+      userId: tempUser.user._id,
+      email: tempUser.user.email,
+    });
+    email =  tempUser.user.email;
+    name =`${tempUser.user.firstname} ${tempUser.user.lastname}`;
+  } else {
+    window.location.href = `/et/${tempCart.eventDetails.vanityLink}?eventID=${tempCart.eventDetails.eventNum}`;
+  };
+
+  console.log("orderTotals: ", orderTotals);
+  console.log("ticketInfo: ", ticketInfo);
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  let tickets = [];
+  tempCart.ticketInfo.forEach((item) => {
+    if (item.ticketsSelected !== 0) {
+      tickets.push({
+        ticketID: item.ticketID,
+        ticketsSelected: item.ticketsSelected,
+      });
+    }
+  });
+    //let promoCode;
+  let body = {
+      totalAmount: tempCart.orderTotals.finalPurchaseAmount,
+      eventNum: tempCart.eventDetails.eventNum,
+      tickets: tickets,
+    };
+
+    if (tempCart?.promoCodeDetails?.appliedPromoCode !== "") {
+      body.userPromo = tempCart.promoCodeDetails.appliedPromoCode;
+    }
+
+    let url;
+    if ("guestInfo" in tempCart) {
+      console.log("customerInformation: ", customerInformation);
+      body.guestFirstname = tempCart.guestInfo.firstname;
+      body.guestLastname = tempCart.guestInfo.lastname;
+      body.guestEmail = tempCart.guestInfo.email;
+
+      console.log("body: ", body);
+      url = `${API}/tixorder/stripe/us-create-order`;
+    } else {
+      console.log("customerInformation: ", customerInformation);
+      console.log("body: ", body);
+      url = `${API}/tixorder/stripe/sn-create-order`;
+
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      myHeaders.append("Authorization", `Bearer ${tempUser.token}`);
+    }
+    const method = "POST"
+    const initialData = { status: true, message: "hi first time " };
+    console.log ("url=", url);
+    const { isLoading, hasError, setUrl, setBody, data, networkError } =
+          useOurApi(method, url, myHeaders, body, initialData);
+
+    const stripePromise = loadStripe(`${OSD_STRIPE_ACCOUNT_ID}`, {
+              stripeAccount: eventDetails.stripeAccountID})
+ 
+   if (localStorage.getItem(`image_${event}`)) {
+      eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
+    }
+
+    setTransactionInfo(
+      loadTransactionInfo(
+        eventDetails,
+        orderTotals,
+        ticketInfo,
+        email,
+        name
+      )
+    );
+
+  console.log ("TINFO===", {eventDetails,
+        orderTotals,
+        ticketInfo,
+        email,
+        name})
+/*
+              console.log("fetch return got back data:", data);
+              setClientSecret(data.client_secret);
+              setClientReceived(true);
+              received = true;
+            })
+            .catch((error) => {
+              console.log("freeTicketHandler() error.message: ", error.message);
+              received = false;
+            })
+            .finally(() => {});
+
+          console.log(
+            "eventDetails.stripeAccountID: ",
+            eventDetails.stripeAccountID
+          );
+
+*/
+
+
+
+/*
   useEffect(() => {
     setDisplay("spinner");
     let received = true;
@@ -233,6 +374,8 @@ const Checkout = () => {
     }
   }, []);
 
+*/
+
   window.onresize = function (event) {
     stylingUpdate(window.innerWidth, window.innerHeight);
   };
@@ -261,26 +404,7 @@ const Checkout = () => {
     }
   };
 
-  // sets the PayPal "purchase_units.items" value populated from "ticketInfo"
-  const populatePaypalArray = () => {
-    paypalArray = [];
-    ticketInfo.forEach((item) => {
-      if (item.ticketsSelected > 0) {
-        let newElement;
-        newElement = {
-          name: `${eventDetails.eventTitle}: ${item.ticketName}`,
-          sku: item.ticketID,
-          unit_amount: {
-            currency_code: orderTotals.currencyAbv,
-            value: item.ticketPrice.toString(),
-          },
-          quantity: item.ticketsSelected.toString(),
-        };
-        paypalArray.push(newElement);
-      }
-    });
-    console.log("paypalArray: ", paypalArray);
-  };
+
 
   // removes order related information from "localStorage"
   const purchaseConfirmHandler = () => {
@@ -303,127 +427,6 @@ const Checkout = () => {
     return response;
   };
 
-  // submits paypal transaction information to the server
-  const payPalPurchase = (details) => {
-    console.log("details: ", details);
-    setDisplay("spinner");
-    let order = {
-      eventNum: eventDetails.eventNum,
-      totalAmount: orderTotals.finalPurchaseAmount,
-      paypalId: details.id, // not required if “isFree === true”
-    };
-
-    if (orderTotals.finalPurchaseAmount === 0) {
-      order.isFree = true;
-    } else {
-      order.isFree = false;
-    }
-
-    let tickets = [];
-    ticketInfo.forEach((item) => {
-      if (item.ticketsSelected > 0) {
-        let tempObject = {};
-        tempObject.ticketID = item.ticketID;
-        tempObject.ticketsSelected = item.ticketsSelected;
-        tickets.push(tempObject);
-        if (
-          item.ticketsSelected > 0 &&
-          "form" in item.ticketPriceFunction &&
-          item.ticketPriceFunction.form === "promo" &&
-          item.adjustedTicketPrice !== item.ticketPrice
-        ) {
-          order.userPromo = item.ticketPriceFunction.args[0].name;
-        }
-      }
-    });
-
-    order.tickets = tickets;
-
-    let url;
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("user") !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      let email = tempUser.user.email;
-      let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
-
-      setTransactionInfo(
-        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
-      );
-      url = `${API}/tixorder/signed_place_neworder`;
-
-      console.log("signed order: ", order);
-      console.log(
-        "customerInformation for signed in user: ",
-        customerInformation
-      );
-
-      myHeaders.append(
-        "Authorization",
-        `Bearer ${customerInformation.sessionToken}`
-      );
-    } else {
-      let email = customerInformation.email;
-      let name = `${customerInformation.firstname} ${customerInformation.lastname}`;
-      console.log("customerInformation for guest: ", customerInformation);
-
-      setTransactionInfo(
-        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
-      );
-
-      // USED BY CURRENT CODE APRIL 17, 2021
-      url = `${API}/tixorder/unsigned_place_neworder`;
-
-      order.guestFirstname = customerInformation.firstname;
-      order.guestLastname = customerInformation.lastname;
-      order.guestEmail = customerInformation.email;
-
-      console.log("unsigned order: ", order);
-    }
-
-    let fetcharg = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(order),
-    };
-
-    fetch(url, fetcharg)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        setOrderStatus(data.status);
-        setDisplay("confirmation");
-      })
-      .catch((error) => {
-        console.log("paymentOnSuccess() error.message: ", error.message);
-        setOrderStatus(false);
-        setDisplay("confirmation");
-      })
-      .finally(() => {
-        purchaseConfirmHandler();
-      });
-  };
-
-  // defines and sets "loadingSpinner" view status
-  const loadingSpinner = () => {
-    if (display === "spinner") {
-      return (
-        <div className={classes.Spinner}>
-          <Spinner></Spinner>;
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
 
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   const purchaseConfirmation = () => {
@@ -443,7 +446,7 @@ const Checkout = () => {
 
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
   const stripeSuccess = () => {
-    if (display === "success") {
+    if ((!isLoading) && (!hasError) && display === "success") {
       console.log("CONFIRMTION");
       //console.log("transactionInfo: ", transactionInfo);
       //console.log("orderStatus: ", orderStatus);
@@ -478,7 +481,7 @@ const Checkout = () => {
       console.log("inside options");
       return {
         // passing the client secret obtained in step 2
-        clientSecret: clientSecret,
+        clientSecret: data.client_secret,
         // Fully customizable with appearance API.
 
         appearance: {
@@ -489,15 +492,15 @@ const Checkout = () => {
   };
 
   const showStripe = () => {
-    console.log("clientSecret: ", clientSecret);
-    if (clientSecret) {
+    console.log("clientSecret: ", data.client_secret);
+    if ((!isLoading) && (!hasError) && data.client_secret) {
       return (
         <div>
           <Elements stripe={stripePromise} options={options()}>
             <CheckoutForm
-              clientSecret={clientSecret}
+              clientSecret={data.client_secret}
               transactionInfo={transactionInfo}
-              orderStatus={clientSecret}
+              orderStatus={data.client_secret}
               orderFailure={(event) => {
                 console.log("UNUCCESSFUL ORDER");
 
@@ -508,18 +511,6 @@ const Checkout = () => {
               }}
               orderSuccess={() => {
                 console.log("SUCCESSFUL ORDER");
-                let email = customerInformation.email;
-                let name = `${customerInformation.firstname} ${customerInformation.lastname}`;
-
-                setTransactionInfo(
-                  loadTransactionInfo(
-                    eventDetails,
-                    orderTotals,
-                    ticketInfo,
-                    email,
-                    name
-                  )
-                );
                 setDisplay("confirmation");
               }}
             />
@@ -599,7 +590,7 @@ const Checkout = () => {
         <CartLink
           onClick={switchShowOrderSummary}
           showStatus={showOrderSummaryOnly}
-          isLoading={display === "spinner"}
+          isLoading={isLoading}
           orderTotals={orderTotals}
           showDoublePane={showDoublePane}
         />
@@ -609,8 +600,66 @@ const Checkout = () => {
     }
   };
 
-  const mainDisplay = () => {
-    if (display === "main" || display === "error") {
+
+  const mainDisplay = () =>{
+    return (
+     <div >
+            LOADED OK !!
+            SEE HERE
+        </div> 
+    )
+  }
+
+
+  const mainDisplay2 = () => {
+
+    if (isLoading) {
+      return (
+        <div className={classes.Spinner}>
+          <Spinner></Spinner>;
+        </div>
+      );
+    };
+    
+    if (hasError ) {
+      return (
+          <div className={classes.ConnectionText}>
+            There is a problem in retrieving your information.
+            Please try again later.
+        </div>
+      )
+    };
+   return (
+     <div className={classes.ConnectionText}>
+            LOADED OK !!
+            SEE HERE
+        </div>
+   );
+  }
+
+
+  const mainDisplayx = () => {
+
+    if (isLoading) {
+      return (
+        <div className={classes.Spinner}>
+          <Spinner></Spinner>;
+        </div>
+      );
+    };
+    
+    if (hasError ) {
+      return (
+          <div className={classes.ConnectionText}>
+            There is a problem in retrieving your information.
+            Please try again later.
+        </div>
+      )
+    };
+
+ //   stylingUpdate(window.innerWidth, window.innerHeight);   //?
+
+    if (display === "main") {
       let paymentPane = (
         <Fragment>
           <div className={classes.MainItemLeft}>
@@ -738,12 +787,18 @@ const Checkout = () => {
     } else return null;
   };
 
+//  return (
+//    <div style={MainContainer}>
+//      {responseModal()}
+//      {mainDisplay()}
+//      {stripeSuccess()}
+ //   </div>
+ // );
+
+
   return (
     <div style={MainContainer}>
-      {loadingSpinner()}
-      {responseModal()}
       {mainDisplay()}
-      {stripeSuccess()}
     </div>
   );
 };
