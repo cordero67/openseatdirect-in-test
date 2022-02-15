@@ -714,7 +714,13 @@ const Checkout = () => {
 
 
   const showit = () =>{
-    if ((!stripe || !elements) && ! checkoutFormError) {
+  if (checkoutFormError ){
+        return (
+          <div>
+          Error in Loading Stripe. Please go back
+          </div>
+        )
+  } else if ((!stripe || !elements)) {
         return (
           <div>
           Loading ...
