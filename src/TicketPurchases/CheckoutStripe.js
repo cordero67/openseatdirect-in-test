@@ -51,7 +51,7 @@ let OrderSummarySectionAlt = {};
 
 let stripe = null; 
 let elements = null;
-
+let checkoutFormError = null;
 
 const Checkout = () => {
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
@@ -539,7 +539,7 @@ const Checkout = () => {
         );
       }
 
-      const { error } = await stripe.confirmPayment({
+      checkoutFormError  = await stripe.confirmPayment({
         //`Elements` instance that was used to create the Payment Element
         elements,
         confirmParams: {
@@ -548,11 +548,11 @@ const Checkout = () => {
         },
       });
 
-      if (error) {
+      if (checkoutFormError ) {
         // This point will only be reached if there is an immediate error when
         // confirming the payment. Show error to your customer (for example, payment
         // details incomplete)
-        setErrorMessage(error.message);
+        setErrorMessage(checkoutFormError.message);
         console.log("ERROR");
       } else {
         // Your customer will be redirected to your `return_url`. For some payment
@@ -714,7 +714,7 @@ const Checkout = () => {
 
 
   const showit = () =>{
-    if (!stripe || !elements) {
+    if ((!stripe || !elements) && ! checkoutFormError) {
         return (
           <div>
           Loading ...
