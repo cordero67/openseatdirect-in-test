@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { PaymentElement } from "@stripe/react-stripe-js";
+
+import { STRIPE_SUCCESS_URL } from "../config.js";
 
 import classes from "./Checkout.module.css";
 
@@ -10,7 +12,7 @@ export default function CheckoutForm(props) {
   const elements = useElements();
 
   const [errorMessage, setErrorMessage] = useState(null);
-  const handleSubmit2 = async (event) => {
+  const handleSubmit = async (event) => {
     // We don't want to let default form submission happen here,
     // which would refresh the page.
     event.preventDefault();
@@ -34,6 +36,7 @@ export default function CheckoutForm(props) {
       //`Elements` instance that was used to create the Payment Element
       elements,
       confirmParams: {
+        //STRIPE_SUCCESS_URL,
         return_url:
           "https://app.bondirectly.com/checkout-stripe?result=success",
       },
@@ -53,41 +56,8 @@ export default function CheckoutForm(props) {
     }
   };
 
-  const handleSubmit = async (event) => {
-    // We don't want to let default form submission happen here,
-    // which would refresh the page.
-    event.preventDefault();
-
-    if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      return;
-    }
-
-    const result = await stripe.confirmCardPayment(props.clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: {
-          name: "Jenny Rosen",
-        },
-      },
-    });
-
-    if (result.error) {
-      // Show error to your customer (for example, insufficient funds)
-      console.log(result.error.message);
-      props.orderFailure(result.error.message);
-    } else {
-      // The payment has been processed!
-      if (result.paymentIntent.status === "succeeded") {
-        console.log("FUCK YEA SUCCESS");
-        props.orderSuccess();
-      }
-    }
-  };
-
   return (
-    <form onSubmit={handleSubmit2}>
+    <form onSubmit={handleSubmit}>
       <PaymentElement />
       <div
         style={{
