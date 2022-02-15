@@ -44,6 +44,7 @@ let EventTicketSection = {};
 let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
+
 const Checkout = () => {
   const [display, setDisplay] = useState("main"); // defines panel displayed: main, spinner, confirmation, paypal
   const [clientReceived, setClientReceived] = useState(false);
@@ -79,7 +80,8 @@ const Checkout = () => {
   let event = JSON.parse(localStorage.getItem("eventNum"));
   let tempCart = JSON.parse(localStorage.getItem(`cart_${event}`));
   
-  if (!event || !tempCart) window.location.ref ="/events";    // go to events of missing vars
+   
+  if (!event || !tempCart) window.location.href ="/events";    // go to events of missing vars
 
   eventDetails = tempCart.eventDetails;
   console.log("cart in storage: ", tempCart);
@@ -161,22 +163,20 @@ const Checkout = () => {
     const { isLoading, hasError, setUrl, setBody, data, networkError } =
           useOurApi(method, url, myHeaders, body, initialData);
 
-    const stripePromise = loadStripe(`${OSD_STRIPE_ACCOUNT_ID}`, {
-              stripeAccount: eventDetails.stripeAccountID})
  
    if (localStorage.getItem(`image_${event}`)) {
       eventLogo = JSON.parse(localStorage.getItem(`image_${event}`));
     }
 
-    setTransactionInfo(
-      loadTransactionInfo(
-        eventDetails,
-        orderTotals,
-        ticketInfo,
-        email,
-        name
-      )
-    );
+//    setTransactionInfo(
+//      loadTransactionInfo(
+//        eventDetails,
+//        orderTotals,
+//        ticketInfo,
+//        email,
+//        name
+//      )
+//    );
 
   console.log ("TINFO===", {eventDetails,
         orderTotals,
@@ -493,6 +493,9 @@ const Checkout = () => {
 
   const showStripe = () => {
     console.log("clientSecret: ", data.client_secret);
+    const stripePromise = loadStripe(`${OSD_STRIPE_ACCOUNT_ID}`, {
+              stripeAccount: eventDetails.stripeAccountID})
+
     if ((!isLoading) && (!hasError) && data.client_secret) {
       return (
         <div>
@@ -603,10 +606,11 @@ const Checkout = () => {
 
   const mainDisplay = () =>{
     return (
-     <div >
-            LOADED OK !!
-            SEE HERE
-        </div> 
+        <div className={classes.ConnectionText}>
+            There is a problem in retrieving your information.
+            Please try again later.
+        </div>
+
     )
   }
 
@@ -795,6 +799,7 @@ const Checkout = () => {
  //   </div>
  // );
 
+console.log ("in 800");
 
   return (
     <div style={MainContainer}>
@@ -802,4 +807,5 @@ const Checkout = () => {
     </div>
   );
 };
+
 export default Checkout;
