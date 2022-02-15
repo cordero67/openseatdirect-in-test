@@ -4,11 +4,16 @@ import queryString from "query-string";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-import CheckoutForm from "./CheckoutForm";
+//import CheckoutForm from "./CheckoutForm";
 import StripeModal from "./Modals/StripeModal";
 
 import { API, OSD_STRIPE_ACCOUNT_ID } from "../config.js";
-import { PayPalButton } from "react-paypal-button-v2";
+
+import { useStripe, useElements } from "@stripe/react-stripe-js";
+import { PaymentElement } from "@stripe/react-stripe-js";
+import { STRIPE_SUCCESS_URL } from "../config.js";
+
+
 
 import {
   MainContainerStyling,
@@ -43,6 +48,10 @@ let MainGrid = {};
 let EventTicketSection = {};
 let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
+
+let stripe = null; 
+let elements = null;
+
 
 const Checkout = () => {
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, spinner, confirmation, paypal
@@ -303,114 +312,6 @@ const Checkout = () => {
     return response;
   };
 
-  // submits paypal transaction information to the server
-  const payPalPurchase = (details) => {
-    console.log("details: ", details);
-    setDisplay("spinner");
-    let order = {
-      eventNum: eventDetails.eventNum,
-      totalAmount: orderTotals.finalPurchaseAmount,
-      paypalId: details.id, // not required if “isFree === true”
-    };
-
-    if (orderTotals.finalPurchaseAmount === 0) {
-      order.isFree = true;
-    } else {
-      order.isFree = false;
-    }
-
-    let tickets = [];
-    ticketInfo.forEach((item) => {
-      if (item.ticketsSelected > 0) {
-        let tempObject = {};
-        tempObject.ticketID = item.ticketID;
-        tempObject.ticketsSelected = item.ticketsSelected;
-        tickets.push(tempObject);
-        if (
-          item.ticketsSelected > 0 &&
-          "form" in item.ticketPriceFunction &&
-          item.ticketPriceFunction.form === "promo" &&
-          item.adjustedTicketPrice !== item.ticketPrice
-        ) {
-          order.userPromo = item.ticketPriceFunction.args[0].name;
-        }
-      }
-    });
-
-    order.tickets = tickets;
-
-    let url;
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("user") !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      let email = tempUser.user.email;
-      let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
-
-      setTransactionInfo(
-        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
-      );
-      url = `${API}/tixorder/signed_place_neworder`;
-
-      console.log("signed order: ", order);
-      console.log(
-        "customerInformation for signed in user: ",
-        customerInformation
-      );
-
-      myHeaders.append(
-        "Authorization",
-        `Bearer ${customerInformation.sessionToken}`
-      );
-    } else {
-      let email = customerInformation.email;
-      let name = `${customerInformation.firstname} ${customerInformation.lastname}`;
-      console.log("customerInformation for guest: ", customerInformation);
-
-      setTransactionInfo(
-        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
-      );
-
-      // USED BY CURRENT CODE APRIL 17, 2021
-      url = `${API}/tixorder/unsigned_place_neworder`;
-
-      order.guestFirstname = customerInformation.firstname;
-      order.guestLastname = customerInformation.lastname;
-      order.guestEmail = customerInformation.email;
-
-      console.log("unsigned order: ", order);
-    }
-
-    let fetcharg = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(order),
-    };
-
-    fetch(url, fetcharg)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        setOrderStatus(data.status);
-        setDisplay("confirmation");
-      })
-      .catch((error) => {
-        console.log("paymentOnSuccess() error.message: ", error.message);
-        setOrderStatus(false);
-        setDisplay("confirmation");
-      })
-      .finally(() => {
-        purchaseConfirmHandler();
-      });
-  };
 
   // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
@@ -609,6 +510,79 @@ const Checkout = () => {
     }
   };
 
+
+
+
+  const CheckoutForm=(props)=> {
+    console.log("props: ", props);
+    stripe = useStripe();
+    elements = useElements();
+
+    const [errorMessage, setErrorMessage] = useState(null);
+    const handleSubmit = async (event) => {
+      // We don't want to let default form submission happen here,
+      // which would refresh the page.
+      event.preventDefault();
+
+      if (!stripe || !elements) {
+        // Stripe.js has not yet loaded.
+        // Make sure to disable form submission until Stripe.js has loaded.
+        return;
+      }
+
+      // load event data into local storage
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          `transaction`,
+          JSON.stringify(props.transactionInfo)
+        );
+      }
+
+      const { error } = await stripe.confirmPayment({
+        //`Elements` instance that was used to create the Payment Element
+        elements,
+        confirmParams: {
+          //STRIPE_SUCCESS_URL,
+          return_url:STRIPE_SUCCESS_URL
+        },
+      });
+
+      if (error) {
+        // This point will only be reached if there is an immediate error when
+        // confirming the payment. Show error to your customer (for example, payment
+        // details incomplete)
+        setErrorMessage(error.message);
+        console.log("ERROR");
+      } else {
+        // Your customer will be redirected to your `return_url`. For some payment
+        // methods like iDEAL, your customer will be redirected to an intermediate
+        // site first to authorize the payment, then redirected to the `return_url`.
+        console.log("SUCCESS");
+      }
+    };
+
+    return (
+      <form onSubmit={handleSubmit}>
+        <PaymentElement />
+        <div
+          style={{
+            textAlign: "center",
+            paddingTop: "40px",
+            paddingBottom: "40px",
+          }}
+        >
+          <button disabled={!stripe} className={classes.StripeButton}>
+            SUBMIT
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+
+
+
   const mainDisplay = () => {
     if (display === "main" || display === "error") {
       let paymentPane = (
@@ -738,13 +712,37 @@ const Checkout = () => {
     } else return null;
   };
 
-  return (
-    <div style={MainContainer}>
-      {loadingSpinner()}
-      {responseModal()}
-      {mainDisplay()}
-      {stripeSuccess()}
-    </div>
-  );
+
+  const showit = () =>{
+    if (!stripe || !elements) {
+        return (
+          <div>
+          Loading ...
+          </div>
+        )
+    } else{
+      return (
+      <div style={MainContainer}>
+        {loadingSpinner()}
+        {responseModal()}
+        {mainDisplay()}
+        {stripeSuccess()}
+      </div>
+    );
+    }
+  }
+
+
+//  return (
+//    <div style={MainContainer}>
+//      {loadingSpinner()}
+ //     {responseModal()}
+ //     {mainDisplay()}
+ //     {stripeSuccess()}
+ //   </div>
+ // );
+
+return showit();
+
 };
 export default Checkout;
