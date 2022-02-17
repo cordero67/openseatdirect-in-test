@@ -5,11 +5,14 @@ import { PaymentElement } from "@stripe/react-stripe-js";
 import classes from "./Checkout.module.css";
 
 export default function CheckoutForm(props) {
+  
   console.log("props: ", props);
   const stripe = useStripe();
   const elements = useElements();
-
   const [errorMessage, setErrorMessage] = useState(null);
+
+  if (props.isLoading || props.hasError ) return;
+
   const handleSubmit2 = async (event) => {
     // We don't want to let default form submission happen here,
     // which would refresh the page.
