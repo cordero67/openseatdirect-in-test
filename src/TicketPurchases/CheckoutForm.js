@@ -31,8 +31,7 @@ export default function CheckoutForm(props) {
  
       //`Elements` instance that was used to create the Payment Element
 
- //   let returnurl = `${API}/checkout-stripe?result=success`;
-    let returnurl = "https://app.bondirectly.com/checkout-stript-result?result=success";
+    let returnurl = `${API}/checkout-stripe-result?result=success`;
 
     let pay_options = {
         elements,
@@ -60,38 +59,6 @@ export default function CheckoutForm(props) {
     }
   };
 
-  const handleSubmit = async (event) => {
-    // We don't want to let default form submission happen here,
-    // which would refresh the page.
-    event.preventDefault();
-
-    if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      return;
-    }
-
-    const result = await stripe.confirmCardPayment(props.clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: {
-          name: "Jenny Rosen",
-        },
-      },
-    });
-
-    if (result.error) {
-      // Show error to your customer (for example, insufficient funds)
-      console.log(result.error.message);
-      props.orderFailure(result.error.message);
-    } else {
-      // The payment has been processed!
-      if (result.paymentIntent.status === "succeeded") {
-        console.log("FUCK YEA SUCCESS");
-        props.orderSuccess();
-      }
-    }
-  };
 
   return (
     <form onSubmit={handleSubmit2}>
