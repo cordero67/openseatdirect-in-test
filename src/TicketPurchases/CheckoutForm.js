@@ -31,6 +31,12 @@ export default function CheckoutForm(props) {
  
       //`Elements` instance that was used to create the Payment Element
 
+//4example of real return
+// https://app.bondirectly.com/checkout-stript-result?result=success
+//    &payment_intent=pi_3KUg4m4DwDsj7HXk1EgiOTD8
+//    &payment_intent_client_secret=pi_3KUg4m4DwDsj7HXk1EgiOTD8_secret_QIrROYLBUbPXKoexrvJVAEJPR
+//    &redirect_status=succeeded
+
     let returnurl = `${API}/checkout-stripe-result?result=success`;
 
     let pay_options = {
@@ -59,6 +65,8 @@ export default function CheckoutForm(props) {
     }
   };
 
+
+//PaymentRequestButtonElement
 
   return (
     <form onSubmit={handleSubmit2}>
