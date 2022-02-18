@@ -7,11 +7,10 @@ import classes from "./Checkout.module.css";
 export default function CheckoutForm(props) {
   
   console.log("props: ", props);
+  const clientSecret = props.clientSecret;
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState(null);
-
-  if (props.isLoading || props.hasError ) return;
 
   const handleSubmit2 = async (event) => {
     // We don't want to let default form submission happen here,
@@ -24,23 +23,24 @@ export default function CheckoutForm(props) {
       return;
     }
 
-    // load event data into local storage
+    console.log ("about to stripe.confirmPayment w elements=",  elements);
 
-    if (typeof window !== "undefined") {
-      localStorage.setItem(
-        `transaction`,
-        JSON.stringify(props.transactionInfo)
-      );
-    }
-
-    const { error } = await stripe.confirmPayment({
+ //https://stripe.com/docs/js/payment_intents/confirm_payment?type=idealBank
+ 
       //`Elements` instance that was used to create the Payment Element
-      elements,
-      confirmParams: {
-        return_url:
-          "https://app.bondirectly.com/checkout-stripe?result=success",
-      },
-    });
+
+    let pay_options = {
+        elements,
+        confirmParams: {
+          return_url:
+              "https://app.bondirectly.com/checkout-stripe?result=success",
+        }
+    };
+    if (props.name) pay_options.payment_method_data ={billing_details:props.name};
+
+    const { error } = await stripe.confirmPayment(pay_options);
+
+    console.log ("return error=",  error );
 
     if (error) {
       // This point will only be reached if there is an immediate error when
