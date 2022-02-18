@@ -29,7 +29,6 @@ const Checkout =(props)=>{
 
     
     const  email = isGuest ? tempCart?.guestInfo?.email : tempUser?.user?.email;
-    const stripeAccount =  tempCart?.eventDetails?.stripeAccountID;
 
     let name = "";    
     if (isGuest ){
@@ -148,6 +147,7 @@ const Checkout =(props)=>{
                 }}>
                 <CheckoutForm 
                     name={name}
+                    email={email}
                     />
             </Elements>
         </div>

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { PaymentElement } from "@stripe/react-stripe-js";
 
+import { API} from "../config.js";
+
 import classes from "./Checkout.module.css";
 
 export default function CheckoutForm(props) {
@@ -29,30 +31,32 @@ export default function CheckoutForm(props) {
  
       //`Elements` instance that was used to create the Payment Element
 
+ //   let returnurl = `${API}/checkout-stripe?result=success`;
+    let returnurl = "https://app.bondirectly.com/checkout-stript-result?result=success";
+
     let pay_options = {
         elements,
         confirmParams: {
-          return_url:
-              "https://app.bondirectly.com/checkout-stripe?result=success",
+          return_url: returnurl
         }
     };
     if (props.name) pay_options.payment_method_data ={billing_details:props.name};
 
     const { error } = await stripe.confirmPayment(pay_options);
 
-    console.log ("return error=",  error );
+    console.log ("stripe.confirmPayment error=",  error );
 
     if (error) {
       // This point will only be reached if there is an immediate error when
       // confirming the payment. Show error to your customer (for example, payment
       // details incomplete)
       setErrorMessage(error.message);
-      console.log("ERROR");
+      console.log(" stripe.confirmPayment ERROR");
     } else {
       // Your customer will be redirected to your `return_url`. For some payment
       // methods like iDEAL, your customer will be redirected to an intermediate
       // site first to authorize the payment, then redirected to the `return_url`.
-      console.log("SUCCESS");
+      console.log(" stripe.confirmPayment SUCCESS");
     }
   };
 
