@@ -101,8 +101,8 @@ const CheckoutOpennode =(props)=>{
        </div>
       )
   } else {
-    if (data?.redirecturl  ){
-      window.location.href = data.redirecturl;
+    if (data?.hosted_checkout_url){
+      window.location.href = data.hosted_checkout_url;
       return (
         <div >
           redirecting to Opennode ...
