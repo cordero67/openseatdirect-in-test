@@ -53,7 +53,7 @@ let OrderSummarySection = {};
 let OrderSummarySectionAlt = {};
 
 const TicketSelection = () => {
-  console.log("You are in Ticket Selection");
+  console.log("You are in Ticket Selection 56");
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, registration, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
@@ -566,6 +566,7 @@ const TicketSelection = () => {
     let signedIn = false;
     console.log("Inside 'storeOrder'");
 
+    
     if (typeof window !== "undefined") {
       localStorage.setItem(
         `image_${eventDetails.eventNum}`,
@@ -587,9 +588,9 @@ const TicketSelection = () => {
         signedIn = true;
       }
     }
+    console.log("eventDetails.gateway: ", eventDetails.gateway);
 
     if (signedIn === true) {
-      console.log("eventDetails.gateway: ", eventDetails.gateway);
       // user is signed in therefore skip guest info page
       console.log("eventDetails.gateway: ", eventDetails.gateway);
       if (eventDetails.gateway === "PayPalExpress") {

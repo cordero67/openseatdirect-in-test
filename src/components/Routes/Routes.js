@@ -307,7 +307,7 @@ const Routes = () => {
       />
 
       <Route
-        path="/checkout-opennnode"
+        path="/checkout-opennode"
         exact
         render={(routeProps) => (
           <Fragment>
@@ -362,24 +362,3 @@ const Routes = () => {
 };
 
 export default Routes;
-
-/*
-
-
-      <Route
-        path="/personal"
-        exact
-        render={(routeProps) => (
-          <React.Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <BuyerAccount />
-            <Footer></Footer>
-          </React.Fragment>
-        )}
-      />
-      */
