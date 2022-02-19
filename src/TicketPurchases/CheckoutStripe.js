@@ -4,6 +4,7 @@ import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
 
 import CheckoutForm from './CheckoutForm';
+import StripeModal from "./Modals/StripeModal";
 
 import { API, OSD_STRIPE_ACCOUNT_ID } from "../config.js";
 import { useOurApi } from "../Users/useOurApi";
@@ -18,6 +19,8 @@ const Checkout =(props)=>{
 //    const isGuest = "guestInfo" in tempCart && ! isSignedUser;
 
 //    const [stripePromise, setStripePromise] = useState();
+
+  const [stripeModal, setStripeModal] = useState({ display: false });
 
     const event     = props?.event ? props.event: JSON.parse(localStorage.getItem("eventNum"));
     const tempCart  = props?.cart ?  props.cart : JSON.parse(localStorage.getItem(`cart_${event}`));
@@ -127,6 +130,18 @@ const Checkout =(props)=>{
         <div >
           HAS ERROR!!!! ...
        </div>
+      )
+  } else if (stripeModal.display){
+      return (
+        <StripeModal
+          show={true}
+          details={stripeModal.message}
+          closeModal={() => {
+            let tempStripeModal = { ...stripeModal };
+            tempStripeModal.display = false;
+            setStripeModal(tempStripeModal);
+          }}
+        ></StripeModal>
       )
   } else if (!data.client_secret){
      return (

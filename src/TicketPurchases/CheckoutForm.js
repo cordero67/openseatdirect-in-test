@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { PaymentElement } from "@stripe/react-stripe-js";
-
-import { API} from "../config.js";
-
 import classes from "./Checkout.module.css";
+
+
+const REACT_APP_APP_URL= process.env.REACT_APP_APP_URL;
+
 
 export default function CheckoutForm(props) {
   
   console.log("props: ", props);
-  const clientSecret = props.clientSecret;
+
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState(null);
@@ -37,7 +38,7 @@ export default function CheckoutForm(props) {
 //    &payment_intent_client_secret=pi_3KUg4m4DwDsj7HXk1EgiOTD8_secret_QIrROYLBUbPXKoexrvJVAEJPR
 //    &redirect_status=succeeded
 
-    let returnurl = `${API}/checkout-stripe-result?result=success`;
+    let returnurl = `${REACT_APP_APP_URL}/checkout-stripe-result?result=success`;
 
     let pay_options = {
         elements,
