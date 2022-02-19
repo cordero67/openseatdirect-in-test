@@ -55,7 +55,7 @@ export default function CheckoutForm(props) {
       // This point will only be reached if there is an immediate error when
       // confirming the payment. Show error to your customer (for example, payment
       // details incomplete)
-      props.onStripeUserError(result.error.message);
+      props.onStripeUserError(result.error);
       console.log(" stripe.confirmPayment ERROR result=", result);
     } else {
       // Your customer will be redirected to your `return_url`. For some payment

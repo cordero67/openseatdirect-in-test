@@ -132,6 +132,7 @@ const Checkout =(props)=>{
        </div>
       )
   } else if (stripeUserError){
+      console.log ("stripeUserErrror=", stripeUserError);
       return (
         <StripeModal
           show={true}
@@ -156,7 +157,7 @@ const Checkout =(props)=>{
                 options={{
                     clientSecret: data.client_secret,
                     // Fully customizable with appearance API.
-                    appearance: {appearance}
+//                    appearance: {appearance}
                 }}>
                 <CheckoutForm 
                     name={name}
