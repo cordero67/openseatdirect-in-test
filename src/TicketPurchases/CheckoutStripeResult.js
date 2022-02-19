@@ -23,6 +23,7 @@ const CheckoutStripeResult =(props)=>{
     let redirect_status = queryString.parse(window.location.search).redirect_status;
 
     console.log ("CheckoutStripeResult=", result);
+    console.log (payment_intent,payment_intent_client_secret,redirect_status );
     alert (result);
 
   return (

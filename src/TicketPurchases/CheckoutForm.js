@@ -10,7 +10,6 @@ const REACT_APP_APP_URL= process.env.REACT_APP_APP_URL;
 export default function CheckoutForm(props) {
   
   console.log("props: ", props);
-
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState(null);
@@ -48,15 +47,15 @@ export default function CheckoutForm(props) {
     };
     if (props.name) pay_options.payment_method_data ={billing_details:props.name};
 
-    const { error } = await stripe.confirmPayment(pay_options);
+    const result  = await stripe.confirmPayment(pay_options);
 
-    console.log ("stripe.confirmPayment error=",  error );
+    console.log ("stripe.confirmPayment result=", result );
 
-    if (error) {
+    if (result.error) {
       // This point will only be reached if there is an immediate error when
       // confirming the payment. Show error to your customer (for example, payment
       // details incomplete)
-      setErrorMessage(error.message);
+      props.onStripeUserError(result.error.message);
       console.log(" stripe.confirmPayment ERROR");
     } else {
       // Your customer will be redirected to your `return_url`. For some payment
@@ -64,6 +63,7 @@ export default function CheckoutForm(props) {
       // site first to authorize the payment, then redirected to the `return_url`.
       console.log(" stripe.confirmPayment SUCCESS");
     }
+
   };
 
 

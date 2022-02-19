@@ -20,7 +20,7 @@ const Checkout =(props)=>{
 
 //    const [stripePromise, setStripePromise] = useState();
 
-  const [stripeModal, setStripeModal] = useState({ display: false });
+  const [stripeUserError, setStripeUserError] = useState(null);
 
     const event     = props?.event ? props.event: JSON.parse(localStorage.getItem("eventNum"));
     const tempCart  = props?.cart ?  props.cart : JSON.parse(localStorage.getItem(`cart_${event}`));
@@ -131,15 +131,13 @@ const Checkout =(props)=>{
           HAS ERROR!!!! ...
        </div>
       )
-  } else if (stripeModal.display){
+  } else if (stripeUserError){
       return (
         <StripeModal
           show={true}
-          details={stripeModal.message}
+          details={stripeUserError?.message}
           closeModal={() => {
-            let tempStripeModal = { ...stripeModal };
-            tempStripeModal.display = false;
-            setStripeModal(tempStripeModal);
+            setStripeUserError(false);
           }}
         ></StripeModal>
       )
@@ -163,6 +161,7 @@ const Checkout =(props)=>{
                 <CheckoutForm 
                     name={name}
                     email={email}
+                    onStripeUserError={setStripeUserError}
                     />
             </Elements>
         </div>
