@@ -14,6 +14,7 @@ import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
 import CheckoutPayPalMerchant from "../../TicketPurchases/CheckoutPayPalMerchant";
 import CheckoutStripeIndex from "../../TicketPurchases/StripeIndex";
 import CheckoutStripe from "../../TicketPurchases/CheckoutStripe";
+import CheckoutOpennode from "../../TicketPurchases/CheckoutOpennode";
 import CheckoutStripeResult from "../../TicketPurchases/CheckoutStripeResult";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import AuthenticationOLD from "../../Users/Authentication/AuthenticationOLD";
@@ -304,6 +305,17 @@ const Routes = () => {
           </Fragment>
         )}
       />
+
+      <Route
+        path="/checkout-opennnode"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <CheckoutOpennode />
+          </Fragment>
+        )}
+      />
+
 
       <Route
         path="/ed/"
