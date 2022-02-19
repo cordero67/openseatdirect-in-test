@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { API } from "../../config";
 import { compareValues } from "./Resources/VendorFunctions";
 
+import {getStatus} from "../../utils/utils";
+
 // THESE INDIVIDUAL COMPONENTS HAVE NOT BEEN CHECKED
 import Events from "./Events"; // NEW COMPONENT COPIED FROM DEV AND UPDATED
 import SalesAnalytics from "./SalesAnalytics"; // NEW COMPONENT COPIED FROM DEV AND UPDATED
@@ -60,7 +62,7 @@ const VendorAccount = (props) => {
       tempUserInfo.email = tempUser.user.email;
       tempUserInfo.firstname = tempUser.user.firstname;
       tempUserInfo.lastname = tempUser.user.lastname;
-      tempUserInfo.status = tempUser.user.accountId.status;
+      tempUserInfo.status = getStatus();
       tempUserInfo.id = tempUser.user.accountId._id;
       tempUserInfo.account = tempUser.user.accountId;
       tempUserInfo.accountNum = tempUser.user.accountId.accountNum;

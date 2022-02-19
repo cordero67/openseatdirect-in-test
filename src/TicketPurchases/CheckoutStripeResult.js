@@ -9,10 +9,10 @@ import StripeModal from "./Modals/StripeModal";
 //&payment_intent_client_secret=pi_3KUgnQ4DwDsj7HXk0xCnm26J_secret_WIL78izxMxDp2Mq9y91jpLLkD
 //&redirect_status=succeeded
 
-const CheckoutStripeResult =(props)=>{
-    console.log ("CheckoutStripeResult=", result);
+const CheckoutStripeResult =()=>{
 
     const event     = JSON.parse(localStorage.getItem("eventNum"));
+
     console.log("event=" , event);
 
     let result = queryString.parse(window.location.search).result;

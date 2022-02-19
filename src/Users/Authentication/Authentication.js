@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
 
+import {getStatus} from "../../utils/utils";
+
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { PayPalButton } from "react-paypal-button-v2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -279,9 +281,7 @@ const Authentication = () => {
           tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
         }
 
-        if (tempUser.user.accountId.status) {
-          tempBuyerInfo.status = tempUser.user.accountId.status;
-        }
+          tempBuyerInfo.status = getStatus();
 
         if (tempUser.user.accountId.paypalExpress_client_id) {
           tempBuyerInfo.paypalExpress_client_id =
