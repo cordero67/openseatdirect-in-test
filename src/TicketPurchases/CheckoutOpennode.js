@@ -75,7 +75,7 @@ const CheckoutOpennode =(props)=>{
     }
     const method = "POST"
     const initialData = { status: true, message: "hi first time " };
-    console.log ("url=", url);
+    console.log ("url=", url, "body=",body);
 
     const { isLoading, hasError, setUrl, setBody, data, networkError } =
           useOurApi(method, url, myHeaders, body, initialData);

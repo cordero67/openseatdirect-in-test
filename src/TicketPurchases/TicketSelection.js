@@ -535,7 +535,7 @@ const TicketSelection = () => {
           }}
           className={classes.ButtonGreen}
         >
-          PROCEED TO CHECKOUT
+          Proceed to Checkout
         </button>
       );
     } else if (orderTotals.ticketsPurchased > 0) {
@@ -547,7 +547,7 @@ const TicketSelection = () => {
           }}
           className={classes.ButtonGreen}
         >
-          PROCEED TO CHECKOUT
+          Proceed to Checkout
         </button>
       );
     } else {
@@ -566,7 +566,7 @@ const TicketSelection = () => {
     let signedIn = false;
     console.log("Inside 'storeOrder'");
 
-    
+
     if (typeof window !== "undefined") {
       localStorage.setItem(
         `image_${eventDetails.eventNum}`,
@@ -588,8 +588,7 @@ const TicketSelection = () => {
         signedIn = true;
       }
     }
-    console.log("eventDetails.gateway: ", eventDetails.gateway);
-
+    console.log(">>>>>>>>>>>>>>>>.eventDetails.gateway: ", eventDetails.gateway);
     if (signedIn === true) {
       // user is signed in therefore skip guest info page
       console.log("eventDetails.gateway: ", eventDetails.gateway);
