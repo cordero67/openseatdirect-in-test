@@ -358,6 +358,10 @@ const Authentication = () => {
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
+      if (tempUser.user.accountId.status === 8) {
+        window.location.href = "/myaccount";
+      }
+
       console.log("tempUser: ", tempUser);
       if ("user" in tempUser && "token" in tempUser) {
         userStatus = "full";
@@ -366,7 +370,40 @@ const Authentication = () => {
       }
     }
 
-    if (initialView === "signin") {
+    if (initialView === "upgrade") {
+      console.log("going to gateway via upgrade");
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      setAuthValues({
+        name: "",
+        email: tempUser.user.email,
+        password: "",
+        vendorIntent: "",
+        temporary: "",
+        reissued: false,
+        //
+        confirmation: "",
+        resent: false,
+        username: tempUser.user.username,
+        resetToken: "",
+        sessionToken: tempUser.token,
+        userId: tempUser.user.accountId._id,
+        accountNum: tempUser.user.accountId.accountNum,
+      });
+
+      setSubIntent("paid");
+      updateSubValues();
+
+      if (
+        tempUser.user.accountId.status === 1 ||
+        tempUser.user.accountId.status === 6
+      ) {
+        setDisplay("gateway");
+      } else if (tempUser.user.accountId.status === 5) {
+        setDisplay("selectPlan");
+      } else if (tempUser.user.accountId.status === 8) {
+        window.location.href = "/myaccount";
+      }
+    } else if (initialView === "signin") {
       if (userStatus === "full") {
         window.location.href = "/myaccount";
       }
@@ -1477,16 +1514,33 @@ const Authentication = () => {
     } else if (display === "paypal") {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          <div>
-            Can't find the Client ID and Secret? Click{" "}
+          Can't find the Client ID and Secret?
+          <div style={{ paddingLeft: "20px" }}>
+            <a
+              href="https://developer.paypal.com/developer/applications/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              PayPal Dashboard
+            </a>
+          </div>
+          <div style={{ paddingLeft: "20px" }}>
+            <a
+              href="https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Additional instructions
+            </a>
+          </div>
+          <div style={{ paddingLeft: "20px" }}>
             <a
               href="https://www.youtube.com/watch?v=gXAsubSL-1I"
               target="_blank"
               rel="noreferrer"
             >
-              here
+              Instructional video
             </a>
-            .
           </div>
         </div>
       );
@@ -1834,7 +1888,6 @@ const Authentication = () => {
                 console.log("details: ", details);
                 const authstring = `Bearer ${authValues.sessionToken}`;
                 console.log("about to send paypal object to server");
-                //return fetch(`${API}/paypal/subscription/${props.userid}`, {
                 return fetch(
                   `${API}/accounts/${authValues.accountNum}/subscription/paypal-express/subscribe`,
                   {
@@ -1864,8 +1917,19 @@ const Authentication = () => {
                       let tempData = JSON.parse(localStorage.getItem("user"));
                       console.log("tempData: ", tempData);
                       tempData.user.accountId = response.result;
+                      console.log("tempData: ", tempData);
+                      console.log(
+                        "tempData.user.accountID.status: ",
+                        tempData.user.accountId.status
+                      );
                       localStorage.setItem("user", JSON.stringify(tempData));
-                      setDisplay("paidCongrats");
+                      if (tempData.user.accountId.status === 8) {
+                        setDisplay("paidCongrats");
+                      } else if (tempData.user.accountId.status === 6) {
+                        setDisplay("gateway");
+                      } else {
+                        setDisplay("gateway");
+                      }
                     } else {
                       console.log("inside else");
                       setDisplay("paidCongrats");
@@ -2393,8 +2457,6 @@ const Authentication = () => {
 
   const paypalForm = (
     <Fragment>
-      <div style={{ paddingTop: "10px", paddingBottom: "10px" }}></div>
-
       <div style={{ paddingBottom: "20px", width: "340px", height: "100px" }}>
         <label style={{ width: "340px", fontSize: "15px" }}>
           Paypal Client ID <span style={{ color: "red" }}>* </span>
@@ -2403,15 +2465,7 @@ const Authentication = () => {
           onFocus={() => {
             setSubValues({ ...subValues, inputError: "" });
           }}
-          style={{
-            border: "1px solid #8DADD4",
-            borderRadius: "0px",
-            backgroundColor: "#EFF3FA",
-            width: "340px",
-            height: "60px",
-            paddingLeft: "10px",
-            resize: "none",
-          }}
+          className={classes.PayPalInputBox}
           type="text"
           name="paypalExpress_client_id"
           onChange={handleSubValueChange}
@@ -2419,32 +2473,23 @@ const Authentication = () => {
         />
       </div>
       <div>
-        <label style={{ width: "340px", fontSize: "15px" }}>
+        <label style={{ fontSize: "15px" }}>
           Paypal Secret <span style={{ color: "red" }}>* </span>
         </label>
         <textarea
           onFocus={() => {
             setSubValues({ ...subValues, inputError: "" });
           }}
-          style={{
-            border: "1px solid #8DADD4",
-            borderRadius: "0px",
-            backgroundColor: "#EFF3FA",
-            width: "340px",
-            height: "60px",
-            paddingLeft: "10px",
-            resize: "none",
-          }}
+          className={classes.PayPalInputBox}
           type="text"
           name="paypalExpress_client_secret"
           onChange={handleSubValueChange}
           value={paypalExpress_client_secret}
         />
       </div>
-      <div style={{ textAlign: "center", paddingTop: "40px" }}>
+      <div style={{ textAlign: "center", paddingTop: "20px" }}>
         <button
           className={classes.ButtonBlue}
-          style={{ width: "340px" }}
           disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
           onClick={() => {
             //submitPaypal();
@@ -2494,7 +2539,14 @@ const Authentication = () => {
                   tempData.user.accountId = data.result;
                   localStorage.setItem("user", JSON.stringify(tempData));
                   //updatePageView();
-                  setDisplay("selectPlan");
+
+                  if (tempData.user.accountId.status === 8) {
+                    setDisplay("paidCongrats");
+                  } else if (tempData.user.accountId.status === 5) {
+                    setDisplay("selectPlan");
+                  } else {
+                    setDisplay("gateway");
+                  }
                 } else {
                   // this is a friendly error
                   let errmsg =
@@ -2504,8 +2556,6 @@ const Authentication = () => {
                     console.log("data.message ", data.message);
                     errmsg = data.message;
                   }
-                  //window.alert(errmsg);
-                  //setDisplay("selectPlan");
                   console.log("errmsg: ", errmsg);
                   setSubmissionStatus({
                     message: errmsg,
@@ -2531,6 +2581,26 @@ const Authentication = () => {
           }}
         >
           SUBMIT YOUR PAYPAL DETAILS
+        </button>
+      </div>
+      <div style={{ textAlign: "center", paddingTop: "20px" }}>
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            setDisplay("gateway");
+          }}
+        >
+          BACK TO GATEWAY SELECTION
+        </button>
+      </div>
+      <div style={{ textAlign: "center", paddingTop: "20px" }}>
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            redirectUser();
+          }}
+        >
+          STAY WITH FREE FOREVER PLAN
         </button>
       </div>
     </Fragment>
@@ -3023,7 +3093,7 @@ const Authentication = () => {
   const paypalDisplay = () => {
     let height = {};
     if (!error) {
-      height = { height: "420px" };
+      height = { height: "560px" };
     }
     if (display === "paypal") {
       if (showSpinner) {

@@ -79,17 +79,19 @@ const VendorNavigation = (props) => {
     if (props.status !== 8) {
       return (
         <li>
-          <button
+          <a
             className={
               props.pane === "upgrade"
                 ? classes.NavigationButtonActive
                 : classes.NavigationButton
             }
-            name="upgrade"
-            onClick={props.clicked}
+            style={{ color: "black" }}
+            href="/auth?view=upgrade"
+            target="_blank"
+            rel="noreferrer"
           >
-            Upgrade Account
-          </button>
+            Upgrade to Pro Plan
+          </a>
         </li>
       );
     }

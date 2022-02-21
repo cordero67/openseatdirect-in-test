@@ -87,6 +87,17 @@
   padding-top: 10px;
   padding-left: 10px;
 }
+
+.PayPalInputBox {
+  border: 1px solid #8dadd4;
+  border-radius: 0px;
+  background-color: #eff3fa;
+  width: calc(100vw - 48px);
+  height: 60px;
+  padding-left: 10px;
+  resize: none;
+}
+
 .ButtonBlue {
   background-color: #2f5596;
   color: #fff;
@@ -185,6 +196,10 @@
     padding-left: calc(50% - 170px);
   }
   .InputBox {
+    width: 340px;
+  }
+
+  .PayPalInputBox {
     width: 340px;
   }
   .ButtonBlue {

@@ -1,5 +1,8 @@
 import React, { useEffect, useState, Fragment } from "react";
-import { BrowserRouter as Router, Link } from "react-router-dom";
+
+import stripeImg from "../../assets/Stripe/Stripe wordmark - blurple (small).png";
+
+import payPalImg from "../../assets/PayPal/PayPal.PNG";
 
 import {
   API,
@@ -70,7 +73,7 @@ const Upgrade = (props) => {
   });
 
   // summary, organization, ticket, payment, receipt, paypal, completed, failedFetch
-  const [pageView, setPageView] = useState("organization");
+  const [pageView, setPageView] = useState("gatewayPage");
   const [preFetchView, setPreFetchView] = useState("");
   const [loading, setLoading] = useState("false");
 
@@ -196,14 +199,17 @@ const Upgrade = (props) => {
   // LOOKS GOOD
   const updatePageView = () => {
     console.log("inside updatePageView");
-    if (getStatus() === 0 || getStatus() === 1 || getStatus() === 2) {
-      console.log("organization");
-      setPageView("organization");
+    if (props.initialView === "sub") {
+      console.log("payment");
+      setPageView("payment");
+    } else if (getStatus() === 0 || getStatus() === 1 || getStatus() === 2) {
+      console.log("gateway");
+      setPageView("gateway");
     } else if (getStatus() === 4 || getStatus() === 5) {
       console.log("payment");
       setPageView("payment");
     } else if (getStatus() === 6) {
-      console.log("paypaln");
+      console.log("paypal");
       setPageView("paypal");
     } else if (getStatus() === 8) {
       console.log("completed");
@@ -732,242 +738,138 @@ const Upgrade = (props) => {
     );
   };
 
-  const summaryPage = () => {
-    return (
-      <div className={classes.DisplayPanel} style={{ textAlign: "center" }}>
-        <div className={classes.SummaryHeader}>
-          3 easy steps to upgrade your account.
-        </div>
-        <div
-          style={{
-            border: "1px solid #2F5596",
-            backgroundColor: "#EFF3FA",
-            marginLeft: "180px",
-            marginRight: "180px",
-            paddingTop: "10px",
-            paddingBottom: "10px",
-          }}
-        >
-          <div
-            className={classes.SummaryGridTitle}
-            style={{ fontWeight: "500" }}
-          >
-            <div>Step 1</div>
-            <div>Step 2</div>
-            <div>Step 3</div>
-          </div>
-          <div className={classes.SummaryGrid}>
-            <div>Provide Minimal</div>
-            <div>Select a</div>
-            <div>Create Your</div>
-          </div>
-          <div className={classes.SummaryGrid}>
-            <div>Organization Info</div>
-            <div>Ticket Plan</div>
-            <div>First Event</div>
-          </div>
-        </div>
-        <div className={classes.SummaryFooter}>
-          If you have 10 minutes to spare, you have time to sign up now.
-        </div>
+  const submitStripe = () => {
+    //setDisplay("spinner");
+    //setShowSpinner(true);
+    /*
+    setSubmissionStatus({
+      message: "",
+      error: false,
+      redirect: "",
+    });
+    */
 
-        <button
-          className={classes.ButtonGreen}
-          style={{ width: "630px" }}
-          onClick={() => {
-            setPageView("organization");
-          }}
-        >
-          START EVENT CREATOR SIGNUP
-        </button>
-      </div>
+    let tempUser = JSON.parse(localStorage.getItem("user"));
+    let sessionToken = tempUser.token;
+    let accountNum = tempUser.user.accountId.accountNum;
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${sessionToken}`);
+    console.log("myHeaders: ", myHeaders);
+
+    console.log(
+      "Account Number: ",
+      accountNum,
+      " sessionToken: ",
+      sessionToken
     );
+
+    let url = `${API}/accounts/${accountNum}/subscription/stripe/onboard1-genlink`;
+    let fetchBody = {
+      method: "POST",
+      headers: myHeaders,
+    };
+    console.log("fetching with: ", url, fetchBody);
+
+    fetch(url, fetchBody)
+      .then((res) => res.json())
+      .then((response) => {
+        console.log("made it inside the .then");
+        window.location.href = response.url;
+      })
+      .catch(function (err) {
+        console.info(err + " url: " + url);
+        /*
+        setSubmissionStatus({
+          message: "Stripe connection is down, please try later",
+          error: true,
+          redirect: "gateway",
+        });
+        setDisplay("error");
+        */
+      });
   };
 
-  const orgPage = () => {
+  const gatewayPage = () => {
     return (
       <div className={classes.DisplayPanel}>
-        <div
-          style={{
-            paddingTop: "40px",
-            paddingBottom: "20px",
-            paddingLeft: "80px",
-            fontSize: "22px",
-            fontWeight: "600",
-          }}
-        >
-          Step 1 of 3: Select a Payment Gateway
-        </div>
-        <div className={classes.VendorCanvas}>
-          <div
-            style={{
-              paddingTop: "10px",
-              paddingBottom: "20px",
-              width: "420px",
-              height: "85px",
-            }}
-          >
-            <label style={{ width: "420px", fontSize: "15px" }}>
-              Organization Name<span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              onFocus={() => {
-                setValues({ ...values, inputError: "" });
-              }}
+        <div className={classes.Modal}>
+          <div className={classes.BlankCanvas}>
+            <div
               style={{
-                border: "1px solid #8DADD4",
-                borderRadius: "0px",
-                backgroundColor: "#EFF3FA",
-                width: "420px",
-                height: "40px",
-                paddingLeft: "10px",
-              }}
-              type="text"
-              name="accountName"
-              onChange={handleChange}
-              value={accountName}
-            />
-          </div>
-
-          <div
-            style={{ paddingBottom: "20px", width: "420px", height: "85px" }}
-          >
-            <label style={{ width: "420px", fontSize: "15px" }}>
-              Organization E-mail Address
-            </label>
-            <input
-              onFocus={() => {
-                setValues({ ...values, inputError: "" });
-              }}
-              style={{
-                border: "1px solid #8DADD4",
-                borderRadius: "0px",
-                backgroundColor: "#EFF3FA",
-                width: "420px",
-                height: "40px",
-                paddingLeft: "10px",
-              }}
-              type="text"
-              name="accountEmail"
-              onChange={handleChange}
-              value={accountEmail}
-            />
-          </div>
-
-          <div
-            style={{ paddingBottom: "20px", width: "420px", height: "85px" }}
-          >
-            <label style={{ width: "420px", fontSize: "15px" }}>
-              Organization Phone or Cell Number
-            </label>
-            <input
-              onFocus={() => {
-                setValues({ ...values, inputError: "" });
-              }}
-              style={{
-                border: "1px solid #8DADD4",
-                borderRadius: "0px",
-                backgroundColor: "#EFF3FA",
-                width: "420px",
-                height: "40px",
-                paddingLeft: "10px",
-              }}
-              type="text"
-              name="accountPhone"
-              onChange={handleChange}
-              value={accountPhone}
-            />
-          </div>
-
-          <div
-            style={{ paddingBottom: "20px", width: "420px", height: "85px" }}
-          >
-            <label style={{ width: "420px", fontSize: "15px" }}>
-              Organization Website
-            </label>
-            <input
-              onFocus={() => {
-                setValues({ ...values, inputError: "" });
-              }}
-              style={{
-                border: "1px solid #8DADD4",
-                borderRadius: "0px",
-                backgroundColor: "#EFF3FA",
-                width: "420px",
-                height: "40px",
-                paddingLeft: "10px",
-              }}
-              type="text"
-              name="accountUrl"
-              onChange={handleChange}
-              value={accountUrl}
-            />
-          </div>
-          <br></br>
-          <div style={{ textAlign: "center", width: "420px", height: "85px" }}>
-            <button
-              className={classes.ButtonGreen}
-              disabled={!accountName}
-              onClick={() => {
-                let methodType;
-                if (getStatus() === 0) {
-                  methodType = "POST";
-                } else {
-                  methodType = "POST";
-                }
-                console.log("methodType: ", methodType);
-                //let url = `${API}/user/${props.userid}/accounts`;
-                //let url = `${API}/user/${props.userid}/accounts/${props.accountNum}`;
-                let url = `${API}/accounts/${props.accountNum}`;
-                let fetcharg = {
-                  method: methodType,
-                  headers: myHeaders,
-                  body: JSON.stringify({
-                    accountName: accountName,
-                    accountEmail: accountEmail,
-                    accountPhone: accountPhone,
-                    accountUrl: accountUrl,
-                  }),
-                };
-                console.log("userID: ", props.userid);
-                console.log("fetching with: ", url, fetcharg);
-                fetch(url, fetcharg)
-                  .then(handleErrors)
-                  .then((response) => {
-                    console.log("then response: ", response);
-                    return response.json();
-                  })
-                  .then((data) => {
-                    console.log(
-                      "fetch return got back data on organization:",
-                      data
-                    );
-
-                    let tempData = JSON.parse(localStorage.getItem("user"));
-                    console.log("tempData: ", tempData);
-                    tempData.user.accountId = data.result;
-                    localStorage.setItem("user", JSON.stringify(tempData));
-                    if (data.status) {
-                      console.log("INSIDE data.status");
-                      updatePageView();
-                    } else {
-                      // this is a friendly error
-                      let errmsg = "DEFAULT MESSAGE - Please try again";
-                      if (data.message) {
-                        errmsg = data.message;
-                      }
-                      window.alert(errmsg);
-                    }
-                  })
-                  .catch((err) => {
-                    setPreFetchView(pageView);
-                    console.log(err);
-                    setPageView("error");
-                  });
+                paddingTop: "40px",
+                paddingBottom: "20px",
+                fontSize: "22px",
+                fontWeight: "600",
               }}
             >
-              SUBMIT YOUR ORGANIZATION INFORMATION
-            </button>
+              How to Get Paid Instantly.
+            </div>
+            <div
+              style={{
+                fontSize: "16px",
+                liineHeight: "25px",
+                paddingBottom: "20px",
+              }}
+            >
+              Select the payment gateway where you will instantly receive your
+              ticket sales revenues.
+            </div>
+            <div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "165px 165px",
+                  columnGap: "10px",
+                  paddingTop: "10px",
+                  paddingBottom: "10px",
+                }}
+              >
+                <button
+                  style={{
+                    background: "white",
+                    width: "160",
+                    border: "1px solid lightgrey",
+                    cursor: "pointer",
+                    outline: "none",
+                  }}
+                >
+                  <img
+                    src={stripeImg}
+                    alt="STRIPE"
+                    width="140px"
+                    height="auto"
+                    cursor="pointer"
+                    onClick={() => {
+                      console.log("selecting Stripe");
+                      submitStripe();
+                    }}
+                  ></img>
+                </button>
+                <button
+                  style={{
+                    background: "white",
+                    width: "160",
+                    border: "1px solid lightgrey",
+                    cursor: "pointer",
+                    outline: "none",
+                  }}
+                >
+                  <img
+                    src={payPalImg}
+                    alt="PAYPAL"
+                    width="140px"
+                    height="auto"
+                    cursor="pointer"
+                    onClick={() => {
+                      console.log("selecting PayPal");
+                      setPageView("paypal");
+                    }}
+                  ></img>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1218,7 +1120,7 @@ const Upgrade = (props) => {
             paddingBottom: "20px",
           }}
         >
-          Choose a plan and submit your payment to PayPal:
+          Select your plan and submit payment:
         </div>
       );
     }
@@ -1259,30 +1161,19 @@ const Upgrade = (props) => {
     return (
       <div className={classes.DisplayPanel}>
         <div>
-          <div
-            style={{
-              paddingTop: "40px",
-              paddingLeft: "80px",
-              fontSize: "22px",
-              fontWeight: "600",
-            }}
-          >
-            Step 2 of 3: Select a Subscription Plan
-          </div>
           <div className={classes.PaymentCanvas}>
+            <div
+              style={{
+                paddingTop: "40px",
+                fontSize: "22px",
+                fontWeight: "600",
+              }}
+            >
+              Select Your Plan!
+            </div>
             {paymentInstructions()}
             {promoOption()}
             {paymentPanel()}
-          </div>
-          <div style={{ textAlign: "center", paddingTop: "10px" }}>
-            <button
-              className={classes.ButtonGrey}
-              onClick={() => {
-                setPageView("organization");
-              }}
-            >
-              BACK TO ORGANIZATION PAGE
-            </button>
           </div>
         </div>
       </div>
@@ -1375,25 +1266,18 @@ const Upgrade = (props) => {
     return (
       <div className={classes.DisplayPanel}>
         <div>
-          <div
-            style={{
-              paddingTop: "40px",
-              paddingLeft: "80px",
-              fontSize: "22px",
-              fontWeight: "600",
-            }}
-          >
-            Step 3 of 3: Link Your Paypal Business Account
-          </div>
-
           <div className={classes.PaypalCanvas}>
-            <div style={{ fontSize: "16px", paddingTop: "20px" }}>
-              Please provide the ClientId and Secret from your PayPal merchant
-              account.
+            <div
+              style={{
+                paddingTop: "40px",
+                fontSize: "22px",
+                fontWeight: "600",
+              }}
+            >
+              Enter Paypal account information.
             </div>
             <div style={{ fontSize: "16px", paddingTop: "20px" }}>
-              These items are located in the "My Apps & Credentials" section of
-              your{" "}
+              Please provide your PayPal Client ID and Secret located{" "}
               <a
                 style={{
                   fontSize: "16px",
@@ -1408,8 +1292,12 @@ const Upgrade = (props) => {
                 target="_blank"
                 rel="noreferrer"
               >
-                PayPal Dashboard.
+                here
               </a>
+              .
+            </div>
+            <div style={{ fontSize: "16px", paddingTop: "20px" }}>
+              Can't find your Client ID and Secret
             </div>
             <div
               style={{
@@ -1532,7 +1420,13 @@ const Upgrade = (props) => {
                 value={paypalExpress_client_secret}
               />
             </div>
-            <div style={{ textAlign: "center", paddingTop: "40px" }}>
+            <div
+              style={{
+                textAlign: "center",
+                paddingTop: "40px",
+                paddingBottom: "10px",
+              }}
+            >
               <button
                 className={classes.ButtonGreen}
                 style={{ width: "700px" }}
@@ -1589,7 +1483,18 @@ const Upgrade = (props) => {
                     });
                 }}
               >
-                SUBMIT YOUR PAYPAL MERCHANT INFORMATION
+                SUBMIT YOUR PAYPAL INFORMATION
+              </button>
+            </div>
+            <div>
+              <button
+                className={classes.ButtonGrey}
+                style={{ width: "700px" }}
+                onClick={() => {
+                  setPageView("gateway");
+                }}
+              >
+                RETURN TO GATEWAY SELECTION
               </button>
             </div>
           </div>
@@ -1682,8 +1587,8 @@ const Upgrade = (props) => {
       console.log("event is NOT loading. pageView =", pageView);
 
       switch (pageView) {
-        case "organization":
-          return orgPage();
+        case "gateway":
+          return gatewayPage();
         case "payment":
           return paymentPage();
         case "receipt":
@@ -1697,7 +1602,7 @@ const Upgrade = (props) => {
         case "error":
           return errorPage();
         default:
-          return summaryPage();
+          return gatewayPage();
       }
     } else {
       return <Spinner />;
@@ -1706,7 +1611,7 @@ const Upgrade = (props) => {
 
   return (
     <div>
-      <div className={classes.DisplayPanelTitle}>Subscription Upgrade</div>
+      <div className={classes.DisplayPanelTitle}>Upgrade to Pro Plan</div>
 
       {loading ? null : mainDisplay()}
     </div>

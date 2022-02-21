@@ -76,8 +76,8 @@ const SideDrawerItems = (props) => {
       {isAuthenticated() && getStatus() !== 7 && getStatus() !== 8 ? (
         <li>
           <NavLink
-            to="/personal"
-            style={isActive(props.currentPage, "/personal")}
+            to="/myaccount"
+            style={isActive(props.currentPage, "/myaccount")}
             onClick={props.clicked}
           >
             My Account

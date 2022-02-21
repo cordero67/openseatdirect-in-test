@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { API } from "../../config";
 import { compareValues } from "./Resources/VendorFunctions";
+import queryString from "query-string";
 
 // THESE INDIVIDUAL COMPONENTS HAVE NOT BEEN CHECKED
 import Events from "./Events"; // NEW COMPONENT COPIED FROM DEV AND UPDATED
@@ -30,6 +31,7 @@ const VendorAccount = (props) => {
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [subscriptionType, setSubscriptionType] = useState("free");
+  const [upgradeDisplay, setUpgradeDisplay] = useState("gateway");
 
   const [userInfo, setUserInfo] = useState({}); //
 
@@ -43,91 +45,99 @@ const VendorAccount = (props) => {
 
   // LOOKS GOOD
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("tempUser: ", tempUser);
+    let initialView = queryString.parse(window.location.search).view;
+    console.log("initialView: ", initialView);
 
-      if (!("user" in tempUser && "token" in tempUser)) {
+    if (initialView === "gateway" || initialView === "sub") {
+      setUpgradeDisplay(initialView);
+      setDisplay("upgrade");
+    } else {
+      if (
+        typeof window !== "undefined" &&
+        localStorage.getItem(`user`) !== null
+      ) {
+        let tempUser = JSON.parse(localStorage.getItem("user"));
+        console.log("tempUser: ", tempUser);
+
+        if (!("user" in tempUser && "token" in tempUser)) {
+          window.location.href = "/auth";
+        }
+
+        // LOOKS GOOD
+        let tempUserInfo = {};
+        tempUserInfo.token = tempUser.token;
+        tempUserInfo.email = tempUser.user.email;
+        tempUserInfo.firstname = tempUser.user.firstname;
+        tempUserInfo.lastname = tempUser.user.lastname;
+        tempUserInfo.status = tempUser.user.accountId.status;
+        tempUserInfo.id = tempUser.user.accountId._id;
+        tempUserInfo.account = tempUser.user.accountId;
+        tempUserInfo.accountNum = tempUser.user.accountId.accountNum;
+        console.log("tempUserInfo: ", tempUserInfo);
+
+        setUserInfo(tempUserInfo);
+
+        // LOOKS GOOD
+        // sets api variables
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer " + tempUserInfo.token);
+        let requestOptions = {
+          method: "GET",
+          headers: myHeaders,
+          redirect: "follow",
+        };
+
+        // LOOKS GOOD
+        // if "accountID" field exists than all event and order information is requested
+        if (tempUserInfo.account) {
+          console.log("INSIDE EVENT FETCH");
+          let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/events`;
+
+          fetch(fetchstr, requestOptions)
+            .then(handleErrors)
+            .then((response) => response.text())
+            .then((result) => {
+              console.log("VENDOR EVENTS api result: ", JSON.parse(result));
+              let jsEvents = JSON.parse(result);
+              jsEvents.sort(compareValues("startDateTime", "asc"));
+              setEventDescriptions(jsEvents);
+              requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                redirect: "follow",
+              };
+              let fetchstr = `${API}/reports/organizer?rsid=orders1`;
+              //let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
+              fetch(fetchstr, requestOptions)
+                .then(handleErrors)
+                .then((response) => response.text())
+                .then((result) => {
+                  let jsOrders = JSON.parse(result);
+                  console.log("ORDERS: ", jsOrders);
+                  //jsOrders.sort(compareValues("createdAt", "asc"));
+                  setEventOrders(jsOrders.data);
+                  // THIS IS FOR THE NEW IMPLEMENTATION WHEN THE TAB SETTING IS COMING FORM "Routes.js"
+                  //setDisplay(props.myAccountTab);
+                  setDisplay("events");
+                })
+                .catch((error) => {
+                  console.log("error", error);
+                  setDisplay("connection");
+                });
+              return jsEvents;
+            })
+            .catch((error) => {
+              console.log("error", error);
+              setDisplay("connection");
+            });
+        } else {
+          // account does not exist
+          setDisplay("events");
+        }
+      } else {
         window.location.href = "/auth";
       }
-
-      // LOOKS GOOD
-      let tempUserInfo = {};
-      tempUserInfo.token = tempUser.token;
-      tempUserInfo.email = tempUser.user.email;
-      tempUserInfo.firstname = tempUser.user.firstname;
-      tempUserInfo.lastname = tempUser.user.lastname;
-      tempUserInfo.status = tempUser.user.accountId.status;
-      tempUserInfo.id = tempUser.user.accountId._id;
-      tempUserInfo.account = tempUser.user.accountId;
-      tempUserInfo.accountNum = tempUser.user.accountId.accountNum;
-      console.log("tempUserInfo: ", tempUserInfo);
-
-      setUserInfo(tempUserInfo);
-
-      // LOOKS GOOD
-      // sets api variables
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", "Bearer " + tempUserInfo.token);
-      let requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-
-      // LOOKS GOOD
-      // if "accountID" field exists than all event and order information is requested
-      if (tempUserInfo.account) {
-        console.log("INSIDE EVENT FETCH");
-        let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/events`;
-
-        fetch(fetchstr, requestOptions)
-          .then(handleErrors)
-          .then((response) => response.text())
-          .then((result) => {
-            console.log("VENDOR EVENTS api result: ", JSON.parse(result));
-            let jsEvents = JSON.parse(result);
-            jsEvents.sort(compareValues("startDateTime", "asc"));
-            setEventDescriptions(jsEvents);
-            requestOptions = {
-              method: "POST",
-              headers: myHeaders,
-              redirect: "follow",
-            };
-            let fetchstr = `${API}/reports/organizer?rsid=orders1`;
-            //let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
-            fetch(fetchstr, requestOptions)
-              .then(handleErrors)
-              .then((response) => response.text())
-              .then((result) => {
-                let jsOrders = JSON.parse(result);
-                console.log("ORDERS: ", jsOrders);
-                //jsOrders.sort(compareValues("createdAt", "asc"));
-                setEventOrders(jsOrders.data);
-                // THIS IS FOR THE NEW IMPLEMENTATION WHEN THE TAB SETTING IS COMING FORM "Routes.js"
-                //setDisplay(props.myAccountTab);
-                setDisplay("events");
-              })
-              .catch((error) => {
-                console.log("error", error);
-                setDisplay("connection");
-              });
-            return jsEvents;
-          })
-          .catch((error) => {
-            console.log("error", error);
-            setDisplay("connection");
-          });
-      } else {
-        // account does not exist
-        setDisplay("events");
-      }
-    } else {
-      window.location.href = "/auth";
     }
   }, []);
 
@@ -282,6 +292,7 @@ const VendorAccount = (props) => {
     } else if (display === "upgrade") {
       return (
         <Upgrade
+          initialView={upgradeDisplay}
           userInfo={userInfo}
           userid={userInfo.id}
           token={userInfo.token}

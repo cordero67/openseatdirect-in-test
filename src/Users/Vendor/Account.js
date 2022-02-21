@@ -12,6 +12,7 @@ const Account = (props) => {
     firstName: "",
     lastName: "",
     email: "",
+    username: "",
     token: "",
   });
   const [modalStatus, setModalStatus] = useState(false);
@@ -25,27 +26,34 @@ const Account = (props) => {
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       let tempAccountId = tempUser.user.accountId;
+      console.log("tempUser: ", tempUser);
       let tempUserInfo = {
-        email: tempUser.user.email,
         firstname: tempUser.user.firstname,
         lastname: tempUser.user.lastname,
+        email: tempUser.user.email,
+        username: tempUser.user.username,
         id: tempUser.user._id,
         token: tempUser.token,
       };
       console.log("tempUserInfo: ", tempUserInfo);
       setUserInfo(tempUserInfo);
       if (
-        tempAccountId &&
-        "accountName" in tempAccountId &&
-        tempAccountId.accountName !== "" &&
-        "paymentGatewayType" in tempAccountId &&
-        tempAccountId.paymentGatewayType === "PayPalExpress" &&
-        "paypalExpress_client_id" in tempAccountId &&
-        "string" === typeof tempAccountId.paypalExpress_client_id &&
-        "paypalExpress_client_secret" in tempAccountId &&
-        "string" === typeof tempAccountId.paypalExpress_client_secret &&
-        (tempAccountId.accountPaymentStatus === "good" ||
-          tempAccountId.ticketPlan === "comp")
+        (tempAccountId &&
+          "accountName" in tempAccountId &&
+          tempAccountId.accountName !== "" &&
+          "paymentGatewayType" in tempAccountId &&
+          tempAccountId.paymentGatewayType === "PayPalExpress" &&
+          "paypalExpress_client_id" in tempAccountId &&
+          "string" === typeof tempAccountId.paypalExpress_client_id &&
+          "paypalExpress_client_secret" in tempAccountId &&
+          "string" === typeof tempAccountId.paypalExpress_client_secret) ||
+        (tempAccountId.paymentGatewayType === "Stripe" &&
+          "stripe_accountID" in tempAccountId &&
+          "string" === typeof tempAccountId.stripe_accountID &&
+          "stripe_details_submitted" in tempAccountId &&
+          "boolean" === typeof tempAccountId.stripe_details_submitted &&
+          (tempAccountId.accountPaymentStatus === "good" ||
+            tempAccountId.ticketPlan === "comp"))
       ) {
         setSubscriptionType("paid");
         console.log("PAID");
@@ -93,15 +101,33 @@ const Account = (props) => {
 
   const subscription = () => {
     if (subscriptionType === "free") {
-      return "Community Plan";
+      return "Free Forever Plan";
     } else if (subscriptionType === "paid") {
-      return "Pro-Plan";
+      return "Pro Plan";
     }
   };
 
   const upgrade = () => {
+    console.log("Subscription type: ", subscriptionType);
     if (subscriptionType === "free") {
-      return "Upgrade Subscription";
+      return (
+        <a
+          style={{
+            fontSize: "16px",
+            color: "blue",
+            border: "none",
+            backgroundColor: "white",
+            cursor: "pointer",
+            display: "inlineBlock",
+            outline: "none",
+          }}
+          href="/auth?view=upgrade"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Upgrade to Pro Plan
+        </a>
+      );
     } else if (subscriptionType === "paid") {
       return null;
     }
@@ -110,12 +136,38 @@ const Account = (props) => {
   return (
     <div>
       <div className={classes.DisplayPanelTitle}>Account Settings</div>
-      <div className={classes.DisplayPanel}>
+      <div className={classes.DisplayPanel} style={{ paddingTop: "20px" }}>
+        <div style={{ fontWeight: "600" }}>
+          Personal Information{" "}
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              //requestChange();
+            }}
+          >
+            edit
+          </button>
+        </div>
         <div>First Name: {userInfo.firstname}</div>
-        <br></br>
         <div>Last Name: {userInfo.lastname}</div>
-        <br></br>
+        <div>User Name: {userInfo.username}</div>
         <div>E-mail: {userInfo.email}</div>
+        <br></br>
+        <div style={{ fontWeight: "600" }}>
+          Organization Information{" "}
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              //requestChange();
+            }}
+          >
+            edit
+          </button>
+        </div>
+        <div>Name:</div>
+        <div>E-mail:</div>
+        <div>Phone Number:</div>
+        <div>Website:</div>
         <br></br>
         <button
           className={classes.PasswordButton}
@@ -127,7 +179,7 @@ const Account = (props) => {
         </button>
         <br></br>
         <br></br>
-        <div>Subscription: {subscription()}</div>
+        <div>Plan: {subscription()}</div>
         <br></br>
         <button className={classes.PasswordButton} onClick={props.upgrade}>
           {upgrade()}
