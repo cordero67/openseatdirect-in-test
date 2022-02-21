@@ -37,24 +37,7 @@ const Account = (props) => {
       };
       console.log("tempUserInfo: ", tempUserInfo);
       setUserInfo(tempUserInfo);
-      if (
-        (tempAccountId &&
-          "accountName" in tempAccountId &&
-          tempAccountId.accountName !== "" &&
-          "paymentGatewayType" in tempAccountId &&
-          tempAccountId.paymentGatewayType === "PayPalExpress" &&
-          "paypalExpress_client_id" in tempAccountId &&
-          "string" === typeof tempAccountId.paypalExpress_client_id &&
-          "paypalExpress_client_secret" in tempAccountId &&
-          "string" === typeof tempAccountId.paypalExpress_client_secret) ||
-        (tempAccountId.paymentGatewayType === "Stripe" &&
-          "stripe_accountID" in tempAccountId &&
-          "string" === typeof tempAccountId.stripe_accountID &&
-          "stripe_details_submitted" in tempAccountId &&
-          "boolean" === typeof tempAccountId.stripe_details_submitted &&
-          (tempAccountId.accountPaymentStatus === "good" ||
-            tempAccountId.ticketPlan === "comp"))
-      ) {
+      if (tempAccountId.status === 8) {
         setSubscriptionType("paid");
         console.log("PAID");
       } else console.log("STILL FREE");
