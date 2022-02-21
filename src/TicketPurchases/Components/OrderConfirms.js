@@ -188,6 +188,10 @@ export const StripeConfirm = () => {
     if (typeof window !== "undefined") {
       let tempUser = JSON.parse(localStorage.getItem("transaction"));
       console.log("tempUser: ", tempUser);
+      let event = JSON.parse(localStorage.getItem("eventNum"));
+      localStorage.removeItem(`cart_${event}`);
+      localStorage.removeItem(`image_${event}`);
+      localStorage.removeItem(`eventNum`);
       setTransactionDetails(tempUser);
     }
     setIsLoading(false);

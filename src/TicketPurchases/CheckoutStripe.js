@@ -4,7 +4,7 @@ import queryString from "query-string";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-import CheckoutForm from "./CheckoutForm";
+import CheckoutForm from "./CheckoutFormNEW";
 import StripeModal from "./Modals/StripeModal";
 
 import { API, OSD_STRIPE_ACCOUNT_ID } from "../config.js";
@@ -51,6 +51,7 @@ const Checkout = () => {
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
   const [stripeModal, setStripeModal] = useState({ display: false });
   const [isRestyling, setIsRestyling] = useState(false); // defines styling variables
+  const [stripeError, setStripeError] = useState("none");
 
   const [orderStatus, setOrderStatus] = useState(false); // defines status of order sent to server
   const [customerInformation, setCustomerInformation] = useState({});
@@ -303,115 +304,6 @@ const Checkout = () => {
     return response;
   };
 
-  // submits paypal transaction information to the server
-  const payPalPurchase = (details) => {
-    console.log("details: ", details);
-    setDisplay("spinner");
-    let order = {
-      eventNum: eventDetails.eventNum,
-      totalAmount: orderTotals.finalPurchaseAmount,
-      paypalId: details.id, // not required if “isFree === true”
-    };
-
-    if (orderTotals.finalPurchaseAmount === 0) {
-      order.isFree = true;
-    } else {
-      order.isFree = false;
-    }
-
-    let tickets = [];
-    ticketInfo.forEach((item) => {
-      if (item.ticketsSelected > 0) {
-        let tempObject = {};
-        tempObject.ticketID = item.ticketID;
-        tempObject.ticketsSelected = item.ticketsSelected;
-        tickets.push(tempObject);
-        if (
-          item.ticketsSelected > 0 &&
-          "form" in item.ticketPriceFunction &&
-          item.ticketPriceFunction.form === "promo" &&
-          item.adjustedTicketPrice !== item.ticketPrice
-        ) {
-          order.userPromo = item.ticketPriceFunction.args[0].name;
-        }
-      }
-    });
-
-    order.tickets = tickets;
-
-    let url;
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("user") !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      let email = tempUser.user.email;
-      let name = `${tempUser.user.firstname} ${tempUser.user.lastname}`;
-
-      setTransactionInfo(
-        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
-      );
-      url = `${API}/tixorder/signed_place_neworder`;
-
-      console.log("signed order: ", order);
-      console.log(
-        "customerInformation for signed in user: ",
-        customerInformation
-      );
-
-      myHeaders.append(
-        "Authorization",
-        `Bearer ${customerInformation.sessionToken}`
-      );
-    } else {
-      let email = customerInformation.email;
-      let name = `${customerInformation.firstname} ${customerInformation.lastname}`;
-      console.log("customerInformation for guest: ", customerInformation);
-
-      setTransactionInfo(
-        loadTransactionInfo(eventDetails, orderTotals, ticketInfo, email, name)
-      );
-
-      // USED BY CURRENT CODE APRIL 17, 2021
-      url = `${API}/tixorder/unsigned_place_neworder`;
-
-      order.guestFirstname = customerInformation.firstname;
-      order.guestLastname = customerInformation.lastname;
-      order.guestEmail = customerInformation.email;
-
-      console.log("unsigned order: ", order);
-    }
-
-    let fetcharg = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(order),
-    };
-
-    fetch(url, fetcharg)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        setOrderStatus(data.status);
-        setDisplay("confirmation");
-      })
-      .catch((error) => {
-        console.log("paymentOnSuccess() error.message: ", error.message);
-        setOrderStatus(false);
-        setDisplay("confirmation");
-      })
-      .finally(() => {
-        purchaseConfirmHandler();
-      });
-  };
-
   // defines and sets "loadingSpinner" view status
   const loadingSpinner = () => {
     if (display === "spinner") {
@@ -423,22 +315,6 @@ const Checkout = () => {
     } else {
       return null;
     }
-  };
-
-  // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
-  const purchaseConfirmation = () => {
-    if (display === "success") {
-      console.log("CONFIRMTION");
-      //console.log("transactionInfo: ", transactionInfo);
-      //console.log("orderStatus: ", orderStatus);
-      return (
-        <div className={classes.BlankCanvas}>
-          <div style={{ paddingTop: "20px" }}>
-            <StripeConfirm />
-          </div>
-        </div>
-      );
-    } else return null;
   };
 
   // defines "purchaseConfirmation" contents: contolled by "transactionStatus.success"
@@ -496,6 +372,12 @@ const Checkout = () => {
           <Elements stripe={stripePromise} options={options()}>
             <CheckoutForm
               clientSecret={clientSecret}
+              stripeError={stripeError}
+              clearStripeError={() => setStripeError("none")}
+              showError={(message) => {
+                console.log("message: ", message);
+                setStripeError(message);
+              }}
               transactionInfo={transactionInfo}
               orderStatus={clientSecret}
               orderFailure={(event) => {
