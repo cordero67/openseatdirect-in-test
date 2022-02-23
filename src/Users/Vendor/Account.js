@@ -164,9 +164,7 @@ const Account = (props) => {
         <br></br>
         <div>Plan: {subscription()}</div>
         <br></br>
-        <button className={classes.PasswordButton} onClick={props.upgrade}>
-          {upgrade()}
-        </button>
+        <button className={classes.PasswordButton}>{upgrade()}</button>
       </div>
 
       <ResetModal
