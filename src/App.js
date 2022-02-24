@@ -1,15 +1,65 @@
-import React, { Component } from "react";
+import React, { Component,useEffect } from "react";
+
 import { BrowserRouter } from "react-router-dom";
 
 import Routes from "./components/Routes/Routes";
 
+import GoogleOneTapLogin from 'react-google-one-tap-login';
+
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
+const APIURL  = process.env.REACT_APP_API_URL
+
+
+
 class App extends Component {
+
+
+
+  handleOnSuccess (googleData) {
+        console.log('Login Success: currentUser:', googleData);
+        alert(
+        `Logged in successfully welcome ${googleData.email}`
+      );
+    // fetch jwt
+    console.log ("about to fetch:",APIURL+'/auth/signin/google/onetap' )
+    fetch (APIURL+'/auth/signin/google/onetap',{
+        method:"post",
+        body: JSON.stringify ({
+            google_data:googleData,
+        }),
+        headers:{
+            'Content-Type':'application/json',
+        },
+    }).then ((res)=>res.json())
+    .then ((data) =>{
+      console.log ("got login credentials here:", data)
+      //setLoginData (data);
+     // localStorage.setItem ('loginData', JSON.stringify (data));
+    }).catch ((err)=>{
+      console.log ("err3333>>", err)
+    })
+  }
+
+  handleOnFailure (res)  {
+    console.log('Login failed: res:', res);
+    alert(`Failed to login.`
+    );
+  }
+
+
   render() {
     return (
-      <BrowserRouter>
-        <Routes></Routes>
-      </BrowserRouter>
-    );
+      <div>
+        <GoogleOneTapLogin 
+          onError={this.handleOnFailure} 
+          onSuccess={this.handleOnSuccess} 
+          googleAccountConfigs={{ client_id:GOOGLE_CLIENT_ID}} 
+          />
+        <BrowserRouter>
+          <Routes></Routes>
+        </BrowserRouter>
+      </div>
+    );  
   }
 }
 
