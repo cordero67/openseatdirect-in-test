@@ -1,3 +1,5 @@
+/* global google */
+
 import React, { Component,useEffect } from "react";
 
 import { BrowserRouter } from "react-router-dom";
@@ -7,22 +9,48 @@ import Routes from "./components/Routes/Routes";
 import GoogleOneTapLogin from 'react-google-one-tap-login';
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
-const APIURL  = process.env.REACT_APP_API_URL
+const API_URL  = process.env.REACT_APP_API_URL
 
 
+function  googleOneTap ({ client_id, auto_select = false, cancel_on_tap_outside = false, context = 'signin' }, callback) {
+    const contextValue = ['signin', 'signup', 'use'].includes(context) ? context : 'signin';
+    let googleScript = document.createElement('script');
+    googleScript.setAttribute('src', 'https://accounts.google.com/gsi/client');
+    document.head.appendChild(googleScript)
+    window.onload = function () {
+      if (client_id) {
+        window.google.accounts.id.initialize({
+          client_id: client_id,
+          callback: callback,
+          auto_select: auto_select,
+          cancel_on_tap_outside: cancel_on_tap_outside,
+          context: contextValue
+        });
+        window.google.accounts.id.prompt();
+      } else {
+        console.error('client_id is missing');
+      }
+    };
+  }
 
-class App extends Component {
+
+  console.log("path=", API_URL+"/auth/signin/google/tokensignin");
 
 
+//https://www.intricatecloud.io/2020/12/passwordless-sign-in-with-google-one-tap-for-web/
 
-  handleOnSuccess (googleData) {
+const onOneTapSignedIn = response =>{
+   console.log ("1t respose", response);
+  }
+
+const  handleOnSuccess = (googleData) => {
         console.log('Login Success: currentUser:', googleData);
         alert(
         `Logged in successfully welcome ${googleData.email}`
       );
     // fetch jwt
-    console.log ("about to fetch:",APIURL+'/auth/signin/google/onetap' )
-    fetch (APIURL+'/auth/signin/google/onetap',{
+    console.log ("about to fetch:",API_URL+'/auth/signin/google/onetap' )
+    fetch (API_URL+'/auth/signin/google/onetap',{
         method:"post",
         body: JSON.stringify ({
             google_data:googleData,
@@ -40,6 +68,53 @@ class App extends Component {
     })
   }
 
+class App extends Component {
+
+
+  removeScript = (scriptToremove) => {
+    let allsuspects=document.getElementsByTagName("script");
+    for (let i=allsuspects.length; i>=0; i--){
+    if (allsuspects[i] && allsuspects[i].getAttribute("src")!==null 
+      && allsuspects[i].getAttribute("src").indexOf(`${scriptToremove}`)                !== -1 ){
+           allsuspects[i].parentNode.removeChild(allsuspects[i])
+        }    
+    }
+  }
+
+  GSI = "https://accounts.google.com/gsi/client";
+
+  gcall (x){
+    console.log (x)
+  }
+
+
+  
+  componentDidMount(){
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    document.head.appendChild(script)
+    window.onload = function () {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+//          login_uri: API_URL+"/auth/signin/google/tokensignin",
+//          ux_mode:"redirect"
+          callback:  handleOnSuccess,
+//          auto_select: auto_select,
+//          cancel_on_tap_outside: cancel_on_tap_outside,
+//          context: contextValue
+        });
+        window.google.accounts.id.prompt (noti =>{
+        console.log ("noti22", noti);
+        });
+    }
+  }
+
+    
+   componentWillUnmount () {
+      this.removeScript(this.GSI)
+  }
+  
+
   handleOnFailure (res)  {
     console.log('Login failed: res:', res);
     alert(`Failed to login.`
@@ -47,14 +122,15 @@ class App extends Component {
   }
 
 
+//        <GoogleOneTapLogin 
+//          onError={this.handleOnFailure} 
+//          onSuccess={this.handleOnSuccess} 
+//          googleAccountConfigs={{ client_id:GOOGLE_CLIENT_ID}} 
+//          />
+
   render() {
     return (
       <div>
-        <GoogleOneTapLogin 
-          onError={this.handleOnFailure} 
-          onSuccess={this.handleOnSuccess} 
-          googleAccountConfigs={{ client_id:GOOGLE_CLIENT_ID}} 
-          />
         <BrowserRouter>
           <Routes></Routes>
         </BrowserRouter>
