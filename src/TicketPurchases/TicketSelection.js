@@ -601,6 +601,10 @@ const TicketSelection = () => {
       } else if (eventDetails.gateway === "PayPalMarketplace") {
         console.log("window.location.href = '/checkout-paypalmerchant'");
         window.location.href = "/checkout-paypalmerchant";
+      } else if (eventDetails.gateway === "Opennode") {
+        console.log("window.location.href = '/checkout-opennode'");
+        window.location.href = "/checkout-opennode";
+
       } else {
         console.log("no gateway is found");
         window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;

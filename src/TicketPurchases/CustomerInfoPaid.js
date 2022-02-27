@@ -197,6 +197,8 @@ const CustomerInfo = (props) => {
         window.location.href = "/checkout-stripe";
       } else if (eventDetails.gateway === "PayPalMerchant") {
         window.location.href = "/checkout-paypalmerchant";
+      } else if (eventDetails.gateway === "Opennode") {
+        window.location.href = "/checkout-opennode";
       } else {
         console.log("no gateway is found");
         window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
@@ -432,6 +434,8 @@ const CustomerInfo = (props) => {
             window.location.href = "/checkout-stripe";
           } else if (eventDetails.gateway === "PayPalMerchant") {
             window.location.href = "/checkout-paypalmerchant";
+          } else if (eventDetails.gateway === "Opennnode") {
+            window.location.href = "/checkout-opennode";
           } else {
             console.log("no gateway is found");
             window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
