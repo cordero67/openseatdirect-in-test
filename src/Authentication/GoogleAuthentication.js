@@ -1,7 +1,6 @@
 // google signin
 
 import { GoogleLogin } from "react-google-login";
-import { useState } from "react";
 import { faCss3 } from "@fortawesome/free-brands-svg-icons";
 
 //const clientId =  '707788443358-u05p46nssla3l8tmn58tpo9r5sommgks.apps.googleusercontent.com';
@@ -25,7 +24,7 @@ function MyGoogleLogin(props) {
     }
 
     try {
-      const res = await fetch(APIURL + "/auth/signi/google/tokensignin", {
+      const res = await fetch(APIURL + "/auth/signin/google/tokensignin", {
         method: "post",
         body: JSON.stringify({
           token: googleData.tokenId,
@@ -72,15 +71,11 @@ function MyGoogleLogin(props) {
     <div>
       <GoogleLogin
         clientId={clientId}
-        //buttonText="Continue with Google"
-        buttonText={null}
-        autoLoad={false}
-        disabled={false}
+        buttonText=""
         onSuccess={handleOnSuccess}
         onFailure={handleOnFailure}
         cookiePolicy={"single_host_origin"}
         style={{ marginTop: "100px" }}
-        isSignedIn={true}
       />
     </div>
   );
