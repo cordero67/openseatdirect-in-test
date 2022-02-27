@@ -23,6 +23,8 @@
     "react-day-picker": "^7.4.8",
     "react-dom": "^16.10.2",
     "react-dropzone": "^11.4.2",
+    "react-facebook-login": "^4.1.1",
+    "react-google-login": "^5.2.2",
     "react-image-crop": "^9.0.5",
     "react-minimal-pie-chart": "^8.2.0",
     "react-paypal-button-v2": "^2.6.1",

@@ -19,6 +19,8 @@ import {
   SUBSCRIPTION_PROMO_CODE_8,
 } from "../config";
 
+import GoogleAuthentication from "./GoogleAuthentication";
+
 import RadioForm from "../components/Forms/RadioForm";
 
 import stripeImg from "../assets/Stripe/Stripe wordmark - blurple (small).png";
@@ -1547,6 +1549,8 @@ const Authentication = () => {
     }
   };
 
+  const [firstLogin, setFirstLogin] = useState(true);
+
   const signInForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -1587,6 +1591,55 @@ const Authentication = () => {
           SIGN IN TO YOUR ACCOUNT
         </button>
       </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
+          columnGap: "20px",
+          textAlign: "center",
+          paddingTop: "20px",
+          paddingBottom: "20px",
+        }}
+      >
+        <hr
+          style={{
+            display: "block",
+            height: "1px",
+            border: "0",
+            borderTop: "1px solid #ccc",
+            margin: "1em 0",
+            padding: "0",
+          }}
+        />
+        <div style={{ paddingTop: "5px" }}>Or sign in with</div>
+        <hr
+          style={{
+            display: "block",
+            height: "1px",
+            border: "0",
+            borderTop: "1px solid #ccc",
+            margin: "1em 0",
+            padding: "0",
+          }}
+        />
+      </div>
+      <GoogleAuthentication
+        error={() => {
+          console.log("Sorry can't log you in");
+
+          setSubmissionStatus({
+            message: "Google login unsuccessful",
+            error: true,
+            redirect: "signin",
+          });
+        }}
+        signin={true}
+        firstLogin={firstLogin}
+        changeFirstLogin={() => {
+          setFirstLogin(false);
+        }}
+      />
     </Fragment>
   );
 
@@ -1698,6 +1751,62 @@ const Authentication = () => {
           SUBMIT YOUR EMAIL
         </button>
       </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
+          columnGap: "20px",
+          textAlign: "center",
+          paddingTop: "20px",
+          paddingBottom: "20px",
+        }}
+      >
+        <hr
+          style={{
+            display: "block",
+            height: "1px",
+            border: "0",
+            borderTop: "1px solid #ccc",
+            margin: "1em 0",
+            padding: "0",
+          }}
+        />
+        <div style={{ paddingTop: "5px" }}>Or sign up with</div>
+        <hr
+          style={{
+            display: "block",
+            height: "1px",
+            border: "0",
+            borderTop: "1px solid #ccc",
+            margin: "1em 0",
+            padding: "0",
+          }}
+        />
+      </div>
+      <GoogleAuthentication
+        error={() => {
+          console.log("Sorry can't log you in");
+
+          setSubmissionStatus({
+            message: "Google login unsuccessful",
+            error: true,
+            redirect: "signin",
+          });
+        }}
+        signin={false}
+        success={() => {
+          if (subIntent === "paid") {
+            setDisplay("gateway");
+          } else {
+            setDisplay("freeCongrats");
+          }
+        }}
+        firstLogin={firstLogin}
+        changeFirstLogin={() => {
+          setFirstLogin(false);
+        }}
+      />
     </Fragment>
   );
 
@@ -1867,8 +1976,8 @@ const Authentication = () => {
   // THIS LOOKS GOOD
   // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
   const showPayPal = () => {
-    console.log("paypal_plan_id: ", paypal_plan_id);
-    console.log("subscriptions.clientId: ", subscriptions.clientId);
+    //console.log("paypal_plan_id: ", paypal_plan_id);
+    //console.log("subscriptions.clientId: ", subscriptions.clientId);
     return (
       <div>
         <PayPalButton
@@ -2748,7 +2857,7 @@ const Authentication = () => {
   const signInDisplay = () => {
     let height = {};
     if (!error) {
-      height = { height: "340px" };
+      height = { height: "540px" };
     }
     if (display === "signin") {
       if (showSpinner) {
@@ -2853,7 +2962,7 @@ const Authentication = () => {
   const signUpDisplay = () => {
     let height = {};
     if (!error) {
-      height = { height: "240px" };
+      height = { height: "500px" };
     }
     if (display === "signup") {
       if (showSpinner) {
