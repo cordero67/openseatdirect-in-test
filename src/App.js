@@ -1,16 +1,13 @@
 /* global google */
 
 import React, { Component,useEffect } from "react";
-
 import { BrowserRouter } from "react-router-dom";
-
 import Routes from "./components/Routes/Routes";
 
-import GoogleOneTapLogin from 'react-google-one-tap-login';
+import jwt_decode from "jwt-decode";    // testing only
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
 const API_URL  = process.env.REACT_APP_API_URL
-
 
 function  googleOneTap ({ client_id, auto_select = false, cancel_on_tap_outside = false, context = 'signin' }, callback) {
     const contextValue = ['signin', 'signup', 'use'].includes(context) ? context : 'signin';
@@ -34,8 +31,6 @@ function  googleOneTap ({ client_id, auto_select = false, cancel_on_tap_outside 
   }
 
 
-  console.log("path=", API_URL+"/auth/signin/google/tokensignin");
-
 
 //https://www.intricatecloud.io/2020/12/passwordless-sign-in-with-google-one-tap-for-web/
 
@@ -45,6 +40,7 @@ const onOneTapSignedIn = response =>{
 
 const  handleOnSuccess = (googleData) => {
         console.log('Login Success: currentUser:', googleData);
+        console.log ("jwt=", jwt_decode(googleData.credential));
         alert(
         `Logged in successfully welcome ${googleData.email}`
       );
@@ -59,6 +55,7 @@ const  handleOnSuccess = (googleData) => {
             'Content-Type':'application/json',
         },
     }).then ((res)=>res.json())
+    
     .then ((data) =>{
       console.log ("got login credentials here:", data)
       //setLoginData (data);
@@ -68,6 +65,8 @@ const  handleOnSuccess = (googleData) => {
     })
   }
 
+
+
 class App extends Component {
 
 
@@ -75,7 +74,7 @@ class App extends Component {
     let allsuspects=document.getElementsByTagName("script");
     for (let i=allsuspects.length; i>=0; i--){
     if (allsuspects[i] && allsuspects[i].getAttribute("src")!==null 
-      && allsuspects[i].getAttribute("src").indexOf(`${scriptToremove}`)                !== -1 ){
+      && allsuspects[i].getAttribute("src").indexOf(`${scriptToremove}`) !== -1 ){
            allsuspects[i].parentNode.removeChild(allsuspects[i])
         }    
     }
@@ -83,12 +82,6 @@ class App extends Component {
 
   GSI = "https://accounts.google.com/gsi/client";
 
-  gcall (x){
-    console.log (x)
-  }
-
-
-  
   componentDidMount(){
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
@@ -108,25 +101,16 @@ class App extends Component {
         });
     }
   }
-
-    
+  
    componentWillUnmount () {
       this.removeScript(this.GSI)
   }
   
-
   handleOnFailure (res)  {
     console.log('Login failed: res:', res);
     alert(`Failed to login.`
     );
   }
-
-
-//        <GoogleOneTapLogin 
-//          onError={this.handleOnFailure} 
-//          onSuccess={this.handleOnSuccess} 
-//          googleAccountConfigs={{ client_id:GOOGLE_CLIENT_ID}} 
-//          />
 
   render() {
     return (
