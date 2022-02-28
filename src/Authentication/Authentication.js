@@ -1802,10 +1802,6 @@ const Authentication = () => {
             setDisplay("freeCongrats");
           }
         }}
-        firstLogin={firstLogin}
-        changeFirstLogin={() => {
-          setFirstLogin(false);
-        }}
       />
     </Fragment>
   );
