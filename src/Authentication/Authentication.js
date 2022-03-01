@@ -4,7 +4,8 @@ import queryString from "query-string";
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 import { PayPalButton } from "react-paypal-button-v2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { getStatus } from "../Resources/Utils";
 
 import {
   API,
@@ -20,20 +21,17 @@ import {
 } from "../config";
 
 import GoogleAuthentication from "./GoogleAuthentication";
+import { SubscriptionPlans } from "./Resources/Variables";
 
 import RadioForm from "../components/Forms/RadioForm";
 
 import stripeImg from "../assets/Stripe/Stripe wordmark - blurple (small).png";
-
 import payPalImg from "../assets/PayPal/PayPal.PNG";
 
 import classes from "./Authentication.module.css";
 
 const Authentication = () => {
   const [subIntent, setSubIntent] = useState();
-  console.log("subIntent: ", subIntent);
-  console.log("sandbox: ", PAYPAL_USE_SANDBOX);
-
   const [showSpinner, setShowSpinner] = useState(false);
 
   const [authValues, setAuthValues] = useState({
@@ -43,7 +41,6 @@ const Authentication = () => {
     vendorIntent: "",
     temporary: "",
     reissued: false,
-    //
     confirmation: "",
     resent: false,
     username: "",
@@ -53,7 +50,7 @@ const Authentication = () => {
     accountNum: "",
   });
 
-  // UPDATE WHEN A NEW PLAN IS INTRODUCED
+  // UPDATE WHEN A NEW PAYPAL PLAN IS INTRODUCED
   const [subValues, setSubValues] = useState({
     accountName: "",
     accountEmail: "",
@@ -123,107 +120,8 @@ const Authentication = () => {
     paypalExpress_client_secret,
   } = subValues;
 
-  // LOOKS GOOD
-  const getStatus = () => {
-    //console.log("Entering 'getStatus'");
-    let tempData = JSON.parse(localStorage.getItem("user"));
-    //console.log("tempData: ", tempData);
-    if ("accountId" in tempData.user) {
-      return tempData.user.accountId.status;
-    } else return 0;
-  };
-
-  let subscriptions;
-
-  // THIS LOOKS GOOD EXCEPT FOR FREE YEAR PLAN ID
-  // UPDATE WHEN A NEW PLAN IS INTRODUCED
-  if (PAYPAL_USE_SANDBOX === true) {
-    // PRODUCTION subscription plans (there are no Sandbox plans)
-    subscriptions = {
-      monthly: {
-        name: "$15 monthly",
-        id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
-      },
-      annually: {
-        name: "$169 annually",
-        id: "P-5YA13382D9271245EL5FRXTA", // Bondirectly PayPal Sandbox subscription
-      },
-      monthlyDiscounted: {
-        name: "$15 monthly: 6 weeks free",
-        id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
-      },
-      annuallyDiscounted: {
-        name: "$149 annually: discounted",
-        id: "P-5YA13382D9271245EL5FRXTA", // Bondirectly PayPal Sandbox subscription
-      },
-      monthlyFreeTrial: {
-        name: "$15 monthly: 3 months free",
-        id: "P-3U3085871T847894PL5FRXTI", // Bondirectly PayPal Sandbox subscription
-      },
-      annualGrowPR: {
-        name: "$169 annually: $149 first year",
-        id: "P-3U3085871T847894PL5FRXTI", // Bondirectly PayPal Sandbox subscription
-      },
-      annuallyOldPrice: {
-        name: "$70 annually",
-        id: "P-6UY26644UT426184FL5FRXTI", // Bondirectly PayPal Sandbox subscription
-      },
-      annuallyOldPriceDiscounted: {
-        name: "$50 annually",
-        id: "P-3YH13849H69051131MAIHPGY", // Bondirectly PayPal Sandbox subscription
-      },
-      freeSubscription: {
-        name: "FREE SUBSCRIPTION",
-        id: "", // OSD PayPal Production subscription
-      },
-      clientId:
-        //"AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
-        "AVtX1eZelPSwAZTeLo2-fyj54NweftuO8zhRW1RSHV-H7DpvEAsiLMjM_c14G2fDG2wuJQ1wOr5etzj7", // Bondirectly PayPal Sandbox ClientId
-    };
-  } else {
-    // PRODUCTION subscription plans
-    subscriptions = {
-      monthly: {
-        name: "$15 monthly",
-        id: "P-3E209303AY287713HMDN3PLQ", // OSD PayPal Production subscription
-      },
-      annually: {
-        name: "$169 annually",
-        id: "P-9P586954FE0229727MDN3RMQ", // OSD PayPal Production subscription
-      },
-      monthlyDiscounted: {
-        name: "$15 monthly: 6 weeks free",
-        id: "P-3MM32159H2853152CMDN3T6Q", // OSD PayPal Production subscription
-      },
-      annuallyDiscounted: {
-        name: "$149 annually: discounted",
-        id: "P-41592191WY6636644MDN3VOY", // OSD PayPal Production subscription
-      },
-      monthlyFreeTrial: {
-        name: "$15 monthly: 3 months free",
-        id: "P-0VY95999WV5246104MDOLPKI", // OSD PayPal Production subscription
-      },
-      annualGrowPR: {
-        name: "$169 annually: $149 first year",
-        id: "P-8T757325FM2761033MF5677Y", // Bondirectly PayPal Sandbox subscription
-      },
-      annuallyOldPrice: {
-        name: "$70 annually",
-        id: "P-2K587859D1613454MMDOIAHA", // OSD PayPal Production subscription
-      },
-      annuallyOldPriceDiscounted: {
-        name: "$50 annually",
-        id: "P-74091125HK783123JMDOLLEA", // OSD PayPal Production subscription
-      },
-      freeSubscription: {
-        name: "FREE SUBSCRIPTION",
-        id: "", // OSD PayPal subscription
-      },
-      clientId:
-        "ATOAhgR1qrhz7xQRVHyyyBnj73Ckga6swyGU-8gxFhyJRrkZgEYzaUhTwQx3BmF71lM-oiJC9VelNZDw", // OSD PayPal Production ClientId
-      //"AYkP3Fg50QurkfBwfk7wL4DK8dHPras1f9IKca3IlUsmCm11I6VO4dXTUjZnPPEAhnVPTbRUZqj7vS3k",
-    };
-  }
+  let subscriptions = SubscriptionPlans();
+  console.log("subscriptions: ", subscriptions);
 
   const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
 
@@ -262,39 +160,25 @@ const Authentication = () => {
         console.log(
           tempUser.user.accountId.accountName === tempUser.user.username
         );
-        /*
-      if (
-        tempUser.user.accountId.accountName &&
-        tempUser.user.username &&
-        tempUser.user.accountId.accountName === tempUser.user.username
-      ) {
-        tempBuyerInfo.accountName = "";
-      } else */
         if (tempUser.user.accountId.accountName) {
           tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
         }
-
         if (tempUser.user.accountId.accountEmail) {
           tempBuyerInfo.accountEmail = tempUser.user.accountId.accountEmail;
         }
-
         if (tempUser.user.accountId.accountPhone) {
           tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
         }
-
         if (tempUser.user.accountId.accountUrl) {
           tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
         }
-
         if (tempUser.user.accountId.status) {
           tempBuyerInfo.status = tempUser.user.accountId.status;
         }
-
         if (tempUser.user.accountId.paypalExpress_client_id) {
           tempBuyerInfo.paypalExpress_client_id =
             tempUser.user.accountId.paypalExpress_client_id;
         }
-
         if (tempUser.user.accountId.paypalExpress_client_secret) {
           tempBuyerInfo.paypalExpress_client_secret =
             tempUser.user.accountId.paypalExpress_client_secret;
@@ -1551,105 +1435,139 @@ const Authentication = () => {
 
   const [firstLogin, setFirstLogin] = useState(true);
 
-  const signInForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>E-mail Address</label>
-        <input
-          className={classes.InputBox}
-          type="email"
-          name="email"
-          onChange={handleAuthValueChange}
-          onFocus={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-          }}
-          value={email}
-        />
-      </div>
+  const signInForm = () => {
+    const regsuper =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let disabled = !regsuper.test(email);
+    console.log("disabled: ", disabled);
+    let buttonClass;
+    if (disabled) {
+      buttonClass = classes.ButtonBlueOpac;
+    } else {
+      buttonClass = classes.ButtonBlue;
+    }
 
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Password</label>
-        <input
-          className={classes.InputBox}
-          type="password"
-          name="password"
-          onChange={handleAuthValueChange}
-          onFocus={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-          }}
-          value={password}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonBlue}
-          disabled={error}
-          onClick={() => {
-            submitSignIn();
+    return (
+      <Fragment>
+        <div style={{ paddingBottom: "20px", width: "100%" }}>
+          <label style={{ fontSize: "15px" }}>E-mail Address</label>
+          <input
+            className={classes.InputBox}
+            type="email"
+            name="email"
+            onChange={handleAuthValueChange}
+            onFocus={() => {
+              setSubmissionStatus({ message: "", error: false, redirect: "" });
+            }}
+            value={email}
+          />
+          {email && !regsuper.test(email) ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span
+                style={{
+                  color: "red",
+                  paddingTop: "5px",
+                  paddingBottom: "10px",
+                }}
+              >
+                A valid email address is required
+              </span>
+            </div>
+          ) : null}
+        </div>
+
+        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+          <label style={{ fontSize: "15px" }}>Password</label>
+          <input
+            className={classes.InputBox}
+            type="password"
+            name="password"
+            onChange={handleAuthValueChange}
+            onFocus={() => {
+              setSubmissionStatus({ message: "", error: false, redirect: "" });
+            }}
+            value={password}
+          />
+        </div>
+
+        <div style={{ paddingTop: "10px" }}>
+          <button
+            className={buttonClass}
+            onClick={() => {
+              if (disabled) {
+                setSubmissionStatus({
+                  message: "Invalid email address",
+                  error: true,
+                  redirect: "",
+                });
+              } else {
+                submitSignIn();
+              }
+            }}
+          >
+            SIGN IN TO YOUR ACCOUNT
+          </button>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
+            columnGap: "20px",
+            textAlign: "center",
+            paddingTop: "20px",
+            paddingBottom: "20px",
           }}
         >
-          SIGN IN TO YOUR ACCOUNT
-        </button>
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
-          columnGap: "20px",
-          textAlign: "center",
-          paddingTop: "20px",
-          paddingBottom: "20px",
-        }}
-      >
-        <hr
-          style={{
-            display: "block",
-            height: "1px",
-            border: "0",
-            borderTop: "1px solid #ccc",
-            margin: "1em 0",
-            padding: "0",
-          }}
-        />
-        <div style={{ paddingTop: "5px" }}>Or sign in with</div>
-        <hr
-          style={{
-            display: "block",
-            height: "1px",
-            border: "0",
-            borderTop: "1px solid #ccc",
-            margin: "1em 0",
-            padding: "0",
-          }}
-        />
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <GoogleAuthentication
-          error={(message) => {
-            if (!message) {
-              setSubmissionStatus({
-                message: "System error please try again.",
-                error: true,
-                redirect: "signin",
-              });
-            } else {
-              setSubmissionStatus({
-                message: message,
-                error: true,
-                redirect: "signin",
-              });
-            }
-          }}
-          signin={true}
-          firstLogin={firstLogin}
-          changeFirstLogin={() => {
-            setFirstLogin(false);
-          }}
-        />
-      </div>
-    </Fragment>
-  );
+          <hr
+            style={{
+              display: "block",
+              height: "1px",
+              border: "0",
+              borderTop: "1px solid #ccc",
+              margin: "1em 0",
+              padding: "0",
+            }}
+          />
+          <div style={{ paddingTop: "5px" }}>Or sign in with</div>
+          <hr
+            style={{
+              display: "block",
+              height: "1px",
+              border: "0",
+              borderTop: "1px solid #ccc",
+              margin: "1em 0",
+              padding: "0",
+            }}
+          />
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <GoogleAuthentication
+            error={(message) => {
+              if (!message) {
+                setSubmissionStatus({
+                  message: "System error please try again.",
+                  error: true,
+                  redirect: "signin",
+                });
+              } else {
+                setSubmissionStatus({
+                  message: message,
+                  error: true,
+                  redirect: "signin",
+                });
+              }
+            }}
+            signin={true}
+            firstLogin={firstLogin}
+            changeFirstLogin={() => {
+              setFirstLogin(false);
+            }}
+          />
+        </div>
+      </Fragment>
+    );
+  };
 
   const forgotForm = () => {
     const regsuper =
@@ -1681,21 +1599,19 @@ const Authentication = () => {
             }}
             value={email}
           />
-          <div>
-            {authValues.email && !regsuper.test(authValues.email) ? (
-              <div style={{ paddingTop: "5px" }}>
-                <span
-                  style={{
-                    color: "red",
-                    paddingTop: "5px",
-                    paddingBottom: "10px",
-                  }}
-                >
-                  A valid email address is required
-                </span>
-              </div>
-            ) : null}
-          </div>
+          {email && !regsuper.test(email) ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span
+                style={{
+                  color: "red",
+                  paddingTop: "5px",
+                  paddingBottom: "10px",
+                }}
+              >
+                A valid email address is required
+              </span>
+            </div>
+          ) : null}
         </div>
 
         <div style={{ paddingTop: "10px" }}>
@@ -1720,6 +1636,13 @@ const Authentication = () => {
       </Fragment>
     );
   };
+
+  //RegExp("\d{6}");
+
+  //const regsuper = \d{6};
+
+  const regsuper =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const temporaryForm = (
     <Fragment>
@@ -1774,21 +1697,19 @@ const Authentication = () => {
             }}
             value={email}
           />
-          <div>
-            {authValues.email && !regsuper.test(authValues.email) ? (
-              <div style={{ paddingTop: "5px" }}>
-                <span
-                  style={{
-                    color: "red",
-                    paddingTop: "5px",
-                    paddingBottom: "10px",
-                  }}
-                >
-                  A valid email address is required
-                </span>
-              </div>
-            ) : null}
-          </div>
+          {email && !regsuper.test(email) ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span
+                style={{
+                  color: "red",
+                  paddingTop: "5px",
+                  paddingBottom: "10px",
+                }}
+              >
+                A valid email address is required
+              </span>
+            </div>
+          ) : null}
         </div>
         <div style={{ paddingTop: "10px" }}>
           <button
@@ -2936,7 +2857,7 @@ const Authentication = () => {
               </div>
               <div>
                 {showDetail()}
-                {signInForm}
+                {signInForm()}
                 {alternateSignInInputs}
               </div>
             </div>
