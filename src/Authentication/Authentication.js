@@ -1438,7 +1438,7 @@ const Authentication = () => {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter 6-digit code resent to
+            Enter 6-digit code resent to:
           </div>
           <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
         </Fragment>
@@ -1447,7 +1447,7 @@ const Authentication = () => {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter 6-digit code resent to
+            Enter 6-digit code sent to:
           </div>
           <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
         </Fragment>
@@ -1624,22 +1624,30 @@ const Authentication = () => {
           }}
         />
       </div>
-      <GoogleAuthentication
-        error={() => {
-          console.log("Sorry can't log you in");
-
-          setSubmissionStatus({
-            message: "Google login unsuccessful",
-            error: true,
-            redirect: "signin",
-          });
-        }}
-        signin={true}
-        firstLogin={firstLogin}
-        changeFirstLogin={() => {
-          setFirstLogin(false);
-        }}
-      />
+      <div style={{ textAlign: "center" }}>
+        <GoogleAuthentication
+          error={(message) => {
+            if (!message) {
+              setSubmissionStatus({
+                message: "System error please try again.",
+                error: true,
+                redirect: "signin",
+              });
+            } else {
+              setSubmissionStatus({
+                message: message,
+                error: true,
+                redirect: "signin",
+              });
+            }
+          }}
+          signin={true}
+          firstLogin={firstLogin}
+          changeFirstLogin={() => {
+            setFirstLogin(false);
+          }}
+        />
+      </div>
     </Fragment>
   );
 
@@ -1655,10 +1663,9 @@ const Authentication = () => {
       buttonClass = classes.ButtonBlue;
     }
 
-    //style={{opacity: disabledTest() ? "0.7" : "1.0"}}
     return (
       <Fragment>
-        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <div style={{ paddingBottom: "20px", width: "100%" }}>
           <label style={{ fontSize: "15px" }}>E-mail Address</label>
           <input
             className={classes.InputBox}
@@ -1674,7 +1681,23 @@ const Authentication = () => {
             }}
             value={email}
           />
+          <div>
+            {authValues.email && !regsuper.test(authValues.email) ? (
+              <div style={{ paddingTop: "5px" }}>
+                <span
+                  style={{
+                    color: "red",
+                    paddingTop: "5px",
+                    paddingBottom: "10px",
+                  }}
+                >
+                  A valid email address is required
+                </span>
+              </div>
+            ) : null}
+          </div>
         </div>
+
         <div style={{ paddingTop: "10px" }}>
           <button
             className={buttonClass}
@@ -1726,85 +1749,129 @@ const Authentication = () => {
     </Fragment>
   );
 
-  const signUpForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>E-mail Address</label>
-        <input
-          className={classes.InputBox}
-          type="email"
-          name="email"
-          onChange={handleAuthValueChange}
-          onFocus={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-          }}
-          value={email}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            submitSignUp();
+  const signUpForm = () => {
+    const regsuper =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let disabled = !regsuper.test(email);
+    console.log("disabled: ", disabled);
+    let buttonClass;
+    if (disabled) {
+      buttonClass = classes.ButtonBlueOpac;
+    } else {
+      buttonClass = classes.ButtonBlue;
+    }
+    return (
+      <Fragment>
+        <div style={{ paddingBottom: "20px", width: "100%" }}>
+          <label style={{ fontSize: "15px" }}>E-mail Address</label>
+          <input
+            className={classes.InputBox}
+            type="email"
+            name="email"
+            onChange={handleAuthValueChange}
+            onFocus={() => {
+              setSubmissionStatus({ message: "", error: false, redirect: "" });
+            }}
+            value={email}
+          />
+          <div>
+            {authValues.email && !regsuper.test(authValues.email) ? (
+              <div style={{ paddingTop: "5px" }}>
+                <span
+                  style={{
+                    color: "red",
+                    paddingTop: "5px",
+                    paddingBottom: "10px",
+                  }}
+                >
+                  A valid email address is required
+                </span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+        <div style={{ paddingTop: "10px" }}>
+          <button
+            className={buttonClass}
+            onClick={() => {
+              console.log("Clicking");
+              if (disabled) {
+                setSubmissionStatus({
+                  message: "Invalid email address",
+                  error: true,
+                  redirect: "",
+                });
+              } else {
+                submitSignUp();
+              }
+            }}
+          >
+            SUBMIT YOUR EMAIL
+          </button>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
+            columnGap: "20px",
+            textAlign: "center",
+            paddingTop: "20px",
+            paddingBottom: "20px",
           }}
         >
-          SUBMIT YOUR EMAIL
-        </button>
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
-          columnGap: "20px",
-          textAlign: "center",
-          paddingTop: "20px",
-          paddingBottom: "20px",
-        }}
-      >
-        <hr
-          style={{
-            display: "block",
-            height: "1px",
-            border: "0",
-            borderTop: "1px solid #ccc",
-            margin: "1em 0",
-            padding: "0",
-          }}
-        />
-        <div style={{ paddingTop: "5px" }}>Or sign up with</div>
-        <hr
-          style={{
-            display: "block",
-            height: "1px",
-            border: "0",
-            borderTop: "1px solid #ccc",
-            margin: "1em 0",
-            padding: "0",
-          }}
-        />
-      </div>
-      <GoogleAuthentication
-        error={() => {
-          console.log("Sorry can't log you in");
-
-          setSubmissionStatus({
-            message: "Google login unsuccessful",
-            error: true,
-            redirect: "signin",
-          });
-        }}
-        signin={false}
-        success={() => {
-          if (subIntent === "paid") {
-            setDisplay("gateway");
-          } else {
-            setDisplay("freeCongrats");
-          }
-        }}
-      />
-    </Fragment>
-  );
+          <hr
+            style={{
+              display: "block",
+              height: "1px",
+              border: "0",
+              borderTop: "1px solid #ccc",
+              margin: "1em 0",
+              padding: "0",
+            }}
+          />
+          <div style={{ paddingTop: "5px" }}>Or sign up with</div>
+          <hr
+            style={{
+              display: "block",
+              height: "1px",
+              border: "0",
+              borderTop: "1px solid #ccc",
+              margin: "1em 0",
+              padding: "0",
+            }}
+          />
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <GoogleAuthentication
+            error={(message) => {
+              if (!message) {
+                setSubmissionStatus({
+                  message: "System error please try again.",
+                  error: true,
+                  redirect: "signin",
+                });
+              } else {
+                setSubmissionStatus({
+                  message: message,
+                  error: true,
+                  redirect: "signin",
+                });
+              }
+            }}
+            signin={false}
+            success={() => {
+              if (subIntent === "paid") {
+                setDisplay("gateway");
+              } else {
+                setDisplay("freeCongrats");
+              }
+            }}
+          />
+        </div>
+      </Fragment>
+    );
+  };
 
   const confirmationForm = (
     <Fragment>
@@ -2851,15 +2918,11 @@ const Authentication = () => {
   };
 
   const signInDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "540px" };
-    }
     if (display === "signin") {
       if (showSpinner) {
         return (
           <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.BlankCanvas} style={{ height: "445px" }}>
               <Spinner />
             </div>
           </div>
@@ -2867,7 +2930,7 @@ const Authentication = () => {
       } else {
         return (
           <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.BlankCanvas}>
               <div className={classes.Header}>
                 <div>Welcome back!</div>
               </div>
@@ -2886,15 +2949,11 @@ const Authentication = () => {
   };
 
   const forgotDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "250px" };
-    }
     if (display === "forgot") {
       if (showSpinner) {
         return (
           <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.BlankCanvas} style={{ height: "240px" }}>
               <Spinner />
             </div>
           </div>
@@ -2902,7 +2961,7 @@ const Authentication = () => {
       } else {
         return (
           <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.BlankCanvas}>
               <div className={classes.Header}>
                 <div>Trouble logging in?</div>
               </div>
@@ -2956,15 +3015,11 @@ const Authentication = () => {
   };
 
   const signUpDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "500px" };
-    }
     if (display === "signup") {
       if (showSpinner) {
         return (
           <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.BlankCanvas} style={{ height: "350px" }}>
               <Spinner />
             </div>
           </div>
@@ -2972,13 +3027,13 @@ const Authentication = () => {
       } else {
         return (
           <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.BlankCanvas}>
               <div className={classes.Header}>
                 <div>Tell us about yourself.</div>
               </div>
               <div>
                 {showDetail()}
-                {signUpForm}
+                {signUpForm()}
                 {alternateSignUpInputs}
               </div>
             </div>

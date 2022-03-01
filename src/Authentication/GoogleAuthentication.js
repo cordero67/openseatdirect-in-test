@@ -9,13 +9,9 @@ const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const APIURL = process.env.REACT_APP_API_URL;
 
 function MyGoogleLogin(props) {
-  console.log("First login: ", props.firstLogin);
-
   const handleOnSuccess = async (googleData) => {
-    console.log("Inside handleOnSuccess, props.firstLogin: ", props.firstLogin);
-    //if (!props.firstLogin) {
     console.log("Login Success: currentUser:", googleData);
-    alert(`GOOGLE Login successfull.`);
+    //alert(`GOOGLE Login successfull.`);
 
     if (props.signin) {
       console.log("SIGNING IN");
@@ -36,42 +32,38 @@ function MyGoogleLogin(props) {
       const data = await res.json();
       console.log("got login credentials here:", data);
 
-      localStorage.setItem("user", JSON.stringify(data));
-      console.log("ALL GOOD");
-
-      if (props.signin) {
-        console.log("SIGNING IN");
-        window.location.href = "/myaccount";
+      if (!data.status) {
+        console.log("NOT ALL GOOD");
+        props.error(data.error);
       } else {
-        console.log("SIGNING UP");
-        props.success();
+        localStorage.setItem("user", JSON.stringify(data));
+        console.log("ALL GOOD");
+        if (props.signin) {
+          console.log("SIGNING IN");
+          window.location.href = "/myaccount";
+        } else {
+          console.log("SIGNING UP");
+          props.success();
+        }
       }
     } catch {
       console.log("NOT ALL GOOD");
-      //props.changeFirstLogin();
-      props.error();
+      props.error("System error please try again");
     }
-
-    //}
-    //props.changeFirstLogin();
-    //else {
-    //  console.log("CHANGING LOGIN STATUS");
-    //  props.changeFirstLogin();
-    //}
     console.log("DONE WITH FETCH");
   };
 
   const handleOnFailure = (res) => {
     console.log("Login failed: res:", res);
-    alert(`Failed to login.`);
-    props.error();
+    //alert(`Failed to login.`);
+    props.error("Google error please try again");
   };
 
   return (
     <div>
       <GoogleLogin
         clientId={clientId}
-        buttonText=""
+        buttonText="Google"
         onSuccess={handleOnSuccess}
         onFailure={handleOnFailure}
         cookiePolicy={"single_host_origin"}

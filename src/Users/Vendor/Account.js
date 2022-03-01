@@ -34,6 +34,9 @@ const Account = (props) => {
         username: tempUser.user.username,
         id: tempUser.user._id,
         token: tempUser.token,
+        accountName: tempUser.user.accountId.accountName,
+        accountEmail: tempUser.user.accountId.accountEmail,
+        paymentGateway: tempUser.user.accountId.paymentGatewayType,
       };
       console.log("tempUserInfo: ", tempUserInfo);
       setUserInfo(tempUserInfo);
@@ -147,10 +150,11 @@ const Account = (props) => {
             edit
           </button>
         </div>
-        <div>Name:</div>
-        <div>E-mail:</div>
+        <div>Name: {userInfo.accountName}</div>
+        <div>E-mail: {userInfo.accountEmail}</div>
         <div>Phone Number:</div>
         <div>Website:</div>
+        <div>Payment Gateway: {userInfo.paymentGateway}</div>
         <br></br>
         <button
           className={classes.PasswordButton}
