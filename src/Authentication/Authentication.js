@@ -1493,6 +1493,7 @@ const Authentication = () => {
         <div style={{ paddingTop: "10px" }}>
           <button
             className={buttonClass}
+            disabled={disabled}
             onClick={() => {
               if (disabled) {
                 setSubmissionStatus({
@@ -1617,6 +1618,7 @@ const Authentication = () => {
         <div style={{ paddingTop: "10px" }}>
           <button
             className={buttonClass}
+            disabled={disabled}
             onClick={() => {
               console.log("Clicking");
               if (disabled) {
@@ -1714,6 +1716,7 @@ const Authentication = () => {
         <div style={{ paddingTop: "10px" }}>
           <button
             className={buttonClass}
+            disabled={disabled}
             onClick={() => {
               console.log("Clicking");
               if (disabled) {
