@@ -10,6 +10,7 @@ const APIURL = process.env.REACT_APP_API_URL;
 
 function MyGoogleLogin(props) {
   const handleOnSuccess = async (googleData) => {
+    window.alert (googleData);
     console.log("Login Success: currentUser:", googleData);
     //alert(`GOOGLE Login successfull.`);
 
@@ -37,8 +38,10 @@ function MyGoogleLogin(props) {
         props.error(data.error);
       } else {
         localStorage.setItem("user", JSON.stringify(data));
-        console.log("ALL GOOD");
-        if (props.signin) {
+        console.log("ALL GOOD ,data=", data);
+         window.alert (data);
+//        if (props.signin) {
+        if (!data.firstime) {
           console.log("SIGNING IN");
           window.location.href = "/myaccount";
         } else {
@@ -46,8 +49,8 @@ function MyGoogleLogin(props) {
           props.success();
         }
       }
-    } catch {
-      console.log("NOT ALL GOOD");
+    } catch (er) {
+      console.log("NOT ALL GOOD er=", er);
       props.error("System error please try again");
     }
     console.log("DONE WITH FETCH");
