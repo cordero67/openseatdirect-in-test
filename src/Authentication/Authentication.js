@@ -420,7 +420,7 @@ const Authentication = () => {
   const discountPlans = [
     {
       label: subscriptions.monthlyDiscounted.name,
-      value: subscriptions.monthlyDiscounted.id,
+      value: subscriptions.monthlyDiscounted.idn,
     },
     {
       label: subscriptions.annuallyDiscounted.name,
@@ -1559,10 +1559,12 @@ const Authentication = () => {
                 });
               }
             }}
-            signin={true}
-            firstLogin={firstLogin}
-            changeFirstLogin={() => {
-              setFirstLogin(false);
+            success={() => {
+              if (subIntent === "paid") {
+                setDisplay("gateway");
+              } else {
+                setDisplay("freeCongrats");
+              }
             }}
           />
         </div>
@@ -1783,7 +1785,6 @@ const Authentication = () => {
                 });
               }
             }}
-            signin={false}
             success={() => {
               if (subIntent === "paid") {
                 setDisplay("gateway");

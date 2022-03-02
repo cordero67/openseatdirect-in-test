@@ -1,5 +1,3 @@
-// google signin
-
 import { GoogleLogin } from "react-google-login";
 import { faCss3 } from "@fortawesome/free-brands-svg-icons";
 
@@ -11,14 +9,6 @@ const APIURL = process.env.REACT_APP_API_URL;
 function MyGoogleLogin(props) {
   const handleOnSuccess = async (googleData) => {
     console.log("Login Success: currentUser:", googleData);
-    //alert(`GOOGLE Login successfull.`);
-
-    if (props.signin) {
-      console.log("SIGNING IN");
-    } else {
-      console.log("SIGNING UP");
-    }
-
     try {
       const res = await fetch(APIURL + "/auth/signin/google/tokensignin", {
         method: "post",
@@ -37,8 +27,8 @@ function MyGoogleLogin(props) {
         props.error(data.error);
       } else {
         localStorage.setItem("user", JSON.stringify(data));
-        console.log("ALL GOOD");
-        if (props.signin) {
+        console.log("ALL GOOD: ", data);
+        if (!data.firstTime) {
           console.log("SIGNING IN");
           window.location.href = "/myaccount";
         } else {
