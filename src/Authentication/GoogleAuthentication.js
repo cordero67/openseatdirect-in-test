@@ -1,8 +1,6 @@
 import { GoogleLogin } from "react-google-login";
 import { faCss3 } from "@fortawesome/free-brands-svg-icons";
 
-//const clientId =  '707788443358-u05p46nssla3l8tmn58tpo9r5sommgks.apps.googleusercontent.com';
-//const clientId ='853998692526-q4q1cbd6lenh71q829jcr3gg110frde1.apps.googleusercontent.com';
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const APIURL = process.env.REACT_APP_API_URL;
 
@@ -36,8 +34,8 @@ function MyGoogleLogin(props) {
           props.success();
         }
       }
-    } catch {
-      console.log("NOT ALL GOOD");
+    } catch (er) {
+      console.log("NOT ALL GOOD er=", er);
       props.error("System error please try again");
     }
     console.log("DONE WITH FETCH");
@@ -45,7 +43,6 @@ function MyGoogleLogin(props) {
 
   const handleOnFailure = (res) => {
     console.log("Login failed: res:", res);
-    //alert(`Failed to login.`);
     props.error("Google error please try again");
   };
 
