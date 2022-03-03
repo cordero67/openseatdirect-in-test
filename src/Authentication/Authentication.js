@@ -101,7 +101,6 @@ const Authentication = () => {
 
   const { message, error, redirect } = submissionStatus;
 
-  // LOOKS GOOD
   // object deconstruction
   const {
     accountName,
@@ -131,7 +130,6 @@ const Authentication = () => {
     password,
     temporary,
     reissued,
-    //
     confirmation,
     resent,
     username,
@@ -331,7 +329,6 @@ const Authentication = () => {
           vendorIntent: "",
           temporary: "",
           reissued: false,
-          //
           confirmation: "",
           resent: false,
           username: tempUser.user.username,
@@ -360,7 +357,6 @@ const Authentication = () => {
           vendorIntent: "",
           temporary: "",
           reissued: false,
-          //
           confirmation: "",
           resent: false,
           username: tempUser.user.username,
@@ -408,7 +404,6 @@ const Authentication = () => {
     setSubValues(tempSubValues);
   };
 
-  // UPDATED FROM HERE
   // Detailed definition of subscription plans based on promo code entered
   // No promo code plans: DEFAULT SUBSCRIPTIONS
   const paymentPlans = [
@@ -877,6 +872,8 @@ const Authentication = () => {
       sessionToken
     );
 
+    console.log("authValues: ", authValues);
+
     let url = `${API}/accounts/${accountNum}/subscription/stripe/onboard1-genlink`;
     let fetchBody = {
       method: "POST",
@@ -1294,12 +1291,6 @@ const Authentication = () => {
           {message}
         </div>
       );
-      //
-      //
-      //
-      //
-      //
-      //
     } else if (
       display === "signin" ||
       display === "forgot" ||
@@ -1559,7 +1550,23 @@ const Authentication = () => {
                 });
               }
             }}
-            success={() => {
+            success={(data) => {
+              console.log("data: ", data);
+              setAuthValues({
+                name: "",
+                email: data.user.email,
+                password: "",
+                vendorIntent: "",
+                temporary: "",
+                reissued: false,
+                confirmation: "",
+                resent: false,
+                username: data.user.username,
+                resetToken: "",
+                sessionToken: data.token,
+                userId: data.user.userId,
+                accountNum: data.user.accountId.accountNum,
+              });
               if (subIntent === "paid") {
                 setDisplay("gateway");
               } else {
@@ -1785,7 +1792,23 @@ const Authentication = () => {
                 });
               }
             }}
-            success={() => {
+            success={(data) => {
+              console.log("data: ", data);
+              setAuthValues({
+                name: "",
+                email: data.user.email,
+                password: "",
+                vendorIntent: "",
+                temporary: "",
+                reissued: false,
+                confirmation: "",
+                resent: false,
+                username: data.user.username,
+                resetToken: "",
+                sessionToken: data.token,
+                userId: data.user.userId,
+                accountNum: data.user.accountId.accountNum,
+              });
               if (subIntent === "paid") {
                 setDisplay("gateway");
               } else {

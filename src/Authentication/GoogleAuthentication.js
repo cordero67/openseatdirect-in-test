@@ -31,7 +31,7 @@ function MyGoogleLogin(props) {
           window.location.href = "/myaccount";
         } else {
           console.log("SIGNING UP");
-          props.success();
+          props.success(data);
         }
       }
     } catch (er) {

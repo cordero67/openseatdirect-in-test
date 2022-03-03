@@ -123,33 +123,13 @@ const Account = (props) => {
     <div>
       <div className={classes.DisplayPanelTitle}>Account Settings</div>
       <div className={classes.DisplayPanel} style={{ paddingTop: "20px" }}>
-        <div style={{ fontWeight: "600" }}>
-          Personal Information{" "}
-          <button
-            className={classes.PasswordButton}
-            onClick={() => {
-              //requestChange();
-            }}
-          >
-            edit
-          </button>
-        </div>
+        <div style={{ fontWeight: "600" }}>Personal Information</div>
         <div>First Name: {userInfo.firstname}</div>
         <div>Last Name: {userInfo.lastname}</div>
         <div>User Name: {userInfo.username}</div>
         <div>E-mail: {userInfo.email}</div>
         <br></br>
-        <div style={{ fontWeight: "600" }}>
-          Organization Information{" "}
-          <button
-            className={classes.PasswordButton}
-            onClick={() => {
-              //requestChange();
-            }}
-          >
-            edit
-          </button>
-        </div>
+        <div style={{ fontWeight: "600" }}>Organization Information</div>
         <div>Name: {userInfo.accountName}</div>
         <div>E-mail: {userInfo.accountEmail}</div>
         <div>Phone Number:</div>
