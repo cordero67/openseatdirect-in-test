@@ -882,6 +882,7 @@ const Authentication = () => {
     console.log("fetching with: ", url, fetchBody);
 
     fetch(url, fetchBody)
+      .then(handleErrors)
       .then((res) => res.json())
       .then((response) => {
         console.log("made it inside the .then");
@@ -895,6 +896,9 @@ const Authentication = () => {
           redirect: "gateway",
         });
         setDisplay("error");
+      })
+      .finally(() => {
+        setShowSpinner(false);
       });
   };
 
@@ -2561,6 +2565,9 @@ const Authentication = () => {
           redirect: "selectPlan",
         });
         setDisplay("error");
+      })
+      .finally(() => {
+        setShowSpinner(false);
       });
   };
 
