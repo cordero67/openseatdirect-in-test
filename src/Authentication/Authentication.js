@@ -503,7 +503,6 @@ const Authentication = () => {
   };
 
   const submitSignIn = () => {
-    //setDisplay("spinner");
     setShowSpinner(true);
     setSubmissionStatus({
       message: "",
@@ -550,7 +549,6 @@ const Authentication = () => {
   };
 
   const submitForgot = () => {
-    //setDisplay("spinner");
     setShowSpinner(true);
     setSubmissionStatus({
       message: "",
@@ -636,7 +634,6 @@ const Authentication = () => {
   };
 
   const submitTemporary = () => {
-    //setDisplay("spinner");
     setShowSpinner(true);
     setSubmissionStatus({
       message: "",
@@ -684,7 +681,6 @@ const Authentication = () => {
   };
 
   const submitSignUp = () => {
-    //setDisplay("spinner");
     setShowSpinner(true);
     setSubmissionStatus({
       message: "",
@@ -738,7 +734,6 @@ const Authentication = () => {
   };
 
   const submitConfirmation = () => {
-    //setDisplay("spinner");
     setShowSpinner(true);
     setSubmissionStatus({
       message: "",
@@ -793,18 +788,12 @@ const Authentication = () => {
   };
 
   const submitPassword = () => {
-    //setDisplay("spinner");
     setShowSpinner(true);
     setSubmissionStatus({
       message: "",
       error: false,
       redirect: "",
     });
-    //
-    //
-    //
-    //
-    //
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/password`;
@@ -852,7 +841,6 @@ const Authentication = () => {
   };
 
   const submitStripe = () => {
-    //setDisplay("spinner");
     setShowSpinner(true);
     setSubmissionStatus({
       message: "",
@@ -896,10 +884,9 @@ const Authentication = () => {
           redirect: "gateway",
         });
         setDisplay("error");
-      })
-      .finally(() => {
         setShowSpinner(false);
-      });
+      })
+      .finally(() => {});
   };
 
   const submitResend = () => {
@@ -954,7 +941,6 @@ const Authentication = () => {
         vendorIntent: "",
         temporary: "",
         reissued: false,
-        //
         confirmation: "",
         resent: false,
         username: "",
@@ -984,7 +970,6 @@ const Authentication = () => {
         vendorIntent: "",
         temporary: "",
         reissued: false,
-        //
         confirmation: "",
         resent: false,
         username: "",
@@ -1015,7 +1000,6 @@ const Authentication = () => {
         vendorIntent: "",
         temporary: "",
         reissued: false,
-        //
         confirmation: "",
         resent: false,
         username: "",
@@ -1038,7 +1022,6 @@ const Authentication = () => {
 
   const handleReissue = (data) => {
     if (data.status) {
-      //
       setAuthValues({
         name: "",
         email: data.user.email,
@@ -1046,7 +1029,6 @@ const Authentication = () => {
         vendorIntent: "",
         temporary: "",
         reissued: true,
-        //
         confirmation: "",
         resent: false,
         username: "",
@@ -1084,7 +1066,6 @@ const Authentication = () => {
         vendorIntent: intent,
         temporary: "",
         reissued: false,
-        //
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -1110,7 +1091,6 @@ const Authentication = () => {
   const handleConfirmation = (data) => {
     console.log("data: ", data);
     if (data.status) {
-      //
       localStorage.setItem("user", JSON.stringify(data)); // KEEP
       let intent;
       if (subIntent === "paid") {
@@ -1126,7 +1106,6 @@ const Authentication = () => {
         vendorIntent: intent,
         temporary: "",
         reissued: false,
-        //
         confirmation: "",
         resent: false,
         username: data.user.username,
@@ -1164,7 +1143,6 @@ const Authentication = () => {
         vendorIntent: "",
         temporary: "",
         reissued: false,
-        //
         confirmation: "",
         resent: false,
         username: username,
@@ -1199,7 +1177,6 @@ const Authentication = () => {
       vendorIntent: "",
       temporary: "",
       reissued: false,
-      //
       confirmation: "",
       resent: false,
       username: "",
@@ -1220,7 +1197,6 @@ const Authentication = () => {
         vendorIntent: "",
         temporary: "",
         reissued: false,
-        //
         confirmation: "",
         resent: true,
         username: username,
@@ -1427,8 +1403,6 @@ const Authentication = () => {
       );
     }
   };
-
-  const [firstLogin, setFirstLogin] = useState(true);
 
   const signInForm = () => {
     const regsuper =
@@ -2544,7 +2518,7 @@ const Authentication = () => {
           console.log("tempData: ", tempData);
           tempData.user.accountId = response.result;
           localStorage.setItem("user", JSON.stringify(tempData));
-          ////setPageView("receipt");
+          //setPageView("receipt");
         } else {
           console.log("error in if then else");
 

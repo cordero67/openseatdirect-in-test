@@ -66,27 +66,24 @@ export const signin = (user) => {
 export const signout = (callback) => {
   // checks if the "window" object exists
   if (typeof window !== "undefined") {
+    let user = JSON.parse(localStorage.getItem("user"));
     localStorage.removeItem("user");
     localStorage.removeItem("orders");
     localStorage.removeItem("events");
+
     callback();
+    console.log("user.token: ", user.token);
 
-    /*
-      // LOOKS GOOD
-      // sets api variables
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", "Bearer " + tempUserInfo.token);
-      let requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-    */
-
-    return fetch(`${API}/signout`, {
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer " + user.token);
+    let requestOptions = {
       method: "GET",
-    })
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    return fetch(`${API}/signout`, requestOptions)
       .then((response) => {
         console.log("signout", response);
       })
