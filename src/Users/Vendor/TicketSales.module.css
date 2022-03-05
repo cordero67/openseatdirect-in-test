@@ -1,8 +1,8 @@
 .DisplayPanel {
   background-color: white;
   width: 1030px;
-  height: calc(100vh - 242px);
-  margin-top: 125px;
+  height: calc(100vh - 247px);
+  margin-top: 130px;
   scrollbar-width: thin;
   overflow-y: auto;
   box-sizing: border-box;
@@ -82,7 +82,7 @@
   box-sizing: border-box;
 }
 
-.EventButton {
+.ReceiptButton {
   text-align: center;
   color: blue;
   font-weight: 600;
@@ -93,11 +93,30 @@
   outline: none;
   box-sizing: border-box;
 }
-.EventButton:focus {
+.ReceiptButton:focus {
   border: none;
   outline: none;
 }
-.EventButton:active {
+.ReceiptButton:active {
+  border: none;
+  outline: none;
+}
+.DownloadButton {
+  text-align: center;
+  color: blue;
+  font-weight: 600;
+  width: 30px;
+  padding-left: 5px;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+}
+.DownloadButton:focus {
+  border: none;
+  outline: none;
+}
+.DownloadButton:active {
   border: none;
   outline: none;
 }

@@ -98,7 +98,7 @@ const TicketSales = (props) => {
                   {/*item.totalPaidAmount.toFixed(2)*/}
                 </div>
                 <div style={{ fontSize: "22px", textAlign: "center" }}>
-                  <button className={classes.EventButton} style={styling}>
+                  <button className={classes.ReceiptButton} style={styling}>
                     <ion-icon
                       style={{ fontSize: "24px", color: "blue" }}
                       style={styling}
@@ -235,14 +235,18 @@ const TicketSales = (props) => {
     <div className={classes.DisplayHeader}>
       <div style={{ fontWeight: "600", fontSize: "18px", paddingLeft: "30px" }}>
         Ticket Orders{" "}
-        <FontAwesomeIcon
-          color="blue"
-          cursor="pointer"
-          onClick={() => {
-            downloadEmployeeData();
-          }}
-          icon={faFileCsv}
-        />
+        <button
+          className={classes.DownloadButton}
+          style={{ backgroundColor: "#fff" }}
+        >
+          <ion-icon
+            style={{ fontSize: "20px", color: "blue" }}
+            name="download-outline"
+            onClick={() => {
+              downloadEmployeeData();
+            }}
+          />
+        </button>
       </div>
       <div className={classes.OrdersHeader}>
         <div>
