@@ -896,9 +896,10 @@ const Authentication = () => {
           redirect: "gateway",
         });
         setDisplay("error");
+        setShowSpinner(false);
       })
       .finally(() => {
-        setShowSpinner(false);
+        //setShowSpinner(false);
       });
   };
 
