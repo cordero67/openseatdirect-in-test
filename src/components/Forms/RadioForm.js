@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 import { Form, Radio } from "semantic-ui-react";
 
 const RadioForm = (props) => {
-  console.log("props: ", props);
+  console.log("props.current: ", props.current);
   const formField = () => {
     return (
       <Fragment>

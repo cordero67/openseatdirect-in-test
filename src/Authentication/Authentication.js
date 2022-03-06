@@ -236,7 +236,8 @@ const Authentication = () => {
     let initialView = queryString.parse(window.location.search).view;
     console.log("initialView: ", initialView);
     let userStatus = "none";
-
+    setDisplay("selectPlan");
+    /*
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -393,6 +394,7 @@ const Authentication = () => {
         setDisplay("signin");
       }
     }
+    */
   }, []);
 
   // THIS ASSIGNS THE "paypal_plan_id" VARIABLE TO THE SELECTED PLAN
@@ -2469,8 +2471,6 @@ const Authentication = () => {
         </Fragment>
       );
     } else {
-      //console.log("NO PROMOS");
-      //console.log("paypal_plan_id: ", paypal_plan_id);
       return (
         <Fragment>
           <RadioForm
@@ -2492,7 +2492,6 @@ const Authentication = () => {
     let tempData = JSON.parse(localStorage.getItem("user"));
     let accountNum = tempData.user.accountId.accountNum;
     console.log("tempData: ", tempData);
-    ////const authstring = `Bearer ${props.token}`;
     const authstring = `Bearer ${authValues.sessionToken}`;
     fetch(`${API}/accounts/${accountNum}/subscription/nopay`, {
       method: "POST",
@@ -2518,7 +2517,7 @@ const Authentication = () => {
           console.log("tempData: ", tempData);
           tempData.user.accountId = response.result;
           localStorage.setItem("user", JSON.stringify(tempData));
-          //setPageView("receipt");
+          setDisplay("paidCongrats");
         } else {
           console.log("error in if then else");
 
@@ -3112,6 +3111,7 @@ const Authentication = () => {
   };
 
   const paidCongratsDisplay = () => {
+    console.log("Inside paidCongratsDisplay");
     let height = {};
     if (!error) {
       height = { height: "240px" };
@@ -3148,7 +3148,7 @@ const Authentication = () => {
   const selectPlanDisplay = () => {
     let height = {};
     if (!error) {
-      height = { height: "480px" };
+      height = { height: "490px" };
     }
     if (display === "selectPlan") {
       if (showSpinner) {

@@ -98,6 +98,24 @@
   resize: none;
 }
 
+.ButtonGreen {
+  background-color: #00a300;
+  color: #fff;
+  width: calc(100vw - 48px);
+  height: 40px;
+  font-size: 14px;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGreen:hover {
+  background-color: #007a00;
+  border: 1px solid #000;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  border: 1px solid #000;
+}
+
 .ButtonBlue {
   background-color: #2f5596;
   color: #fff;
@@ -156,14 +174,88 @@
   box-sizing: border-box;
 }
 
+.PromoGrid {
+  height: 48px;
+  display: grid;
+  grid-template-columns: auto 80px;
+}
 .EnterPromoCode {
   color: blue;
   width: 140px;
+  /*padding-bottom: 10px;*/
 }
 .EnterPromoCode:hover {
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
+}
+.AppliedPromoCode {
+  background-color: #eff8e9;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  margin-bottom: 10px;
+  height: 40px;
+  vertical-align: center;
+}
+.RemovePromoCode {
+  color: blue;
+  font-size: 14px;
+  width: 80px;
+}
+.RemovePromoCode:hover {
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.PromoCodeInputBoxRed {
+  padding-left: 10px;
+  color: red;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeInputBoxBlack {
+  padding-left: 10px;
+  color: black;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonBlue {
+  font-size: 14px;
+  text-align: center;
+  color: blue;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonBlue:active {
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonRed {
+  font-size: 14px;
+  text-align: center;
+  color: red;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonRed:active {
+  border: none;
+  outline: none;
+}
+@media (min-width: 1140px) {
+  .PromoGrid {
+    grid-template-columns: auto 77px;
+  }
+}
+.Red {
+  border: 1px solid red;
+}
+.Blue {
+  border: 1px solid blue;
 }
 
 .BlueText {
@@ -200,6 +292,9 @@
   }
 
   .PayPalInputBox {
+    width: 340px;
+  }
+  .ButtonGreen {
     width: 340px;
   }
   .ButtonBlue {
