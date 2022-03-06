@@ -2343,7 +2343,7 @@ const Authentication = () => {
   // UPDATE WHEN A NEW PLAN IS INTRODUCED BY ADDING A NEW '<RadioForm>' CODE
   // Displays subscription pricing options section based on promo code entered
   const paymentPanel = () => {
-    //console.log("subValues info: ", subValues);
+    console.log("subValues info: ", subValues);
     if (
       promoCodeDetails.appliedPromoCode === "OSD20" ||
       promoCodeDetails.appliedPromoCode === "HEAMEDIAGROUP" ||
@@ -2730,7 +2730,7 @@ const Authentication = () => {
           <button
             className={classes.ButtonGrey}
             onClick={() => {
-              window.location.href = "/";
+              window.location.href = "/myaccount";
             }}
           >
             TRY AGAIN LATER
@@ -3145,6 +3145,7 @@ const Authentication = () => {
   };
 
   const selectPlanDisplay = () => {
+    //updateSubValues();
     let height = {};
     if (!error) {
       height = { height: "490px" };
