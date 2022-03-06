@@ -236,8 +236,8 @@ const Authentication = () => {
     let initialView = queryString.parse(window.location.search).view;
     console.log("initialView: ", initialView);
     let userStatus = "none";
-    setDisplay("selectPlan");
-    /*
+    //setDisplay("selectPlan");
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -394,7 +394,6 @@ const Authentication = () => {
         setDisplay("signin");
       }
     }
-    */
   }, []);
 
   // THIS ASSIGNS THE "paypal_plan_id" VARIABLE TO THE SELECTED PLAN
