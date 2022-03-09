@@ -9,6 +9,7 @@ import ForgotDisplay from "./Components/ForgotDisplay";
 import TemporaryDisplay from "./Components/TemporaryDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
 import ConfirmationDisplay from "./Components/ConfirmationDisplay";
+import PasswordDisplay from "./Components/PasswordDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./Authentication.module.css";
@@ -889,6 +890,37 @@ const Authentication = (props) => {
             {alternateConfirmationInputs}
           </div>
         </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const passwordDisplay2 = () => {
+    if (modalSetting === "forgot") {
+      return (
+        <PasswordDisplay
+          close={closeModal}
+          email={email}
+          error={error}
+          expired={expired}
+          message={message}
+          password={password}
+          confirmation={confirmation}
+          resetToken={resetToken}
+          username={username}
+          spinner={showSpinner}
+          inputChange={handleChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          modalChange={(modal) => setModalSetting(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          values={(input) => setValues(input)}
+          submitResend={() => submitResend()}
+          resetValues={() => resetValues()}
+          submit={() => props.submit()}
+        ></PasswordDisplay>
       );
     } else {
       return null;

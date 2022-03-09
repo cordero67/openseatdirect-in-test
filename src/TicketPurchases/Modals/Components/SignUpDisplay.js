@@ -236,6 +236,7 @@ const SignUpDisplay = (props) => {
       props.modalChange("signup");
     }
   };
+
   const showError = () => {
     if (props.error) {
       return (
