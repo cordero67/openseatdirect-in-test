@@ -8,6 +8,7 @@ import SignInDisplay from "./Components/SignInDisplay";
 import ForgotDisplay from "./Components/ForgotDisplay";
 import TemporaryDisplay from "./Components/TemporaryDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
+import ConfirmationDisplay from "./Components/ConfirmationDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./Authentication.module.css";
@@ -132,46 +133,6 @@ const Authentication = (props) => {
       .then((data) => {
         console.log("fetch return got back data:", data);
         handleReissue(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        setModalSetting("error");
-      });
-  };
-
-  const submitSignUp = () => {
-    setModalSetting("spinner");
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup/email`;
-    let information = {
-      email: email,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleSignUp(data);
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -381,7 +342,6 @@ const Authentication = (props) => {
 
   const handleReissue = (data) => {
     if (data.status) {
-      //localStorage.setItem("user", JSON.stringify(data));
       setValues({
         name: "",
         email: data.user.email,
@@ -401,34 +361,6 @@ const Authentication = (props) => {
         message: data.error,
         error: true,
       });
-      console.log("ERROR: ", data.error);
-    }
-  };
-
-  const handleSignUp = (data) => {
-    if (data.status) {
-      setValues({
-        name: "",
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        username: data.user.username,
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-      });
-      console.log("SUCCESS");
-      setModalSetting("confirmation");
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-      });
-      setModalSetting("signup");
       console.log("ERROR: ", data.error);
     }
   };
@@ -641,66 +573,6 @@ const Authentication = (props) => {
     }
   };
 
-  const signUpForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>E-mail Address</label>
-        <input
-          className={classes.InputBox}
-          type="email"
-          name="email"
-          onChange={handleChange}
-          value={email}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.SubmitButton}
-          onClick={() => {
-            submitSignUp();
-          }}
-        >
-          SUBMIT YOUR EMAIL
-        </button>
-      </div>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
-          columnGap: "20px",
-          textAlign: "center",
-          fontSize: "14px",
-          paddingTop: "20px",
-          paddingBottom: "20px",
-        }}
-      >
-        <hr
-          style={{
-            display: "block",
-            height: "1px",
-            border: "0",
-            borderTop: "1px solid #ccc",
-            margin: "1em 0",
-            padding: "0",
-          }}
-        />
-        <div style={{ paddingTop: "5px" }}>Or sign up with</div>
-        <hr
-          style={{
-            display: "block",
-            height: "1px",
-            border: "0",
-            borderTop: "1px solid #ccc",
-            margin: "1em 0",
-            padding: "0",
-          }}
-        />
-      </div>
-    </Fragment>
-  );
-
   const confirmationForm = (
     <Fragment>
       <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
@@ -810,22 +682,6 @@ const Authentication = (props) => {
         </button>
       </div>
     </Fragment>
-  );
-
-  const alternateSignUpInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        Back to{" "}
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            setModalSetting("signin");
-          }}
-        >
-          Sign In
-        </button>
-      </div>
-    </div>
   );
 
   const alternateConfirmationInputs = (
@@ -952,7 +808,7 @@ const Authentication = (props) => {
     }
   };
 
-  const signUpDisplay2 = () => {
+  const signUpDisplay = () => {
     console.log("INSIDE OUTER");
     if (modalSetting === "signup") {
       console.log("INSIDE INNER");
@@ -981,36 +837,33 @@ const Authentication = (props) => {
     }
   };
 
-  const signUpDisplay = () => {
-    if (modalSetting === "signup") {
+  const confirmationDisplay2 = () => {
+    if (modalSetting === "forgot") {
       return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Tell us about yourself</div>
-            <div style={{ textAlign: "right" }}>
-              <ion-icon
-                style={{
-                  fontWeight: "600",
-                  fontSize: "28px",
-                  color: "black",
-                  paddingBottom: "5px",
-                }}
-                name="close-outline"
-                cursor="pointer"
-                onClick={() => {
-                  closeModal();
-                }}
-              />
-            </div>
-          </div>
-          <div>
-            {showError()}
-            {signUpForm}
-            {props.start === "signin" ? alternateSignUpInputs : null}
-          </div>
-        </div>
+        <ConfirmationDisplay
+          close={closeModal}
+          email={email}
+          error={error}
+          expired={expired}
+          message={message}
+          password={password}
+          confirmation={confirmation}
+          spinner={showSpinner}
+          inputChange={handleChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          modalChange={(modal) => setModalSetting(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          values={(input) => setValues(input)}
+          submitResend={() => submitResend()}
+          resetValues={() => resetValues()}
+          submit={() => props.submit()}
+        ></ConfirmationDisplay>
       );
-    } else return null;
+    } else {
+      return null;
+    }
   };
 
   const confirmationDisplay = () => {
@@ -1138,7 +991,7 @@ const Authentication = (props) => {
         {signInDisplay()}
         {forgotDisplay()}
         {temporaryDisplay()}
-        {signUpDisplay2()}
+        {signUpDisplay()}
         {confirmationDisplay()}
         {passwordDisplay()}
         {usernameDisplay()}
