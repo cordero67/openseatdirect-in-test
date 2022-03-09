@@ -74,10 +74,9 @@ const ConfirmationDisplay = (props) => {
     </div>
   );
 
-  const confirmationForm = (
-
-    const regsuper = /\b\d{6}\b/
-    let disabled = !regsuper.test(props.temporary);
+  const confirmationForm = () => {
+    const regsuper = /\b\d{6}\b/;
+    let disabled = !regsuper.test(props.confirmation);
     console.log("disabled: ", disabled);
     let buttonClass;
     if (disabled) {
@@ -86,37 +85,53 @@ const ConfirmationDisplay = (props) => {
       buttonClass = classes.SubmitButton;
     }
 
-
-
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Confirmation Number</label>
-        <input
-          className={classes.InputBox}
-          type="text"
-          name="confirmation"
-          onChange={handleChange}
-          value={confirmation}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.SubmitButton}
-          onClick={() => {
-            submitConfirmation();
-          }}
-        >
-          SUBMIT YOUR CODE
-        </button>
-      </div>
-    </Fragment>
-  );
+    return (
+      <Fragment>
+        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+          <label style={{ fontSize: "15px" }}>Confirmation Number</label>
+          <input
+            className={classes.InputBox}
+            type="text"
+            name="confirmation"
+            onChange={props.inputChange}
+            value={props.confirmation}
+            onFocus={() => {
+              props.submission({ message: "", error: false, redirect: "" });
+            }}
+          />{" "}
+          {props.confirmation && !regsuper.test(props.confirmation) ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span
+                style={{
+                  color: "red",
+                  fontSize: "14px",
+                  paddingTop: "5px",
+                  paddingBottom: "10px",
+                }}
+              >
+                A valid email address is required
+              </span>
+            </div>
+          ) : null}
+        </div>
+        <div style={{ paddingTop: "10px" }}>
+          <button
+            className={classes.buttonClass}
+            onClick={() => {
+              submitConfirmation();
+            }}
+          >
+            SUBMIT YOUR CODE
+          </button>
+        </div>
+      </Fragment>
+    );
+  };
 
   const handleConfirmation = (data) => {
     if (data.status) {
-      // ADDED on 1/9/22
-      localStorage.setItem("user", JSON.stringify(data)); // KEEP
-      setValues({
+      localStorage.setItem("user", JSON.stringify(data));
+      props.values({
         name: "",
         email: data.user.email,
         password: "",
@@ -130,33 +145,30 @@ const ConfirmationDisplay = (props) => {
         sessionToken: "",
         userId: "",
       });
-      console.log("SUCCESS");
-      setModalSetting("password");
+      props.modalChange("password");
     } else {
-      console.log("Inside handleConfirmation false");
-      setSubmissionStatus({
+      props.submission({
         message: data.error,
         error: true,
       });
-      setModalSetting("confirmation");
-      console.log("ERROR: ", data.error);
+      props.modalChange("confirmation");
     }
   };
 
   const showError = () => {
-    if (error) {
+    if (props.error) {
       return (
         <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
-          {message}
+          {props.message}
         </div>
       );
-    } else if (modalSetting === "confirmation" && !resent) {
+    } else if (!props.resent) {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           Enter the 6-digit code sent to your email:
         </div>
       );
-    } else if (modalSetting === "confirmation" && resent) {
+    } else {
       return (
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
           A new 6-digit code was sent to your email,
@@ -184,7 +196,7 @@ const ConfirmationDisplay = (props) => {
               name="close-outline"
               cursor="pointer"
               onClick={() => {
-                closeModal();
+                props.close();
               }}
             />
           </div>
@@ -198,5 +210,4 @@ const ConfirmationDisplay = (props) => {
     );
   }
 };
-
 export default ConfirmationDisplay;
