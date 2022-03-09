@@ -1425,11 +1425,11 @@ const Authentication = () => {
             className={classes.InputBox}
             type="email"
             name="email"
+            value={email}
             onChange={handleAuthValueChange}
             onFocus={() => {
               setSubmissionStatus({ message: "", error: false, redirect: "" });
             }}
-            value={email}
           />
           {email && !regsuper.test(email) ? (
             <div style={{ paddingTop: "5px" }}>
@@ -1514,6 +1514,7 @@ const Authentication = () => {
         </div>
         <div style={{ textAlign: "center" }}>
           <GoogleAuthentication
+            authOrigin={true}
             error={(message) => {
               if (!message) {
                 setSubmissionStatus({
@@ -2848,24 +2849,20 @@ const Authentication = () => {
     if (display === "signin") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={{ height: "445px" }}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={{ height: "445px" }}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas}>
-              <div className={classes.Header}>
-                <div>Welcome back!</div>
-              </div>
-              <div>
-                {showDetail()}
-                {signInForm()}
-                {alternateSignInInputs}
-              </div>
+          <div className={classes.BlankCanvas}>
+            <div className={classes.Header}>
+              <div>Welcome back!</div>
+            </div>
+            <div>
+              {showDetail()}
+              {signInForm()}
+              {alternateSignInInputs}
             </div>
           </div>
         );
@@ -2879,24 +2876,20 @@ const Authentication = () => {
     if (display === "forgot") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={{ height: "240px" }}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={{ height: "240px" }}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas}>
-              <div className={classes.Header}>
-                <div>Trouble logging in?</div>
-              </div>
-              <div>
-                {showDetail()}
-                {forgotForm()}
-                {alternateSignUpInputs}
-              </div>
+          <div className={classes.BlankCanvas}>
+            <div className={classes.Header}>
+              <div>Trouble logging in?</div>
+            </div>
+            <div>
+              {showDetail()}
+              {forgotForm()}
+              {alternateSignUpInputs}
             </div>
           </div>
         );
@@ -2914,24 +2907,20 @@ const Authentication = () => {
     if (display === "temporary") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>
-                <div>Enter confirmation code.</div>
-              </div>
-              <div>
-                {showDetail()}
-                {temporaryForm}
-                {alternateTemporaryInputs}
-              </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.Header}>
+              <div>Enter confirmation code.</div>
+            </div>
+            <div>
+              {showDetail()}
+              {temporaryForm}
+              {alternateTemporaryInputs}
             </div>
           </div>
         );
@@ -2945,24 +2934,20 @@ const Authentication = () => {
     if (display === "signup") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={{ height: "350px" }}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={{ height: "350px" }}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas}>
-              <div className={classes.Header}>
-                <div>Tell us about yourself.</div>
-              </div>
-              <div>
-                {showDetail()}
-                {signUpForm()}
-                {alternateSignUpInputs}
-              </div>
+          <div className={classes.BlankCanvas}>
+            <div className={classes.Header}>
+              <div>Tell us about yourself.</div>
+            </div>
+            <div>
+              {showDetail()}
+              {signUpForm()}
+              {alternateSignUpInputs}
             </div>
           </div>
         );
@@ -2980,24 +2965,20 @@ const Authentication = () => {
     if (display === "confirmation") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>
-                <div>Enter confirmation code.</div>
-              </div>
-              <div>
-                {showDetail()}
-                {confirmationForm}
-                {alternateConfirmationInputs}
-              </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.Header}>
+              <div>Enter confirmation code.</div>
+            </div>
+            <div>
+              {showDetail()}
+              {confirmationForm}
+              {alternateConfirmationInputs}
             </div>
           </div>
         );
@@ -3015,23 +2996,19 @@ const Authentication = () => {
     if (display === "password") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>
-                <div>Create your password</div>
-              </div>
-              <div>
-                {showDetail()}
-                {passwordForm}
-              </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.Header}>
+              <div>Create your password</div>
+            </div>
+            <div>
+              {showDetail()}
+              {passwordForm}
             </div>
           </div>
         );
@@ -3049,23 +3026,19 @@ const Authentication = () => {
     if (display === "gateway") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>
-                <div>How to Get Paid Instantly.</div>
-              </div>
-              <div>
-                {showDetail()}
-                {gatewayForm}
-              </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.Header}>
+              <div>How to Get Paid Instantly.</div>
+            </div>
+            <div>
+              {showDetail()}
+              {gatewayForm}
             </div>
           </div>
         );
@@ -3083,23 +3056,19 @@ const Authentication = () => {
     if (display === "freeCongrats") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>
-                <div>Success!</div>
-              </div>
-              <div>
-                {showDetail()}
-                {freeCongratsForm}
-              </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.Header}>
+              <div>Success!</div>
+            </div>
+            <div>
+              {showDetail()}
+              {freeCongratsForm}
             </div>
           </div>
         );
@@ -3118,23 +3087,19 @@ const Authentication = () => {
     if (display === "paidCongrats") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>
-                <div>Success!</div>
-              </div>
-              <div>
-                {showDetail()}
-                {paidCongratsForm}
-              </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.Header}>
+              <div>Success!</div>
+            </div>
+            <div>
+              {showDetail()}
+              {paidCongratsForm}
             </div>
           </div>
         );
@@ -3153,23 +3118,19 @@ const Authentication = () => {
     if (display === "selectPlan") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>
-                <div>Select Your Plan!</div>
-              </div>
-              <div>
-                {showDetail()}
-                {selectPlanForm}
-              </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.Header}>
+              <div>Select Your Plan!</div>
+            </div>
+            <div>
+              {showDetail()}
+              {selectPlanForm}
             </div>
           </div>
         );
@@ -3187,21 +3148,17 @@ const Authentication = () => {
     if (display === "paypal") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>Enter PayPal account info.</div>
-              <div>
-                {showDetail()}
-                {paypalForm}
-              </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.Header}>Enter PayPal account info.</div>
+            <div>
+              {showDetail()}
+              {paypalForm}
             </div>
           </div>
         );
@@ -3219,21 +3176,17 @@ const Authentication = () => {
     if (display === "error") {
       if (showSpinner) {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <Spinner />
-            </div>
+          <div className={classes.BlankCanvas} style={height}>
+            <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>
-                <div>System Error</div>
-              </div>
-              <div>{errorForm()}</div>
+          <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.Header}>
+              <div>System Error</div>
             </div>
+            <div>{errorForm()}</div>
           </div>
         );
       }
@@ -3244,18 +3197,20 @@ const Authentication = () => {
 
   return (
     <div className={classes.MainContainer}>
-      {signInDisplay()}
-      {forgotDisplay()}
-      {temporaryDisplay()}
-      {signUpDisplay()}
-      {confirmationDisplay()}
-      {passwordDisplay()}
-      {gatewayDisplay()}
-      {paypalDisplay()}
-      {selectPlanDisplay()}
-      {freeCongratsDisplay()}
-      {paidCongratsDisplay()}
-      {errorDisplay()}
+      <div className={classes.Modal}>
+        {signInDisplay()}
+        {forgotDisplay()}
+        {temporaryDisplay()}
+        {signUpDisplay()}
+        {confirmationDisplay()}
+        {passwordDisplay()}
+        {gatewayDisplay()}
+        {paypalDisplay()}
+        {selectPlanDisplay()}
+        {freeCongratsDisplay()}
+        {paidCongratsDisplay()}
+        {errorDisplay()}
+      </div>
     </div>
   );
 };

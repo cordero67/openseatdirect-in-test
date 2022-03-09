@@ -1,12 +1,13 @@
-import React, { useState, useEffect, Fragment } from "react";
-//
+import React, { useState, Fragment } from "react";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../../config";
 
+import GoogleAuthentication from "../../Authentication/GoogleAuthentication";
+
 import Backdrop from "./Backdrop";
-import classes from "./AuthenticationModal.module.css";
+import classes from "./Authentication.module.css";
 
 const Authentication = (props) => {
   const [values, setValues] = useState({
@@ -854,6 +855,84 @@ const Authentication = (props) => {
           SIGN IN TO YOUR ACCOUNT
         </button>
       </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
+          columnGap: "20px",
+          textAlign: "center",
+          fontSize: "14px",
+          paddingTop: "20px",
+          paddingBottom: "20px",
+        }}
+      >
+        <hr
+          style={{
+            display: "block",
+            height: "1px",
+            border: "0",
+            borderTop: "1px solid #ccc",
+            margin: "1em 0",
+            padding: "0",
+          }}
+        />
+        <div style={{ paddingTop: "5px" }}>Or sign in with</div>
+        <hr
+          style={{
+            display: "block",
+            height: "1px",
+            border: "0",
+            borderTop: "1px solid #ccc",
+            margin: "1em 0",
+            padding: "0",
+          }}
+        />
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <GoogleAuthentication
+          error={(message) => {
+            if (!message) {
+              setSubmissionStatus({
+                message: "System error please try again.",
+                error: true,
+                redirect: "signin",
+              });
+            } else {
+              setSubmissionStatus({
+                message: message,
+                error: true,
+                redirect: "signin",
+              });
+            }
+          }}
+          success={(data) => {
+            console.log("data: ", data);
+            /*
+            setAuthValues({
+              name: "",
+              email: data.user.email,
+              password: "",
+              vendorIntent: "",
+              temporary: "",
+              reissued: false,
+              confirmation: "",
+              resent: false,
+              username: data.user.username,
+              resetToken: "",
+              sessionToken: data.token,
+              userId: data.user.userId,
+              accountNum: data.user.accountId.accountNum,
+            });
+            */
+            //if (subIntent === "paid") {
+            //setDisplay("gateway");
+            //} else {
+            //setDisplay("freeCongrats");
+            //}
+          }}
+        />
+      </div>
     </Fragment>
   );
 
@@ -928,6 +1007,85 @@ const Authentication = (props) => {
         >
           SUBMIT YOUR EMAIL
         </button>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
+          columnGap: "20px",
+          textAlign: "center",
+          fontSize: "14px",
+          paddingTop: "20px",
+          paddingBottom: "20px",
+        }}
+      >
+        <hr
+          style={{
+            display: "block",
+            height: "1px",
+            border: "0",
+            borderTop: "1px solid #ccc",
+            margin: "1em 0",
+            padding: "0",
+          }}
+        />
+        <div style={{ paddingTop: "5px" }}>Or sign up with</div>
+        <hr
+          style={{
+            display: "block",
+            height: "1px",
+            border: "0",
+            borderTop: "1px solid #ccc",
+            margin: "1em 0",
+            padding: "0",
+          }}
+        />
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <GoogleAuthentication
+          error={(message) => {
+            if (!message) {
+              setSubmissionStatus({
+                message: "System error please try again.",
+                error: true,
+                redirect: "signin",
+              });
+            } else {
+              setSubmissionStatus({
+                message: message,
+                error: true,
+                redirect: "signin",
+              });
+            }
+          }}
+          success={(data) => {
+            console.log("data: ", data);
+            /*
+            setAuthValues({
+              name: "",
+              email: data.user.email,
+              password: "",
+              vendorIntent: "",
+              temporary: "",
+              reissued: false,
+              confirmation: "",
+              resent: false,
+              username: data.user.username,
+              resetToken: "",
+              sessionToken: data.token,
+              userId: data.user.userId,
+              accountNum: data.user.accountId.accountNum,
+            });
+            */
+            //if (subIntent === "paid") {
+            //setDisplay("gateway");
+            //} else {
+            //setDisplay("freeCongrats");
+            //}
+          }}
+        />
       </div>
     </Fragment>
   );

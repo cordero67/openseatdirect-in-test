@@ -638,7 +638,7 @@ const TicketSelection = () => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
-                window.location.href = `/events`;
+                window.location.href = `/`;
               }}
             >
               CONTINUE

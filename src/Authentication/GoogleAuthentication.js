@@ -26,7 +26,7 @@ function MyGoogleLogin(props) {
       } else {
         localStorage.setItem("user", JSON.stringify(data));
         console.log("ALL GOOD: ", data);
-        if (!data.firstTime) {
+        if (!data.firstTime && props.authOrigin) {
           console.log("SIGNING IN");
           window.location.href = "/myaccount";
         } else {

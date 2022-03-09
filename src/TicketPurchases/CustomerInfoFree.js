@@ -17,7 +17,7 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import GuestForm from "./Components/GuestForm";
 import CartLink from "./Components/CartLink";
 import OrderSummary from "./Components/OrderSummary";
-import AuthenticationModal from "./Modals/AuthenticationModal";
+import AuthenticationModal from "./Modals/AuthenticationNEW";
 import { OrderConfirm } from "./Components/OrderConfirms";
 import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
 import classes from "./CustomerInfo.module.css";
@@ -342,11 +342,13 @@ const CustomerInfo = (props) => {
   // when it runs it runs the "timeLeft" hook
   // this causes the page to refresh which updates the time expired numbers
   // these numbers are fed by the "calculateTimeLeft()" function
+  /*
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
   });
+  */
 
   const timeRemaining = () => {
     if (+new Date(orderExpiration) >= +new Date()) {
