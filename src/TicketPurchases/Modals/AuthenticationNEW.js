@@ -65,47 +65,6 @@ const Authentication = (props) => {
     return response;
   };
 
-  const submitSignIn = () => {
-    setModalSetting("spinner");
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/email`;
-    let information = {
-      email: email,
-      password: password,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleSignIn(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-        });
-        setModalSetting("error");
-      });
-  };
-
   const submitReissue = () => {
     setSubmissionStatus({
       message: "",
@@ -134,52 +93,6 @@ const Authentication = (props) => {
       .then((data) => {
         console.log("fetch return got back data:", data);
         handleReissue(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        setModalSetting("error");
-      });
-  };
-
-  const submitPassword = () => {
-    setModalSetting("spinner");
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
-
-    console.log("email: ", email);
-    console.log("resetToken: ", resetToken);
-    console.log("password: ", password);
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup/password`;
-    let information = {
-      email: email,
-      passwordToken: resetToken,
-      password: password,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handlePassword(data);
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -230,34 +143,6 @@ const Authentication = (props) => {
       });
   };
 
-  const handleSignIn = (data) => {
-    if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
-      setValues({
-        name: "",
-        email: "",
-        password: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        username: "",
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-      });
-      props.submit();
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-      });
-      setModalSetting("signin");
-      console.log("ERROR: ", data.error);
-    }
-  };
-
   const handleReissue = (data) => {
     if (data.status) {
       setValues({
@@ -279,38 +164,6 @@ const Authentication = (props) => {
         message: data.error,
         error: true,
       });
-      console.log("ERROR: ", data.error);
-    }
-  };
-
-  const handlePassword = (data) => {
-    console.log("STATUS: ", data.status);
-    if (data.status) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      tempUser.token = data.token;
-      localStorage.setItem("user", JSON.stringify(tempUser));
-      setValues({
-        name: "",
-        email: email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        username: username,
-        resetToken: "",
-        sessionToken: data.token,
-        userId: data.user._id,
-      });
-      console.log("SUCCESS");
-      setModalSetting("username");
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-      });
-      setModalSetting("password");
       console.log("ERROR: ", data.error);
     }
   };
@@ -366,94 +219,6 @@ const Authentication = (props) => {
     });
   };
 
-  const showError = () => {
-    if (error) {
-      return (
-        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
-          {message}
-        </div>
-      );
-    } else if (modalSetting === "signup" && expired) {
-      return (
-        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
-          Timer has expired, please resubmit your email:
-        </div>
-      );
-    } else if (
-      modalSetting === "signin" ||
-      modalSetting === "forgot" ||
-      modalSetting === "signup" ||
-      modalSetting === "password"
-    ) {
-      return null;
-    } else if (modalSetting === "temporary" && !reissued) {
-      console.log("values: ", values);
-      return (
-        <Fragment>
-          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter the 6-digit code sent to:
-          </div>
-          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
-        </Fragment>
-      );
-    } else if (modalSetting === "temporary" && reissued) {
-      console.log("modalSetting === 'temporary' && reissued");
-      console.log("values: ", values);
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Confirmation code resent to your email.
-        </div>
-      );
-    } else if (modalSetting === "confirmation" && !resent) {
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Enter the 6-digit code sent to your email:
-        </div>
-      );
-    } else if (modalSetting === "confirmation" && resent) {
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          A new 6-digit code was sent to your email,
-          <br></br>
-          please enter it below:
-        </div>
-      );
-    } else if (modalSetting === "username") {
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Default username provided below.
-          <br></br>
-          Submit a new username if desired:
-        </div>
-      );
-    }
-  };
-
-  const passwordForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Password</label>
-        <input
-          className={classes.InputBox}
-          type="text"
-          name="password"
-          onChange={handleChange}
-          value={password}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.SubmitButton}
-          onClick={() => {
-            submitPassword();
-          }}
-        >
-          REGISTER YOUR PASSWORD
-        </button>
-      </div>
-    </Fragment>
-  );
-
   const errorForm = (
     <Fragment>
       <div
@@ -479,6 +244,31 @@ const Authentication = (props) => {
       </div>
     </Fragment>
   );
+
+  const errorDisplay = () => {
+    if (modalSetting === "error") {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div className={classes.Header}>
+            <div>System Error</div>
+            <div style={{ textAlign: "right" }}>
+              <ion-icon
+                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
+                name="close-outline"
+                cursor="pointer"
+                onClick={() => {
+                  closeModal();
+                }}
+              />
+            </div>
+          </div>
+          <div>{errorForm}</div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
 
   const closeModal = () => {
     resetValues();
@@ -647,7 +437,7 @@ const Authentication = (props) => {
     }
   };
 
-  const passwordDisplay2 = () => {
+  const passwordDisplay = () => {
     if (modalSetting === "password") {
       return (
         <PasswordDisplay
@@ -678,59 +468,6 @@ const Authentication = (props) => {
     }
   };
 
-  const passwordDisplay = () => {
-    if (modalSetting === "password") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Create your password</div>
-            <div style={{ textAlign: "right" }}>
-              <ion-icon
-                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
-                name="close-outline"
-                cursor="pointer"
-                onClick={() => {
-                  closeModal();
-                }}
-              />
-            </div>
-          </div>
-          <div>
-            {showError()}
-            {passwordForm}
-          </div>
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const errorDisplay = () => {
-    if (modalSetting === "error") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>System Error</div>
-            <div style={{ textAlign: "right" }}>
-              <ion-icon
-                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
-                name="close-outline"
-                cursor="pointer"
-                onClick={() => {
-                  closeModal();
-                }}
-              />
-            </div>
-          </div>
-          <div>{errorForm}</div>
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
-
   return (
     <Fragment>
       <Backdrop show={props.show} clicked={props.modalClosed}></Backdrop>
@@ -748,7 +485,7 @@ const Authentication = (props) => {
         {temporaryDisplay()}
         {signUpDisplay()}
         {confirmationDisplay()}
-        {passwordDisplay2()}
+        {passwordDisplay()}
         {errorDisplay()}
       </div>
     </Fragment>

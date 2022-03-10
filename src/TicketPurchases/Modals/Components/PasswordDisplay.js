@@ -107,7 +107,7 @@ const PasswordDisplay = (props) => {
         userId: data.user._id,
       });
       console.log("SUCCESS");
-      props.modalChange("username");
+      props.submit();
     } else {
       props.submission({
         message: data.error,
@@ -129,28 +129,35 @@ const PasswordDisplay = (props) => {
       return null;
     }
   };
-
-  return (
-    <div className={classes.BlankCanvas}>
-      <div className={classes.Header}>
-        <div>Create your password</div>
-        <div style={{ textAlign: "right" }}>
-          <ion-icon
-            style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
-            name="close-outline"
-            cursor="pointer"
-            onClick={() => {
-              props.close();
-            }}
-          />
+  if (props.spinner) {
+    return (
+      <div className={classes.BlankCanvas} style={{ height: "363px" }}>
+        <Spinner />
+      </div>
+    );
+  } else {
+    return (
+      <div className={classes.BlankCanvas}>
+        <div className={classes.Header}>
+          <div>Create your password</div>
+          <div style={{ textAlign: "right" }}>
+            <ion-icon
+              style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
+              name="close-outline"
+              cursor="pointer"
+              onClick={() => {
+                props.close();
+              }}
+            />
+          </div>
+        </div>
+        <div>
+          {showError()}
+          {passwordForm}
         </div>
       </div>
-      <div>
-        {showError()}
-        {passwordForm}
-      </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default PasswordDisplay;
