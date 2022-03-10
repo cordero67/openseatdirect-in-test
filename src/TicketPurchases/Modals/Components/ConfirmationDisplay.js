@@ -65,7 +65,7 @@ const ConfirmationDisplay = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.resend();
+            props.submitResend();
           }}
         >
           Resend code
@@ -87,7 +87,7 @@ const ConfirmationDisplay = (props) => {
 
     return (
       <Fragment>
-        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <div style={{ paddingBottom: "20px", width: "100%" }}>
           <label style={{ fontSize: "15px" }}>Confirmation Number</label>
           <input
             className={classes.InputBox}
@@ -116,7 +116,7 @@ const ConfirmationDisplay = (props) => {
         </div>
         <div style={{ paddingTop: "10px" }}>
           <button
-            className={classes.buttonClass}
+            className={buttonClass}
             onClick={() => {
               submitConfirmation();
             }}
@@ -181,7 +181,7 @@ const ConfirmationDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "445px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "288px" }}>
         <Spinner />
       </div>
     );
@@ -203,7 +203,7 @@ const ConfirmationDisplay = (props) => {
         </div>
         <div>
           {showError()}
-          {confirmationForm}
+          {confirmationForm()}
           {alternateConfirmationInputs}
         </div>
       </div>
