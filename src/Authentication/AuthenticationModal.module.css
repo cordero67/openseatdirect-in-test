@@ -110,6 +110,13 @@
 }
 .BlueText:hover {
   color: #0000cc;
+  outline: none;
+  border: none;
+}
+.BlueText:active {
+  color: #0000ff;
+  outline: none;
+  border: none;
 }
 
 @media (min-width: 460px) {

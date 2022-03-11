@@ -17,7 +17,8 @@ import Spinner from "../components/UI/Spinner/Spinner";
 import GuestForm from "./Components/GuestForm";
 import CartLink from "./Components/CartLink";
 import OrderSummary from "./Components/OrderSummary";
-import AuthenticationModal from "./Modals/AuthenticationNEW";
+
+import AuthenticationModal from "../Authentication/AuthenticationModal";
 import { OrderConfirm } from "./Components/OrderConfirms";
 import { loadTransactionInfo } from "./Resources/TicketSelectionFunctions";
 import classes from "./CustomerInfo.module.css";

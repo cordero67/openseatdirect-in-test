@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 
-import Spinner from "../../../components/UI/Spinner/SpinnerNew";
-import { API } from "../../../config";
+import Spinner from "../../components/UI/Spinner/SpinnerNew";
+import { API } from "../../config";
 
-import classes from "../Authentication.module.css";
+import classes from "../AuthenticationModal.module.css";
 
-const ForgotDisplay = (props) => {
+const ConfirmationDisplay = (props) => {
   console.log("props: ", props);
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
@@ -15,8 +15,7 @@ const ForgotDisplay = (props) => {
     return response;
   };
 
-  const submitForgot = () => {
-    props.spinnerChange(true);
+  const submitResend = () => {
     props.submission({
       message: "",
       error: false,
@@ -24,7 +23,7 @@ const ForgotDisplay = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/sendcode`;
+    let url = `${API}/auth/signup/resendcode`;
     let information = {
       email: props.email,
     };
@@ -34,6 +33,7 @@ const ForgotDisplay = (props) => {
       body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
+    console.log("Information: ", information);
     fetch(url, fetchBody)
       .then(handleErrors)
       .then((response) => {
@@ -42,7 +42,75 @@ const ForgotDisplay = (props) => {
       })
       .then((data) => {
         console.log("fetch return got back data:", data);
-        handleForgot(data);
+        handleResend(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        props.submission({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        props.modalChange("error");
+      });
+  };
+
+  const handleResend = (data) => {
+    if (data.status) {
+      //localStorage.setItem("user", JSON.stringify(data));
+      props.values({
+        name: "",
+        email: data.user.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        expired: false,
+        confirmation: "",
+        resent: true,
+        username: props.username,
+        resetToken: "",
+        sessionToken: "",
+        userId: "",
+      });
+      console.log("SUCCESS");
+    } else {
+      props.submission({
+        message: data.error,
+        error: true,
+      });
+      console.log("ERROR: ", data.error);
+    }
+  };
+
+  const submitConfirmation = () => {
+    props.spinnerChange(true);
+    props.submission({
+      message: "",
+      error: false,
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/signup/confirmcode`;
+    let information = {
+      email: props.email,
+      confirm_code: props.confirmation,
+    };
+    let fetchBody = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(information),
+    };
+    console.log("fetching with: ", url, fetchBody);
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleConfirmation(data);
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -57,28 +125,24 @@ const ForgotDisplay = (props) => {
       });
   };
 
-  const alternateSignUpInputs = (
+  const alternateConfirmationInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
-        Back to{" "}
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.resetValues();
-            props.submission({ message: "", error: false, redirect: "" });
-            props.modalChange("signin");
+            submitResend();
           }}
         >
-          Sign In
+          Resend code
         </button>
       </div>
     </div>
   );
 
-  const forgotForm = () => {
-    const regsuper =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let disabled = !regsuper.test(props.email);
+  const confirmationForm = () => {
+    const regsuper = /\b\d{6}\b/;
+    let disabled = !regsuper.test(props.confirmation);
     console.log("disabled: ", disabled);
     let buttonClass;
     if (disabled) {
@@ -90,18 +154,18 @@ const ForgotDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>E-mail Address</label>
+          <label style={{ fontSize: "15px" }}>Confirmation Number</label>
           <input
             className={classes.InputBox}
-            type="email"
-            name="email"
+            type="text"
+            name="confirmation"
             onChange={props.inputChange}
-            value={props.email}
+            value={props.confirmation}
             onFocus={() => {
               props.submission({ message: "", error: false, redirect: "" });
             }}
-          />
-          {props.email && !regsuper.test(props.email) ? (
+          />{" "}
+          {props.confirmation && !regsuper.test(props.confirmation) ? (
             <div style={{ paddingTop: "5px" }}>
               <span
                 style={{
@@ -119,50 +183,41 @@ const ForgotDisplay = (props) => {
         <div style={{ paddingTop: "10px" }}>
           <button
             className={buttonClass}
-            disabled={disabled}
             onClick={() => {
-              if (disabled) {
-                props.submission({
-                  message: "Invalid email address",
-                  error: true,
-                  redirect: "",
-                });
-              } else {
-                submitForgot();
-              }
+              submitConfirmation();
             }}
           >
-            SUBMIT YOUR EMAIL
+            SUBMIT YOUR CODE
           </button>
         </div>
       </Fragment>
     );
   };
 
-  const handleForgot = (data) => {
+  const handleConfirmation = (data) => {
     if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data));
       props.values({
         name: "",
         email: data.user.email,
         password: "",
         temporary: "",
         reissued: false,
-        expired: false,
+        //expired: false,
         confirmation: "",
         resent: false,
-        username: "",
-        resetToken: "",
+        username: data.user.username,
+        resetToken: data.user.passwordToken,
         sessionToken: "",
         userId: "",
       });
-      props.modalChange("temporary");
+      props.modalChange("password");
     } else {
       props.submission({
         message: data.error,
         error: true,
       });
-      props.modalChange("forgot");
-      console.log("ERROR: ", data.error);
+      props.modalChange("confirmation");
     }
   };
 
@@ -173,20 +228,26 @@ const ForgotDisplay = (props) => {
           {props.message}
         </div>
       );
-    } else if (props.expired) {
+    } else if (!props.resent) {
       return (
-        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
-          Timer has expired, please resubmit your email:
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+          Enter the 6-digit code sent to your email:
         </div>
       );
     } else {
-      return null;
+      return (
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+          A new 6-digit code was sent to your email,
+          <br></br>
+          please enter it below:
+        </div>
+      );
     }
   };
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "249px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "288px" }}>
         <Spinner />
       </div>
     );
@@ -194,7 +255,7 @@ const ForgotDisplay = (props) => {
     return (
       <div className={classes.BlankCanvas}>
         <div className={classes.Header}>
-          <div>Trouble logging in?</div>
+          <div>Enter confirmation code</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
               style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
@@ -208,12 +269,11 @@ const ForgotDisplay = (props) => {
         </div>
         <div>
           {showError()}
-          {forgotForm()}
-          {alternateSignUpInputs}
+          {confirmationForm()}
+          {alternateConfirmationInputs}
         </div>
       </div>
     );
   }
 };
-
-export default ForgotDisplay;
+export default ConfirmationDisplay;

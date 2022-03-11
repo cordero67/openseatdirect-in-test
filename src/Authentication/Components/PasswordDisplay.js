@@ -1,10 +1,9 @@
 import React, { Fragment } from "react";
-import GoogleAuthentication from "../../../Authentication/GoogleAuthentication";
 
-import Spinner from "../../../components/UI/Spinner/SpinnerNew";
-import { API } from "../../../config";
+import Spinner from "../../components/UI/Spinner/SpinnerNew";
+import { API } from "../../config";
 
-import classes from "../Authentication.module.css";
+import classes from "../AuthenticationModal.module.css";
 
 const PasswordDisplay = (props) => {
   console.log("props: ", props);

@@ -1,76 +1,77 @@
+import { faWindows } from "@fortawesome/free-brands-svg-icons";
 import React, { Component } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import Routes from "./components/Routes/Routes";
 
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+const API_URL = process.env.REACT_APP_API_URL;
 
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
-const API_URL  = process.env.REACT_APP_API_URL
+const googleCallback = (googleData) => {
+  console.log("Login Success: currentUser:", googleData);
+  alert(`Logged in successfully welcome ${googleData}`);
+  // fetch jwt
+  console.log("about to fetch:", API_URL + "/auth/signin/google/onetap");
+  fetch(API_URL + "/auth/signin/google/onetap", {
+    method: "post",
+    body: JSON.stringify({
+      google_data: googleData,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
 
-
-const  googleCallback = (googleData) => {
-  console.log('Login Success: currentUser:', googleData);
-  alert(
-  `Logged in successfully welcome ${googleData}`
-);
-// fetch jwt
-console.log ("about to fetch:",API_URL+'/auth/signin/google/onetap' )
-fetch (API_URL+'/auth/signin/google/onetap',{
-  method:"post",
-  body: JSON.stringify ({
-      google_data:googleData,
-  }),
-  headers:{
-      'Content-Type':'application/json',
-  },
-}).then ((res)=>res.json())
-
-.then ((data) =>{
-console.log ("got login credentials here:", data)
-//setLoginData (data);
-// localStorage.setItem ('loginData', JSON.stringify (data));
-}).catch ((err)=>{
-console.log ("err3333>>", err)
-})
-}
+    .then((data) => {
+      console.log("got login credentials here:", data);
+      //setLoginData (data);
+      localStorage.setItem("user", JSON.stringify(data));
+      window.location.href = "/myaccount";
+    })
+    .catch((err) => {
+      console.log("err3333>>", err);
+    });
+};
 
 class App extends Component {
-
   GSI = "https://accounts.google.com/gsi/client";
 
   removeScript = (scriptToremove) => {
-    let allsuspects=document.getElementsByTagName("script");
-    for (let i=allsuspects.length; i>=0; i--){
-    if (allsuspects[i] && allsuspects[i].getAttribute("src")!==null 
-      && allsuspects[i].getAttribute("src").indexOf(`${scriptToremove}`) !== -1 ){
-           allsuspects[i].parentNode.removeChild(allsuspects[i])
-        }    
+    let allsuspects = document.getElementsByTagName("script");
+    for (let i = allsuspects.length; i >= 0; i--) {
+      if (
+        allsuspects[i] &&
+        allsuspects[i].getAttribute("src") !== null &&
+        allsuspects[i].getAttribute("src").indexOf(`${scriptToremove}`) !== -1
+      ) {
+        allsuspects[i].parentNode.removeChild(allsuspects[i]);
+      }
     }
-  }
+  };
 
-
-  componentDidMount(){
+  componentDidMount() {
     const script = document.createElement("script");
-    script.src = this.GSI ;
-    document.head.appendChild(script)
+    script.src = this.GSI;
+    document.head.appendChild(script);
     window.onload = function () {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback:  googleCallback,
-//          auto_select: auto_select,
-//          cancel_on_tap_outside: cancel_on_tap_outside,
-//          context: contextValue
-        });
-        window.google.accounts.id.prompt (noti =>{
-        console.log ("noti22", noti);
-        });
-    }
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: googleCallback,
+        //          auto_select: auto_select,
+        //          cancel_on_tap_outside: cancel_on_tap_outside,
+        //          context: contextValue
+      });
+      window.google.accounts.id.prompt((noti) => {
+        console.log("noti22", noti);
+      });
+    };
   }
-  
-   componentWillUnmount () {
-    console.log ("unmounting ", this.GSI);
-    this.removeScript(this.GSI)
-  }
+
+  //componentWillUnmount() {
+  //  console.log("unmounting ", this.GSI);
+  //  this.removeScript(this.GSI);
+  //}
 
   render() {
     return (

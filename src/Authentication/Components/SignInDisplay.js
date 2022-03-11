@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
-import GoogleAuthentication from "../../../Authentication/GoogleAuthentication";
+import GoogleAuthentication from "../GoogleAuthentication";
 
-import Spinner from "../../../components/UI/Spinner/SpinnerNew";
-import { API } from "../../../config";
+import Spinner from "../../components/UI/Spinner/SpinnerNew";
+import { API } from "../../config";
 
-import classes from "../Authentication.module.css";
+import classes from "../AuthenticationModal.module.css";
 
 const SignInDisplay = (props) => {
   console.log("props: ", props);
@@ -262,6 +262,8 @@ const SignInDisplay = (props) => {
   };
 
   const showError = () => {
+    console.log("props.error, ", props.error);
+    console.log("props.message, ", props.message);
     if (props.error) {
       return (
         <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>

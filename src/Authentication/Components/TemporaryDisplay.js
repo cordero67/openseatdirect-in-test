@@ -1,9 +1,9 @@
 import React, { Fragment } from "react";
 
-import Spinner from "../../../components/UI/Spinner/SpinnerNew";
-import { API } from "../../../config";
+import Spinner from "../../components/UI/Spinner/SpinnerNew";
+import { API } from "../../config";
 
-import classes from "../Authentication.module.css";
+import classes from "../AuthenticationModal.module.css";
 
 const TemporaryDisplay = (props) => {
   console.log("props: ", props);
@@ -13,6 +13,70 @@ const TemporaryDisplay = (props) => {
       throw Error(response.status);
     }
     return response;
+  };
+
+  const submitReissue = () => {
+    props.submission({
+      message: "",
+      error: false,
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/signin/sendcode`;
+    let information = {
+      email: props.email,
+    };
+    let fetchBody = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(information),
+    };
+    console.log("fetching with: ", url, fetchBody);
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleReissue(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        props.submission({
+          message: "Server is down, please try later",
+          error: true,
+        });
+        props.modalChange("error");
+      });
+  };
+
+  const handleReissue = (data) => {
+    if (data.status) {
+      props.values({
+        name: "",
+        email: data.user.email,
+        password: "",
+        temporary: "",
+        reissued: true,
+        expired: false,
+        confirmation: "",
+        resent: false,
+        username: "",
+        resetToken: "",
+        sessionToken: "",
+        userId: "",
+      });
+    } else {
+      props.submission({
+        message: data.error,
+        error: true,
+      });
+      console.log("ERROR: ", data.error);
+    }
   };
 
   const submitTemporary = () => {
@@ -65,7 +129,7 @@ const TemporaryDisplay = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.submitReissue();
+            submitReissue();
           }}
         >
           Resend code
@@ -167,6 +231,7 @@ const TemporaryDisplay = (props) => {
       });
       props.submit();
     } else {
+      console.log("data.error: ", data.error);
       props.submission({
         message: data.error,
         error: true,
@@ -176,7 +241,15 @@ const TemporaryDisplay = (props) => {
   };
 
   const showError = () => {
-    if (!props.reissued) {
+    console.log("props.error, ", props.error);
+    console.log("props.message, ", props.message);
+    if (props.error) {
+      return (
+        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
+          {props.message}
+        </div>
+      );
+    } else if (!props.reissued) {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
