@@ -564,7 +564,7 @@ const TicketSelection = () => {
   const storeOrder = (/*orderId*/) => {
     //
     let signedIn = false;
-    console.log("Inside 'storeOrder'");
+    console.log("Inside 'storeOrder' w eventDetails.gateway & 2 : ",eventDetails.gateway, eventDetails.gateway2);
 
     if (typeof window !== "undefined") {
       localStorage.setItem(
@@ -601,7 +601,7 @@ const TicketSelection = () => {
       } else if (eventDetails.gateway === "PayPalMarketplace") {
         console.log("window.location.href = '/checkout-paypalmerchant'");
         window.location.href = "/checkout-paypalmerchant";
-      } else if (eventDetails.gateway === "Opennode") {
+      } else if (eventDetails.gateway2 === "Opennode") {
         console.log("window.location.href = '/checkout-opennode'");
         window.location.href = "/checkout-opennode";
         

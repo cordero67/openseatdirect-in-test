@@ -31,6 +31,7 @@ export const loadEventDetails = (event) => {
     isDraft: event.isDraft,
     register: event.register,
     organizer: "",
+    gateway2: event.accountId?.paymentGatewayType2,
     gateway: event.accountId.paymentGatewayType,
     gatewayClientID: event.accountId.paypalExpress_client_id,
     paypalClientID: event.accountId.paypalExpress_client_id,

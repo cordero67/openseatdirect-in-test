@@ -430,8 +430,13 @@ const CustomerInfo = (props) => {
           } else if (eventDetails.gateway === "Stripe") {
             console.log("window.location.href = '/checkout-stripe'");
             window.location.href = "/checkout-stripe";
-          } else if (eventDetails.gateway === "PayPalMerchant") {
+          }
+            else if (eventDetails.gateway === "PayPalMerchant") {
             window.location.href = "/checkout-paypalmerchant";
+                // PUT THIS IN THE BOTTOM, SO IT GOTS TOP MAIN CHECKOUTS FIRST
+          } else if (eventDetails.gateway2 === "Opennode") {
+            console.log("window.location.href = '/checkout-opennode'");
+            window.location.href = "/checkout-opennode";
           } else {
             console.log("no gateway is found");
             window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
