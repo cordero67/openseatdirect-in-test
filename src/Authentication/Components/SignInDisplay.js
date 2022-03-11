@@ -89,9 +89,12 @@ const SignInDisplay = (props) => {
   );
 
   const signInForm = () => {
-    const regsuper =
+    const regEmail =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let disabled = !regsuper.test(props.email);
+    const regPassword = /^(?=.*\d).{8,}$/;
+    let disabled =
+      !regEmail.test(props.email) || !regPassword.test(props.password);
+
     console.log("disabled: ", disabled);
     let buttonClass;
     if (disabled) {
@@ -114,7 +117,7 @@ const SignInDisplay = (props) => {
               props.submission({ message: "", error: false, redirect: "" });
             }}
           />
-          {props.email && !regsuper.test(props.email) ? (
+          {props.email && !regEmail.test(props.email) ? (
             <div style={{ paddingTop: "5px" }}>
               <span
                 style={{
@@ -130,7 +133,7 @@ const SignInDisplay = (props) => {
           ) : null}
         </div>
 
-        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
+        <div style={{ paddingBottom: "20px", width: "100%" }}>
           <label style={{ fontSize: "15px" }}>Password</label>
           <input
             className={classes.InputBox}
@@ -138,7 +141,24 @@ const SignInDisplay = (props) => {
             name="password"
             onChange={props.inputChange}
             value={props.password}
+            onFocus={() => {
+              props.submission({ message: "", error: false, redirect: "" });
+            }}
           />
+          {props.email && !regPassword.test(props.password) ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span
+                style={{
+                  color: "red",
+                  fontSize: "14px",
+                  paddingTop: "5px",
+                  paddingBottom: "10px",
+                }}
+              >
+                Password must be minimum 8 characters including 1 number
+              </span>
+            </div>
+          ) : null}
         </div>
         <div style={{ paddingTop: "10px" }}>
           <button
