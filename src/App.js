@@ -1,3 +1,103 @@
+/* global google */
+
+import React from "react";
+import { useState, useEffect } from 'react';
+
+import { BrowserRouter } from "react-router-dom";
+
+import Routes from "./components/Routes/Routes";
+
+import jwt_decode from 'jwt-decode';  // test only
+
+
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
+const API_URL  = process.env.REACT_APP_API_URL
+
+
+
+function App() {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+
+  const onOneTapSignedIn = response => {
+    setIsSignedIn(true)
+    console.log ("signed in w:", response );
+    const decodedToken = jwt_decode(response.credential)
+    console.log ("decoded token=", decodedToken);
+    fetch (API_URL+'/auth/signin/google/onetap',{
+      method:"post",
+      body: JSON.stringify ({
+          google_data:response,
+      }),
+      headers:{
+          'Content-Type':'application/json',
+      },
+    }).then ((res)=>res.json())    
+    .then ((data) =>{
+    console.log ("got login credentials here:", data)
+    //setLoginData (data);
+    // localStorage.setItem ('loginData', JSON.stringify (data));
+    }).catch ((err)=>{
+    console.log ("err3333>>", err)
+    })
+  }
+
+  const initializeGSI = () => {
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      cancel_on_tap_outside: false,
+      callback: onOneTapSignedIn
+    });
+    google.accounts.id.prompt((notification) => {
+      
+      console.log ("prompt notification>> ", notification);
+
+      if (notification.isNotDisplayed()) {
+        console.log(notification.getNotDisplayedReason())
+      } else if (notification.isSkippedMoment()) {
+        console.log(notification.getSkippedReason())
+      } else if(notification.isDismissedMoment()) {
+        console.log(notification.getDismissedReason())
+      }
+    });
+  }
+
+  const signout = () => {
+    // refresh the page
+    window.location.reload();
+  }
+
+  useEffect(() => {
+    const el = document.createElement('script')
+    el.setAttribute('src', 'https://accounts.google.com/gsi/client')
+    el.onload = () => initializeGSI();
+    document.querySelector('body').appendChild(el)
+  }, [])
+
+  return (
+
+
+    <BrowserRouter>
+      <Routes></Routes>
+    </BrowserRouter>
+
+
+  );
+}
+
+export default App;
+
+
+
+
+
+
+
+
+/*
+
+//ORIGINAL  CODE . 
+
 import React, { Component } from "react";
 import { BrowserRouter } from "react-router-dom";
 
@@ -82,6 +182,9 @@ class App extends Component {
 }
 
 export default App;
+
+*/
+
 
 // Polo Blue (OSD light blue): #8DADD4 rgb(141,173,212)
 // lightest blue complement: #E1EAF4 rgb(225,234,244)
