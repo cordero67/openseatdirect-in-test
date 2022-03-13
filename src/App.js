@@ -1,29 +1,20 @@
 /* global google */
 
 import React from "react";
-import { useState, useEffect } from 'react';
-
+import { useEffect } from 'react';
 import { BrowserRouter } from "react-router-dom";
-
 import Routes from "./components/Routes/Routes";
-
-import jwt_decode from 'jwt-decode';  // test only
-
-
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
 const API_URL  = process.env.REACT_APP_API_URL
 
 
 
 function App() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
-
 
   const onOneTapSignedIn = response => {
-    setIsSignedIn(true)
-    console.log ("signed in w:", response );
-    const decodedToken = jwt_decode(response.credential)
-    console.log ("decoded token=", decodedToken);
+
+    console.log ("onOneTapSignedIn w:", response );
+
     fetch (API_URL+'/auth/signin/google/onetap',{
       method:"post",
       body: JSON.stringify ({
@@ -34,9 +25,10 @@ function App() {
       },
     }).then ((res)=>res.json())    
     .then ((data) =>{
-    console.log ("got login credentials here:", data)
+    console.log ("got login credentials setting gprofile:", data)
     //setLoginData (data);
-    // localStorage.setItem ('loginData', JSON.stringify (data));
+    localStorage.setItem ('gprofile', JSON.stringify (data));
+
     }).catch ((err)=>{
     console.log ("err3333>>", err)
     })
@@ -45,7 +37,6 @@ function App() {
   const initializeGSI = () => {
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
-      cancel_on_tap_outside: false,
       callback: onOneTapSignedIn
     });
     google.accounts.id.prompt((notification) => {
@@ -67,7 +58,15 @@ function App() {
     window.location.reload();
   }
 
+
   useEffect(() => {
+    console.log ("in App.js's useEffect");
+    const profile = localStorage.getItem("gprofile");
+    if  (profile ) {
+      console.log ("exiting with gprofile = " , profile);
+      return;
+    }
+
     const el = document.createElement('script')
     el.setAttribute('src', 'https://accounts.google.com/gsi/client')
     el.onload = () => initializeGSI();
