@@ -27,6 +27,8 @@ import { SubscriptionPlans } from "./Resources/Variables";
 
 import RadioForm from "../components/Forms/RadioForm";
 
+import opennodeImg from "../assets/Opennode/opennodeBtc.png";
+
 import stripeImg from "../assets/Stripe/Stripe wordmark - blurple (small).png";
 import payPalImg from "../assets/PayPal/PayPal.PNG";
 
@@ -69,6 +71,9 @@ const Authentication = () => {
     paypal_plan_id_freeSubscription: "", // default plan for "FREESUBSCRIPTION" ticket plan selection view
     paypalExpress_client_id: "", // vendor's clientID not OSD's
     paypalExpress_client_secret: "", // vendor's secret not OSD's
+    opennode_invoice_API_KEY:"", // vendors opennode api key
+    opennode_auto_settle :"",  // vendors request convesion to USD or keep in BTC?
+    opennode_dev:""           // Boolean: dev=true for testnet BTC
   });
 
   // LOOKS GOOD
@@ -118,6 +123,9 @@ const Authentication = () => {
     paypal_plan_id_freeSubscription,
     paypalExpress_client_id,
     paypalExpress_client_secret,
+    opennode_invoice_API_KEY,
+    opennode_auto_settle ,
+    opennode_dev    
   } = subValues;
 
   let subscriptions = SubscriptionPlans();
@@ -181,6 +189,20 @@ const Authentication = () => {
           tempBuyerInfo.paypalExpress_client_secret =
             tempUser.user.accountId.paypalExpress_client_secret;
         }
+
+        if (tempUser.user.accountId?.opennode_invoice_API_KEY) {
+          tempBuyerInfo.opennode_invoice_API_KEY =
+            tempUser.user.accountId.opennode_invoice_API_KEY;
+        }
+        if (tempUser.user.accountId?.opennode_auto_settle) {
+          tempBuyerInfo.opennode_auto_settle =
+            tempUser.user.accountId.opennode_auto_settle;
+        }
+        if (tempUser.user.accountId?.opennode_dev) {
+          tempBuyerInfo.opennode_auto_settle =
+            tempUser.user.accountId.opennode_dev;
+        }
+
 
         if (PAYPAL_USE_SANDBOX === true) {
           console.log(
@@ -1319,8 +1341,8 @@ const Authentication = () => {
             paddingBottom: "20px",
           }}
         >
-          Select the payment gateway where you will instantly receive your
-          ticket sales revenues.
+          Link to Stripe or Paypal to get your ticket sales revenue instantly in cash,   
+          or Opennode for bitcoin/lightning network. 
         </div>
       );
     } else if (display === "freeCongrats") {
@@ -1904,6 +1926,29 @@ const Authentication = () => {
             }}
           ></img>
         </button>
+
+        <button
+          style={{
+            background: "white",
+            width: "160",
+            border: "1px solid lightgrey",
+            cursor: "pointer",
+            outline: "none",
+          }}
+        >
+          <img
+            src={opennodeImg}
+            alt="OPENNODE"
+            width="140px"
+            height="auto"
+            cursor="pointer"
+            onClick={() => {
+              console.log("selecting Opennode");
+              setDisplay("opennode");
+            }}
+          ></img>
+        </button>
+
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
@@ -2700,6 +2745,177 @@ const Authentication = () => {
     </Fragment>
   );
 
+
+
+
+  const opennodeForm = (
+    <Fragment>
+      <div style={{ paddingBottom: "20px", width: "340px", height: "100px" }}>
+        <label style={{ width: "340px", fontSize: "15px" }}>
+          Opennode API Key <span style={{ color: "red" }}>* </span>
+        </label>
+        <textarea
+          onFocus={() => {
+            setSubValues({ ...subValues, inputError: "" });
+          }}
+          className={classes.PayPalInputBox}
+          type="text"
+          name="opennode_invoice_API_KEY"
+          onChange={handleSubValueChange}
+          value={opennode_invoice_API_KEY}
+        />
+      </div>
+      <div>
+        <label style={{ fontSize: "15px" }}>
+          Auto Settle ? <span style={{ color: "red" }}>* </span>
+        </label>
+        <textarea
+          onFocus={() => {
+            setSubValues({ ...subValues, inputError: "" });
+          }}
+          className={classes.PayPalInputBox}
+          type="text"
+          name="opennode_auto_settle"
+          onChange={handleSubValueChange}
+          value={opennode_auto_settle}
+        />
+      </div>
+      <div>
+        <label style={{ fontSize: "15px" }}>
+          Testnet BTC ? <span style={{ color: "red" }}>* </span>
+        </label>
+        <textarea
+          onFocus={() => {
+            setSubValues({ ...subValues, inputError: "" });
+          }}
+          className={classes.PayPalInputBox}
+          type="text"
+          name="opennode_dev"
+          onChange={handleSubValueChange}
+          value={opennode_dev}
+        />
+      </div>
+
+      <div style={{ textAlign: "center", paddingTop: "20px" }}>
+        <button
+          className={classes.ButtonBlue}
+          disabled={! opennode_auto_settle|| !opennode_invoice_API_KEY ||!opennode_dev}
+          onClick={() => {
+            //submitPaypal();
+
+            console.log("Inside submitOpennode");
+            //setDisplay("spinner");
+            setShowSpinner(true);
+            setSubmissionStatus({
+              message: "",
+              error: false,
+              redirect: "",
+            });
+            // api static variables
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            const authstring = `Bearer ${authValues.sessionToken}`;
+            myHeaders.append("Authorization", authstring);
+
+            let url = `${API}/accounts/${authValues.accountNum}`;
+            let fetcharg = {
+              method: "POST",
+              headers: myHeaders,
+              body: JSON.stringify({
+                paymentGatewayType2: "Opennode",
+                opennode_invoice_API_KEY: opennode_invoice_API_KEY,
+                opennode_auto_settle : opennode_auto_settle,
+                opennode_dev: opennode_dev
+              }),
+            };
+            console.log(opennode_invoice_API_KEY);
+
+            console.log("fetching with: ", url, fetcharg);
+            fetch(url, fetcharg)
+              .then(handleErrors)
+              .then((response) => {
+                console.log("then response: ", response);
+                return response.json();
+              })
+              .then((data) => {
+                console.log("fetch return got back data on Opennode:", data);
+                //handleConfirmation
+                if (data.status) {
+                  console.log("INSIDE data.status");
+                  let tempData = JSON.parse(localStorage.getItem("user"));
+                  console.log("tempData: ", tempData);
+                  tempData.user.accountId = data.result;
+                  localStorage.setItem("user", JSON.stringify(tempData));
+                  //updatePageView();
+
+                  if (tempData.user.accountId.status === 8) {
+                    setDisplay("paidCongrats");
+                  } else if (tempData.user.accountId.status === 5) {
+                    setDisplay("selectPlan");
+                  } else {
+                    setDisplay("gateway");
+                  }
+                } else {
+                  // this is a friendly error
+                  let errmsg =
+                    "unable to validate Opennode API Key and secret at this time";
+                  if (data.message) {
+                    console.log("data.message exist");
+                    console.log("data.message ", data.message);
+                    errmsg = data.message;
+                  }
+                  console.log("errmsg: ", errmsg);
+                  setSubmissionStatus({
+                    message: errmsg,
+                    error: true,
+                    redirect: "opennode",
+                  });
+                  setDisplay("error");
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+
+                setSubmissionStatus({
+                  message: "Server down please try again",
+                  error: true,
+                  redirect: "opennode",
+                });
+                setDisplay("error");
+              })
+              .finally(() => {
+                setShowSpinner(false);
+              });
+          }}
+        >
+          SUBMIT YOUR OPENNODE DETAILS
+        </button>
+      </div>
+      <div style={{ textAlign: "center", paddingTop: "20px" }}>
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            setDisplay("gateway");
+          }}
+        >
+          BACK TO GATEWAY SELECTION
+        </button>
+      </div>
+      <div style={{ textAlign: "center", paddingTop: "20px" }}>
+        <button
+          className={classes.ButtonGrey}
+          onClick={() => {
+            redirectUser();
+          }}
+        >
+          STAY WITH FREE FOREVER PLAN
+        </button>
+      </div>
+    </Fragment>
+  );
+
+
+
   const errorForm = () => {
     console.log("redirect: ", redirect);
     return (
@@ -3191,6 +3407,39 @@ const Authentication = () => {
     }
   };
 
+
+  const opennodeDisplay = () => {
+    let height = {};
+    if (!error) {
+      height = { height: "560px" };
+    }
+    if (display === "opennode") {
+      if (showSpinner) {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <Spinner />
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div className={classes.Modal}>
+            <div className={classes.BlankCanvas} style={height}>
+              <div className={classes.Header}>Enter Opennode API Key (invoice permission only!)</div>
+              <div>
+                {showDetail()}
+                {opennodeForm}
+              </div>
+            </div>
+          </div>
+        );
+      }
+    } else {
+      return null;
+    }
+  };
+
   const errorDisplay = () => {
     let height = {};
     if (!error) {
@@ -3229,6 +3478,7 @@ const Authentication = () => {
         {passwordDisplay()}
         {gatewayDisplay()}
         {paypalDisplay()}
+        {opennodeDisplay()}
         {selectPlanDisplay()}
         {freeCongratsDisplay()}
         {paidCongratsDisplay()}

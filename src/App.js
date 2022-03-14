@@ -1,88 +1,82 @@
-import { faWindows } from "@fortawesome/free-brands-svg-icons";
-import React, { Component } from "react";
+/* global google */
+
+import React from "react";
+import { useEffect } from 'react';
 import { BrowserRouter } from "react-router-dom";
-
 import Routes from "./components/Routes/Routes";
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
+const API_URL  = process.env.REACT_APP_API_URL
 
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-const API_URL = process.env.REACT_APP_API_URL;
 
-const googleCallback = (googleData) => {
-  console.log("Login Success: currentUser:", googleData);
-  alert(`Logged in successfully welcome ${googleData}`);
-  // fetch jwt
-  console.log("about to fetch:", API_URL + "/auth/signin/google/onetap");
-  fetch(API_URL + "/auth/signin/google/onetap", {
-    method: "post",
-    body: JSON.stringify({
-      google_data: googleData,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
+function App() {
 
-    .then((data) => {
-      console.log("got login credentials here:", data);
-      //setLoginData (data);
-      localStorage.setItem("user", JSON.stringify(data));
-      window.location.href = "/myaccount";
-    })
-    .catch((err) => {
-      console.log("err3333>>", err);
-    });
-};
-
-class App extends Component {
-  GSI = "https://accounts.google.com/gsi/client";
-
-  removeScript = (scriptToremove) => {
-    let allsuspects = document.getElementsByTagName("script");
-    for (let i = allsuspects.length; i >= 0; i--) {
-      if (
-        allsuspects[i] &&
-        allsuspects[i].getAttribute("src") !== null &&
-        allsuspects[i].getAttribute("src").indexOf(`${scriptToremove}`) !== -1
-      ) {
-        allsuspects[i].parentNode.removeChild(allsuspects[i]);
-      }
-    }
-  };
-
-  componentDidMount() {
-    const script = document.createElement("script");
-    script.src = this.GSI;
-    document.head.appendChild(script);
-    window.onload = function () {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: googleCallback,
-        //          auto_select: auto_select,
-        //          cancel_on_tap_outside: cancel_on_tap_outside,
-        //          context: contextValue
-      });
-      window.google.accounts.id.prompt((noti) => {
-        console.log("noti22", noti);
-      });
+  useEffect(() => {
+    console.log ("in App.js's useEffect");
+    const user = localStorage.getItem("user");
+    if  (user ) {
+      console.log ("exiting with user = " , user);
+      return;
     };
-  }
 
-  //componentWillUnmount() {
-  //  console.log("unmounting ", this.GSI);
-  //  this.removeScript(this.GSI);
-  //}
+    const onOneTapSignedIn = response => {
+      console.log ("onOneTapSignedIn w:", response );
+      fetch (API_URL+'/auth/signin/google/onetap',{
+        method:"post",
+        body: JSON.stringify ({
+            google_data:response,
+        }),
+        headers:{
+            'Content-Type':'application/json',
+        },
+      }).then ((res)=>res.json())    
+      .then ((data) =>{
+      console.log ("got login credentials setting gprofile:", data)
+      //setLoginData (data);
+      localStorage.setItem ('user', JSON.stringify (data));
+      window.location.href='/myaccount';
 
-  render() {
-    return (
-      <BrowserRouter>
-        <Routes></Routes>
-      </BrowserRouter>
-    );
-  }
+      }).catch ((err)=>{
+      console.log ("err3333>>", err)
+      })
+    }
+  
+    const initializeGSI = () => {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: onOneTapSignedIn
+      });
+      google.accounts.id.prompt((notification) => {
+        
+        console.log ("prompt notification>> ", notification);
+  
+        if (notification.isNotDisplayed()) {
+          console.log(notification.getNotDisplayedReason())
+        } else if (notification.isSkippedMoment()) {
+          console.log(notification.getSkippedReason())
+        } else if(notification.isDismissedMoment()) {
+          console.log(notification.getDismissedReason())
+        }
+      });
+    }
+  
+
+    const el = document.createElement('script')
+    el.setAttribute('src', 'https://accounts.google.com/gsi/client')
+    el.onload = () => initializeGSI();
+    document.querySelector('body').appendChild(el)
+  }, [])
+
+
+
+  return (
+    <BrowserRouter>
+      <Routes></Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
+
 
 // Polo Blue (OSD light blue): #8DADD4 rgb(141,173,212)
 // lightest blue complement: #E1EAF4 rgb(225,234,244)
