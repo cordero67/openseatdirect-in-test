@@ -151,13 +151,17 @@ const CustomerInfo = (props) => {
           disabled={false}
           className={classes.ButtonGreen}
         >
-          SUBMIT INFORMATION
+          {eventDetails.cryptoGateway === "Opennode"
+            ? "SUBMIT INFORMATION"
+            : "PAY WITH BITCOIN"}
         </button>
       );
     } else {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
-          SUBMIT INFORMATION
+          {eventDetails.cryptoGateway === "Opennode"
+            ? "SUBMIT INFORMATION"
+            : "PAY WITH BITCOIN"}
         </button>
       );
     }
@@ -197,9 +201,8 @@ const CustomerInfo = (props) => {
         window.location.href = "/checkout-stripe";
       } else if (eventDetails.gateway === "PayPalMerchant") {
         window.location.href = "/checkout-paypalmerchant";
-      } else {
-        console.log("no gateway is found");
-        window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+      } else if (eventDetails.cryptoGateway === "Opennode") {
+        window.location.href = "/checkout-opennode";
       }
     }
   };
@@ -432,9 +435,8 @@ const CustomerInfo = (props) => {
             window.location.href = "/checkout-stripe";
           } else if (eventDetails.gateway === "PayPalMerchant") {
             window.location.href = "/checkout-paypalmerchant";
-          } else {
-            console.log("no gateway is found");
-            window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+          } else if (eventDetails.cryptoGateway === "Opennode") {
+            window.location.href = "/checkout-opennode";
           }
         }}
       />

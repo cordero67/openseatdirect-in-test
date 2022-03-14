@@ -615,7 +615,7 @@ const TicketSelection = () => {
                   onClick={() => {
                     console.log("Paid and Crypto Order");
                     storeOrder();
-                    window.location.href = "/checkout-paypalmerchant";
+                    window.location.href = "/checkout-opennode";
                   }}
                 >
                   PAY WITH BITCOIN
