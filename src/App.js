@@ -11,61 +11,54 @@ const API_URL  = process.env.REACT_APP_API_URL
 
 function App() {
 
-  const onOneTapSignedIn = response => {
-
-    console.log ("onOneTapSignedIn w:", response );
-
-    fetch (API_URL+'/auth/signin/google/onetap',{
-      method:"post",
-      body: JSON.stringify ({
-          google_data:response,
-      }),
-      headers:{
-          'Content-Type':'application/json',
-      },
-    }).then ((res)=>res.json())    
-    .then ((data) =>{
-    console.log ("got login credentials setting gprofile:", data)
-    //setLoginData (data);
-    localStorage.setItem ('gprofile', JSON.stringify (data));
-
-    }).catch ((err)=>{
-    console.log ("err3333>>", err)
-    })
-  }
-
-  const initializeGSI = () => {
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: onOneTapSignedIn
-    });
-    google.accounts.id.prompt((notification) => {
-      
-      console.log ("prompt notification>> ", notification);
-
-      if (notification.isNotDisplayed()) {
-        console.log(notification.getNotDisplayedReason())
-      } else if (notification.isSkippedMoment()) {
-        console.log(notification.getSkippedReason())
-      } else if(notification.isDismissedMoment()) {
-        console.log(notification.getDismissedReason())
-      }
-    });
-  }
-
-  const signout = () => {
-    // refresh the page
-    window.location.reload();
-  }
-
-
   useEffect(() => {
     console.log ("in App.js's useEffect");
     const profile = localStorage.getItem("gprofile");
     if  (profile ) {
       console.log ("exiting with gprofile = " , profile);
       return;
+    };
+
+    const onOneTapSignedIn = response => {
+      console.log ("onOneTapSignedIn w:", response );
+      fetch (API_URL+'/auth/signin/google/onetap',{
+        method:"post",
+        body: JSON.stringify ({
+            google_data:response,
+        }),
+        headers:{
+            'Content-Type':'application/json',
+        },
+      }).then ((res)=>res.json())    
+      .then ((data) =>{
+      console.log ("got login credentials setting gprofile:", data)
+      //setLoginData (data);
+      localStorage.setItem ('gprofile', JSON.stringify (data));
+  
+      }).catch ((err)=>{
+      console.log ("err3333>>", err)
+      })
     }
+  
+    const initializeGSI = () => {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: onOneTapSignedIn
+      });
+      google.accounts.id.prompt((notification) => {
+        
+        console.log ("prompt notification>> ", notification);
+  
+        if (notification.isNotDisplayed()) {
+          console.log(notification.getNotDisplayedReason())
+        } else if (notification.isSkippedMoment()) {
+          console.log(notification.getSkippedReason())
+        } else if(notification.isDismissedMoment()) {
+          console.log(notification.getDismissedReason())
+        }
+      });
+    }
+  
 
     const el = document.createElement('script')
     el.setAttribute('src', 'https://accounts.google.com/gsi/client')
@@ -73,14 +66,12 @@ function App() {
     document.querySelector('body').appendChild(el)
   }, [])
 
+
+
   return (
-
-
     <BrowserRouter>
       <Routes></Routes>
     </BrowserRouter>
-
-
   );
 }
 
