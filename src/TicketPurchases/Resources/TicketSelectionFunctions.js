@@ -37,6 +37,7 @@ export const loadEventDetails = (event) => {
     stripeAccountID: event.accountId.stripe_accountID,
     gatewayMerchantID: event.accountId.paypal_merchant_id,
     gatewayURL: tempGatewayURL,
+    cryptoGateway: event.accountId.cryptoGatewayType,
     startDateTime: event.startDateTime,
     endDateTime: event.endDateTime,
     timeZone: event.timeZone,

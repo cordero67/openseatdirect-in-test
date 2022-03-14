@@ -128,18 +128,13 @@ const TicketSelection = () => {
             "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public";
         }
         console.log("res.photoUrl2: ", res.photoUrl2);
-
         console.log("res.photoUrl1: ", res.photoUrl1);
-
-        console.log("I am here");
         console.log("res: ", res);
 
-        console.log("I am here");
         eventDetails = loadEventDetails(res);
 
         console.log("I am here");
         console.log("eventDetails: ", eventDetails);
-        //eventDetails = loadEventDetails(res);
         // checks if an order exists in local storage
         if (
           typeof window !== "undefined" &&
@@ -478,6 +473,223 @@ const TicketSelection = () => {
     setTicketInfo(changeTicketInfo(event, ticketType, ticketInfo));
     updateOrderTotals();
   };
+
+  const NEWcheckoutButton = () => {
+    let selectedTickets = orderTotals.ticketsPurchased ? true : false;
+    let paidAmount = orderTotals.finalPurchaseAmount > 0 ? true : false;
+
+    let buttonClass = selectedTickets
+      ? classes.ButtonGreen
+      : classes.ButtonGreenOpac;
+
+    let tempArray = [];
+    ticketInfo.forEach((ticket, index) => {
+      tempArray.push(ticket.adjustedTicketPrice);
+    });
+    let onlyFree = Math.max(...tempArray) === 0 ? true : false;
+    let noFree = Math.min(...tempArray) > 0 ? true : false;
+
+    let hasRegistration = false;
+    if (
+      eventDetails.register &&
+      "buttonLabel" in eventDetails.register &&
+      "content" in eventDetails.register
+    ) {
+      hasRegistration = true;
+    }
+
+    let isSignedIn = false;
+    if (customerInformation.sessionToken !== "") {
+      isSignedIn = true;
+    }
+
+    let hasPrimary = false;
+    if (
+      eventDetails.gateway === "PayPalExpress" ||
+      eventDetails.gateway === "PayPalMarketplace" ||
+      eventDetails.gateway === "Stripe"
+    ) {
+      hasPrimary = true;
+    }
+    console.log("hasPrimary: ", hasPrimary);
+
+    let hasCrypto = eventDetails.cryptoGateway === "Opennode" ? true : false;
+
+    let needsGateway = false;
+    if (!hasPrimary && !hasCrypto && (paidAmount || noFree)) {
+      needsGateway = true;
+      console.log("needsGateway: ", needsGateway);
+    } else {
+      console.log("needsGateway: ", needsGateway);
+    }
+
+    if (needsGateway) {
+      console.log("NO GATEWAY");
+      return (
+        <button
+          style={{
+            height: "40px",
+            width: "180px",
+            backgroundColor: "#cc0000",
+            color: "#fff",
+            border: "1px solid black",
+            outline: "none",
+          }}
+          disabled={true}
+          onClick={() => {
+            console.log("Gateway Required");
+          }}
+        >
+          NO GATEWAY
+        </button>
+      );
+    } else if (hasRegistration) {
+      console.log("REGISTRATION REQUIRED");
+      return (
+        <button
+          className={buttonClass}
+          disabled={true}
+          onClick={() => {
+            console.log("Registration Required");
+            setDisplay("registration");
+          }}
+        >
+          {eventDetails.register.buttonLabel.toUpperCase()}
+        </button>
+      );
+    } else {
+      console.log("NO REGISTRATION REQUIRED");
+      if (isSignedIn) {
+        console.log("SIGNED-IN USER");
+        if (onlyFree) {
+          console.log("FREE ORDER");
+          return (
+            <button
+              className={buttonClass}
+              disabled={!selectedTickets}
+              onClick={() => {
+                console.log("Free User Checkout");
+                storeOrder();
+                freeTicketHandler();
+              }}
+            >
+              SUBMIT ORDER
+            </button>
+          );
+        } else {
+          console.log("Potentialy a Paid Order");
+          if (noFree || (paidAmount && selectedTickets)) {
+            console.log("Only Paid Orders");
+            if (hasPrimary) {
+              return (
+                <button
+                  className={buttonClass}
+                  disabled={!selectedTickets}
+                  onClick={() => {
+                    console.log("Paid and Primary Order");
+                    storeOrder();
+                    if (eventDetails.gateway === "PayPalExpress") {
+                      console.log(
+                        "window.location.href = '/checkout-paypalexpress'"
+                      );
+                      window.location.href = "/checkout-paypalexpress";
+                    } else if (eventDetails.gateway === "Stripe") {
+                      console.log("window.location.href = '/checkout-stripe'");
+                      window.location.href = "/checkout-stripe";
+                    } else if (eventDetails.gateway === "PayPalMarketplace") {
+                      console.log(
+                        "window.location.href = '/checkout-paypalmerchant'"
+                      );
+                      window.location.href = "/checkout-paypalmerchant";
+                    }
+                  }}
+                >
+                  SELECT PAYMENT
+                </button>
+              );
+            } else {
+              return (
+                <button
+                  className={buttonClass}
+                  disabled={!selectedTickets}
+                  onClick={() => {
+                    console.log("Paid and Crypto Order");
+                    storeOrder();
+                    window.location.href = "/checkout-paypalmerchant";
+                  }}
+                >
+                  PAY WITH BITCOIN
+                </button>
+              );
+            }
+          } else {
+            console.log("Mixed Orders");
+            if (selectedTickets) {
+              console.log("FREE ORDER");
+              return (
+                <button
+                  className={buttonClass}
+                  disabled={!selectedTickets}
+                  onClick={() => {
+                    console.log("Free User Checkout");
+                    freeTicketHandler();
+                  }}
+                >
+                  SUBMIT ORDER
+                </button>
+              );
+            } else {
+              console.log("NO ORDER MADE");
+              return (
+                <button
+                  className={classes.ButtonGreenOpac}
+                  disabled={!selectedTickets}
+                  onClick={() => {
+                    console.log("Free User Checkout");
+                  }}
+                >
+                  MAKE A SELECTION
+                </button>
+              );
+            }
+          }
+        }
+      } else {
+        console.log("GUEST USER");
+        if (!paidAmount) {
+          console.log("Free and Guest Checkout");
+          return (
+            <button
+              className={buttonClass}
+              disabled={!selectedTickets}
+              onClick={() => {
+                console.log("Free and Guest Checkout");
+                storeOrder();
+                window.location.href = "/infofree";
+              }}
+            >
+              CHECKOUT
+            </button>
+          );
+        } else if (paidAmount && (hasPrimary || hasCrypto)) {
+          console.log("Paid and Guest Checkout");
+          return (
+            <button
+              className={buttonClass}
+              disabled={!selectedTickets}
+              onClick={() => {
+                console.log("Paid and Guest Checkout");
+                window.location.href = "/infopaid";
+              }}
+            >
+              CHECKOUT
+            </button>
+          );
+        }
+      }
+    }
+  };
+
   // LOOKS GOOD
   // creates checkout/submit order button
   // THIS IS NOT IN PRODUCTION CODE
@@ -561,7 +773,7 @@ const TicketSelection = () => {
   };
   // LOOKS GOOD
   // stores order and event information into "localStorage"
-  const storeOrder = (/*orderId*/) => {
+  const storeOrder = () => {
     //
     let signedIn = false;
     console.log("Inside 'storeOrder'");
@@ -587,8 +799,12 @@ const TicketSelection = () => {
         signedIn = true;
       }
     }
+    //
+  };
 
-    if (signedIn === true) {
+  const processOrder = () => {
+    //if (signedIn === true) {
+    if (true) {
       console.log("eventDetails.gateway: ", eventDetails.gateway);
       // user is signed in therefore skip guest info page
       console.log("eventDetails.gateway: ", eventDetails.gateway);
@@ -769,7 +985,7 @@ const TicketSelection = () => {
             <div className={classes.TotalAmount}>
               {totalAmount(showDoublePane)}
             </div>
-            <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
+            <div style={{ textAlign: "right" }}>{NEWcheckoutButton()}</div>
           </div>
         </Fragment>
       );
@@ -814,7 +1030,7 @@ const TicketSelection = () => {
           <div className={classes.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
-          <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
+          <div style={{ textAlign: "right" }}>{NEWcheckoutButton()}</div>
         </div>
       </div>
     );

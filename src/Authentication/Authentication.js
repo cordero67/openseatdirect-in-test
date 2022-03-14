@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
 
+import SignInDisplay from "./Components/SignInDisplay";
+
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 import { PayPalButton } from "react-paypal-button-v2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -68,7 +70,6 @@ const Authentication = () => {
     paypalExpress_client_id: "", // vendor's clientID not OSD's
     paypalExpress_client_secret: "", // vendor's secret not OSD's
   });
-  console.log("subValues: ", subValues);
 
   // LOOKS GOOD
   const [promoCodeDetails, setPromoCodeDetails] = useState({
@@ -120,7 +121,6 @@ const Authentication = () => {
   } = subValues;
 
   let subscriptions = SubscriptionPlans();
-  console.log("subscriptions: ", subscriptions);
 
   const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
 
@@ -234,9 +234,7 @@ const Authentication = () => {
 
   useEffect(() => {
     let initialView = queryString.parse(window.location.search).view;
-    console.log("initialView: ", initialView);
     let userStatus = "none";
-    //setDisplay("selectPlan");
 
     if (
       typeof window !== "undefined" &&
@@ -246,8 +244,6 @@ const Authentication = () => {
       if (tempUser.user.accountId.status === 8) {
         window.location.href = "/myaccount";
       }
-
-      console.log("tempUser: ", tempUser);
       if ("user" in tempUser && "token" in tempUser) {
         userStatus = "full";
       } else {
@@ -256,7 +252,6 @@ const Authentication = () => {
     }
 
     if (initialView === "upgrade") {
-      console.log("going to gateway via upgrade");
       let tempUser = JSON.parse(localStorage.getItem("user"));
       setAuthValues({
         name: "",
@@ -401,7 +396,6 @@ const Authentication = () => {
     let tempSubValues = { ...subValues };
     tempSubValues[name] = value.value;
     tempSubValues.paypal_plan_id = value.value;
-    console.log("tempSubValues: ", tempSubValues);
     setSubValues(tempSubValues);
   };
 
@@ -2839,6 +2833,35 @@ const Authentication = () => {
             <Spinner />
           </div>
         </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const signInDisplay2 = () => {
+    if (display === "signin") {
+      return (
+        <SignInDisplay
+          //close={closeModal} NOT IN AUTH
+          subIntent={subIntent}
+          email={email}
+          error={error}
+          //expired={expired} NOT IN AUTH
+          message={message}
+          password={password}
+          spinner={showSpinner}
+          inputChange={handleAuthValueChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          modalChange={(modal) => setDisplay(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          values={(input) => setAuthValues(input)}
+          resetValues={() => resetValues()}
+          //submit={() => props.submit()} NOT IN AUTH
+          redirectUser={() => redirectUser()} // NOT IN MODAL
+        ></SignInDisplay>
       );
     } else {
       return null;

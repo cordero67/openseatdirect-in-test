@@ -16,77 +16,24 @@ const SignInDisplay = (props) => {
     return response;
   };
 
-  const submitSignIn = () => {
-    props.spinnerChange(true);
-    props.submission({
-      message: "",
-      error: false,
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/email`;
-    let information = {
-      email: props.email,
-      password: props.password,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleSignIn(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        props.submission({
-          message: "Server down please try again",
-          error: true,
-        });
-        props.modalChange("error");
-      })
-      .finally(() => {
-        props.spinnerChange(false);
-      });
+  const showDetail = () => {
+    if (props.error) {
+      return (
+        <div
+          style={{
+            color: "red",
+            fontSize: "14px",
+            lineHeight: "25px",
+            paddingBottom: "20px",
+          }}
+        >
+          {props.message}
+        </div>
+      );
+    } else {
+      return null;
+    }
   };
-
-  const alternateSignInInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.resetValues();
-            props.submission({ message: "", error: false, redirect: "" });
-            props.modalChange("forgot");
-          }}
-        >
-          Forgot password?
-        </button>
-      </div>
-      <div style={{ textAlign: "right" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.resetValues();
-            props.submission({ message: "", error: false, redirect: "" });
-            props.modalChange("signup");
-          }}
-        >
-          Create account
-        </button>
-      </div>
-    </div>
-  );
 
   const signInForm = () => {
     const regEmail =
@@ -100,7 +47,7 @@ const SignInDisplay = (props) => {
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
     } else {
-      buttonClass = classes.SubmitButton;
+      buttonClass = classes.ButtonBlue;
     }
 
     return (
@@ -111,8 +58,8 @@ const SignInDisplay = (props) => {
             className={classes.InputBox}
             type="email"
             name="email"
-            onChange={props.inputChange}
             value={props.email}
+            onChange={props.inputChange}
             onFocus={() => {
               props.submission({ message: "", error: false, redirect: "" });
             }}
@@ -133,17 +80,17 @@ const SignInDisplay = (props) => {
           ) : null}
         </div>
 
-        <div style={{ paddingBottom: "20px", width: "100%" }}>
+        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
           <label style={{ fontSize: "15px" }}>Password</label>
           <input
             className={classes.InputBox}
             type="password"
             name="password"
             onChange={props.inputChange}
-            value={props.password}
             onFocus={() => {
               props.submission({ message: "", error: false, redirect: "" });
             }}
+            value={props.password}
           />
           {props.email && !regPassword.test(props.password) ? (
             <div style={{ paddingTop: "5px" }}>
@@ -187,7 +134,6 @@ const SignInDisplay = (props) => {
               "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
             columnGap: "20px",
             textAlign: "center",
-            fontSize: "14px",
             paddingTop: "20px",
             paddingBottom: "20px",
           }}
@@ -216,17 +162,19 @@ const SignInDisplay = (props) => {
         </div>
         <div style={{ textAlign: "center" }}>
           <GoogleAuthentication
-            authOrigin={false}
+            authOrigin={true}
             error={(message) => {
               if (!message) {
                 props.submission({
                   message: "System error please try again.",
                   error: true,
+                  redirect: "signin",
                 });
               } else {
                 props.submission({
                   message: message,
                   error: true,
+                  redirect: "signin",
                 });
               }
             }}
@@ -247,7 +195,11 @@ const SignInDisplay = (props) => {
                 userId: data.user.userId,
                 accountNum: data.user.accountId.accountNum,
               });
-              props.submit();
+              if (props.subIntent === "paid") {
+                props.modalChange("gateway");
+              } else {
+                props.modalChange("freeCongrats");
+              }
             }}
           />
         </div>
@@ -255,52 +207,111 @@ const SignInDisplay = (props) => {
     );
   };
 
+  const submitSignIn = () => {
+    props.spinner(true);
+    props.submission({
+      message: "",
+      error: false,
+      redirect: "",
+    });
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/signin/email`;
+    let information = {
+      email: props.email,
+      password: props.password,
+    };
+    let fetchBody = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(information),
+    };
+    console.log("fetching with: ", url, fetchBody);
+    console.log("Information: ", information);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("fetch return got back data:", data);
+        handleSignIn(data);
+      })
+      .catch((error) => {
+        console.log("freeTicketHandler() error.message: ", error.message);
+        props.submission({
+          message: "Server down please try again",
+          error: true,
+          redirect: "signin",
+        });
+        props.modalChange("error");
+      })
+      .finally(() => {
+        props.spinner(false);
+      });
+  };
+
   const handleSignIn = (data) => {
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
+      localStorage.setItem("user", JSON.stringify(data)); // KEEP
       props.values({
         name: "",
         email: "",
         password: "",
+        vendorIntent: "",
         temporary: "",
         reissued: false,
-        expired: false,
         confirmation: "",
         resent: false,
         username: "",
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
-      props.submit();
+      //props.submit();
+      props.redirectUser();
     } else {
       props.submission({
         message: data.error,
         error: true,
+        redirect: "",
       });
       props.modalChange("signin");
+      console.log("ERROR: ", data.error);
     }
   };
 
-  const showError = () => {
-    console.log("props.error, ", props.error);
-    console.log("props.message, ", props.message);
-    if (props.error) {
-      return (
-        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
-          {props.message}
-        </div>
-      );
-    } else if (props.expired) {
-      return (
-        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
-          Timer has expired, please resubmit your email:
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
+  const alternateSignInInputs = (
+    <div className={classes.Alternates}>
+      <div style={{ textAlign: "left" }}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.resetValues();
+            props.submission({ message: "", error: false, redirect: "" });
+            props.modalChange("forgot");
+          }}
+        >
+          Forgot password?
+        </button>
+      </div>
+      <div style={{ textAlign: "right" }}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.resetValues();
+            props.submission({ message: "", error: false, redirect: "" });
+            props.modalChange("signup");
+          }}
+        >
+          Create account
+        </button>
+      </div>
+    </div>
+  );
 
   if (props.spinner) {
     return (
@@ -312,25 +323,10 @@ const SignInDisplay = (props) => {
     return (
       <div className={classes.BlankCanvas}>
         <div className={classes.Header}>
-          <div>Welcome back</div>
-          <div style={{ textAlign: "right" }}>
-            <ion-icon
-              style={{
-                fontWeight: "600",
-                fontSize: "28px",
-                color: "black",
-                paddingBottom: "5px",
-              }}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                props.close();
-              }}
-            />
-          </div>
+          <div>Welcome back!</div>
         </div>
         <div>
-          {showError()}
+          {showDetail()}
           {signInForm()}
           {alternateSignInInputs}
         </div>
@@ -338,5 +334,3 @@ const SignInDisplay = (props) => {
     );
   }
 };
-
-export default SignInDisplay;
