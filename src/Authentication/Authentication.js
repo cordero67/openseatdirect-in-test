@@ -12,6 +12,7 @@ import { getStatus } from "../Resources/Utils";
 import {
   API,
   PAYPAL_USE_SANDBOX,
+  OPENNODE_USE_TEST,
   SUBSCRIPTION_PROMO_CODE_1,
   SUBSCRIPTION_PROMO_CODE_2,
   SUBSCRIPTION_PROMO_CODE_3,
@@ -56,10 +57,6 @@ const Authentication = () => {
 
   // UPDATE WHEN A NEW PAYPAL PLAN IS INTRODUCED
   const [subValues, setSubValues] = useState({
-    accountName: "",
-    accountEmail: "",
-    accountPhone: "",
-    accountUrl: "",
     inputError: "",
     paypal_plan_id: "P-3E209303AY287713HMDN3PLQ", // default value is production monthly plan
     paypal_plan_id_full: "", // default plan for "FULL" ticket plan selection view
@@ -71,9 +68,9 @@ const Authentication = () => {
     paypal_plan_id_freeSubscription: "", // default plan for "FREESUBSCRIPTION" ticket plan selection view
     paypalExpress_client_id: "", // vendor's clientID not OSD's
     paypalExpress_client_secret: "", // vendor's secret not OSD's
-    opennode_invoice_API_KEY:"", // vendors opennode api key
-    opennode_auto_settle :"",  // vendors request convesion to USD or keep in BTC?
-    opennode_dev:""           // Boolean: dev=true for testnet BTC
+    opennode_invoice_API_KEY: "", // vendors opennode api key
+    opennode_auto_settle: "", // vendors request convesion to USD or keep in BTC?
+    opennode_dev: "", // Boolean: dev=true for testnet BTC
   });
 
   // LOOKS GOOD
@@ -109,10 +106,6 @@ const Authentication = () => {
 
   // object deconstruction
   const {
-    accountName,
-    accountEmail,
-    accountPhone,
-    accountUrl,
     paypal_plan_id,
     paypal_plan_id_full,
     paypal_plan_id_discount,
@@ -124,8 +117,8 @@ const Authentication = () => {
     paypalExpress_client_id,
     paypalExpress_client_secret,
     opennode_invoice_API_KEY,
-    opennode_auto_settle ,
-    opennode_dev    
+    opennode_auto_settle,
+    opennode_dev,
   } = subValues;
 
   let subscriptions = SubscriptionPlans();
@@ -203,7 +196,6 @@ const Authentication = () => {
             tempUser.user.accountId.opennode_dev;
         }
 
-
         if (PAYPAL_USE_SANDBOX === true) {
           console.log(
             "PAYPAL_USE_SANDBOX is ",
@@ -245,6 +237,12 @@ const Authentication = () => {
               tempUser.user.accountId.paypal_plan_id;
           }
         }
+        if (OPENNODE_USE_TEST === true) {
+          tempBuyerInfo.opennode_dev = true;
+        } else {
+          tempBuyerInfo.opennode_dev = false;
+        }
+        tempBuyerInfo.opennode_auto_settle = true;
 
         setSubValues(tempBuyerInfo);
         console.log("tempBuyerInfo: ", tempBuyerInfo);
@@ -414,7 +412,7 @@ const Authentication = () => {
   }, []);
 
   // THIS ASSIGNS THE "paypal_plan_id" VARIABLE TO THE SELECTED PLAN
-  const radioChangePayment = (event, value, name) => {
+  const radioChangeSubValues = (event, value, name) => {
     let tempSubValues = { ...subValues };
     tempSubValues[name] = value.value;
     tempSubValues.paypal_plan_id = value.value;
@@ -477,6 +475,30 @@ const Authentication = () => {
     {
       label: subscriptions.freeSubscription.name,
       value: subscriptions.freeSubscription.id,
+    },
+  ];
+
+  // OSDFREE promo code plans
+  const settleOptions = [
+    {
+      label: "US Dollars",
+      value: true,
+    },
+    {
+      label: "Bitcoin",
+      value: false,
+    },
+  ];
+
+  // OSDFREE promo code plans
+  const blockchainOptions = [
+    {
+      label: "Test Net",
+      value: true,
+    },
+    {
+      label: "Main Net",
+      value: false,
     },
   ];
 
@@ -1341,8 +1363,8 @@ const Authentication = () => {
             paddingBottom: "20px",
           }}
         >
-          Link to Stripe or Paypal to get your ticket sales revenue instantly in cash,   
-          or Opennode for bitcoin/lightning network. 
+          Link to Stripe or Paypal to get your ticket sales revenue instantly in
+          cash, or Opennode for bitcoin/lightning network.
         </div>
       );
     } else if (display === "freeCongrats") {
@@ -1926,7 +1948,17 @@ const Authentication = () => {
             }}
           ></img>
         </button>
+      </div>
 
+      <div
+        style={{
+          width: "165px",
+          textAlign: "center",
+          paddingTop: "10px",
+          paddingBottom: "10px",
+          paddingLeft: "89px",
+        }}
+      >
         <button
           style={{
             background: "white",
@@ -1939,7 +1971,7 @@ const Authentication = () => {
           <img
             src={opennodeImg}
             alt="OPENNODE"
-            width="140px"
+            width="150px"
             height="auto"
             cursor="pointer"
             onClick={() => {
@@ -1948,7 +1980,6 @@ const Authentication = () => {
             }}
           ></img>
         </button>
-
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
@@ -2398,7 +2429,7 @@ const Authentication = () => {
             group="eventTypeGroup"
             current={paypal_plan_id_discount}
             change={(event, value) => {
-              radioChangePayment(event, value, "paypal_plan_id_discount");
+              radioChangeSubValues(event, value, "paypal_plan_id_discount");
             }}
           />
           <br></br>
@@ -2416,7 +2447,7 @@ const Authentication = () => {
             group="eventTypeGroup"
             current={paypal_plan_id_forFree}
             change={(event, value) => {
-              radioChangePayment(event, value, "paypal_plan_id_forFree");
+              radioChangeSubValues(event, value, "paypal_plan_id_forFree");
             }}
           />
           <br></br>
@@ -2434,7 +2465,7 @@ const Authentication = () => {
             group="eventTypeGroup"
             current={paypal_plan_id_growPR}
             change={(event, value) => {
-              radioChangePayment(event, value, "paypal_plan_id_growPR");
+              radioChangeSubValues(event, value, "paypal_plan_id_growPR");
             }}
           />
           <br></br>
@@ -2451,7 +2482,7 @@ const Authentication = () => {
             group="eventTypeGroup"
             current={paypal_plan_id_old}
             change={(event, value) => {
-              radioChangePayment(event, value, "paypal_plan_id_old");
+              radioChangeSubValues(event, value, "paypal_plan_id_old");
             }}
           />
           <br></br>
@@ -2468,7 +2499,11 @@ const Authentication = () => {
             group="eventTypeGroup"
             current={paypal_plan_id_oldDiscounted}
             change={(event, value) => {
-              radioChangePayment(event, value, "paypal_plan_id_oldDiscounted");
+              radioChangeSubValues(
+                event,
+                value,
+                "paypal_plan_id_oldDiscounted"
+              );
             }}
           />
           <br></br>
@@ -2485,7 +2520,7 @@ const Authentication = () => {
             group="eventTypeGroup"
             current={paypal_plan_id_freeSubscription}
             change={(event, value) => {
-              radioChangePayment(
+              radioChangeSubValues(
                 event,
                 value,
                 "paypal_plan_id_freeSubscription"
@@ -2517,7 +2552,7 @@ const Authentication = () => {
             group="eventTypeGroup"
             current={paypal_plan_id_full}
             change={(event, value) => {
-              radioChangePayment(event, value, "paypal_plan_id_full");
+              radioChangeSubValues(event, value, "paypal_plan_id_full");
             }}
           />
           <br></br>
@@ -2596,15 +2631,15 @@ const Authentication = () => {
 
   const paypalForm = (
     <Fragment>
-      <div style={{ paddingBottom: "20px", width: "340px", height: "100px" }}>
+      <div style={{ paddingBottom: "20px", width: "340px" }}>
         <label style={{ width: "340px", fontSize: "15px" }}>
           Paypal Client ID <span style={{ color: "red" }}>* </span>
         </label>
-        <textarea
+        <input
           onFocus={() => {
             setSubValues({ ...subValues, inputError: "" });
           }}
-          className={classes.PayPalInputBox}
+          className={classes.InputBox}
           type="text"
           name="paypalExpress_client_id"
           onChange={handleSubValueChange}
@@ -2615,11 +2650,11 @@ const Authentication = () => {
         <label style={{ fontSize: "15px" }}>
           Paypal Secret <span style={{ color: "red" }}>* </span>
         </label>
-        <textarea
+        <input
           onFocus={() => {
             setSubValues({ ...subValues, inputError: "" });
           }}
-          className={classes.PayPalInputBox}
+          className={classes.InputBox}
           type="text"
           name="paypalExpress_client_secret"
           onChange={handleSubValueChange}
@@ -2745,61 +2780,52 @@ const Authentication = () => {
     </Fragment>
   );
 
-
-
-
   const opennodeForm = (
     <Fragment>
-      <div style={{ paddingBottom: "20px", width: "340px", height: "100px" }}>
+      <div style={{ paddingBottom: "20px", width: "340px" }}>
         <label style={{ width: "340px", fontSize: "15px" }}>
           Opennode API Key <span style={{ color: "red" }}>* </span>
         </label>
-        <textarea
+        <input
           onFocus={() => {
             setSubValues({ ...subValues, inputError: "" });
           }}
-          className={classes.PayPalInputBox}
+          className={classes.InputBox}
           type="text"
           name="opennode_invoice_API_KEY"
           onChange={handleSubValueChange}
           value={opennode_invoice_API_KEY}
         />
       </div>
-      <div>
-        <label style={{ fontSize: "15px" }}>
-          Auto Settle ? <span style={{ color: "red" }}>* </span>
-        </label>
-        <textarea
-          onFocus={() => {
-            setSubValues({ ...subValues, inputError: "" });
-          }}
-          className={classes.PayPalInputBox}
-          type="text"
-          name="opennode_auto_settle"
-          onChange={handleSubValueChange}
-          value={opennode_auto_settle}
-        />
-      </div>
-      <div>
-        <label style={{ fontSize: "15px" }}>
-          Testnet BTC ? <span style={{ color: "red" }}>* </span>
-        </label>
-        <textarea
-          onFocus={() => {
-            setSubValues({ ...subValues, inputError: "" });
-          }}
-          className={classes.PayPalInputBox}
-          type="text"
-          name="opennode_dev"
-          onChange={handleSubValueChange}
-          value={opennode_dev}
-        />
-      </div>
 
+      <div style={{ paddingBottom: "20px", width: "340px" }}>
+        <label style={{ fontSize: "15px" }}>Settlement Currency:</label>
+        <RadioForm
+          details={settleOptions}
+          group="settleOptioneGroup"
+          current={opennode_auto_settle}
+          change={(event, value) => {
+            radioChangeSubValues(event, value, "opennode_auto_settle");
+          }}
+        />
+      </div>
+      <div style={{ width: "340px" }}>
+        <label style={{ fontSize: "15px" }}>Bitcoin Blockchain:</label>
+        <RadioForm
+          details={blockchainOptions}
+          group="blockchainOptionGroup"
+          current={opennode_dev}
+          change={(event, value) => {
+            radioChangeSubValues(event, value, "opennode_dev");
+          }}
+        />
+      </div>
       <div style={{ textAlign: "center", paddingTop: "20px" }}>
         <button
           className={classes.ButtonBlue}
-          disabled={! opennode_auto_settle|| !opennode_invoice_API_KEY ||!opennode_dev}
+          disabled={
+            !opennode_auto_settle || !opennode_invoice_API_KEY || !opennode_dev
+          }
           onClick={() => {
             //submitPaypal();
 
@@ -2824,8 +2850,8 @@ const Authentication = () => {
               body: JSON.stringify({
                 paymentGatewayType2: "Opennode",
                 opennode_invoice_API_KEY: opennode_invoice_API_KEY,
-                opennode_auto_settle : opennode_auto_settle,
-                opennode_dev: opennode_dev
+                opennode_auto_settle: opennode_auto_settle,
+                opennode_dev: opennode_dev,
               }),
             };
             console.log(opennode_invoice_API_KEY);
@@ -2913,8 +2939,6 @@ const Authentication = () => {
       </div>
     </Fragment>
   );
-
-
 
   const errorForm = () => {
     console.log("redirect: ", redirect);
@@ -3260,7 +3284,7 @@ const Authentication = () => {
   const gatewayDisplay = () => {
     let height = {};
     if (!error) {
-      height = { height: "350px" };
+      height = { height: "535px" };
     }
     if (display === "gateway") {
       if (showSpinner) {
@@ -3382,7 +3406,7 @@ const Authentication = () => {
   const paypalDisplay = () => {
     let height = {};
     if (!error) {
-      height = { height: "560px" };
+      height = { height: "500px" };
     }
     if (display === "paypal") {
       if (showSpinner) {
@@ -3407,11 +3431,10 @@ const Authentication = () => {
     }
   };
 
-
   const opennodeDisplay = () => {
     let height = {};
     if (!error) {
-      height = { height: "560px" };
+      height = { height: "595px" };
     }
     if (display === "opennode") {
       if (showSpinner) {
@@ -3426,7 +3449,9 @@ const Authentication = () => {
         return (
           <div className={classes.Modal}>
             <div className={classes.BlankCanvas} style={height}>
-              <div className={classes.Header}>Enter Opennode API Key (invoice permission only!)</div>
+              <div className={classes.Header}>
+                Enter Opennode API Key (invoice permission only!)
+              </div>
               <div>
                 {showDetail()}
                 {opennodeForm}
