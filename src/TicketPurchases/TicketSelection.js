@@ -474,7 +474,7 @@ const TicketSelection = () => {
     updateOrderTotals();
   };
 
-  const NEWcheckoutButton = () => {
+  const checkoutButton = () => {
     let selectedTickets = orderTotals.ticketsPurchased ? true : false;
     let paidAmount = orderTotals.finalPurchaseAmount > 0 ? true : false;
 
@@ -691,87 +691,6 @@ const TicketSelection = () => {
   };
 
   // LOOKS GOOD
-  // creates checkout/submit order button
-  // THIS IS NOT IN PRODUCTION CODE
-  const checkoutButton = () => {
-    if (
-      // there is a registration requirement & total purchase amount > zero
-      eventDetails.register &&
-      "buttonLabel" in eventDetails.register &&
-      "content" in eventDetails.register &&
-      eventDetails.register.content.length > 0 &&
-      orderTotals.ticketsPurchased > 0
-    ) {
-      return (
-        <button
-          onClick={() => {
-            setDisplay("registration");
-          }}
-          className={classes.ButtonGreen}
-        >
-          {eventDetails.register.buttonLabel.toUpperCase()}
-        </button>
-      );
-    } else if (
-      // there is a registration requirement & total purchase amount > zero
-      eventDetails.register &&
-      "buttonLabel" in eventDetails.register &&
-      "content" in eventDetails.register &&
-      eventDetails.register.content.length > 0
-    ) {
-      return (
-        <button disabled={true} className={classes.ButtonGreenOpac}>
-          {eventDetails.register.buttonLabel.toUpperCase()}
-        </button>
-      );
-    } else if (
-      // there is NOT a registration requirement & a signed order of positive tickets and a zero total value
-      orderTotals.finalPurchaseAmount === 0 &&
-      orderTotals.ticketsPurchased > 0 &&
-      customerInformation.sessionToken !== ""
-    ) {
-      return (
-        <button onClick={freeTicketHandler} className={classes.ButtonGreen}>
-          SUBMIT ORDER
-        </button>
-      );
-    } else if (
-      orderTotals.finalPurchaseAmount > 0 &&
-      customerInformation.sessionToken !== ""
-    ) {
-      // there is NOT a registration requirement & a signed order of positive tickets and a positive total value
-      return (
-        <button
-          onClick={() => {
-            storeOrder();
-          }}
-          className={classes.ButtonGreen}
-        >
-          PROCEED TO CHECKOUT
-        </button>
-      );
-    } else if (orderTotals.ticketsPurchased > 0) {
-      // there is NOT a registration requirement & a unsigned order of positive tickets and a positive total value
-      return (
-        <button
-          onClick={() => {
-            storeOrder();
-          }}
-          className={classes.ButtonGreen}
-        >
-          PROCEED TO CHECKOUT
-        </button>
-      );
-    } else {
-      // there is NOT a registration requirement & a unsigned order of no tickets
-      return (
-        <button disabled={true} className={classes.ButtonGreenOpac}>
-          PROCEED TO CHECKOUT
-        </button>
-      );
-    }
-  };
-  // LOOKS GOOD
   // stores order and event information into "localStorage"
   const storeOrder = () => {
     //
@@ -985,7 +904,7 @@ const TicketSelection = () => {
             <div className={classes.TotalAmount}>
               {totalAmount(showDoublePane)}
             </div>
-            <div style={{ textAlign: "right" }}>{NEWcheckoutButton()}</div>
+            <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
           </div>
         </Fragment>
       );
@@ -1030,7 +949,7 @@ const TicketSelection = () => {
           <div className={classes.TotalAmount}>
             {totalAmount(showDoublePane)}
           </div>
-          <div style={{ textAlign: "right" }}>{NEWcheckoutButton()}</div>
+          <div style={{ textAlign: "right" }}>{checkoutButton()}</div>
         </div>
       </div>
     );

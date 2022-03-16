@@ -454,6 +454,47 @@ const Checkout = () => {
     }
   };
 
+  const PaymentTitle = () => {
+    if (eventDetails.cryptoGateway === "Opennode") {
+      return (
+        <div>
+          <span style={{ fontSize: "18px", fontWeight: "600" }}>
+            PayPal Checkout
+          </span>{" "}
+          or pay with{" "}
+          <button
+            style={{
+              background: "white",
+              border: "none",
+              cursor: "pointer",
+              outline: "none",
+            }}
+          >
+            <img
+              width="auto"
+              height="24px"
+              cursor="pointer"
+              src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Bitcoin_logo.svg"
+              alt="Bitcoin"
+              onClick={() => {
+                console.log("Paid and Crypto Order");
+                window.location.href = "/checkout-opennode";
+              }}
+            />
+          </button>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <span style={{ fontSize: "18px", fontWeight: "600" }}>
+            PayPal Checkout
+          </span>
+        </div>
+      );
+    }
+  };
+
   const mainDisplay = () => {
     if (display === "main") {
       let paymentPane = (
@@ -473,9 +514,7 @@ const Checkout = () => {
             <div style={EventTicketSection}>
               {timeRemaining()}
               <br></br>
-              <span style={{ fontSize: "18px", fontWeight: "600" }}>
-                PayPal Checkout
-              </span>
+              {PaymentTitle()}
               <br></br>
               <br></br>
               <span className={classes.TicketType}>Payment Information</span>
