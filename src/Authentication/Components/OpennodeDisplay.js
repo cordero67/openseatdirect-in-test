@@ -13,7 +13,7 @@ const OpennodeDisplay = (props) => {
   // OSDFREE promo code plans
   const settleOptions = [
     {
-      label: "US Dollars",
+      label: "Fiat (e.g. US Dollar)",
       value: true,
     },
     {
@@ -25,11 +25,11 @@ const OpennodeDisplay = (props) => {
   // OSDFREE promo code plans
   const blockchainOptions = [
     {
-      label: "Test Net",
+      label: "Dev / Test Net",
       value: true,
     },
     {
-      label: "Main Net",
+      label: "Live / Main Net",
       value: false,
     },
   ];
@@ -202,10 +202,15 @@ const OpennodeDisplay = (props) => {
                   let tempData = JSON.parse(localStorage.getItem("user"));
                   console.log("tempData: ", tempData);
                   tempData.user.accountId = data.result;
+                  console.log("after tempData");
                   localStorage.setItem("user", JSON.stringify(tempData));
                   //updatePageView();
 
-                  if (tempData.user.accountId.status === 8) {
+                  console.log("props.authOrigin: ", props.authOrigin);
+                  if (!props.authOrigin) {
+                    console.log("About to close");
+                    props.close();
+                  } else if (tempData.user.accountId.status === 8) {
                     props.modalChange("paidCongrats");
                   } else if (tempData.user.accountId.status === 5) {
                     props.modalChange("selectPlan");
@@ -223,7 +228,7 @@ const OpennodeDisplay = (props) => {
                   }
                   console.log("errmsg: ", errmsg);
                   props.submission({ message: errmsg, error: true });
-                  props.modalChange("error");
+                  //props.modalChange("error");
                 }
               })
               .catch((err) => {
@@ -303,7 +308,7 @@ const OpennodeDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.Header}>
-          <div>Enter Opennode API Key</div>
+          <div>Enter Opennode Account Info.</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
               style={{
