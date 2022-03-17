@@ -95,6 +95,7 @@ const Authentication = (props) => {
           email={email}
           error={error}
           expired={expired}
+          authOrigin={false}
           message={message}
           password={password}
           spinner={showSpinner}
@@ -167,9 +168,7 @@ const Authentication = (props) => {
   };
 
   const signUpDisplay = () => {
-    console.log("INSIDE OUTER");
     if (modalSetting === "signup") {
-      console.log("INSIDE INNER");
       return (
         <SignUpDisplay
           close={closeModal}

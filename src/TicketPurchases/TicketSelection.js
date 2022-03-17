@@ -679,6 +679,7 @@ const TicketSelection = () => {
               disabled={!selectedTickets}
               onClick={() => {
                 console.log("Paid and Guest Checkout");
+                storeOrder();
                 window.location.href = "/infopaid";
               }}
             >

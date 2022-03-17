@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { API } from "../../config.js";
 
 import ResetModal from "./Modals/ResetModal";
+import OpennodeModal from "./Modals/OpennodeModal";
 
 import classes from "./Account.module.css";
 
@@ -15,7 +16,7 @@ const Account = (props) => {
     username: "",
     token: "",
   });
-  const [modalStatus, setModalStatus] = useState(false);
+  const [modalStatus, setModalStatus] = useState("none");
   const [subscriptionType, setSubscriptionType] = useState("free");
 
   useEffect(() => {
@@ -37,6 +38,7 @@ const Account = (props) => {
         accountName: tempUser.user.accountId.accountName,
         accountEmail: tempUser.user.accountId.accountEmail,
         paymentGateway: tempUser.user.accountId.paymentGatewayType,
+        cryptoGateway: tempUser.user.accountId.cryptoGatewayType,
       };
       console.log("tempUserInfo: ", tempUserInfo);
       setUserInfo(tempUserInfo);
@@ -55,6 +57,10 @@ const Account = (props) => {
       throw Error(response.status);
     }
     return response;
+  };
+
+  const changeOpennode = () => {
+    setModalStatus("opennode");
   };
 
   const requestChange = () => {
@@ -77,7 +83,7 @@ const Account = (props) => {
       .then((data) => {
         console.log("fetch return got back data:", data);
 
-        setModalStatus(true);
+        setModalStatus("password");
       })
       .catch((error) => {
         console.log("passwordReset() error.message: ", error.message);
@@ -97,25 +103,63 @@ const Account = (props) => {
     console.log("Subscription type: ", subscriptionType);
     if (subscriptionType === "free") {
       return (
-        <a
-          style={{
-            fontSize: "16px",
-            color: "blue",
-            border: "none",
-            backgroundColor: "white",
-            cursor: "pointer",
-            display: "inlineBlock",
-            outline: "none",
-          }}
-          href="/auth?view=upgrade"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Upgrade to Pro Plan
-        </a>
+        <div>
+          <a
+            style={{
+              fontSize: "16px",
+              color: "blue",
+              border: "none",
+              backgroundColor: "white",
+              cursor: "pointer",
+              display: "inlineBlock",
+              outline: "none",
+            }}
+            href="/auth?view=upgrade"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Upgrade to Pro Plan
+          </a>
+          <br></br>
+          <br></br>
+        </div>
       );
     } else if (subscriptionType === "paid") {
       return null;
+    }
+  };
+
+  const cryptoDetails = () => {
+    if (userInfo.cryptoGateway) {
+      return (
+        <div>
+          Crypto Gateway: {userInfo.cryptoGateway}{" "}
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              changeOpennode();
+            }}
+          >
+            {" "}
+            Update
+          </button>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          Crypto Gateway: NONE{" "}
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              changeOpennode();
+            }}
+          >
+            {" "}
+            Add
+          </button>
+        </div>
+      );
     }
   };
 
@@ -134,7 +178,6 @@ const Account = (props) => {
         <div>E-mail: {userInfo.accountEmail}</div>
         <div>Phone Number:</div>
         <div>Website:</div>
-        <div>Payment Gateway: {userInfo.paymentGateway}</div>
         <br></br>
         <button
           className={classes.PasswordButton}
@@ -146,16 +189,26 @@ const Account = (props) => {
         </button>
         <br></br>
         <br></br>
-        <div>Plan: {subscription()}</div>
-        <br></br>
+        <div style={{ fontWeight: "600" }}>Plan Details</div>
+        <div>Plan Type: {subscription()}</div>
         <button className={classes.PasswordButton}>{upgrade()}</button>
-      </div>
 
+        <br></br>
+        <div>Payment Gateway: {userInfo.paymentGateway}</div>
+        <div>{cryptoDetails()}</div>
+        <div></div>
+      </div>
       <ResetModal
-        show={modalStatus}
+        show={modalStatus === "password"}
         start={"confirmation"}
         closeModal={() => {
-          setModalStatus(false);
+          setModalStatus("none");
+        }}
+      />
+      <OpennodeModal
+        show={modalStatus === "opennode"}
+        closeModal={() => {
+          setModalStatus("none");
         }}
       />
     </div>

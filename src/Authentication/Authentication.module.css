@@ -52,15 +52,16 @@
   box-sizing: border-box;
 }
 .Header {
-  /*display: grid;*/
-  /*grid-template-columns: 95% 5%;*/
-  /*column-gap: "0px";*/
+  display: grid;
+  grid-template-columns: 90% 10%;
+  column-gap: "0px";
   line-height: 24px;
   font-size: 24px;
   font-weight: 600;
   padding-top: 20px;
   padding-bottom: 20px;
 }
+
 .Alternates {
   display: grid;
   grid-template-columns: auto auto;
@@ -246,6 +247,7 @@
   border: none;
   outline: none;
 }
+
 @media (min-width: 1140px) {
   .PromoGrid {
     grid-template-columns: auto 77px;

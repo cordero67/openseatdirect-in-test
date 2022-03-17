@@ -7,7 +7,6 @@ import { API } from "../../config";
 import classes from "../AuthenticationModal.module.css";
 
 const SignInDisplay = (props) => {
-  console.log("props: ", props);
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -53,10 +52,9 @@ const SignInDisplay = (props) => {
           error: true,
         });
         props.modalChange("error");
-      })
-      .finally(() => {
         props.spinnerChange(false);
-      });
+      })
+      .finally(() => {});
   };
 
   const alternateSignInInputs = (
@@ -95,7 +93,6 @@ const SignInDisplay = (props) => {
     let disabled =
       !regEmail.test(props.email) || !regPassword.test(props.password);
 
-    console.log("disabled: ", disabled);
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
@@ -216,7 +213,7 @@ const SignInDisplay = (props) => {
         </div>
         <div style={{ textAlign: "center" }}>
           <GoogleAuthentication
-            authOrigin={false}
+            authOrigin={props.authOrigin}
             error={(message) => {
               if (!message) {
                 props.submission({
@@ -262,6 +259,7 @@ const SignInDisplay = (props) => {
         name: "",
         email: "",
         password: "",
+        vendorIntent: "",
         temporary: "",
         reissued: false,
         expired: false,
@@ -271,6 +269,7 @@ const SignInDisplay = (props) => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       props.submit();
     } else {
@@ -279,19 +278,25 @@ const SignInDisplay = (props) => {
         error: true,
       });
       props.modalChange("signin");
+      props.spinnerChange(false);
     }
   };
 
-  const showError = () => {
-    console.log("props.error, ", props.error);
-    console.log("props.message, ", props.message);
+  const showDetail = () => {
     if (props.error) {
       return (
-        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
+        <div
+          style={{
+            color: "red",
+            fontSize: "14px",
+            lineHeight: "25px",
+            paddingBottom: "20px",
+          }}
+        >
           {props.message}
         </div>
       );
-    } else if (props.expired) {
+    } else if (props.expired && props.authOrigin !== true) {
       return (
         <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
           Timer has expired, please resubmit your email:
@@ -302,15 +307,9 @@ const SignInDisplay = (props) => {
     }
   };
 
-  if (props.spinner) {
-    return (
-      <div className={classes.BlankCanvas} style={{ height: "445px" }}>
-        <Spinner />
-      </div>
-    );
-  } else {
-    return (
-      <div className={classes.BlankCanvas}>
+  const header = () => {
+    if (props.authOrigin !== true) {
+      return (
         <div className={classes.Header}>
           <div>Welcome back</div>
           <div style={{ textAlign: "right" }}>
@@ -329,8 +328,24 @@ const SignInDisplay = (props) => {
             />
           </div>
         </div>
+      );
+    } else {
+      return <div className={classes.Header}>Welcome back!</div>;
+    }
+  };
+
+  if (props.spinner) {
+    return (
+      <div className={classes.BlankCanvas} style={{ height: "433px" }}>
+        <Spinner />
+      </div>
+    );
+  } else {
+    return (
+      <div className={classes.BlankCanvas}>
+        {header()}
         <div>
-          {showError()}
+          {showDetail()}
           {signInForm()}
           {alternateSignInInputs}
         </div>

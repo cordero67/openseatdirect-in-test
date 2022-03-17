@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
 
 import SignInDisplay from "./Components/SignInDisplay";
+import OpennodeDisplay from "./Components/OpennodeDisplay";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 import { PayPalButton } from "react-paypal-button-v2";
@@ -29,7 +30,6 @@ import { SubscriptionPlans } from "./Resources/Variables";
 import RadioForm from "../components/Forms/RadioForm";
 
 import opennodeImg from "../assets/Opennode/opennodeBtc.png";
-
 import stripeImg from "../assets/Stripe/Stripe wordmark - blurple (small).png";
 import payPalImg from "../assets/PayPal/PayPal.PNG";
 
@@ -541,52 +541,6 @@ const Authentication = () => {
     return response;
   };
 
-  const submitSignIn = () => {
-    setShowSpinner(true);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/email`;
-    let information = {
-      email: email,
-      password: password,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleSignIn(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-          redirect: "signin",
-        });
-        setDisplay("error");
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
   const submitForgot = () => {
     setShowSpinner(true);
     setSubmissionStatus({
@@ -968,36 +922,6 @@ const Authentication = () => {
         });
         setDisplay("error");
       });
-  };
-
-  const handleSignIn = (data) => {
-    if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data)); // KEEP
-      setAuthValues({
-        name: "",
-        email: "",
-        password: "",
-        vendorIntent: "",
-        temporary: "",
-        reissued: false,
-        confirmation: "",
-        resent: false,
-        username: "",
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
-      redirectUser();
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-        redirect: "",
-      });
-      setDisplay("signin");
-      console.log("ERROR: ", data.error);
-    }
   };
 
   const handleForgot = (data) => {
@@ -1441,160 +1365,6 @@ const Authentication = () => {
         </div>
       );
     }
-  };
-
-  const signInForm = () => {
-    const regsuper =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let disabled = !regsuper.test(email);
-    console.log("disabled: ", disabled);
-    let buttonClass;
-    if (disabled) {
-      buttonClass = classes.ButtonBlueOpac;
-    } else {
-      buttonClass = classes.ButtonBlue;
-    }
-
-    return (
-      <Fragment>
-        <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>E-mail Address</label>
-          <input
-            className={classes.InputBox}
-            type="email"
-            name="email"
-            value={email}
-            onChange={handleAuthValueChange}
-            onFocus={() => {
-              setSubmissionStatus({ message: "", error: false, redirect: "" });
-            }}
-          />
-          {email && !regsuper.test(email) ? (
-            <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
-                A valid email address is required
-              </span>
-            </div>
-          ) : null}
-        </div>
-
-        <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-          <label style={{ fontSize: "15px" }}>Password</label>
-          <input
-            className={classes.InputBox}
-            type="password"
-            name="password"
-            onChange={handleAuthValueChange}
-            onFocus={() => {
-              setSubmissionStatus({ message: "", error: false, redirect: "" });
-            }}
-            value={password}
-          />
-        </div>
-
-        <div style={{ paddingTop: "10px" }}>
-          <button
-            className={buttonClass}
-            disabled={disabled}
-            onClick={() => {
-              if (disabled) {
-                setSubmissionStatus({
-                  message: "Invalid email address",
-                  error: true,
-                  redirect: "",
-                });
-              } else {
-                submitSignIn();
-              }
-            }}
-          >
-            SIGN IN TO YOUR ACCOUNT
-          </button>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
-            columnGap: "20px",
-            textAlign: "center",
-            paddingTop: "20px",
-            paddingBottom: "20px",
-          }}
-        >
-          <hr
-            style={{
-              display: "block",
-              height: "1px",
-              border: "0",
-              borderTop: "1px solid #ccc",
-              margin: "1em 0",
-              padding: "0",
-            }}
-          />
-          <div style={{ paddingTop: "5px" }}>Or sign in with</div>
-          <hr
-            style={{
-              display: "block",
-              height: "1px",
-              border: "0",
-              borderTop: "1px solid #ccc",
-              margin: "1em 0",
-              padding: "0",
-            }}
-          />
-        </div>
-        <div style={{ textAlign: "center" }}>
-          <GoogleAuthentication
-            authOrigin={true}
-            error={(message) => {
-              if (!message) {
-                setSubmissionStatus({
-                  message: "System error please try again.",
-                  error: true,
-                  redirect: "signin",
-                });
-              } else {
-                setSubmissionStatus({
-                  message: message,
-                  error: true,
-                  redirect: "signin",
-                });
-              }
-            }}
-            success={(data) => {
-              console.log("data: ", data);
-              setAuthValues({
-                name: "",
-                email: data.user.email,
-                password: "",
-                vendorIntent: "",
-                temporary: "",
-                reissued: false,
-                confirmation: "",
-                resent: false,
-                username: data.user.username,
-                resetToken: "",
-                sessionToken: data.token,
-                userId: data.user.userId,
-                accountNum: data.user.accountId.accountNum,
-              });
-              if (subIntent === "paid") {
-                setDisplay("gateway");
-              } else {
-                setDisplay("freeCongrats");
-              }
-            }}
-          />
-        </div>
-      </Fragment>
-    );
   };
 
   const forgotForm = () => {
@@ -2827,15 +2597,11 @@ const Authentication = () => {
             !opennode_auto_settle || !opennode_invoice_API_KEY || !opennode_dev
           }
           onClick={() => {
-            //submitPaypal();
-
             console.log("Inside submitOpennode");
-            //setDisplay("spinner");
             setShowSpinner(true);
             setSubmissionStatus({
               message: "",
               error: false,
-              redirect: "",
             });
             // api static variables
             let myHeaders = new Headers();
@@ -3065,29 +2831,15 @@ const Authentication = () => {
     </div>
   );
 
-  const spinnerDisplay = () => {
-    if (display === "spinner") {
-      return (
-        <div className={classes.BlankCanvas} style={{ height: "600px" }}>
-          <div className={classes.Header}>
-            <Spinner />
-          </div>
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const signInDisplay2 = () => {
+  const signInDisplay = () => {
     if (display === "signin") {
       return (
         <SignInDisplay
           //close={closeModal} NOT IN AUTH
-          subIntent={subIntent}
           email={email}
           error={error}
           //expired={expired} NOT IN AUTH
+          authOrigin={true}
           message={message}
           password={password}
           spinner={showSpinner}
@@ -3099,37 +2851,9 @@ const Authentication = () => {
           }}
           values={(input) => setAuthValues(input)}
           resetValues={() => resetValues()}
-          //submit={() => props.submit()} NOT IN AUTH
-          redirectUser={() => redirectUser()} // NOT IN MODAL
+          submit={() => redirectUser()}
         ></SignInDisplay>
       );
-    } else {
-      return null;
-    }
-  };
-
-  const signInDisplay = () => {
-    if (display === "signin") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={{ height: "445px" }}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas}>
-            <div className={classes.Header}>
-              <div>Welcome back!</div>
-            </div>
-            <div>
-              {showDetail()}
-              {signInForm()}
-              {alternateSignInInputs}
-            </div>
-          </div>
-        );
-      }
     } else {
       return null;
     }
@@ -3431,16 +3155,42 @@ const Authentication = () => {
     }
   };
 
-  const opennodeDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "595px" };
+  const opennodeDisplay2 = () => {
+    if (display === "opennode") {
+      return (
+        <OpennodeDisplay
+          authOrigin={true}
+          error={error}
+          message={message}
+          apiKey={subValues.opennode_invoice_API_KEY}
+          settle={subValues.opennode_auto_settle}
+          dev={subValues.opennode_dev}
+          sessionToken={authValues.sessionToken}
+          accountNum={authValues.accountNum}
+          spinner={showSpinner}
+          inputChange={handleSubValueChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          modalChange={(modal) => setDisplay(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          radioChange={(event, value, message) => {
+            radioChangeSubValues(event, value, message);
+          }}
+          redirect={() => redirectUser()}
+        ></OpennodeDisplay>
+      );
+    } else {
+      return null;
     }
+  };
+
+  const opennodeDisplay = () => {
     if (display === "opennode") {
       if (showSpinner) {
         return (
           <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.BlankCanvas} style={{ height: "595px" }}>
               <Spinner />
             </div>
           </div>
@@ -3448,7 +3198,7 @@ const Authentication = () => {
       } else {
         return (
           <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={height}>
+            <div className={classes.BlankCanvas}>
               <div className={classes.Header}>
                 Enter Opennode API Key (invoice permission only!)
               </div>
@@ -3503,7 +3253,7 @@ const Authentication = () => {
         {passwordDisplay()}
         {gatewayDisplay()}
         {paypalDisplay()}
-        {opennodeDisplay()}
+        {opennodeDisplay2()}
         {selectPlanDisplay()}
         {freeCongratsDisplay()}
         {paidCongratsDisplay()}
