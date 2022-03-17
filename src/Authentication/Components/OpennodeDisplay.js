@@ -170,6 +170,7 @@ const OpennodeDisplay = (props) => {
             myHeaders.append("Authorization", authstring);
 
             let url = `${API}/accounts/${props.accountNum}`;
+            console.log("url: ", url);
             let fetcharg = {
               method: "POST",
               headers: myHeaders,

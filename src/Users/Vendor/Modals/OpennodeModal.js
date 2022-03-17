@@ -20,6 +20,7 @@ const Opennode = (props) => {
     opennode_invoice_API_KEY: "", // vendors opennode api key
     opennode_auto_settle: "", // vendors request convesion to USD or keep in BTC?
     opennode_dev: "", // Boolean: dev=true for testnet BTC
+    accountNum: "",
   });
 
   const [authValues, setAuthValues] = useState({
@@ -66,7 +67,8 @@ const Opennode = (props) => {
       tempValues.opennode_auto_settle =
         tempUser.user.accountId.opennode_auto_settle; // vendors request convesion to USD or keep in BTC?
       tempValues.opennode_dev = tempUser.user.accountId.opennode_dev;
-
+      tempValues.accountNum = tempUser.user.accountId.accountNum;
+      tempValues.sessionToken = tempUser.token;
       console.log("tempValues: ", tempValues);
       setSubValues(tempValues);
     }
@@ -120,8 +122,8 @@ const Opennode = (props) => {
         apiKey={subValues.opennode_invoice_API_KEY}
         settle={subValues.opennode_auto_settle}
         dev={subValues.opennode_dev}
-        sessionToken={authValues.sessionToken}
-        accountNum={authValues.accountNum}
+        sessionToken={subValues.sessionToken}
+        accountNum={subValues.accountNum}
         spinner={showSpinner}
         //spinner={true}
         inputChange={handleSubValueChange}
