@@ -125,7 +125,6 @@ const Opennode = (props) => {
         sessionToken={subValues.sessionToken}
         accountNum={subValues.accountNum}
         spinner={showSpinner}
-        //spinner={true}
         inputChange={handleSubValueChange}
         spinnerChange={(value) => setShowSpinner(value)}
         ////modalChange={(modal) => setDisplay(modal)}

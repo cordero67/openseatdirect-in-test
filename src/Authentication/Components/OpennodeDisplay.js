@@ -181,6 +181,11 @@ const OpennodeDisplay = (props) => {
                 opennode_dev: props.dev,
               }),
             };
+            console.log("props.apiKey: ", props.apiKey);
+            console.log("props.settle: ", props.settle);
+            console.log("props.dev: ", props.dev);
+            console.log("props.sessionToken: ", props.sessionToken);
+            console.log("props.accountNum: ", props.accountNum);
 
             console.log("fetching with: ", url, fetcharg);
             fetch(url, fetcharg)
