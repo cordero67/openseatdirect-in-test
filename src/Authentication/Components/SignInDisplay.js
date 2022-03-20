@@ -17,10 +17,7 @@ const SignInDisplay = (props) => {
 
   const submitSignIn = () => {
     props.spinnerChange(true);
-    props.submission({
-      message: "",
-      error: false,
-    });
+    props.submission({ message: "", error: false });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -51,10 +48,9 @@ const SignInDisplay = (props) => {
           message: "Server down please try again",
           error: true,
         });
-        props.modalChange("error");
+        props.displayChange("error");
         props.spinnerChange(false);
-      })
-      .finally(() => {});
+      });
   };
 
   const alternateSignInInputs = (
@@ -65,7 +61,7 @@ const SignInDisplay = (props) => {
           onClick={() => {
             props.resetValues();
             props.submission({ message: "", error: false, redirect: "" });
-            props.modalChange("forgot");
+            props.displayChange("forgot");
           }}
         >
           Forgot password?
@@ -77,7 +73,7 @@ const SignInDisplay = (props) => {
           onClick={() => {
             props.resetValues();
             props.submission({ message: "", error: false, redirect: "" });
-            props.modalChange("signup");
+            props.displayChange("signup");
           }}
         >
           Create account
@@ -277,12 +273,12 @@ const SignInDisplay = (props) => {
         message: data.error,
         error: true,
       });
-      props.modalChange("signin");
+      props.displayChange("signin");
       props.spinnerChange(false);
     }
   };
 
-  const showDetail = () => {
+  const showError = () => {
     if (props.error) {
       return (
         <div
@@ -345,7 +341,7 @@ const SignInDisplay = (props) => {
       <div className={classes.BlankCanvas}>
         {header()}
         <div>
-          {showDetail()}
+          {showError()}
           {signInForm()}
           {alternateSignInInputs}
         </div>

@@ -5,6 +5,8 @@ import { API } from "../../config.js";
 import ResetModal from "./Modals/ResetModal";
 import OpennodeModal from "./Modals/OpennodeModal";
 
+import { getStatus } from "../../Resources/Utils";
+
 import classes from "./Account.module.css";
 
 const Account = (props) => {
@@ -129,8 +131,42 @@ const Account = (props) => {
     }
   };
 
+  const paymentDetails = () => {
+    if (getStatus() !== 8 && userInfo.paymentGateway) {
+      return (
+        <div>
+          Payment Gateway: {userInfo.paymentGateway}{" "}
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              changeOpennode();
+            }}
+          >
+            {" "}
+            Update
+          </button>
+        </div>
+      );
+    } else if (getStatus() === 8) {
+      return (
+        <div>
+          Payment Gateway: NONE{" "}
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              changeOpennode();
+            }}
+          >
+            {" "}
+            Add
+          </button>
+        </div>
+      );
+    } else return null;
+  };
+
   const cryptoDetails = () => {
-    if (userInfo.cryptoGateway) {
+    if (getStatus() !== 8 && userInfo.cryptoGateway) {
       return (
         <div>
           Crypto Gateway: {userInfo.cryptoGateway}{" "}
@@ -145,7 +181,7 @@ const Account = (props) => {
           </button>
         </div>
       );
-    } else {
+    } else if (getStatus() === 8) {
       return (
         <div>
           Crypto Gateway: NONE{" "}
@@ -160,7 +196,7 @@ const Account = (props) => {
           </button>
         </div>
       );
-    }
+    } else return null;
   };
 
   return (
@@ -194,7 +230,7 @@ const Account = (props) => {
         <button className={classes.PasswordButton}>{upgrade()}</button>
 
         <br></br>
-        <div>Payment Gateway: {userInfo.paymentGateway}</div>
+        <div>{paymentDetails()}</div>
         <div>{cryptoDetails()}</div>
         <div></div>
       </div>

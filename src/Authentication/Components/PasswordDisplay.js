@@ -53,7 +53,7 @@ const PasswordDisplay = (props) => {
           message: "Server down please try again",
           error: true,
         });
-        props.modalChange("error");
+        props.displayChange("error");
       })
       .finally(() => {
         props.spinnerChange(false);
@@ -112,7 +112,7 @@ const PasswordDisplay = (props) => {
         message: data.error,
         error: true,
       });
-      props.modalChange("password");
+      props.displayChange("password");
       console.log("ERROR: ", data.error);
     }
   };

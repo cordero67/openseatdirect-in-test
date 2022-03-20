@@ -50,7 +50,7 @@ const TemporaryDisplay = (props) => {
           message: "Server is down, please try later",
           error: true,
         });
-        props.modalChange("error");
+        props.displayChange("error");
       });
   };
 
@@ -69,6 +69,7 @@ const TemporaryDisplay = (props) => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
     } else {
       props.submission({
@@ -116,9 +117,7 @@ const TemporaryDisplay = (props) => {
           message: "Server is down, please try later",
           error: true,
         });
-        props.modalChange("error");
-      })
-      .finally(() => {
+        props.displayChange("error");
         props.spinnerChange(false);
       });
   };
@@ -129,6 +128,10 @@ const TemporaryDisplay = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
+            props.submission({
+              message: "",
+              error: false,
+            });
             submitReissue();
           }}
         >
@@ -140,7 +143,11 @@ const TemporaryDisplay = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.modalChange("signin");
+            props.submission({
+              message: "",
+              error: false,
+            });
+            props.displayChange("signin");
           }}
         >
           Sign In
@@ -171,7 +178,7 @@ const TemporaryDisplay = (props) => {
             onChange={props.inputChange}
             value={props.temporary}
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              props.submission({ message: "", error: false });
             }}
           />
           {props.temporary && !regsuper.test(props.temporary) ? (
@@ -198,7 +205,6 @@ const TemporaryDisplay = (props) => {
                 props.submission({
                   message: "Invalid confirmation code",
                   error: true,
-                  redirect: "",
                 });
               } else {
                 submitTemporary();
@@ -236,16 +242,22 @@ const TemporaryDisplay = (props) => {
         message: data.error,
         error: true,
       });
-      props.modalChange("temporary");
+      props.displayChange("temporary");
+      props.spinnerChange(false);
     }
   };
 
   const showError = () => {
-    console.log("props.error, ", props.error);
-    console.log("props.message, ", props.message);
     if (props.error) {
       return (
-        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
+        <div
+          style={{
+            color: "red",
+            fontSize: "14px",
+            lineHeight: "25px",
+            paddingBottom: "20px",
+          }}
+        >
           {props.message}
         </div>
       );
@@ -276,6 +288,33 @@ const TemporaryDisplay = (props) => {
     height = "319px";
   }
 
+  const header = () => {
+    if (props.authOrigin !== true) {
+      return (
+        <div className={classes.Header}>
+          <div>Enter confirmation code</div>
+          <div style={{ textAlign: "right" }}>
+            <ion-icon
+              style={{
+                fontWeight: "600",
+                fontSize: "28px",
+                color: "black",
+                paddingBottom: "5px",
+              }}
+              name="close-outline"
+              cursor="pointer"
+              onClick={() => {
+                props.close();
+              }}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      return <div className={classes.Header}>Enter confirmation code</div>;
+    }
+  };
+
   if (props.spinner) {
     return (
       <div className={classes.BlankCanvas} style={{ height: height }}>
@@ -285,19 +324,7 @@ const TemporaryDisplay = (props) => {
   } else {
     return (
       <div className={classes.BlankCanvas}>
-        <div className={classes.Header}>
-          <div>Enter confirmation code</div>
-          <div style={{ textAlign: "right" }}>
-            <ion-icon
-              style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                props.close();
-              }}
-            />
-          </div>
-        </div>
+        {header()}
         <div>
           {showError()}
           {temporaryForm()}

@@ -2,6 +2,9 @@ import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
 
 import SignInDisplay from "./Components/SignInDisplay";
+import ForgotDisplay from "./Components/ForgotDisplay";
+import TemporaryDisplay from "./Components/TemporaryDisplay";
+import SignUpDisplay from "./Components/SignUpDisplay";
 import OpennodeDisplay from "./Components/OpennodeDisplay";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
@@ -29,21 +32,20 @@ import { SubscriptionPlans } from "./Resources/Variables";
 
 import RadioForm from "../components/Forms/RadioForm";
 
-import opennodeImg from "../assets/Opennode/opennodeBtc.png";
 import stripeImg from "../assets/Stripe/Stripe wordmark - blurple (small).png";
 import payPalImg from "../assets/PayPal/PayPal.PNG";
+import opennodeImg from "../assets/Opennode/opennodeBtc.png";
 
 import classes from "./Authentication.module.css";
 
 const Authentication = () => {
-  const [subIntent, setSubIntent] = useState();
+  let initialView = queryString.parse(window.location.search).view;
+  const [paidIntent, setPaidIntent] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
 
   const [authValues, setAuthValues] = useState({
-    name: "",
     email: "",
     password: "",
-    vendorIntent: "",
     temporary: "",
     reissued: false,
     confirmation: "",
@@ -54,6 +56,20 @@ const Authentication = () => {
     userId: "",
     accountNum: "",
   });
+
+  const {
+    email,
+    password,
+    temporary,
+    reissued,
+    confirmation,
+    resent,
+    username,
+    resetToken,
+    sessionToken,
+    userId,
+    accountNum,
+  } = authValues;
 
   // UPDATE WHEN A NEW PAYPAL PLAN IS INTRODUCED
   const [subValues, setSubValues] = useState({
@@ -73,7 +89,24 @@ const Authentication = () => {
     opennode_dev: "", // Boolean: dev=true for testnet BTC
   });
 
-  // LOOKS GOOD
+  const {
+    paypal_plan_id,
+    paypal_plan_id_full,
+    paypal_plan_id_discount,
+    paypal_plan_id_forFree,
+    paypal_plan_id_growPR,
+    paypal_plan_id_old,
+    paypal_plan_id_oldDiscounted,
+    paypal_plan_id_freeSubscription,
+    paypalExpress_client_id,
+    paypalExpress_client_secret,
+    opennode_invoice_API_KEY,
+    opennode_auto_settle,
+    opennode_dev,
+  } = subValues;
+
+  let subscriptions = SubscriptionPlans();
+
   const [promoCodeDetails, setPromoCodeDetails] = useState({
     available: false,
     applied: false,
@@ -103,45 +136,9 @@ const Authentication = () => {
   });
 
   const { message, error, redirect } = submissionStatus;
-
-  // object deconstruction
-  const {
-    paypal_plan_id,
-    paypal_plan_id_full,
-    paypal_plan_id_discount,
-    paypal_plan_id_forFree,
-    paypal_plan_id_growPR,
-    paypal_plan_id_old,
-    paypal_plan_id_oldDiscounted,
-    paypal_plan_id_freeSubscription,
-    paypalExpress_client_id,
-    paypalExpress_client_secret,
-    opennode_invoice_API_KEY,
-    opennode_auto_settle,
-    opennode_dev,
-  } = subValues;
-
-  let subscriptions = SubscriptionPlans();
-
   const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
 
-  const {
-    name,
-    email,
-    password,
-    temporary,
-    reissued,
-    confirmation,
-    resent,
-    username,
-    resetToken,
-    sessionToken,
-    userId,
-    accountNum,
-  } = authValues;
-
   // edit so that it is driven by the "status" value
-  // only used by useEffect to populate the "values" object
   const updateSubValues = () => {
     if (
       typeof window !== "undefined" &&
@@ -253,161 +250,77 @@ const Authentication = () => {
   };
 
   useEffect(() => {
-    let initialView = queryString.parse(window.location.search).view;
+    console.log("initialView: ", initialView);
     let userStatus = "none";
+    let partialStatus = false;
 
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      if (tempUser.user.accountId.status === 8) {
-        window.location.href = "/myaccount";
-      }
+      console.log("getStatus: ", getStatus());
+      console.log("User status: ", tempUser.user.accountId.status);
+      let status = getStatus();
       if ("user" in tempUser && "token" in tempUser) {
-        userStatus = "full";
+        partialStatus = true;
+      }
+      if (status === 8) {
+        window.location.href = "/myaccount";
+      } else if (initialView === "upgrade") {
+        console.log("initialView: ", initialView, ", upgrade");
+        setPaidIntent(true);
+        if (status === 1 || status === 4 || status === 6) {
+          setDisplay("gateway");
+        } else if (status === 5) {
+          setDisplay("selectPlan");
+        } else if (partialStatus) {
+          setDisplay("password");
+        } else {
+          console.log("going to signin");
+          setDisplay("signin");
+        }
+      } else if (initialView === "free") {
+        console.log("initialView: ", initialView, ", free");
+        setPaidIntent(false);
+        if (status === 1 || status === 4 || status === 6) {
+          setDisplay("gateway");
+        } else if (status === 5) {
+          setDisplay("selectPlan");
+        } else if (partialStatus) {
+          setDisplay("password");
+        } else {
+          setDisplay("signup");
+        }
+      } else if (initialView === "paid") {
+        console.log("initialView: ", initialView, ", paid");
+        setPaidIntent(true);
+        if (status === 1 || status === 4 || status === 6) {
+          setDisplay("gateway");
+        } else if (status === 5) {
+          setDisplay("selectPlan");
+        } else if (partialStatus) {
+          setDisplay("password");
+        } else {
+          setDisplay("signup");
+        }
       } else {
-        userStatus = "partial";
-      }
-    }
-
-    if (initialView === "upgrade") {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      setAuthValues({
-        name: "",
-        email: tempUser.user.email,
-        password: "",
-        vendorIntent: "",
-        temporary: "",
-        reissued: false,
-        //
-        confirmation: "",
-        resent: false,
-        username: tempUser.user.username,
-        resetToken: "",
-        sessionToken: tempUser.token,
-        userId: tempUser.user.accountId._id,
-        accountNum: tempUser.user.accountId.accountNum,
-      });
-
-      setSubIntent("paid");
-      updateSubValues();
-
-      if (
-        tempUser.user.accountId.status === 1 ||
-        tempUser.user.accountId.status === 6
-      ) {
-        setDisplay("gateway");
-      } else if (tempUser.user.accountId.status === 5) {
-        setDisplay("selectPlan");
-      } else if (tempUser.user.accountId.status === 8) {
-        window.location.href = "/myaccount";
-      }
-    } else if (initialView === "signin") {
-      if (userStatus === "full") {
-        window.location.href = "/myaccount";
-      }
-      console.log("going to signin");
-      setSubIntent("free");
-      setDisplay("signin");
-    } else if (initialView === "free") {
-      if (userStatus === "full") {
-        window.location.href = "/myaccount";
-      } else if (userStatus === "partial") {
-        console.log("going to signin");
-        setSubIntent("free");
-        setDisplay("signin");
-      } else {
-        console.log("going to signup");
-        setSubIntent("free");
-        setDisplay("signup");
-      }
-    } else if (initialView === "paid") {
-      if (userStatus === "full") {
-        window.location.href = "/myaccount";
-      } else if (userStatus === "partial") {
-        console.log("going to signin");
-        setSubIntent("paid");
-        setDisplay("signin");
-      } else {
-        console.log("going to signup");
-        setSubIntent("paid");
-        setDisplay("signup");
-      }
-    } else if (initialView === "gateway") {
-      if (userStatus === "full") {
-        console.log("going to gateway");
-        let tempUser = JSON.parse(localStorage.getItem("user"));
-        setAuthValues({
-          name: "",
-          email: tempUser.user.email,
-          password: "",
-          vendorIntent: "",
-          temporary: "",
-          reissued: false,
-          confirmation: "",
-          resent: false,
-          username: tempUser.user.username,
-          resetToken: "",
-          sessionToken: tempUser.token,
-          userId: tempUser.user.accountId._id,
-          accountNum: tempUser.user.accountId.accountNum,
-        });
-        console.log("inside gateway useEffect");
-        setDisplay("gateway");
-        setSubIntent("paid");
-        updateSubValues();
-      } else if (userStatus === "partial") {
-        console.log("going to signin");
-        setSubIntent("paid");
-        setDisplay("signin");
-      } else window.location.href = "/myaccount";
-    } else if (initialView === "sub") {
-      if (userStatus === "full") {
-        console.log("going to sub");
-        let tempUser = JSON.parse(localStorage.getItem("user"));
-        setAuthValues({
-          name: "",
-          email: tempUser.user.email,
-          password: "",
-          vendorIntent: "",
-          temporary: "",
-          reissued: false,
-          confirmation: "",
-          resent: false,
-          username: tempUser.user.username,
-          resetToken: "",
-          sessionToken: tempUser.token,
-          userId: tempUser.user.accountId._id,
-          accountNum: tempUser.user.accountId.accountNum,
-        });
-        console.log("inside sub useEffect");
-        setDisplay("selectPlan");
-        setSubIntent("paid");
-        updateSubValues();
-      } else if (userStatus === "partial") {
-        console.log("going to signin");
-        setSubIntent("paid");
-        setDisplay("signin");
-      } else window.location.href = "/myaccount";
-    } else if (initialView === "congrats") {
-      setDisplay("paidCongrats");
-    } else if (!initialView) {
-      console.log("No initial");
-      if (userStatus === "full") {
-        window.location.href = "/myaccount";
-      } else {
-        setSubIntent("free");
-        setDisplay("signin");
+        console.log("initialView: ", initialView, ", NONE");
+        setPaidIntent(false);
+        if (status === 1 || status === 4 || status === 6) {
+          setDisplay("gateway");
+        } else if (status === 5) {
+          setDisplay("selectPlan");
+        } else if (partialStatus) {
+          setDisplay("password");
+        } else {
+          console.log("going to signin");
+          setDisplay("signin");
+        }
       }
     } else {
-      console.log("No initial");
-      if (userStatus === "full") {
-        window.location.href = "/myaccount";
-      } else {
-        setSubIntent("free");
-        setDisplay("signin");
-      }
+      console.log("going to signin");
+      setDisplay("signin");
     }
   }, []);
 
@@ -541,50 +454,6 @@ const Authentication = () => {
     return response;
   };
 
-  const submitForgot = () => {
-    setShowSpinner(true);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/sendcode`;
-    let information = {
-      email: email,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleForgot(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-          redirect: "forgot",
-        });
-        setDisplay("error");
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
   const submitReissue = () => {
     setSubmissionStatus({
       message: "",
@@ -626,106 +495,6 @@ const Authentication = () => {
       });
   };
 
-  const submitTemporary = () => {
-    setShowSpinner(true);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/confirmcode`;
-    let information = {
-      email: email,
-      confirm_code: temporary,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleTemporary(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-          redirect: "temporary",
-        });
-        setDisplay("error");
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
-  const submitSignUp = () => {
-    setShowSpinner(true);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup/email`;
-    let intent;
-    if (subIntent === "paid") {
-      intent = true;
-    } else {
-      intent = false;
-    }
-    let information = {
-      email: email,
-      vendorIntent: intent,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleSignUp(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-          redirect: "signin",
-        });
-        setDisplay("error");
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
   const submitConfirmation = () => {
     setShowSpinner(true);
     setSubmissionStatus({
@@ -738,14 +507,13 @@ const Authentication = () => {
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/confirmcode`;
     let intent;
-    if (subIntent === "paid") {
+    if (paidIntent) {
       intent = true;
     } else {
       intent = false;
     }
     let information = {
       email: email,
-      vendorIntent: intent,
       confirm_code: confirmation,
     };
     let fetchBody = {
@@ -791,7 +559,7 @@ const Authentication = () => {
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/password`;
     let intent;
-    if (subIntent === "paid") {
+    if (paidIntent) {
       intent = true;
     } else {
       intent = false;
@@ -800,7 +568,6 @@ const Authentication = () => {
       email: email,
       passwordToken: resetToken,
       password: password,
-      vendorIntent: intent,
     };
     let fetchBody = {
       method: "POST",
@@ -924,72 +691,12 @@ const Authentication = () => {
       });
   };
 
-  const handleForgot = (data) => {
-    if (data.status) {
-      setAuthValues({
-        name: "",
-        email: data.user.email,
-        password: "",
-        vendorIntent: "",
-        temporary: "",
-        reissued: false,
-        confirmation: "",
-        resent: false,
-        username: "",
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
-      setDisplay("temporary");
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-        redirect: "",
-      });
-      setDisplay("forgot");
-      console.log("ERROR: ", data.error);
-    }
-  };
-
-  const handleTemporary = (data) => {
-    if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data)); // KEEP
-      setAuthValues({
-        name: "",
-        email: "",
-        password: "",
-        vendorIntent: "",
-        temporary: "",
-        reissued: false,
-        confirmation: "",
-        resent: false,
-        username: "",
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
-      redirectUser();
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-        redirect: "",
-      });
-      setDisplay("temporary");
-      console.log("ERROR: ", data.error);
-    }
-  };
-
   const handleReissue = (data) => {
     if (data.status) {
       setAuthValues({
         name: "",
         email: data.user.email,
         password: "",
-        vendorIntent: "",
         temporary: "",
         reissued: true,
         confirmation: "",
@@ -1010,53 +717,12 @@ const Authentication = () => {
     }
   };
 
-  const handleSignUp = (data) => {
-    console.log("data: ", data);
-    console.log("data.status: ", data.status);
-    if (data.status) {
-      console.log("inside true handleSignUp");
-      let intent;
-      if (subIntent === "paid") {
-        intent = true;
-      } else {
-        intent = false;
-      }
-      setAuthValues({
-        name: "",
-        email: data.user.email,
-        password: "",
-        // need to capture vendotIntent field from server response object
-        vendorIntent: intent,
-        temporary: "",
-        reissued: false,
-        confirmation: "",
-        resent: false,
-        username: data.user.username,
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
-      console.log("inside true handleSignUp");
-      console.log("SUCCESS");
-      setDisplay("confirmation");
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-        redirect: "",
-      });
-      setDisplay("signup");
-      console.log("ERROR: ", data.error);
-    }
-  };
-
   const handleConfirmation = (data) => {
     console.log("data: ", data);
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data)); // KEEP
       let intent;
-      if (subIntent === "paid") {
+      if (paidIntent) {
         intent = true;
       } else {
         intent = false;
@@ -1065,8 +731,6 @@ const Authentication = () => {
         name: "",
         email: data.user.email,
         password: "",
-        // need to capture vendotIntent field from server response object
-        vendorIntent: intent,
         temporary: "",
         reissued: false,
         confirmation: "",
@@ -1103,7 +767,6 @@ const Authentication = () => {
         name: "",
         email: email,
         password: "",
-        vendorIntent: "",
         temporary: "",
         reissued: false,
         confirmation: "",
@@ -1115,11 +778,10 @@ const Authentication = () => {
         accountNum: accountNum,
       });
       console.log("SUCCESS");
-      if (subIntent === "paid") {
+      if (paidIntent) {
         setDisplay("gateway");
-      } else if (subIntent === "free") {
+      } else if (!paidIntent) {
         setDisplay("freeCongrats");
-        console.log("CONGRATULATIONS");
       }
     } else {
       setSubmissionStatus({
@@ -1137,7 +799,6 @@ const Authentication = () => {
       name: "",
       email: "",
       password: "",
-      vendorIntent: "",
       temporary: "",
       reissued: false,
       confirmation: "",
@@ -1157,7 +818,6 @@ const Authentication = () => {
         name: "",
         email: data.user.email,
         password: "",
-        vendorIntent: "",
         temporary: "",
         reissued: false,
         confirmation: "",
@@ -1192,24 +852,37 @@ const Authentication = () => {
       [event.target.name]: event.target.value,
     });
   };
+  /*
+  else if (tempData.user.accountId.status === 8) {
+    props.displayChange("paidCongrats");
+  }
+  */
 
   const redirectUser = () => {
     console.log("Redirect user");
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("user") !== null
+    let status = getStatus();
+    if (status === 8) {
+      window.location.href = "/myaccount";
+    } else if (
+      (status === 1 || status === 4 || status === 5 || status === 6) &&
+      initialView === "free"
     ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      if ("token" in tempUser && "user" in tempUser) {
-        window.location.href = "/myaccount";
-      } else {
-        setSubmissionStatus({
-          message: "Server error please try again",
-          error: true,
-          redirect: "",
-        });
-        setDisplay("error");
-      }
+      setDisplay("freeCongrats");
+      setShowSpinner(false);
+    } else if (
+      (status === 1 || status === 4 || status === 6) &&
+      (initialView === "upgrade" || initialView === "paid")
+    ) {
+      setDisplay("gateway");
+      setShowSpinner(false);
+    } else if (
+      status === 5 &&
+      (initialView === "upgrade" || initialView === "paid")
+    ) {
+      setDisplay("selectPlan");
+      setShowSpinner(false);
+    } else if (status === 1 || status === 4 || status === 5 || status === 6) {
+      window.location.href = "/myaccount";
     } else {
       setSubmissionStatus({
         message: "Server error please try again",
@@ -1217,6 +890,7 @@ const Authentication = () => {
         redirect: "",
       });
       setDisplay("error");
+      setShowSpinner(false);
     }
   };
 
@@ -1234,33 +908,8 @@ const Authentication = () => {
           {message}
         </div>
       );
-    } else if (
-      display === "signin" ||
-      display === "forgot" ||
-      display === "signup" ||
-      display === "password"
-    ) {
+    } else if (display === "password") {
       return null;
-    } else if (display === "temporary" && !reissued) {
-      console.log("authValues: ", authValues);
-      return (
-        <Fragment>
-          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter 6-digit code sent to:
-          </div>
-          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
-        </Fragment>
-      );
-    } else if (display === "temporary" && reissued) {
-      console.log("authValues: ", authValues);
-      return (
-        <Fragment>
-          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter 6-digit code resent to:
-          </div>
-          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
-        </Fragment>
-      );
     } else if (display === "confirmation" && !resent) {
       return (
         <Fragment>
@@ -1367,247 +1016,8 @@ const Authentication = () => {
     }
   };
 
-  const forgotForm = () => {
-    const regsuper =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let disabled = !regsuper.test(email);
-    console.log("disabled: ", disabled);
-    let buttonClass;
-    if (disabled) {
-      buttonClass = classes.ButtonBlueOpac;
-    } else {
-      buttonClass = classes.ButtonBlue;
-    }
-
-    return (
-      <Fragment>
-        <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>E-mail Address</label>
-          <input
-            className={classes.InputBox}
-            type="email"
-            name="email"
-            onChange={handleAuthValueChange}
-            onFocus={() => {
-              setSubmissionStatus({
-                message: "",
-                error: false,
-                redirect: "",
-              });
-            }}
-            value={email}
-          />
-          {email && !regsuper.test(email) ? (
-            <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
-                A valid email address is required
-              </span>
-            </div>
-          ) : null}
-        </div>
-
-        <div style={{ paddingTop: "10px" }}>
-          <button
-            className={buttonClass}
-            disabled={disabled}
-            onClick={() => {
-              console.log("Clicking");
-              if (disabled) {
-                setSubmissionStatus({
-                  message: "Invalid email address",
-                  error: true,
-                  redirect: "",
-                });
-              } else {
-                submitForgot();
-              }
-            }}
-          >
-            SUBMIT YOUR EMAIL
-          </button>
-        </div>
-      </Fragment>
-    );
-  };
-
-  //RegExp("\d{6}");
-
-  //const regsuper = \d{6};
-
   const regsuper =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-  const temporaryForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Confirmation code</label>
-        <input
-          className={classes.InputBox}
-          type="text"
-          name="temporary"
-          onChange={handleAuthValueChange}
-          onFocus={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-          }}
-          value={temporary}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            submitTemporary();
-          }}
-        >
-          SUBMIT CONFIRMATION CODE
-        </button>
-      </div>
-    </Fragment>
-  );
-
-  const signUpForm = () => {
-    const regsuper =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let disabled = !regsuper.test(email);
-    console.log("disabled: ", disabled);
-    let buttonClass;
-    if (disabled) {
-      buttonClass = classes.ButtonBlueOpac;
-    } else {
-      buttonClass = classes.ButtonBlue;
-    }
-    return (
-      <Fragment>
-        <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>E-mail Address</label>
-          <input
-            className={classes.InputBox}
-            type="email"
-            name="email"
-            onChange={handleAuthValueChange}
-            onFocus={() => {
-              setSubmissionStatus({ message: "", error: false, redirect: "" });
-            }}
-            value={email}
-          />
-          {email && !regsuper.test(email) ? (
-            <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
-                A valid email address is required
-              </span>
-            </div>
-          ) : null}
-        </div>
-        <div style={{ paddingTop: "10px" }}>
-          <button
-            className={buttonClass}
-            disabled={disabled}
-            onClick={() => {
-              console.log("Clicking");
-              if (disabled) {
-                setSubmissionStatus({
-                  message: "Invalid email address",
-                  error: true,
-                  redirect: "",
-                });
-              } else {
-                submitSignUp();
-              }
-            }}
-          >
-            SUBMIT YOUR EMAIL
-          </button>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
-            columnGap: "20px",
-            textAlign: "center",
-            paddingTop: "20px",
-            paddingBottom: "20px",
-          }}
-        >
-          <hr
-            style={{
-              display: "block",
-              height: "1px",
-              border: "0",
-              borderTop: "1px solid #ccc",
-              margin: "1em 0",
-              padding: "0",
-            }}
-          />
-          <div style={{ paddingTop: "5px" }}>Or sign up with</div>
-          <hr
-            style={{
-              display: "block",
-              height: "1px",
-              border: "0",
-              borderTop: "1px solid #ccc",
-              margin: "1em 0",
-              padding: "0",
-            }}
-          />
-        </div>
-        <div style={{ textAlign: "center" }}>
-          <GoogleAuthentication
-            error={(message) => {
-              if (!message) {
-                setSubmissionStatus({
-                  message: "System error please try again.",
-                  error: true,
-                  redirect: "signin",
-                });
-              } else {
-                setSubmissionStatus({
-                  message: message,
-                  error: true,
-                  redirect: "signin",
-                });
-              }
-            }}
-            success={(data) => {
-              console.log("data: ", data);
-              setAuthValues({
-                name: "",
-                email: data.user.email,
-                password: "",
-                vendorIntent: "",
-                temporary: "",
-                reissued: false,
-                confirmation: "",
-                resent: false,
-                username: data.user.username,
-                resetToken: "",
-                sessionToken: data.token,
-                userId: data.user.userId,
-                accountNum: data.user.accountId.accountNum,
-              });
-              if (subIntent === "paid") {
-                setDisplay("gateway");
-              } else {
-                setDisplay("freeCongrats");
-              }
-            }}
-          />
-        </div>
-      </Fragment>
-    );
-  };
 
   const confirmationForm = (
     <Fragment>
@@ -2184,7 +1594,6 @@ const Authentication = () => {
   // UPDATE WHEN A NEW PLAN IS INTRODUCED BY ADDING A NEW '<RadioForm>' CODE
   // Displays subscription pricing options section based on promo code entered
   const paymentPanel = () => {
-    console.log("subValues info: ", subValues);
     if (
       promoCodeDetails.appliedPromoCode === "OSD20" ||
       promoCodeDetails.appliedPromoCode === "HEAMEDIAGROUP" ||
@@ -2707,7 +2116,6 @@ const Authentication = () => {
   );
 
   const errorForm = () => {
-    console.log("redirect: ", redirect);
     return (
       <Fragment>
         <div style={{ paddingTop: "10px" }}>
@@ -2770,51 +2178,6 @@ const Authentication = () => {
     </div>
   );
 
-  const alternateTemporaryInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-            submitReissue();
-          }}
-        >
-          Resend code
-        </button>
-      </div>
-      <div style={{ textAlign: "right" }}>
-        Back to{" "}
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-            setDisplay("signin");
-          }}
-        >
-          Sign In
-        </button>
-      </div>
-    </div>
-  );
-
-  const alternateSignUpInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        Back to{" "}
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-            setDisplay("signin");
-          }}
-        >
-          Sign In
-        </button>
-      </div>
-    </div>
-  );
-
   const alternateConfirmationInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
@@ -2845,7 +2208,7 @@ const Authentication = () => {
           spinner={showSpinner}
           inputChange={handleAuthValueChange}
           spinnerChange={(value) => setShowSpinner(value)}
-          modalChange={(modal) => setDisplay(modal)}
+          displayChange={(display) => setDisplay(display)}
           submission={(input) => {
             setSubmissionStatus(input);
           }}
@@ -2861,57 +2224,52 @@ const Authentication = () => {
 
   const forgotDisplay = () => {
     if (display === "forgot") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={{ height: "240px" }}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas}>
-            <div className={classes.Header}>
-              <div>Trouble logging in?</div>
-            </div>
-            <div>
-              {showDetail()}
-              {forgotForm()}
-              {alternateSignUpInputs}
-            </div>
-          </div>
-        );
-      }
+      return (
+        <ForgotDisplay
+          //close={closeModal} NOT IN AUTH
+          email={email}
+          error={error}
+          //expired={expired} NOT IN AUTH
+          authOrigin={true}
+          message={message}
+          spinner={showSpinner}
+          inputChange={handleAuthValueChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          displayChange={(display) => setDisplay(display)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          values={(input) => setAuthValues(input)}
+          resetValues={() => resetValues()}
+        ></ForgotDisplay>
+      );
     } else {
       return null;
     }
   };
 
   const temporaryDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "310px" };
-    }
     if (display === "temporary") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <div className={classes.Header}>
-              <div>Enter confirmation code.</div>
-            </div>
-            <div>
-              {showDetail()}
-              {temporaryForm}
-              {alternateTemporaryInputs}
-            </div>
-          </div>
-        );
-      }
+      return (
+        <TemporaryDisplay
+          //close={closeModal} NOT IN AUTH
+          email={email}
+          reissued={reissued}
+          temporary={temporary}
+          message={message}
+          error={error}
+          authOrigin={true}
+          spinner={showSpinner}
+          inputChange={handleAuthValueChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          displayChange={(modal) => setDisplay(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          values={(input) => setAuthValues(input)}
+          submit={() => redirectUser()}
+        ></TemporaryDisplay>
+      );
     } else {
       return null;
     }
@@ -2919,26 +2277,27 @@ const Authentication = () => {
 
   const signUpDisplay = () => {
     if (display === "signup") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={{ height: "350px" }}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas}>
-            <div className={classes.Header}>
-              <div>Tell us about yourself.</div>
-            </div>
-            <div>
-              {showDetail()}
-              {signUpForm()}
-              {alternateSignUpInputs}
-            </div>
-          </div>
-        );
-      }
+      return (
+        <SignUpDisplay
+          //close={closeModal} NOT IN AUTH
+          email={email}
+          error={error}
+          authOrigin={true}
+          //expired={expired} NOT IN AUTH
+          message={message}
+          password={password}
+          spinner={showSpinner}
+          inputChange={handleAuthValueChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          displayChange={(modal) => setDisplay(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          values={(input) => setAuthValues(input)}
+          resetValues={() => resetValues()}
+          submit={() => redirectUser()}
+        ></SignUpDisplay>
+      );
     } else {
       return null;
     }
@@ -3066,7 +2425,6 @@ const Authentication = () => {
   };
 
   const paidCongratsDisplay = () => {
-    console.log("Inside paidCongratsDisplay");
     let height = {};
     if (!error) {
       height = { height: "240px" };
@@ -3160,6 +2518,7 @@ const Authentication = () => {
       return (
         <OpennodeDisplay
           authOrigin={true}
+          //close={closeModal} NOT IN AUTH
           error={error}
           message={message}
           apiKey={subValues.opennode_invoice_API_KEY}
@@ -3170,14 +2529,24 @@ const Authentication = () => {
           spinner={showSpinner}
           inputChange={handleSubValueChange}
           spinnerChange={(value) => setShowSpinner(value)}
-          modalChange={(modal) => setDisplay(modal)}
+          displayChange={(modal) => setDisplay(modal)}
           submission={(input) => {
             setSubmissionStatus(input);
           }}
           radioChange={(event, value, message) => {
             radioChangeSubValues(event, value, message);
           }}
-          redirect={() => redirectUser()}
+          submit={() => {
+            if (getStatus() === 8) {
+              setDisplay("paidCongrats");
+            } else if (getStatus() === 5) {
+              setDisplay("selectPlan");
+            } else if (
+              (getStatus() === 1, getStatus() === 4, getStatus() === 6)
+            ) {
+              setDisplay("gateway");
+            } else setDisplay("signin");
+          }}
         ></OpennodeDisplay>
       );
     } else {

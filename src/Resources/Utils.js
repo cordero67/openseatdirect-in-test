@@ -8,7 +8,7 @@ export const getStatus = () => {
 
   if (!isNaN(status)) return status;
 
-  status = JSON.parse(localStorage.getItem("user"))?.accountId?.status;
+  status = JSON.parse(localStorage.getItem("user"))?.user?.accountId?.status;
 
   if (isNaN(status)) {
     return 0;

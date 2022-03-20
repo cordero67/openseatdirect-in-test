@@ -1,0 +1,144 @@
+.Modal {
+  position: fixed;
+  z-index: 700;
+  background-color: white;
+  width: 100%;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-right: 5%;
+  padding-left: 5%;
+  top: 10%;
+  text-align: center;
+  box-sizing: border-box;
+  transition: all 0.6s ease-out;
+  -webkit-transition: all 0.6s ease-out;
+  -moz-transition: all 0.6s ease-out;
+  -ms-transition: all 0.6s ease-out;
+  -o-transition: all 0.6s ease-out;
+}
+.BlankCanvas {
+  background-color: white;
+  margin: auto;
+  width: auto;
+  height: auto;
+  z-index: 100;
+  padding-left: 0px;
+  padding-left: 0px;
+  text-align: left;
+  overflow-y: auto;
+}
+.Header {
+  display: grid;
+  grid-template-columns: 90% 10%;
+  column-gap: "0px";
+  font-size: 24px;
+  font-weight: 600;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.Alternates {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: "0px";
+  font-size: 14px;
+  padding-top: 20px;
+}
+.InputBox {
+  border: 1px solid #8DADD4;
+  border-radius: 0px;
+  background-color: #EFF3FA;
+  width: 100%;
+  height: 40px;
+  padding-left: 10px;
+  font-size: 14px;
+}
+.OSDBlueButton {
+  background-color: #2F5596;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+}
+.OSDBlueButton:hover {
+  background-color: #1D355D;
+  border: 1px solid #000;
+}
+.OSDBlueButton:active {
+  background-color: #14233E;
+  border: 1px solid #000;
+}
+
+.ButtonGrey {
+  height: 40px;
+  width: 100%;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+  font-size: 14px;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.CancelButton {
+  border: 1px solid #000;
+  border-radius: 0px;
+  color: #fff;
+  background-color: #999999;
+  width: 340px;
+  height: 40px;
+  font-size: 14px;
+}
+.CancelButton:hover {
+  background-color: #858585;
+  border: 1px solid #000;
+}
+.CancelButton:active {
+  background-color: #707070;
+  border: 1px solid #000;
+}
+.BlueText {
+  font-size: 14px;
+  text-align: left;
+  font-weight: 600;
+  padding-left: 0px;
+  color: #0000FF;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
+.BlueText:hover {
+  color: #0000CC;
+}
+
+@media (min-width: 500px) {
+  .Modal {
+    width: 500px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 79px;
+    padding-right: 79px;
+    left: calc(50% - 250px);
+  }
+  .BlankCanvas {
+    padding-left: calc(50% - 170px);
+    padding-left: calc(50% - 170px);
+  }
+  .InputBox {
+    width: 340px;
+  }
+  .SubmitButton {
+    width: 340px;
+  }
+}

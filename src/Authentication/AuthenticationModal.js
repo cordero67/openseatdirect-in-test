@@ -13,7 +13,6 @@ import classes from "./AuthenticationModal.module.css";
 
 const Authentication = (props) => {
   const [values, setValues] = useState({
-    name: "",
     email: "",
     password: "",
     temporary: "",
@@ -28,7 +27,6 @@ const Authentication = (props) => {
   });
 
   const {
-    name,
     email,
     password,
     temporary,
@@ -49,13 +47,12 @@ const Authentication = (props) => {
 
   const { message, error } = submissionStatus;
 
-  const [modalSetting, setModalSetting] = useState(props.start); // signin, forgot, temporary, signup, confirmation, password, username, error
+  const [modalDisplay, setModalDisplay] = useState(props.start); // signin, forgot, temporary, signup, confirmation, password, username, error
 
   const [showSpinner, setShowSpinner] = useState(false);
 
   const resetValues = () => {
     setValues({
-      name: "",
       email: "",
       password: "",
       temporary: "",
@@ -83,12 +80,12 @@ const Authentication = (props) => {
       message: "",
       error: false,
     });
-    setModalSetting(props.start);
+    setModalDisplay(props.start);
     props.closeModal();
   };
 
   const signInDisplay = () => {
-    if (modalSetting === "signin") {
+    if (modalDisplay === "signin") {
       return (
         <SignInDisplay
           close={closeModal}
@@ -101,7 +98,7 @@ const Authentication = (props) => {
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
-          modalChange={(modal) => setModalSetting(modal)}
+          displayChange={(modal) => setModalDisplay(modal)}
           submission={(input) => {
             setSubmissionStatus(input);
           }}
@@ -116,18 +113,19 @@ const Authentication = (props) => {
   };
 
   const forgotDisplay = () => {
-    if (modalSetting === "forgot") {
+    if (modalDisplay === "forgot") {
       return (
         <ForgotDisplay
           close={closeModal}
           email={email}
           error={error}
           expired={expired}
+          authOrigin={false}
           message={message}
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
-          modalChange={(modal) => setModalSetting(modal)}
+          displayChange={(modal) => setModalDisplay(modal)}
           submission={(input) => {
             setSubmissionStatus(input);
           }}
@@ -141,7 +139,7 @@ const Authentication = (props) => {
   };
 
   const temporaryDisplay = () => {
-    if (modalSetting === "temporary") {
+    if (modalDisplay === "temporary") {
       console.log("TEMPORARY");
       return (
         <TemporaryDisplay
@@ -151,10 +149,11 @@ const Authentication = (props) => {
           temporary={temporary}
           message={message}
           error={error}
+          authOrigin={false}
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
-          modalChange={(modal) => setModalSetting(modal)}
+          displayChange={(modal) => setModalDisplay(modal)}
           submission={(input) => {
             setSubmissionStatus(input);
           }}
@@ -168,19 +167,20 @@ const Authentication = (props) => {
   };
 
   const signUpDisplay = () => {
-    if (modalSetting === "signup") {
+    if (modalDisplay === "signup") {
       return (
         <SignUpDisplay
           close={closeModal}
           email={email}
           error={error}
+          authOrigin={false}
           expired={expired}
           message={message}
           password={password}
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
-          modalChange={(modal) => setModalSetting(modal)}
+          displayChange={(modal) => setModalDisplay(modal)}
           submission={(input) => {
             setSubmissionStatus(input);
           }}
@@ -195,7 +195,7 @@ const Authentication = (props) => {
   };
 
   const confirmationDisplay = () => {
-    if (modalSetting === "confirmation") {
+    if (modalDisplay === "confirmation") {
       return (
         <ConfirmationDisplay
           close={closeModal}
@@ -208,7 +208,7 @@ const Authentication = (props) => {
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
-          modalChange={(modal) => setModalSetting(modal)}
+          displayChange={(modal) => setModalDisplay(modal)}
           submission={(input) => {
             setSubmissionStatus(input);
           }}
@@ -221,7 +221,7 @@ const Authentication = (props) => {
   };
 
   const passwordDisplay = () => {
-    if (modalSetting === "password") {
+    if (modalDisplay === "password") {
       return (
         <PasswordDisplay
           close={closeModal}
@@ -234,7 +234,7 @@ const Authentication = (props) => {
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
-          modalChange={(modal) => setModalSetting(modal)}
+          displayChange={(modal) => setModalDisplay(modal)}
           submission={(input) => {
             setSubmissionStatus(input);
           }}
@@ -248,7 +248,7 @@ const Authentication = (props) => {
   };
 
   const errorDisplay = () => {
-    if (modalSetting === "error") {
+    if (modalDisplay === "error") {
       return <ErrorDisplay close={closeModal}></ErrorDisplay>;
     } else {
       return null;

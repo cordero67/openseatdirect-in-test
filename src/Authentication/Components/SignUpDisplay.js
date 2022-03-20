@@ -52,9 +52,7 @@ const SignUpDisplay = (props) => {
           message: "Server down please try again",
           error: true,
         });
-        props.modalChange("error");
-      })
-      .finally(() => {
+        props.displayChange("error");
         props.spinnerChange(false);
       });
   };
@@ -66,7 +64,8 @@ const SignUpDisplay = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.modalChange("signin");
+            props.submission({ message: "", error: false });
+            props.displayChange("signin");
           }}
         >
           Sign In
@@ -86,7 +85,6 @@ const SignUpDisplay = (props) => {
     } else {
       buttonClass = classes.SubmitButton;
     }
-
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
@@ -98,7 +96,7 @@ const SignUpDisplay = (props) => {
             onChange={props.inputChange}
             value={props.email}
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              props.submission({ message: "", error: false });
             }}
           />
           {props.email && !regsuper.test(props.email) ? (
@@ -125,7 +123,6 @@ const SignUpDisplay = (props) => {
                 props.submission({
                   message: "Invalid email address",
                   error: true,
-                  redirect: "",
                 });
               } else {
                 submitSignUp();
@@ -171,7 +168,7 @@ const SignUpDisplay = (props) => {
         </div>
         <div style={{ textAlign: "center" }}>
           <GoogleAuthentication
-            authOrigin={false}
+            authOrigin={props.authOrigin}
             error={(message) => {
               if (!message) {
                 props.submission({
@@ -191,7 +188,6 @@ const SignUpDisplay = (props) => {
                 name: "",
                 email: data.user.email,
                 password: "",
-                vendorIntent: "",
                 temporary: "",
                 reissued: false,
                 confirmation: "",
@@ -214,7 +210,6 @@ const SignUpDisplay = (props) => {
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data));
       props.values({
-        name: "",
         email: data.user.email,
         password: "",
         temporary: "",
@@ -226,25 +221,35 @@ const SignUpDisplay = (props) => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
-      props.modalChange("confirmation");
+      props.displayChange("confirmation");
+      props.spinnerChange(false);
     } else {
       props.submission({
         message: data.error,
         error: true,
       });
-      props.modalChange("signup");
+      props.displayChange("signup");
+      props.spinnerChange(false);
     }
   };
 
   const showError = () => {
     if (props.error) {
       return (
-        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
+        <div
+          style={{
+            color: "red",
+            fontSize: "14px",
+            lineHeight: "25px",
+            paddingBottom: "20px",
+          }}
+        >
           {props.message}
         </div>
       );
-    } else if (props.expired) {
+    } else if (props.expired && !props.authOrigin) {
       return (
         <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
           Timer has expired, please resubmit your email:
@@ -255,15 +260,9 @@ const SignUpDisplay = (props) => {
     }
   };
 
-  if (props.spinner) {
-    return (
-      <div className={classes.BlankCanvas} style={{ height: "363px" }}>
-        <Spinner />
-      </div>
-    );
-  } else {
-    return (
-      <div className={classes.BlankCanvas}>
+  const header = () => {
+    if (props.authOrigin !== true) {
+      return (
         <div className={classes.Header}>
           <div>Tell us about yourself</div>
           <div style={{ textAlign: "right" }}>
@@ -282,6 +281,22 @@ const SignUpDisplay = (props) => {
             />
           </div>
         </div>
+      );
+    } else {
+      return <div className={classes.Header}>Tell us about yourself</div>;
+    }
+  };
+
+  if (props.spinner) {
+    return (
+      <div className={classes.BlankCanvas} style={{ height: "363px" }}>
+        <Spinner />
+      </div>
+    );
+  } else {
+    return (
+      <div className={classes.BlankCanvas}>
+        {header()}
         <div>
           {showError()}
           {signUpForm()}

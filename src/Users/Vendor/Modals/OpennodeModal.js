@@ -1,10 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import OpennodeDisplay from "../../../Authentication/Components/OpennodeDisplay";
 
-import { API } from "../../../config";
-
 import Backdrop from "./Backdrop";
-import classes from "./ResetModal.module.css";
+import classes from "./OpennodeModal.module.css";
 
 const Opennode = (props) => {
   console.log("props: ", props);
@@ -22,37 +20,6 @@ const Opennode = (props) => {
     opennode_dev: "", // Boolean: dev=true for testnet BTC
     accountNum: "",
   });
-
-  const [authValues, setAuthValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-    vendorIntent: "",
-    temporary: "",
-    reissued: false,
-    confirmation: "",
-    resent: false,
-    username: "",
-    resetToken: "",
-    sessionToken: "",
-    userId: "",
-    accountNum: "",
-  });
-
-  const {
-    name,
-    email,
-    password,
-    temporary,
-    reissued,
-    confirmation,
-    resent,
-    username,
-    resetToken,
-    sessionToken,
-    userId,
-    accountNum,
-  } = authValues;
 
   useEffect(() => {
     if (
@@ -94,29 +61,7 @@ const Opennode = (props) => {
     return (
       <OpennodeDisplay
         authOrigin={false}
-        close={() => {
-          setSubmissionStatus({
-            message: "",
-            error: false,
-          });
-          if (
-            typeof window !== "undefined" &&
-            localStorage.getItem(`user`) !== null
-          ) {
-            let tempUser = JSON.parse(localStorage.getItem("user"));
-
-            let tempValues = { ...subValues };
-            tempValues.opennode_invoice_API_KEY =
-              tempUser.user.accountId.opennode_invoice_API_KEY; // vendors opennode api key
-            tempValues.opennode_auto_settle =
-              tempUser.user.accountId.opennode_auto_settle; // vendors request convesion to USD or keep in BTC?
-            tempValues.opennode_dev = tempUser.user.accountId.opennode_dev;
-
-            console.log("tempValues: ", tempValues);
-            setSubValues(tempValues);
-          }
-          props.closeModal();
-        }}
+        close={() => props.closeModal()}
         error={error}
         message={message}
         apiKey={subValues.opennode_invoice_API_KEY}
@@ -127,14 +72,16 @@ const Opennode = (props) => {
         spinner={showSpinner}
         inputChange={handleSubValueChange}
         spinnerChange={(value) => setShowSpinner(value)}
-        ////modalChange={(modal) => setDisplay(modal)}
+        ////displayChange={(modal) => setDisplay(modal)} NOT IN MODAL
         submission={(input) => {
           setSubmissionStatus(input);
         }}
         radioChange={(event, value, message) => {
           radioChangeSubValues(event, value, message);
         }}
-        ////redirect={() => redirectUser()}
+        submit={() => {
+          props.closeModal();
+        }}
       ></OpennodeDisplay>
     );
     ////} else {

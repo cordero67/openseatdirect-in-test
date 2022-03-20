@@ -50,7 +50,7 @@ const ConfirmationDisplay = (props) => {
           message: "Server is down, please try later",
           error: true,
         });
-        props.modalChange("error");
+        props.displayChange("error");
       });
   };
 
@@ -118,7 +118,7 @@ const ConfirmationDisplay = (props) => {
           message: "Server down please try again",
           error: true,
         });
-        props.modalChange("error");
+        props.displayChange("error");
       })
       .finally(() => {
         props.spinnerChange(false);
@@ -211,13 +211,13 @@ const ConfirmationDisplay = (props) => {
         sessionToken: "",
         userId: "",
       });
-      props.modalChange("password");
+      props.displayChange("password");
     } else {
       props.submission({
         message: data.error,
         error: true,
       });
-      props.modalChange("confirmation");
+      props.displayChange("confirmation");
     }
   };
 

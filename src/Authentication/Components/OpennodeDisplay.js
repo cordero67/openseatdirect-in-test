@@ -43,47 +43,46 @@ const OpennodeDisplay = (props) => {
   };
 
   const submitOpennode = () => {
-    /*
     props.spinnerChange(true);
-    props.submission({
-      message: "",
-      error: false,
-    });
+    props.submission({ message: "", error: false });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/email`;
-    let information = {
-      email: props.email,
-      password: props.password,
-    };
-    let fetchBody = {
+    const authstring = `Bearer ${props.sessionToken}`;
+    myHeaders.append("Authorization", authstring);
+    let url = `${API}/accounts/${props.accountNum}`;
+    let fetcharg = {
       method: "POST",
       headers: myHeaders,
-      body: JSON.stringify(information),
+      body: JSON.stringify({
+        paymentGatewayType2: "Opennode",
+        opennode_invoice_API_KEY: props.apiKey,
+        opennode_auto_settle: props.settle,
+        opennode_dev: props.dev,
+      }),
     };
-    console.log("fetching with: ", url, fetchBody);
-    fetch(url, fetchBody)
+    console.log("fetching with: ", url, fetcharg);
+    fetch(url, fetcharg)
       .then(handleErrors)
       .then((response) => {
         console.log("then response: ", response);
         return response.json();
       })
       .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleSignIn(data);
+        console.log("fetch return got back data on Opennode:", data);
+        handleOpennode(data);
       })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
+      .catch((err) => {
+        console.log(err);
         props.submission({
           message: "Server down please try again",
           error: true,
         });
-        props.modalChange("error");
-        props.spinnerChange(false);
+        props.displayChange("error");
       })
-      .finally(() => {});
-      */
+      .finally(() => {
+        props.spinnerChange(false);
+      });
   };
 
   const displayButtons = () => {
@@ -94,7 +93,7 @@ const OpennodeDisplay = (props) => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
-                props.modalChange("gateway");
+                props.displayChange("gateway");
               }}
             >
               BACK TO GATEWAY SELECTION
@@ -104,7 +103,7 @@ const OpennodeDisplay = (props) => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
-                props.redirect();
+                props.submit();
               }}
             >
               STAY WITH FREE FOREVER PLAN
@@ -158,90 +157,8 @@ const OpennodeDisplay = (props) => {
         <button
           className={classes.ButtonBlue}
           disabled={!props.apiKey}
-          //disabled={false}
           onClick={() => {
-            console.log("Inside submitOpennode");
-            props.spinnerChange(true);
-            props.submission({ message: "", error: false, redirect: "" });
-            // api static variables
-            let myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            const authstring = `Bearer ${props.sessionToken}`;
-            myHeaders.append("Authorization", authstring);
-
-            let url = `${API}/accounts/${props.accountNum}`;
-            console.log("url: ", url);
-            let fetcharg = {
-              method: "POST",
-              headers: myHeaders,
-              body: JSON.stringify({
-                paymentGatewayType2: "Opennode",
-                opennode_invoice_API_KEY: props.apiKey,
-                opennode_auto_settle: props.settle,
-                opennode_dev: props.dev,
-              }),
-            };
-            console.log("props.apiKey: ", props.apiKey);
-            console.log("props.settle: ", props.settle);
-            console.log("props.dev: ", props.dev);
-            console.log("props.sessionToken: ", props.sessionToken);
-            console.log("props.accountNum: ", props.accountNum);
-
-            console.log("fetching with: ", url, fetcharg);
-            fetch(url, fetcharg)
-              .then(handleErrors)
-              .then((response) => {
-                console.log("then response: ", response);
-                return response.json();
-              })
-              .then((data) => {
-                console.log("fetch return got back data on Opennode:", data);
-                //handleConfirmation
-                if (data.status) {
-                  console.log("INSIDE data.status");
-                  let tempData = JSON.parse(localStorage.getItem("user"));
-                  console.log("tempData: ", tempData);
-                  tempData.user.accountId = data.result;
-                  console.log("after tempData");
-                  localStorage.setItem("user", JSON.stringify(tempData));
-                  //updatePageView();
-
-                  console.log("props.authOrigin: ", props.authOrigin);
-                  if (!props.authOrigin) {
-                    console.log("About to close");
-                    props.close();
-                  } else if (tempData.user.accountId.status === 8) {
-                    props.modalChange("paidCongrats");
-                  } else if (tempData.user.accountId.status === 5) {
-                    props.modalChange("selectPlan");
-                  } else {
-                    props.modalChange("gateway");
-                  }
-                } else {
-                  // this is a friendly error
-                  let errmsg =
-                    "unable to validate Opennode API Key and secret at this time";
-                  if (data.message) {
-                    console.log("data.message exist");
-                    console.log("data.message ", data.message);
-                    errmsg = data.message;
-                  }
-                  console.log("errmsg: ", errmsg);
-                  props.submission({ message: errmsg, error: true });
-                  //props.modalChange("error");
-                }
-              })
-              .catch((err) => {
-                console.log(err);
-                props.submission({
-                  message: "Server down please try again",
-                  error: true,
-                });
-                props.modalChange("error");
-              })
-              .finally(() => {
-                props.spinnerChange(false);
-              });
+            submitOpennode();
           }}
         >
           SUBMIT YOUR OPENNODE DETAILS
@@ -251,39 +168,41 @@ const OpennodeDisplay = (props) => {
     </Fragment>
   );
 
-  const handleSignIn = (data) => {
-    /*
+  const handleOpennode = (data) => {
+    console.log("data: ", data);
     if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
-      props.values({
-        name: "",
-        email: "",
-        password: "",
-        vendorIntent: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        username: "",
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
+      console.log("INSIDE data.status");
+      let tempData = JSON.parse(localStorage.getItem("user"));
+      tempData.user.accountId = data.result;
+      localStorage.setItem("user", JSON.stringify(tempData));
+      /*
+      if (!props.authOrigin) {
+        console.log("About to close");
+        props.close();
+      } else if (tempData.user.accountId.status === 8) {
+        props.displayChange("paidCongrats");
+      } else if (tempData.user.accountId.status === 5) {
+        props.displayChange("selectPlan");
+      } else {
+        props.displayChange("gateway");
+      }
+      */
       props.submit();
     } else {
-      props.submission({
-        message: data.error,
-        error: true,
-      });
-      props.modalChange("signin");
-      props.spinnerChange(false);
+      let errmsg =
+        "unable to validate Opennode API Key and secret at this time";
+      if (data.message) {
+        console.log("data.message exist");
+        console.log("data.message ", data.message);
+        errmsg = data.message;
+      }
+      console.log("errmsg: ", errmsg);
+      props.submission({ message: errmsg, error: true });
+      //props.displayChange("error");
     }
-    */
   };
 
-  const showDetail = () => {
+  const showError = () => {
     console.log("props.error, ", props.error);
     console.log("props.message, ", props.message);
     if (props.error) {
@@ -308,7 +227,7 @@ const OpennodeDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.Header}>
-          <div>Enter Opennode Account Info.</div>
+          <div>Enter Opennode Information</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
               style={{
@@ -342,7 +261,7 @@ const OpennodeDisplay = (props) => {
       <div className={classes.BlankCanvas}>
         {header()}
         <div>
-          {showDetail()}
+          {showError()}
           {opennodeForm}
         </div>
       </div>
