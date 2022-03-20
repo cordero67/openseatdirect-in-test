@@ -132,7 +132,7 @@ const Account = (props) => {
   };
 
   const paymentDetails = () => {
-    if (getStatus() !== 8 && userInfo.paymentGateway) {
+    if (getStatus() === 8 && userInfo.paymentGateway) {
       return (
         <div>
           Payment Gateway: {userInfo.paymentGateway}{" "}
@@ -166,7 +166,7 @@ const Account = (props) => {
   };
 
   const cryptoDetails = () => {
-    if (getStatus() !== 8 && userInfo.cryptoGateway) {
+    if (getStatus() === 8 && userInfo.cryptoGateway) {
       return (
         <div>
           Crypto Gateway: {userInfo.cryptoGateway}{" "}
