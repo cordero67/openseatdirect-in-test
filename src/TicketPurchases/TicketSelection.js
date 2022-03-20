@@ -99,7 +99,16 @@ const TicketSelection = () => {
       });
     }
 
-    eventData(queryString.parse(window.location.search).eventID);
+  //
+  let eventNum_url = queryString.parse(window.location.search).eventID;
+  if (eventNum_url) {  // we can get to this page from the web
+      localStorage.setItem(`eventNum`, eventNum_url); // set in case next step fails
+      eventData(eventNum_url);
+  } else {   // assume eventNum is preset in localStorage if not in URL.
+    let eventNumStored = JSON.parse(localStorage.getItem("eventNum"));
+    eventData(eventNumStored);
+  };
+
 
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
@@ -214,7 +223,6 @@ const TicketSelection = () => {
     let event = JSON.parse(localStorage.getItem("eventNum"));
     localStorage.removeItem(`cart_${event}`);
     localStorage.removeItem(`image_${event}`);
-    localStorage.removeItem(`eventNum`);
   };
   // LOOKS GOOD
   const handleErrors = (response) => {

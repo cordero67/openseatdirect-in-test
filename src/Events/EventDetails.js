@@ -6,7 +6,6 @@ import ReactHtmlParser from "html-react-parser";
 import { getEventData } from "./apiEvents";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
-//
 
 import classes from "./EventDetails.module.css";
 
@@ -19,10 +18,25 @@ const EventDetail = () => {
   const [isSuccessfull, setIsSuccessfull] = useState(true);
   const [showLargerDoublePane, setShowLargerDoublePane] = useState(false);
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
-  //
+
 
   useEffect(() => {
-    eventData(queryString.parse(window.location.search).eventID);
+    console.log ("MM WINDOW = ", window.location.pathname);
+    console.log ("MM WINDOW2 = ",this?.props);
+
+    let eventNum_url = queryString.parse(window.location.search).eventID;
+    if (!eventNum_url) {
+      var urlparts = window?.location?.pathname?.split("/");
+      console.log ("urlaprts=", urlparts);
+      eventNum_url = urlparts.pop();
+    };
+    if (eventNum_url) {  // we can get to this page from the web
+        localStorage.setItem(`eventNum`, eventNum_url); // set in case next step fails
+        eventData(eventNum_url);
+    } else {   // assume eventNum is preset in localStorage if not in URL.
+      let eventNumStored = JSON.parse(localStorage.getItem("eventNum"));
+      eventData(eventNumStored);
+    };
     stylingUpdate(window.innerWidth, window.innerHeight);
   }, []);
 

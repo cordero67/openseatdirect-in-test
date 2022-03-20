@@ -195,7 +195,7 @@ const SignInDisplay = (props) => {
               padding: "0",
             }}
           />
-          <div style={{ paddingTop: "5px" }}>Or sign in with</div>
+          <div style={{ paddingTop: "5px" }}>or continue with</div>
           <hr
             style={{
               display: "block",
@@ -238,7 +238,7 @@ const SignInDisplay = (props) => {
                 resetToken: "",
                 sessionToken: data.token,
                 userId: data.user.userId,
-                accountNum: data.user.accountId.accountNum,
+                accountNum: data.user?.accountId?.accountNum,
               });
               props.submit();
             }}

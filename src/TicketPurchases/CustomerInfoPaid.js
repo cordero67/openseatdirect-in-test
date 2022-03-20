@@ -255,7 +255,6 @@ const CustomerInfo = (props) => {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       localStorage.removeItem(`cart_${event}`);
       localStorage.removeItem(`image_${event}`);
-      localStorage.removeItem(`eventNum`);
       window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
       return (
         <div

@@ -277,6 +277,23 @@ const Routes = () => {
       />
 
       <Route
+        path="/en/"
+        render={(routeProps) => (
+          <Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <EventDetails />
+            <Footer></Footer>
+          </Fragment>
+        )}
+      />
+
+
+      <Route
         path="/edNEW/"
         render={(routeProps) => (
           <Fragment>
