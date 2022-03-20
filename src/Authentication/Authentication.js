@@ -249,6 +249,25 @@ const Authentication = () => {
     }
   };
 
+  const updateAuthValues = () => {
+    let tempUser = JSON.parse(localStorage.getItem("user"));
+    localStorage.setItem("user", JSON.stringify(tempUser));
+    setAuthValues({
+      name: "",
+      email: tempUser.user.email,
+      password: "",
+      temporary: "",
+      reissued: false,
+      confirmation: "",
+      resent: false,
+      username: tempUser.user.username,
+      resetToken: "",
+      sessionToken: tempUser.token,
+      userId: tempUser.user.accountId.userId,
+      accountNum: tempUser.user.accountId.accountNum,
+    });
+  };
+
   useEffect(() => {
     console.log("initialView: ", initialView);
     let userStatus = "none";
@@ -271,8 +290,10 @@ const Authentication = () => {
         console.log("initialView: ", initialView, ", upgrade");
         setPaidIntent(true);
         if (status === 1 || status === 4 || status === 6) {
+          updateAuthValues();
           setDisplay("gateway");
         } else if (status === 5) {
+          updateAuthValues();
           setDisplay("selectPlan");
         } else if (partialStatus) {
           setDisplay("password");
@@ -284,8 +305,10 @@ const Authentication = () => {
         console.log("initialView: ", initialView, ", free");
         setPaidIntent(false);
         if (status === 1 || status === 4 || status === 6) {
+          updateAuthValues();
           setDisplay("gateway");
         } else if (status === 5) {
+          updateAuthValues();
           setDisplay("selectPlan");
         } else if (partialStatus) {
           setDisplay("password");
@@ -296,8 +319,10 @@ const Authentication = () => {
         console.log("initialView: ", initialView, ", paid");
         setPaidIntent(true);
         if (status === 1 || status === 4 || status === 6) {
+          updateAuthValues();
           setDisplay("gateway");
         } else if (status === 5) {
+          updateAuthValues();
           setDisplay("selectPlan");
         } else if (partialStatus) {
           setDisplay("password");
@@ -308,8 +333,10 @@ const Authentication = () => {
         console.log("initialView: ", initialView, ", NONE");
         setPaidIntent(false);
         if (status === 1 || status === 4 || status === 6) {
+          updateAuthValues();
           setDisplay("gateway");
         } else if (status === 5) {
+          updateAuthValues();
           setDisplay("selectPlan");
         } else if (partialStatus) {
           setDisplay("password");
