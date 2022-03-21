@@ -5,6 +5,7 @@ import ReactHtmlParser from "html-react-parser";
 
 import { API } from "../config.js";
 import { getEventData, getEventImage } from "./Resources/apiCore";
+import {isValidEventNum} from "../utils/validators";
 
 //gatewayClientID: event.accountId.paypalExpress_client_id,
 //paypalClientID: event.accountId.paypalExpress_client_id,
@@ -98,10 +99,10 @@ const TicketSelection = () => {
         userId: tempUser.user._id,
       });
     }
+////
 
-  //
   let eventNum_url = queryString.parse(window.location.search).eventID;
-  if (eventNum_url) {  // we can get to this page from the web
+  if (isValidEventNum(eventNum_url)) {  // we can get to this page from the web
       localStorage.setItem(`eventNum`, eventNum_url); // set in case next step fails
       eventData(eventNum_url);
   } else {   // assume eventNum is preset in localStorage if not in URL.

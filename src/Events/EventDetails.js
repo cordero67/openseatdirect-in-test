@@ -2,6 +2,8 @@ import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
 import dateFormat from "dateformat";
 import ReactHtmlParser from "html-react-parser";
+//https://github.com/bvaughn/react-error-boundary
+import {ErrorBoundary} from 'react-error-boundary'
 
 import { getEventData } from "./apiEvents";
 
@@ -9,36 +11,81 @@ import Spinner from "../components/UI/Spinner/SpinnerNew";
 
 import classes from "./EventDetails.module.css";
 
+import {isValidEventNum} from "../utils/validators";
+import { API } from "../config";
+import {useOurApi} from "../utils/useOurApi";
+
+
 // defines an event's NON ticket type specific information
 let eventDetails;
 
 const EventDetail = () => {
   // defines data loading control variables
-  const [isLoadingEvent, setIsLoadingEvent] = useState(true);
+//  const [isLoadingEvent, setIsLoadingEvent] = useState(true);
   const [isSuccessfull, setIsSuccessfull] = useState(true);
   const [showLargerDoublePane, setShowLargerDoublePane] = useState(false);
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
 
 
-  useEffect(() => {
-    console.log ("MM WINDOW = ", window.location.pathname);
-    console.log ("MM WINDOW2 = ",this?.props);
+//  const [isGoodEventNum, setIsGoodEventNum] = useState(false);
+ // const [reloadEventData, setReloadEventData] = useState(false);
 
-    let eventNum_url = queryString.parse(window.location.search).eventID;
-    if (!eventNum_url) {
-      var urlparts = window?.location?.pathname?.split("/");
-      console.log ("urlaprts=", urlparts);
-      eventNum_url = urlparts.pop();
+
+  function ErrorFallback({error, resetErrorBoundary}) {
+    return (
+      <div role="alert">
+        <p>Something went wrong:</p>
+        <pre>{error.message}</pre>
+        <button onClick={resetErrorBoundary}>Try again</button>
+      </div>
+    )
+  }
+  
+//// USE OUR API
+  let isGoodEventNum = false;
+  let reloadEventData = false;
+  let eventNum_url = queryString.parse(window?.location?.search)?.eventID;
+  // get eventNum from local storage and check if data has been loaded
+  if (!isValidEventNum(eventNum_url)) {
+    let urlparts = window?.location?.pathname?.split("/");
+    console.log ("urlaprts=", urlparts);
+    eventNum_url =  urlparts?.pop();
+  };
+  console.log (">>>>>eventNum_url =>>>>", eventNum_url );
+  if (isValidEventNum(eventNum_url)) {
+    console.log (">>>>>isVALID=true, eventNum_url =>>>>", eventNum_url );
+    isGoodEventNum = true; 
+    if (eventNum_url!==localStorage.getItem(`eventNum`)){
+      localStorage.setItem (`eventNum`,eventNum_url);
+      localStorage.setItem (`eventAPILoaded`,'false');
+      reloadEventData = true;
+    } else if (!JSON.parse(localStorage.getItem ('eventAPILoaded'))){
+      reloadEventData = true;
     };
-    if (eventNum_url) {  // we can get to this page from the web
-        localStorage.setItem(`eventNum`, eventNum_url); // set in case next step fails
-        eventData(eventNum_url);
-    } else {   // assume eventNum is preset in localStorage if not in URL.
-      let eventNumStored = JSON.parse(localStorage.getItem("eventNum"));
-      eventData(eventNumStored);
-    };
+  } else {
+    isGoodEventNum = false;
+  };
+  let url = (reloadEventData && isGoodEventNum )?`${API}/events/${eventNum_url}` :"";
+  const method = "GET";
+  const initialData = null;
+  const body = "";
+  console.log("url=", url, "body=", body,"reloadEventData, isGoodEventNum=", 
+  reloadEventData , isGoodEventNum);
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  const { isLoadingEvent, hasError, setUrl, setBody, data, hasNetworkError } =
+  useOurApi(method, url, myHeaders, body, initialData);
+///// END USE OUR API
+
+
+  useEffect(() => {
+
     stylingUpdate(window.innerWidth, window.innerHeight);
+
   }, []);
+
+
+
 
   const eventData = (eventID) => {
     getEventData(eventID)
@@ -60,7 +107,7 @@ const EventDetail = () => {
         }
 
         loadEventDetails(res);
-        setIsLoadingEvent(false);
+//        setIsLoadingEvent(false);
       })
       .catch((err) => {
         // NEED TO ADDRESS THESE SITUATIONS
@@ -69,7 +116,7 @@ const EventDetail = () => {
         if (err === undefined) {
         }
         setIsSuccessfull(false);
-        setIsLoadingEvent(false);
+  //      setIsLoadingEvent(false);
       });
   };
 
@@ -81,8 +128,10 @@ const EventDetail = () => {
       organizer: "", // Need to add this field to "Event" object from server
       startDateTime: event.startDateTime, //
       endDateTime: event.endDateTime, //
-      largeLogo: event.photoUrl1, //
-      smallLogo: event.photoUrl2, //
+      largeLogo: event.photoUrl1 ? event.photoUrl1 :
+        "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public", //
+      smallLogo: event.photoUrl2 ?  event.photoUrl2: 
+        "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public", //
       eventUrl: event.eventUrl, //
       locationVenueName: event.locationVenueName, //
       locationAddress1: event.locationAddress1, //
@@ -486,24 +535,14 @@ const EventDetail = () => {
 
   // defines main display with ticket and order panes
   const mainDisplay = () => {
+    console.log ("data=", data, isLoadingEvent, hasNetworkError, hasError);
     if (isLoadingEvent) {
       return (
-        <div className={classes.BlankCanvas}>
-          <Spinner></Spinner>
-        </div>
-      );
-    } else {
-      if (isSuccessfull) {
-        return (
-          <div>
-            {" "}
-            {topDisplay()}
-            {ticketDisplay()}
-            {middleDisplay()}
-            {bottomDisplay()}
+          <div className={classes.BlankCanvas}>
+            <Spinner></Spinner>
           </div>
         );
-      } else {
+    } else if (hasNetworkError) {
         return (
           <div className={classes.BlankCanvas}>
             <div
@@ -514,15 +553,81 @@ const EventDetail = () => {
                 color: "red",
               }}
             >
-              This event does not exist.
+              Network problem. Please refresh the page and try again.
             </div>
           </div>
         );
-      }
-    }
-  };
+    } else if (hasError) {
+        return (
+          <div className={classes.BlankCanvas}>
+            <div
+              style={{
+                paddingTop: "20px",
+                fontSize: "20px",
+                textAlign: "center",
+                color: "red",
+              }}
+            >
+              Something went wrong. Please refresh the page and try again.
+            </div>
+          </div>
+        );
+    } else if (data?.error) {
+        return (
+          <div className={classes.BlankCanvas}>
+            <div
+              style={{
+                paddingTop: "20px",
+                fontSize: "20px",
+                textAlign: "center",
+                color: "red",
+              }}
+            >
+              Event does not exist.
+            </div>
+          </div>
+        );
+    } else if (data){
+        console.log ("data=", data);
+        loadEventDetails(data);
+        return (
+              <div>
+                {" "}
+                {topDisplay()}
+                {ticketDisplay()}
+                {middleDisplay()}
+                {bottomDisplay()}
+              </div>
+        );
+    } else {
+      return (
+        <div className={classes.BlankCanvas}>
+          <div
+            style={{
+              paddingTop: "20px",
+              fontSize: "20px",
+              textAlign: "center",
+              color: "red",
+            }}
+          >
+            ....wait.....
+          </div>
+        </div>
+      );
+    };
+  } 
 
-  return <div className={classes.MainContainer}>{mainDisplay()}</div>;
+  return (
+  <ErrorBoundary
+    FallbackComponent={ErrorFallback}
+      onReset={() => {
+      // reset the state of your app so the error doesn't happen again
+   }}
+    >
+    <div className={classes.MainContainer}>{mainDisplay()}</div>
+  </ErrorBoundary>
+  )
+//  return <div className={classes.MainContainer}>{mainDisplay()}</div>;
 };
 
 export default EventDetail;

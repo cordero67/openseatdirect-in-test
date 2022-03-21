@@ -71,6 +71,7 @@ export const useOurApi = (
     };
   }, [url, body]);
 
+  console.log("initialUrl= ", initialUrl);
   console.log("url: ", url);
   console.log("isLoading: ", isLoading);
   console.log("hasError: ", hasError);
