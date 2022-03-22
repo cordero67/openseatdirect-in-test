@@ -35,7 +35,7 @@ const Footer = () => {
         </div>
         <div className={styles.CopyRight}>
           <div>
-            Copyright &copy; 2021 OpenSeatDirect LLC | All Rights Reserved
+            Copyright &copy; 2022 OpenSeatDirect LLC | All Rights Reserved
           </div>
           <div>
             <a
@@ -70,7 +70,7 @@ const Footer = () => {
         </div>
         <div className={styles.CopyRight}>
           <div>
-            Copyright &copy; 2020 OpenSeatDirect LLC | All Rights Reserved
+            Copyright &copy; 2022 OpenSeatDirect LLC | All Rights Reserved
           </div>
           <div styles={{ border: "none", outline: "none" }}>
             <button
