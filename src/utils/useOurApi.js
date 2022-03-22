@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"; //HENRIK SOMMERFELD example
-
+                                            //https://www.henriksommerfeld.se/error-handling-with-fetch/
 export const useOurApi = (
   initialMethod,
   initialUrl,

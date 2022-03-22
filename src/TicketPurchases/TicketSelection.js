@@ -5,7 +5,10 @@ import ReactHtmlParser from "html-react-parser";
 
 import { API } from "../config.js";
 import { getEventData, getEventImage } from "./Resources/apiCore";
+
 import {isValidEventNum} from "../utils/validators";
+import {getAPIEvent} from "../Events/useOurApiEvent";
+
 
 //gatewayClientID: event.accountId.paypalExpress_client_id,
 //paypalClientID: event.accountId.paypalExpress_client_id,
@@ -55,6 +58,15 @@ let OrderSummarySectionAlt = {};
 
 const TicketSelection = () => {
   console.log("You are in Ticket Selection");
+  // defines data loading control variables
+  const [isLoadingEvent, setIsLoadingEvent] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [isBadEvent, setIsBadEvent] = useState(false);
+  const [eventAPIData, setEventAPIData] = useState("");
+  const [networkError, setNetworkError] = useState(false);
+
+
+  
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, registration, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
@@ -86,11 +98,54 @@ const TicketSelection = () => {
     userId: "",
   });
 
+  // 
+
+  let eventNum_url = queryString.parse(window?.location?.search)?.eventID;
+  // get eventNum from local storage and check if data has been loaded
+  if (!isValidEventNum(eventNum_url)) {
+    let urlparts = window?.location?.pathname?.split("/");
+    console.log ("urlaprts=", urlparts);
+    eventNum_url =  urlparts?.pop();
+  };
+
+
   useEffect(() => {
+
+    ////
+    console.log ("in useEffect...w eventNum=", eventNum_url);
+    setIsLoadingEvent(true);
+    getAPIEvent(eventNum_url)
+    .then (r=>{
+      console.log ("return fromgetAPIEvent", r);
+      if (r.ok) {
+        loadTicketEventData(r.data);
+        setEventAPIData(r.data);
+        setHasError(false);
+        setDisplay("main");
+      } else {
+        setHasError(true);
+        debugger;
+        setDisplay("connection");
+      }
+    })
+    .catch ((e) =>{
+      debugger;
+      console.log ("catch fromgetAPIEvent 133", e);
+      setHasError(true);
+      setDisplay("connection");
+    })
+    .finally (()=>{
+      setIsLoadingEvent(false)
+    });
+
+    console.log ("catch fromgetAPIEvent 141");
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
+      console.log ("catch fromgetAPIEvent 147");
+
       let tempUser = JSON.parse(localStorage.getItem("user"));
       setCustomerInformation({
         name: tempUser.user.name,
@@ -99,20 +154,48 @@ const TicketSelection = () => {
         userId: tempUser.user._id,
       });
     }
-////
-
-  let eventNum_url = queryString.parse(window.location.search).eventID;
-  if (isValidEventNum(eventNum_url)) {  // we can get to this page from the web
-      localStorage.setItem(`eventNum`, eventNum_url); // set in case next step fails
-      eventData(eventNum_url);
-  } else {   // assume eventNum is preset in localStorage if not in URL.
-    let eventNumStored = JSON.parse(localStorage.getItem("eventNum"));
-    eventData(eventNumStored);
-  };
-
+    console.log ("catch fromgetAPIEvent 157");
 
     stylingUpdate(window.innerWidth, window.innerHeight);
+
+    console.log ("useEffect 157");
   }, []);
+
+
+  const loadTicketEventData = (eventJson)=>{
+    let res = eventJson;
+    console.log(
+      "Current TicketSelection: EVENT DATA OBJECT from Server: in 'getEventData()': ",
+      res
+    );
+    console.log("res: ", res);
+
+    eventDetails = loadEventDetails(res);
+
+    console.log("I am here");
+    console.log("eventDetails: ", eventDetails);
+    // checks if an order exists in local storage
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
+    ) {
+      let cart = JSON.parse(
+        localStorage.getItem(`cart_${eventDetails.eventNum}`)
+      );
+      setTicketInfo(cart.ticketInfo);
+      setPromoCodeDetails(cart.promoCodeDetails);
+      setOrderTotals(cart.orderTotals);
+    } else {
+      console.log("ticketInfo: ", loadTicketInfo(res));
+      if (res.tickets.length === 0) {
+        window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+      }
+      console.log("ticketInfo: ", loadTicketInfo(res));
+      setTicketInfo(loadTicketInfo(res));
+      setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
+      setOrderTotals(loadOrderTotals(res));
+    }
+  }
 
   // receives Event Data from server and populates several control variables
   const eventData = (eventID) => {

@@ -12,23 +12,28 @@ import Spinner from "../components/UI/Spinner/SpinnerNew";
 import classes from "./EventDetails.module.css";
 
 import {isValidEventNum} from "../utils/validators";
-import { API } from "../config";
-import {useOurApi} from "../utils/useOurApi";
+import {getAPIEvent} from "./useOurApiEvent";
 
 
+
+
+console.log ("loading eventDetails page ....");
 // defines an event's NON ticket type specific information
 let eventDetails;
 
 const EventDetail = () => {
+  console.log ("in EventDetails func ....");
+
   // defines data loading control variables
-//  const [isLoadingEvent, setIsLoadingEvent] = useState(true);
+  const [isLoadingEvent, setIsLoadingEvent] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [isBadEvent, setIsBadEvent] = useState(false);
+  const [eventAPIData, setEventAPIData] = useState("");
+  const [networkError, setNetworkError] = useState(false);
+  
   const [isSuccessfull, setIsSuccessfull] = useState(true);
   const [showLargerDoublePane, setShowLargerDoublePane] = useState(false);
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
-
-
-//  const [isGoodEventNum, setIsGoodEventNum] = useState(false);
- // const [reloadEventData, setReloadEventData] = useState(false);
 
 
   function ErrorFallback({error, resetErrorBoundary}) {
@@ -41,9 +46,7 @@ const EventDetail = () => {
     )
   }
   
-//// USE OUR API
-  let isGoodEventNum = false;
-  let reloadEventData = false;
+  
   let eventNum_url = queryString.parse(window?.location?.search)?.eventID;
   // get eventNum from local storage and check if data has been loaded
   if (!isValidEventNum(eventNum_url)) {
@@ -51,34 +54,30 @@ const EventDetail = () => {
     console.log ("urlaprts=", urlparts);
     eventNum_url =  urlparts?.pop();
   };
-  console.log (">>>>>eventNum_url =>>>>", eventNum_url );
-  if (isValidEventNum(eventNum_url)) {
-    console.log (">>>>>isVALID=true, eventNum_url =>>>>", eventNum_url );
-    isGoodEventNum = true; 
-    if (eventNum_url!==localStorage.getItem(`eventNum`)){
-      localStorage.setItem (`eventNum`,eventNum_url);
-      localStorage.setItem (`eventAPILoaded`,'false');
-      reloadEventData = true;
-    } else if (!JSON.parse(localStorage.getItem ('eventAPILoaded'))){
-      reloadEventData = true;
-    };
-  } else {
-    isGoodEventNum = false;
-  };
-  let url = (reloadEventData && isGoodEventNum )?`${API}/events/${eventNum_url}` :"";
-  const method = "GET";
-  const initialData = null;
-  const body = "";
-  console.log("url=", url, "body=", body,"reloadEventData, isGoodEventNum=", 
-  reloadEventData , isGoodEventNum);
-  let myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  const { isLoadingEvent, hasError, setUrl, setBody, data, hasNetworkError } =
-  useOurApi(method, url, myHeaders, body, initialData);
-///// END USE OUR API
 
 
   useEffect(() => {
+
+    console.log ("in useEffect...w eventNum=", eventNum_url);
+    setIsLoadingEvent(true);
+    getAPIEvent(eventNum_url)
+    .then (r=>{
+      console.log ("return fromgetAPIEvent", r);
+      if (r.ok) {
+        loadEventDetails (r.data);
+        setEventAPIData(r.data);
+        setHasError(false);
+      } else {
+        setHasError(true);
+      }
+    })
+    .catch ((e) =>{
+      console.log ("catch fromgetAPIEvent", e);
+      setHasError(true);
+    })
+    .finally (()=>{
+      setIsLoadingEvent(false)
+    });
 
     stylingUpdate(window.innerWidth, window.innerHeight);
 
@@ -119,6 +118,9 @@ const EventDetail = () => {
   //      setIsLoadingEvent(false);
       });
   };
+
+
+
 
   const loadEventDetails = (event) => {
     eventDetails = {
@@ -535,14 +537,14 @@ const EventDetail = () => {
 
   // defines main display with ticket and order panes
   const mainDisplay = () => {
-    console.log ("data=", data, isLoadingEvent, hasNetworkError, hasError);
+    console.log ("isLoading=", isLoadingEvent, networkError, hasError);
     if (isLoadingEvent) {
       return (
           <div className={classes.BlankCanvas}>
             <Spinner></Spinner>
           </div>
         );
-    } else if (hasNetworkError) {
+    } else if (networkError) {
         return (
           <div className={classes.BlankCanvas}>
             <div
@@ -572,7 +574,7 @@ const EventDetail = () => {
             </div>
           </div>
         );
-    } else if (data?.error) {
+    } else if (isBadEvent) {
         return (
           <div className={classes.BlankCanvas}>
             <div
@@ -587,9 +589,8 @@ const EventDetail = () => {
             </div>
           </div>
         );
-    } else if (data){
-        console.log ("data=", data);
-        loadEventDetails(data);
+    } else if (eventAPIData){
+        console.log ("eventData=", eventAPIData);
         return (
               <div>
                 {" "}

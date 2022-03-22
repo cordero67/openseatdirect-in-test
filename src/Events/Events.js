@@ -50,7 +50,6 @@ const Events = () => {
   };
 
   const eventSelectionHandler = (event, eventItem) => {
-    localStorage.setItem(`eventNum`, JSON.stringify(eventItem.eventNum)); // set in case next step fails
     window.location.href = `/ed/${eventItem.eventUrl}?eventID=${eventItem.eventNum}`;
   };
 
