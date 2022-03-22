@@ -166,7 +166,6 @@ const Checkout = () => {
     let event = JSON.parse(localStorage.getItem("eventNum"));
     localStorage.removeItem(`cart_${event}`);
     localStorage.removeItem(`image_${event}`);
-    localStorage.removeItem(`eventNum`);
   };
   */
 
@@ -344,7 +343,6 @@ const Checkout = () => {
                 let event = JSON.parse(localStorage.getItem("eventNum"));
                 localStorage.removeItem(`cart_${event}`);
                 localStorage.removeItem(`image_${event}`);
-                localStorage.removeItem(`eventNum`);
               } else {
                 setTransactionInfo(
                   loadTransactionInfo(
@@ -361,7 +359,6 @@ const Checkout = () => {
                 let event = JSON.parse(localStorage.getItem("eventNum"));
                 localStorage.removeItem(`cart_${event}`);
                 localStorage.removeItem(`image_${event}`);
-                localStorage.removeItem(`eventNum`);
                 //window.location.href = `/events`;
               }
             });
@@ -435,7 +432,6 @@ const Checkout = () => {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       localStorage.removeItem(`cart_${event}`);
       localStorage.removeItem(`image_${event}`);
-      localStorage.removeItem(`eventNum`);
       window.location.href = `/et/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
     }
   };

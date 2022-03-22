@@ -191,7 +191,6 @@ export const StripeConfirm = () => {
       let event = JSON.parse(localStorage.getItem("eventNum"));
       localStorage.removeItem(`cart_${event}`);
       localStorage.removeItem(`image_${event}`);
-      localStorage.removeItem(`eventNum`);
       setTransactionDetails(tempUser);
     }
     setIsLoading(false);

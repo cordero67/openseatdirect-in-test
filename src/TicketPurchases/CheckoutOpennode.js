@@ -94,7 +94,7 @@ const CheckoutOpennode = (props) => {
   } else if (hasError) {
     return <div>HAS OUR API ERROR!!!! ...</div>;
   } else if (onodeError) {
-    console.log("stripeUserErrror=", onodeError);
+    console.log("onennodeError=", onodeError);
     return <div>HAS OPENNODE ERROR!!!! ...</div>;
   } else {
     if (data?.success) {

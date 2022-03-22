@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"; //HENRIK SOMMERFELD example
-
+                                            //https://www.henriksommerfeld.se/error-handling-with-fetch/
 export const useOurApi = (
   initialMethod,
   initialUrl,
@@ -71,6 +71,7 @@ export const useOurApi = (
     };
   }, [url, body]);
 
+  console.log("initialUrl= ", initialUrl);
   console.log("url: ", url);
   console.log("isLoading: ", isLoading);
   console.log("hasError: ", hasError);
