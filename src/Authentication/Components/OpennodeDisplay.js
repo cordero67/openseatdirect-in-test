@@ -203,8 +203,6 @@ const OpennodeDisplay = (props) => {
   };
 
   const showError = () => {
-    console.log("props.error, ", props.error);
-    console.log("props.message, ", props.message);
     if (props.error) {
       return (
         <div

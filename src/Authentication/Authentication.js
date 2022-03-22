@@ -5,6 +5,8 @@ import SignInDisplay from "./Components/SignInDisplay";
 import ForgotDisplay from "./Components/ForgotDisplay";
 import TemporaryDisplay from "./Components/TemporaryDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
+import ConfirmationDisplay from "./Components/ConfirmationDisplay";
+import PasswordDisplay from "./Components/PasswordDisplay";
 import OpennodeDisplay from "./Components/OpennodeDisplay";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
@@ -27,7 +29,6 @@ import {
   SUBSCRIPTION_PROMO_CODE_8,
 } from "../config";
 
-import GoogleAuthentication from "./GoogleAuthentication";
 import { SubscriptionPlans } from "./Resources/Variables";
 
 import RadioForm from "../components/Forms/RadioForm";
@@ -90,6 +91,7 @@ const Authentication = () => {
   });
 
   const {
+    inputError,
     paypal_plan_id,
     paypal_plan_id_full,
     paypal_plan_id_discount,
@@ -145,29 +147,9 @@ const Authentication = () => {
       localStorage.getItem("user") !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("tempUser: ", tempUser);
-      console.log("tempUser.user: ", tempUser.user);
-      console.log("tempUser.user.accountId: ", tempUser.user.accountId);
       if ("user" in tempUser && "accountId" in tempUser.user) {
         let tempBuyerInfo = {};
         // populates the "tempBuyerInfo" (and "values") object with "user" object info
-        console.log("Account Name: ", tempUser.user.accountId.accountName);
-        console.log("User Name: ", tempUser.user.username);
-        console.log(
-          tempUser.user.accountId.accountName === tempUser.user.username
-        );
-        if (tempUser.user.accountId.accountName) {
-          tempBuyerInfo.accountName = tempUser.user.accountId.accountName;
-        }
-        if (tempUser.user.accountId.accountEmail) {
-          tempBuyerInfo.accountEmail = tempUser.user.accountId.accountEmail;
-        }
-        if (tempUser.user.accountId.accountPhone) {
-          tempBuyerInfo.accountPhone = tempUser.user.accountId.accountPhone;
-        }
-        if (tempUser.user.accountId.accountUrl) {
-          tempBuyerInfo.accountUrl = tempUser.user.accountId.accountUrl;
-        }
         if (tempUser.user.accountId.status) {
           tempBuyerInfo.status = tempUser.user.accountId.status;
         }
@@ -179,7 +161,6 @@ const Authentication = () => {
           tempBuyerInfo.paypalExpress_client_secret =
             tempUser.user.accountId.paypalExpress_client_secret;
         }
-
         if (tempUser.user.accountId?.opennode_invoice_API_KEY) {
           tempBuyerInfo.opennode_invoice_API_KEY =
             tempUser.user.accountId.opennode_invoice_API_KEY;
@@ -270,7 +251,6 @@ const Authentication = () => {
 
   useEffect(() => {
     console.log("initialView: ", initialView);
-    let userStatus = "none";
     let partialStatus = false;
 
     if (
@@ -289,6 +269,7 @@ const Authentication = () => {
       } else if (initialView === "upgrade") {
         console.log("initialView: ", initialView, ", upgrade");
         setPaidIntent(true);
+        updateSubValues();
         if (status === 1 || status === 4 || status === 6) {
           updateAuthValues();
           setDisplay("gateway");
@@ -304,6 +285,7 @@ const Authentication = () => {
       } else if (initialView === "free") {
         console.log("initialView: ", initialView, ", free");
         setPaidIntent(false);
+        updateSubValues();
         if (status === 1 || status === 4 || status === 6) {
           updateAuthValues();
           setDisplay("gateway");
@@ -318,6 +300,7 @@ const Authentication = () => {
       } else if (initialView === "paid") {
         console.log("initialView: ", initialView, ", paid");
         setPaidIntent(true);
+        updateSubValues();
         if (status === 1 || status === 4 || status === 6) {
           updateAuthValues();
           setDisplay("gateway");
@@ -332,6 +315,7 @@ const Authentication = () => {
       } else {
         console.log("initialView: ", initialView, ", NONE");
         setPaidIntent(false);
+        updateSubValues();
         if (status === 1 || status === 4 || status === 6) {
           updateAuthValues();
           setDisplay("gateway");
@@ -418,30 +402,6 @@ const Authentication = () => {
     },
   ];
 
-  // OSDFREE promo code plans
-  const settleOptions = [
-    {
-      label: "US Dollars",
-      value: true,
-    },
-    {
-      label: "Bitcoin",
-      value: false,
-    },
-  ];
-
-  // OSDFREE promo code plans
-  const blockchainOptions = [
-    {
-      label: "Test Net",
-      value: true,
-    },
-    {
-      label: "Main Net",
-      value: false,
-    },
-  ];
-
   // Determines pricing plans details to display based on promo code entered
   const shownPlans = () => {
     if (
@@ -479,152 +439,6 @@ const Authentication = () => {
       throw Error(response.status);
     }
     return response;
-  };
-
-  const submitReissue = () => {
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/sendcode`;
-    let information = {
-      email: email,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleReissue(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-          redirect: "forgot",
-        });
-        setDisplay("error");
-      });
-  };
-
-  const submitConfirmation = () => {
-    setShowSpinner(true);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup/confirmcode`;
-    let intent;
-    if (paidIntent) {
-      intent = true;
-    } else {
-      intent = false;
-    }
-    let information = {
-      email: email,
-      confirm_code: confirmation,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleConfirmation(data);
-        updateSubValues();
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-          redirect: "confirmation",
-        });
-        setDisplay("error");
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
-  const submitPassword = () => {
-    setShowSpinner(true);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup/password`;
-    let intent;
-    if (paidIntent) {
-      intent = true;
-    } else {
-      intent = false;
-    }
-    let information = {
-      email: email,
-      passwordToken: resetToken,
-      password: password,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handlePassword(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-          redirect: "password",
-        });
-        setDisplay("error");
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
   };
 
   const submitStripe = () => {
@@ -676,151 +490,6 @@ const Authentication = () => {
       .finally(() => {});
   };
 
-  const submitResend = () => {
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signup/resendcode`;
-    let information = {
-      email: email,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleResend(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-          redirect: "confirmation",
-        });
-        setDisplay("error");
-      });
-  };
-
-  const handleReissue = (data) => {
-    if (data.status) {
-      setAuthValues({
-        name: "",
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: true,
-        confirmation: "",
-        resent: false,
-        username: "",
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-        redirect: "",
-      });
-      console.log("ERROR: ", data.error);
-    }
-  };
-
-  const handleConfirmation = (data) => {
-    console.log("data: ", data);
-    if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data)); // KEEP
-      let intent;
-      if (paidIntent) {
-        intent = true;
-      } else {
-        intent = false;
-      }
-      setAuthValues({
-        name: "",
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        confirmation: "",
-        resent: false,
-        username: data.user.username,
-        resetToken: data.user.passwordToken,
-        sessionToken: "",
-        userId: data.user.accountId._id,
-        accountNum: data.user.accountId.accountNum,
-      });
-      console.log("SUCCESS");
-      setDisplay("password");
-    } else {
-      console.log("Inside handleConfirmation false");
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-        redirect: "",
-      });
-      setDisplay("confirmation");
-      console.log("ERROR: ", data.error);
-    }
-  };
-
-  const handlePassword = (data) => {
-    console.log("data: ", data);
-    console.log("STATUS: ", data.status);
-    if (data.status) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("user from local storage: ", tempUser);
-      tempUser.token = data.token;
-      localStorage.setItem("user", JSON.stringify(tempUser));
-      setAuthValues({
-        name: "",
-        email: email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        confirmation: "",
-        resent: false,
-        username: username,
-        resetToken: "",
-        sessionToken: data.token,
-        userId: userId,
-        accountNum: accountNum,
-      });
-      console.log("SUCCESS");
-      if (paidIntent) {
-        setDisplay("gateway");
-      } else if (!paidIntent) {
-        setDisplay("freeCongrats");
-      }
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-        redirect: "",
-      });
-      setDisplay("password");
-      console.log("ERROR: ", data.error);
-    }
-  };
-
   const resetValues = () => {
     setAuthValues({
       name: "",
@@ -836,34 +505,6 @@ const Authentication = () => {
       userId: "",
       accountNum: "",
     });
-  };
-
-  const handleResend = (data) => {
-    if (data.status) {
-      //
-      setAuthValues({
-        name: "",
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        confirmation: "",
-        resent: true,
-        username: username,
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
-      console.log("SUCCESS");
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-        redirect: "",
-      });
-      console.log("ERROR: ", data.error);
-    }
   };
 
   const handleAuthValueChange = (event) => {
@@ -933,25 +574,6 @@ const Authentication = () => {
           }}
         >
           {message}
-        </div>
-      );
-    } else if (display === "password") {
-      return null;
-    } else if (display === "confirmation" && !resent) {
-      return (
-        <Fragment>
-          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter 6-digit code sent to:
-          </div>
-          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>{email}</div>
-        </Fragment>
-      );
-    } else if (display === "confirmation" && resent) {
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          A new 6-digit code was sent to your email,
-          <br></br>
-          please enter it below:
         </div>
       );
     } else if (display === "gateway") {
@@ -1045,62 +667,6 @@ const Authentication = () => {
 
   const regsuper =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-  const confirmationForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Confirmation Number</label>
-        <input
-          className={classes.InputBox}
-          type="text"
-          name="confirmation"
-          onChange={handleAuthValueChange}
-          onFocus={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-          }}
-          value={confirmation}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            submitConfirmation();
-          }}
-        >
-          SUBMIT YOUR CODE
-        </button>
-      </div>
-    </Fragment>
-  );
-
-  const passwordForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Password</label>
-        <input
-          className={classes.InputBox}
-          type="text"
-          name="password"
-          onChange={handleAuthValueChange}
-          onFocus={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-          }}
-          value={password}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            submitPassword();
-          }}
-        >
-          REGISTER YOUR PASSWORD
-        </button>
-      </div>
-    </Fragment>
-  );
 
   const gatewayForm = (
     <Fragment>
@@ -1986,162 +1552,6 @@ const Authentication = () => {
     </Fragment>
   );
 
-  const opennodeForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "340px" }}>
-        <label style={{ width: "340px", fontSize: "15px" }}>
-          Opennode API Key <span style={{ color: "red" }}>* </span>
-        </label>
-        <input
-          onFocus={() => {
-            setSubValues({ ...subValues, inputError: "" });
-          }}
-          className={classes.InputBox}
-          type="text"
-          name="opennode_invoice_API_KEY"
-          onChange={handleSubValueChange}
-          value={opennode_invoice_API_KEY}
-        />
-      </div>
-
-      <div style={{ paddingBottom: "20px", width: "340px" }}>
-        <label style={{ fontSize: "15px" }}>Settlement Currency:</label>
-        <RadioForm
-          details={settleOptions}
-          group="settleOptioneGroup"
-          current={opennode_auto_settle}
-          change={(event, value) => {
-            radioChangeSubValues(event, value, "opennode_auto_settle");
-          }}
-        />
-      </div>
-      <div style={{ width: "340px" }}>
-        <label style={{ fontSize: "15px" }}>Bitcoin Blockchain:</label>
-        <RadioForm
-          details={blockchainOptions}
-          group="blockchainOptionGroup"
-          current={opennode_dev}
-          change={(event, value) => {
-            radioChangeSubValues(event, value, "opennode_dev");
-          }}
-        />
-      </div>
-      <div style={{ textAlign: "center", paddingTop: "20px" }}>
-        <button
-          className={classes.ButtonBlue}
-          disabled={
-            !opennode_auto_settle || !opennode_invoice_API_KEY || !opennode_dev
-          }
-          onClick={() => {
-            console.log("Inside submitOpennode");
-            setShowSpinner(true);
-            setSubmissionStatus({
-              message: "",
-              error: false,
-            });
-            // api static variables
-            let myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            const authstring = `Bearer ${authValues.sessionToken}`;
-            myHeaders.append("Authorization", authstring);
-
-            let url = `${API}/accounts/${authValues.accountNum}`;
-            let fetcharg = {
-              method: "POST",
-              headers: myHeaders,
-              body: JSON.stringify({
-                paymentGatewayType2: "Opennode",
-                opennode_invoice_API_KEY: opennode_invoice_API_KEY,
-                opennode_auto_settle: opennode_auto_settle,
-                opennode_dev: opennode_dev,
-              }),
-            };
-            console.log(opennode_invoice_API_KEY);
-
-            console.log("fetching with: ", url, fetcharg);
-            fetch(url, fetcharg)
-              .then(handleErrors)
-              .then((response) => {
-                console.log("then response: ", response);
-                return response.json();
-              })
-              .then((data) => {
-                console.log("fetch return got back data on Opennode:", data);
-                //handleConfirmation
-                if (data.status) {
-                  console.log("INSIDE data.status");
-                  let tempData = JSON.parse(localStorage.getItem("user"));
-                  console.log("tempData: ", tempData);
-                  tempData.user.accountId = data.result;
-                  localStorage.setItem("user", JSON.stringify(tempData));
-                  //updatePageView();
-
-                  if (tempData.user.accountId.status === 8) {
-                    setDisplay("paidCongrats");
-                  } else if (tempData.user.accountId.status === 5) {
-                    setDisplay("selectPlan");
-                  } else {
-                    setDisplay("gateway");
-                  }
-                } else {
-                  // this is a friendly error
-                  let errmsg =
-                    "unable to validate Opennode API Key and secret at this time";
-                  if (data.message) {
-                    console.log("data.message exist");
-                    console.log("data.message ", data.message);
-                    errmsg = data.message;
-                  }
-                  console.log("errmsg: ", errmsg);
-                  setSubmissionStatus({
-                    message: errmsg,
-                    error: true,
-                    redirect: "opennode",
-                  });
-                  setDisplay("error");
-                }
-              })
-              .catch((err) => {
-                console.log(err);
-
-                setSubmissionStatus({
-                  message: "Server down please try again",
-                  error: true,
-                  redirect: "opennode",
-                });
-                setDisplay("error");
-              })
-              .finally(() => {
-                setShowSpinner(false);
-              });
-          }}
-        >
-          SUBMIT YOUR OPENNODE DETAILS
-        </button>
-      </div>
-      <div style={{ textAlign: "center", paddingTop: "20px" }}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            setDisplay("gateway");
-          }}
-        >
-          BACK TO GATEWAY SELECTION
-        </button>
-      </div>
-      <div style={{ textAlign: "center", paddingTop: "20px" }}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            redirectUser();
-          }}
-        >
-          STAY WITH FREE FOREVER PLAN
-        </button>
-      </div>
-    </Fragment>
-  );
-
   const errorForm = () => {
     return (
       <Fragment>
@@ -2175,51 +1585,6 @@ const Authentication = () => {
       </Fragment>
     );
   };
-
-  const alternateSignInInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            resetValues();
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-            setDisplay("forgot");
-          }}
-        >
-          Forgot password?
-        </button>
-      </div>
-      <div style={{ textAlign: "right" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            resetValues();
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-            setDisplay("signup");
-          }}
-        >
-          Create account
-        </button>
-      </div>
-    </div>
-  );
-
-  const alternateConfirmationInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            setSubmissionStatus({ message: "", error: false, redirect: "" });
-            submitResend();
-          }}
-        >
-          Resend code
-        </button>
-      </div>
-    </div>
-  );
 
   const signInDisplay = () => {
     if (display === "signin") {
@@ -2331,61 +1696,62 @@ const Authentication = () => {
   };
 
   const confirmationDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "310px" };
-    }
     if (display === "confirmation") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <div className={classes.Header}>
-              <div>Enter confirmation code.</div>
-            </div>
-            <div>
-              {showDetail()}
-              {confirmationForm}
-              {alternateConfirmationInputs}
-            </div>
-          </div>
-        );
-      }
+      return (
+        <ConfirmationDisplay
+          //close={closeModal} NOT IN AUTH
+          email={email}
+          username={username}
+          error={error}
+          message={message}
+          authOrigin={true}
+          resent={resent}
+          confirmation={confirmation}
+          spinner={showSpinner}
+          inputChange={handleAuthValueChange}
+          updateSub={updateSubValues}
+          spinnerChange={(value) => setShowSpinner(value)}
+          displayChange={(modal) => setDisplay(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          values={(input) => setAuthValues(input)}
+        ></ConfirmationDisplay>
+      );
     } else {
       return null;
     }
   };
 
   const passwordDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "200px" };
-    }
     if (display === "password") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <div className={classes.Header}>
-              <div>Create your password</div>
-            </div>
-            <div>
-              {showDetail()}
-              {passwordForm}
-            </div>
-          </div>
-        );
-      }
+      return (
+        <PasswordDisplay
+          //close={closeModal} NOT IN AUTH
+          email={email}
+          username={username}
+          error={error}
+          message={message}
+          authOrigin={true}
+          password={password}
+          resetToken={resetToken}
+          spinner={showSpinner}
+          inputChange={handleAuthValueChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          displayChange={(modal) => setDisplay(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          values={(input) => setAuthValues(input)}
+          submit={() => {
+            if (initialView === "paid" || initialView === "upgrade") {
+              setDisplay("gateway");
+            } else {
+              setDisplay("freeCongrats");
+            }
+          }}
+        ></PasswordDisplay>
+      );
     } else {
       return null;
     }
@@ -2540,7 +1906,7 @@ const Authentication = () => {
     }
   };
 
-  const opennodeDisplay2 = () => {
+  const opennodeDisplay = () => {
     if (display === "opennode") {
       return (
         <OpennodeDisplay
@@ -2548,9 +1914,9 @@ const Authentication = () => {
           //close={closeModal} NOT IN AUTH
           error={error}
           message={message}
-          apiKey={subValues.opennode_invoice_API_KEY}
-          settle={subValues.opennode_auto_settle}
-          dev={subValues.opennode_dev}
+          apiKey={opennode_invoice_API_KEY}
+          settle={opennode_auto_settle}
+          dev={opennode_dev}
           sessionToken={authValues.sessionToken}
           accountNum={authValues.accountNum}
           spinner={showSpinner}
@@ -2576,36 +1942,6 @@ const Authentication = () => {
           }}
         ></OpennodeDisplay>
       );
-    } else {
-      return null;
-    }
-  };
-
-  const opennodeDisplay = () => {
-    if (display === "opennode") {
-      if (showSpinner) {
-        return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas} style={{ height: "595px" }}>
-              <Spinner />
-            </div>
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.Modal}>
-            <div className={classes.BlankCanvas}>
-              <div className={classes.Header}>
-                Enter Opennode API Key (invoice permission only!)
-              </div>
-              <div>
-                {showDetail()}
-                {opennodeForm}
-              </div>
-            </div>
-          </div>
-        );
-      }
     } else {
       return null;
     }
@@ -2649,7 +1985,7 @@ const Authentication = () => {
         {passwordDisplay()}
         {gatewayDisplay()}
         {paypalDisplay()}
-        {opennodeDisplay2()}
+        {opennodeDisplay()}
         {selectPlanDisplay()}
         {freeCongratsDisplay()}
         {paidCongratsDisplay()}

@@ -77,7 +77,7 @@ const PasswordDisplay = (props) => {
       </div>
       <div style={{ paddingTop: "10px" }}>
         <button
-          className={classes.SubmitButton}
+          className={classes.ButtonBlue}
           onClick={() => {
             submitPassword();
           }}
@@ -100,7 +100,6 @@ const PasswordDisplay = (props) => {
         password: "",
         temporary: "",
         reissued: false,
-        expired: false,
         confirmation: "",
         resent: false,
         username: props.username,
@@ -139,28 +138,6 @@ const PasswordDisplay = (props) => {
     }
   };
 
-  const header = () => {
-    if (props.authOrigin !== true) {
-      return (
-        <div className={classes.Header}>
-          <div>Create your password</div>
-          <div style={{ textAlign: "right" }}>
-            <ion-icon
-              style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                props.close();
-              }}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      <div className={classes.Header}>Create your password</div>;
-    }
-  };
-
   if (props.spinner) {
     return (
       <div className={classes.BlankCanvas} style={{ height: "363px" }}>
@@ -170,7 +147,9 @@ const PasswordDisplay = (props) => {
   } else {
     return (
       <div className={classes.BlankCanvas}>
-        {header()}
+        <div className={classes.Header}>
+          <div>Create your password</div>
+        </div>
         <div>
           {showError()}
           {passwordForm}

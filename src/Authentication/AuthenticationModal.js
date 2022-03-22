@@ -203,10 +203,12 @@ const Authentication = (props) => {
           username={username}
           error={error}
           message={message}
+          authOrigin={false}
           resent={resent}
           confirmation={confirmation}
           spinner={showSpinner}
           inputChange={handleChange}
+          //updateSub={updateSubValues} NOT IN MODAL
           spinnerChange={(value) => setShowSpinner(value)}
           displayChange={(modal) => setModalDisplay(modal)}
           submission={(input) => {
@@ -226,11 +228,12 @@ const Authentication = (props) => {
         <PasswordDisplay
           close={closeModal}
           email={email}
+          username={username}
           error={error}
           message={message}
+          authOrigin={false}
           password={password}
           resetToken={resetToken}
-          username={username}
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}

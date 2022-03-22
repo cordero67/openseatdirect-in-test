@@ -56,7 +56,6 @@ const ConfirmationDisplay = (props) => {
 
   const handleResend = (data) => {
     if (data.status) {
-      //localStorage.setItem("user", JSON.stringify(data));
       props.values({
         name: "",
         email: data.user.email,
@@ -70,6 +69,7 @@ const ConfirmationDisplay = (props) => {
         resetToken: "",
         sessionToken: "",
         userId: "",
+        accountNum: "",
       });
       console.log("SUCCESS");
     } else {
@@ -111,6 +111,9 @@ const ConfirmationDisplay = (props) => {
       .then((data) => {
         console.log("fetch return got back data:", data);
         handleConfirmation(data);
+        if (props.authOrigin) {
+          props.updateSub();
+        }
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -119,8 +122,6 @@ const ConfirmationDisplay = (props) => {
           error: true,
         });
         props.displayChange("error");
-      })
-      .finally(() => {
         props.spinnerChange(false);
       });
   };
@@ -131,6 +132,7 @@ const ConfirmationDisplay = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
+            props.submission({ message: "", error: false });
             submitResend();
           }}
         >
@@ -162,7 +164,7 @@ const ConfirmationDisplay = (props) => {
             onChange={props.inputChange}
             value={props.confirmation}
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              props.submission({ message: "", error: false });
             }}
           />{" "}
           {props.confirmation && !regsuper.test(props.confirmation) ? (
@@ -203,21 +205,24 @@ const ConfirmationDisplay = (props) => {
         password: "",
         temporary: "",
         reissued: false,
-        //expired: false,
+        expired: false,
         confirmation: "",
         resent: false,
         username: data.user.username,
         resetToken: data.user.passwordToken,
         sessionToken: "",
-        userId: "",
+        userId: data.user.accountId._id,
+        accountNum: data.user.accountId.accountNum,
       });
       props.displayChange("password");
+      props.spinnerChange(false);
     } else {
       props.submission({
         message: data.error,
         error: true,
       });
       props.displayChange("confirmation");
+      props.spinnerChange(false);
     }
   };
 
@@ -245,6 +250,33 @@ const ConfirmationDisplay = (props) => {
     }
   };
 
+  const header = () => {
+    if (props.authOrigin !== true) {
+      return (
+        <div className={classes.Header}>
+          <div>Enter confirmation code</div>
+          <div style={{ textAlign: "right" }}>
+            <ion-icon
+              style={{
+                fontWeight: "600",
+                fontSize: "28px",
+                color: "black",
+                paddingBottom: "5px",
+              }}
+              name="close-outline"
+              cursor="pointer"
+              onClick={() => {
+                props.close();
+              }}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      return <div className={classes.Header}>Enter confirmation code</div>;
+    }
+  };
+
   if (props.spinner) {
     return (
       <div className={classes.BlankCanvas} style={{ height: "288px" }}>
@@ -254,19 +286,7 @@ const ConfirmationDisplay = (props) => {
   } else {
     return (
       <div className={classes.BlankCanvas}>
-        <div className={classes.Header}>
-          <div>Enter confirmation code</div>
-          <div style={{ textAlign: "right" }}>
-            <ion-icon
-              style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                props.close();
-              }}
-            />
-          </div>
-        </div>
+        {header()}
         <div>
           {showError()}
           {confirmationForm()}
@@ -276,4 +296,5 @@ const ConfirmationDisplay = (props) => {
     );
   }
 };
+
 export default ConfirmationDisplay;
