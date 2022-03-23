@@ -161,7 +161,6 @@ const TicketSelection = () => {
             setDisplay("main");
           } else {
             setHasError(true);
-            debugger;
             setDisplay("connection");
           }
         })
@@ -177,7 +176,7 @@ const TicketSelection = () => {
         });
     };
 
-    
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
