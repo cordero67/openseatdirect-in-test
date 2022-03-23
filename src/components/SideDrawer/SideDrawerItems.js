@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-import { isAuthenticated,signout } from "../../Users/apiUsers";
+import { isAuthenticated, signout } from "../../Users/apiUsers";
 
 ///import { signout } from "./apiSideDrawer";
 
@@ -47,7 +47,7 @@ const SideDrawerItems = (props) => {
           style={isActive(props.currentPage, "/")}
           onClick={props.clicked}
         >
-          Events
+          EVENTS
         </NavLink>
       </li>
 
@@ -57,7 +57,7 @@ const SideDrawerItems = (props) => {
           style={isActive(props.currentPage, "/past")}
           onClick={props.clicked}
         >
-          Past Events
+          PAST EVENTS
         </NavLink>
       </li>
 
@@ -68,7 +68,7 @@ const SideDrawerItems = (props) => {
             style={isActive(props.currentPage, "/myaccount")}
             onClick={props.clicked}
           >
-            My Account
+            MY ACCOUNT
           </NavLink>
         </li>
       ) : null}
@@ -80,7 +80,7 @@ const SideDrawerItems = (props) => {
             style={isActive(props.currentPage, "/myaccount")}
             onClick={props.clicked}
           >
-            My Account
+            MY ACCOUNT
           </NavLink>
         </li>
       ) : null}
@@ -94,7 +94,7 @@ const SideDrawerItems = (props) => {
               props.clicked();
             }}
           >
-            Log in
+            LOG IN
           </NavLink>
         </li>
       )}
@@ -109,7 +109,7 @@ const SideDrawerItems = (props) => {
               signout(() => {});
             }}
           >
-            Log out
+            LOG OUT
           </NavLink>
         </li>
       )}
