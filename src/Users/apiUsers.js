@@ -9,6 +9,7 @@ const handleErrors = (response) => {
   return response;
 };
 
+
 export const signup = (user) => {
   var myHeaders = new Headers();
   //myHeaders.append("Accept", "application/json");
@@ -82,8 +83,8 @@ export const signout = (callback) => {
       headers: myHeaders,
       redirect: "follow",
     };
-
-    return fetch(`${API}/signout`, requestOptions)
+    console.log("adios....");
+    return fetch(`${API}/auth/signout`, requestOptions)
       .then((response) => {
         console.log("signout", response);
       })

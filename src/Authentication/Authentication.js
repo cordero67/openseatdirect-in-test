@@ -150,14 +150,14 @@ const Authentication = () => {
       if ("user" in tempUser && "accountId" in tempUser.user) {
         let tempBuyerInfo = {};
         // populates the "tempBuyerInfo" (and "values") object with "user" object info
-        if (tempUser.user.accountId.status) {
+        if (tempUser.user.accountId?.status) {
           tempBuyerInfo.status = tempUser.user.accountId.status;
         }
-        if (tempUser.user.accountId.paypalExpress_client_id) {
+        if (tempUser.user.accountId?.paypalExpress_client_id) {
           tempBuyerInfo.paypalExpress_client_id =
             tempUser.user.accountId.paypalExpress_client_id;
         }
-        if (tempUser.user.accountId.paypalExpress_client_secret) {
+        if (tempUser.user.accountId?.paypalExpress_client_secret) {
           tempBuyerInfo.paypalExpress_client_secret =
             tempUser.user.accountId.paypalExpress_client_secret;
         }
@@ -585,8 +585,8 @@ const Authentication = () => {
             paddingBottom: "20px",
           }}
         >
-          Link to Stripe or Paypal to get your ticket sales revenue instantly in
-          cash, or Opennode for bitcoin/lightning network.
+          Link to Stripe or Paypal to get paid instantly in
+          cash, or Opennode for bitcoin payments. You can pick more later in Account Settings.
         </div>
       );
     } else if (display === "freeCongrats") {
@@ -1178,7 +1178,7 @@ const Authentication = () => {
             paddingBottom: "20px",
           }}
         >
-          Select your plan and submit payment.
+          Say goodbye to per-ticket fees. Your ticketbuyers will love it.
         </div>
       );
     }
@@ -1536,7 +1536,7 @@ const Authentication = () => {
             setDisplay("gateway");
           }}
         >
-          BACK TO GATEWAY SELECTION
+          BACK TO PAYMENT PROCESSOR SELECTION
         </button>
       </div>
       <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -1773,7 +1773,7 @@ const Authentication = () => {
         return (
           <div className={classes.BlankCanvas} style={height}>
             <div className={classes.Header}>
-              <div>How to Get Paid Instantly.</div>
+              <div>Pick a Payment Processor</div>
             </div>
             <div>
               {showDetail()}
@@ -1864,7 +1864,7 @@ const Authentication = () => {
         return (
           <div className={classes.BlankCanvas} style={height}>
             <div className={classes.Header}>
-              <div>Select Your Plan!</div>
+              <div>Pick a Subscription Plan</div>
             </div>
             <div>
               {showDetail()}

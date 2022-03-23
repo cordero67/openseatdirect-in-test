@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, useCallback, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import queryString from "query-string";
 import ReactHtmlParser from "html-react-parser";
@@ -109,70 +109,14 @@ const TicketSelection = () => {
   };
 
 
-  useEffect(() => {
-
-    ////
-    console.log ("in useEffect...w eventNum=", eventNum_url);
-    if( isValidEventNum(eventNum_url)){ 
-        setIsLoadingEvent(true);
-        getAPIEvent(eventNum_url)
-        .then (r=>{
-          console.log ("return fromgetAPIEvent", r);
-          if (r.ok) {
-            loadTicketEventData(r.data);
-            setEventAPIData(r.data);
-            setHasError(false);
-            setDisplay("main");
-          } else {
-            setHasError(true);
-            debugger;
-            setDisplay("connection");
-          }
-        })
-        .catch ((e) =>{
-          debugger;
-          console.log ("catch fromgetAPIEvent 133", e);
-          setHasError(true);
-          setDisplay("connection");
-        })
-        .finally (()=>{
-          setIsLoadingEvent(false)
-        });
-    
-  
-    }
-
-
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      setCustomerInformation({
-        name: tempUser.user.name,
-        email: tempUser.user.email,
-        sessionToken: tempUser.token,
-        userId: tempUser.user._id,
-      });
-    }
-
-    stylingUpdate(window.innerWidth, window.innerHeight);
-
-    console.log ("useEffect 157");
-  }, []);
-
-
-  const loadTicketEventData = (eventJson)=>{
+  const loadTicketEventData = useCallback ((eventJson)=>{
     let res = eventJson;
     console.log(
       "Current TicketSelection: EVENT DATA OBJECT from Server: in 'getEventData()': ",
       res
     );
     console.log("res: ", res);
-
     eventDetails = loadEventDetails(res);
-
     console.log("I am here");
     console.log("eventDetails: ", eventDetails);
     // checks if an order exists in local storage
@@ -196,7 +140,65 @@ const TicketSelection = () => {
       setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
       setOrderTotals(loadOrderTotals(res));
     }
-  }
+}, []);
+
+
+  useEffect(() => {
+
+    let isSubscribed = true;
+
+    console.log ("in useEffect...w eventNum=", eventNum_url);
+    if( isValidEventNum(eventNum_url)){ 
+        setIsLoadingEvent(true);
+        getAPIEvent(eventNum_url)
+        .then (r=>{
+          if (!isSubscribed) return null;
+          console.log ("return fromgetAPIEvent", r);
+          if (r.ok) {
+            loadTicketEventData(r.data);
+            setEventAPIData(r.data);
+            setHasError(false);
+            setDisplay("main");
+          } else {
+            setHasError(true);
+            debugger;
+            setDisplay("connection");
+          }
+        })
+        .catch ((e) =>{
+          if (!isSubscribed) return null;
+          console.log ("catch fromgetAPIEvent 133", e);
+          setHasError(true);
+          setDisplay("connection");
+        })
+        .finally (()=>{
+          if (!isSubscribed) return null;
+          setIsLoadingEvent(false)
+        });
+    };
+
+    
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      setCustomerInformation({
+        name: tempUser.user.name,
+        email: tempUser.user.email,
+        sessionToken: tempUser.token,
+        userId: tempUser.user._id,
+      });
+    }
+
+    stylingUpdate(window.innerWidth, window.innerHeight);
+
+    return () => { isSubscribed = false}
+
+  }, [eventNum_url, loadTicketEventData]);
+
+
 
   // receives Event Data from server and populates several control variables
   const eventData = (eventID) => {

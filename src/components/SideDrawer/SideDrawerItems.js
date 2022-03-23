@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-import { isAuthenticated } from "../../Users/apiUsers";
+import { isAuthenticated,signout } from "../../Users/apiUsers";
 
-import { signout } from "./apiSideDrawer";
+///import { signout } from "./apiSideDrawer";
 
 import classes from "./SideDrawerItems.module.css";
 

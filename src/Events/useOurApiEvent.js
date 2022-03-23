@@ -41,12 +41,13 @@ export const getAPIEvent = (eventNumString) =>{
 
       console.log (">>>>> reloadEventData, evnum =>>>>", reloadEventData, evnum,
       localStorage.getItem(`eventNum`),
-      evnum!==localStorage.getItem(`eventNum`),"apilosded=",JSON.parse(localStorage.getItem ('eventAPILoaded')));
+      evnum!==localStorage.getItem(`eventNum`),"eventAPILoaded=",JSON.parse(localStorage.getItem ('eventAPILoaded')));
       
       if (!reloadEventData ) {
         console.log ("resolving with stored data", reloadEventData);
         return resolve ({ok:true, data: JSON.parse (localStorage.getItem (`eventAPIData`))});
       };
+
 
       let url = `${API}/events/${evnum}`;  
       console.log ("continue after resolving w url=", url);
