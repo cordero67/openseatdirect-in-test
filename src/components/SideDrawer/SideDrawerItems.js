@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-import { isAuthenticated } from "../../Users/apiUsers";
+import { isAuthenticated,signout } from "../../Users/apiUsers";
 
-import { signout } from "./apiSideDrawer";
+///import { signout } from "./apiSideDrawer";
 
 import classes from "./SideDrawerItems.module.css";
 
@@ -94,7 +94,7 @@ const SideDrawerItems = (props) => {
               props.clicked();
             }}
           >
-            Sign In
+            Log in
           </NavLink>
         </li>
       )}
@@ -109,7 +109,7 @@ const SideDrawerItems = (props) => {
               signout(() => {});
             }}
           >
-            Sign Out
+            Log out
           </NavLink>
         </li>
       )}

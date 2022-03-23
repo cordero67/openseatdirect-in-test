@@ -124,7 +124,7 @@ const SignIn = () => {
             });
           }}
         >
-          SIGN IN TO YOUR ACCOUNT
+          Log in
         </button>
       </div>
     </Fragment>
@@ -139,7 +139,7 @@ const SignIn = () => {
         to="/signup"
         style={{ fontWeight: "600", color: "blue", textAlign: "right" }}
       >
-        Create account
+        Sign up
       </Link>
     </div>
   );
@@ -147,7 +147,7 @@ const SignIn = () => {
   return (
     <div className={classes.MainContainer}>
       <div className={classes.BlankCanvas} style={{ height: "420px" }}>
-        <div className={classes.Header}>Welcome back</div>
+        <div className={classes.Header}>Log in</div>
         <div>
           {showError()}
           {signInForm}

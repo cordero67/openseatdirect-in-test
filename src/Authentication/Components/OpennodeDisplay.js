@@ -25,11 +25,11 @@ const OpennodeDisplay = (props) => {
   // OSDFREE promo code plans
   const blockchainOptions = [
     {
-      label: "Dev / Test Net",
+      label: "Dev / Testnet",
       value: true,
     },
     {
-      label: "Live / Main Net",
+      label: "Live / Mainnet",
       value: false,
     },
   ];
@@ -132,7 +132,18 @@ const OpennodeDisplay = (props) => {
         />
       </div>
       <div style={{ paddingBottom: "20px", width: "340px" }}>
-        <label style={{ fontSize: "15px" }}>Settlement Currency:</label>
+        <div style={{ fontSize: "15px" }}>
+            Settlement Currency: (see auto_settle field {" "}
+            <a
+              href="https://developers.opennode.com/reference/create-charge" 
+              target="_blank"
+              rel="noreferrer"
+            >
+              here
+            </a>
+            )
+        </div>
+
         <RadioForm
           details={settleOptions}
           group="settleOptioneGroup"
@@ -143,7 +154,17 @@ const OpennodeDisplay = (props) => {
         />
       </div>
       <div style={{ width: "340px" }}>
-        <label style={{ fontSize: "15px" }}>Bitcoin Blockchain:</label>
+        <div style={{ fontSize: "15px" }}>
+            Bitcoin Blockchain:  (to try dev setup {" "}
+            <a
+              href="https://dev.opennode.com/" 
+              target="_blank"
+              rel="noreferrer"
+            >
+              here
+            </a>
+            )
+        </div>
         <RadioForm
           details={blockchainOptions}
           group="blockchainOptionGroup"

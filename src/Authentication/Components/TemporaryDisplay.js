@@ -149,7 +149,6 @@ const TemporaryDisplay = (props) => {
         props.spinnerChange(false);
       });
   };
-
   const temporaryForm = () => {
     const regsuper = /\b\d{6}\b/;
     let disabled = !regsuper.test(props.temporary);

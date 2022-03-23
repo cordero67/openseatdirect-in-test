@@ -440,7 +440,7 @@ const CustomerInfo = (props) => {
                 className={classes.BlueText}
                 onClick={() => setModalStatus(true)}
               >
-                Sign In
+                Log in
               </button>
             </div>
             <GuestForm

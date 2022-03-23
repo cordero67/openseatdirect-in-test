@@ -88,7 +88,7 @@ const SignUpDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>E-mail Address</label>
+          <label style={{ fontSize: "15px" }}>Email Address</label>
           <input
             className={classes.InputBox}
             type="email"
