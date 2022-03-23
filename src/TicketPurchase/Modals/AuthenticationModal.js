@@ -855,7 +855,7 @@ const Authentication = (props) => {
             submitSignIn();
           }}
         >
-          SIGN IN TO YOUR ACCOUNT
+          Log in
         </button>
       </div>
     </Fragment>
@@ -880,7 +880,7 @@ const Authentication = (props) => {
             submitForgot();
           }}
         >
-          SUBMIT YOUR EMAIL
+          Submit Email
         </button>
       </div>
     </Fragment>
@@ -905,7 +905,7 @@ const Authentication = (props) => {
             submitTemporary();
           }}
         >
-          SUBMIT CONFIRMATION CODE
+          Submit Confirmation Code
         </button>
       </div>
     </Fragment>
@@ -930,7 +930,7 @@ const Authentication = (props) => {
             submitSignUp();
           }}
         >
-          SUBMIT YOUR EMAIL
+          Submit Email
         </button>
       </div>
     </Fragment>
@@ -955,7 +955,7 @@ const Authentication = (props) => {
             submitConfirmation();
           }}
         >
-          SUBMIT YOUR CODE
+          Submit Code
         </button>
       </div>
     </Fragment>
@@ -980,7 +980,7 @@ const Authentication = (props) => {
             submitPassword();
           }}
         >
-          REGISTER YOUR PASSWORD
+          Register Password
         </button>
       </div>
     </Fragment>
@@ -1005,7 +1005,7 @@ const Authentication = (props) => {
             submitUsername();
           }}
         >
-          CHANGE YOUR USERNAME
+          Change Username
         </button>
       </div>
       <div style={{ paddingTop: "10px" }}>
@@ -1016,7 +1016,7 @@ const Authentication = (props) => {
             //props.submit();
           }}
         >
-          CHANGE IT LATER
+          Next
         </button>
       </div>
     </Fragment>
@@ -1042,7 +1042,7 @@ const Authentication = (props) => {
             closeModal();
           }}
         >
-          CONTINUE
+          Continue
         </button>
       </div>
     </Fragment>
@@ -1069,7 +1069,7 @@ const Authentication = (props) => {
             setModalSetting("signup");
           }}
         >
-          Create account
+          Sign up
         </button>
       </div>
     </div>
@@ -1095,7 +1095,7 @@ const Authentication = (props) => {
             setModalSetting("signin");
           }}
         >
-          Sign In
+          Log in
         </button>
       </div>
     </div>
@@ -1111,7 +1111,7 @@ const Authentication = (props) => {
             setModalSetting("signin");
           }}
         >
-          Sign In
+          Log in
         </button>
       </div>
     </div>
@@ -1161,7 +1161,7 @@ const Authentication = (props) => {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            <div>Welcome back</div>
+            <div>Log in</div>
             <div style={{ textAlign: "right" }}>
               <ion-icon
                 style={{
@@ -1253,8 +1253,8 @@ const Authentication = (props) => {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            <div>Tell us about yourself</div>
-            <div style={{ textAlign: "right" }}>
+            <div>Sign Up</div>
+            <div style={{ textAlign: "center" }}>
               <ion-icon
                 style={{
                   fontWeight: "600",

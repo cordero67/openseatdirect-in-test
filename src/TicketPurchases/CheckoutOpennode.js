@@ -10,10 +10,8 @@ const CheckoutOpennode = (props) => {
   //    let tempUser = JSON.parse(localStorage.getItem("user"));
   //    const  isSignedUser = tempUser !=null;
   //    const isGuest = "guestInfo" in tempCart && ! isSignedUser;
-
   //    const [stripePromise, setStripePromise] = useState();
 
-  const [onodeError, setOnodeError] = useState(null);
 
   const event = props?.event
     ? props.event
@@ -90,21 +88,22 @@ const CheckoutOpennode = (props) => {
     useOurApi(method, url, myHeaders, body, initialData);
 
   if (isLoading) {
-    return <div>IS LOADING ...</div>;
-  } else if (hasError) {
-    return <div>HAS OUR API ERROR!!!! ...</div>;
-  } else if (onodeError) {
-    console.log("onennodeError=", onodeError);
-    return <div>HAS OPENNODE ERROR!!!! ...</div>;
-  } else {
-    if (data?.success) {
+    return <div> Loading please wait...</div>;
+  } else if (networkError) {
+    console.log("onennodeError=");
+    return <div>These was a network connectivity problem. Please check your connection, click the back button on your browser and try again.</div>;
+  } else if (hasError) {    // must check networkError before hasError
+    return <div>System problem with bitcoin payments. Please click the back button on your browser and try again or inform the event creator...</div>;
+  } else if (data?.success) {
       window.location.href = data.redirect_url;
-      return <div>redirecting to Opennode ...</div>;
-    } else {
+      return <div>redirecting to Opennode to complete payment...</div>;
+  } else if (data?.error) {
+      return <div>{data.error}</div>;
+  } else {
       console.log("Something went wrong");
-      return <div>Something went wrong. try again</div>;
-    }
+      return <div>Something went wrong. Please try again or report a problem to the event creator.</div>;
   }
-};
+}
+
 
 export default CheckoutOpennode;

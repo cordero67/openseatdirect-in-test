@@ -205,7 +205,7 @@ const Home = () => {
               }
             }}
           >
-            SIGN UP NOW
+            Sign up
           </button>
         </div>
       );
@@ -265,7 +265,7 @@ const Home = () => {
               }
             }}
           >
-            SIGN UP NOW
+            Sign up
           </button>
         </div>
       );
@@ -325,7 +325,7 @@ const Home = () => {
               }
             }}
           >
-            SIGN UP NOW
+            Sign up
           </button>
         </div>
       );
@@ -385,7 +385,7 @@ const Home = () => {
               }
             }}
           >
-            SIGN UP NOW
+            Sign up
           </button>
         </div>
       );
@@ -445,7 +445,7 @@ const Home = () => {
               }
             }}
           >
-            SIGN UP NOW
+            Sign up
           </button>
         </div>
       );
@@ -1359,7 +1359,7 @@ const Home = () => {
                   }
                 }}
               >
-                SIGN UP NOW
+                Sign up
               </button>
             </div>
             <div
@@ -1400,7 +1400,7 @@ const Home = () => {
               </a>
             </div>
             <div className={classes.CopyRight} style={{ color: "white" }}>
-              Copyright &copy; 2021 Open Seat Direct LLC | All Rights Reserved
+              Copyright &copy; 2022 Open Seat Direct LLC | All Rights Reserved
             </div>
             <div>
               <button

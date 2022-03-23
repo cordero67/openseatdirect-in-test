@@ -100,7 +100,7 @@ const GuestInfo = (props) => {
             className={classes.BlueText}
             onClick={() => setModalStatus(true)}
           >
-            Sign In
+            Log in
           </button>
         </div>{" "}
         <div style={{ paddingBottom: "20px" }}>

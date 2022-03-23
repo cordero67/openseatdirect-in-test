@@ -59,8 +59,8 @@ const SignUpDisplay = (props) => {
 
   const alternateSignUpInputs = (
     <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        Back to{" "}
+      <div style={{ textAlign: "right" }}>
+        Already a member?{" "}
         <button
           className={classes.BlueText}
           onClick={() => {
@@ -68,7 +68,7 @@ const SignUpDisplay = (props) => {
             props.displayChange("signin");
           }}
         >
-          Sign In
+        Log in
         </button>
       </div>
     </div>
@@ -88,7 +88,7 @@ const SignUpDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>E-mail Address</label>
+          <label style={{ fontSize: "15px" }}>Email Address</label>
           <input
             className={classes.InputBox}
             type="email"
@@ -154,7 +154,7 @@ const SignUpDisplay = (props) => {
               padding: "0",
             }}
           />
-          <div style={{ paddingTop: "5px" }}>Or sign up with</div>
+          <div style={{ paddingTop: "5px" }}>or continue with</div>
           <hr
             style={{
               display: "block",
@@ -264,8 +264,8 @@ const SignUpDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.Header}>
-          <div>Tell us about yourself</div>
-          <div style={{ textAlign: "right" }}>
+          <div>Sign Up</div>
+          <div style={{ textAlign: "center" }}>
             <ion-icon
               style={{
                 fontWeight: "600",

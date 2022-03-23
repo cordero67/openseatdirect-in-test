@@ -65,7 +65,7 @@ const PasswordRecovery = () => {
       <div>
         Back to{" "}
         <Link to="/signin" style={{ fontWeight: "600", color: "blue" }}>
-          Signin
+          Log in
         </Link>
       </div>
     </div>
@@ -106,7 +106,7 @@ const PasswordRecovery = () => {
       <div>
         Back to{" "}
         <Link to="/signin" style={{ fontWeight: "600", color: "blue" }}>
-          Sign In
+          Log in
         </Link>
       </div>
     </div>

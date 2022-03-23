@@ -67,7 +67,7 @@ const ForgotDisplay = (props) => {
             props.displayChange("signin");
           }}
         >
-          Sign In
+          Log in
         </button>
       </div>
     </div>

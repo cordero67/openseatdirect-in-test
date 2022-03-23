@@ -75,7 +75,7 @@ const PasswordReset = () => {
       <div>
         Back to{" "}
         <Link to="/signin" style={{ fontWeight: "600", color: "blue" }}>
-          Signin
+          Log in
         </Link>
       </div>
     </div>
@@ -123,7 +123,7 @@ const PasswordReset = () => {
       <div className={classes.Section}>
         Go back to{" "}
         <Link to="/signin" style={{ fontWeight: "600", color: "blue" }}>
-          Sign In.
+          Log in
         </Link>
       </div>
     </Fragment>

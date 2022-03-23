@@ -1474,7 +1474,7 @@ const Authentication = () => {
               }
             }}
           >
-            SIGN IN TO YOUR ACCOUNT
+            Log in
           </button>
         </div>
         <div
@@ -2761,7 +2761,7 @@ const Authentication = () => {
             setDisplay("signup");
           }}
         >
-          Create account
+          Sign up
         </button>
       </div>
     </div>
@@ -2789,7 +2789,7 @@ const Authentication = () => {
             setDisplay("signin");
           }}
         >
-          Sign In
+          Log in
         </button>
       </div>
     </div>
@@ -2806,7 +2806,7 @@ const Authentication = () => {
             setDisplay("signin");
           }}
         >
-          Sign In
+          Sign in
         </button>
       </div>
     </div>
@@ -2857,7 +2857,7 @@ const Authentication = () => {
           <div className={classes.Modal}>
             <div className={classes.BlankCanvas}>
               <div className={classes.Header}>
-                <div>Welcome back!</div>
+                <div>Log in</div>
               </div>
               <div>
                 {showDetail()}
@@ -2954,7 +2954,7 @@ const Authentication = () => {
           <div className={classes.Modal}>
             <div className={classes.BlankCanvas}>
               <div className={classes.Header}>
-                <div>Tell us about yourself.</div>
+                <div>Sign Up</div>
               </div>
               <div>
                 {showDetail()}

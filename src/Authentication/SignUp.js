@@ -98,7 +98,7 @@ const SignUp = () => {
           />
           <span></span>
           <label style={{paddingLeft: "10px"}}  for="vendorIntent">
-            {" "}Sign Up to also <span style={{color: "#008F00", fontWeight: "600"}}>Create Events</span>
+            {" "}Sign up to also <span style={{color: "#008F00", fontWeight: "600"}}>Create Events</span>
           </label>
         </div>
       </div>
@@ -161,7 +161,7 @@ const SignUp = () => {
       <div>
         Back to{" "}
         <Link to="/signin" style={{fontWeight: "600", color: "blue"}}>
-          Sign In
+          Log in
         </Link>
       </div>
     </div>

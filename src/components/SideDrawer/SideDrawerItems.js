@@ -94,7 +94,7 @@ const SideDrawerItems = (props) => {
               props.clicked();
             }}
           >
-            Sign In
+            Log in
           </NavLink>
         </li>
       )}
@@ -109,7 +109,7 @@ const SideDrawerItems = (props) => {
               signout(() => {});
             }}
           >
-            Sign Out
+            Log out
           </NavLink>
         </li>
       )}

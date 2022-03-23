@@ -68,6 +68,7 @@ const SignInDisplay = (props) => {
         </button>
       </div>
       <div style={{ textAlign: "right" }}>
+        <div style={{ textAlign: "right" }}>Not a member yet?</div>
         <button
           className={classes.BlueText}
           onClick={() => {
@@ -76,7 +77,7 @@ const SignInDisplay = (props) => {
             props.displayChange("signup");
           }}
         >
-          Create account
+          Sign up
         </button>
       </div>
     </div>
@@ -99,7 +100,7 @@ const SignInDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>E-mail Address</label>
+          <label style={{ fontSize: "15px" }}>Email Address</label>
           <input
             className={classes.InputBox}
             type="email"
@@ -170,7 +171,7 @@ const SignInDisplay = (props) => {
               }
             }}
           >
-            SIGN IN TO YOUR ACCOUNT
+            Log in
           </button>
         </div>
         <div
@@ -307,8 +308,8 @@ const SignInDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.Header}>
-          <div>Welcome back</div>
-          <div style={{ textAlign: "right" }}>
+          <div>Log in to Open Seat Direct</div>
+          <div style={{ textAlign: "center" }}>
             <ion-icon
               style={{
                 fontWeight: "600",
@@ -326,7 +327,7 @@ const SignInDisplay = (props) => {
         </div>
       );
     } else {
-      return <div className={classes.Header}>Welcome back!</div>;
+      return <div className={classes.Header}>Log in to Open Seat Direct</div>;
     }
   };
 
