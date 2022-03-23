@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef,Fragment } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import queryString from "query-string";
 import dateFormat from "dateformat";
 import ReactHtmlParser from "html-react-parser";
@@ -16,7 +16,6 @@ import { getAPIEvent } from "./useOurApiEvent";
 console.log("loading eventDetails page ....");
 // defines an event's NON ticket type specific information
 let eventDetails;
-
 
 const EventDetail = () => {
   console.log("in EventDetails func ....");
@@ -41,11 +40,7 @@ const EventDetail = () => {
       </div>
     );
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 3adcd8d42d5dfd747b0a42cdba513948888d0ab7
   let eventNum_url = queryString.parse(window?.location?.search)?.eventID;
   // get eventNum from local storage and check if data has been loaded
   if (!isValidEventNum(eventNum_url)) {
@@ -55,65 +50,42 @@ const EventDetail = () => {
   }
 
   useEffect(() => {
-<<<<<<< HEAD
-    console.log("in useEffect...w eventNum=", eventNum_url);
-    setIsLoadingEvent(true);
-    getAPIEvent(eventNum_url)
-      .then((r) => {
-        console.log("return fromgetAPIEvent", r);
-        if (r.ok) {
-          loadEventDetails(r.data);
-=======
-//https://stackoverflow.com/questions/56450975/to-fix-cancel-all-subscriptions-and-asynchronous-tasks-in-a-useeffect-cleanup-f
+    //https://stackoverflow.com/questions/56450975/to-fix-cancel-all-subscriptions-and-asynchronous-tasks-in-a-useeffect-cleanup-f
 
     let isSubscribed = true;
 
-    console.log ("in useEffect...w eventNum=", eventNum_url);
-    if( isValidEventNum(eventNum_url)){ 
+    console.log("in useEffect...w eventNum=", eventNum_url);
+    if (isValidEventNum(eventNum_url)) {
       setIsLoadingEvent(true);
       getAPIEvent(eventNum_url)
-      .then (r=>{
-        if (!isSubscribed) return null;
-        console.log ("return fromgetAPIEvent", r);
-        if (r.ok) {
-          loadEventDetails (r.data);
->>>>>>> 3adcd8d42d5dfd747b0a42cdba513948888d0ab7
-          setEventAPIData(r.data);
-          setHasError(false);
-        } else {
+        .then((r) => {
+          if (!isSubscribed) return null;
+          console.log("return fromgetAPIEvent", r);
+          if (r.ok) {
+            loadEventDetails(r.data);
+            setEventAPIData(r.data);
+            setHasError(false);
+          } else {
+            setHasError(true);
+          }
+        })
+        .catch((e) => {
+          if (!isSubscribed) return null;
+          console.log("catch fromgetAPIEvent", e);
           setHasError(true);
-        }
-      })
-<<<<<<< HEAD
-      .catch((e) => {
-        console.log("catch fromgetAPIEvent", e);
-        setHasError(true);
-      })
-      .finally(() => {
-        setIsLoadingEvent(false);
-      });
+        })
+        .finally(() => {
+          if (!isSubscribed) return null;
+          setIsLoadingEvent(false);
+        });
+    }
 
     stylingUpdate(window.innerWidth, window.innerHeight);
-  }, []);
-=======
-      .catch ((e) =>{
-        if (!isSubscribed) return null;
-        console.log ("catch fromgetAPIEvent", e);
-        setHasError(true);
-      })
-      .finally (()=>{
-        if (!isSubscribed) return null;
-        setIsLoadingEvent(false)
-      });
+
+    return () => {
+      isSubscribed = false;
     };
-
-    stylingUpdate(window.innerWidth, window.innerHeight);
-
-    return () => { isSubscribed = false}
   }, [eventNum_url]);
-
-
->>>>>>> 3adcd8d42d5dfd747b0a42cdba513948888d0ab7
 
   const eventData = (eventID) => {
     getEventData(eventID)
@@ -156,17 +128,12 @@ const EventDetail = () => {
       organizer: "", // Need to add this field to "Event" object from server
       startDateTime: event.startDateTime, //
       endDateTime: event.endDateTime, //
-<<<<<<< HEAD
-      largeLogo: event.photoUrl1
-        ? event.photoUrl1
+      largeLogo: event?.photoUrl1
+        ? event?.photoUrl1
         : "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public", //
-      smallLogo: event.photoUrl2
-        ? event.photoUrl2
+      smallLogo: event?.photoUrl2
+        ? event?.photoUrl2
         : "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public", //
-=======
-      largeLogo: event?.photoUrl1 ? event?.photoUrl1 :"https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public", //
-      smallLogo: event?.photoUrl2 ? event?.photoUrl2: "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public", //
->>>>>>> 3adcd8d42d5dfd747b0a42cdba513948888d0ab7
       eventUrl: event.eventUrl, //
       locationVenueName: event.locationVenueName, //
       locationAddress1: event.locationAddress1, //
@@ -198,7 +165,6 @@ const EventDetail = () => {
   window.onresize = function (event) {
     stylingUpdate(window.innerWidth);
   };
-
 
   let image = () => {
     if (!isLoadingEvent) {
