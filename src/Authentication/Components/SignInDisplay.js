@@ -15,6 +15,33 @@ const SignInDisplay = (props) => {
     return response;
   };
 
+  const handleSignIn = (data) => {
+    if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data));
+      props.values({
+        email: data.user?.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        expired: false,
+        confirmation: "",
+        resent: false,
+        resetToken: "",
+        sessionToken: data.token,
+        userId: data.user?._id,
+        accountNum: data.user?.accountId?.accountNum,
+      });
+      props.submit();
+    } else {
+      props.submission({
+        message: data.error,
+        error: true,
+      });
+      props.displayChange("signin");
+      props.spinnerChange(false);
+    }
+  };
+
   const submitSignIn = () => {
     props.spinnerChange(true);
     props.submission({ message: "", error: false });
@@ -53,35 +80,6 @@ const SignInDisplay = (props) => {
       });
   };
 
-  const alternateSignInInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.resetValues();
-            props.submission({ message: "", error: false, redirect: "" });
-            props.displayChange("forgot");
-          }}
-        >
-          Forgot password?
-        </button>
-      </div>
-      <div style={{ textAlign: "right" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.resetValues();
-            props.submission({ message: "", error: false, redirect: "" });
-            props.displayChange("signup");
-          }}
-        >
-          Create account
-        </button>
-      </div>
-    </div>
-  );
-
   const signInForm = () => {
     const regEmail =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -107,7 +105,7 @@ const SignInDisplay = (props) => {
             onChange={props.inputChange}
             value={props.email}
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              props.submission({ message: "", error: false });
             }}
           />
           {props.email && !regEmail.test(props.email) ? (
@@ -135,7 +133,7 @@ const SignInDisplay = (props) => {
             onChange={props.inputChange}
             value={props.password}
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              props.submission({ message: "", error: false });
             }}
           />
           {props.email && !regPassword.test(props.password) ? (
@@ -159,18 +157,12 @@ const SignInDisplay = (props) => {
             className={buttonClass}
             disabled={disabled}
             onClick={() => {
-              if (disabled) {
-                props.submission({
-                  message: "Invalid email address",
-                  error: true,
-                  redirect: "",
-                });
-              } else {
+              if (!disabled) {
                 submitSignIn();
               }
             }}
           >
-            SIGN IN TO YOUR ACCOUNT
+            LOG IN TO YOUR ACCOUNT
           </button>
         </div>
         <div
@@ -195,7 +187,9 @@ const SignInDisplay = (props) => {
               padding: "0",
             }}
           />
-          <div style={{ paddingTop: "5px" }}>or continue with</div>
+          <div style={{ paddingTop: "5px", fontWeight: "600" }}>
+            Or Log In with
+          </div>
           <hr
             style={{
               display: "block",
@@ -226,18 +220,16 @@ const SignInDisplay = (props) => {
             success={(data) => {
               console.log("data: ", data);
               props.values({
-                name: "",
-                email: data.user.email,
+                email: data.user?.email,
                 password: "",
-                vendorIntent: "",
                 temporary: "",
                 reissued: false,
+                expired: false,
                 confirmation: "",
                 resent: false,
-                username: data.user.username,
                 resetToken: "",
                 sessionToken: data.token,
-                userId: data.user.userId,
+                userId: data.user?.userId,
                 accountNum: data.user?.accountId?.accountNum,
               });
               props.submit();
@@ -246,36 +238,6 @@ const SignInDisplay = (props) => {
         </div>
       </Fragment>
     );
-  };
-
-  const handleSignIn = (data) => {
-    if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
-      props.values({
-        name: "",
-        email: "",
-        password: "",
-        vendorIntent: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        username: "",
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
-      props.submit();
-    } else {
-      props.submission({
-        message: data.error,
-        error: true,
-      });
-      props.displayChange("signin");
-      props.spinnerChange(false);
-    }
   };
 
   const showError = () => {
@@ -302,6 +264,35 @@ const SignInDisplay = (props) => {
       return null;
     }
   };
+
+  const alternateSignInInputs = (
+    <div className={classes.Alternates}>
+      <div style={{ textAlign: "left" }}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.resetValues();
+            props.submission({ message: "", error: false, redirect: "" });
+            props.displayChange("forgot");
+          }}
+        >
+          Forgot password?
+        </button>
+      </div>
+      <div style={{ textAlign: "right" }}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.resetValues();
+            props.submission({ message: "", error: false });
+            props.displayChange("signup");
+          }}
+        >
+          Create account
+        </button>
+      </div>
+    </div>
+  );
 
   const header = () => {
     if (props.authOrigin !== true) {

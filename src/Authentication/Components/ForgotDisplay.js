@@ -15,6 +15,34 @@ const ForgotDisplay = (props) => {
     return response;
   };
 
+  const handleForgot = (data) => {
+    console.log("data from forgot api: ", data);
+    if (data.status) {
+      props.values({
+        email: data.user?.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        expired: false,
+        confirmation: "",
+        resent: false,
+        resetToken: "",
+        sessionToken: "",
+        userId: "",
+        accountNum: "",
+      });
+      props.displayChange("temporary");
+      props.spinnerChange(false);
+    } else {
+      props.submission({
+        message: data.error,
+        error: true,
+      });
+      props.displayChange("forgot");
+      props.spinnerChange(false);
+    }
+  };
+
   const submitForgot = () => {
     props.spinnerChange(true);
     props.submission({
@@ -54,24 +82,6 @@ const ForgotDisplay = (props) => {
         props.spinnerChange(false);
       });
   };
-
-  const alternateForgotInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        Back to{" "}
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.resetValues();
-            props.submission({ message: "", error: false, redirect: "" });
-            props.displayChange("signin");
-          }}
-        >
-          Sign In
-        </button>
-      </div>
-    </div>
-  );
 
   const forgotForm = () => {
     const regsuper =
@@ -119,12 +129,7 @@ const ForgotDisplay = (props) => {
             className={buttonClass}
             disabled={disabled}
             onClick={() => {
-              if (disabled) {
-                props.submission({
-                  message: "Invalid email address",
-                  error: true,
-                });
-              } else {
+              if (!disabled) {
                 submitForgot();
               }
             }}
@@ -134,35 +139,6 @@ const ForgotDisplay = (props) => {
         </div>
       </Fragment>
     );
-  };
-
-  const handleForgot = (data) => {
-    if (data.status) {
-      props.values({
-        name: "",
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        username: "",
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
-      props.displayChange("temporary");
-      props.spinnerChange(false);
-    } else {
-      props.submission({
-        message: data.error,
-        error: true,
-      });
-      props.displayChange("forgot");
-      props.spinnerChange(false);
-    }
   };
 
   const showError = () => {
@@ -189,6 +165,35 @@ const ForgotDisplay = (props) => {
       return null;
     }
   };
+
+  const alternateForgotInputs = (
+    <div className={classes.Alternates}>
+      <div style={{ textAlign: "left" }}>
+        Back to{" "}
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.submission({ message: "", error: false });
+            props.displayChange("signin");
+          }}
+        >
+          Log in
+        </button>
+      </div>
+      <div style={{ textAlign: "right" }}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.resetValues();
+            props.submission({ message: "", error: false, redirect: "" });
+            props.displayChange("signup");
+          }}
+        >
+          Create account
+        </button>
+      </div>
+    </div>
+  );
 
   const header = () => {
     if (props.authOrigin !== true) {

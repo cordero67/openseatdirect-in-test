@@ -60,7 +60,7 @@ const SignUpDisplay = (props) => {
   const alternateSignUpInputs = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
-        Back to{" "}
+        Already a member?{" "}
         <button
           className={classes.BlueText}
           onClick={() => {
@@ -68,7 +68,7 @@ const SignUpDisplay = (props) => {
             props.displayChange("signin");
           }}
         >
-          Sign In
+          Log in
         </button>
       </div>
     </div>
@@ -113,6 +113,7 @@ const SignUpDisplay = (props) => {
               </span>
             </div>
           ) : null}
+          <div></div>
         </div>
         <div style={{ paddingTop: "10px" }}>
           <button
@@ -131,6 +132,29 @@ const SignUpDisplay = (props) => {
           >
             SUBMIT YOUR EMAIL
           </button>
+        </div>
+        <div style={{ paddingTop: "10px" }}>
+          By clicking 'Submit Your Email' I agree to Open Seat Direct's{" "}
+          <a
+            className={classes.BlueText}
+            styles={{ border: "none", outline: "none" }}
+            href="https://www.openseatdirect.com/privacy-policy/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Privacy Policy
+          </a>{" "}
+          and{" "}
+          <a
+            className={classes.BlueText}
+            styles={{ border: "none", outline: "none" }}
+            href="https://www.openseatdirect.com/terms-and-conditions/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Terms and Conditions
+          </a>
+          .
         </div>
         <div
           style={{
@@ -154,7 +178,9 @@ const SignUpDisplay = (props) => {
               padding: "0",
             }}
           />
-          <div style={{ paddingTop: "5px" }}>Or sign up with</div>
+          <div style={{ paddingTop: "5px", fontWeight: "600" }}>
+            Or Sign Up with
+          </div>
           <hr
             style={{
               display: "block",
@@ -264,7 +290,10 @@ const SignUpDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.Header}>
-          <div>Tell us about yourself</div>
+          <div>
+            <div style={{ lineHeight: "30px" }}>Ready to join us at</div>
+            <div style={{ lineHeight: "30px" }}>Open Seat Direct?</div>
+          </div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
               style={{
@@ -283,7 +312,14 @@ const SignUpDisplay = (props) => {
         </div>
       );
     } else {
-      return <div className={classes.Header}>Tell us about yourself</div>;
+      return (
+        <div className={classes.Header}>
+          <div>
+            <div style={{ lineHeight: "30px" }}>Ready to join us at</div>
+            <div style={{ lineHeight: "30px" }}>Open Seat Direct?</div>
+          </div>
+        </div>
+      );
     }
   };
 

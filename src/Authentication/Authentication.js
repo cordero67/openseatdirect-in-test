@@ -6,7 +6,8 @@ import ForgotDisplay from "./Components/ForgotDisplay";
 import TemporaryDisplay from "./Components/TemporaryDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
 import ConfirmationDisplay from "./Components/ConfirmationDisplay";
-import PasswordDisplay from "./Components/PasswordDisplay";
+import PasswordDisplay from "./Components/Password2";
+import PaypalDisplay from "./Components/OpennodeDisplay";
 import OpennodeDisplay from "./Components/OpennodeDisplay";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
@@ -51,7 +52,6 @@ const Authentication = () => {
     reissued: false,
     confirmation: "",
     resent: false,
-    username: "",
     resetToken: "",
     sessionToken: "",
     userId: "",
@@ -65,7 +65,6 @@ const Authentication = () => {
     reissued,
     confirmation,
     resent,
-    username,
     resetToken,
     sessionToken,
     userId,
@@ -138,7 +137,7 @@ const Authentication = () => {
   });
 
   const { message, error, redirect } = submissionStatus;
-  const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
+  const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, error
 
   // edit so that it is driven by the "status" value
   const updateSubValues = () => {
@@ -241,7 +240,6 @@ const Authentication = () => {
       reissued: false,
       confirmation: "",
       resent: false,
-      username: tempUser.user.username,
       resetToken: "",
       sessionToken: tempUser.token,
       userId: tempUser.user.accountId.userId,
@@ -492,14 +490,12 @@ const Authentication = () => {
 
   const resetValues = () => {
     setAuthValues({
-      name: "",
       email: "",
       password: "",
       temporary: "",
       reissued: false,
       confirmation: "",
       resent: false,
-      username: "",
       resetToken: "",
       sessionToken: "",
       userId: "",
@@ -1590,13 +1586,13 @@ const Authentication = () => {
     if (display === "signin") {
       return (
         <SignInDisplay
+          authOrigin={true}
           //close={closeModal} NOT IN AUTH
           email={email}
-          error={error}
-          //expired={expired} NOT IN AUTH
-          authOrigin={true}
-          message={message}
           password={password}
+          //expired={expired} NOT IN AUTH
+          message={message}
+          error={error}
           spinner={showSpinner}
           inputChange={handleAuthValueChange}
           spinnerChange={(value) => setShowSpinner(value)}
@@ -1644,13 +1640,13 @@ const Authentication = () => {
     if (display === "temporary") {
       return (
         <TemporaryDisplay
+          authOrigin={true}
           //close={closeModal} NOT IN AUTH
           email={email}
+          message={message}
           reissued={reissued}
           temporary={temporary}
-          message={message}
           error={error}
-          authOrigin={true}
           spinner={showSpinner}
           inputChange={handleAuthValueChange}
           spinnerChange={(value) => setShowSpinner(value)}
@@ -1659,6 +1655,7 @@ const Authentication = () => {
             setSubmissionStatus(input);
           }}
           values={(input) => setAuthValues(input)}
+          resetValues={() => resetValues()}
           submit={() => redirectUser()}
         ></TemporaryDisplay>
       );
@@ -1701,7 +1698,6 @@ const Authentication = () => {
         <ConfirmationDisplay
           //close={closeModal} NOT IN AUTH
           email={email}
-          username={username}
           error={error}
           message={message}
           authOrigin={true}
@@ -1729,7 +1725,6 @@ const Authentication = () => {
         <PasswordDisplay
           //close={closeModal} NOT IN AUTH
           email={email}
-          username={username}
           error={error}
           message={message}
           authOrigin={true}
@@ -1878,7 +1873,7 @@ const Authentication = () => {
     }
   };
 
-  const paypalDisplay = () => {
+  const paypalDisplay2 = () => {
     let height = {};
     if (!error) {
       height = { height: "500px" };
@@ -1901,6 +1896,43 @@ const Authentication = () => {
           </div>
         );
       }
+    } else {
+      return null;
+    }
+  };
+
+  const paypalDisplay = () => {
+    if (display === "paypal") {
+      return (
+        <PaypalDisplay
+          //authOrigin={true}
+          //close={closeModal} NOT IN AUTH
+          error={error}
+          message={message}
+          client={paypalExpress_client_id}
+          secreat={paypalExpress_client_secret}
+          sessionToken={authValues.sessionToken}
+          accountNum={authValues.accountNum}
+          spinner={showSpinner}
+          inputChange={handleSubValueChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          displayChange={(modal) => setDisplay(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          submit={() => {
+            if (getStatus() === 8) {
+              setDisplay("paidCongrats");
+            } else if (getStatus() === 5) {
+              setDisplay("selectPlan");
+            } else if (
+              (getStatus() === 1, getStatus() === 4, getStatus() === 6)
+            ) {
+              setDisplay("gateway");
+            } else setDisplay("signin");
+          }}
+        ></PaypalDisplay>
+      );
     } else {
       return null;
     }

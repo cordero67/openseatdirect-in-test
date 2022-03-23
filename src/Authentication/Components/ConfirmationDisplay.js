@@ -126,21 +126,35 @@ const ConfirmationDisplay = (props) => {
       });
   };
 
-  const alternateConfirmationInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.submission({ message: "", error: false });
-            submitResend();
-          }}
-        >
-          Resend code
-        </button>
-      </div>
-    </div>
-  );
+  const handleConfirmation = (data) => {
+    if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data));
+      props.values({
+        name: "",
+        email: data.user.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        expired: false,
+        confirmation: "",
+        resent: false,
+        username: data.user.username,
+        resetToken: data.user.passwordToken,
+        sessionToken: "",
+        userId: data.user.accountId._id,
+        accountNum: data.user.accountId.accountNum,
+      });
+      props.displayChange("password");
+      props.spinnerChange(false);
+    } else {
+      props.submission({
+        message: data.error,
+        error: true,
+      });
+      props.displayChange("confirmation");
+      props.spinnerChange(false);
+    }
+  };
 
   const confirmationForm = () => {
     const regsuper = /\b\d{6}\b/;
@@ -196,36 +210,6 @@ const ConfirmationDisplay = (props) => {
     );
   };
 
-  const handleConfirmation = (data) => {
-    if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
-      props.values({
-        name: "",
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        username: data.user.username,
-        resetToken: data.user.passwordToken,
-        sessionToken: "",
-        userId: data.user.accountId._id,
-        accountNum: data.user.accountId.accountNum,
-      });
-      props.displayChange("password");
-      props.spinnerChange(false);
-    } else {
-      props.submission({
-        message: data.error,
-        error: true,
-      });
-      props.displayChange("confirmation");
-      props.spinnerChange(false);
-    }
-  };
-
   const showError = () => {
     if (props.error) {
       return (
@@ -249,6 +233,22 @@ const ConfirmationDisplay = (props) => {
       );
     }
   };
+
+  const alternateConfirmationInputs = (
+    <div className={classes.Alternates}>
+      <div style={{ textAlign: "left" }}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.submission({ message: "", error: false });
+            submitResend();
+          }}
+        >
+          Resend code
+        </button>
+      </div>
+    </div>
+  );
 
   const header = () => {
     if (props.authOrigin !== true) {

@@ -15,6 +15,32 @@ const TemporaryDisplay = (props) => {
     return response;
   };
 
+  const handleReissue = (data) => {
+    if (data.status) {
+      props.values({
+        name: "",
+        email: data.user.email,
+        password: "",
+        temporary: "",
+        reissued: true,
+        expired: false,
+        confirmation: "",
+        resent: false,
+        username: "",
+        resetToken: "",
+        sessionToken: "",
+        userId: "",
+        accountNum: "",
+      });
+    } else {
+      props.submission({
+        message: data.error,
+        error: true,
+      });
+      console.log("ERROR: ", data.error);
+    }
+  };
+
   const submitReissue = () => {
     props.submission({
       message: "",
@@ -54,29 +80,31 @@ const TemporaryDisplay = (props) => {
       });
   };
 
-  const handleReissue = (data) => {
+  const handleTemporary = (data) => {
     if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data));
       props.values({
-        name: "",
-        email: data.user.email,
+        email: "",
         password: "",
         temporary: "",
-        reissued: true,
+        reissued: false,
         expired: false,
         confirmation: "",
         resent: false,
-        username: "",
         resetToken: "",
         sessionToken: "",
         userId: "",
-        accountNum: "",
+        accoutNum: "",
       });
+      props.submit();
     } else {
+      console.log("data.error: ", data.error);
       props.submission({
         message: data.error,
         error: true,
       });
-      console.log("ERROR: ", data.error);
+      props.displayChange("temporary");
+      props.spinnerChange(false);
     }
   };
 
@@ -121,40 +149,6 @@ const TemporaryDisplay = (props) => {
         props.spinnerChange(false);
       });
   };
-
-  const alternateTemporaryInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.submission({
-              message: "",
-              error: false,
-            });
-            submitReissue();
-          }}
-        >
-          Resend code
-        </button>
-      </div>
-      <div style={{ textAlign: "right" }}>
-        Back to{" "}
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.submission({
-              message: "",
-              error: false,
-            });
-            props.displayChange("signin");
-          }}
-        >
-          Sign In
-        </button>
-      </div>
-    </div>
-  );
 
   const temporaryForm = () => {
     const regsuper = /\b\d{6}\b/;
@@ -201,12 +195,7 @@ const TemporaryDisplay = (props) => {
             className={buttonClass}
             disabled={disabled}
             onClick={() => {
-              if (disabled) {
-                props.submission({
-                  message: "Invalid confirmation code",
-                  error: true,
-                });
-              } else {
+              if (!disabled) {
                 submitTemporary();
               }
             }}
@@ -216,35 +205,6 @@ const TemporaryDisplay = (props) => {
         </div>
       </Fragment>
     );
-  };
-
-  const handleTemporary = (data) => {
-    if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
-      props.values({
-        name: "",
-        email: "",
-        password: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        username: "",
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-      });
-      props.submit();
-    } else {
-      console.log("data.error: ", data.error);
-      props.submission({
-        message: data.error,
-        error: true,
-      });
-      props.displayChange("temporary");
-      props.spinnerChange(false);
-    }
   };
 
   const showError = () => {
@@ -274,19 +234,52 @@ const TemporaryDisplay = (props) => {
       );
     } else {
       return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Confirmation code resent to your email.
-        </div>
+        <Fragment>
+          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
+            Confirmation code resent to:
+          </div>
+          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+            {props.email}
+          </div>
+        </Fragment>
       );
     }
   };
 
-  let height;
-  if (props.reissued) {
-    height = "288px";
-  } else {
-    height = "319px";
-  }
+  const alternateTemporaryInputs = (
+    <div className={classes.Alternates}>
+      <div style={{ textAlign: "left" }}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.submission({
+              message: "",
+              error: false,
+            });
+            submitReissue();
+          }}
+        >
+          Resend code
+        </button>
+      </div>
+      <div style={{ textAlign: "right" }}>
+        Back to{" "}
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.resetValues();
+            props.submission({
+              message: "",
+              error: false,
+            });
+            props.displayChange("signin");
+          }}
+        >
+          Log Inn
+        </button>
+      </div>
+    </div>
+  );
 
   const header = () => {
     if (props.authOrigin !== true) {
@@ -317,7 +310,7 @@ const TemporaryDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: height }}>
+      <div className={classes.BlankCanvas} style={{ height: "319px" }}>
         <Spinner />
       </div>
     );
