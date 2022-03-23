@@ -48,7 +48,7 @@ const PasswordDisplay = (props) => {
         handlePassword(data);
       })
       .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
+        console.log("error.message: ", error.message);
         props.submission({
           message: "Server down please try again",
           error: true,
@@ -89,11 +89,14 @@ const PasswordDisplay = (props) => {
   );
 
   const handlePassword = (data) => {
+    console.log("data: ", data);
     console.log("STATUS: ", data.status);
     if (data.status) {
+      console.log("Inside if statement");
       let tempUser = JSON.parse(localStorage.getItem("user"));
       tempUser.token = data.token;
       localStorage.setItem("user", JSON.stringify(tempUser));
+      /*
       props.values({
         name: "",
         email: props.email,
@@ -107,8 +110,8 @@ const PasswordDisplay = (props) => {
         sessionToken: data.token,
         userId: data.user._id,
         accountNum: data.user.accountId.accountNum,
-      });
-      props.submit();
+      });*/
+      //props.submit();
     } else {
       props.submission({
         message: data.error,

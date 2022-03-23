@@ -89,25 +89,26 @@ const PasswordDisplay = (props) => {
   );
 
   const handlePassword = (data) => {
+    console.log("data: ", data);
     console.log("STATUS: ", data.status);
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       tempUser.token = data.token;
+      console.log("tempUser: ", tempUser);
       localStorage.setItem("user", JSON.stringify(tempUser));
+
       props.values({
-        name: "",
-        email: props.email,
+        email: tempUser.user.email,
         password: "",
         temporary: "",
         reissued: false,
         expired: false,
         confirmation: "",
         resent: false,
-        username: props.username,
         resetToken: "",
-        sessionToken: data.token,
-        userId: data.user._id,
-        accountNum: data.user.accountId.accountNum,
+        sessionToken: tempUser.token,
+        userId: tempUser.user.accountId._id,
+        accountNum: tempUser.user.accountId.accountNum,
       });
       props.submit();
     } else {
@@ -143,7 +144,7 @@ const PasswordDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.Header}>
-          <div>Create your password</div>
+          <div>Create your passwordddd</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
               style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
@@ -157,7 +158,7 @@ const PasswordDisplay = (props) => {
         </div>
       );
     } else {
-      <div className={classes.Header}>Create your password</div>;
+      return <div className={classes.Header}>Create your password</div>;
     }
   };
 

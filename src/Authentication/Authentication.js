@@ -6,7 +6,7 @@ import ForgotDisplay from "./Components/ForgotDisplay";
 import TemporaryDisplay from "./Components/TemporaryDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
 import ConfirmationDisplay from "./Components/ConfirmationDisplay";
-import PasswordDisplay from "./Components/Password2";
+import PasswordDisplay from "./Components/PasswordDisplay";
 import PaypalDisplay from "./Components/OpennodeDisplay";
 import OpennodeDisplay from "./Components/OpennodeDisplay";
 
@@ -581,8 +581,8 @@ const Authentication = () => {
             paddingBottom: "20px",
           }}
         >
-          Link to Stripe or Paypal to get paid instantly in
-          cash, or Opennode for bitcoin payments. You can pick more later in Account Settings.
+          Link to Stripe or Paypal to get paid instantly in cash, or Opennode
+          for bitcoin payments. You can pick more later in Account Settings.
         </div>
       );
     } else if (display === "freeCongrats") {
@@ -1739,6 +1739,8 @@ const Authentication = () => {
           }}
           values={(input) => setAuthValues(input)}
           submit={() => {
+            console.log("inside submit");
+            console.log("initial view: ", initialView);
             if (initialView === "paid" || initialView === "upgrade") {
               setDisplay("gateway");
             } else {

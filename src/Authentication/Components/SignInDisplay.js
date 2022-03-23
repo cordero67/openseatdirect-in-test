@@ -280,17 +280,19 @@ const SignInDisplay = (props) => {
         </button>
       </div>
       <div style={{ textAlign: "right" }}>
-        <div style={{ textAlign: "right" }}>Not a member yet?</div>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.resetValues();
-            props.submission({ message: "", error: false });
-            props.displayChange("signup");
-          }}
-        >
-          Sign Up
-        </button>
+        <div style={{ textAlign: "right" }}>
+          Not a member?{" "}
+          <button
+            className={classes.BlueText}
+            onClick={() => {
+              props.resetValues();
+              props.submission({ message: "", error: false });
+              props.displayChange("signup");
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -299,7 +301,7 @@ const SignInDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.Header}>
-          <div>Log in to Open Seat Direct</div>
+          <div>Welcome Back!</div>
           <div style={{ textAlign: "center" }}>
             <ion-icon
               style={{
@@ -318,7 +320,7 @@ const SignInDisplay = (props) => {
         </div>
       );
     } else {
-      return <div className={classes.Header}>Log in to Open Seat Direct</div>;
+      return <div className={classes.Header}>Welcome Back!</div>;
     }
   };
 

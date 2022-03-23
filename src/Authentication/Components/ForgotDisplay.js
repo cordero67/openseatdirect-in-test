@@ -180,18 +180,6 @@ const ForgotDisplay = (props) => {
           Log in
         </button>
       </div>
-      <div style={{ textAlign: "right" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.resetValues();
-            props.submission({ message: "", error: false, redirect: "" });
-            props.displayChange("signup");
-          }}
-        >
-          Create account
-        </button>
-      </div>
     </div>
   );
 

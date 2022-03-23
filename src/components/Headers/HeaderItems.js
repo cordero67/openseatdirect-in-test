@@ -49,7 +49,7 @@ const NavigationItems = (props) => {
             to="/myaccount"
             style={isActive(props.currentPage, "/myaccount")}
           >
-            My Account
+            MY ACCOUNT
           </NavLink>
         </li>
       )}
