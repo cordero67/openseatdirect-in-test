@@ -119,6 +119,54 @@
   border: none;
 }
 
+.ONBlueText {
+  font-size: 14px;
+  text-align: left;
+  font-weight: 600;
+  padding-left: 0px;
+  color: #3c89e9;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
+.ONBlueText:hover {
+  color: #0000cc;
+  outline: none;
+  border: none;
+}
+.ONBlueText:active {
+  color: #3c89e9;
+  outline: none;
+  border: none;
+}
+
+.GoogleBlueText {
+  font-size: 14px;
+  text-align: left;
+  font-weight: 600;
+  padding-left: 0px;
+  color: #1F009D;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
+.GoogleBlueText:hover {
+  color: #0000cc;
+  outline: none;
+  border: none;
+}
+.GoogleBlueText:active {
+  color: #1F009D;
+  outline: none;
+  border: none;
+}
+
+
+
 @media (min-width: 460px) {
   .Modal {
     width: 460px;

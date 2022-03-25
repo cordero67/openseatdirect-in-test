@@ -566,7 +566,7 @@ const Upgrade = (props) => {
                   submitFreeSub();
                 }}
               >
-                CONFIRM SELECTION
+                Confirm selection
               </button>
             </div>
           )}
@@ -1255,7 +1255,7 @@ const Upgrade = (props) => {
               paddingBottom: "40px",
             }}
           >
-            PLEASE DO NOT RESUBMIT A PAYMENT.
+            Please do not resubmit payment.
           </div>
         </div>
       </div>
@@ -1483,7 +1483,7 @@ const Upgrade = (props) => {
                     });
                 }}
               >
-                SUBMIT YOUR PAYPAL INFORMATION
+                Submit your Paypal information
               </button>
             </div>
             <div>
@@ -1494,7 +1494,7 @@ const Upgrade = (props) => {
                   setPageView("gateway");
                 }}
               >
-                RETURN TO GATEWAY SELECTION
+                Return to Payment Processor selection
               </button>
             </div>
           </div>
@@ -1537,7 +1537,7 @@ const Upgrade = (props) => {
                 window.location.href = "/myaccount";
               }}
             >
-              GET STARTED
+              Get started
             </button>
           </div>
         </div>
@@ -1556,7 +1556,7 @@ const Upgrade = (props) => {
             fontWeight: "600",
           }}
         >
-          SYSTEM ERROR
+          System error
         </div>
         <div className={classes.SummaryHeader}>
           System error please go back and resubmit.

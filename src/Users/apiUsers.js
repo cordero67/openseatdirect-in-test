@@ -208,7 +208,8 @@ export const isAuthenticated = () => {
 };
 
 // extracts all event data, non-transactional
-export const getAllEventData = (userId) => {
+// deprecated  w Evnts/apiEvents:getAppEventDat
+export const getAllEventDataXXXX = (userId) => {
   return fetch(`${API}/event/list/${userId}`, {
     method: "GET",
   })

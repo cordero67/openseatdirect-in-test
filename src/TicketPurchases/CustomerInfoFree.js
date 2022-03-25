@@ -272,13 +272,13 @@ const CustomerInfo = (props) => {
           disabled={false}
           className={classes.ButtonGreen}
         >
-          SUBMIT ORDER
+          Submit order
         </button>
       );
     } else {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
-          SUBMIT ORDER
+          Submit order
         </button>
       );
     }
@@ -301,7 +301,7 @@ const CustomerInfo = (props) => {
       return (
         <div className={classes.BlankCanvas}>
           <div>
-            There is a problem with OSD Server in processing your tickets.
+            There is a problem with our server in processing your tickets.
             Please try again later.
           </div>
         </div>

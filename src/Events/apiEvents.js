@@ -47,7 +47,7 @@ export const getEventData = (eventId) => {
 
 // REFACTORED
 // retrieves all public event data (less image), non-transactional
-export const getAllEventData = () => {
+export const getAllEventDataXXXXX = () => {
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -73,7 +73,7 @@ export const getAllEventData = () => {
 
 // REFACTORED
 // retrieves all public event data (less image), non-transactional
-export const getAllPastEventData = () => {
+export const getAllPastEventDataXXX = () => {
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 

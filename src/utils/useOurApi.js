@@ -30,7 +30,6 @@ export const useOurApi = (
     let unmounted = false;
 
     const handleFetchResponse = (response) => {
-      console.log(" in handleFetchResponse...");
 
       if (unmounted) return initialData;
 
@@ -38,10 +37,8 @@ export const useOurApi = (
 
       if (typeof response.ok === "undefined") {
         setNetworkError(true);
-        console.log("undefined response = newtwork error!");
       } else {
         setNetworkError(false);
-        console.log("defined response");
       }
 
       setIsLoading(false);
@@ -71,12 +68,6 @@ export const useOurApi = (
     };
   }, [url, body]);
 
-  console.log("initialUrl= ", initialUrl);
-  console.log("url: ", url);
-  console.log("isLoading: ", isLoading);
-  console.log("hasError: ", hasError);
-  console.log("fetchedData: ", fetchedData);
-  console.log("networkError: ", networkError);
   return {
     isLoading,
     hasError,

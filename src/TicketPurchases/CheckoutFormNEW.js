@@ -116,7 +116,7 @@ export default function CheckoutForm(props) {
         }}
       >
         <button disabled={!stripe} className={classes.StripeButton}>
-          SUBMIT
+          Submit
         </button>
       </div>
       <div style={{ textAlign: "center", color: "red" }}>

@@ -162,7 +162,7 @@ const SignInDisplay = (props) => {
               }
             }}
           >
-            LOG IN TO YOUR ACCOUNT
+            Log in
           </button>
         </div>
         <div
@@ -172,7 +172,7 @@ const SignInDisplay = (props) => {
               "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
             columnGap: "20px",
             textAlign: "center",
-            fontSize: "14px",
+            fontSize: "13px",
             paddingTop: "20px",
             paddingBottom: "20px",
           }}
@@ -187,8 +187,8 @@ const SignInDisplay = (props) => {
               padding: "0",
             }}
           />
-          <div style={{ paddingTop: "5px", fontWeight: "600" }}>
-            Or Log In with
+          <div style={{ paddingTop: "5px", fontWeight: "500" }}>
+            or continue with
           </div>
           <hr
             style={{
@@ -269,7 +269,7 @@ const SignInDisplay = (props) => {
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
         <button
-          className={classes.BlueText}
+          className={classes.ONBlueText}
           onClick={() => {
             props.resetValues();
             props.submission({ message: "", error: false, redirect: "" });
@@ -283,14 +283,14 @@ const SignInDisplay = (props) => {
         <div style={{ textAlign: "right" }}>
           Not a member?{" "}
           <button
-            className={classes.BlueText}
+            className={classes.ONBlueText}
             onClick={() => {
               props.resetValues();
               props.submission({ message: "", error: false });
               props.displayChange("signup");
             }}
           >
-            Sign Up
+            Sign up
           </button>
         </div>
       </div>

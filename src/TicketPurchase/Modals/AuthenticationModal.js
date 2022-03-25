@@ -880,7 +880,7 @@ const Authentication = (props) => {
             submitForgot();
           }}
         >
-          Submit Email
+          Submit email
         </button>
       </div>
     </Fragment>
@@ -905,7 +905,7 @@ const Authentication = (props) => {
             submitTemporary();
           }}
         >
-          Submit Confirmation Code
+          Submit confirmation code
         </button>
       </div>
     </Fragment>
@@ -930,7 +930,7 @@ const Authentication = (props) => {
             submitSignUp();
           }}
         >
-          Submit Email
+          Submit email
         </button>
       </div>
     </Fragment>
@@ -955,7 +955,7 @@ const Authentication = (props) => {
             submitConfirmation();
           }}
         >
-          Submit Code
+          Submit code
         </button>
       </div>
     </Fragment>
@@ -980,7 +980,7 @@ const Authentication = (props) => {
             submitPassword();
           }}
         >
-          Register Password
+          Register password
         </button>
       </div>
     </Fragment>
@@ -1005,7 +1005,7 @@ const Authentication = (props) => {
             submitUsername();
           }}
         >
-          Change Username
+          Change username
         </button>
       </div>
       <div style={{ paddingTop: "10px" }}>
@@ -1253,7 +1253,7 @@ const Authentication = (props) => {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
-            <div>Sign Up</div>
+            <div>Sign up</div>
             <div style={{ textAlign: "center" }}>
               <ion-icon
                 style={{

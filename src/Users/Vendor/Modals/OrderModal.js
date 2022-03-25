@@ -53,13 +53,13 @@ const OrderModal = (props) => {
           }}
         >
           <button className={classes.ButtonRed} onClick={props.edit}>
-            EDIT ORDER
+            Edit order
           </button>
           <button
             className={classes.ButtonGreen}
             onClick={() => props.submit(allTotal)}
           >
-            SUBMIT ORDER
+            Submit order
           </button>
         </div>
       );
@@ -70,7 +70,7 @@ const OrderModal = (props) => {
             className={classes.ButtonGrey}
             onClick={() => props.close("confirmation")}
           >
-            CONTINUE
+            Continue
           </button>
         </Fragment>
       );
@@ -81,7 +81,7 @@ const OrderModal = (props) => {
             className={classes.ButtonGrey}
             onClick={() => props.close("error")}
           >
-            CONTINUE
+            Continue
           </button>
         </Fragment>
       );

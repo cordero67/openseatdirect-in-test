@@ -62,7 +62,7 @@ const SignUpDisplay = (props) => {
       <div style={{ textAlign: "left" }}>
         Already a member?{" "}
         <button
-          className={classes.BlueText}
+          className={classes.ONBlueText}
           onClick={() => {
             props.submission({ message: "", error: false });
             props.displayChange("signin");
@@ -130,29 +130,29 @@ const SignUpDisplay = (props) => {
               }
             }}
           >
-            SUBMIT YOUR EMAIL
+            Continue
           </button>
         </div>
         <div style={{ paddingTop: "10px" }}>
-          By clicking 'Submit Your Email' I agree to Open Seat Direct's{" "}
+          By clicking 'Continue', you agree to our{" "}
           <a
-            className={classes.BlueText}
+            className={classes.ONBlueText}
+            styles={{ border: "none", outline: "none" }}
+            href="https://www.openseatdirect.com/terms-and-conditions/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Terms
+          </a>
+          {" "}and{" "}
+          <a
+            className={classes.ONBlueText}
             styles={{ border: "none", outline: "none" }}
             href="https://www.openseatdirect.com/privacy-policy/"
             target="_blank"
             rel="noreferrer"
           >
             Privacy Policy
-          </a>{" "}
-          and{" "}
-          <a
-            className={classes.BlueText}
-            styles={{ border: "none", outline: "none" }}
-            href="https://www.openseatdirect.com/terms-and-conditions/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Terms and Conditions
           </a>
           .
         </div>
@@ -163,7 +163,7 @@ const SignUpDisplay = (props) => {
               "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
             columnGap: "20px",
             textAlign: "center",
-            fontSize: "14px",
+            fontSize: "13px",
             paddingTop: "20px",
             paddingBottom: "20px",
           }}
@@ -178,8 +178,8 @@ const SignUpDisplay = (props) => {
               padding: "0",
             }}
           />
-          <div style={{ paddingTop: "5px", fontWeight: "600" }}>
-            Or Sign Up with
+          <div style={{ paddingTop: "5px", fontWeight: "500" }}>
+            or continue with
           </div>
           <hr
             style={{

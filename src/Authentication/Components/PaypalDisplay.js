@@ -126,7 +126,7 @@ const PaypalDisplay = (props) => {
               });
           }}
         >
-          SUBMIT YOUR PAYPAL DETAILS
+          Submit Paypal details
         </button>
       </div>
       <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -136,7 +136,7 @@ const PaypalDisplay = (props) => {
             props.displayChange("gateway");
           }}
         >
-          BACK TO GATEWAY SELECTION
+          Back to Payment Processor selection
         </button>
       </div>
       <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -146,7 +146,7 @@ const PaypalDisplay = (props) => {
             ////redirectUser();
           }}
         >
-          STAY WITH FREE FOREVER PLAN
+          Stay with Free Forever Plan
         </button>
       </div>
     </Fragment>

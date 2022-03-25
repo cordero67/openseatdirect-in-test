@@ -152,16 +152,16 @@ const CustomerInfo = (props) => {
           className={classes.ButtonGreen}
         >
           {eventDetails.cryptoGateway === "Opennode"
-            ? "SUBMIT INFORMATION"
-            : "PAY WITH BITCOIN"}
+            ? "Submit information"
+            : "Pay with bitcoin"}
         </button>
       );
     } else {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
           {eventDetails.cryptoGateway === "Opennode"
-            ? "SUBMIT INFORMATION"
-            : "PAY WITH BITCOIN"}
+            ? "Submit information"
+            : "Pay with bitcoin"}
         </button>
       );
     }

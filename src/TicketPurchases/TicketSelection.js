@@ -667,7 +667,7 @@ const TicketSelection = () => {
                 freeTicketHandler();
               }}
             >
-              SUBMIT ORDER
+              Submit order
             </button>
           );
         } else {
@@ -698,7 +698,7 @@ const TicketSelection = () => {
                     }
                   }}
                 >
-                  SELECT PAYMENT
+                  Select payment
                 </button>
               );
             } else {
@@ -712,7 +712,7 @@ const TicketSelection = () => {
                     window.location.href = "/checkout-opennode";
                   }}
                 >
-                  PAY WITH BITCOIN
+                  Pay with bitcoin
                 </button>
               );
             }
@@ -729,7 +729,7 @@ const TicketSelection = () => {
                     freeTicketHandler();
                   }}
                 >
-                  SUBMIT ORDER
+                  Submit order
                 </button>
               );
             } else {
@@ -742,7 +742,7 @@ const TicketSelection = () => {
                     console.log("Free User Checkout");
                   }}
                 >
-                  MAKE A SELECTION
+                  Make a selection
                 </button>
               );
             }
@@ -762,7 +762,7 @@ const TicketSelection = () => {
                 window.location.href = "/infofree";
               }}
             >
-              CHECKOUT
+              Checkout
             </button>
           );
         } else if (paidAmount && (hasPrimary || hasCrypto)) {
@@ -777,7 +777,7 @@ const TicketSelection = () => {
                 window.location.href = "/infopaid";
               }}
             >
-              CHECKOUT
+              Checkout
             </button>
           );
         }
@@ -871,7 +871,7 @@ const TicketSelection = () => {
                 window.location.href = `/`;
               }}
             >
-              CONTINUE
+              Continue
             </button>
           </div>
         </div>
@@ -1097,7 +1097,7 @@ const TicketSelection = () => {
           setDisplay("main");
         }}
       >
-        I DISAGREE
+        I disagree
       </button>
     </div>
   );
@@ -1136,7 +1136,7 @@ const TicketSelection = () => {
               }
             }}
           >
-            I AGREE
+            I agree
           </button>
         </div>
       );

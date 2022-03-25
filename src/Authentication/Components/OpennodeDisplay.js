@@ -96,7 +96,7 @@ const OpennodeDisplay = (props) => {
                 props.displayChange("gateway");
               }}
             >
-              BACK TO GATEWAY SELECTION
+              Back to payment processor selection
             </button>
           </div>
           <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -106,7 +106,7 @@ const OpennodeDisplay = (props) => {
                 props.submit();
               }}
             >
-              STAY WITH FREE FOREVER PLAN
+              Stay with Free Forever Plan
             </button>
           </div>
         </Fragment>
@@ -182,7 +182,7 @@ const OpennodeDisplay = (props) => {
             submitOpennode();
           }}
         >
-          SUBMIT YOUR OPENNODE DETAILS
+          Submit your OpenNode details
         </button>
       </div>
       {displayButtons()}
@@ -265,7 +265,7 @@ const OpennodeDisplay = (props) => {
         </div>
       );
     } else {
-      return <div className={classes.Header}>Enter Opennode API Key</div>;
+      return <div className={classes.Header}>Enter OpenNode API Key</div>;
     }
   };
 

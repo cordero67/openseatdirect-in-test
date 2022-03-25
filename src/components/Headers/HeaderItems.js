@@ -33,14 +33,14 @@ const NavigationItems = (props) => {
     <ul className={classes.HeaderItems}>
       <li>
         <NavLink to="/" style={isActive(props.currentPage, "/")}>
-          EVENTS
+          Events
         </NavLink>
       </li>
 
       {!isAuthenticated() ? (
         <li>
           <NavLink to="/auth" style={isActive(props.currentPage, "/auth")}>
-            LOG IN
+            Log in
           </NavLink>
         </li>
       ) : (
@@ -49,7 +49,7 @@ const NavigationItems = (props) => {
             to="/myaccount"
             style={isActive(props.currentPage, "/myaccount")}
           >
-            MY ACCOUNT
+            Dashboard
           </NavLink>
         </li>
       )}

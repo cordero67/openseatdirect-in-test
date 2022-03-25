@@ -199,7 +199,7 @@ const TemporaryDisplay = (props) => {
               }
             }}
           >
-            SUBMIT CONFIRMATION CODE
+            Submit confirmation code
           </button>
         </div>
       </Fragment>
@@ -274,7 +274,7 @@ const TemporaryDisplay = (props) => {
             props.displayChange("signin");
           }}
         >
-          Log Inn
+          Log in
         </button>
       </div>
     </div>

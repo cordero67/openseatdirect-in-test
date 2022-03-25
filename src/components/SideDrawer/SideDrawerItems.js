@@ -47,7 +47,7 @@ const SideDrawerItems = (props) => {
           style={isActive(props.currentPage, "/")}
           onClick={props.clicked}
         >
-          EVENTS
+          Events
         </NavLink>
       </li>
 
@@ -57,7 +57,7 @@ const SideDrawerItems = (props) => {
           style={isActive(props.currentPage, "/past")}
           onClick={props.clicked}
         >
-          PAST EVENTS
+          Past events
         </NavLink>
       </li>
 
@@ -68,7 +68,7 @@ const SideDrawerItems = (props) => {
             style={isActive(props.currentPage, "/myaccount")}
             onClick={props.clicked}
           >
-            MY ACCOUNT
+            Dashboard
           </NavLink>
         </li>
       ) : null}
@@ -80,7 +80,7 @@ const SideDrawerItems = (props) => {
             style={isActive(props.currentPage, "/myaccount")}
             onClick={props.clicked}
           >
-            MY ACCOUNT
+            Dashboard
           </NavLink>
         </li>
       ) : null}
@@ -94,7 +94,7 @@ const SideDrawerItems = (props) => {
               props.clicked();
             }}
           >
-            LOG IN
+            Log in
           </NavLink>
         </li>
       )}
@@ -109,7 +109,7 @@ const SideDrawerItems = (props) => {
               signout(() => {});
             }}
           >
-            LOG OUT
+            Log out
           </NavLink>
         </li>
       )}
