@@ -777,7 +777,7 @@ const Authentication = () => {
             setDisplay("gateway");
           }}
         >
-          UPGRADE TO A PRO PLAN
+          Upgrade to Pro Plan
         </button>
       </div>
       <div style={{ paddingTop: "10px" }}>
@@ -787,7 +787,7 @@ const Authentication = () => {
             window.location.href = "/myaccount";
           }}
         >
-          GO TO MY DASHBOARD
+          Go to Dashboard
         </button>
       </div>
     </Fragment>
@@ -802,7 +802,7 @@ const Authentication = () => {
             window.location.href = "/myaccount";
           }}
         >
-          GO TO MY DASHBOARD
+          Go to Dashboard
         </button>
       </div>
     </Fragment>
@@ -1311,7 +1311,7 @@ const Authentication = () => {
                   submitFreeSub();
                 }}
               >
-                CONFIRM SELECTION
+                Confirm
               </button>
             </div>
           )}
@@ -1527,7 +1527,7 @@ const Authentication = () => {
               });
           }}
         >
-          SUBMIT YOUR PAYPAL DETAILS
+          Submit your Paypal details
         </button>
       </div>
       <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -1537,7 +1537,7 @@ const Authentication = () => {
             setDisplay("gateway");
           }}
         >
-          BACK TO PAYMENT PROCESSOR SELECTION
+          Back to Payment Processor selection
         </button>
       </div>
       <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -1547,7 +1547,7 @@ const Authentication = () => {
             redirectUser();
           }}
         >
-          STAY WITH FREE FOREVER PLAN
+          Stay with Free Forever Plan
         </button>
       </div>
     </Fragment>
@@ -1570,7 +1570,7 @@ const Authentication = () => {
               setDisplay(newDisplay);
             }}
           >
-            TRY AGAIN NOW
+            Try again now
           </button>
         </div>
         <div style={{ paddingTop: "10px" }}>
@@ -1580,7 +1580,7 @@ const Authentication = () => {
               window.location.href = "/myaccount";
             }}
           >
-            TRY AGAIN LATER
+            Try again later
           </button>
         </div>
       </Fragment>
