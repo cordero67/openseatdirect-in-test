@@ -109,7 +109,7 @@ const PasswordReset = () => {
             });
           }}
         >
-          SUBMIT YOUR NEW PASSWORD
+          Submit your new password
         </button>
       </div>
     </Fragment>

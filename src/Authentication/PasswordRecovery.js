@@ -95,7 +95,7 @@ const PasswordRecovery = () => {
             });
           }}
         >
-          SUBMIT YOUR REQUEST
+          Submit
         </button>
       </div>
     </Fragment>

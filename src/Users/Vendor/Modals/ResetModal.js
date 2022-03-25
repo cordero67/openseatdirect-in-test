@@ -345,7 +345,7 @@ const Reset = (props) => {
             submitConfirmation();
           }}
         >
-          SUBMIT YOUR CODE
+          Submit your code
         </button>
       </div>
     </Fragment>
@@ -371,7 +371,7 @@ const Reset = (props) => {
             submitPassword();
           }}
         >
-          REGISTER YOUR PASSWORD
+          Register your password
         </button>
       </div>
     </Fragment>
@@ -390,7 +390,7 @@ const Reset = (props) => {
             submitExpired();
           }}
         >
-          YES RESEND CODE
+          Yes resend code
         </button>
       </div>
       <div style={{ paddingTop: "10px" }}>
@@ -400,7 +400,7 @@ const Reset = (props) => {
             closeModal();
           }}
         >
-          NOT AT THIS TIME
+          Not at this time
         </button>
       </div>
     </Fragment>
@@ -426,7 +426,7 @@ const Reset = (props) => {
             closeModal();
           }}
         >
-          CONTINUE
+          Continue
         </button>
       </div>
     </Fragment>

@@ -532,7 +532,7 @@ const TicketPurchase = (props) => {
           }}
           className={classes.ButtonGreen}
         >
-          SUBMIT ORDER
+          Submit Order
         </button>
       );
     } else if (
@@ -571,7 +571,7 @@ const TicketPurchase = (props) => {
           }}
           className={classes.ButtonGreen}
         >
-          SUBMIT ORDER
+          Submit Order
         </button>
       );
     } else if (display === "guestinfo" && detailsMinimal()) {
@@ -587,13 +587,13 @@ const TicketPurchase = (props) => {
           }}
           className={classes.ButtonGreen}
         >
-          SUBMIT ORDER
+          Submit Order
         </button>
       );
     } else if (display === "guestinfo") {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
-          SUBMIT ORDER
+          Submit Order
         </button>
       );
     } else if (display === "payment") {
@@ -601,7 +601,7 @@ const TicketPurchase = (props) => {
     } else if (display === "paypal") {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
-          PAYPAL FAILURE
+          Paypal failure
         </button>
       );
     } else {
@@ -609,7 +609,7 @@ const TicketPurchase = (props) => {
       // NEED TO ADDRESS ALL OTHER "else" conditions
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
-          PROCEED TO CHECKOUT
+          Proceed to checkout
         </button>
       );
     }
