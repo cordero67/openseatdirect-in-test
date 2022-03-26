@@ -1,8 +1,9 @@
 import React, { Fragment } from "react";
-import GoogleAuthentication from "../GoogleAuthentication";
+import GoogleAuthentication from "./GoogleAuthentication";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
+import OSDImg from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 
 import classes from "../AuthenticationModal.module.css";
 
@@ -14,6 +15,35 @@ const SignUpDisplay = (props) => {
       throw Error(response.status);
     }
     return response;
+  };
+
+  const handleSignUp = (data) => {
+    if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data));
+      props.values({
+        email: data.user.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        expired: false,
+        confirmation: "",
+        resent: false,
+        username: data.user.username,
+        resetToken: "",
+        sessionToken: "",
+        userId: "",
+        accountNum: "",
+      });
+      props.displayChange("confirmation");
+      props.spinnerChange(false);
+    } else {
+      props.submission({
+        message: data.error,
+        error: true,
+      });
+      props.displayChange("signup");
+      props.spinnerChange(false);
+    }
   };
 
   const submitSignUp = () => {
@@ -56,23 +86,6 @@ const SignUpDisplay = (props) => {
         props.spinnerChange(false);
       });
   };
-
-  const alternateSignUpInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        Already a member?{" "}
-        <button
-          className={classes.ONBlueText}
-          onClick={() => {
-            props.submission({ message: "", error: false });
-            props.displayChange("signin");
-          }}
-        >
-          Log in
-        </button>
-      </div>
-    </div>
-  );
 
   const signUpForm = () => {
     const regsuper =
@@ -130,29 +143,29 @@ const SignUpDisplay = (props) => {
               }
             }}
           >
-            Continue
+            SUBMIT YOUR EMAIL
           </button>
         </div>
         <div style={{ paddingTop: "10px" }}>
-          By clicking 'Continue', you agree to our{" "}
+          By clicking 'Submit Your Email' I agree to Open Seat Direct's{" "}
           <a
-            className={classes.ONBlueText}
-            styles={{ border: "none", outline: "none" }}
-            href="https://www.openseatdirect.com/terms-and-conditions/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Terms
-          </a>
-          {" "}and{" "}
-          <a
-            className={classes.ONBlueText}
+            className={classes.BlueText}
             styles={{ border: "none", outline: "none" }}
             href="https://www.openseatdirect.com/privacy-policy/"
             target="_blank"
             rel="noreferrer"
           >
             Privacy Policy
+          </a>{" "}
+          and{" "}
+          <a
+            className={classes.BlueText}
+            styles={{ border: "none", outline: "none" }}
+            href="https://www.openseatdirect.com/terms-and-conditions/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Terms and Conditions
           </a>
           .
         </div>
@@ -160,10 +173,10 @@ const SignUpDisplay = (props) => {
           style={{
             display: "grid",
             gridTemplateColumns:
-              "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
+              "calc((100% - 150px)/2) 110px calc((100% - 150px)/2)",
             columnGap: "20px",
             textAlign: "center",
-            fontSize: "13px",
+            fontSize: "14px",
             paddingTop: "20px",
             paddingBottom: "20px",
           }}
@@ -178,8 +191,8 @@ const SignUpDisplay = (props) => {
               padding: "0",
             }}
           />
-          <div style={{ paddingTop: "5px", fontWeight: "500" }}>
-            or continue with
+          <div style={{ paddingTop: "5px", fontWeight: "600" }}>
+            OR continue with
           </div>
           <hr
             style={{
@@ -232,35 +245,6 @@ const SignUpDisplay = (props) => {
     );
   };
 
-  const handleSignUp = (data) => {
-    if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
-      props.values({
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        username: data.user.username,
-        resetToken: "",
-        sessionToken: "",
-        userId: "",
-        accountNum: "",
-      });
-      props.displayChange("confirmation");
-      props.spinnerChange(false);
-    } else {
-      props.submission({
-        message: data.error,
-        error: true,
-      });
-      props.displayChange("signup");
-      props.spinnerChange(false);
-    }
-  };
-
   const showError = () => {
     if (props.error) {
       return (
@@ -286,13 +270,40 @@ const SignUpDisplay = (props) => {
     }
   };
 
+  const alternateSignUpInputs = (
+    <div className={classes.Alternates}>
+      <div style={{ textAlign: "left" }}>
+        Already a member?{" "}
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.submission({ message: "", error: false });
+            props.displayChange("signin");
+          }}
+        >
+          Log in
+        </button>
+      </div>
+    </div>
+  );
+
   const header = () => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.Header}>
-          <div>
-            <div style={{ lineHeight: "30px" }}>Ready to join us at</div>
-            <div style={{ lineHeight: "30px" }}>Open Seat Direct?</div>
+          <div style={{ lineHeight: "30px" }}>
+            Ready to join{" "}
+            <img
+              src={OSDImg}
+              alt="OPENNODE"
+              width="80px"
+              height="auto"
+              cursor="pointer"
+              onClick={() => {
+                console.log("selecting Opennode");
+                //setDisplay("opennode");
+              }}
+            ></img>
           </div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
@@ -314,9 +325,19 @@ const SignUpDisplay = (props) => {
     } else {
       return (
         <div className={classes.Header}>
-          <div>
-            <div style={{ lineHeight: "30px" }}>Ready to join us at</div>
-            <div style={{ lineHeight: "30px" }}>Open Seat Direct?</div>
+          <div style={{ lineHeight: "30px" }}>
+            Ready to join{" "}
+            <img
+              src={OSDImg}
+              alt="OPENNODE"
+              width="80px"
+              height="auto"
+              cursor="pointer"
+              onClick={() => {
+                console.log("selecting Opennode");
+                //setDisplay("opennode");
+              }}
+            ></img>
           </div>
         </div>
       );

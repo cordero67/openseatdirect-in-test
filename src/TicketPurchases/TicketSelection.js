@@ -6,9 +6,8 @@ import ReactHtmlParser from "html-react-parser";
 import { API } from "../config.js";
 import { getEventData, getEventImage } from "./Resources/apiCore";
 
-import {isValidEventNum} from "../utils/validators";
-import {getAPIEvent} from "../Events/useOurApiEvent";
-
+import { isValidEventNum } from "../utils/validators";
+import { getAPIEvent } from "../Events/useOurApiEvent";
 
 //gatewayClientID: event.accountId.paypalExpress_client_id,
 //paypalClientID: event.accountId.paypalExpress_client_id,
@@ -65,8 +64,6 @@ const TicketSelection = () => {
   const [eventAPIData, setEventAPIData] = useState("");
   const [networkError, setNetworkError] = useState(false);
 
-
-  
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, registration, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
@@ -98,18 +95,15 @@ const TicketSelection = () => {
     userId: "",
   });
 
-  // 
-
   let eventNum_url = queryString.parse(window?.location?.search)?.eventID;
   // get eventNum from local storage and check if data has been loaded
   if (!isValidEventNum(eventNum_url)) {
     let urlparts = window?.location?.pathname?.split("/");
-    console.log ("urlaprts=", urlparts);
-    eventNum_url =  urlparts?.pop();
-  };
+    console.log("urlaprts=", urlparts);
+    eventNum_url = urlparts?.pop();
+  }
 
-
-  const loadTicketEventData = useCallback ((eventJson)=>{
+  const loadTicketEventData = useCallback((eventJson) => {
     let res = eventJson;
     console.log(
       "Current TicketSelection: EVENT DATA OBJECT from Server: in 'getEventData()': ",
@@ -140,20 +134,18 @@ const TicketSelection = () => {
       setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
       setOrderTotals(loadOrderTotals(res));
     }
-}, []);
-
+  }, []);
 
   useEffect(() => {
-
     let isSubscribed = true;
 
-    console.log ("in useEffect...w eventNum=", eventNum_url);
-    if( isValidEventNum(eventNum_url)){ 
-        setIsLoadingEvent(true);
-        getAPIEvent(eventNum_url)
-        .then (r=>{
+    console.log("in useEffect...w eventNum=", eventNum_url);
+    if (isValidEventNum(eventNum_url)) {
+      setIsLoadingEvent(true);
+      getAPIEvent(eventNum_url)
+        .then((r) => {
           if (!isSubscribed) return null;
-          console.log ("return fromgetAPIEvent", r);
+          console.log("return fromgetAPIEvent", r);
           if (r.ok) {
             loadTicketEventData(r.data);
             setEventAPIData(r.data);
@@ -164,24 +156,22 @@ const TicketSelection = () => {
             setDisplay("connection");
           }
         })
-        .catch ((e) =>{
+        .catch((e) => {
           if (!isSubscribed) return null;
-          console.log ("catch fromgetAPIEvent 133", e);
+          console.log("catch fromgetAPIEvent 133", e);
           setHasError(true);
           setDisplay("connection");
         })
-        .finally (()=>{
+        .finally(() => {
           if (!isSubscribed) return null;
-          setIsLoadingEvent(false)
+          setIsLoadingEvent(false);
         });
-    };
-
+    }
 
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
-
       let tempUser = JSON.parse(localStorage.getItem("user"));
       setCustomerInformation({
         name: tempUser.user.name,
@@ -193,11 +183,10 @@ const TicketSelection = () => {
 
     stylingUpdate(window.innerWidth, window.innerHeight);
 
-    return () => { isSubscribed = false}
-
+    return () => {
+      isSubscribed = false;
+    };
   }, [eventNum_url, loadTicketEventData]);
-
-
 
   // receives Event Data from server and populates several control variables
   const eventData = (eventID) => {
@@ -253,17 +242,6 @@ const TicketSelection = () => {
         }
 
         setDisplay("main");
-        /*
-        getEventImage(eventID)
-          .then((res) => {
-            eventLogo = res;
-          })
-          .catch((err) => {
-            eventLogo = DefaultLogo;
-          })
-          .finally(() => {
-          });
-          */
       })
       .catch((err) => {
         setDisplay("connection");
@@ -667,7 +645,7 @@ const TicketSelection = () => {
                 freeTicketHandler();
               }}
             >
-              Submit order
+              SUBMIT ORDER
             </button>
           );
         } else {
@@ -698,7 +676,7 @@ const TicketSelection = () => {
                     }
                   }}
                 >
-                  Select payment
+                  SELECT PAYMENT
                 </button>
               );
             } else {
@@ -712,7 +690,7 @@ const TicketSelection = () => {
                     window.location.href = "/checkout-opennode";
                   }}
                 >
-                  Pay with bitcoin
+                  PAY WITH BITCOIN
                 </button>
               );
             }
@@ -729,7 +707,7 @@ const TicketSelection = () => {
                     freeTicketHandler();
                   }}
                 >
-                  Submit order
+                  SUBMIT ORDER
                 </button>
               );
             } else {
@@ -742,7 +720,7 @@ const TicketSelection = () => {
                     console.log("Free User Checkout");
                   }}
                 >
-                  Make a selection
+                  MAKE A SELECTION
                 </button>
               );
             }
@@ -762,7 +740,7 @@ const TicketSelection = () => {
                 window.location.href = "/infofree";
               }}
             >
-              Checkout
+              CHECKOUT
             </button>
           );
         } else if (paidAmount && (hasPrimary || hasCrypto)) {
@@ -777,7 +755,7 @@ const TicketSelection = () => {
                 window.location.href = "/infopaid";
               }}
             >
-              Checkout
+              CHECKOUT
             </button>
           );
         }
@@ -871,7 +849,7 @@ const TicketSelection = () => {
                 window.location.href = `/`;
               }}
             >
-              Continue
+              CONTINUE
             </button>
           </div>
         </div>
@@ -925,8 +903,11 @@ const TicketSelection = () => {
   // determines whether or not to display purchase amount
   const totalAmount = (show) => {
     if (display === "main" && !show && orderTotals.ticketsPurchased > 0) {
-      // show 2 decimal places in currency amount ($2.10 instead of $2.1). We need to adjust for Yen.  
-      let amt2 =  ('number'===typeof(orderTotals.finalPurchaseAmount)) ? (orderTotals.finalPurchaseAmount).toFixed(2) : orderTotals.finalPurchaseAmount;
+      // show 2 decimal places in currency amount ($2.10 instead of $2.1). We need to adjust for Yen.
+      let amt2 =
+        "number" === typeof orderTotals.finalPurchaseAmount
+          ? orderTotals.finalPurchaseAmount.toFixed(2)
+          : orderTotals.finalPurchaseAmount;
       return (
         <div>
           {orderTotals.currencySym}
@@ -1007,20 +988,7 @@ const TicketSelection = () => {
       );
     }
   };
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
+
   // LOOKS GOOD
   // creates ticket pane with promo form and ticket sections
   const ticketPane = () => {
@@ -1097,7 +1065,7 @@ const TicketSelection = () => {
           setDisplay("main");
         }}
       >
-        I disagree
+        I DISAGREE
       </button>
     </div>
   );
@@ -1136,7 +1104,7 @@ const TicketSelection = () => {
               }
             }}
           >
-            I agree
+            I AGREE
           </button>
         </div>
       );
@@ -1197,15 +1165,6 @@ const TicketSelection = () => {
   };
 
   return (
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
     <div style={MainContainer}>
       {loadingSpinner()}
       {mainDisplay()}

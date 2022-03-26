@@ -8,7 +8,7 @@ import ConfirmationDisplay from "./Components/ConfirmationDisplay";
 import PasswordDisplay from "./Components/PasswordDisplay";
 import ErrorDisplay from "./Components/ErrorDisplay";
 
-import Backdrop from "./Backdrop";
+import Backdrop from "../components/UI/Backdrop/Backdrop";
 import classes from "./AuthenticationModal.module.css";
 
 const Authentication = (props) => {

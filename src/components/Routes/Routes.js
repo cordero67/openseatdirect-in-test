@@ -16,7 +16,6 @@ import CheckoutStripe from "../../TicketPurchases/CheckoutStripe";
 import CheckoutOpennode from "../../TicketPurchases/CheckoutOpennode";
 import TicketSelection from "../../TicketPurchases/TicketSelection";
 import Authentication from "../../Authentication/Authentication";
-import GoogleAuthentication from "../../Authentication/GoogleAuthentication";
 import VendorAccount from "../../Users/Vendor/VendorAccount";
 
 import Header from "../Headers/Header";
@@ -93,23 +92,6 @@ const Routes = () => {
               buyer={"ANOTHER"}
               owner={"SOMETHING"}
             />
-            <Footer></Footer>
-          </Fragment>
-        )}
-      />
-
-      <Route
-        path="/googlelogin"
-        exact
-        render={(routeProps) => (
-          <Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <GoogleAuthentication />
             <Footer></Footer>
           </Fragment>
         )}
@@ -291,7 +273,6 @@ const Routes = () => {
           </Fragment>
         )}
       />
-
 
       <Route
         path="/edNEW/"

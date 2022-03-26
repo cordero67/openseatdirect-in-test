@@ -66,7 +66,7 @@ export default function CheckoutForm(props) {
         }}
       >
         <button disabled={!stripe} className={classes.StripeButton}>
-          Submit
+          SUBMIT
         </button>
       </div>
     </form>

@@ -96,17 +96,17 @@ const OpennodeDisplay = (props) => {
                 props.displayChange("gateway");
               }}
             >
-              Back to payment processor selection
+              BACK TO GATEWAY SELECTION
             </button>
           </div>
           <div style={{ textAlign: "center", paddingTop: "20px" }}>
             <button
               className={classes.ButtonGrey}
               onClick={() => {
-                props.submit();
+                props.redirect();
               }}
             >
-              Stay with Free Forever Plan
+              STAY WITH FREE FOREVER PLAN
             </button>
           </div>
         </Fragment>
@@ -122,7 +122,7 @@ const OpennodeDisplay = (props) => {
         </label>
         <input
           onFocus={() => {
-            props.submission({ message: "", error: false, redirect: "" });
+            props.submission({ message: "", error: false });
           }}
           className={classes.InputBox}
           type="text"
@@ -133,15 +133,15 @@ const OpennodeDisplay = (props) => {
       </div>
       <div style={{ paddingBottom: "20px", width: "340px" }}>
         <div style={{ fontSize: "15px" }}>
-            Settlement Currency: (see auto_settle field {" "}
-            <a
-              href="https://developers.opennode.com/reference/create-charge" 
-              target="_blank"
-              rel="noreferrer"
-            >
-              here
-            </a>
-            )
+          Settlement Currency: (see auto_settle field{" "}
+          <a
+            href="https://developers.opennode.com/reference/create-charge"
+            target="_blank"
+            rel="noreferrer"
+          >
+            here
+          </a>
+          )
         </div>
 
         <RadioForm
@@ -155,15 +155,11 @@ const OpennodeDisplay = (props) => {
       </div>
       <div style={{ width: "340px" }}>
         <div style={{ fontSize: "15px" }}>
-            Bitcoin Blockchain:  (to try dev setup {" "}
-            <a
-              href="https://dev.opennode.com/" 
-              target="_blank"
-              rel="noreferrer"
-            >
-              here
-            </a>
-            )
+          Bitcoin Blockchain: (to try dev setup{" "}
+          <a href="https://dev.opennode.com/" target="_blank" rel="noreferrer">
+            here
+          </a>
+          )
         </div>
         <RadioForm
           details={blockchainOptions}
@@ -182,7 +178,7 @@ const OpennodeDisplay = (props) => {
             submitOpennode();
           }}
         >
-          Submit your OpenNode details
+          SUBMIT YOUR OPENNODE DETAILS
         </button>
       </div>
       {displayButtons()}
@@ -208,6 +204,8 @@ const OpennodeDisplay = (props) => {
         props.displayChange("gateway");
       }
       */
+
+      console.log("going to submit: ");
       props.submit();
     } else {
       let errmsg =
@@ -265,7 +263,7 @@ const OpennodeDisplay = (props) => {
         </div>
       );
     } else {
-      return <div className={classes.Header}>Enter OpenNode API Key</div>;
+      return <div className={classes.Header}>Enter Opennode Information</div>;
     }
   };
 

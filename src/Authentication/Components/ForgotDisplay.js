@@ -134,7 +134,7 @@ const ForgotDisplay = (props) => {
               }
             }}
           >
-            Submit your email
+            SUBMIT YOUR EMAIL
           </button>
         </div>
       </Fragment>

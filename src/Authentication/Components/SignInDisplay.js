@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import GoogleAuthentication from "../GoogleAuthentication";
+import GoogleAuthentication from "./GoogleAuthentication";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
@@ -162,17 +162,17 @@ const SignInDisplay = (props) => {
               }
             }}
           >
-            Log in
+            LOG IN TO YOUR ACCOUNT
           </button>
         </div>
         <div
           style={{
             display: "grid",
             gridTemplateColumns:
-              "calc((100% - 140px)/2) 100px calc((100% - 140px)/2)",
+              "calc((100% - 150px)/2) 110px calc((100% - 150px)/2)",
             columnGap: "20px",
             textAlign: "center",
-            fontSize: "13px",
+            fontSize: "14px",
             paddingTop: "20px",
             paddingBottom: "20px",
           }}
@@ -187,8 +187,8 @@ const SignInDisplay = (props) => {
               padding: "0",
             }}
           />
-          <div style={{ paddingTop: "5px", fontWeight: "500" }}>
-            or continue with
+          <div style={{ paddingTop: "5px", fontWeight: "600" }}>
+            OR continue with
           </div>
           <hr
             style={{
@@ -269,7 +269,7 @@ const SignInDisplay = (props) => {
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
         <button
-          className={classes.ONBlueText}
+          className={classes.BlueText}
           onClick={() => {
             props.resetValues();
             props.submission({ message: "", error: false, redirect: "" });
@@ -283,14 +283,14 @@ const SignInDisplay = (props) => {
         <div style={{ textAlign: "right" }}>
           Not a member?{" "}
           <button
-            className={classes.ONBlueText}
+            className={classes.BlueText}
             onClick={() => {
               props.resetValues();
               props.submission({ message: "", error: false });
               props.displayChange("signup");
             }}
           >
-            Sign up
+            Sign Up
           </button>
         </div>
       </div>

@@ -7,6 +7,7 @@ import TemporaryDisplay from "./Components/TemporaryDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
 import ConfirmationDisplay from "./Components/ConfirmationDisplay";
 import PasswordDisplay from "./Components/PasswordDisplay";
+import PaypalDisplay from "./Components/PaypalDisplay";
 import OpennodeDisplay from "./Components/OpennodeDisplay";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
@@ -51,7 +52,6 @@ const Authentication = () => {
     reissued: false,
     confirmation: "",
     resent: false,
-    username: "",
     resetToken: "",
     sessionToken: "",
     userId: "",
@@ -65,13 +65,14 @@ const Authentication = () => {
     reissued,
     confirmation,
     resent,
-    username,
     resetToken,
     sessionToken,
     userId,
     accountNum,
   } = authValues;
-
+  //
+  //
+  //
   // UPDATE WHEN A NEW PAYPAL PLAN IS INTRODUCED
   const [subValues, setSubValues] = useState({
     inputError: "",
@@ -138,7 +139,7 @@ const Authentication = () => {
   });
 
   const { message, error, redirect } = submissionStatus;
-  const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, username, error
+  const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, error
 
   // edit so that it is driven by the "status" value
   const updateSubValues = () => {
@@ -241,7 +242,6 @@ const Authentication = () => {
       reissued: false,
       confirmation: "",
       resent: false,
-      username: tempUser.user.username,
       resetToken: "",
       sessionToken: tempUser.token,
       userId: tempUser.user.accountId.userId,
@@ -259,9 +259,8 @@ const Authentication = () => {
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       console.log("getStatus: ", getStatus());
+      console.log("User status: ", tempUser.user.accountId.status);
       let status = getStatus();
-      console.log("User status: ", status);
-
       if ("user" in tempUser && "token" in tempUser) {
         partialStatus = true;
       }
@@ -493,14 +492,12 @@ const Authentication = () => {
 
   const resetValues = () => {
     setAuthValues({
-      name: "",
       email: "",
       password: "",
       temporary: "",
       reissued: false,
       confirmation: "",
       resent: false,
-      username: "",
       resetToken: "",
       sessionToken: "",
       userId: "",
@@ -521,11 +518,6 @@ const Authentication = () => {
       [event.target.name]: event.target.value,
     });
   };
-  /*
-  else if (tempData.user.accountId.status === 8) {
-    props.displayChange("paidCongrats");
-  }
-  */
 
   const redirectUser = () => {
     console.log("Redirect user");
@@ -586,8 +578,8 @@ const Authentication = () => {
             paddingBottom: "20px",
           }}
         >
-          Link to Stripe or Paypal to get paid instantly in
-          cash, or OpenNode for bitcoin payments. You can pick more later in Account Settings.
+          Link to Stripe or Paypal to get paid instantly in cash, or Opennode
+          for bitcoin payments. You can pick more later in Account Settings.
         </div>
       );
     } else if (display === "freeCongrats") {
@@ -759,10 +751,15 @@ const Authentication = () => {
         <button
           className={classes.ButtonGrey}
           onClick={() => {
-            redirectUser();
+            if (getStatus !== 0) {
+              console.log("going to my account");
+            } else {
+              console.log("going to signup");
+            }
+            //redirectUser();
           }}
         >
-          Stay Free Forever Plan
+          STAY WITH FREE FOREVER PLAN
         </button>
       </div>
     </Fragment>
@@ -777,7 +774,7 @@ const Authentication = () => {
             setDisplay("gateway");
           }}
         >
-          Upgrade to Pro Plan
+          UPGRADE TO A PRO PLAN
         </button>
       </div>
       <div style={{ paddingTop: "10px" }}>
@@ -787,7 +784,7 @@ const Authentication = () => {
             window.location.href = "/myaccount";
           }}
         >
-          Go to Dashboard
+          GO TO MY DASHBOARD
         </button>
       </div>
     </Fragment>
@@ -802,7 +799,7 @@ const Authentication = () => {
             window.location.href = "/myaccount";
           }}
         >
-          Go to Dashboard
+          GO TO MY DASHBOARD
         </button>
       </div>
     </Fragment>
@@ -1179,7 +1176,7 @@ const Authentication = () => {
             paddingBottom: "20px",
           }}
         >
-          Say goodbye to per-ticket fees. Your ticketbuyers will love it.
+          Select your plan and submit payment.
         </div>
       );
     }
@@ -1311,7 +1308,7 @@ const Authentication = () => {
                   submitFreeSub();
                 }}
               >
-                Confirm
+                CONFIRM SELECTION
               </button>
             </div>
           )}
@@ -1527,7 +1524,7 @@ const Authentication = () => {
               });
           }}
         >
-          Submit your Paypal details
+          SUBMIT YOUR PAYPAL DETAILS
         </button>
       </div>
       <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -1537,7 +1534,7 @@ const Authentication = () => {
             setDisplay("gateway");
           }}
         >
-          Back to Payment Processor selection
+          BACK TO GATEWAY SELECTION
         </button>
       </div>
       <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -1547,7 +1544,7 @@ const Authentication = () => {
             redirectUser();
           }}
         >
-          Stay with Free Forever Plan
+          STAY WITH FREE FOREVER PLAN
         </button>
       </div>
     </Fragment>
@@ -1570,7 +1567,7 @@ const Authentication = () => {
               setDisplay(newDisplay);
             }}
           >
-            Try again now
+            TRY AGAIN NOW
           </button>
         </div>
         <div style={{ paddingTop: "10px" }}>
@@ -1580,7 +1577,7 @@ const Authentication = () => {
               window.location.href = "/myaccount";
             }}
           >
-            Try again later
+            TRY AGAIN LATER
           </button>
         </div>
       </Fragment>
@@ -1591,13 +1588,13 @@ const Authentication = () => {
     if (display === "signin") {
       return (
         <SignInDisplay
+          authOrigin={true}
           //close={closeModal} NOT IN AUTH
           email={email}
-          error={error}
-          //expired={expired} NOT IN AUTH
-          authOrigin={true}
-          message={message}
           password={password}
+          message={message}
+          //expired={expired} NOT IN AUTH
+          error={error}
           spinner={showSpinner}
           inputChange={handleAuthValueChange}
           spinnerChange={(value) => setShowSpinner(value)}
@@ -1619,12 +1616,12 @@ const Authentication = () => {
     if (display === "forgot") {
       return (
         <ForgotDisplay
+          authOrigin={true}
           //close={closeModal} NOT IN AUTH
           email={email}
-          error={error}
-          //expired={expired} NOT IN AUTH
-          authOrigin={true}
           message={message}
+          //expired={expired} NOT IN AUTH
+          error={error}
           spinner={showSpinner}
           inputChange={handleAuthValueChange}
           spinnerChange={(value) => setShowSpinner(value)}
@@ -1645,13 +1642,13 @@ const Authentication = () => {
     if (display === "temporary") {
       return (
         <TemporaryDisplay
+          authOrigin={true}
           //close={closeModal} NOT IN AUTH
           email={email}
+          message={message}
           reissued={reissued}
           temporary={temporary}
-          message={message}
           error={error}
-          authOrigin={true}
           spinner={showSpinner}
           inputChange={handleAuthValueChange}
           spinnerChange={(value) => setShowSpinner(value)}
@@ -1660,6 +1657,7 @@ const Authentication = () => {
             setSubmissionStatus(input);
           }}
           values={(input) => setAuthValues(input)}
+          resetValues={() => resetValues()}
           submit={() => redirectUser()}
         ></TemporaryDisplay>
       );
@@ -1672,13 +1670,13 @@ const Authentication = () => {
     if (display === "signup") {
       return (
         <SignUpDisplay
+          authOrigin={true}
           //close={closeModal} NOT IN AUTH
           email={email}
-          error={error}
-          authOrigin={true}
-          //expired={expired} NOT IN AUTH
           message={message}
           password={password}
+          //expired={expired} NOT IN AUTH
+          error={error}
           spinner={showSpinner}
           inputChange={handleAuthValueChange}
           spinnerChange={(value) => setShowSpinner(value)}
@@ -1702,7 +1700,6 @@ const Authentication = () => {
         <ConfirmationDisplay
           //close={closeModal} NOT IN AUTH
           email={email}
-          username={username}
           error={error}
           message={message}
           authOrigin={true}
@@ -1730,7 +1727,6 @@ const Authentication = () => {
         <PasswordDisplay
           //close={closeModal} NOT IN AUTH
           email={email}
-          username={username}
           error={error}
           message={message}
           authOrigin={true}
@@ -1745,6 +1741,8 @@ const Authentication = () => {
           }}
           values={(input) => setAuthValues(input)}
           submit={() => {
+            console.log("inside submit");
+            console.log("initial view: ", initialView);
             if (initialView === "paid" || initialView === "upgrade") {
               setDisplay("gateway");
             } else {
@@ -1774,7 +1772,7 @@ const Authentication = () => {
         return (
           <div className={classes.BlankCanvas} style={height}>
             <div className={classes.Header}>
-              <div>Pick a Payment Processor</div>
+              <div>How to Get Paid Instantly.</div>
             </div>
             <div>
               {showDetail()}
@@ -1865,7 +1863,7 @@ const Authentication = () => {
         return (
           <div className={classes.BlankCanvas} style={height}>
             <div className={classes.Header}>
-              <div>Pick a Subscription Plan</div>
+              <div>Select Your Plan!</div>
             </div>
             <div>
               {showDetail()}
@@ -1879,7 +1877,7 @@ const Authentication = () => {
     }
   };
 
-  const paypalDisplay = () => {
+  const paypalDisplay2 = () => {
     let height = {};
     if (!error) {
       height = { height: "500px" };
@@ -1902,6 +1900,53 @@ const Authentication = () => {
           </div>
         );
       }
+    } else {
+      return null;
+    }
+  };
+
+  const paypalDisplay = () => {
+    if (display === "paypal") {
+      return (
+        <PaypalDisplay
+          authOrigin={true}
+          //close={closeModal} NOT IN AUTH
+          error={error}
+          message={message}
+          client={paypalExpress_client_id}
+          secret={paypalExpress_client_secret}
+          //apiKey={opennode_invoice_API_KEY}
+          //settle={opennode_auto_settle}
+          //dev={opennode_dev}
+          sessionToken={authValues.sessionToken}
+          accountNum={authValues.accountNum}
+          spinner={showSpinner}
+          inputChange={handleSubValueChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          displayChange={(modal) => setDisplay(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+          radioChange={(event, value, message) => {
+            radioChangeSubValues(event, value, message);
+          }}
+          submit={() => {
+            console.log("getStatus: ", getStatus());
+
+            if (getStatus() === 8) {
+              setDisplay("paidCongrats");
+            } else if (getStatus() === 5) {
+              setDisplay("selectPlan");
+            } else if (
+              getStatus() === 1 ||
+              getStatus() === 4 ||
+              getStatus() === 6
+            ) {
+              setDisplay("gateway");
+            } else setDisplay("signin");
+          }}
+        ></PaypalDisplay>
+      );
     } else {
       return null;
     }
@@ -1936,10 +1981,19 @@ const Authentication = () => {
             } else if (getStatus() === 5) {
               setDisplay("selectPlan");
             } else if (
-              (getStatus() === 1, getStatus() === 4, getStatus() === 6)
+              getStatus() === 1 ||
+              getStatus() === 4 ||
+              getStatus() === 6
             ) {
+              console.log("going to gateway");
               setDisplay("gateway");
             } else setDisplay("signin");
+          }}
+          redirect={() => {
+            console.log("REDIRECT");
+            if (getStatus() !== 0) {
+              console.log("THERE IS A STATUS");
+            }
           }}
         ></OpennodeDisplay>
       );

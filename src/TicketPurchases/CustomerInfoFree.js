@@ -272,13 +272,13 @@ const CustomerInfo = (props) => {
           disabled={false}
           className={classes.ButtonGreen}
         >
-          Submit order
+          SUBMIT ORDER
         </button>
       );
     } else {
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
-          Submit order
+          SUBMIT ORDER
         </button>
       );
     }

@@ -203,7 +203,7 @@ const ConfirmationDisplay = (props) => {
               submitConfirmation();
             }}
           >
-            Submit your code
+            SUBMIT YOUR CODE
           </button>
         </div>
       </Fragment>

@@ -215,7 +215,7 @@ const Checkout = () => {
             <br></br>
             Please try again later.
           </div>
-          <button>Continue</button>
+          <button>CONTINUE</button>
         </div>
       );
     } else {

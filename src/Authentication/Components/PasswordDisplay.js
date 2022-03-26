@@ -144,7 +144,7 @@ const PasswordDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.Header}>
-          <div>Create your passwordddd</div>
+          <div>Create your password</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
               style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
