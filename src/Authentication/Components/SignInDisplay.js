@@ -36,6 +36,7 @@ const SignInDisplay = (props) => {
       props.submission({
         message: data.error,
         error: true,
+        redirect: "",
       });
       props.displayChange("signin");
       props.spinnerChange(false);
@@ -44,7 +45,7 @@ const SignInDisplay = (props) => {
 
   const submitSignIn = () => {
     props.spinnerChange(true);
-    props.submission({ message: "", error: false });
+    props.submission({ message: "", error: false, redirect: "" });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -74,6 +75,7 @@ const SignInDisplay = (props) => {
         props.submission({
           message: "Server down please try again",
           error: true,
+          redirect: "signin",
         });
         props.displayChange("error");
         props.spinnerChange(false);
@@ -105,7 +107,7 @@ const SignInDisplay = (props) => {
             onChange={props.inputChange}
             value={props.email}
             onFocus={() => {
-              props.submission({ message: "", error: false });
+              props.submission({ message: "", error: false, redirect: "" });
             }}
           />
           {props.email && !regEmail.test(props.email) ? (
@@ -133,7 +135,7 @@ const SignInDisplay = (props) => {
             onChange={props.inputChange}
             value={props.password}
             onFocus={() => {
-              props.submission({ message: "", error: false });
+              props.submission({ message: "", error: false, redirect: "" });
             }}
           />
           {props.email && !regPassword.test(props.password) ? (
@@ -209,11 +211,13 @@ const SignInDisplay = (props) => {
                 props.submission({
                   message: "System error please try again.",
                   error: true,
+                  redirect: "",
                 });
               } else {
                 props.submission({
                   message: message,
                   error: true,
+                  redirect: "",
                 });
               }
             }}

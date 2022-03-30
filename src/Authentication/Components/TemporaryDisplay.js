@@ -224,10 +224,12 @@ const TemporaryDisplay = (props) => {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter the 6-digit code sent to:
+            Enter the 6-digit code sent to your email.
           </div>
-          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-            {props.email}
+          <div
+            style={{ fontWeight: "600", color: "red", paddingBottom: "20px" }}
+          >
+            PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
         </Fragment>
       );
@@ -235,10 +237,12 @@ const TemporaryDisplay = (props) => {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Confirmation code resent to:
+            Confirmation code resent to your email.
           </div>
-          <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-            {props.email}
+          <div
+            style={{ fontWeight: "600", color: "red", paddingBottom: "20px" }}
+          >
+            PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
         </Fragment>
       );

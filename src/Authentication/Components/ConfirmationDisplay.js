@@ -19,6 +19,7 @@ const ConfirmationDisplay = (props) => {
     props.submission({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -49,6 +50,7 @@ const ConfirmationDisplay = (props) => {
         props.submission({
           message: "Server is down, please try later",
           error: true,
+          redirect: "confirmation",
         });
         props.displayChange("error");
       });
@@ -76,6 +78,7 @@ const ConfirmationDisplay = (props) => {
       props.submission({
         message: data.error,
         error: true,
+        redirect: "",
       });
       console.log("ERROR: ", data.error);
     }
@@ -86,6 +89,7 @@ const ConfirmationDisplay = (props) => {
     props.submission({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -120,6 +124,7 @@ const ConfirmationDisplay = (props) => {
         props.submission({
           message: "Server down please try again",
           error: true,
+          redirect: "confirmation",
         });
         props.displayChange("error");
         props.spinnerChange(false);
@@ -138,7 +143,6 @@ const ConfirmationDisplay = (props) => {
         expired: false,
         confirmation: "",
         resent: false,
-        username: data.user.username,
         resetToken: data.user.passwordToken,
         sessionToken: "",
         userId: data.user.accountId._id,
@@ -150,6 +154,7 @@ const ConfirmationDisplay = (props) => {
       props.submission({
         message: data.error,
         error: true,
+        redirect: "",
       });
       props.displayChange("confirmation");
       props.spinnerChange(false);
@@ -178,7 +183,7 @@ const ConfirmationDisplay = (props) => {
             onChange={props.inputChange}
             value={props.confirmation}
             onFocus={() => {
-              props.submission({ message: "", error: false });
+              props.submission({ message: "", error: false, redirect: "" });
             }}
           />{" "}
           {props.confirmation && !regsuper.test(props.confirmation) ? (
@@ -219,17 +224,29 @@ const ConfirmationDisplay = (props) => {
       );
     } else if (!props.resent) {
       return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Enter the 6-digit code sent to your email:
-        </div>
+        <Fragment>
+          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
+            Enter the 6-digit code sent to your email.
+          </div>
+          <div
+            style={{ fontWeight: "600", color: "red", paddingBottom: "20px" }}
+          >
+            PLEASE CHECK YOUR SPAM/JUNK FOLDER
+          </div>
+        </Fragment>
       );
     } else {
       return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          A new 6-digit code was sent to your email,
-          <br></br>
-          please enter it below:
-        </div>
+        <Fragment>
+          <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
+            Enter the new 6-digit code sent to your email.
+          </div>
+          <div
+            style={{ fontWeight: "600", color: "red", paddingBottom: "20px" }}
+          >
+            PLEASE CHECK YOUR SPAM/JUNK FOLDER
+          </div>
+        </Fragment>
       );
     }
   };
@@ -240,7 +257,7 @@ const ConfirmationDisplay = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.submission({ message: "", error: false });
+            props.submission({ message: "", error: false, redirect: "" });
             submitResend();
           }}
         >

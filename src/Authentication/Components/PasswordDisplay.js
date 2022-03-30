@@ -20,6 +20,7 @@ const PasswordDisplay = (props) => {
     props.submission({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -52,6 +53,7 @@ const PasswordDisplay = (props) => {
         props.submission({
           message: "Server down please try again",
           error: true,
+          redirect: "password",
         });
         props.displayChange("error");
       })
@@ -70,7 +72,7 @@ const PasswordDisplay = (props) => {
           name="password"
           onChange={props.inputChange}
           onFocus={() => {
-            props.submission({ message: "", error: false });
+            props.submission({ message: "", error: false, redirect: "" });
           }}
           value={props.password}
         />
@@ -115,6 +117,7 @@ const PasswordDisplay = (props) => {
       props.submission({
         message: data.error,
         error: true,
+        redirect: "",
       });
       props.displayChange("password");
       console.log("ERROR: ", data.error);

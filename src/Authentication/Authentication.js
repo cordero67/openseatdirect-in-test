@@ -9,30 +9,12 @@ import ConfirmationDisplay from "./Components/ConfirmationDisplay";
 import PasswordDisplay from "./Components/PasswordDisplay";
 import PaypalDisplay from "./Components/PaypalDisplay";
 import OpennodeDisplay from "./Components/OpennodeDisplay";
+import SubscriptionDisplay from "./Components/SubscriptionDisplay";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
-import { PayPalButton } from "react-paypal-button-v2";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { getStatus } from "../Resources/Utils";
 
-import {
-  API,
-  PAYPAL_USE_SANDBOX,
-  OPENNODE_USE_TEST,
-  SUBSCRIPTION_PROMO_CODE_1,
-  SUBSCRIPTION_PROMO_CODE_2,
-  SUBSCRIPTION_PROMO_CODE_3,
-  SUBSCRIPTION_PROMO_CODE_4,
-  SUBSCRIPTION_PROMO_CODE_5,
-  SUBSCRIPTION_PROMO_CODE_6,
-  SUBSCRIPTION_PROMO_CODE_7,
-  SUBSCRIPTION_PROMO_CODE_8,
-} from "../config";
-
-import { SubscriptionPlans } from "./Resources/Variables";
-
-import RadioForm from "../components/Forms/RadioForm";
+import { API, PAYPAL_USE_SANDBOX, OPENNODE_USE_TEST } from "../config";
 
 import stripeImg from "../assets/Stripe/Stripe wordmark - blurple (small).png";
 import payPalImg from "../assets/PayPal/PayPal.PNG";
@@ -41,9 +23,10 @@ import opennodeImg from "../assets/Opennode/opennodeBtc.png";
 import classes from "./Authentication.module.css";
 
 const Authentication = () => {
-  let initialView = queryString.parse(window.location.search).view;
-  const [paidIntent, setPaidIntent] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
+  const [initialView, setInitialView] = useState(
+    queryString.parse(window.location.search).view
+  );
 
   const [authValues, setAuthValues] = useState({
     email: "",
@@ -54,7 +37,6 @@ const Authentication = () => {
     resent: false,
     resetToken: "",
     sessionToken: "",
-    userId: "",
     accountNum: "",
   });
 
@@ -67,23 +49,12 @@ const Authentication = () => {
     resent,
     resetToken,
     sessionToken,
-    userId,
     accountNum,
   } = authValues;
-  //
-  //
-  //
+
   // UPDATE WHEN A NEW PAYPAL PLAN IS INTRODUCED
   const [subValues, setSubValues] = useState({
     inputError: "",
-    paypal_plan_id: "P-3E209303AY287713HMDN3PLQ", // default value is production monthly plan
-    paypal_plan_id_full: "", // default plan for "FULL" ticket plan selection view
-    paypal_plan_id_discount: "", // default plan for "DISCOUNT" ticket plan selection view
-    paypal_plan_id_forFree: "", // default plan for "FORFREE" ticket plan selection view
-    paypal_plan_id_growPR: "", // default plan for "FORFREE" ticket plan selection view
-    paypal_plan_id_old: "", // default plan for "OLD" ticket plan selection view
-    paypal_plan_id_oldDiscounted: "", // default plan for "OLDDISCOUNTED" ticket plan selection view
-    paypal_plan_id_freeSubscription: "", // default plan for "FREESUBSCRIPTION" ticket plan selection view
     paypalExpress_client_id: "", // vendor's clientID not OSD's
     paypalExpress_client_secret: "", // vendor's secret not OSD's
     opennode_invoice_API_KEY: "", // vendors opennode api key
@@ -93,43 +64,12 @@ const Authentication = () => {
 
   const {
     inputError,
-    paypal_plan_id,
-    paypal_plan_id_full,
-    paypal_plan_id_discount,
-    paypal_plan_id_forFree,
-    paypal_plan_id_growPR,
-    paypal_plan_id_old,
-    paypal_plan_id_oldDiscounted,
-    paypal_plan_id_freeSubscription,
     paypalExpress_client_id,
     paypalExpress_client_secret,
     opennode_invoice_API_KEY,
     opennode_auto_settle,
     opennode_dev,
   } = subValues;
-
-  let subscriptions = SubscriptionPlans();
-
-  const [promoCodeDetails, setPromoCodeDetails] = useState({
-    available: false,
-    applied: false,
-    input: false,
-    errorMessage: "",
-    appliedPromoCode: "",
-    inputtedPromoValue: "",
-    lastInvalidPromoCode: "",
-    // UPDATE WHEN A NEW PROMO CODE IS CREATED
-    eventPromoCodes: [
-      SUBSCRIPTION_PROMO_CODE_1,
-      SUBSCRIPTION_PROMO_CODE_2,
-      SUBSCRIPTION_PROMO_CODE_3,
-      SUBSCRIPTION_PROMO_CODE_4,
-      SUBSCRIPTION_PROMO_CODE_5,
-      SUBSCRIPTION_PROMO_CODE_6,
-      SUBSCRIPTION_PROMO_CODE_7,
-      SUBSCRIPTION_PROMO_CODE_8,
-    ],
-  });
 
   // transaction status variable
   const [submissionStatus, setSubmissionStatus] = useState({
@@ -174,48 +114,6 @@ const Authentication = () => {
           tempBuyerInfo.opennode_auto_settle =
             tempUser.user.accountId.opennode_dev;
         }
-
-        if (PAYPAL_USE_SANDBOX === true) {
-          console.log(
-            "PAYPAL_USE_SANDBOX is ",
-            PAYPAL_USE_SANDBOX,
-            " Sandbox true"
-          );
-          tempBuyerInfo.paypal_plan_id_full = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
-          tempBuyerInfo.paypal_plan_id_discount = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
-          tempBuyerInfo.paypal_plan_id_forFree = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly full price
-          tempBuyerInfo.paypal_plan_id_growPR = "P-3U3085871T847894PL5FRXTI"; // sandbox monthly full price
-          tempBuyerInfo.paypal_plan_id_old = "P-6UY26644UT426184FL5FRXTI"; // sandbox monthly full price
-          tempBuyerInfo.paypal_plan_id_oldDiscounted =
-            "P-3YH13849H69051131MAIHPGY"; // sandbox monthly full price
-          tempBuyerInfo.paypal_plan_id_freeSubscription = ""; // production FREE SUBSCRIPTION no PayPal
-          if (!tempUser.user.accountId.paypal_plan_id) {
-            tempBuyerInfo.paypal_plan_id = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
-          } else {
-            tempBuyerInfo.paypal_plan_id =
-              tempUser.user.accountId.paypal_plan_id;
-          }
-        } else {
-          console.log(
-            "PAYPAL_USE_SANDBOX is ",
-            PAYPAL_USE_SANDBOX,
-            " Sandbox false"
-          );
-          tempBuyerInfo.paypal_plan_id_full = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
-          tempBuyerInfo.paypal_plan_id_discount = "P-3MM32159H2853152CMDN3T6Q"; // production monthly discounted price
-          tempBuyerInfo.paypal_plan_id_forFree = "P-0VY95999WV5246104MDOLPKI"; // production monthly 3 months free
-          tempBuyerInfo.paypal_plan_id_growPR = "P-8T757325FM2761033MF5677Y"; // production monthly 3 months free
-          tempBuyerInfo.paypal_plan_id_old = "P-2K587859D1613454MMDOIAHA"; // production old annually full price
-          tempBuyerInfo.paypal_plan_id_oldDiscounted =
-            "P-74091125HK783123JMDOLLEA"; // production monthly full price
-          tempBuyerInfo.paypal_plan_id_freeSubscription = ""; // production FREE SUBSCRIPTION no PayPal
-          if (!tempUser.user.accountId.paypal_plan_id) {
-            tempBuyerInfo.paypal_plan_id = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
-          } else {
-            tempBuyerInfo.paypal_plan_id =
-              tempUser.user.accountId.paypal_plan_id;
-          }
-        }
         if (OPENNODE_USE_TEST === true) {
           tempBuyerInfo.opennode_dev = true;
         } else {
@@ -235,48 +133,56 @@ const Authentication = () => {
     let tempUser = JSON.parse(localStorage.getItem("user"));
     localStorage.setItem("user", JSON.stringify(tempUser));
     setAuthValues({
-      name: "",
-      email: tempUser.user.email,
-      password: "",
-      temporary: "",
-      reissued: false,
-      confirmation: "",
-      resent: false,
-      resetToken: "",
+      name: "", //
+      email: tempUser.user.email, //
+      password: "", //
+      temporary: "", //
+      reissued: false, //
+      expired: false, //
+      confirmation: "", //
+      resent: false, //
+      resetToken: tempUser.user.passwordToken, //
       sessionToken: tempUser.token,
-      userId: tempUser.user.accountId.userId,
-      accountNum: tempUser.user.accountId.accountNum,
+      accountNum: tempUser.user.accountId.accountNum, //
     });
   };
 
   useEffect(() => {
     console.log("initialView: ", initialView);
-    let partialStatus = false;
+    let view = queryString.parse(window.location.search).view;
+    console.log("view: ", view);
+    setInitialView(view);
+    let fullUser = false;
 
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("getStatus: ", getStatus());
-      console.log("User status: ", tempUser.user.accountId.status);
+      console.log("tempUser: ", tempUser);
       let status = getStatus();
+      console.log("getStatus: ", getStatus());
       if ("user" in tempUser && "token" in tempUser) {
-        partialStatus = true;
+        fullUser = true;
+        console.log("We have a fullUser");
       }
       if (status === 8) {
         window.location.href = "/myaccount";
       } else if (initialView === "upgrade") {
         console.log("initialView: ", initialView, ", upgrade");
-        setPaidIntent(true);
         updateSubValues();
-        if (status === 1 || status === 4 || status === 6) {
+        if ((status === 1 || status === 4 || status === 6) && fullUser) {
           updateAuthValues();
           setDisplay("gateway");
-        } else if (status === 5) {
+        } else if (status === 5 && fullUser) {
           updateAuthValues();
-          setDisplay("selectPlan");
-        } else if (partialStatus) {
+          setDisplay("subscription");
+        } else if (
+          "user" in tempUser &&
+          "passwordToken" in tempUser.user &&
+          !("token" in tempUser)
+        ) {
+          updateAuthValues();
           setDisplay("password");
         } else {
           console.log("going to signin");
@@ -284,45 +190,57 @@ const Authentication = () => {
         }
       } else if (initialView === "free") {
         console.log("initialView: ", initialView, ", free");
-        setPaidIntent(false);
         updateSubValues();
-        if (status === 1 || status === 4 || status === 6) {
+        if ((status === 1 || status === 4 || status === 6) && fullUser) {
           updateAuthValues();
           setDisplay("gateway");
-        } else if (status === 5) {
+        } else if (status === 5 && fullUser) {
           updateAuthValues();
-          setDisplay("selectPlan");
-        } else if (partialStatus) {
+          setDisplay("subscription");
+        } else if (
+          "user" in tempUser &&
+          "passwordToken" in tempUser.user &&
+          !("token" in tempUser)
+        ) {
+          updateAuthValues();
           setDisplay("password");
         } else {
           setDisplay("signup");
         }
       } else if (initialView === "paid") {
         console.log("initialView: ", initialView, ", paid");
-        setPaidIntent(true);
         updateSubValues();
-        if (status === 1 || status === 4 || status === 6) {
+        if ((status === 1 || status === 4 || status === 6) && fullUser) {
           updateAuthValues();
           setDisplay("gateway");
-        } else if (status === 5) {
+        } else if (status === 5 && fullUser) {
           updateAuthValues();
-          setDisplay("selectPlan");
-        } else if (partialStatus) {
+          setDisplay("subscription");
+        } else if (
+          "user" in tempUser &&
+          "passwordToken" in tempUser.user &&
+          !("token" in tempUser)
+        ) {
+          updateAuthValues();
           setDisplay("password");
         } else {
           setDisplay("signup");
         }
       } else {
         console.log("initialView: ", initialView, ", NONE");
-        setPaidIntent(false);
         updateSubValues();
-        if (status === 1 || status === 4 || status === 6) {
+        if ((status === 1 || status === 4 || status === 6) && fullUser) {
           updateAuthValues();
           setDisplay("gateway");
-        } else if (status === 5) {
+        } else if (status === 5 && fullUser) {
           updateAuthValues();
-          setDisplay("selectPlan");
-        } else if (partialStatus) {
+          setDisplay("subscription");
+        } else if (
+          "user" in tempUser &&
+          "passwordToken" in tempUser.user &&
+          !("token" in tempUser)
+        ) {
+          updateAuthValues();
           setDisplay("password");
         } else {
           console.log("going to signin");
@@ -330,107 +248,20 @@ const Authentication = () => {
         }
       }
     } else {
-      console.log("going to signin");
-      setDisplay("signin");
+      if (initialView === "paid" || initialView === "free") {
+        console.log("going to signup");
+        setDisplay("signup");
+      } else {
+        console.log("going to signin");
+        setDisplay("signin");
+      }
     }
   }, []);
 
-  // THIS ASSIGNS THE "paypal_plan_id" VARIABLE TO THE SELECTED PLAN
   const radioChangeSubValues = (event, value, name) => {
     let tempSubValues = { ...subValues };
     tempSubValues[name] = value.value;
-    tempSubValues.paypal_plan_id = value.value;
     setSubValues(tempSubValues);
-  };
-
-  // Detailed definition of subscription plans based on promo code entered
-  // No promo code plans: DEFAULT SUBSCRIPTIONS
-  const paymentPlans = [
-    { label: subscriptions.monthly.name, value: subscriptions.monthly.id },
-    { label: subscriptions.annually.name, value: subscriptions.annually.id },
-  ];
-
-  // OSD20 promo code plans
-  const discountPlans = [
-    {
-      label: subscriptions.monthlyDiscounted.name,
-      value: subscriptions.monthlyDiscounted.idn,
-    },
-    {
-      label: subscriptions.annuallyDiscounted.name,
-      value: subscriptions.annuallyDiscounted.id,
-    },
-  ];
-
-  // TRYFORFREE promo code plans
-  const tryForFreePlan = [
-    {
-      label: subscriptions.monthlyFreeTrial.name,
-      value: subscriptions.monthlyFreeTrial.id,
-    },
-  ];
-
-  // GROWPR promo code plans
-  const growPRPlan = [
-    {
-      label: subscriptions.annualGrowPR.name,
-      value: subscriptions.annualGrowPR.id,
-    },
-  ];
-
-  // OSD70 promo code plans
-  const oldAnnualPlan = [
-    {
-      label: subscriptions.annuallyOldPrice.name,
-      value: subscriptions.annuallyOldPrice.id,
-    },
-  ];
-
-  // OSD50 promo code plans
-  const oldAnnualDiscountedPlan = [
-    {
-      label: subscriptions.annuallyOldPriceDiscounted.name,
-      value: subscriptions.annuallyOldPriceDiscounted.id,
-    },
-  ];
-
-  // OSDFREE promo code plans
-  const freeSubscriptionPlan = [
-    {
-      label: subscriptions.freeSubscription.name,
-      value: subscriptions.freeSubscription.id,
-    },
-  ];
-
-  // Determines pricing plans details to display based on promo code entered
-  const shownPlans = () => {
-    if (
-      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_1 ||
-      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_6 ||
-      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_7
-    ) {
-      return discountPlans;
-    } else if (
-      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_2
-    ) {
-      return tryForFreePlan;
-    } else if (
-      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_3
-    ) {
-      return oldAnnualPlan;
-    } else if (
-      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_8
-    ) {
-      return growPRPlan;
-    } else if (
-      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_4
-    ) {
-      return oldAnnualDiscountedPlan;
-    } else if (
-      promoCodeDetails.appliedPromoCode === SUBSCRIPTION_PROMO_CODE_5
-    ) {
-      return freeSubscriptionPlan;
-    } else return paymentPlans;
   };
 
   const handleErrors = (response) => {
@@ -500,7 +331,6 @@ const Authentication = () => {
       resent: false,
       resetToken: "",
       sessionToken: "",
-      userId: "",
       accountNum: "",
     });
   };
@@ -523,33 +353,39 @@ const Authentication = () => {
     console.log("Redirect user");
     let status = getStatus();
     if (status === 8) {
+      console.log("going to myaccount");
       window.location.href = "/myaccount";
     } else if (
       (status === 1 || status === 4 || status === 5 || status === 6) &&
       initialView === "free"
     ) {
+      console.log("going to free congrats");
       setDisplay("freeCongrats");
       setShowSpinner(false);
     } else if (
       (status === 1 || status === 4 || status === 6) &&
       (initialView === "upgrade" || initialView === "paid")
     ) {
+      console.log("going to gateway");
       setDisplay("gateway");
       setShowSpinner(false);
     } else if (
       status === 5 &&
       (initialView === "upgrade" || initialView === "paid")
     ) {
-      setDisplay("selectPlan");
+      console.log("going to subscription");
+      setDisplay("subscription");
       setShowSpinner(false);
     } else if (status === 1 || status === 4 || status === 5 || status === 6) {
+      console.log("going to myaccount");
       window.location.href = "/myaccount";
     } else {
       setSubmissionStatus({
         message: "Server error please try again",
         error: true,
-        redirect: "",
+        redirect: display,
       });
+      console.log("error");
       setDisplay("error");
       setShowSpinner(false);
     }
@@ -579,7 +415,7 @@ const Authentication = () => {
           }}
         >
           Link to Stripe or Paypal to get paid instantly in cash, or Opennode
-          for bitcoin payments. You can pick more later in Account Settings.
+          for bitcoin payments.
         </div>
       );
     } else if (display === "freeCongrats") {
@@ -622,44 +458,8 @@ const Authentication = () => {
           </div>
         </div>
       );
-    } else if (display === "paypal") {
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Can't find the Client ID and Secret?
-          <div style={{ paddingLeft: "20px" }}>
-            <a
-              href="https://developer.paypal.com/developer/applications/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              PayPal Dashboard
-            </a>
-          </div>
-          <div style={{ paddingLeft: "20px" }}>
-            <a
-              href="https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Additional instructions
-            </a>
-          </div>
-          <div style={{ paddingLeft: "20px" }}>
-            <a
-              href="https://www.youtube.com/watch?v=gXAsubSL-1I"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Instructional video
-            </a>
-          </div>
-        </div>
-      );
     }
   };
-
-  const regsuper =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const gatewayForm = (
     <Fragment>
@@ -751,12 +551,11 @@ const Authentication = () => {
         <button
           className={classes.ButtonGrey}
           onClick={() => {
-            if (getStatus !== 0) {
-              console.log("going to my account");
+            if (initialView === "upgrade") {
+              window.close();
             } else {
-              console.log("going to signup");
+              redirectUser();
             }
-            //redirectUser();
           }}
         >
           STAY WITH FREE FOREVER PLAN
@@ -800,751 +599,6 @@ const Authentication = () => {
           }}
         >
           GO TO MY DASHBOARD
-        </button>
-      </div>
-    </Fragment>
-  );
-
-  // THIS LOOKS GOOD
-  // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
-  const showPayPal = () => {
-    //console.log("paypal_plan_id: ", paypal_plan_id);
-    //console.log("subscriptions.clientId: ", subscriptions.clientId);
-    return (
-      <div>
-        <PayPalButton
-          onButtonReady={() => {}}
-          createSubscription={(data, actions) => {
-            return actions.subscription.create({
-              plan_id: paypal_plan_id,
-            });
-          }}
-          onCancel={(data) => {
-            console.log("onCancel 'data': ", data);
-          }}
-          onApprove={(data, actions) => {
-            return actions.subscription
-              .get()
-              .then(function (details) {
-                console.log("details: ", details);
-                const authstring = `Bearer ${authValues.sessionToken}`;
-                console.log("about to send paypal object to server");
-                return fetch(
-                  `${API}/accounts/${authValues.accountNum}/subscription/paypal-express/subscribe`,
-                  {
-                    method: "POST",
-                    headers: {
-                      Accept: "application/json",
-                      "Content-Type": "application/json",
-                      Authorization: authstring,
-                    },
-                    body: JSON.stringify({
-                      data: data,
-                      details: details,
-                      promoCode: promoCodeDetails.appliedPromoCode,
-                    }),
-                  }
-                )
-                  .then(handleErrors)
-                  .then((response) => {
-                    console.log("MADE IT PAST handleErrors");
-                    console.log("response: ", response);
-                    return response.json();
-                  })
-                  .then((response) => {
-                    console.log("response: ", response);
-                    // first show a success model with a continue button to go to paypal clientId model
-                    if (response.status) {
-                      let tempData = JSON.parse(localStorage.getItem("user"));
-                      console.log("tempData: ", tempData);
-                      tempData.user.accountId = response.result;
-                      console.log("tempData: ", tempData);
-                      console.log(
-                        "tempData.user.accountID.status: ",
-                        tempData.user.accountId.status
-                      );
-                      localStorage.setItem("user", JSON.stringify(tempData));
-                      if (tempData.user.accountId.status === 8) {
-                        setDisplay("paidCongrats");
-                      } else if (tempData.user.accountId.status === 6) {
-                        setDisplay("gateway");
-                      } else {
-                        setDisplay("gateway");
-                      }
-                    } else {
-                      console.log("inside else");
-                      setDisplay("paidCongrats");
-                    }
-                  }) // need better error handling
-                  .catch((err) => {
-                    console.log("Inside inner .catch");
-                    setDisplay("paidCongrats");
-                  });
-              })
-              .catch((err) => {
-                console.log("Inside outer .catch");
-                window.alert("Problem with Paypal.");
-              });
-          }}
-          onError={(err) => {
-            console.log("error occurs: ", err);
-            window.alert("Problem connecting with PayPal. Please try again.");
-          }}
-          options={{
-            clientId: subscriptions.clientId,
-            currency: "USD",
-            vault: true,
-          }}
-          catchError={(err) => {
-            console.log("error occurs: ", err);
-            window.alert("Problem connecting with PayPal. Please try again.");
-          }}
-        />
-      </div>
-    );
-  };
-
-  // THIS LOOKS GOOD
-  const amendPromoCodeDetails = (inputtedPromoCode, promoCodeDetails) => {
-    let tempPromoCodeDetails = { ...promoCodeDetails };
-    tempPromoCodeDetails.applied = true;
-    tempPromoCodeDetails.errorMessage = "Valid Promo Code";
-    tempPromoCodeDetails.appliedPromoCode = inputtedPromoCode;
-    tempPromoCodeDetails.inputtedPromoCode = "";
-    tempPromoCodeDetails.lastInvalidPromoCode = "";
-    console.log("UPDATED 'promoCodeDetails': ", tempPromoCodeDetails);
-    return tempPromoCodeDetails;
-  };
-
-  // updates "promoCodeDetails", "ticketInfo" and "orderTotals" based on promo code change
-  const applyPromoCodeHandler = (event, inputtedPromoCode) => {
-    console.log("inputtedPromoCode: ", inputtedPromoCode);
-    // first check if promo code is valid
-    if (promoCodeDetails.eventPromoCodes.includes(inputtedPromoCode)) {
-      console.log("valid code");
-      setPromoCodeDetails(
-        amendPromoCodeDetails(inputtedPromoCode, promoCodeDetails)
-      );
-      let tempSubValues = { ...subValues };
-      console.log("tempSubValues: ", tempSubValues);
-      // set "paypal_plan_id" to default value of that particular promo code
-      if (
-        inputtedPromoCode === "OSD20" ||
-        inputtedPromoCode === "HEAMEDIAGROUP" ||
-        inputtedPromoCode === "LIGHTOFGOLD"
-      ) {
-        tempSubValues.paypal_plan_id = tempSubValues.paypal_plan_id_discount;
-      } else if (inputtedPromoCode === "TRYFORFREE") {
-        tempSubValues.paypal_plan_id = tempSubValues.paypal_plan_id_forFree;
-      } else if (inputtedPromoCode === "GROWPR") {
-        tempSubValues.paypal_plan_id = tempSubValues.paypal_plan_id_growPR;
-      } else if (inputtedPromoCode === "OSD70") {
-        tempSubValues.paypal_plan_id = tempSubValues.paypal_plan_id_old;
-      } else if (inputtedPromoCode === "OSD50") {
-        tempSubValues.paypal_plan_id =
-          tempSubValues.paypal_plan_id_oldDiscounted;
-      } else if (inputtedPromoCode === "OSDFREE") {
-        tempSubValues.paypal_plan_id = "";
-      } else {
-        tempSubValues.paypal_plan_id = tempSubValues.paypal_plan_id_full;
-      }
-      console.log(
-        "tempSubValues.paypal_plan_id: ",
-        tempSubValues.paypal_plan_id
-      );
-      setSubValues(tempSubValues);
-    } else {
-      let tempobject = { ...promoCodeDetails };
-      tempobject.errorMessage = "Sorry, that promo code is invalid";
-      tempobject.lastInvalidPromoCode = inputtedPromoCode;
-      setPromoCodeDetails(tempobject);
-    }
-  };
-
-  // THIS LOOKS GOOD
-  const inputPromoCode = () => {
-    if (promoCodeDetails.errorMessage === "Sorry, that promo code is invalid") {
-      return (
-        <Fragment>
-          <div className={[classes.PromoGrid, classes.Red].join(" ")}>
-            <input
-              type="text"
-              id="input box"
-              className={classes.PromoCodeInputBoxRed}
-              value={promoCodeDetails.inputtedPromoValue}
-              onChange={(event) => {
-                let tempobject = { ...promoCodeDetails };
-                tempobject.inputtedPromoValue = event.target.value;
-                tempobject.errorMessage = "";
-                setPromoCodeDetails(tempobject);
-              }}
-              onFocus={() => {
-                setSubmissionStatus({
-                  message: "",
-                  error: false,
-                  redirect: "",
-                });
-              }}
-            ></input>
-            <button
-              className={classes.PromoCodeButtonRed}
-              onClick={(event) => {
-                applyPromoCodeHandler(
-                  event,
-                  promoCodeDetails.inputtedPromoValue.toUpperCase()
-                );
-                let temp = { ...promoCodeDetails };
-                temp.inputtedPromoValue = "";
-                temp.errorMessage = "";
-                setPromoCodeDetails(temp);
-              }}
-            >
-              Clear
-            </button>
-          </div>
-          <div style={{ color: "red", fontSize: "12px" }}>
-            {promoCodeDetails.errorMessage !== ""
-              ? promoCodeDetails.errorMessage
-              : null}
-          </div>
-        </Fragment>
-      );
-    } else {
-      return (
-        <Fragment>
-          <div className={[classes.PromoGrid, classes.Blue].join(" ")}>
-            <input
-              type="text"
-              id="input box"
-              placeholder="Enter Promo Code"
-              className={classes.PromoCodeInputBoxBlack}
-              value={promoCodeDetails.inputtedPromoValue}
-              onChange={(event) => {
-                let tempDetails = { ...promoCodeDetails };
-                tempDetails.inputtedPromoValue = event.target.value;
-                tempDetails.errorMessage = "";
-                console.log("promoCodeDetails: ", tempDetails);
-                setPromoCodeDetails(tempDetails);
-              }}
-              onFocus={() => {
-                setSubmissionStatus({
-                  message: "",
-                  error: false,
-                  redirect: "",
-                });
-              }}
-            ></input>
-            <button
-              onClick={(event) => {
-                console.log(
-                  "promoCodeDetails.inputtedPromoValue: ",
-                  promoCodeDetails.inputtedPromoValue
-                );
-                applyPromoCodeHandler(
-                  event,
-                  promoCodeDetails.inputtedPromoValue.toUpperCase()
-                );
-              }}
-              className={classes.PromoCodeButtonBlue}
-              disabled={!promoCodeDetails.inputtedPromoValue}
-            >
-              Apply
-            </button>
-          </div>
-          <div style={{ color: "blue", fontSize: "12px" }}>
-            {promoCodeDetails.errorMessage !== ""
-              ? promoCodeDetails.errorMessage
-              : null}
-          </div>
-        </Fragment>
-      );
-    }
-  };
-
-  // THIS LOOKS GOOD
-  const clearPromoDetails = (promoCodeDetails) => {
-    let tempPromoCodeDetails;
-    tempPromoCodeDetails = { ...promoCodeDetails };
-    tempPromoCodeDetails.applied = false;
-    tempPromoCodeDetails.input = true;
-    tempPromoCodeDetails.errorMessage = "";
-    tempPromoCodeDetails.appliedPromoCode = "";
-    tempPromoCodeDetails.inputtedPromoValue = "";
-    tempPromoCodeDetails.lastInvalidPromoCode = "";
-    console.log("UPDATED 'promoCodeDetails': ", tempPromoCodeDetails);
-    return tempPromoCodeDetails;
-  };
-
-  // THIS LOOKS GOOD
-  // creates contents inside promo code input form
-  const promoOption = () => {
-    if (promoCodeDetails.applied) {
-      console.log("promoCodeDetails.applied");
-      return (
-        <Fragment>
-          <div className={classes.AppliedPromoCode}>
-            <FontAwesomeIcon
-              className={classes.faCheckCircle}
-              icon={faCheckCircle}
-            />{" "}
-            Code{" "}
-            <span style={{ fontWeight: "600" }}>
-              {(" ", promoCodeDetails.appliedPromoCode)}{" "}
-            </span>
-            applied.{" "}
-            <span
-              className={classes.RemovePromoCode}
-              onClick={() => {
-                console.log("inside remove");
-                setPromoCodeDetails(clearPromoDetails(promoCodeDetails));
-                let tempSubValues = { ...subValues };
-                tempSubValues.paypal_plan_id =
-                  tempSubValues.paypal_plan_id_full;
-                setSubValues(tempSubValues);
-              }}
-            >
-              Remove
-            </span>
-          </div>
-          <br></br>
-        </Fragment>
-      );
-    } else if (promoCodeDetails.input) {
-      console.log("promoCodeDetails.input");
-      return (
-        <Fragment>
-          {inputPromoCode()}
-          <br></br>
-        </Fragment>
-      );
-    } else if (!promoCodeDetails.input) {
-      //console.log("!promoCodeDetails.input");
-      return (
-        <Fragment>
-          <div
-            className={classes.EnterPromoCode}
-            onClick={() => {
-              let tempPromoCodeDetails;
-              tempPromoCodeDetails = { ...promoCodeDetails };
-              tempPromoCodeDetails.input = true;
-              setPromoCodeDetails(tempPromoCodeDetails);
-            }}
-          >
-            Enter Promo Code
-          </div>
-          <br></br>
-        </Fragment>
-      );
-    }
-  };
-
-  const paymentInstructions = () => {
-    if (
-      promoCodeDetails.appliedPromoCode === "OSD50" ||
-      promoCodeDetails.appliedPromoCode === "OSD70" ||
-      promoCodeDetails.appliedPromoCode === "GROWPR" ||
-      promoCodeDetails.appliedPromoCode === "TRYFORFREE"
-    ) {
-      return (
-        <div
-          style={{
-            fontSize: "16px",
-            paddingTop: "30px",
-            paddingBottom: "20px",
-          }}
-        >
-          Submit your payment to PayPal:
-        </div>
-      );
-    } else if (promoCodeDetails.appliedPromoCode === "OSDFREE") {
-      return (
-        <div
-          style={{
-            fontSize: "16px",
-            paddingTop: "30px",
-            paddingBottom: "20px",
-          }}
-        >
-          Submit your plan:
-        </div>
-      );
-    } else {
-      return (
-        <div
-          style={{
-            fontSize: "16px",
-            paddingBottom: "20px",
-          }}
-        >
-          Select your plan and submit payment.
-        </div>
-      );
-    }
-  };
-
-  // UPDATE WHEN A NEW PLAN IS INTRODUCED BY ADDING A NEW '<RadioForm>' CODE
-  // Displays subscription pricing options section based on promo code entered
-  const paymentPanel = () => {
-    if (
-      promoCodeDetails.appliedPromoCode === "OSD20" ||
-      promoCodeDetails.appliedPromoCode === "HEAMEDIAGROUP" ||
-      promoCodeDetails.appliedPromoCode === "LIGHTOFGOLD"
-    ) {
-      console.log("OSD20");
-      console.log("paypal_plan_id: ", paypal_plan_id);
-      return (
-        <Fragment>
-          <RadioForm
-            details={shownPlans()}
-            group="eventTypeGroup"
-            current={paypal_plan_id_discount}
-            change={(event, value) => {
-              radioChangeSubValues(event, value, "paypal_plan_id_discount");
-            }}
-          />
-          <br></br>
-          {paypal_plan_id ? showPayPal() : null}
-        </Fragment>
-      );
-    } else if (promoCodeDetails.appliedPromoCode === "TRYFORFREE") {
-      console.log("TRYFORFREE");
-      console.log("paypal_plan_id: ", paypal_plan_id);
-      console.log("paypal_plan_id_forFree: ", paypal_plan_id_forFree);
-      return (
-        <Fragment>
-          <RadioForm
-            details={shownPlans()}
-            group="eventTypeGroup"
-            current={paypal_plan_id_forFree}
-            change={(event, value) => {
-              radioChangeSubValues(event, value, "paypal_plan_id_forFree");
-            }}
-          />
-          <br></br>
-          {paypal_plan_id ? showPayPal() : null}
-        </Fragment>
-      );
-    } else if (promoCodeDetails.appliedPromoCode === "GROWPR") {
-      console.log("GROWPR");
-      console.log("paypal_plan_id: ", paypal_plan_id);
-      console.log("paypal_plan_id_growPR: ", paypal_plan_id_growPR);
-      return (
-        <Fragment>
-          <RadioForm
-            details={shownPlans()}
-            group="eventTypeGroup"
-            current={paypal_plan_id_growPR}
-            change={(event, value) => {
-              radioChangeSubValues(event, value, "paypal_plan_id_growPR");
-            }}
-          />
-          <br></br>
-          {paypal_plan_id ? showPayPal() : null}
-        </Fragment>
-      );
-    } else if (promoCodeDetails.appliedPromoCode === "OSD70") {
-      console.log("OSD70");
-      console.log("paypal_plan_id: ", paypal_plan_id);
-      return (
-        <Fragment>
-          <RadioForm
-            details={shownPlans()}
-            group="eventTypeGroup"
-            current={paypal_plan_id_old}
-            change={(event, value) => {
-              radioChangeSubValues(event, value, "paypal_plan_id_old");
-            }}
-          />
-          <br></br>
-          {paypal_plan_id ? showPayPal() : null}
-        </Fragment>
-      );
-    } else if (promoCodeDetails.appliedPromoCode === "OSD50") {
-      console.log("OSD50");
-      console.log("paypal_plan_id: ", paypal_plan_id);
-      return (
-        <Fragment>
-          <RadioForm
-            details={shownPlans()}
-            group="eventTypeGroup"
-            current={paypal_plan_id_oldDiscounted}
-            change={(event, value) => {
-              radioChangeSubValues(
-                event,
-                value,
-                "paypal_plan_id_oldDiscounted"
-              );
-            }}
-          />
-          <br></br>
-          {paypal_plan_id ? showPayPal() : null}
-        </Fragment>
-      );
-    } else if (promoCodeDetails.appliedPromoCode === "OSDFREE") {
-      console.log("OSDFREE");
-      console.log("paypal_plan_id: ", paypal_plan_id);
-      return (
-        <Fragment>
-          <RadioForm
-            details={shownPlans()}
-            group="eventTypeGroup"
-            current={paypal_plan_id_freeSubscription}
-            change={(event, value) => {
-              radioChangeSubValues(
-                event,
-                value,
-                "paypal_plan_id_freeSubscription"
-              );
-            }}
-          />
-          <br></br>
-          {paypal_plan_id ? (
-            showPayPal()
-          ) : (
-            <div style={{ textAlign: "center", paddingTop: "20px" }}>
-              <button
-                className={classes.ButtonGreen}
-                onClick={() => {
-                  submitFreeSub();
-                }}
-              >
-                CONFIRM SELECTION
-              </button>
-            </div>
-          )}
-        </Fragment>
-      );
-    } else {
-      return (
-        <Fragment>
-          <RadioForm
-            details={shownPlans()}
-            group="eventTypeGroup"
-            current={paypal_plan_id_full}
-            change={(event, value) => {
-              radioChangeSubValues(event, value, "paypal_plan_id_full");
-            }}
-          />
-          <br></br>
-          {paypal_plan_id ? showPayPal() : null}
-        </Fragment>
-      );
-    }
-  };
-
-  const submitFreeSub = () => {
-    let tempData = JSON.parse(localStorage.getItem("user"));
-    let accountNum = tempData.user.accountId.accountNum;
-    console.log("tempData: ", tempData);
-    const authstring = `Bearer ${authValues.sessionToken}`;
-    fetch(`${API}/accounts/${accountNum}/subscription/nopay`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: authstring,
-      },
-      body: JSON.stringify({
-        promo: "OSDFREE",
-      }),
-    })
-      .then(handleErrors)
-      .then((response) => {
-        console.log("MADE IT PAST handleErrors");
-        return response.json();
-      })
-      .then((response) => {
-        // first show a success model with a continue button to go to paypal clientId model
-        if (response.status) {
-          console.log("fetch return got back data on organization:", response);
-          let tempData = JSON.parse(localStorage.getItem("user"));
-          console.log("tempData: ", tempData);
-          tempData.user.accountId = response.result;
-          localStorage.setItem("user", JSON.stringify(tempData));
-          setDisplay("paidCongrats");
-        } else {
-          console.log("error in if then else");
-
-          setSubmissionStatus({
-            message: "Server down please try again",
-            error: true,
-            redirect: "selectPlan",
-          });
-          setDisplay("error");
-        }
-      }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
-      .catch((err) => {
-        console.log("error in .then .catch");
-
-        setSubmissionStatus({
-          message: "Server down please try again",
-          error: true,
-          redirect: "selectPlan",
-        });
-        setDisplay("error");
-      })
-      .finally(() => {
-        setShowSpinner(false);
-      });
-  };
-
-  // Displays the entire subscription payment panel
-  const selectPlanForm = (
-    <div className={classes.DisplayPanel}>
-      <div className={classes.PaymentCanvas}>
-        {paymentInstructions()}
-        {promoOption()}
-        {paymentPanel()}
-      </div>
-    </div>
-  );
-
-  const paypalForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "340px" }}>
-        <label style={{ width: "340px", fontSize: "15px" }}>
-          Paypal Client ID <span style={{ color: "red" }}>* </span>
-        </label>
-        <input
-          onFocus={() => {
-            setSubValues({ ...subValues, inputError: "" });
-          }}
-          className={classes.InputBox}
-          type="text"
-          name="paypalExpress_client_id"
-          onChange={handleSubValueChange}
-          value={paypalExpress_client_id}
-        />
-      </div>
-      <div>
-        <label style={{ fontSize: "15px" }}>
-          Paypal Secret <span style={{ color: "red" }}>* </span>
-        </label>
-        <input
-          onFocus={() => {
-            setSubValues({ ...subValues, inputError: "" });
-          }}
-          className={classes.InputBox}
-          type="text"
-          name="paypalExpress_client_secret"
-          onChange={handleSubValueChange}
-          value={paypalExpress_client_secret}
-        />
-      </div>
-      <div style={{ textAlign: "center", paddingTop: "20px" }}>
-        <button
-          className={classes.ButtonBlue}
-          disabled={!paypalExpress_client_id || !paypalExpress_client_secret}
-          onClick={() => {
-            //submitPaypal();
-
-            console.log("Inside submitPaypal");
-            //setDisplay("spinner");
-            setShowSpinner(true);
-            setSubmissionStatus({
-              message: "",
-              error: false,
-              redirect: "",
-            });
-            // api static variables
-            let myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            const authstring = `Bearer ${authValues.sessionToken}`;
-            myHeaders.append("Authorization", authstring);
-
-            let url = `${API}/accounts/${authValues.accountNum}`;
-            let fetcharg = {
-              method: "POST",
-              headers: myHeaders,
-              body: JSON.stringify({
-                useSandbox: PAYPAL_USE_SANDBOX,
-                paymentGatewayType: "PayPalExpress",
-                paypalExpress_client_id: paypalExpress_client_id,
-                paypalExpress_client_secret: paypalExpress_client_secret,
-              }),
-            };
-            console.log(paypalExpress_client_id);
-            console.log(paypalExpress_client_secret);
-
-            console.log("fetching with: ", url, fetcharg);
-            fetch(url, fetcharg)
-              .then(handleErrors)
-              .then((response) => {
-                console.log("then response: ", response);
-                return response.json();
-              })
-              .then((data) => {
-                console.log("fetch return got back data on PayPal:", data);
-                //handleConfirmation
-                if (data.status) {
-                  console.log("INSIDE data.status");
-                  let tempData = JSON.parse(localStorage.getItem("user"));
-                  console.log("tempData: ", tempData);
-                  tempData.user.accountId = data.result;
-                  localStorage.setItem("user", JSON.stringify(tempData));
-                  //updatePageView();
-
-                  if (tempData.user.accountId.status === 8) {
-                    setDisplay("paidCongrats");
-                  } else if (tempData.user.accountId.status === 5) {
-                    setDisplay("selectPlan");
-                  } else {
-                    setDisplay("gateway");
-                  }
-                } else {
-                  // this is a friendly error
-                  let errmsg =
-                    "unable to validate ClientId and secret at this time";
-                  if (data.message) {
-                    console.log("data.message exist");
-                    console.log("data.message ", data.message);
-                    errmsg = data.message;
-                  }
-                  console.log("errmsg: ", errmsg);
-                  setSubmissionStatus({
-                    message: errmsg,
-                    error: true,
-                    redirect: "paypal",
-                  });
-                  setDisplay("error");
-                }
-              })
-              .catch((err) => {
-                console.log(err);
-
-                setSubmissionStatus({
-                  message: "Server down please try again",
-                  error: true,
-                  redirect: "paypal",
-                });
-                setDisplay("error");
-              })
-              .finally(() => {
-                setShowSpinner(false);
-              });
-          }}
-        >
-          SUBMIT YOUR PAYPAL DETAILS
-        </button>
-      </div>
-      <div style={{ textAlign: "center", paddingTop: "20px" }}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            setDisplay("gateway");
-          }}
-        >
-          BACK TO GATEWAY SELECTION
-        </button>
-      </div>
-      <div style={{ textAlign: "center", paddingTop: "20px" }}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            redirectUser();
-          }}
-        >
-          STAY WITH FREE FOREVER PLAN
         </button>
       </div>
     </Fragment>
@@ -1846,97 +900,34 @@ const Authentication = () => {
     }
   };
 
-  const selectPlanDisplay = () => {
-    //updateSubValues();
-    let height = {};
-    if (!error) {
-      height = { height: "490px" };
-    }
-    if (display === "selectPlan") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <div className={classes.Header}>
-              <div>Select Your Plan!</div>
-            </div>
-            <div>
-              {showDetail()}
-              {selectPlanForm}
-            </div>
-          </div>
-        );
-      }
-    } else {
-      return null;
-    }
-  };
-
-  const paypalDisplay2 = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "500px" };
-    }
-    if (display === "paypal") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <div className={classes.Header}>Enter PayPal account info.</div>
-            <div>
-              {showDetail()}
-              {paypalForm}
-            </div>
-          </div>
-        );
-      }
-    } else {
-      return null;
-    }
-  };
-
   const paypalDisplay = () => {
     if (display === "paypal") {
       return (
         <PaypalDisplay
-          authOrigin={true}
+          authOrigin={true} //YES
           //close={closeModal} NOT IN AUTH
-          error={error}
-          message={message}
-          client={paypalExpress_client_id}
-          secret={paypalExpress_client_secret}
-          //apiKey={opennode_invoice_API_KEY}
-          //settle={opennode_auto_settle}
-          //dev={opennode_dev}
-          sessionToken={authValues.sessionToken}
-          accountNum={authValues.accountNum}
-          spinner={showSpinner}
-          inputChange={handleSubValueChange}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(modal) => setDisplay(modal)}
+          initial={initialView}
+          error={error} //YES
+          message={message} //YES
+          client={paypalExpress_client_id} //YES
+          secret={paypalExpress_client_secret} //YES
+          sandbox={PAYPAL_USE_SANDBOX} //YES
+          sessionToken={authValues.sessionToken} //YES
+          accountNum={authValues.accountNum} //YES
+          spinner={showSpinner} //YES
+          inputChange={handleSubValueChange} //YES
+          spinnerChange={(value) => setShowSpinner(value)} //YES
+          displayChange={(modal) => setDisplay(modal)} //YES
           submission={(input) => {
+            //YES
             setSubmissionStatus(input);
           }}
-          radioChange={(event, value, message) => {
-            radioChangeSubValues(event, value, message);
-          }}
           submit={() => {
-            console.log("getStatus: ", getStatus());
-
+            //YES
             if (getStatus() === 8) {
               setDisplay("paidCongrats");
             } else if (getStatus() === 5) {
-              setDisplay("selectPlan");
+              setDisplay("subscription");
             } else if (
               getStatus() === 1 ||
               getStatus() === 4 ||
@@ -1944,6 +935,13 @@ const Authentication = () => {
             ) {
               setDisplay("gateway");
             } else setDisplay("signin");
+          }}
+          redirect={() => {
+            if (getStatus() !== 0) {
+              window.location.href = "/myaccount";
+            } else {
+              setDisplay("signup");
+            }
           }}
         ></PaypalDisplay>
       );
@@ -1958,6 +956,7 @@ const Authentication = () => {
         <OpennodeDisplay
           authOrigin={true}
           //close={closeModal} NOT IN AUTH
+          initial={initialView}
           error={error}
           message={message}
           apiKey={opennode_invoice_API_KEY}
@@ -1979,23 +978,48 @@ const Authentication = () => {
             if (getStatus() === 8) {
               setDisplay("paidCongrats");
             } else if (getStatus() === 5) {
-              setDisplay("selectPlan");
+              setDisplay("subscription");
             } else if (
               getStatus() === 1 ||
               getStatus() === 4 ||
               getStatus() === 6
             ) {
-              console.log("going to gateway");
               setDisplay("gateway");
             } else setDisplay("signin");
           }}
           redirect={() => {
-            console.log("REDIRECT");
             if (getStatus() !== 0) {
-              console.log("THERE IS A STATUS");
+              window.location.href = "/myaccount";
+            } else {
+              setDisplay("signup");
             }
           }}
         ></OpennodeDisplay>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const subscriptionDisplay = () => {
+    if (display === "subscription") {
+      return (
+        <SubscriptionDisplay
+          subValues={subValues}
+          changeSubValues={(values) => {
+            setSubValues(values);
+          }}
+          //authOrigin={true}
+          //initial={initialView}
+          sessionToken={authValues.sessionToken}
+          accountNum={authValues.accountNum}
+          spinner={showSpinner}
+          spinnerChange={(value) => setShowSpinner(value)}
+          displayChange={(modal) => setDisplay(modal)}
+          submission={(input) => {
+            setSubmissionStatus(input);
+          }}
+        ></SubscriptionDisplay>
       );
     } else {
       return null;
@@ -2041,7 +1065,7 @@ const Authentication = () => {
         {gatewayDisplay()}
         {paypalDisplay()}
         {opennodeDisplay()}
-        {selectPlanDisplay()}
+        {subscriptionDisplay()}
         {freeCongratsDisplay()}
         {paidCongratsDisplay()}
         {errorDisplay()}

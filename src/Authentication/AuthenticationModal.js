@@ -43,9 +43,10 @@ const Authentication = (props) => {
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
     error: false,
+    redirect: "",
   });
 
-  const { message, error } = submissionStatus;
+  const { message, error, redirect } = submissionStatus;
 
   const [modalDisplay, setModalDisplay] = useState(props.start); // signin, forgot, temporary, signup, confirmation, password, username, error
 

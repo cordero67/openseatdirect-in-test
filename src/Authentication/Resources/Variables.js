@@ -32,6 +32,10 @@ export const SubscriptionPlans = () => {
         name: "$169 annually: $149 first year",
         id: "P-3U3085871T847894PL5FRXTI", // Bondirectly PayPal Sandbox subscription
       },
+      annualFiftyPercent: {
+        name: "$169 annually: $84.50 first year",
+        id: "P-3U3085871T847894PL5FRXTI", // Bondirectly PayPal Sandbox subscription
+      },
       annuallyOldPrice: {
         name: "$70 annually",
         id: "P-6UY26644UT426184FL5FRXTI", // Bondirectly PayPal Sandbox subscription
@@ -41,7 +45,7 @@ export const SubscriptionPlans = () => {
         id: "P-3YH13849H69051131MAIHPGY", // Bondirectly PayPal Sandbox subscription
       },
       freeSubscription: {
-        name: "FREE SUBSCRIPTION",
+        name: "1 YEAR FREE SUBSCRIPTION",
         id: "", // OSD PayPal Production subscription
       },
       clientId:
@@ -74,6 +78,10 @@ export const SubscriptionPlans = () => {
         name: "$169 annually: $149 first year",
         id: "P-8T757325FM2761033MF5677Y", // Bondirectly PayPal Sandbox subscription
       },
+      annualFiftyPercent: {
+        name: "$169 annually: $84.50 first year",
+        id: "P-9JU02589EP1173940MJALTXA", // Bondirectly PayPal Sandbox subscription
+      },
       annuallyOldPrice: {
         name: "$70 annually",
         id: "P-2K587859D1613454MMDOIAHA", // OSD PayPal Production subscription
@@ -83,7 +91,7 @@ export const SubscriptionPlans = () => {
         id: "P-74091125HK783123JMDOLLEA", // OSD PayPal Production subscription
       },
       freeSubscription: {
-        name: "FREE SUBSCRIPTION",
+        name: "1 YEAR FREE SUBSCRIPTION",
         id: "", // OSD PayPal subscription
       },
       clientId:

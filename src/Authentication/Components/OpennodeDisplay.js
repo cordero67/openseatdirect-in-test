@@ -5,7 +5,7 @@ import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import RadioForm from "../../components/Forms/RadioForm";
 import { API } from "../../config";
 
-import classes from "../Authentication.module.css";
+import classes from "../AuthenticationModal.module.css";
 
 const OpennodeDisplay = (props) => {
   console.log("props: ", props);
@@ -42,9 +42,32 @@ const OpennodeDisplay = (props) => {
     return response;
   };
 
+  const handleOpennode = (data) => {
+    console.log("data: ", data);
+    if (data.status) {
+      console.log("INSIDE data.status");
+      let tempData = JSON.parse(localStorage.getItem("user"));
+      tempData.user.accountId = data.result;
+      localStorage.setItem("user", JSON.stringify(tempData));
+      props.submit();
+      props.spinnerChange(false);
+    } else {
+      let errmsg =
+        "unable to validate Opennode API Key and secret at this time";
+      if (data.message) {
+        console.log("data.message exist");
+        console.log("data.message ", data.message);
+        errmsg = data.message;
+      }
+      console.log("errmsg: ", errmsg);
+      props.submission({ message: errmsg, error: true, redirect: "" });
+      props.spinnerChange(false);
+    }
+  };
+
   const submitOpennode = () => {
     props.spinnerChange(true);
-    props.submission({ message: "", error: false });
+    props.submission({ message: "", error: false, redirect: "" });
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -77,10 +100,9 @@ const OpennodeDisplay = (props) => {
         props.submission({
           message: "Server down please try again",
           error: true,
+          redirect: "opennode",
         });
         props.displayChange("error");
-      })
-      .finally(() => {
         props.spinnerChange(false);
       });
   };
@@ -94,6 +116,7 @@ const OpennodeDisplay = (props) => {
               className={classes.ButtonGrey}
               onClick={() => {
                 props.displayChange("gateway");
+                props.submission({ message: "", error: false, redirect: "" });
               }}
             >
               BACK TO GATEWAY SELECTION
@@ -103,7 +126,11 @@ const OpennodeDisplay = (props) => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
-                props.redirect();
+                if (props.initial === "upgrade") {
+                  window.close();
+                } else {
+                  props.redirect();
+                }
               }}
             >
               STAY WITH FREE FOREVER PLAN
@@ -114,111 +141,105 @@ const OpennodeDisplay = (props) => {
     } else return null;
   };
 
-  const opennodeForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "340px" }}>
-        <label style={{ width: "340px", fontSize: "15px" }}>
-          Opennode API Key <span style={{ color: "red" }}>* </span>
-        </label>
-        <input
-          onFocus={() => {
-            props.submission({ message: "", error: false });
-          }}
-          className={classes.InputBox}
-          type="text"
-          name="opennode_invoice_API_KEY"
-          onChange={props.inputChange}
-          value={props.apiKey}
-        />
-      </div>
-      <div style={{ paddingBottom: "20px", width: "340px" }}>
-        <div style={{ fontSize: "15px" }}>
-          Settlement Currency: (see auto_settle field{" "}
-          <a
-            href="https://developers.opennode.com/reference/create-charge"
-            target="_blank"
-            rel="noreferrer"
-          >
-            here
-          </a>
-          )
-        </div>
-
-        <RadioForm
-          details={settleOptions}
-          group="settleOptioneGroup"
-          current={props.settle}
-          change={(event, value) => {
-            props.radioChange(event, value, "opennode_auto_settle");
-          }}
-        />
-      </div>
-      <div style={{ width: "340px" }}>
-        <div style={{ fontSize: "15px" }}>
-          Bitcoin Blockchain: (to try dev setup{" "}
-          <a href="https://dev.opennode.com/" target="_blank" rel="noreferrer">
-            here
-          </a>
-          )
-        </div>
-        <RadioForm
-          details={blockchainOptions}
-          group="blockchainOptionGroup"
-          current={props.dev}
-          change={(event, value) => {
-            props.radioChange(event, value, "opennode_dev");
-          }}
-        />
-      </div>
-      <div style={{ textAlign: "center", paddingTop: "20px" }}>
-        <button
-          className={classes.ButtonBlue}
-          disabled={!props.apiKey}
-          onClick={() => {
-            submitOpennode();
-          }}
-        >
-          SUBMIT YOUR OPENNODE DETAILS
-        </button>
-      </div>
-      {displayButtons()}
-    </Fragment>
-  );
-
-  const handleOpennode = (data) => {
-    console.log("data: ", data);
-    if (data.status) {
-      console.log("INSIDE data.status");
-      let tempData = JSON.parse(localStorage.getItem("user"));
-      tempData.user.accountId = data.result;
-      localStorage.setItem("user", JSON.stringify(tempData));
-      /*
-      if (!props.authOrigin) {
-        console.log("About to close");
-        props.close();
-      } else if (tempData.user.accountId.status === 8) {
-        props.displayChange("paidCongrats");
-      } else if (tempData.user.accountId.status === 5) {
-        props.displayChange("selectPlan");
-      } else {
-        props.displayChange("gateway");
-      }
-      */
-
-      console.log("going to submit: ");
-      props.submit();
+  const opennodeForm = () => {
+    let buttonClass;
+    if (!props.apiKey) {
+      buttonClass = classes.ButtonBlueOpac;
     } else {
-      let errmsg =
-        "unable to validate Opennode API Key and secret at this time";
-      if (data.message) {
-        console.log("data.message exist");
-        console.log("data.message ", data.message);
-        errmsg = data.message;
-      }
-      console.log("errmsg: ", errmsg);
-      props.submission({ message: errmsg, error: true });
-      //props.displayChange("error");
+      buttonClass = classes.SubmitButton;
     }
+    return (
+      <Fragment>
+        <div
+          style={{ fontSize: "15px", paddingBottom: "20px", width: "340px" }}
+        >
+          <div>
+            Setup a new Opennode account{" "}
+            <a
+              href="https://dev.opennode.com/signup"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontWeight: "600", color: "blue" }}
+            >
+              {" "}
+              here
+            </a>
+          </div>
+          <label style={{ width: "340px", fontSize: "15px" }}>
+            <br></br>
+            Opennode API key
+            <span style={{ color: "red" }}>* </span>
+          </label>
+          <input
+            onFocus={() => {
+              props.submission({ message: "", error: false, redirect: "" });
+            }}
+            className={classes.InputBox}
+            type="text"
+            name="opennode_invoice_API_KEY"
+            onChange={props.inputChange}
+            value={props.apiKey}
+          />
+        </div>
+        <div style={{ paddingBottom: "20px", width: "340px" }}>
+          <div style={{ fontSize: "15px" }}>
+            Settlement Currency: (see auto_settle field{" "}
+            <a
+              href="https://developers.opennode.com/reference/create-charge"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontWeight: "600", color: "blue" }}
+            >
+              here
+            </a>
+            )
+          </div>
+
+          <RadioForm
+            details={settleOptions}
+            group="settleOptioneGroup"
+            current={props.settle}
+            change={(event, value) => {
+              props.radioChange(event, value, "opennode_auto_settle");
+            }}
+          />
+        </div>
+        <div style={{ width: "340px" }}>
+          <div style={{ fontSize: "15px" }}>
+            Bitcoin Blockchain: (try dev setup{" "}
+            <a
+              href="https://dev.opennode.com/"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontWeight: "600", color: "blue" }}
+            >
+              here
+            </a>
+            )
+          </div>
+          <RadioForm
+            details={blockchainOptions}
+            group="blockchainOptionGroup"
+            current={props.dev}
+            change={(event, value) => {
+              props.radioChange(event, value, "opennode_dev");
+            }}
+          />
+        </div>
+        <div style={{ textAlign: "center", paddingTop: "20px" }}>
+          <button
+            className={buttonClass}
+            disabled={!props.apiKey}
+            onClick={() => {
+              submitOpennode();
+            }}
+          >
+            SUBMIT YOUR OPENNODE DETAILS
+          </button>
+        </div>
+        {displayButtons()}
+      </Fragment>
+    );
   };
 
   const showError = () => {
@@ -279,7 +300,7 @@ const OpennodeDisplay = (props) => {
         {header()}
         <div>
           {showError()}
-          {opennodeForm}
+          {opennodeForm()}
         </div>
       </div>
     );

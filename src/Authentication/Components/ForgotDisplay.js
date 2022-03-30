@@ -37,6 +37,7 @@ const ForgotDisplay = (props) => {
       props.submission({
         message: data.error,
         error: true,
+        redirect: "",
       });
       props.displayChange("forgot");
       props.spinnerChange(false);
@@ -48,6 +49,7 @@ const ForgotDisplay = (props) => {
     props.submission({
       message: "",
       error: false,
+      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -77,6 +79,7 @@ const ForgotDisplay = (props) => {
         props.submission({
           message: "Server down please try again",
           error: true,
+          redirect: "forgot",
         });
         props.displayChange("error");
         props.spinnerChange(false);
@@ -106,7 +109,7 @@ const ForgotDisplay = (props) => {
             onChange={props.inputChange}
             value={props.email}
             onFocus={() => {
-              props.submission({ message: "", error: false });
+              props.submission({ message: "", error: false, redirect: "" });
             }}
           />
           {props.email && !regsuper.test(props.email) ? (
@@ -173,12 +176,28 @@ const ForgotDisplay = (props) => {
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.submission({ message: "", error: false });
+            props.submission({ message: "", error: false, redirect: "" });
             props.displayChange("signin");
           }}
         >
           Log in
         </button>
+      </div>
+
+      <div style={{ textAlign: "right" }}>
+        <div style={{ textAlign: "right" }}>
+          Not a member?{" "}
+          <button
+            className={classes.BlueText}
+            onClick={() => {
+              props.resetValues();
+              props.submission({ message: "", error: false });
+              props.displayChange("signup");
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
       </div>
     </div>
   );
