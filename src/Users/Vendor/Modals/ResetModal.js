@@ -345,7 +345,7 @@ const Reset = (props) => {
             submitConfirmation();
           }}
         >
-          Submit your code
+          SUBMIT YOUR CODE
         </button>
       </div>
     </Fragment>
@@ -371,7 +371,7 @@ const Reset = (props) => {
             submitPassword();
           }}
         >
-          Register your password
+          REGISTER YOUR PASSWORD
         </button>
       </div>
     </Fragment>

@@ -1,11 +1,13 @@
 import React, { useState, useEffect, Fragment } from "react";
-import OpennodeDisplay from "../../../Authentication/Components/OpennodeDisplay";
+import PaypalDisplay from "../../../Authentication/Components/PaypalDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./OpennodeModal.module.css";
+import { PAYPAL_USE_SANDBOX } from "../../../config";
 
-const Opennode = (props) => {
+const PaypalExpress = (props) => {
   console.log("props: ", props);
+  console.log("Inside PaypalExpress Modal");
   const [showSpinner, setShowSpinner] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
@@ -14,13 +16,13 @@ const Opennode = (props) => {
   const { message, error } = submissionStatus;
 
   const [subValues, setSubValues] = useState({
-    opennode_invoice_API_KEY: "", // vendors opennode api key
-    opennode_auto_settle: "", // vendors request convesion to USD or keep in BTC?
-    opennode_dev: "", // Boolean: dev=true for testnet BTC
+    //paypalExpress_client_id: "",
+    //paypalExpress_client_secret: "",
     accountNum: "",
+    sessionToken: "",
   });
 
-  useEffect(() => {
+  const initializeSubValues = () => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -28,25 +30,20 @@ const Opennode = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
 
       let tempValues = { ...subValues };
-      tempValues.opennode_invoice_API_KEY =
-        tempUser.user.accountId.opennode_invoice_API_KEY; // vendors opennode api key
-      tempValues.opennode_auto_settle =
-        tempUser.user.accountId.opennode_auto_settle; // vendors request convesion to USD or keep in BTC?
-      tempValues.opennode_dev = tempUser.user.accountId.opennode_dev;
+      //tempValues.paypalExpress_client_id =
+      //  tempUser.user.accountId.paypalExpress_client_id;
+      //tempValues.paypalExpress_client_secret =
+      //  tempUser.user.accountId.paypalExpress_client_secret;
       tempValues.accountNum = tempUser.user.accountId.accountNum;
       tempValues.sessionToken = tempUser.token;
       console.log("tempValues: ", tempValues);
       setSubValues(tempValues);
     }
-  }, []);
-
-  // THIS ASSIGNS THE "paypal_plan_id" VARIABLE TO THE SELECTED PLAN
-  const radioChangeSubValues = (event, value, name) => {
-    let tempSubValues = { ...subValues };
-    tempSubValues[name] = value.value;
-    tempSubValues.paypal_plan_id = value.value;
-    setSubValues(tempSubValues);
   };
+
+  useEffect(() => {
+    initializeSubValues();
+  }, []);
 
   const handleSubValueChange = (event) => {
     setSubValues({
@@ -55,34 +52,40 @@ const Opennode = (props) => {
     });
   };
 
-  const opennodeDisplay = () => {
+  const setDefaultValues = () => {
+    setSubmissionStatus({
+      message: "",
+      error: false,
+    });
+    initializeSubValues();
+    props.closeModal();
+  };
+
+  const paypalDisplay = () => {
     return (
-      <OpennodeDisplay
+      <PaypalDisplay
         authOrigin={false}
-        close={() => props.closeModal()}
+        close={() => {
+          setDefaultValues();
+        }}
         //initial={initialView} // NOT IN MODAL
         error={error}
         message={message}
-        apiKey={subValues.opennode_invoice_API_KEY}
-        settle={subValues.opennode_auto_settle}
-        dev={subValues.opennode_dev}
+        sandbox={PAYPAL_USE_SANDBOX}
         sessionToken={subValues.sessionToken}
         accountNum={subValues.accountNum}
         spinner={showSpinner}
         inputChange={handleSubValueChange}
         spinnerChange={(value) => setShowSpinner(value)}
-        ////displayChange={(modal) => setDisplay(modal)} NOT IN MODAL
+        //displayChange={(modal) => setDisplay(modal)} NOT IN MODAL
         submission={(input) => {
           setSubmissionStatus(input);
         }}
-        radioChange={(event, value, message) => {
-          radioChangeSubValues(event, value, message);
-        }}
         submit={() => {
-          props.closeModal();
+          setDefaultValues();
         }}
         //redirect={() => {setDefaultValues()}} NOT IN MODAL
-      ></OpennodeDisplay>
+      ></PaypalDisplay>
     );
   };
 
@@ -97,10 +100,10 @@ const Opennode = (props) => {
         }}
         className={classes.Modal}
       >
-        {opennodeDisplay()}
+        {paypalDisplay()}
         {/*errorDisplay()*/}
       </div>
     </Fragment>
   );
 };
-export default Opennode;
+export default PaypalExpress;

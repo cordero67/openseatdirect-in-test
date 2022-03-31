@@ -54,22 +54,13 @@ const Authentication = () => {
 
   // UPDATE WHEN A NEW PAYPAL PLAN IS INTRODUCED
   const [subValues, setSubValues] = useState({
-    inputError: "",
-    paypalExpress_client_id: "", // vendor's clientID not OSD's
-    paypalExpress_client_secret: "", // vendor's secret not OSD's
     opennode_invoice_API_KEY: "", // vendors opennode api key
     opennode_auto_settle: "", // vendors request convesion to USD or keep in BTC?
     opennode_dev: "", // Boolean: dev=true for testnet BTC
   });
 
-  const {
-    inputError,
-    paypalExpress_client_id,
-    paypalExpress_client_secret,
-    opennode_invoice_API_KEY,
-    opennode_auto_settle,
-    opennode_dev,
-  } = subValues;
+  const { opennode_invoice_API_KEY, opennode_auto_settle, opennode_dev } =
+    subValues;
 
   // transaction status variable
   const [submissionStatus, setSubmissionStatus] = useState({
@@ -91,17 +82,6 @@ const Authentication = () => {
       if ("user" in tempUser && "accountId" in tempUser.user) {
         let tempBuyerInfo = {};
         // populates the "tempBuyerInfo" (and "values") object with "user" object info
-        if (tempUser.user.accountId?.status) {
-          tempBuyerInfo.status = tempUser.user.accountId.status;
-        }
-        if (tempUser.user.accountId?.paypalExpress_client_id) {
-          tempBuyerInfo.paypalExpress_client_id =
-            tempUser.user.accountId.paypalExpress_client_id;
-        }
-        if (tempUser.user.accountId?.paypalExpress_client_secret) {
-          tempBuyerInfo.paypalExpress_client_secret =
-            tempUser.user.accountId.paypalExpress_client_secret;
-        }
         if (tempUser.user.accountId?.opennode_invoice_API_KEY) {
           tempBuyerInfo.opennode_invoice_API_KEY =
             tempUser.user.accountId.opennode_invoice_API_KEY;
@@ -111,8 +91,7 @@ const Authentication = () => {
             tempUser.user.accountId.opennode_auto_settle;
         }
         if (tempUser.user.accountId?.opennode_dev) {
-          tempBuyerInfo.opennode_auto_settle =
-            tempUser.user.accountId.opennode_dev;
+          tempBuyerInfo.opennode_dev = tempUser.user.accountId.opennode_dev;
         }
         if (OPENNODE_USE_TEST === true) {
           tempBuyerInfo.opennode_dev = true;
@@ -583,7 +562,7 @@ const Authentication = () => {
             window.location.href = "/myaccount";
           }}
         >
-          GO TO MY DASHBOARD
+          GO TO MY ACCOUNT
         </button>
       </div>
     </Fragment>
@@ -598,7 +577,7 @@ const Authentication = () => {
             window.location.href = "/myaccount";
           }}
         >
-          GO TO MY DASHBOARD
+          GO TO MY ACCOUNT
         </button>
       </div>
     </Fragment>
@@ -904,26 +883,22 @@ const Authentication = () => {
     if (display === "paypal") {
       return (
         <PaypalDisplay
-          authOrigin={true} //YES
+          authOrigin={true}
           //close={closeModal} NOT IN AUTH
           initial={initialView}
-          error={error} //YES
-          message={message} //YES
-          client={paypalExpress_client_id} //YES
-          secret={paypalExpress_client_secret} //YES
-          sandbox={PAYPAL_USE_SANDBOX} //YES
-          sessionToken={authValues.sessionToken} //YES
-          accountNum={authValues.accountNum} //YES
-          spinner={showSpinner} //YES
-          inputChange={handleSubValueChange} //YES
-          spinnerChange={(value) => setShowSpinner(value)} //YES
-          displayChange={(modal) => setDisplay(modal)} //YES
+          error={error}
+          message={message}
+          sandbox={PAYPAL_USE_SANDBOX}
+          sessionToken={authValues.sessionToken}
+          accountNum={authValues.accountNum}
+          spinner={showSpinner}
+          inputChange={handleSubValueChange}
+          spinnerChange={(value) => setShowSpinner(value)}
+          displayChange={(modal) => setDisplay(modal)}
           submission={(input) => {
-            //YES
             setSubmissionStatus(input);
           }}
           submit={() => {
-            //YES
             if (getStatus() === 8) {
               setDisplay("paidCongrats");
             } else if (getStatus() === 5) {

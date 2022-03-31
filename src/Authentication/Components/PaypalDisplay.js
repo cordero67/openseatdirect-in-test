@@ -1,13 +1,53 @@
-import React, { Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../../config";
 
-import classes from "../Authentication.module.css";
+import classes from "../AuthenticationModal.module.css";
 
 const PaypalDisplay = (props) => {
   console.log("props: ", props);
+  const [subValues, setSubValues] = useState({
+    paypalExpress_client_id: "", // vendor's clientID not OSD's
+    paypalExpress_client_secret: "", // vendor's secret not OSD's
+  });
+
+  const handleSubValueChange = (event) => {
+    setSubValues({
+      ...subValues,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const initializeSubValues = () => {
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("user") !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      if ("user" in tempUser && "accountId" in tempUser.user) {
+        let tempSubValues = {};
+        // populates the "tempSubValues" (and "values") object with "user" object info
+        if (tempUser.user.accountId?.paypalExpress_client_id) {
+          tempSubValues.paypalExpress_client_id =
+            tempUser.user.accountId.paypalExpress_client_id;
+        }
+        if (tempUser.user.accountId?.paypalExpress_client_secret) {
+          tempSubValues.paypalExpress_client_secret =
+            tempUser.user.accountId.paypalExpress_client_secret;
+        }
+        setSubValues(tempSubValues);
+        console.log("tempSubValues: ", tempSubValues);
+      }
+    } else {
+      console.log("no user object");
+    }
+  };
+
+  useEffect(() => {
+    initializeSubValues();
+  }, []);
 
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
@@ -58,8 +98,8 @@ const PaypalDisplay = (props) => {
       body: JSON.stringify({
         useSandbox: props.sandbox,
         paymentGatewayType: "PayPalExpress",
-        paypalExpress_client_id: props.client,
-        paypalExpress_client_secret: props.secret,
+        paypalExpress_client_id: subValues.paypalExpress_client_id,
+        paypalExpress_client_secret: subValues.paypalExpress_client_secret,
       }),
     };
     console.log("fetching with: ", url, fetcharg);
@@ -93,6 +133,7 @@ const PaypalDisplay = (props) => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
+                initializeSubValues();
                 props.displayChange("gateway");
                 props.submission({ message: "", error: false, redirect: "" });
               }}
@@ -119,87 +160,106 @@ const PaypalDisplay = (props) => {
     } else return null;
   };
 
-  const paypalForm = (
-    <Fragment>
-      <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-        Can't find the Client ID and Secret?
-        <div style={{ paddingLeft: "20px" }}>
-          <a
-            style={{ fontWeight: "600", color: "blue" }}
-            href="https://developer.paypal.com/developer/applications/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            PayPal Dashboard
-          </a>
+  const paypalForm = () => {
+    console.log("paypalExpress_client_id: ", props.paypalExpress_client_id);
+    console.log(
+      "paypalExpress_client_secret: ",
+      props.paypalExpress_client_secret
+    );
+    let buttonClass;
+    if (
+      !subValues.paypalExpress_client_id ||
+      !subValues.paypalExpress_client_secret
+    ) {
+      buttonClass = classes.ButtonBlueOpac;
+    } else {
+      buttonClass = classes.SubmitButton;
+    }
+    return (
+      <Fragment>
+        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+          Can't find the Client ID and Secret?
+          <div style={{ paddingLeft: "20px" }}>
+            <a
+              style={{ fontWeight: "600", color: "blue" }}
+              href="https://developer.paypal.com/developer/applications/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              PayPal Dashboard
+            </a>
+          </div>
+          <div style={{ paddingLeft: "20px" }}>
+            <a
+              style={{ fontWeight: "600", color: "blue" }}
+              href="https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Additional instructions
+            </a>
+          </div>
+          <div style={{ paddingLeft: "20px" }}>
+            <a
+              style={{ fontWeight: "600", color: "blue" }}
+              href="https://www.youtube.com/watch?v=gXAsubSL-1I"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Instructional video
+            </a>
+          </div>
         </div>
-        <div style={{ paddingLeft: "20px" }}>
-          <a
-            style={{ fontWeight: "600", color: "blue" }}
-            href="https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Additional instructions
-          </a>
-        </div>
-        <div style={{ paddingLeft: "20px" }}>
-          <a
-            style={{ fontWeight: "600", color: "blue" }}
-            href="https://www.youtube.com/watch?v=gXAsubSL-1I"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Instructional video
-          </a>
-        </div>
-      </div>
 
-      <div style={{ paddingBottom: "20px", width: "340px" }}>
-        <label style={{ width: "340px", fontSize: "15px" }}>
-          Paypal Client ID <span style={{ color: "red" }}>* </span>
-        </label>
-        <input
-          onFocus={() => {
-            props.submission({ message: "", error: false, redirect: "" });
-          }}
-          className={classes.InputBox}
-          type="text"
-          name="paypalExpress_client_id"
-          onChange={props.inputChange}
-          value={props.client}
-        />
-      </div>
-      <div>
-        <label style={{ fontSize: "15px" }}>
-          Paypal Secret <span style={{ color: "red" }}>* </span>
-        </label>
-        <input
-          onFocus={() => {
-            props.submission({ message: "", error: false, redirect: "" });
-          }}
-          className={classes.InputBox}
-          type="text"
-          name="paypalExpress_client_secret"
-          onChange={props.inputChange}
-          value={props.secret}
-        />
-      </div>
-      <div style={{ textAlign: "center", paddingTop: "20px" }}>
-        <button
-          className={classes.ButtonBlue}
-          disabled={!props.client || !props.secret}
-          onClick={() => {
-            console.log("CLICKED SUBMIT");
-            submitPaypal();
-          }}
-        >
-          SUBMIT YOUR PAYPAL DETAILS
-        </button>
-      </div>
-      {displayButtons()}
-    </Fragment>
-  );
+        <div style={{ paddingBottom: "20px", width: "340px" }}>
+          <label style={{ width: "340px", fontSize: "15px" }}>
+            Paypal Client ID <span style={{ color: "red" }}>* </span>
+          </label>
+          <input
+            onFocus={() => {
+              props.submission({ message: "", error: false, redirect: "" });
+            }}
+            className={classes.InputBox}
+            type="text"
+            name="paypalExpress_client_id"
+            onChange={handleSubValueChange}
+            value={subValues.paypalExpress_client_id}
+          />
+        </div>
+        <div>
+          <label style={{ fontSize: "15px" }}>
+            Paypal Secret <span style={{ color: "red" }}>* </span>
+          </label>
+          <input
+            onFocus={() => {
+              props.submission({ message: "", error: false, redirect: "" });
+            }}
+            className={classes.InputBox}
+            type="text"
+            name="paypalExpress_client_secret"
+            onChange={handleSubValueChange}
+            value={subValues.paypalExpress_client_secret}
+          />
+        </div>
+        <div style={{ textAlign: "center", paddingTop: "20px" }}>
+          <button
+            className={buttonClass}
+            disabled={
+              !subValues.paypalExpress_client_id ||
+              !subValues.paypalExpress_client_secret
+            }
+            onClick={() => {
+              console.log("CLICKED SUBMIT");
+              submitPaypal();
+            }}
+          >
+            SUBMIT YOUR PAYPAL DETAILS
+          </button>
+        </div>
+        {displayButtons()}
+      </Fragment>
+    );
+  };
 
   const showError = () => {
     if (props.error) {
@@ -236,6 +296,7 @@ const PaypalDisplay = (props) => {
               name="close-outline"
               cursor="pointer"
               onClick={() => {
+                initializeSubValues();
                 props.close();
               }}
             />
@@ -248,8 +309,15 @@ const PaypalDisplay = (props) => {
   };
 
   if (props.spinner) {
+    let height;
+    if (props.authOrigin) {
+      height = { height: "595px" };
+    } else {
+      height = { height: "392px" };
+    }
+
     return (
-      <div className={classes.BlankCanvas} style={{ height: "595px" }}>
+      <div className={classes.BlankCanvas} style={height}>
         <Spinner />
       </div>
     );
@@ -259,7 +327,7 @@ const PaypalDisplay = (props) => {
         {header()}
         <div>
           {showError()}
-          {paypalForm}
+          {paypalForm()}
         </div>
       </div>
     );

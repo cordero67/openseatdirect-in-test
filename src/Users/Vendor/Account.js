@@ -4,6 +4,7 @@ import { API } from "../../config.js";
 
 import ResetModal from "./Modals/ResetModal";
 import OpennodeModal from "./Modals/OpennodeModal";
+import PaypalModal from "./Modals/PaypalModal";
 
 import { getStatus } from "../../Resources/Utils";
 
@@ -63,6 +64,10 @@ const Account = (props) => {
 
   const changeOpennode = () => {
     setModalStatus("opennode");
+  };
+
+  const changePaypal = () => {
+    setModalStatus("paypal");
   };
 
   const requestChange = () => {
@@ -136,37 +141,31 @@ const Account = (props) => {
       return (
         <div>
           Payment Gateway: {userInfo.paymentGateway}{" "}
-          <button
-            className={classes.PasswordButton}
-            onClick={() => {
-              changeOpennode();
-            }}
-          >
-            {" "}
-            Update
-          </button>
+          {userInfo.paymentGateway === "PayPalExpress" ? (
+            <button
+              className={classes.PasswordButton}
+              onClick={() => {
+                changePaypal();
+              }}
+            >
+              {" "}
+              Update
+            </button>
+          ) : null}
         </div>
       );
     } else if (getStatus() === 8) {
-      return (
-        <div>
-          Payment Gateway: NONE{" "}
-          <button
-            className={classes.PasswordButton}
-            onClick={() => {
-              changeOpennode();
-            }}
-          >
-            {" "}
-            Add
-          </button>
-        </div>
-      );
+      return <div>Payment Gateway: NONE </div>;
     } else return null;
   };
 
   const cryptoDetails = () => {
-    if (getStatus() === 8 && userInfo.cryptoGateway) {
+    console.log("userInfo.cryptoGateway: ", userInfo.cryptoGateway);
+    if (
+      getStatus() === 8 &&
+      userInfo.cryptoGateway &&
+      userInfo.cryptoGateway !== "NONE"
+    ) {
       return (
         <div>
           Crypto Gateway: {userInfo.cryptoGateway}{" "}
@@ -243,6 +242,12 @@ const Account = (props) => {
       />
       <OpennodeModal
         show={modalStatus === "opennode"}
+        closeModal={() => {
+          setModalStatus("none");
+        }}
+      />
+      <PaypalModal
+        show={modalStatus === "paypal"}
         closeModal={() => {
           setModalStatus("none");
         }}

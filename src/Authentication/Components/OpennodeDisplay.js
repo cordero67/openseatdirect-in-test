@@ -289,8 +289,14 @@ const OpennodeDisplay = (props) => {
   };
 
   if (props.spinner) {
+    let height;
+    if (props.authOrigin) {
+      height = { height: "595px" };
+    } else {
+      height = { height: "486px" };
+    }
     return (
-      <div className={classes.BlankCanvas} style={{ height: "595px" }}>
+      <div className={classes.BlankCanvas} style={height}>
         <Spinner />
       </div>
     );
