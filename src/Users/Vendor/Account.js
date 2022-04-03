@@ -199,6 +199,12 @@ const Account = (props) => {
           setModalStatus("none");
         }}
       />
+      <PaypalModal
+        show={modalStatus === "paypal"}
+        closeModal={() => {
+          setModalStatus("none");
+        }}
+      />
     </div>
   );
 };
@@ -209,12 +215,6 @@ export default Account;
 
       <OpennodeModal
         show={modalStatus === "opennode"}
-        closeModal={() => {
-          setModalStatus("none");
-        }}
-      />
-      <PaypalModal
-        show={modalStatus === "paypal"}
         closeModal={() => {
           setModalStatus("none");
         }}
