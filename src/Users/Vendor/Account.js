@@ -138,22 +138,7 @@ const Account = (props) => {
 
   const paymentDetails = () => {
     if (getStatus() === 8 && userInfo.paymentGateway) {
-      return (
-        <div>
-          Payment Gateway: {userInfo.paymentGateway}{" "}
-          {userInfo.paymentGateway === "PayPalExpress" ? (
-            <button
-              className={classes.PasswordButton}
-              onClick={() => {
-                changePaypal();
-              }}
-            >
-              {" "}
-              Update
-            </button>
-          ) : null}
-        </div>
-      );
+      return <div>Payment Gateway: {userInfo.paymentGateway} </div>;
     } else if (getStatus() === 8) {
       return <div>Payment Gateway: NONE </div>;
     } else return null;
@@ -166,35 +151,9 @@ const Account = (props) => {
       userInfo.cryptoGateway &&
       userInfo.cryptoGateway !== "NONE"
     ) {
-      return (
-        <div>
-          Crypto Gateway: {userInfo.cryptoGateway}{" "}
-          <button
-            className={classes.PasswordButton}
-            onClick={() => {
-              changeOpennode();
-            }}
-          >
-            {" "}
-            Update
-          </button>
-        </div>
-      );
+      return <div>Crypto Gateway: {userInfo.cryptoGateway} </div>;
     } else if (getStatus() === 8) {
-      return (
-        <div>
-          Crypto Gateway: NONE{" "}
-          <button
-            className={classes.PasswordButton}
-            onClick={() => {
-              changeOpennode();
-            }}
-          >
-            {" "}
-            Add
-          </button>
-        </div>
-      );
+      return <div>Crypto Gateway: NONE </div>;
     } else return null;
   };
 
@@ -240,6 +199,14 @@ const Account = (props) => {
           setModalStatus("none");
         }}
       />
+    </div>
+  );
+};
+
+export default Account;
+
+/*
+
       <OpennodeModal
         show={modalStatus === "opennode"}
         closeModal={() => {
@@ -252,8 +219,36 @@ const Account = (props) => {
           setModalStatus("none");
         }}
       />
-    </div>
-  );
-};
 
-export default Account;
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              changeOpennode();
+            }}
+          >
+            {" "}
+            Add
+          </button>
+
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              changeOpennode();
+            }}
+          >
+            {" "}
+            Update
+          </button>
+
+
+          {userInfo.paymentGateway === "PayPalExpress" ? (
+            <button
+              className={classes.PasswordButton}
+              onClick={() => {
+                changePaypal();
+              }}
+            >
+              {" "}
+              Update
+            </button>
+          ) : null}*/

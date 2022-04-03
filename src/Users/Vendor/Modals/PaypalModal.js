@@ -159,6 +159,7 @@ const PaypalExpress = (props) => {
           }}
           later={() => {
             console.log("LATER");
+            closeModal();
           }}
         ></ErrorDisplay>
       );

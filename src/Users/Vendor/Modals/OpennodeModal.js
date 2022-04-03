@@ -1,8 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
 import OpennodeDisplay from "../../../Authentication/Components/OpennodeDisplay";
+import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./OpennodeModal.module.css";
+import Spinner from "../../../components/UI/Spinner/Spinner";
 
 const Opennode = (props) => {
   console.log("props: ", props);
@@ -55,6 +57,27 @@ const Opennode = (props) => {
     });
   };
 
+  const errorDisplay = () => {
+    /*
+    if (display === "error") {
+      return (
+        <ErrorDisplay
+          now={() => {
+            console.log("NOW");
+            setDisplay("paypal");
+          }}
+          later={() => {
+            console.log("LATER");
+            closeModal();
+          }}
+        ></ErrorDisplay>
+      );
+    } else {
+      return null;
+    }
+    */
+  };
+
   const opennodeDisplay = () => {
     return (
       <OpennodeDisplay
@@ -93,7 +116,7 @@ const Opennode = (props) => {
         className={classes.Modal}
       >
         {opennodeDisplay()}
-        {/*errorDisplay()*/}
+        {errorDisplay()}
       </div>
     </Fragment>
   );

@@ -94,7 +94,7 @@ const PaypalDisplay = (props) => {
     myHeaders.append("Content-Type", "application/json");
     const authstring = `Bearer ${props.sessionToken}`;
     myHeaders.append("Authorization", authstring);
-    let url = `${API}/accounts/${props.accountNum}`;
+    let url = `${API}/accountssss/${props.accountNum}`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
