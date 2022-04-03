@@ -1,14 +1,77 @@
-import React, { Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import RadioForm from "../../components/Forms/RadioForm";
-import { API } from "../../config";
+import { API, OPENNODE_USE_TEST } from "../../config";
 
-import classes from "../AuthenticationModal.module.css";
+import classes from "./Components.module.css";
 
 const OpennodeDisplay = (props) => {
   console.log("props: ", props);
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    error: false,
+  });
+  const { message, error } = submissionStatus;
+
+  const [subValues, setSubValues] = useState({
+    opennode_invoice_API_KEY: "", // vendors opennode api key
+    opennode_auto_settle: "", // vendors request convesion to USD or keep in BTC?
+    opennode_dev: "", // Boolean: dev=true for testnet BTC\
+  });
+
+  const handleSubValueChange = (event) => {
+    console.log("event: ", event);
+    setSubValues({
+      ...subValues,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const radioChangeSubValues = (event, value, name) => {
+    let tempSubValues = { ...subValues };
+    tempSubValues[name] = value.value;
+    setSubValues(tempSubValues);
+  };
+
+  const initializeSubValues = () => {
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("user") !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      if ("user" in tempUser && "accountId" in tempUser.user) {
+        let tempSubValues = {};
+        if (tempUser.user.accountId?.opennode_invoice_API_KEY) {
+          tempSubValues.opennode_invoice_API_KEY =
+            tempUser.user.accountId.opennode_invoice_API_KEY;
+        }
+
+        if (tempUser.user.accountId?.opennode_auto_settle === undefined) {
+          tempSubValues.opennode_auto_settle = true;
+        } else {
+          tempSubValues.opennode_auto_settle =
+            tempUser.user.accountId?.opennode_auto_settle;
+        }
+
+        if (tempUser.user.accountId?.opennode_dev === undefined) {
+          tempSubValues.opennode_dev = OPENNODE_USE_TEST;
+        } else {
+          tempSubValues.opennode_dev = tempUser.user.accountId?.opennode_dev;
+        }
+
+        setSubValues(tempSubValues);
+        console.log("tempBuyerInfo: ", tempSubValues);
+      }
+    } else {
+      console.log("no user object");
+    }
+  };
+
+  useEffect(() => {
+    initializeSubValues();
+  }, []);
 
   // OSDFREE promo code plans
   const settleOptions = [
@@ -43,9 +106,7 @@ const OpennodeDisplay = (props) => {
   };
 
   const handleOpennode = (data) => {
-    console.log("data: ", data);
     if (data.status) {
-      console.log("INSIDE data.status");
       let tempData = JSON.parse(localStorage.getItem("user"));
       tempData.user.accountId = data.result;
       localStorage.setItem("user", JSON.stringify(tempData));
@@ -55,20 +116,22 @@ const OpennodeDisplay = (props) => {
       let errmsg =
         "unable to validate Opennode API Key and secret at this time";
       if (data.message) {
-        console.log("data.message exist");
-        console.log("data.message ", data.message);
         errmsg = data.message;
       }
-      console.log("errmsg: ", errmsg);
-      props.submission({ message: errmsg, error: true, redirect: "" });
+      setSubmissionStatus({
+        message: errmsg,
+        error: true,
+      });
       props.spinnerChange(false);
     }
   };
 
   const submitOpennode = () => {
     props.spinnerChange(true);
-    props.submission({ message: "", error: false, redirect: "" });
-
+    setSubmissionStatus({
+      message: "",
+      error: false,
+    });
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const authstring = `Bearer ${props.sessionToken}`;
@@ -79,9 +142,9 @@ const OpennodeDisplay = (props) => {
       headers: myHeaders,
       body: JSON.stringify({
         paymentGatewayType2: "Opennode",
-        opennode_invoice_API_KEY: props.apiKey,
-        opennode_auto_settle: props.settle,
-        opennode_dev: props.dev,
+        opennode_invoice_API_KEY: subValues.opennode_invoice_API_KEY,
+        opennode_auto_settle: subValues.opennode_auto_settle,
+        opennode_dev: subValues.opennode_dev,
       }),
     };
     console.log("fetching with: ", url, fetcharg);
@@ -95,16 +158,19 @@ const OpennodeDisplay = (props) => {
         console.log("fetch return got back data on Opennode:", data);
         handleOpennode(data);
       })
-      .catch((err) => {
-        console.log(err);
-        props.submission({
-          message: "Server down please try again",
-          error: true,
-          redirect: "opennode",
-        });
-        props.displayChange("error");
+      .catch((error) => {
+        console.log("error.message: ", error.message);
+        props.showError();
         props.spinnerChange(false);
       });
+  };
+
+  const buttonText = () => {
+    if (props.initial === "upgrade") {
+      return "UPGRADE LATER";
+    } else {
+      return "STAY WITH FREE FOREVER PLAN";
+    }
   };
 
   const displayButtons = () => {
@@ -115,8 +181,12 @@ const OpennodeDisplay = (props) => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
+                initializeSubValues();
                 props.displayChange("gateway");
-                props.submission({ message: "", error: false, redirect: "" });
+                setSubmissionStatus({
+                  message: "",
+                  error: false,
+                });
               }}
             >
               BACK TO GATEWAY SELECTION
@@ -126,6 +196,7 @@ const OpennodeDisplay = (props) => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
+                initializeSubValues();
                 if (props.initial === "upgrade") {
                   window.close();
                 } else {
@@ -133,7 +204,7 @@ const OpennodeDisplay = (props) => {
                 }
               }}
             >
-              STAY WITH FREE FOREVER PLAN
+              {buttonText()}
             </button>
           </div>
         </Fragment>
@@ -142,24 +213,26 @@ const OpennodeDisplay = (props) => {
   };
 
   const opennodeForm = () => {
+    let disabled = true;
+    if (subValues.opennode_invoice_API_KEY) {
+      disabled = false;
+    }
     let buttonClass;
-    if (!props.apiKey) {
+    if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
     } else {
-      buttonClass = classes.SubmitButton;
+      buttonClass = classes.ButtonBlue;
     }
     return (
       <Fragment>
-        <div
-          style={{ fontSize: "15px", paddingBottom: "20px", width: "340px" }}
-        >
+        <div style={{ fontSize: "15px", paddingBottom: "20px" }}>
           <div>
             Setup a new Opennode account{" "}
             <a
+              className={classes.BlueText}
               href="https://dev.opennode.com/signup"
               target="_blank"
               rel="noreferrer"
-              style={{ fontWeight: "600", color: "blue" }}
             >
               {" "}
               here
@@ -172,35 +245,34 @@ const OpennodeDisplay = (props) => {
           </label>
           <input
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              setSubmissionStatus({ message: "", error: false });
             }}
             className={classes.InputBox}
             type="text"
             name="opennode_invoice_API_KEY"
-            onChange={props.inputChange}
-            value={props.apiKey}
+            onChange={handleSubValueChange}
+            value={subValues.opennode_invoice_API_KEY}
           />
         </div>
         <div style={{ paddingBottom: "20px", width: "340px" }}>
           <div style={{ fontSize: "15px" }}>
             Settlement Currency: (see auto_settle field{" "}
             <a
+              className={classes.BlueText}
               href="https://developers.opennode.com/reference/create-charge"
               target="_blank"
               rel="noreferrer"
-              style={{ fontWeight: "600", color: "blue" }}
             >
               here
             </a>
             )
           </div>
-
           <RadioForm
             details={settleOptions}
             group="settleOptioneGroup"
-            current={props.settle}
+            current={subValues.opennode_auto_settle}
             change={(event, value) => {
-              props.radioChange(event, value, "opennode_auto_settle");
+              radioChangeSubValues(event, value, "opennode_auto_settle");
             }}
           />
         </div>
@@ -208,10 +280,10 @@ const OpennodeDisplay = (props) => {
           <div style={{ fontSize: "15px" }}>
             Bitcoin Blockchain: (try dev setup{" "}
             <a
+              className={classes.BlueText}
               href="https://dev.opennode.com/"
               target="_blank"
               rel="noreferrer"
-              style={{ fontWeight: "600", color: "blue" }}
             >
               here
             </a>
@@ -220,18 +292,20 @@ const OpennodeDisplay = (props) => {
           <RadioForm
             details={blockchainOptions}
             group="blockchainOptionGroup"
-            current={props.dev}
+            current={subValues.opennode_dev}
             change={(event, value) => {
-              props.radioChange(event, value, "opennode_dev");
+              radioChangeSubValues(event, value, "opennode_dev");
             }}
           />
         </div>
         <div style={{ textAlign: "center", paddingTop: "20px" }}>
           <button
             className={buttonClass}
-            disabled={!props.apiKey}
+            disabled={disabled}
             onClick={() => {
-              submitOpennode();
+              if (!disabled) {
+                submitOpennode();
+              }
             }}
           >
             SUBMIT YOUR OPENNODE DETAILS
@@ -243,7 +317,7 @@ const OpennodeDisplay = (props) => {
   };
 
   const showError = () => {
-    if (props.error) {
+    if (error) {
       return (
         <div
           style={{
@@ -253,7 +327,7 @@ const OpennodeDisplay = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {props.message}
+          {message}
         </div>
       );
     } else {
@@ -277,6 +351,7 @@ const OpennodeDisplay = (props) => {
               name="close-outline"
               cursor="pointer"
               onClick={() => {
+                initializeSubValues();
                 props.close();
               }}
             />

@@ -31,6 +31,12 @@ import {
 import classes from "../Authentication.module.css";
 
 const SubscriptionDisplay = (props) => {
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    error: false,
+  });
+  const { message, error } = submissionStatus;
+
   const [promoCodeDetails, setPromoCodeDetails] = useState({
     available: false,
     applied: false,
@@ -57,9 +63,6 @@ const SubscriptionDisplay = (props) => {
     ],
   });
 
-  //
-  //
-  //
   // UPDATE WHEN A NEW PAYPAL PLAN IS INTRODUCED
   const [subValues, setSubValues] = useState({
     paypal_plan_id: "P-3E209303AY287713HMDN3PLQ", // default value is production monthly plan
@@ -306,7 +309,7 @@ const SubscriptionDisplay = (props) => {
                 setPromoCodeDetails(tempobject);
               }}
               onFocus={() => {
-                props.submission({ message: "", error: false });
+                setSubmissionStatus({ message: "", error: false });
               }}
             ></input>
             <button
@@ -349,7 +352,7 @@ const SubscriptionDisplay = (props) => {
                 setPromoCodeDetails(tempobject);
               }}
               onFocus={() => {
-                props.submission({ message: "", error: false });
+                setSubmissionStatus({ message: "", error: false });
               }}
             ></input>
             <button
@@ -443,7 +446,7 @@ const SubscriptionDisplay = (props) => {
   };
 
   const showDetail = () => {
-    if (props.error) {
+    if (error) {
       return (
         <div
           style={{
@@ -453,7 +456,7 @@ const SubscriptionDisplay = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {props.message}
+          {message}
         </div>
       );
     } else return null;
@@ -567,12 +570,26 @@ const SubscriptionDisplay = (props) => {
     } else return paymentPlans;
   };
 
+  const handleFreeSub = (data) => {
+    if (data.status) {
+      let tempData = JSON.parse(localStorage.getItem("user"));
+      tempData.user.accountId = data.result;
+      localStorage.setItem("user", JSON.stringify(tempData));
+      props.submit();
+      props.spinnerChange(false);
+    } else {
+      setSubmissionStatus({
+        message: data.error,
+        error: true,
+      });
+      props.displayChange("subscription");
+      props.spinnerChange(false);
+    }
+  };
+
   const submitFreeSub = () => {
-    let tempData = JSON.parse(localStorage.getItem("user"));
-    let accountNum = tempData.user.accountId.accountNum;
-    console.log("tempData: ", tempData);
     const authstring = `Bearer ${props.sessionToken}`;
-    fetch(`${API}/accounts/${accountNum}/subscription/nopay`, {
+    fetch(`${API}/accounts/${props.accountNum}/subscription/nopay`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -588,43 +605,19 @@ const SubscriptionDisplay = (props) => {
         console.log("MADE IT PAST handleErrors");
         return response.json();
       })
-      .then((response) => {
-        // first show a success model with a continue button to go to paypal clientId model
-        if (response.status) {
-          console.log("fetch return got back data on organization:", response);
-          let tempData = JSON.parse(localStorage.getItem("user"));
-          console.log("tempData: ", tempData);
-          tempData.user.accountId = response.result;
-          localStorage.setItem("user", JSON.stringify(tempData));
-          props.displayChange("paidCongrats");
-        } else {
-          console.log("error in if then else");
-
-          props.submission({
-            message: "Server down please try again",
-            error: true,
-          });
-          props.displayChange("error");
-        }
-      }) // add .catch block for failed response from server, press "continue" button to go to paypal clientId model
-      .catch((err) => {
-        console.log("error in .then .catch");
-
-        props.submission({
-          message: "Server down please try again",
-          error: true,
-        });
-        props.displayChange("error");
+      .then((data) => {
+        console.log("fetch return got back data on free subscription:", data);
+        handleFreeSub(data);
       })
-      .finally(() => {
+      .catch((err) => {
+        console.log("error.message: ", error.message);
+        props.showError();
         props.spinnerChange(false);
       });
   };
 
   // change plan_id value to be a variable value depending on $10 or $35 choice, right now its the same
   const showPayPal = () => {
-    console.log("CHANGE");
-    console.log("subValues.paypal_plan_id: ", subValues.paypal_plan_id);
     return (
       <div>
         <PayPalButton
@@ -921,7 +914,7 @@ const SubscriptionDisplay = (props) => {
     </div>
   );
 
-  if (props.showSpinner) {
+  if (props.spinner) {
     return (
       <div className={classes.BlankCanvas} style={{ height: "490px" }}>
         <Spinner />

@@ -276,14 +276,14 @@
   color: #0000cc;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 450px) {
   .Modal {
-    width: 500px;
+    width: 450px;
     padding-top: 30px;
     padding-bottom: 30px;
-    padding-left: 79px;
-    padding-right: 79px;
-    left: calc(50% - 250px);
+    padding-left: 54px;
+    padding-right: 54px;
+    left: calc(50% - 225px);
   }
   .BlankCanvas {
     padding-left: calc(50% - 170px);

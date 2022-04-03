@@ -1,12 +1,17 @@
-import React, { Fragment } from "react";
+import React, { useState, Fragment } from "react";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
 
-import classes from "../AuthenticationModal.module.css";
+import classes from "./Components.module.css";
 
 const ForgotDisplay = (props) => {
-  console.log("props: ", props);
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    error: false,
+  });
+  const { message, error } = submissionStatus;
+
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -16,7 +21,6 @@ const ForgotDisplay = (props) => {
   };
 
   const handleForgot = (data) => {
-    console.log("data from forgot api: ", data);
     if (data.status) {
       props.values({
         email: data.user?.email,
@@ -28,16 +32,14 @@ const ForgotDisplay = (props) => {
         resent: false,
         resetToken: "",
         sessionToken: "",
-        userId: "",
         accountNum: "",
       });
       props.displayChange("temporary");
       props.spinnerChange(false);
     } else {
-      props.submission({
+      setSubmissionStatus({
         message: data.error,
         error: true,
-        redirect: "",
       });
       props.displayChange("forgot");
       props.spinnerChange(false);
@@ -46,12 +48,10 @@ const ForgotDisplay = (props) => {
 
   const submitForgot = () => {
     props.spinnerChange(true);
-    props.submission({
+    setSubmissionStatus({
       message: "",
       error: false,
-      redirect: "",
     });
-
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signin/sendcode`;
@@ -76,12 +76,7 @@ const ForgotDisplay = (props) => {
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
-        props.submission({
-          message: "Server down please try again",
-          error: true,
-          redirect: "forgot",
-        });
-        props.displayChange("error");
+        props.showError();
         props.spinnerChange(false);
       });
   };
@@ -90,12 +85,11 @@ const ForgotDisplay = (props) => {
     const regsuper =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let disabled = !regsuper.test(props.email);
-    console.log("disabled: ", disabled);
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
     } else {
-      buttonClass = classes.SubmitButton;
+      buttonClass = classes.ButtonBlue;
     }
 
     return (
@@ -109,7 +103,10 @@ const ForgotDisplay = (props) => {
             onChange={props.inputChange}
             value={props.email}
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
             }}
           />
           {props.email && !regsuper.test(props.email) ? (
@@ -145,7 +142,7 @@ const ForgotDisplay = (props) => {
   };
 
   const showError = () => {
-    if (props.error) {
+    if (error) {
       return (
         <div
           style={{
@@ -155,7 +152,7 @@ const ForgotDisplay = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {props.message}
+          {message}
         </div>
       );
     } else if (props.expired && props.authOrigin !== true) {
@@ -169,14 +166,17 @@ const ForgotDisplay = (props) => {
     }
   };
 
-  const alternateForgotInputs = (
+  const bottomDisplay = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
         Back to{" "}
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.submission({ message: "", error: false, redirect: "" });
+            setSubmissionStatus({
+              message: "",
+              error: false,
+            });
             props.displayChange("signin");
           }}
         >
@@ -191,7 +191,10 @@ const ForgotDisplay = (props) => {
             className={classes.BlueText}
             onClick={() => {
               props.resetValues();
-              props.submission({ message: "", error: false });
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
               props.displayChange("signup");
             }}
           >
@@ -226,7 +229,7 @@ const ForgotDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "249px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "237px" }}>
         <Spinner />
       </div>
     );
@@ -237,7 +240,7 @@ const ForgotDisplay = (props) => {
         <div>
           {showError()}
           {forgotForm()}
-          {alternateForgotInputs}
+          {bottomDisplay}
         </div>
       </div>
     );

@@ -1,0 +1,146 @@
+.BlankCanvas {
+  background-color: white;
+  margin: auto;
+  width: auto;
+  height: auto;
+  z-index: 100;
+  padding-left: 0px;
+  padding-left: 0px;
+  text-align: left;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.Header {
+  display: grid;
+  grid-template-columns: 90% 10%;
+  column-gap: "0px";
+  font-size: 24px;
+  font-weight: 600;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.InputBox {
+  background-color: #eff3fa;
+  border: 1px solid #8dadd4;
+  outline: none;
+  border-radius: 0px;
+  width: 100%;
+  height: 40px;
+  padding-left: 10px;
+  font-size: 14px;
+}
+.InputBox:focus {
+  background-color: #e0e8f5;
+  border: 1px solid #4e7fbc;
+  outline: none;
+  width: 100%;
+  height: 40px;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+.Alternates {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: "0px";
+  font-size: 14px;
+  padding-top: 20px;
+}
+
+.ButtonBlue {
+  background-color: #2f5596;
+  border: 1px solid #000;
+  outline: none;
+  border-radius: 0px;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+}
+.ButtonBlue:hover {
+  background-color: #1d355d;
+  border: 1px solid #000;
+  outline: none;
+}
+.ButtonBlue:focus {
+  background-color: #14233e;
+  border: 1px solid #000;
+  outline: none;
+}
+
+.ButtonBlueOpac {
+  background-color: #2f5596;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+  opacity: 0.5;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonGrey {
+  background-color: #999999;
+  border: 1px solid #000;
+  outline: none;
+  color: #fff;
+  border-radius: 0px;
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  border: 1px solid #000;
+  outline: none;
+}
+.ButtonGrey:focus {
+  background-color: #707070;
+  border: 1px solid #000;
+  outline: none;
+}
+
+.BlueText {
+  color: #0000ff;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 16px;
+  padding-left: 0px;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+}
+.BlueText:hover {
+  color: #0000cc;
+  border: none;
+  outline: none;
+}
+.BlueText:focus {
+  color: #0000aa;
+  border: none;
+  outline: none;
+}
+
+@media (min-width: 460px) {
+  .BlankCanvas {
+    padding-left: calc(50% - 170px);
+    padding-left: calc(50% - 170px);
+  }
+  .InputBox {
+    width: 340px;
+  }
+  .ButtonBlue {
+    width: 340px;
+  }
+  .ButtonBlueOpac {
+    width: 340px;
+  }
+  .GreyButton {
+    width: 340px;
+  }
+}

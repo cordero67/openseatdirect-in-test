@@ -6,7 +6,7 @@ import TemporaryDisplay from "./Components/TemporaryDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
 import ConfirmationDisplay from "./Components/ConfirmationDisplay";
 import PasswordDisplay from "./Components/PasswordDisplay";
-import ErrorDisplay from "./Components/ErrorDisplay";
+import ErrorDisplay from "./Components/OLDErrorDisplay";
 
 import Backdrop from "../components/UI/Backdrop/Backdrop";
 import classes from "./AuthenticationModal.module.css";

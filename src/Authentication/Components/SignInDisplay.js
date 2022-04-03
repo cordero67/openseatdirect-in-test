@@ -1,12 +1,18 @@
-import React, { Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import GoogleAuthentication from "./GoogleAuthentication";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
 
-import classes from "../AuthenticationModal.module.css";
+import classes from "./Components.module.css";
 
 const SignInDisplay = (props) => {
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    error: false,
+  });
+  const { message, error } = submissionStatus;
+
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -28,15 +34,13 @@ const SignInDisplay = (props) => {
         resent: false,
         resetToken: "",
         sessionToken: data.token,
-        userId: data.user?._id,
         accountNum: data.user?.accountId?.accountNum,
       });
       props.submit();
     } else {
-      props.submission({
+      setSubmissionStatus({
         message: data.error,
         error: true,
-        redirect: "",
       });
       props.displayChange("signin");
       props.spinnerChange(false);
@@ -45,8 +49,10 @@ const SignInDisplay = (props) => {
 
   const submitSignIn = () => {
     props.spinnerChange(true);
-    props.submission({ message: "", error: false, redirect: "" });
-
+    setSubmissionStatus({
+      message: "",
+      error: false,
+    });
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signin/email`;
@@ -71,13 +77,8 @@ const SignInDisplay = (props) => {
         handleSignIn(data);
       })
       .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        props.submission({
-          message: "Server down please try again",
-          error: true,
-          redirect: "signin",
-        });
-        props.displayChange("error");
+        console.log("error.message: ", error.message);
+        props.showError();
         props.spinnerChange(false);
       });
   };
@@ -88,12 +89,11 @@ const SignInDisplay = (props) => {
     const regPassword = /^(?=.*\d).{8,}$/;
     let disabled =
       !regEmail.test(props.email) || !regPassword.test(props.password);
-
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
     } else {
-      buttonClass = classes.SubmitButton;
+      buttonClass = classes.ButtonBlue;
     }
 
     return (
@@ -107,7 +107,10 @@ const SignInDisplay = (props) => {
             onChange={props.inputChange}
             value={props.email}
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
             }}
           />
           {props.email && !regEmail.test(props.email) ? (
@@ -125,7 +128,6 @@ const SignInDisplay = (props) => {
             </div>
           ) : null}
         </div>
-
         <div style={{ paddingBottom: "20px", width: "100%" }}>
           <label style={{ fontSize: "15px" }}>Password</label>
           <input
@@ -135,10 +137,13 @@ const SignInDisplay = (props) => {
             onChange={props.inputChange}
             value={props.password}
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
             }}
           />
-          {props.email && !regPassword.test(props.password) ? (
+          {props.password && !regPassword.test(props.password) ? (
             <div style={{ paddingTop: "5px" }}>
               <span
                 style={{
@@ -153,7 +158,6 @@ const SignInDisplay = (props) => {
             </div>
           ) : null}
         </div>
-
         <div style={{ paddingTop: "10px" }}>
           <button
             className={buttonClass}
@@ -208,16 +212,14 @@ const SignInDisplay = (props) => {
             authOrigin={props.authOrigin}
             error={(message) => {
               if (!message) {
-                props.submission({
+                setSubmissionStatus({
                   message: "System error please try again.",
                   error: true,
-                  redirect: "",
                 });
               } else {
-                props.submission({
+                setSubmissionStatus({
                   message: message,
                   error: true,
-                  redirect: "",
                 });
               }
             }}
@@ -233,7 +235,6 @@ const SignInDisplay = (props) => {
                 resent: false,
                 resetToken: "",
                 sessionToken: data.token,
-                userId: data.user?.userId,
                 accountNum: data.user?.accountId?.accountNum,
               });
               props.submit();
@@ -245,7 +246,7 @@ const SignInDisplay = (props) => {
   };
 
   const showError = () => {
-    if (props.error) {
+    if (error) {
       return (
         <div
           style={{
@@ -255,7 +256,7 @@ const SignInDisplay = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {props.message}
+          {message}
         </div>
       );
     } else if (props.expired && props.authOrigin !== true) {
@@ -268,38 +269,6 @@ const SignInDisplay = (props) => {
       return null;
     }
   };
-
-  const alternateSignInInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            props.resetValues();
-            props.submission({ message: "", error: false, redirect: "" });
-            props.displayChange("forgot");
-          }}
-        >
-          Forgot password?
-        </button>
-      </div>
-      <div style={{ textAlign: "right" }}>
-        <div style={{ textAlign: "right" }}>
-          Not a member?{" "}
-          <button
-            className={classes.BlueText}
-            onClick={() => {
-              props.resetValues();
-              props.submission({ message: "", error: false });
-              props.displayChange("signup");
-            }}
-          >
-            Sign Up
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 
   const header = () => {
     if (props.authOrigin !== true) {
@@ -328,6 +297,44 @@ const SignInDisplay = (props) => {
     }
   };
 
+  const bottomDisplay = (
+    <div className={classes.Alternates}>
+      <div style={{ textAlign: "left" }}>
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            props.resetValues();
+            setSubmissionStatus({
+              message: "",
+              error: false,
+            });
+            props.displayChange("forgot");
+          }}
+        >
+          Forgot password?
+        </button>
+      </div>
+      <div style={{ textAlign: "right" }}>
+        <div style={{ textAlign: "right" }}>
+          Not a member?{" "}
+          <button
+            className={classes.BlueText}
+            onClick={() => {
+              props.resetValues();
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
+              props.displayChange("signup");
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   if (props.spinner) {
     return (
       <div className={classes.BlankCanvas} style={{ height: "433px" }}>
@@ -341,7 +348,7 @@ const SignInDisplay = (props) => {
         <div>
           {showError()}
           {signInForm()}
-          {alternateSignInInputs}
+          {bottomDisplay}
         </div>
       </div>
     );

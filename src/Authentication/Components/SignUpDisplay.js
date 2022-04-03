@@ -1,14 +1,19 @@
-import React, { Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import GoogleAuthentication from "./GoogleAuthentication";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
 import OSDImg from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackground_1024.png";
 
-import classes from "../AuthenticationModal.module.css";
+import classes from "./Components.module.css";
 
 const SignUpDisplay = (props) => {
-  console.log("props: ", props);
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    error: false,
+  });
+  const { message, error } = submissionStatus;
+
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -28,16 +33,14 @@ const SignUpDisplay = (props) => {
         expired: false,
         confirmation: "",
         resent: false,
-        username: data.user.username,
         resetToken: "",
         sessionToken: "",
-        userId: "",
         accountNum: "",
       });
       props.displayChange("confirmation");
       props.spinnerChange(false);
     } else {
-      props.submission({
+      setSubmissionStatus({
         message: data.error,
         error: true,
       });
@@ -48,11 +51,10 @@ const SignUpDisplay = (props) => {
 
   const submitSignUp = () => {
     props.spinnerChange(true);
-    props.submission({
+    setSubmissionStatus({
       message: "",
       error: false,
     });
-
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/email`;
@@ -65,7 +67,6 @@ const SignUpDisplay = (props) => {
       body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
     fetch(url, fetchBody)
       .then(handleErrors)
       .then((response) => {
@@ -77,12 +78,8 @@ const SignUpDisplay = (props) => {
         handleSignUp(data);
       })
       .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        props.submission({
-          message: "Server down please try again",
-          error: true,
-        });
-        props.displayChange("error");
+        console.log("error.message: ", error.message);
+        props.showError();
         props.spinnerChange(false);
       });
   };
@@ -91,13 +88,13 @@ const SignUpDisplay = (props) => {
     const regsuper =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let disabled = !regsuper.test(props.email);
-    console.log("disabled: ", disabled);
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
     } else {
-      buttonClass = classes.SubmitButton;
+      buttonClass = classes.ButtonBlue;
     }
+
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
@@ -109,7 +106,10 @@ const SignUpDisplay = (props) => {
             onChange={props.inputChange}
             value={props.email}
             onFocus={() => {
-              props.submission({ message: "", error: false });
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
             }}
           />
           {props.email && !regsuper.test(props.email) ? (
@@ -126,19 +126,13 @@ const SignUpDisplay = (props) => {
               </span>
             </div>
           ) : null}
-          <div></div>
         </div>
         <div style={{ paddingTop: "10px" }}>
           <button
             className={buttonClass}
             disabled={disabled}
             onClick={() => {
-              if (disabled) {
-                props.submission({
-                  message: "Invalid email address",
-                  error: true,
-                });
-              } else {
+              if (!disabled) {
                 submitSignUp();
               }
             }}
@@ -150,7 +144,6 @@ const SignUpDisplay = (props) => {
           By clicking 'Submit Your Email' I agree to Open Seat Direct's{" "}
           <a
             className={classes.BlueText}
-            styles={{ border: "none", outline: "none" }}
             href="https://www.openseatdirect.com/privacy-policy/"
             target="_blank"
             rel="noreferrer"
@@ -160,7 +153,6 @@ const SignUpDisplay = (props) => {
           and{" "}
           <a
             className={classes.BlueText}
-            styles={{ border: "none", outline: "none" }}
             href="https://www.openseatdirect.com/terms-and-conditions/"
             target="_blank"
             rel="noreferrer"
@@ -210,12 +202,12 @@ const SignUpDisplay = (props) => {
             authOrigin={props.authOrigin}
             error={(message) => {
               if (!message) {
-                props.submission({
+                setSubmissionStatus({
                   message: "System error please try again.",
                   error: true,
                 });
               } else {
-                props.submission({
+                setSubmissionStatus({
                   message: message,
                   error: true,
                 });
@@ -246,7 +238,7 @@ const SignUpDisplay = (props) => {
   };
 
   const showError = () => {
-    if (props.error) {
+    if (error) {
       return (
         <div
           style={{
@@ -256,7 +248,7 @@ const SignUpDisplay = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {props.message}
+          {message}
         </div>
       );
     } else if (props.expired && !props.authOrigin) {
@@ -270,14 +262,15 @@ const SignUpDisplay = (props) => {
     }
   };
 
-  const alternateSignUpInputs = (
+  const bottomDisplay = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
         Already a member?{" "}
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.submission({ message: "", error: false });
+            props.resetValues();
+            setSubmissionStatus({ message: "", error: false });
             props.displayChange("signin");
           }}
         >
@@ -327,17 +320,7 @@ const SignUpDisplay = (props) => {
         <div className={classes.Header}>
           <div style={{ lineHeight: "30px" }}>
             Ready to join{" "}
-            <img
-              src={OSDImg}
-              alt="OPENNODE"
-              width="80px"
-              height="auto"
-              cursor="pointer"
-              onClick={() => {
-                console.log("selecting Opennode");
-                //setDisplay("opennode");
-              }}
-            ></img>
+            <img src={OSDImg} alt="OPENNODE" width="80px" height="auto"></img>
           </div>
         </div>
       );
@@ -346,7 +329,7 @@ const SignUpDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "363px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "433px" }}>
         <Spinner />
       </div>
     );
@@ -357,7 +340,7 @@ const SignUpDisplay = (props) => {
         <div>
           {showError()}
           {signUpForm()}
-          {alternateSignUpInputs}
+          {bottomDisplay}
         </div>
       </div>
     );

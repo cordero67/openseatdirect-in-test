@@ -63,8 +63,6 @@ const Opennode = (props) => {
         //initial={initialView} // NOT IN MODAL
         error={error}
         message={message}
-        apiKey={subValues.opennode_invoice_API_KEY}
-        settle={subValues.opennode_auto_settle}
         dev={subValues.opennode_dev}
         sessionToken={subValues.sessionToken}
         accountNum={subValues.accountNum}
@@ -74,9 +72,6 @@ const Opennode = (props) => {
         ////displayChange={(modal) => setDisplay(modal)} NOT IN MODAL
         submission={(input) => {
           setSubmissionStatus(input);
-        }}
-        radioChange={(event, value, message) => {
-          radioChangeSubValues(event, value, message);
         }}
         submit={() => {
           props.closeModal();

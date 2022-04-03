@@ -1,12 +1,17 @@
-import React, { Fragment } from "react";
+import React, { useState, Fragment } from "react";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
 
-import classes from "../AuthenticationModal.module.css";
+import classes from "./Components.module.css";
 
 const ConfirmationDisplay = (props) => {
-  console.log("props: ", props);
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    error: false,
+  });
+  const { message, error } = submissionStatus;
+
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -15,11 +20,34 @@ const ConfirmationDisplay = (props) => {
     return response;
   };
 
+  const handleResend = (data) => {
+    if (data.status) {
+      props.values({
+        email: data.user.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        expired: false,
+        confirmation: "",
+        resent: true,
+        resetToken: "",
+        sessionToken: "",
+        accountNum: "",
+      });
+    } else {
+      setSubmissionStatus({
+        message: data.error,
+        error: true,
+      });
+      props.displayChange("confirmation");
+      props.spinnerChange(false);
+    }
+  };
+
   const submitResend = () => {
-    props.submission({
+    setSubmissionStatus({
       message: "",
       error: false,
-      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -47,49 +75,43 @@ const ConfirmationDisplay = (props) => {
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
-        props.submission({
-          message: "Server is down, please try later",
-          error: true,
-          redirect: "confirmation",
-        });
-        props.displayChange("error");
+        props.showError();
+        props.spinnerChange(false);
       });
   };
 
-  const handleResend = (data) => {
+  const handleConfirmation = (data) => {
     if (data.status) {
+      localStorage.setItem("user", JSON.stringify(data));
       props.values({
-        name: "",
         email: data.user.email,
         password: "",
         temporary: "",
         reissued: false,
         expired: false,
         confirmation: "",
-        resent: true,
-        username: props.username,
-        resetToken: "",
+        resent: false,
+        resetToken: data.user.passwordToken,
         sessionToken: "",
-        userId: "",
-        accountNum: "",
+        accountNum: data.user.accountId.accountNum,
       });
-      console.log("SUCCESS");
+      props.displayChange("password");
+      props.spinnerChange(false);
     } else {
-      props.submission({
+      setSubmissionStatus({
         message: data.error,
         error: true,
-        redirect: "",
       });
-      console.log("ERROR: ", data.error);
+      props.displayChange("confirmation");
+      props.spinnerChange(false);
     }
   };
 
   const submitConfirmation = () => {
     props.spinnerChange(true);
-    props.submission({
+    setSubmissionStatus({
       message: "",
       error: false,
-      redirect: "",
     });
 
     let myHeaders = new Headers();
@@ -115,50 +137,12 @@ const ConfirmationDisplay = (props) => {
       .then((data) => {
         console.log("fetch return got back data:", data);
         handleConfirmation(data);
-        if (props.authOrigin) {
-          props.updateSub();
-        }
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
-        props.submission({
-          message: "Server down please try again",
-          error: true,
-          redirect: "confirmation",
-        });
-        props.displayChange("error");
+        props.showError();
         props.spinnerChange(false);
       });
-  };
-
-  const handleConfirmation = (data) => {
-    if (data.status) {
-      localStorage.setItem("user", JSON.stringify(data));
-      props.values({
-        name: "",
-        email: data.user.email,
-        password: "",
-        temporary: "",
-        reissued: false,
-        expired: false,
-        confirmation: "",
-        resent: false,
-        resetToken: data.user.passwordToken,
-        sessionToken: "",
-        userId: data.user.accountId._id,
-        accountNum: data.user.accountId.accountNum,
-      });
-      props.displayChange("password");
-      props.spinnerChange(false);
-    } else {
-      props.submission({
-        message: data.error,
-        error: true,
-        redirect: "",
-      });
-      props.displayChange("confirmation");
-      props.spinnerChange(false);
-    }
   };
 
   const confirmationForm = () => {
@@ -169,7 +153,7 @@ const ConfirmationDisplay = (props) => {
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
     } else {
-      buttonClass = classes.SubmitButton;
+      buttonClass = classes.ButtonBlue;
     }
 
     return (
@@ -183,7 +167,7 @@ const ConfirmationDisplay = (props) => {
             onChange={props.inputChange}
             value={props.confirmation}
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              setSubmissionStatus({ message: "", error: false });
             }}
           />{" "}
           {props.confirmation && !regsuper.test(props.confirmation) ? (
@@ -205,10 +189,12 @@ const ConfirmationDisplay = (props) => {
           <button
             className={buttonClass}
             onClick={() => {
-              submitConfirmation();
+              if (!disabled) {
+                submitConfirmation();
+              }
             }}
           >
-            SUBMIT YOUR CODE
+            SUBMIT CONFIRMATION CODE
           </button>
         </div>
       </Fragment>
@@ -216,13 +202,25 @@ const ConfirmationDisplay = (props) => {
   };
 
   const showError = () => {
-    if (props.error) {
+    if (error) {
       return (
         <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
-          {props.message}
+          {message}
         </div>
       );
-    } else if (!props.resent) {
+    } else if (props.expired && props.authOrigin !== true) {
+      return (
+        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
+          Timer has expired, please resubmit your email:
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const topDisplay = () => {
+    if (!props.resent) {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
@@ -251,13 +249,16 @@ const ConfirmationDisplay = (props) => {
     }
   };
 
-  const alternateConfirmationInputs = (
+  const bottomDisplay = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.submission({ message: "", error: false, redirect: "" });
+            setSubmissionStatus({
+              message: "",
+              error: false,
+            });
             submitResend();
           }}
         >
@@ -296,7 +297,7 @@ const ConfirmationDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "288px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "307px" }}>
         <Spinner />
       </div>
     );
@@ -306,8 +307,9 @@ const ConfirmationDisplay = (props) => {
         {header()}
         <div>
           {showError()}
+          {topDisplay()}
           {confirmationForm()}
-          {alternateConfirmationInputs}
+          {bottomDisplay}
         </div>
       </div>
     );

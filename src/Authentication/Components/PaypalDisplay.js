@@ -2,12 +2,18 @@ import React, { useState, useEffect, Fragment } from "react";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
-import { API } from "../../config";
+import { API, PAYPAL_USE_SANDBOX } from "../../config";
 
-import classes from "../AuthenticationModal.module.css";
+import classes from "./Components.module.css";
 
 const PaypalDisplay = (props) => {
   console.log("props: ", props);
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    error: false,
+  });
+  const { message, error } = submissionStatus;
+
   const [subValues, setSubValues] = useState({
     paypalExpress_client_id: "", // vendor's clientID not OSD's
     paypalExpress_client_secret: "", // vendor's secret not OSD's
@@ -28,7 +34,6 @@ const PaypalDisplay = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       if ("user" in tempUser && "accountId" in tempUser.user) {
         let tempSubValues = {};
-        // populates the "tempSubValues" (and "values") object with "user" object info
         if (tempUser.user.accountId?.paypalExpress_client_id) {
           tempSubValues.paypalExpress_client_id =
             tempUser.user.accountId.paypalExpress_client_id;
@@ -58,9 +63,7 @@ const PaypalDisplay = (props) => {
   };
 
   const handlePaypal = (data) => {
-    console.log("data: ", data);
     if (data.status) {
-      console.log("INSIDE data.status");
       let tempData = JSON.parse(localStorage.getItem("user"));
       tempData.user.accountId = data.result;
       localStorage.setItem("user", JSON.stringify(tempData));
@@ -69,15 +72,13 @@ const PaypalDisplay = (props) => {
     } else {
       let errmsg = "unable to validate ClientId and secret at this time";
       if (data.message) {
-        console.log("data.message exist");
         console.log("data.message ", data.message);
         errmsg = data.message;
       }
       console.log("errmsg: ", errmsg);
-      props.submission({
+      setSubmissionStatus({
         message: errmsg,
         error: true,
-        redirect: "",
       });
       props.spinnerChange(false);
     }
@@ -85,8 +86,10 @@ const PaypalDisplay = (props) => {
 
   const submitPaypal = () => {
     props.spinnerChange(true);
-    props.submission({ message: "", error: false, redirect: "" });
-
+    setSubmissionStatus({
+      message: "",
+      error: false,
+    });
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const authstring = `Bearer ${props.sessionToken}`;
@@ -96,7 +99,7 @@ const PaypalDisplay = (props) => {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
-        useSandbox: props.sandbox,
+        useSandbox: PAYPAL_USE_SANDBOX,
         paymentGatewayType: "PayPalExpress",
         paypalExpress_client_id: subValues.paypalExpress_client_id,
         paypalExpress_client_secret: subValues.paypalExpress_client_secret,
@@ -113,16 +116,19 @@ const PaypalDisplay = (props) => {
         console.log("fetch return got back data on PayPal:", data);
         handlePaypal(data);
       })
-      .catch((err) => {
-        console.log(err);
-        props.submission({
-          message: "Server down please try again",
-          error: true,
-          redirect: "paypal",
-        });
-        props.displayChange("error");
+      .catch((error) => {
+        console.log("error.message: ", error.message);
+        props.showError();
         props.spinnerChange(false);
       });
+  };
+
+  const buttonText = () => {
+    if (props.initial === "upgrade") {
+      return "UPGRADE LATER";
+    } else {
+      return "STAY WITH FREE FOREVER PLAN";
+    }
   };
 
   const displayButtons = () => {
@@ -135,7 +141,10 @@ const PaypalDisplay = (props) => {
               onClick={() => {
                 initializeSubValues();
                 props.displayChange("gateway");
-                props.submission({ message: "", error: false, redirect: "" });
+                setSubmissionStatus({
+                  message: "",
+                  error: false,
+                });
               }}
             >
               BACK TO GATEWAY SELECTION
@@ -145,6 +154,7 @@ const PaypalDisplay = (props) => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
+                initializeSubValues();
                 if (props.initial === "upgrade") {
                   window.close();
                 } else {
@@ -152,7 +162,7 @@ const PaypalDisplay = (props) => {
                 }
               }}
             >
-              STAY WITH FREE FOREVER PLAN
+              {buttonText()}
             </button>
           </div>
         </Fragment>
@@ -161,19 +171,18 @@ const PaypalDisplay = (props) => {
   };
 
   const paypalForm = () => {
-    console.log("paypalExpress_client_id: ", props.paypalExpress_client_id);
-    console.log(
-      "paypalExpress_client_secret: ",
-      props.paypalExpress_client_secret
-    );
-    let buttonClass;
+    let disabled = true;
     if (
-      !subValues.paypalExpress_client_id ||
-      !subValues.paypalExpress_client_secret
+      subValues.paypalExpress_client_id &&
+      subValues.paypalExpress_client_secret
     ) {
+      disabled = false;
+    }
+    let buttonClass;
+    if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
     } else {
-      buttonClass = classes.SubmitButton;
+      buttonClass = classes.ButtonBlue;
     }
     return (
       <Fragment>
@@ -181,7 +190,7 @@ const PaypalDisplay = (props) => {
           Can't find the Client ID and Secret?
           <div style={{ paddingLeft: "20px" }}>
             <a
-              style={{ fontWeight: "600", color: "blue" }}
+              className={classes.BlueText}
               href="https://developer.paypal.com/developer/applications/"
               target="_blank"
               rel="noreferrer"
@@ -191,7 +200,7 @@ const PaypalDisplay = (props) => {
           </div>
           <div style={{ paddingLeft: "20px" }}>
             <a
-              style={{ fontWeight: "600", color: "blue" }}
+              className={classes.BlueText}
               href="https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing"
               target="_blank"
               rel="noreferrer"
@@ -201,7 +210,7 @@ const PaypalDisplay = (props) => {
           </div>
           <div style={{ paddingLeft: "20px" }}>
             <a
-              style={{ fontWeight: "600", color: "blue" }}
+              className={classes.BlueText}
               href="https://www.youtube.com/watch?v=gXAsubSL-1I"
               target="_blank"
               rel="noreferrer"
@@ -217,7 +226,10 @@ const PaypalDisplay = (props) => {
           </label>
           <input
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
             }}
             className={classes.InputBox}
             type="text"
@@ -232,7 +244,10 @@ const PaypalDisplay = (props) => {
           </label>
           <input
             onFocus={() => {
-              props.submission({ message: "", error: false, redirect: "" });
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
             }}
             className={classes.InputBox}
             type="text"
@@ -244,13 +259,11 @@ const PaypalDisplay = (props) => {
         <div style={{ textAlign: "center", paddingTop: "20px" }}>
           <button
             className={buttonClass}
-            disabled={
-              !subValues.paypalExpress_client_id ||
-              !subValues.paypalExpress_client_secret
-            }
+            disabled={disabled}
             onClick={() => {
-              console.log("CLICKED SUBMIT");
-              submitPaypal();
+              if (!disabled) {
+                submitPaypal();
+              }
             }}
           >
             SUBMIT YOUR PAYPAL DETAILS
@@ -262,7 +275,7 @@ const PaypalDisplay = (props) => {
   };
 
   const showError = () => {
-    if (props.error) {
+    if (error) {
       return (
         <div
           style={{
@@ -272,7 +285,7 @@ const PaypalDisplay = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {props.message}
+          {message}
         </div>
       );
     } else {
@@ -311,7 +324,7 @@ const PaypalDisplay = (props) => {
   if (props.spinner) {
     let height;
     if (props.authOrigin) {
-      height = { height: "595px" };
+      height = { height: "493px" };
     } else {
       height = { height: "392px" };
     }

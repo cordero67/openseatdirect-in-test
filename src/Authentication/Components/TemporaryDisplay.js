@@ -1,12 +1,17 @@
-import React, { Fragment } from "react";
+import React, { useState, Fragment } from "react";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
 
-import classes from "../AuthenticationModal.module.css";
+import classes from "./Components.module.css";
 
 const TemporaryDisplay = (props) => {
-  console.log("props: ", props);
+  const [submissionStatus, setSubmissionStatus] = useState({
+    message: "",
+    error: false,
+  });
+  const { message, error } = submissionStatus;
+
   const handleErrors = (response) => {
     console.log("inside handleErrors ", response);
     if (!response.ok) {
@@ -18,7 +23,6 @@ const TemporaryDisplay = (props) => {
   const handleReissue = (data) => {
     if (data.status) {
       props.values({
-        name: "",
         email: data.user.email,
         password: "",
         temporary: "",
@@ -26,23 +30,22 @@ const TemporaryDisplay = (props) => {
         expired: false,
         confirmation: "",
         resent: false,
-        username: "",
         resetToken: "",
         sessionToken: "",
-        userId: "",
         accountNum: "",
       });
     } else {
-      props.submission({
+      setSubmissionStatus({
         message: data.error,
         error: true,
       });
-      console.log("ERROR: ", data.error);
+      props.displayChange("temporary");
+      props.spinnerChange(false);
     }
   };
 
   const submitReissue = () => {
-    props.submission({
+    setSubmissionStatus({
       message: "",
       error: false,
     });
@@ -72,14 +75,10 @@ const TemporaryDisplay = (props) => {
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
-        props.submission({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        props.displayChange("error");
+        props.showError();
+        props.spinnerChange(false);
       });
   };
-
   const handleTemporary = (data) => {
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data));
@@ -93,13 +92,12 @@ const TemporaryDisplay = (props) => {
         resent: false,
         resetToken: "",
         sessionToken: "",
-        userId: "",
         accoutNum: "",
       });
       props.submit();
     } else {
       console.log("data.error: ", data.error);
-      props.submission({
+      setSubmissionStatus({
         message: data.error,
         error: true,
       });
@@ -110,7 +108,7 @@ const TemporaryDisplay = (props) => {
 
   const submitTemporary = () => {
     props.spinnerChange(true);
-    props.submission({
+    setSubmissionStatus({
       message: "",
       error: false,
     });
@@ -141,23 +139,18 @@ const TemporaryDisplay = (props) => {
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
-        props.submission({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        props.displayChange("error");
+        props.showError();
         props.spinnerChange(false);
       });
   };
   const temporaryForm = () => {
     const regsuper = /\b\d{6}\b/;
     let disabled = !regsuper.test(props.temporary);
-    console.log("disabled: ", disabled);
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
     } else {
-      buttonClass = classes.SubmitButton;
+      buttonClass = classes.ButtonBlue;
     }
 
     return (
@@ -171,7 +164,7 @@ const TemporaryDisplay = (props) => {
             onChange={props.inputChange}
             value={props.temporary}
             onFocus={() => {
-              props.submission({ message: "", error: false });
+              setSubmissionStatus({ message: "", error: false });
             }}
           />
           {props.temporary && !regsuper.test(props.temporary) ? (
@@ -207,7 +200,7 @@ const TemporaryDisplay = (props) => {
   };
 
   const showError = () => {
-    if (props.error) {
+    if (error) {
       return (
         <div
           style={{
@@ -217,10 +210,22 @@ const TemporaryDisplay = (props) => {
             paddingBottom: "20px",
           }}
         >
-          {props.message}
+          {message}
         </div>
       );
-    } else if (!props.reissued) {
+    } else if (props.expired && props.authOrigin !== true) {
+      return (
+        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
+          Timer has expired, please resubmit your email:
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const topDisplay = () => {
+    if (!props.reissued) {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
@@ -249,13 +254,13 @@ const TemporaryDisplay = (props) => {
     }
   };
 
-  const alternateTemporaryInputs = (
+  const bottomDisplay = (
     <div className={classes.Alternates}>
       <div style={{ textAlign: "left" }}>
         <button
           className={classes.BlueText}
           onClick={() => {
-            props.submission({
+            setSubmissionStatus({
               message: "",
               error: false,
             });
@@ -271,7 +276,7 @@ const TemporaryDisplay = (props) => {
           className={classes.BlueText}
           onClick={() => {
             props.resetValues();
-            props.submission({
+            setSubmissionStatus({
               message: "",
               error: false,
             });
@@ -313,7 +318,7 @@ const TemporaryDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "319px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "307px" }}>
         <Spinner />
       </div>
     );
@@ -323,8 +328,9 @@ const TemporaryDisplay = (props) => {
         {header()}
         <div>
           {showError()}
+          {topDisplay()}
           {temporaryForm()}
-          {alternateTemporaryInputs}
+          {bottomDisplay}
         </div>
       </div>
     );

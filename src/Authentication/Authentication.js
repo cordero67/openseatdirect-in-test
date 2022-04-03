@@ -7,18 +7,15 @@ import TemporaryDisplay from "./Components/TemporaryDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
 import ConfirmationDisplay from "./Components/ConfirmationDisplay";
 import PasswordDisplay from "./Components/PasswordDisplay";
+import FreeDisplay from "./Components/FreeDisplay";
+import GatewayDisplay from "./Components/GatewayDisplay";
 import PaypalDisplay from "./Components/PaypalDisplay";
 import OpennodeDisplay from "./Components/OpennodeDisplay";
 import SubscriptionDisplay from "./Components/SubscriptionDisplay";
+import ErrorDisplay from "./Components/ErrorDisplay";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
 import { getStatus } from "../Resources/Utils";
-
-import { API, PAYPAL_USE_SANDBOX, OPENNODE_USE_TEST } from "../config";
-
-import stripeImg from "../assets/Stripe/Stripe wordmark - blurple (small).png";
-import payPalImg from "../assets/PayPal/PayPal.PNG";
-import opennodeImg from "../assets/Opennode/opennodeBtc.png";
 
 import classes from "./Authentication.module.css";
 
@@ -52,61 +49,9 @@ const Authentication = () => {
     accountNum,
   } = authValues;
 
-  // UPDATE WHEN A NEW PAYPAL PLAN IS INTRODUCED
-  const [subValues, setSubValues] = useState({
-    opennode_invoice_API_KEY: "", // vendors opennode api key
-    opennode_auto_settle: "", // vendors request convesion to USD or keep in BTC?
-    opennode_dev: "", // Boolean: dev=true for testnet BTC
-  });
+  const [redirect, setRedirect] = useState("");
 
-  const { opennode_invoice_API_KEY, opennode_auto_settle, opennode_dev } =
-    subValues;
-
-  // transaction status variable
-  const [submissionStatus, setSubmissionStatus] = useState({
-    message: "",
-    error: false,
-    redirect: "",
-  });
-
-  const { message, error, redirect } = submissionStatus;
   const [display, setDisplay] = useState("spinner"); // spinner, signin, forgot, temporary, signup, confirmation, password, error
-
-  // edit so that it is driven by the "status" value
-  const updateSubValues = () => {
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem("user") !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      if ("user" in tempUser && "accountId" in tempUser.user) {
-        let tempBuyerInfo = {};
-        // populates the "tempBuyerInfo" (and "values") object with "user" object info
-        if (tempUser.user.accountId?.opennode_invoice_API_KEY) {
-          tempBuyerInfo.opennode_invoice_API_KEY =
-            tempUser.user.accountId.opennode_invoice_API_KEY;
-        }
-        if (tempUser.user.accountId?.opennode_auto_settle) {
-          tempBuyerInfo.opennode_auto_settle =
-            tempUser.user.accountId.opennode_auto_settle;
-        }
-        if (tempUser.user.accountId?.opennode_dev) {
-          tempBuyerInfo.opennode_dev = tempUser.user.accountId.opennode_dev;
-        }
-        if (OPENNODE_USE_TEST === true) {
-          tempBuyerInfo.opennode_dev = true;
-        } else {
-          tempBuyerInfo.opennode_dev = false;
-        }
-        tempBuyerInfo.opennode_auto_settle = true;
-
-        setSubValues(tempBuyerInfo);
-        console.log("tempBuyerInfo: ", tempBuyerInfo);
-      }
-    } else {
-      console.log("no user object");
-    }
-  };
 
   const updateAuthValues = () => {
     let tempUser = JSON.parse(localStorage.getItem("user"));
@@ -149,7 +94,6 @@ const Authentication = () => {
         window.location.href = "/myaccount";
       } else if (initialView === "upgrade") {
         console.log("initialView: ", initialView, ", upgrade");
-        updateSubValues();
         if ((status === 1 || status === 4 || status === 6) && fullUser) {
           updateAuthValues();
           setDisplay("gateway");
@@ -169,7 +113,6 @@ const Authentication = () => {
         }
       } else if (initialView === "free") {
         console.log("initialView: ", initialView, ", free");
-        updateSubValues();
         if ((status === 1 || status === 4 || status === 6) && fullUser) {
           updateAuthValues();
           setDisplay("gateway");
@@ -188,7 +131,6 @@ const Authentication = () => {
         }
       } else if (initialView === "paid") {
         console.log("initialView: ", initialView, ", paid");
-        updateSubValues();
         if ((status === 1 || status === 4 || status === 6) && fullUser) {
           updateAuthValues();
           setDisplay("gateway");
@@ -207,7 +149,6 @@ const Authentication = () => {
         }
       } else {
         console.log("initialView: ", initialView, ", NONE");
-        updateSubValues();
         if ((status === 1 || status === 4 || status === 6) && fullUser) {
           updateAuthValues();
           setDisplay("gateway");
@@ -237,69 +178,6 @@ const Authentication = () => {
     }
   }, []);
 
-  const radioChangeSubValues = (event, value, name) => {
-    let tempSubValues = { ...subValues };
-    tempSubValues[name] = value.value;
-    setSubValues(tempSubValues);
-  };
-
-  const handleErrors = (response) => {
-    console.log("inside handleErrors ", response);
-    if (!response.ok) {
-      throw Error(response.status);
-    }
-    return response;
-  };
-
-  const submitStripe = () => {
-    setShowSpinner(true);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-      redirect: "",
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${sessionToken}`);
-    console.log("myHeaders: ", myHeaders);
-
-    console.log(
-      "Account Number: ",
-      accountNum,
-      " sessionToken: ",
-      sessionToken
-    );
-
-    console.log("authValues: ", authValues);
-
-    let url = `${API}/accounts/${accountNum}/subscription/stripe/onboard1-genlink`;
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-    };
-    console.log("fetching with: ", url, fetchBody);
-
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((res) => res.json())
-      .then((response) => {
-        console.log("made it inside the .then");
-        window.location.href = response.url;
-      })
-      .catch(function (err) {
-        console.info(err + " url: " + url);
-        setSubmissionStatus({
-          message: "Stripe connection is down, please try later",
-          error: true,
-          redirect: "gateway",
-        });
-        setDisplay("error");
-        setShowSpinner(false);
-      })
-      .finally(() => {});
-  };
-
   const resetValues = () => {
     setAuthValues({
       email: "",
@@ -317,13 +195,6 @@ const Authentication = () => {
   const handleAuthValueChange = (event) => {
     setAuthValues({
       ...authValues,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleSubValueChange = (event) => {
-    setSubValues({
-      ...subValues,
       [event.target.name]: event.target.value,
     });
   };
@@ -358,20 +229,21 @@ const Authentication = () => {
     } else if (status === 1 || status === 4 || status === 5 || status === 6) {
       console.log("going to myaccount");
       window.location.href = "/myaccount";
+    } else if (
+      initialView === "upgrade" ||
+      initialView === "paid" ||
+      initialView === "free"
+    ) {
+      setDisplay("signup");
+      setShowSpinner(false);
     } else {
-      setSubmissionStatus({
-        message: "Server error please try again",
-        error: true,
-        redirect: display,
-      });
-      console.log("error");
-      setDisplay("error");
+      setDisplay("signin");
       setShowSpinner(false);
     }
   };
 
   const showDetail = () => {
-    if (error) {
+    if (true /*error*/) {
       return (
         <div
           style={{
@@ -381,40 +253,7 @@ const Authentication = () => {
             paddingBottom: "20px",
           }}
         >
-          {message}
-        </div>
-      );
-    } else if (display === "gateway") {
-      return (
-        <div
-          style={{
-            fontSize: "16px",
-            liineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          Link to Stripe or Paypal to get paid instantly in cash, or Opennode
-          for bitcoin payments.
-        </div>
-      );
-    } else if (display === "freeCongrats") {
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          <div>You now have a Free Forever Plan!</div>
-          <div style={{ lineHeight: "25px" }}>
-            You can issue an unlimited amount of free tickets.
-          </div>
-          <div>
-            More details on this plan{" "}
-            <a
-              href="https://www.openseatdirect.com/#pricing-plans"
-              target="blank"
-              rel="noreferrer"
-            >
-              here
-            </a>
-            .
-          </div>
+          {/*message*/}
         </div>
       );
     } else if (display === "paidCongrats") {
@@ -440,134 +279,6 @@ const Authentication = () => {
     }
   };
 
-  const gatewayForm = (
-    <Fragment>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "165px 165px",
-          columnGap: "10px",
-          paddingTop: "10px",
-          paddingBottom: "10px",
-        }}
-      >
-        <button
-          style={{
-            background: "white",
-            width: "160",
-            border: "1px solid lightgrey",
-            cursor: "pointer",
-            outline: "none",
-          }}
-        >
-          <img
-            src={stripeImg}
-            alt="STRIPE"
-            width="140px"
-            height="auto"
-            cursor="pointer"
-            onClick={() => {
-              console.log("selecting Stripe");
-              submitStripe();
-            }}
-          ></img>
-        </button>
-        <button
-          style={{
-            background: "white",
-            width: "160",
-            border: "1px solid lightgrey",
-            cursor: "pointer",
-            outline: "none",
-          }}
-        >
-          <img
-            src={payPalImg}
-            alt="PAYPAL"
-            width="140px"
-            height="auto"
-            cursor="pointer"
-            onClick={() => {
-              console.log("selecting PayPal");
-              setDisplay("paypal");
-            }}
-          ></img>
-        </button>
-      </div>
-
-      <div
-        style={{
-          width: "165px",
-          textAlign: "center",
-          paddingTop: "10px",
-          paddingBottom: "10px",
-          paddingLeft: "89px",
-        }}
-      >
-        <button
-          style={{
-            background: "white",
-            width: "160",
-            border: "1px solid lightgrey",
-            cursor: "pointer",
-            outline: "none",
-          }}
-        >
-          <img
-            src={opennodeImg}
-            alt="OPENNODE"
-            width="150px"
-            height="auto"
-            cursor="pointer"
-            onClick={() => {
-              console.log("selecting Opennode");
-              setDisplay("opennode");
-            }}
-          ></img>
-        </button>
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            if (initialView === "upgrade") {
-              window.close();
-            } else {
-              redirectUser();
-            }
-          }}
-        >
-          STAY WITH FREE FOREVER PLAN
-        </button>
-      </div>
-    </Fragment>
-  );
-
-  const freeCongratsForm = (
-    <Fragment>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonBlue}
-          onClick={() => {
-            setDisplay("gateway");
-          }}
-        >
-          UPGRADE TO A PRO PLAN
-        </button>
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            window.location.href = "/myaccount";
-          }}
-        >
-          GO TO MY ACCOUNT
-        </button>
-      </div>
-    </Fragment>
-  );
-
   const paidCongratsForm = (
     <Fragment>
       <div style={{ paddingTop: "10px" }}>
@@ -583,61 +294,28 @@ const Authentication = () => {
     </Fragment>
   );
 
-  const errorForm = () => {
-    return (
-      <Fragment>
-        <div style={{ paddingTop: "10px" }}>
-          <button
-            className={classes.ButtonBlue}
-            onClick={() => {
-              console.log("redirect: ", redirect);
-              let newDisplay = redirect;
-              setSubmissionStatus({
-                message: "",
-                error: false,
-                redirect: "",
-              });
-              setDisplay(newDisplay);
-            }}
-          >
-            TRY AGAIN NOW
-          </button>
-        </div>
-        <div style={{ paddingTop: "10px" }}>
-          <button
-            className={classes.ButtonGrey}
-            onClick={() => {
-              window.location.href = "/myaccount";
-            }}
-          >
-            TRY AGAIN LATER
-          </button>
-        </div>
-      </Fragment>
-    );
-  };
-
   const signInDisplay = () => {
     if (display === "signin") {
       return (
         <SignInDisplay
-          authOrigin={true}
-          //close={closeModal} NOT IN AUTH
-          email={email}
-          password={password}
-          message={message}
-          //expired={expired} NOT IN AUTH
-          error={error}
-          spinner={showSpinner}
-          inputChange={handleAuthValueChange}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(display) => setDisplay(display)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          authOrigin={true} // AUTH
+          //close={closeModal} // NOT IN AUTH
+          //expired={expired} // NOT IN AUTH
+          email={email} // AUTH
+          password={password} // AUTH
+          spinner={showSpinner} // AUTH
+          inputChange={handleAuthValueChange} // AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // AUTH
+          displayChange={(display) => setDisplay(display)} // AUTH
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("signin");
+            setDisplay("error");
           }}
-          values={(input) => setAuthValues(input)}
-          resetValues={() => resetValues()}
-          submit={() => redirectUser()}
+          values={(input) => setAuthValues(input)} // AUTH
+          resetValues={() => resetValues()} // AUTH
+          submit={() => redirectUser()} // AUTH
         ></SignInDisplay>
       );
     } else {
@@ -649,21 +327,22 @@ const Authentication = () => {
     if (display === "forgot") {
       return (
         <ForgotDisplay
-          authOrigin={true}
+          authOrigin={true} // IN AUTH
           //close={closeModal} NOT IN AUTH
-          email={email}
-          message={message}
           //expired={expired} NOT IN AUTH
-          error={error}
-          spinner={showSpinner}
-          inputChange={handleAuthValueChange}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(display) => setDisplay(display)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          email={email} // IN AUTH
+          spinner={showSpinner} // IN AUTH
+          inputChange={handleAuthValueChange} // IN AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // IN AUTH
+          displayChange={(display) => setDisplay(display)} // IN AUTH
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("forgot");
+            setDisplay("error");
           }}
-          values={(input) => setAuthValues(input)}
-          resetValues={() => resetValues()}
+          values={(input) => setAuthValues(input)} // IN AUTH
+          resetValues={() => resetValues()} // IN AUTH
         ></ForgotDisplay>
       );
     } else {
@@ -675,23 +354,25 @@ const Authentication = () => {
     if (display === "temporary") {
       return (
         <TemporaryDisplay
-          authOrigin={true}
+          authOrigin={true} // IN AUTH
           //close={closeModal} NOT IN AUTH
-          email={email}
-          message={message}
-          reissued={reissued}
-          temporary={temporary}
-          error={error}
-          spinner={showSpinner}
-          inputChange={handleAuthValueChange}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(modal) => setDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          //expired={expired} NOT IN AUTH
+          email={email} // IN AUTH
+          reissued={reissued} // IN AUTH
+          temporary={temporary} // IN AUTH
+          spinner={showSpinner} // IN AUTH
+          inputChange={handleAuthValueChange} // IN AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // IN AUTH
+          displayChange={(modal) => setDisplay(modal)} // IN AUTH
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("temporary");
+            setDisplay("error");
           }}
-          values={(input) => setAuthValues(input)}
-          resetValues={() => resetValues()}
-          submit={() => redirectUser()}
+          values={(input) => setAuthValues(input)} // IN AUTH
+          resetValues={() => resetValues()} // IN AUTH
+          submit={() => redirectUser()} // AUTH
         ></TemporaryDisplay>
       );
     } else {
@@ -703,23 +384,24 @@ const Authentication = () => {
     if (display === "signup") {
       return (
         <SignUpDisplay
-          authOrigin={true}
+          authOrigin={true} // AUTH
           //close={closeModal} NOT IN AUTH
-          email={email}
-          message={message}
-          password={password}
           //expired={expired} NOT IN AUTH
-          error={error}
-          spinner={showSpinner}
-          inputChange={handleAuthValueChange}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(modal) => setDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          email={email} // AUTH
+          password={password}
+          spinner={showSpinner} // AUTH
+          inputChange={handleAuthValueChange} // AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // AUTH
+          displayChange={(modal) => setDisplay(modal)} // AUTH
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("signup");
+            setDisplay("error");
           }}
-          values={(input) => setAuthValues(input)}
-          resetValues={() => resetValues()}
-          submit={() => redirectUser()}
+          values={(input) => setAuthValues(input)} // AUTH
+          resetValues={() => resetValues()} // AUTH
+          submit={() => redirectUser()} // AUTH
         ></SignUpDisplay>
       );
     } else {
@@ -731,22 +413,23 @@ const Authentication = () => {
     if (display === "confirmation") {
       return (
         <ConfirmationDisplay
+          authOrigin={true} // AUTH
           //close={closeModal} NOT IN AUTH
-          email={email}
-          error={error}
-          message={message}
-          authOrigin={true}
-          resent={resent}
-          confirmation={confirmation}
-          spinner={showSpinner}
-          inputChange={handleAuthValueChange}
-          updateSub={updateSubValues}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(modal) => setDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          //expired={expired} NOT IN AUTH
+          email={email} // AUTH
+          resent={resent} // AUTH
+          confirmation={confirmation} // AUTH
+          spinner={showSpinner} // AUTH
+          inputChange={handleAuthValueChange} // AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // AUTH
+          displayChange={(modal) => setDisplay(modal)} // AUTH
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("confirmation");
+            setDisplay("error");
           }}
-          values={(input) => setAuthValues(input)}
+          values={(input) => setAuthValues(input)} // AUTH
         ></ConfirmationDisplay>
       );
     } else {
@@ -758,24 +441,25 @@ const Authentication = () => {
     if (display === "password") {
       return (
         <PasswordDisplay
+          authOrigin={true} // AUTH
           //close={closeModal} NOT IN AUTH
-          email={email}
-          error={error}
-          message={message}
-          authOrigin={true}
-          password={password}
-          resetToken={resetToken}
-          spinner={showSpinner}
-          inputChange={handleAuthValueChange}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(modal) => setDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          //expired={expired} NOT IN AUTH
+          email={email} // AUTH
+          password={password} // AUTH
+          resetToken={resetToken} // AUTH
+          spinner={showSpinner} // AUTH
+          inputChange={handleAuthValueChange} // AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // AUTH
+          displayChange={(modal) => setDisplay(modal)} // AUTH
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("password");
+            setDisplay("error");
           }}
-          values={(input) => setAuthValues(input)}
+          values={(input) => setAuthValues(input)} // AUTH
           submit={() => {
-            console.log("inside submit");
-            console.log("initial view: ", initialView);
+            // AUTH
             if (initialView === "paid" || initialView === "upgrade") {
               setDisplay("gateway");
             } else {
@@ -790,85 +474,73 @@ const Authentication = () => {
   };
 
   const gatewayDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "535px" };
-    }
     if (display === "gateway") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <div className={classes.Header}>
-              <div>How to Get Paid Instantly.</div>
-            </div>
-            <div>
-              {showDetail()}
-              {gatewayForm}
-            </div>
-          </div>
-        );
-      }
+      return (
+        <GatewayDisplay
+          initial={initialView} // AUTH
+          spinner={showSpinner} // AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // AUTH
+          sessionToken={authValues.sessionToken} // AUTH
+          accountNum={authValues.accountNum} // AUTH
+          displayChange={(modal) => setDisplay(modal)} // AUTH
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("gateway");
+            setDisplay("error");
+          }}
+          submit={() => redirectUser()} // AUTH
+        ></GatewayDisplay>
+      );
     } else {
       return null;
     }
   };
 
-  const freeCongratsDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "290px" };
-    }
+  const freeDisplay = () => {
     if (display === "freeCongrats") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <div className={classes.Header}>
-              <div>Success!</div>
-            </div>
-            <div>
-              {showDetail()}
-              {freeCongratsForm}
-            </div>
-          </div>
-        );
-      }
+      return (
+        <FreeDisplay
+          displayChange={(modal) => setDisplay(modal)} // AUTH
+        ></FreeDisplay>
+      );
     } else {
       return null;
     }
   };
 
   const paidCongratsDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "240px" };
-    }
     if (display === "paidCongrats") {
       if (showSpinner) {
         return (
-          <div className={classes.BlankCanvas} style={height}>
+          <div className={classes.BlankCanvas} style={{ height: "240px" }}>
             <Spinner />
           </div>
         );
       } else {
         return (
-          <div className={classes.BlankCanvas} style={height}>
+          <div className={classes.BlankCanvas}>
             <div className={classes.Header}>
               <div>Success!</div>
             </div>
             <div>
-              {showDetail()}
+              <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+                <div>You now have a Pro Plan!</div>
+                <div style={{ lineHeight: "25px" }}>
+                  You can issue an unlimited amount of free tickets.
+                </div>
+                <div>
+                  More details on this plan{" "}
+                  <a
+                    href="https://www.openseatdirect.com/#pricing-plans"
+                    target="blank"
+                    rel="noreferrer"
+                  >
+                    here
+                  </a>
+                  .
+                </div>
+              </div>
               {paidCongratsForm}
             </div>
           </div>
@@ -883,22 +555,21 @@ const Authentication = () => {
     if (display === "paypal") {
       return (
         <PaypalDisplay
-          authOrigin={true}
+          authOrigin={true} // AUTH
           //close={closeModal} NOT IN AUTH
-          initial={initialView}
-          error={error}
-          message={message}
-          sandbox={PAYPAL_USE_SANDBOX}
-          sessionToken={authValues.sessionToken}
-          accountNum={authValues.accountNum}
-          spinner={showSpinner}
-          inputChange={handleSubValueChange}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(modal) => setDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          initial={initialView} // AUTH
+          sessionToken={authValues.sessionToken} // AUTH
+          accountNum={authValues.accountNum} // AUTH
+          spinner={showSpinner} // AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // AUTH
+          showError={() => {
+            // AUTH
+            setRedirect("paypal");
+            setDisplay("error");
           }}
+          displayChange={(modal) => setDisplay(modal)} // AUTH
           submit={() => {
+            // AUTH
             if (getStatus() === 8) {
               setDisplay("paidCongrats");
             } else if (getStatus() === 5) {
@@ -912,6 +583,7 @@ const Authentication = () => {
             } else setDisplay("signin");
           }}
           redirect={() => {
+            // AUTH
             if (getStatus() !== 0) {
               window.location.href = "/myaccount";
             } else {
@@ -929,27 +601,22 @@ const Authentication = () => {
     if (display === "opennode") {
       return (
         <OpennodeDisplay
-          authOrigin={true}
+          authOrigin={true} // AUTH
           //close={closeModal} NOT IN AUTH
-          initial={initialView}
-          error={error}
-          message={message}
-          apiKey={opennode_invoice_API_KEY}
-          settle={opennode_auto_settle}
-          dev={opennode_dev}
-          sessionToken={authValues.sessionToken}
-          accountNum={authValues.accountNum}
-          spinner={showSpinner}
-          inputChange={handleSubValueChange}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(modal) => setDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
-          }}
-          radioChange={(event, value, message) => {
-            radioChangeSubValues(event, value, message);
+          initial={initialView} // AUTH
+          sessionToken={authValues.sessionToken} // AUTH
+          accountNum={authValues.accountNum} // AUTH
+          spinner={showSpinner} // AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // AUTH
+          displayChange={(modal) => setDisplay(modal)} // AUTH
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("opennode");
+            setDisplay("error");
           }}
           submit={() => {
+            // AUTH
             if (getStatus() === 8) {
               setDisplay("paidCongrats");
             } else if (getStatus() === 5) {
@@ -963,6 +630,7 @@ const Authentication = () => {
             } else setDisplay("signin");
           }}
           redirect={() => {
+            // AUTH
             if (getStatus() !== 0) {
               window.location.href = "/myaccount";
             } else {
@@ -980,19 +648,30 @@ const Authentication = () => {
     if (display === "subscription") {
       return (
         <SubscriptionDisplay
-          subValues={subValues}
-          changeSubValues={(values) => {
-            setSubValues(values);
+          sessionToken={authValues.sessionToken} // AUTH
+          accountNum={authValues.accountNum} // AUTH
+          spinner={showSpinner} // AUTH
+          spinnerChange={(value) => setShowSpinner(value)} // AUTH
+          displayChange={(modal) => setDisplay(modal)} // AUTH
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("submission");
+            setDisplay("error");
           }}
-          //authOrigin={true}
-          //initial={initialView}
-          sessionToken={authValues.sessionToken}
-          accountNum={authValues.accountNum}
-          spinner={showSpinner}
-          spinnerChange={(value) => setShowSpinner(value)}
-          displayChange={(modal) => setDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          submit={() => {
+            // AUTH
+            if (getStatus() === 8) {
+              setDisplay("paidCongrats");
+            } else if (getStatus() === 5) {
+              setDisplay("subscription");
+            } else if (
+              getStatus() === 1 ||
+              getStatus() === 4 ||
+              getStatus() === 6
+            ) {
+              setDisplay("gateway");
+            } else setDisplay("signin");
           }}
         ></SubscriptionDisplay>
       );
@@ -1002,27 +681,46 @@ const Authentication = () => {
   };
 
   const errorDisplay = () => {
-    let height = {};
-    if (!error) {
-      height = { height: "340px" };
-    }
     if (display === "error") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas} style={height}>
-            <div className={classes.Header}>
-              <div>System Error</div>
-            </div>
-            <div>{errorForm()}</div>
-          </div>
-        );
-      }
+      return (
+        <ErrorDisplay
+          redirect={redirect}
+          initial={initialView}
+          now={() => {
+            console.log("NOW");
+            setDisplay(redirect);
+          }}
+          later={() => {
+            if (
+              redirect === "signin" ||
+              redirect === "forgot" ||
+              redirect === "temporary" ||
+              redirect === "signup" ||
+              redirect === "confirmation" ||
+              redirect === "password"
+            ) {
+              window.location.href = "/";
+            } else if (
+              (redirect === "gateway" ||
+                redirect === "opennode" ||
+                redirect === "paypal" ||
+                redirect === "subscription") &&
+              initialView === "upgrade"
+            ) {
+              console.log("gateway");
+              window.close();
+            } else if (
+              redirect === "gateway" ||
+              redirect === "opennode" ||
+              redirect === "paypal" ||
+              redirect === "subscription"
+            ) {
+              console.log("LATER");
+              window.location.href = "/myaccount";
+            }
+          }}
+        ></ErrorDisplay>
+      );
     } else {
       return null;
     }
@@ -1037,11 +735,11 @@ const Authentication = () => {
         {signUpDisplay()}
         {confirmationDisplay()}
         {passwordDisplay()}
+        {freeDisplay()}
         {gatewayDisplay()}
         {paypalDisplay()}
         {opennodeDisplay()}
         {subscriptionDisplay()}
-        {freeCongratsDisplay()}
         {paidCongratsDisplay()}
         {errorDisplay()}
       </div>
