@@ -22,8 +22,7 @@ const Account = (props) => {
   const [modalStatus, setModalStatus] = useState("none");
   const [subscriptionType, setSubscriptionType] = useState("free");
 
-  useEffect(() => {
-    //
+  const updateUserInfo = () => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -52,7 +51,40 @@ const Account = (props) => {
     } else {
       window.location.href = "/auth";
     }
+  };
+
+  useEffect(() => {
     //
+    updateUserInfo(); /*
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`user`) !== null
+    ) {
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      let tempAccountId = tempUser.user.accountId;
+      console.log("tempUser: ", tempUser);
+      let tempUserInfo = {
+        firstname: tempUser.user.firstname,
+        lastname: tempUser.user.lastname,
+        email: tempUser.user.email,
+        username: tempUser.user.username,
+        id: tempUser.user._id,
+        token: tempUser.token,
+        accountName: tempUser.user.accountId.accountName,
+        accountEmail: tempUser.user.accountId.accountEmail,
+        paymentGateway: tempUser.user.accountId.paymentGatewayType,
+        cryptoGateway: tempUser.user.accountId.cryptoGatewayType,
+      };
+      console.log("tempUserInfo: ", tempUserInfo);
+      setUserInfo(tempUserInfo);
+      if (tempAccountId.status === 8) {
+        setSubscriptionType("paid");
+        console.log("PAID");
+      } else console.log("STILL FREE");
+    } else {
+      window.location.href = "/auth";
+    }
+    */
   }, []);
 
   const handleErrors = (response) => {
@@ -138,7 +170,22 @@ const Account = (props) => {
 
   const paymentDetails = () => {
     if (getStatus() === 8 && userInfo.paymentGateway) {
-      return <div>Payment Gateway: {userInfo.paymentGateway} </div>;
+      return (
+        <div>
+          Payment Gateway: {userInfo.paymentGateway}{" "}
+          {userInfo.paymentGateway === "PayPalExpress" ? (
+            <button
+              className={classes.PasswordButton}
+              onClick={() => {
+                changePaypal();
+              }}
+            >
+              {" "}
+              Update
+            </button>
+          ) : null}
+        </div>
+      );
     } else if (getStatus() === 8) {
       return <div>Payment Gateway: NONE </div>;
     } else return null;
@@ -151,9 +198,35 @@ const Account = (props) => {
       userInfo.cryptoGateway &&
       userInfo.cryptoGateway !== "NONE"
     ) {
-      return <div>Crypto Gateway: {userInfo.cryptoGateway} </div>;
+      return (
+        <div>
+          Crypto Gateway: {userInfo.cryptoGateway}{" "}
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              changeOpennode();
+            }}
+          >
+            {" "}
+            Update
+          </button>
+        </div>
+      );
     } else if (getStatus() === 8) {
-      return <div>Crypto Gateway: NONE </div>;
+      return (
+        <div>
+          Crypto Gateway: NONE{" "}
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              changeOpennode();
+            }}
+          >
+            {" "}
+            Add
+          </button>
+        </div>
+      );
     } else return null;
   };
 
@@ -205,50 +278,15 @@ const Account = (props) => {
           setModalStatus("none");
         }}
       />
+      <OpennodeModal
+        show={modalStatus === "opennode"}
+        closeModal={() => {
+          updateUserInfo();
+          setModalStatus("none");
+        }}
+      />
     </div>
   );
 };
 
 export default Account;
-
-/*
-
-      <OpennodeModal
-        show={modalStatus === "opennode"}
-        closeModal={() => {
-          setModalStatus("none");
-        }}
-      />
-
-          <button
-            className={classes.PasswordButton}
-            onClick={() => {
-              changeOpennode();
-            }}
-          >
-            {" "}
-            Add
-          </button>
-
-          <button
-            className={classes.PasswordButton}
-            onClick={() => {
-              changeOpennode();
-            }}
-          >
-            {" "}
-            Update
-          </button>
-
-
-          {userInfo.paymentGateway === "PayPalExpress" ? (
-            <button
-              className={classes.PasswordButton}
-              onClick={() => {
-                changePaypal();
-              }}
-            >
-              {" "}
-              Update
-            </button>
-          ) : null}*/

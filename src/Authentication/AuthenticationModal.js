@@ -6,7 +6,7 @@ import TemporaryDisplay from "./Components/TemporaryDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
 import ConfirmationDisplay from "./Components/ConfirmationDisplay";
 import PasswordDisplay from "./Components/PasswordDisplay";
-import ErrorDisplay from "./Components/OLDErrorDisplay";
+import ErrorDisplay from "./Components/ErrorDisplay";
 
 import Backdrop from "../components/UI/Backdrop/Backdrop";
 import classes from "./AuthenticationModal.module.css";
@@ -23,7 +23,6 @@ const Authentication = (props) => {
     username: "",
     resetToken: "",
     sessionToken: "",
-    userId: "",
   });
 
   const {
@@ -37,16 +36,16 @@ const Authentication = (props) => {
     username,
     resetToken,
     sessionToken,
-    userId,
   } = values;
 
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
     error: false,
-    redirect: "",
   });
 
-  const { message, error, redirect } = submissionStatus;
+  const { message, error } = submissionStatus;
+
+  const [redirect, setRedirect] = useState("");
 
   const [modalDisplay, setModalDisplay] = useState(props.start); // signin, forgot, temporary, signup, confirmation, password, username, error
 
@@ -89,19 +88,19 @@ const Authentication = (props) => {
     if (modalDisplay === "signin") {
       return (
         <SignInDisplay
-          close={closeModal}
-          email={email}
-          error={error}
-          expired={expired}
           authOrigin={false}
-          message={message}
+          close={closeModal}
+          expired={expired}
+          email={email}
           password={password}
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
           displayChange={(modal) => setModalDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          showError={() => {
+            console.log("showError");
+            setRedirect("signin");
+            setModalDisplay("error");
           }}
           values={(input) => setValues(input)}
           resetValues={() => resetValues()}
@@ -117,18 +116,18 @@ const Authentication = (props) => {
     if (modalDisplay === "forgot") {
       return (
         <ForgotDisplay
-          close={closeModal}
-          email={email}
-          error={error}
-          expired={expired}
           authOrigin={false}
-          message={message}
+          close={closeModal}
+          expired={expired}
+          email={email}
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
           displayChange={(modal) => setModalDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          showError={() => {
+            console.log("showError");
+            setRedirect("forgot");
+            setModalDisplay("error");
           }}
           values={(input) => setValues(input)}
           resetValues={() => resetValues()}
@@ -144,21 +143,23 @@ const Authentication = (props) => {
       console.log("TEMPORARY");
       return (
         <TemporaryDisplay
+          authOrigin={false}
           close={closeModal}
+          expired={expired}
           email={email}
           reissued={reissued}
           temporary={temporary}
-          message={message}
-          error={error}
-          authOrigin={false}
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
           displayChange={(modal) => setModalDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          showError={() => {
+            console.log("showError");
+            setRedirect("temporary");
+            setModalDisplay("error");
           }}
           values={(input) => setValues(input)}
+          resetValues={() => resetValues()}
           submit={() => props.submit()}
         ></TemporaryDisplay>
       );
@@ -171,19 +172,20 @@ const Authentication = (props) => {
     if (modalDisplay === "signup") {
       return (
         <SignUpDisplay
-          close={closeModal}
-          email={email}
-          error={error}
           authOrigin={false}
+          close={closeModal}
           expired={expired}
-          message={message}
+          email={email}
           password={password}
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
           displayChange={(modal) => setModalDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("signup");
+            setModalDisplay("error");
           }}
           values={(input) => setValues(input)}
           resetValues={() => resetValues()}
@@ -199,21 +201,21 @@ const Authentication = (props) => {
     if (modalDisplay === "confirmation") {
       return (
         <ConfirmationDisplay
-          close={closeModal}
-          email={email}
-          username={username}
-          error={error}
-          message={message}
           authOrigin={false}
+          close={closeModal}
+          expired={expired}
+          email={email}
           resent={resent}
           confirmation={confirmation}
           spinner={showSpinner}
           inputChange={handleChange}
-          //updateSub={updateSubValues} NOT IN MODAL
           spinnerChange={(value) => setShowSpinner(value)}
           displayChange={(modal) => setModalDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("confirmation");
+            setModalDisplay("error");
           }}
           values={(input) => setValues(input)}
         ></ConfirmationDisplay>
@@ -227,20 +229,21 @@ const Authentication = (props) => {
     if (modalDisplay === "password") {
       return (
         <PasswordDisplay
-          close={closeModal}
-          email={email}
-          username={username}
-          error={error}
-          message={message}
           authOrigin={false}
+          close={closeModal}
+          expired={expired}
+          email={email}
           password={password}
           resetToken={resetToken}
           spinner={showSpinner}
           inputChange={handleChange}
           spinnerChange={(value) => setShowSpinner(value)}
           displayChange={(modal) => setModalDisplay(modal)}
-          submission={(input) => {
-            setSubmissionStatus(input);
+          showError={() => {
+            // AUTH
+            console.log("showError");
+            setRedirect("password");
+            setModalDisplay("error");
           }}
           values={(input) => setValues(input)}
           submit={() => props.submit()}
@@ -253,7 +256,28 @@ const Authentication = (props) => {
 
   const errorDisplay = () => {
     if (modalDisplay === "error") {
-      return <ErrorDisplay close={closeModal}></ErrorDisplay>;
+      return (
+        <ErrorDisplay
+          redirect={redirect}
+          //initial={initialView} // NOT IN MODAL
+          now={() => {
+            console.log("NOW");
+            setModalDisplay(redirect);
+          }}
+          later={() => {
+            if (
+              redirect === "signin" ||
+              redirect === "forgot" ||
+              redirect === "temporary" ||
+              redirect === "signup" ||
+              redirect === "confirmation" ||
+              redirect === "password"
+            ) {
+              closeModal();
+            }
+          }}
+        ></ErrorDisplay>
+      );
     } else {
       return null;
     }

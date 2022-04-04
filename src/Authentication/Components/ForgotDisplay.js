@@ -208,7 +208,7 @@ const ForgotDisplay = (props) => {
   const header = () => {
     if (props.authOrigin !== true) {
       return (
-        <div className={classes.Header}>
+        <div className={classes.HeaderModal}>
           <div>Trouble logging in?</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
@@ -229,7 +229,7 @@ const ForgotDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "237px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "238px" }}>
         <Spinner />
       </div>
     );

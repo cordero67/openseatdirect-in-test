@@ -22,7 +22,6 @@ const OpennodeDisplay = (props) => {
   });
 
   const handleSubValueChange = (event) => {
-    console.log("event: ", event);
     setSubValues({
       ...subValues,
       [event.target.name]: event.target.value,
@@ -46,6 +45,8 @@ const OpennodeDisplay = (props) => {
         if (tempUser.user.accountId?.opennode_invoice_API_KEY) {
           tempSubValues.opennode_invoice_API_KEY =
             tempUser.user.accountId.opennode_invoice_API_KEY;
+        } else {
+          tempSubValues.opennode_invoice_API_KEY = "";
         }
 
         if (tempUser.user.accountId?.opennode_auto_settle === undefined) {
@@ -338,7 +339,7 @@ const OpennodeDisplay = (props) => {
   const header = () => {
     if (props.authOrigin !== true) {
       return (
-        <div className={classes.Header}>
+        <div className={classes.HeaderModal}>
           <div>Enter Opennode Information</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
@@ -351,7 +352,12 @@ const OpennodeDisplay = (props) => {
               name="close-outline"
               cursor="pointer"
               onClick={() => {
+                console.log("CLOSING");
                 initializeSubValues();
+                setSubmissionStatus({
+                  message: "",
+                  error: false,
+                });
                 props.close();
               }}
             />
@@ -366,9 +372,9 @@ const OpennodeDisplay = (props) => {
   if (props.spinner) {
     let height;
     if (props.authOrigin) {
-      height = { height: "595px" };
+      height = { height: "591px" };
     } else {
-      height = { height: "486px" };
+      height = { height: "471px" };
     }
     return (
       <div className={classes.BlankCanvas} style={height}>

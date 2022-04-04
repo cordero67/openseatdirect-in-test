@@ -3,26 +3,19 @@ import OpennodeDisplay from "../../../Authentication/Components/OpennodeDisplay"
 import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
 
 import Backdrop from "./Backdrop";
-import classes from "./OpennodeModal.module.css";
-import Spinner from "../../../components/UI/Spinner/Spinner";
+import classes from "./AccountModal.module.css";
 
 const Opennode = (props) => {
-  console.log("props: ", props);
   const [showSpinner, setShowSpinner] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState({
-    message: "",
-    error: false,
-  });
-  const { message, error } = submissionStatus;
 
   const [subValues, setSubValues] = useState({
-    opennode_invoice_API_KEY: "", // vendors opennode api key
-    opennode_auto_settle: "", // vendors request convesion to USD or keep in BTC?
-    opennode_dev: "", // Boolean: dev=true for testnet BTC
     accountNum: "",
+    sessionToken: "",
   });
 
-  useEffect(() => {
+  const [display, setDisplay] = useState("opennode"); // spinner, signin, forgot, temporary, signup, confirmation, password, error
+
+  const initializeSubValues = () => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -30,78 +23,68 @@ const Opennode = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
 
       let tempValues = { ...subValues };
-      tempValues.opennode_invoice_API_KEY =
-        tempUser.user.accountId.opennode_invoice_API_KEY; // vendors opennode api key
-      tempValues.opennode_auto_settle =
-        tempUser.user.accountId.opennode_auto_settle; // vendors request convesion to USD or keep in BTC?
-      tempValues.opennode_dev = tempUser.user.accountId.opennode_dev;
       tempValues.accountNum = tempUser.user.accountId.accountNum;
       tempValues.sessionToken = tempUser.token;
       console.log("tempValues: ", tempValues);
       setSubValues(tempValues);
+      setDisplay("opennode");
     }
-  }, []);
-
-  // THIS ASSIGNS THE "paypal_plan_id" VARIABLE TO THE SELECTED PLAN
-  const radioChangeSubValues = (event, value, name) => {
-    let tempSubValues = { ...subValues };
-    tempSubValues[name] = value.value;
-    tempSubValues.paypal_plan_id = value.value;
-    setSubValues(tempSubValues);
   };
 
-  const handleSubValueChange = (event) => {
-    setSubValues({
-      ...subValues,
-      [event.target.name]: event.target.value,
-    });
+  useEffect(() => {
+    initializeSubValues();
+  }, []);
+
+  const closeModal = () => {
+    props.closeModal();
+  };
+
+  const opennodeDisplay = () => {
+    if (display === "opennode") {
+      return (
+        <OpennodeDisplay
+          authOrigin={false}
+          close={() => {
+            props.closeModal();
+          }}
+          //initial={initialView} // NOT IN MODAL
+          sessionToken={subValues.sessionToken}
+          accountNum={subValues.accountNum}
+          spinner={showSpinner}
+          spinnerChange={(value) => setShowSpinner(value)}
+          showError={() => {
+            console.log("showError");
+            setDisplay("error");
+          }} ////displayChange={(modal) => setDisplay(modal)} NOT IN MODAL
+          submit={() => {
+            props.closeModal();
+          }}
+          //redirect={() => {setDefaultValues()}} NOT IN MODAL
+        ></OpennodeDisplay>
+      );
+    } else {
+      return null;
+    }
   };
 
   const errorDisplay = () => {
-    /*
     if (display === "error") {
       return (
         <ErrorDisplay
           now={() => {
             console.log("NOW");
-            setDisplay("paypal");
+            setDisplay("opennode");
           }}
           later={() => {
             console.log("LATER");
             closeModal();
+            setDisplay("opennode");
           }}
         ></ErrorDisplay>
       );
     } else {
       return null;
     }
-    */
-  };
-
-  const opennodeDisplay = () => {
-    return (
-      <OpennodeDisplay
-        authOrigin={false}
-        close={() => props.closeModal()}
-        //initial={initialView} // NOT IN MODAL
-        error={error}
-        message={message}
-        dev={subValues.opennode_dev}
-        sessionToken={subValues.sessionToken}
-        accountNum={subValues.accountNum}
-        spinner={showSpinner}
-        inputChange={handleSubValueChange}
-        spinnerChange={(value) => setShowSpinner(value)}
-        ////displayChange={(modal) => setDisplay(modal)} NOT IN MODAL
-        submission={(input) => {
-          setSubmissionStatus(input);
-        }}
-        submit={() => {
-          props.closeModal();
-        }}
-        //redirect={() => {setDefaultValues()}} NOT IN MODAL
-      ></OpennodeDisplay>
-    );
   };
 
   return (

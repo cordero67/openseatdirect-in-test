@@ -37,10 +37,14 @@ const PaypalDisplay = (props) => {
         if (tempUser.user.accountId?.paypalExpress_client_id) {
           tempSubValues.paypalExpress_client_id =
             tempUser.user.accountId.paypalExpress_client_id;
+        } else {
+          tempSubValues.paypalExpress_client_id = "";
         }
         if (tempUser.user.accountId?.paypalExpress_client_secret) {
           tempSubValues.paypalExpress_client_secret =
             tempUser.user.accountId.paypalExpress_client_secret;
+        } else {
+          tempSubValues.paypalExpress_client_id = "";
         }
         setSubValues(tempSubValues);
         console.log("tempSubValues: ", tempSubValues);
@@ -296,7 +300,7 @@ const PaypalDisplay = (props) => {
   const header = () => {
     if (props.authOrigin !== true) {
       return (
-        <div className={classes.Header}>
+        <div className={classes.HeaderModal}>
           <div>Enter Paypal Information</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
@@ -310,6 +314,10 @@ const PaypalDisplay = (props) => {
               cursor="pointer"
               onClick={() => {
                 initializeSubValues();
+                setSubmissionStatus({
+                  message: "",
+                  error: false,
+                });
                 props.close();
               }}
             />
@@ -324,9 +332,9 @@ const PaypalDisplay = (props) => {
   if (props.spinner) {
     let height;
     if (props.authOrigin) {
-      height = { height: "493px" };
+      height = { height: "494px" };
     } else {
-      height = { height: "392px" };
+      height = { height: "377px" };
     }
 
     return (

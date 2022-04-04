@@ -140,7 +140,7 @@ const SignUpDisplay = (props) => {
             SUBMIT YOUR EMAIL
           </button>
         </div>
-        <div style={{ paddingTop: "10px" }}>
+        <div style={{ fontSize: "16px", paddingTop: "10px" }}>
           By clicking 'Submit Your Email' I agree to Open Seat Direct's{" "}
           <a
             className={classes.BlueText}
@@ -283,7 +283,7 @@ const SignUpDisplay = (props) => {
   const header = () => {
     if (props.authOrigin !== true) {
       return (
-        <div className={classes.Header}>
+        <div className={classes.HeaderModal}>
           <div style={{ lineHeight: "30px" }}>
             Ready to join{" "}
             <img

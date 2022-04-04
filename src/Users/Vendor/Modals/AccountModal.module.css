@@ -1,0 +1,72 @@
+.Modal {
+  position: fixed;
+  z-index: 700;
+  background-color: white;
+  width: 100%;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-right: 5%;
+  padding-left: 5%;
+  top: 10%;
+  text-align: center;
+  box-sizing: border-box;
+  transition: all 0.6s ease-out;
+  -webkit-transition: all 0.6s ease-out;
+  -moz-transition: all 0.6s ease-out;
+  -ms-transition: all 0.6s ease-out;
+  -o-transition: all 0.6s ease-out;
+}
+
+.ButtonBlue {
+  background-color: #2f5596;
+  color: #fff;
+  width: calc(100vw - 48px);
+  height: 40px;
+  font-size: 14px;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonBlue:hover {
+  background-color: #1d355d;
+  border: 1px solid #000;
+}
+.ButtonBlue:active {
+  background-color: #14233e;
+  border: 1px solid #000;
+}
+
+.ButtonGrey {
+  height: 40px;
+  width: 100%;
+  background-color: #999999;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+  font-size: 14px;
+}
+.ButtonGrey:hover {
+  background-color: #858585;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonGrey:active {
+  background-color: #707070;
+  color: white;
+  border: 1px solid black;
+  outline: none;
+}
+
+@media (min-width: 450px) {
+  .Modal {
+    width: 450px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 54px;
+    padding-right: 54px;
+    left: calc(50% - 225px);
+  }
+  .ButtonBlue {
+    width: 340px;
+  }
+}

@@ -227,7 +227,12 @@ const ConfirmationDisplay = (props) => {
             Enter the 6-digit code sent to your email.
           </div>
           <div
-            style={{ fontWeight: "600", color: "red", paddingBottom: "20px" }}
+            style={{
+              fontSize: "16px",
+              fontWeight: "600",
+              color: "red",
+              paddingBottom: "20px",
+            }}
           >
             PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
@@ -240,7 +245,12 @@ const ConfirmationDisplay = (props) => {
             Enter the new 6-digit code sent to your email.
           </div>
           <div
-            style={{ fontWeight: "600", color: "red", paddingBottom: "20px" }}
+            style={{
+              fontSize: "16px",
+              fontWeight: "600",
+              color: "red",
+              paddingBottom: "20px",
+            }}
           >
             PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
@@ -271,15 +281,15 @@ const ConfirmationDisplay = (props) => {
   const header = () => {
     if (props.authOrigin !== true) {
       return (
-        <div className={classes.Header}>
+        <div className={classes.HeaderModal}>
           <div>Enter confirmation code</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
               style={{
                 fontWeight: "600",
-                fontSize: "28px",
+                fontSize: "24px",
                 color: "black",
-                paddingBottom: "5px",
+                //paddingBottom: "5px",
               }}
               name="close-outline"
               cursor="pointer"
@@ -297,7 +307,7 @@ const ConfirmationDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "307px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "308px" }}>
         <Spinner />
       </div>
     );

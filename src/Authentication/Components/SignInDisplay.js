@@ -273,7 +273,7 @@ const SignInDisplay = (props) => {
   const header = () => {
     if (props.authOrigin !== true) {
       return (
-        <div className={classes.Header}>
+        <div className={classes.HeaderModal}>
           <div>Welcome Back!</div>
           <div style={{ textAlign: "center" }}>
             <ion-icon
@@ -337,7 +337,7 @@ const SignInDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "433px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "435px" }}>
         <Spinner />
       </div>
     );

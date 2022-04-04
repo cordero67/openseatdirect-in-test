@@ -916,7 +916,7 @@ const SubscriptionDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "490px" }}>
+      <div className={classes.BlankCanvas} style={{ height: "453px" }}>
         <Spinner />
       </div>
     );

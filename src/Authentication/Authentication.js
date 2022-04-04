@@ -242,43 +242,6 @@ const Authentication = () => {
     }
   };
 
-  const showDetail = () => {
-    if (true /*error*/) {
-      return (
-        <div
-          style={{
-            color: "red",
-            fontSize: "14px",
-            lineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          {/*message*/}
-        </div>
-      );
-    } else if (display === "paidCongrats") {
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          <div>You now have a Pro Plan!</div>
-          <div style={{ lineHeight: "25px" }}>
-            You can issue an unlimited amount of free tickets.
-          </div>
-          <div>
-            More details on this plan{" "}
-            <a
-              href="https://www.openseatdirect.com/#pricing-plans"
-              target="blank"
-              rel="noreferrer"
-            >
-              here
-            </a>
-            .
-          </div>
-        </div>
-      );
-    }
-  };
-
   const paidCongratsForm = (
     <Fragment>
       <div style={{ paddingTop: "10px" }}>
