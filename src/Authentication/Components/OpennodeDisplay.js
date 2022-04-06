@@ -309,7 +309,7 @@ const OpennodeDisplay = (props) => {
               }
             }}
           >
-            SUBMIT YOUR OPENNODE DETAILS
+            SUBMIT OPENNODE DETAILS
           </button>
         </div>
         {displayButtons()}
@@ -317,7 +317,7 @@ const OpennodeDisplay = (props) => {
     );
   };
 
-  const showError = () => {
+  const errorText = () => {
     if (error) {
       return (
         <div
@@ -340,7 +340,7 @@ const OpennodeDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.HeaderModal}>
-          <div>Enter Opennode Information</div>
+          <div>Enter Opennode Details</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
               style={{
@@ -365,7 +365,7 @@ const OpennodeDisplay = (props) => {
         </div>
       );
     } else {
-      return <div className={classes.Header}>Enter Opennode Information</div>;
+      return <div className={classes.Header}>Enter Opennode Details</div>;
     }
   };
 
@@ -386,7 +386,7 @@ const OpennodeDisplay = (props) => {
       <div className={classes.BlankCanvas}>
         {header()}
         <div>
-          {showError()}
+          {errorText()}
           {opennodeForm()}
         </div>
       </div>

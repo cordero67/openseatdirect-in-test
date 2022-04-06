@@ -44,27 +44,27 @@
   padding-top: 20px;
 }
 .InputBox {
-  border: 1px solid #8DADD4;
+  border: 1px solid #8dadd4;
   border-radius: 0px;
-  background-color: #EFF3FA;
+  background-color: #eff3fa;
   width: 100%;
   height: 40px;
   padding-left: 10px;
   font-size: 14px;
 }
 .OSDBlueButton {
-  background-color: #2F5596;
+  background-color: #2f5596;
   color: #fff;
   width: 100%;
   height: 40px;
   font-size: 14px;
 }
 .OSDBlueButton:hover {
-  background-color: #1D355D;
+  background-color: #1d355d;
   border: 1px solid #000;
 }
 .OSDBlueButton:active {
-  background-color: #14233E;
+  background-color: #14233e;
   border: 1px solid #000;
 }
 
@@ -111,7 +111,7 @@
   text-align: left;
   font-weight: 600;
   padding-left: 0px;
-  color: #0000FF;
+  color: #0000ff;
   border: none;
   background-color: #fff;
   cursor: pointer;
@@ -119,21 +119,21 @@
   outline: none;
 }
 .BlueText:hover {
-  color: #0000CC;
+  color: #0000cc;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 450px) {
   .Modal {
-    width: 500px;
+    width: 450px;
     padding-top: 30px;
     padding-bottom: 30px;
-    padding-left: 79px;
-    padding-right: 79px;
-    left: calc(50% - 250px);
+    padding-left: 54px;
+    padding-right: 54px;
+    left: calc(50% - 225px);
   }
   .BlankCanvas {
     padding-left: calc(50% - 170px);
-    padding-left: calc(50% - 170px);
+    padding-right: calc(50% - 170px);
   }
   .InputBox {
     width: 340px;

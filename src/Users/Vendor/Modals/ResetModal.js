@@ -1,4 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
+import ConfirmUpdateDisplay from "../../../Authentication/Components/ConfirmUpdateDisplay";
+import ResetDisplay from "../../../Authentication/Components/ResetDisplay";
+import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
 
 import { API } from "../../../config";
 
@@ -6,14 +9,42 @@ import Backdrop from "./Backdrop";
 import classes from "./ResetModal.module.css";
 
 const Reset = (props) => {
+  const [showSpinner, setShowSpinner] = useState(false);
+
+  const [subValues, setSubValues] = useState({
+    accountNum: "",
+    sessionToken: "",
+  });
+
+  const [display, setDisplay] = useState("confirmUpdate"); // spinner, signin, forgot, temporary, signup, confirmation, password, error
+
   const [values, setValues] = useState({
+    email: "",
     password: "",
+    temporary: "",
+    reissued: false,
     confirmation: "",
     resent: false,
     resetToken: "",
+    expired: "",
     sessionToken: "",
-    userId: "",
+    accountNum: "",
   });
+
+  const [redirect, setRedirect] = useState("");
+
+  const {
+    email,
+    password,
+    temporary,
+    reissued,
+    confirmation,
+    resent,
+    resetToken,
+    expired,
+    sessionToken,
+    accountNum,
+  } = values;
 
   // transaction status variable
   const [submissionStatus, setSubmissionStatus] = useState({
@@ -21,18 +52,6 @@ const Reset = (props) => {
     error: false,
   });
   const { message, error } = submissionStatus;
-
-  const [modalSetting, setModalSetting] = useState("confirmation"); // confirmation, password, error
-  const { password, confirmation, resent, resetToken, sessionToken, userId } =
-    values;
-  // LOOKS GOOD
-  const getStatus = (user) => {
-    if ("accountId" in user && "status" in user.accountId) {
-      return user.accountId.status;
-    } else {
-      return 0;
-    }
-  };
 
   // LOOKS GOOD
   useEffect(() => {
@@ -43,7 +62,6 @@ const Reset = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       let tempValues = { ...values };
       tempValues.sessionToken = tempUser.token;
-      tempValues.userId = tempUser.user._id;
       setValues(tempValues);
     } else {
       window.location.href = "/auth";
@@ -57,89 +75,7 @@ const Reset = (props) => {
     }
     return response;
   };
-  // LOOKS GOOD
-  const submitConfirmation = () => {
-    console.log("values: ", values);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
-    let url = `${API}/auth/password/confirmcode`;
-    let information = {
-      confirm_code: confirmation,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleConfirmation(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        setModalSetting("error");
-      });
-  };
-  // LOOKS GOOD
-  const submitPassword = () => {
-    console.log("values: ", values);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
-    let url = `${API}/auth/password/new`;
-    let information = {
-      passwordToken: resetToken,
-      password: password,
-    };
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(information),
-    };
-    console.log("fetching with: ", url);
-    console.log("fetching body: ", fetchBody);
-    console.log("Information: ", information);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handlePassword(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        setModalSetting("error");
-      });
-  };
   // LOOKS GOOD
   const submitExpired = () => {
     console.log("values: ", values);
@@ -175,87 +111,15 @@ const Reset = (props) => {
           message: "Server is down, please try later",
           error: true,
         });
-        setModalSetting("error");
+        setDisplay("error");
       });
   };
 
-  // LOOKS GOOD
-  const submitResend = () => {
-    console.log("values: ", values);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
-    let url = `${API}/auth/password/sendcode`;
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    console.log("fetching with: ", url, fetchBody);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleResend(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        setModalSetting("error");
-      });
-  };
-
-  const handleConfirmation = (data) => {
-    if (data.status) {
-      let tempValues = { ...values };
-      tempValues.resetToken = data.user.passwordToken;
-      setValues(tempValues);
-      console.log("SUCCESS");
-      setModalSetting("password");
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-      });
-      console.log("ERROR: ", data.error);
-    }
-  };
-
-  // LOOKS GOOD
-  const handlePassword = (data) => {
-    if (data.status) {
-      console.log("SUCCESS");
-      closeModal();
-    } else {
-      if (data.code === 202) {
-        console.log("Status 202 Error");
-        setModalSetting("expired");
-      } else {
-        setSubmissionStatus({
-          message: data.error,
-          error: true,
-        });
-        console.log("ERROR: ", data.error);
-      }
-    }
-  };
   const handleExpired = (data) => {
     if (data.status) {
       resetValues();
       console.log("SUCCESS");
-      setModalSetting("confirmation");
+      setDisplay("confirmUpdate");
     } else {
       setSubmissionStatus({
         message: data.error,
@@ -272,25 +136,8 @@ const Reset = (props) => {
       resent: false,
       resetToken: "",
       sessionToken: values.sessionToken,
-      userId: values.userId,
     };
     setValues(tempValues);
-  };
-  // LOOKS GOOD
-  const handleResend = (data) => {
-    if (data.status) {
-      let tempValues = { ...values };
-      tempValues.confirmation = "";
-      tempValues.resent = true;
-      setValues(tempValues);
-      console.log("SUCCESS");
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-      });
-      console.log("ERROR: ", data.error);
-    }
   };
   // LOOKS GOOD
   const handleChange = (event) => {
@@ -307,75 +154,8 @@ const Reset = (props) => {
           {message}
         </div>
       );
-    } else if (modalSetting === "password") {
-      return null;
-    } else if (modalSetting === "confirmation" && !resent) {
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Enter the 6-digit code sent to your email:
-        </div>
-      );
-    } else if (modalSetting === "confirmation" && resent) {
-      return (
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          A new 6-digit code was sent to your email,
-          <br></br>
-          please enter it below:
-        </div>
-      );
     }
   };
-
-  const confirmationForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Confirmation Number</label>
-        <input
-          className={classes.InputBox}
-          type="text"
-          name="confirmation"
-          onChange={handleChange}
-          value={confirmation}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.OSDBlueButton}
-          onClick={() => {
-            submitConfirmation();
-          }}
-        >
-          SUBMIT YOUR CODE
-        </button>
-      </div>
-    </Fragment>
-  );
-
-  const passwordForm = (
-    <Fragment>
-      <div style={{ paddingBottom: "20px", width: "100%", height: "85px" }}>
-        <label style={{ fontSize: "15px" }}>Password</label>
-        <input
-          className={classes.InputBox}
-          type="text"
-          name="password"
-          onChange={handleChange}
-          value={password}
-        />
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.OSDBlueButton}
-          onClick={() => {
-            console.log("clicked submit button");
-            submitPassword();
-          }}
-        >
-          REGISTER YOUR PASSWORD
-        </button>
-      </div>
-    </Fragment>
-  );
 
   const expiredForm = (
     <Fragment>
@@ -406,46 +186,6 @@ const Reset = (props) => {
     </Fragment>
   );
 
-  const errorForm = (
-    <Fragment>
-      <div
-        style={{
-          fontSize: "16px",
-          color: "red",
-          paddingBottom: "20px",
-          width: "340px",
-          height: "40px",
-        }}
-      >
-        Please try again later
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.SubmitButton}
-          onClick={() => {
-            closeModal();
-          }}
-        >
-          Continue
-        </button>
-      </div>
-    </Fragment>
-  );
-
-  const alternateConfirmationInputs = (
-    <div className={classes.Alternates}>
-      <div style={{ textAlign: "left" }}>
-        <button
-          className={classes.BlueText}
-          onClick={() => {
-            submitResend();
-          }}
-        >
-          Resend code
-        </button>
-      </div>
-    </div>
-  );
   // LOOKS GOOD
   const closeModal = () => {
     resetValues();
@@ -453,65 +193,12 @@ const Reset = (props) => {
       message: "",
       error: false,
     });
-    setModalSetting(props.start);
+    setDisplay("confirmUpdate");
     props.closeModal();
   };
 
-  const confirmationDisplay = () => {
-    if (modalSetting === "confirmation") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Enter confirmation code</div>
-            <div style={{ textAlign: "right" }}>
-              <ion-icon
-                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
-                name="close-outline"
-                cursor="pointer"
-                onClick={() => {
-                  closeModal();
-                }}
-              />
-            </div>
-          </div>
-          <div>
-            {showError()}
-            {confirmationForm}
-            {alternateConfirmationInputs}
-          </div>
-        </div>
-      );
-    } else return null;
-  };
-
-  const passwordDisplay = () => {
-    if (modalSetting === "password") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Create your password</div>
-            <div style={{ textAlign: "right" }}>
-              <ion-icon
-                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
-                name="close-outline"
-                cursor="pointer"
-                onClick={() => {
-                  closeModal();
-                }}
-              />
-            </div>
-          </div>
-          <div>
-            {showError()}
-            {passwordForm}
-          </div>
-        </div>
-      );
-    } else return null;
-  };
-
   const expiredDisplay = () => {
-    if (modalSetting === "expired") {
+    if (display === "expired") {
       return (
         <div className={classes.BlankCanvas}>
           <div className={classes.Header}>
@@ -526,27 +213,78 @@ const Reset = (props) => {
     } else return null;
   };
 
-  const errorDisplay = () => {
-    if (modalSetting === "error") {
+  const confirmUpdateDisplayNEW = () => {
+    if (display === "confirmUpdate") {
       return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>System Error</div>
-            <div style={{ textAlign: "right" }}>
-              <ion-icon
-                style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
-                name="close-outline"
-                cursor="pointer"
-                onClick={() => {
-                  closeModal();
-                }}
-              />
-            </div>
-          </div>
-          <div>{errorForm}</div>
-        </div>
+        <ConfirmUpdateDisplay
+          close={closeModal} //
+          sessionToken={sessionToken} //
+          email={email} //
+          accountNumber={accountNum} //
+          resent={resent} //
+          confirmation={confirmation} //
+          spinner={showSpinner} //
+          inputChange={handleChange} //
+          spinnerChange={(value) => setShowSpinner(value)} //
+          displayChange={(modal) => setDisplay(modal)} //
+          showError={() => {
+            //
+            console.log("showError");
+            setRedirect("confirmUpdate");
+            setDisplay("error");
+          }}
+          values={(input) => setValues(input)} //
+        ></ConfirmUpdateDisplay>
       );
-    } else return null;
+    } else {
+      return null;
+    }
+  };
+
+  const errorDisplay = () => {
+    if (display === "error") {
+      return (
+        <ErrorDisplay
+          redirect={redirect}
+          now={() => {
+            console.log("NOW");
+            setDisplay(redirect);
+          }}
+          later={() => {
+            console.log("LATER");
+            closeModal();
+          }}
+        ></ErrorDisplay>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const resetDisplay = () => {
+    if (display === "reset") {
+      return (
+        <ResetDisplay
+          authOrigin={true}
+          close={closeModal} //
+          password={password} //
+          resetToken={resetToken} //
+          sessionToken={sessionToken} //
+          spinner={showSpinner} //
+          inputChange={handleChange} //
+          spinnerChange={(value) => setShowSpinner(value)} //
+          displayChange={(modal) => setDisplay(modal)} //
+          showError={() => {
+            //
+            console.log("showError");
+            setRedirect("reset");
+            setDisplay("error");
+          }}
+        ></ResetDisplay>
+      );
+    } else {
+      return null;
+    }
   };
 
   return (
@@ -560,8 +298,8 @@ const Reset = (props) => {
         }}
         className={classes.Modal}
       >
-        {confirmationDisplay()}
-        {passwordDisplay()}
+        {confirmUpdateDisplayNEW()}
+        {resetDisplay()}
         {expiredDisplay()}
         {errorDisplay()}
       </div>

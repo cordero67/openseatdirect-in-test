@@ -33,6 +33,11 @@ const ErrorDisplay = (props) => {
         console.log("free forever");
         return "STAY WITH FREE FOREVER PLAN";
       }
+    } else if (
+      props.redirect === "confirmUpdate" ||
+      props.redirect === "reset"
+    ) {
+      return "UPDATE LATER";
     } else {
       console.log("OTHER");
       return "TRY AGAIN LATER";
@@ -40,7 +45,6 @@ const ErrorDisplay = (props) => {
   };
 
   const errorForm = () => {
-    console.log("INSIDE NEW EEROR FORM");
     console.log("INSIDE NEW EEROR FORM");
     return (
       <Fragment>

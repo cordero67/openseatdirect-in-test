@@ -5,7 +5,8 @@ import { API } from "../../config";
 
 import classes from "./Components.module.css";
 
-const ConfirmationDisplay = (props) => {
+const ConfirmInitialDisplay = (props) => {
+  console.log("props: ", props);
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
     error: false,
@@ -81,8 +82,10 @@ const ConfirmationDisplay = (props) => {
   };
 
   const handleConfirmation = (data) => {
+    console.log("data: ", data);
     if (data.status) {
       localStorage.setItem("user", JSON.stringify(data));
+
       props.values({
         email: data.user.email,
         password: "",
@@ -159,7 +162,7 @@ const ConfirmationDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>Confirmation Number</label>
+          <label style={{ fontSize: "15px" }}>Enter confirmation code</label>
           <input
             className={classes.InputBox}
             type="text"
@@ -180,7 +183,7 @@ const ConfirmationDisplay = (props) => {
                   paddingBottom: "10px",
                 }}
               >
-                A valid email address is required
+                A valid 6 digit code is required
               </span>
             </div>
           ) : null}
@@ -201,7 +204,7 @@ const ConfirmationDisplay = (props) => {
     );
   };
 
-  const showError = () => {
+  const errorText = () => {
     if (error) {
       return (
         <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
@@ -224,7 +227,7 @@ const ConfirmationDisplay = (props) => {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter the 6-digit code sent to your email.
+            Enter 6-digit code sent to your email.
           </div>
           <div
             style={{
@@ -242,7 +245,7 @@ const ConfirmationDisplay = (props) => {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter the new 6-digit code sent to your email.
+            Enter new 6-digit code sent to your email.
           </div>
           <div
             style={{
@@ -316,7 +319,7 @@ const ConfirmationDisplay = (props) => {
       <div className={classes.BlankCanvas}>
         {header()}
         <div>
-          {showError()}
+          {errorText()}
           {topDisplay()}
           {confirmationForm()}
           {bottomDisplay}
@@ -326,4 +329,4 @@ const ConfirmationDisplay = (props) => {
   }
 };
 
-export default ConfirmationDisplay;
+export default ConfirmInitialDisplay;

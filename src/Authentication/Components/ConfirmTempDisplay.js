@@ -5,7 +5,7 @@ import { API } from "../../config";
 
 import classes from "./Components.module.css";
 
-const TemporaryDisplay = (props) => {
+const ConfirmTempDisplay = (props) => {
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
     error: false,
@@ -199,7 +199,7 @@ const TemporaryDisplay = (props) => {
     );
   };
 
-  const showError = () => {
+  const errorText = () => {
     if (error) {
       return (
         <div
@@ -337,7 +337,7 @@ const TemporaryDisplay = (props) => {
       <div className={classes.BlankCanvas}>
         {header()}
         <div>
-          {showError()}
+          {errorText()}
           {topDisplay()}
           {temporaryForm()}
           {bottomDisplay}
@@ -347,4 +347,4 @@ const TemporaryDisplay = (props) => {
   }
 };
 
-export default TemporaryDisplay;
+export default ConfirmTempDisplay;

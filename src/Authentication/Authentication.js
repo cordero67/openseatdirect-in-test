@@ -3,9 +3,9 @@ import queryString from "query-string";
 
 import SignInDisplay from "./Components/SignInDisplay";
 import ForgotDisplay from "./Components/ForgotDisplay";
-import TemporaryDisplay from "./Components/TemporaryDisplay";
+import ConfirmTempDisplay from "./Components/ConfirmTempDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
-import ConfirmationDisplay from "./Components/ConfirmationDisplay";
+import ConfirmInitialDisplay from "./Components/ConfirmInitialDisplay";
 import PasswordDisplay from "./Components/PasswordDisplay";
 import FreeDisplay from "./Components/FreeDisplay";
 import GatewayDisplay from "./Components/GatewayDisplay";
@@ -313,10 +313,10 @@ const Authentication = () => {
     }
   };
 
-  const temporaryDisplay = () => {
+  const confirmTempDisplay = () => {
     if (display === "temporary") {
       return (
-        <TemporaryDisplay
+        <ConfirmTempDisplay
           authOrigin={true} // IN AUTH
           //close={closeModal} NOT IN AUTH
           //expired={expired} NOT IN AUTH
@@ -336,7 +336,7 @@ const Authentication = () => {
           values={(input) => setAuthValues(input)} // IN AUTH
           resetValues={() => resetValues()} // IN AUTH
           submit={() => redirectUser()} // AUTH
-        ></TemporaryDisplay>
+        ></ConfirmTempDisplay>
       );
     } else {
       return null;
@@ -372,13 +372,15 @@ const Authentication = () => {
     }
   };
 
-  const confirmationDisplay = () => {
+  const confirmInitialDisplay = () => {
     if (display === "confirmation") {
       return (
-        <ConfirmationDisplay
+        <ConfirmInitialDisplay
           authOrigin={true} // AUTH
+          update={true} // IN UPDATE
           //close={closeModal} NOT IN AUTH
           //expired={expired} NOT IN AUTH
+          sessionToken={authValues.sessionToken} // NOT IN AUTH
           email={email} // AUTH
           resent={resent} // AUTH
           confirmation={confirmation} // AUTH
@@ -393,7 +395,7 @@ const Authentication = () => {
             setDisplay("error");
           }}
           values={(input) => setAuthValues(input)} // AUTH
-        ></ConfirmationDisplay>
+        ></ConfirmInitialDisplay>
       );
     } else {
       return null;
@@ -694,9 +696,9 @@ const Authentication = () => {
       <div className={classes.Modal}>
         {signInDisplay()}
         {forgotDisplay()}
-        {temporaryDisplay()}
+        {confirmTempDisplay()}
         {signUpDisplay()}
-        {confirmationDisplay()}
+        {confirmInitialDisplay()}
         {passwordDisplay()}
         {freeDisplay()}
         {gatewayDisplay()}

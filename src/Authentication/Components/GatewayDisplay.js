@@ -182,7 +182,7 @@ const GatewayDisplay = (props) => {
     </div>
   );
 
-  const showError = () => {
+  const errorText = () => {
     if (error) {
       return (
         <div
@@ -214,7 +214,7 @@ const GatewayDisplay = (props) => {
           <div>How to Get Paid Instantly.</div>
         </div>
         <div>
-          {showError()}
+          {errorText()}
           {topDisplay}
           {gatewayForm}
         </div>

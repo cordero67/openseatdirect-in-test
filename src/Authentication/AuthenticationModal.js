@@ -2,9 +2,9 @@ import React, { useState, Fragment } from "react";
 
 import SignInDisplay from "./Components/SignInDisplay";
 import ForgotDisplay from "./Components/ForgotDisplay";
-import TemporaryDisplay from "./Components/TemporaryDisplay";
+import ConfirmTempDisplay from "./Components/ConfirmTempDisplay";
 import SignUpDisplay from "./Components/SignUpDisplay";
-import ConfirmationDisplay from "./Components/ConfirmationDisplay";
+import ConfirmationDisplay from "./Components/ConfirmInitialDisplay";
 import PasswordDisplay from "./Components/PasswordDisplay";
 import ErrorDisplay from "./Components/ErrorDisplay";
 
@@ -20,9 +20,9 @@ const Authentication = (props) => {
     expired: false,
     confirmation: "",
     resent: false,
-    username: "",
     resetToken: "",
     sessionToken: "",
+    accountNum: "",
   });
 
   const {
@@ -138,11 +138,11 @@ const Authentication = (props) => {
     }
   };
 
-  const temporaryDisplay = () => {
+  const confirmTempDisplay = () => {
     if (modalDisplay === "temporary") {
       console.log("TEMPORARY");
       return (
-        <TemporaryDisplay
+        <ConfirmTempDisplay
           authOrigin={false}
           close={closeModal}
           expired={expired}
@@ -161,7 +161,7 @@ const Authentication = (props) => {
           values={(input) => setValues(input)}
           resetValues={() => resetValues()}
           submit={() => props.submit()}
-        ></TemporaryDisplay>
+        ></ConfirmTempDisplay>
       );
     } else {
       return null;
@@ -202,6 +202,7 @@ const Authentication = (props) => {
       return (
         <ConfirmationDisplay
           authOrigin={false}
+          update={false}
           close={closeModal}
           expired={expired}
           email={email}
@@ -296,7 +297,7 @@ const Authentication = (props) => {
       >
         {signInDisplay()}
         {forgotDisplay()}
-        {temporaryDisplay()}
+        {confirmTempDisplay()}
         {signUpDisplay()}
         {confirmationDisplay()}
         {passwordDisplay()}

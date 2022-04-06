@@ -150,7 +150,7 @@ const PasswordDisplay = (props) => {
     );
   };
 
-  const showError = () => {
+  const errorText = () => {
     if (error) {
       return (
         <div
@@ -208,7 +208,7 @@ const PasswordDisplay = (props) => {
       <div className={classes.BlankCanvas}>
         {header()}
         <div>
-          {showError()}
+          {errorText()}
           {passwordForm()}
         </div>
       </div>

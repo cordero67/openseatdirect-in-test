@@ -139,12 +139,12 @@
 
 @media (min-width: 460px) {
   .Modal {
-    width: 460px;
+    width: 450px;
     padding-top: 30px;
     padding-bottom: 30px;
-    padding-left: 59px;
-    padding-right: 59px;
-    left: calc(50% - 230px);
+    padding-left: 54px;
+    padding-right: 54px;
+    left: calc(50% - 225px);
   }
   .BlankCanvas {
     padding-left: calc(50% - 170px);

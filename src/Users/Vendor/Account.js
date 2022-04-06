@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { API } from "../../config.js";
 
+import PersonalModal from "./Modals/PersonalModal";
 import ResetModal from "./Modals/ResetModal";
 import OpennodeModal from "./Modals/OpennodeModal";
 import PaypalModal from "./Modals/PaypalModal";
@@ -54,37 +55,7 @@ const Account = (props) => {
   };
 
   useEffect(() => {
-    //
-    updateUserInfo(); /*
-    if (
-      typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
-    ) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      let tempAccountId = tempUser.user.accountId;
-      console.log("tempUser: ", tempUser);
-      let tempUserInfo = {
-        firstname: tempUser.user.firstname,
-        lastname: tempUser.user.lastname,
-        email: tempUser.user.email,
-        username: tempUser.user.username,
-        id: tempUser.user._id,
-        token: tempUser.token,
-        accountName: tempUser.user.accountId.accountName,
-        accountEmail: tempUser.user.accountId.accountEmail,
-        paymentGateway: tempUser.user.accountId.paymentGatewayType,
-        cryptoGateway: tempUser.user.accountId.cryptoGatewayType,
-      };
-      console.log("tempUserInfo: ", tempUserInfo);
-      setUserInfo(tempUserInfo);
-      if (tempAccountId.status === 8) {
-        setSubscriptionType("paid");
-        console.log("PAID");
-      } else console.log("STILL FREE");
-    } else {
-      window.location.href = "/auth";
-    }
-    */
+    updateUserInfo();
   }, []);
 
   const handleErrors = (response) => {
@@ -92,14 +63,6 @@ const Account = (props) => {
       throw Error(response.status);
     }
     return response;
-  };
-
-  const changeOpennode = () => {
-    setModalStatus("opennode");
-  };
-
-  const changePaypal = () => {
-    setModalStatus("paypal");
   };
 
   const requestChange = () => {
@@ -122,10 +85,10 @@ const Account = (props) => {
       .then((data) => {
         console.log("fetch return got back data:", data);
 
-        setModalStatus("password");
+        setModalStatus("reset");
       })
       .catch((error) => {
-        console.log("passwordReset() error.message: ", error.message);
+        console.log("reset() error.message: ", error.message);
         //setDisplay("connection")
       });
   };
@@ -177,7 +140,7 @@ const Account = (props) => {
             <button
               className={classes.PasswordButton}
               onClick={() => {
-                changePaypal();
+                setModalStatus("paypal");
               }}
             >
               {" "}
@@ -204,7 +167,7 @@ const Account = (props) => {
           <button
             className={classes.PasswordButton}
             onClick={() => {
-              changeOpennode();
+              setModalStatus("opennode");
             }}
           >
             {" "}
@@ -219,7 +182,7 @@ const Account = (props) => {
           <button
             className={classes.PasswordButton}
             onClick={() => {
-              changeOpennode();
+              setModalStatus("opennode");
             }}
           >
             {" "}
@@ -234,11 +197,22 @@ const Account = (props) => {
     <div>
       <div className={classes.DisplayPanelTitle}>Account Settings</div>
       <div className={classes.DisplayPanel} style={{ paddingTop: "20px" }}>
-        <div style={{ fontWeight: "600" }}>Personal Information</div>
+        <div style={{ fontWeight: "600" }}>
+          Personal Information{" "}
+          <button
+            className={classes.PasswordButton}
+            onClick={() => {
+              setModalStatus("personal");
+            }}
+          >
+            EDIT
+          </button>
+        </div>
         <div>First Name: {userInfo.firstname}</div>
         <div>Last Name: {userInfo.lastname}</div>
         <div>User Name: {userInfo.username}</div>
         <div>E-mail: {userInfo.email}</div>
+
         <br></br>
         <div style={{ fontWeight: "600" }}>Organization Information</div>
         <div>Name: {userInfo.accountName}</div>
@@ -265,8 +239,14 @@ const Account = (props) => {
         <div>{cryptoDetails()}</div>
         <div></div>
       </div>
+      <PersonalModal
+        show={modalStatus === "personal"}
+        closeModal={() => {
+          setModalStatus("none");
+        }}
+      />
       <ResetModal
-        show={modalStatus === "password"}
+        show={modalStatus === "reset"}
         start={"confirmation"}
         closeModal={() => {
           setModalStatus("none");
