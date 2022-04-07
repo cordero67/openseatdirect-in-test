@@ -33,7 +33,7 @@ const FreeDisplay = (props) => {
             props.displayChange("gateway");
           }}
         >
-          UPGRADE TO A PRO PLAN
+          UPGRADE TO PRO PLAN
         </button>
       </div>
       <div style={{ paddingTop: "20px" }}>

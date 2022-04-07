@@ -239,7 +239,7 @@ const OpennodeDisplay = (props) => {
               here
             </a>
           </div>
-          <label style={{ width: "340px", fontSize: "15px" }}>
+          <label style={{ width: "200px", fontSize: "15px" }}>
             <br></br>
             Opennode API key
             <span style={{ color: "red" }}>* </span>
@@ -255,7 +255,7 @@ const OpennodeDisplay = (props) => {
             value={subValues.opennode_invoice_API_KEY}
           />
         </div>
-        <div style={{ paddingBottom: "20px", width: "340px" }}>
+        <div style={{ paddingBottom: "20px", width: "200px" }}>
           <div style={{ fontSize: "15px" }}>
             Settlement Currency: (see auto_settle field{" "}
             <a
@@ -277,7 +277,7 @@ const OpennodeDisplay = (props) => {
             }}
           />
         </div>
-        <div style={{ width: "340px" }}>
+        <div style={{ width: "200px" }}>
           <div style={{ fontSize: "15px" }}>
             Bitcoin Blockchain: (try dev setup{" "}
             <a

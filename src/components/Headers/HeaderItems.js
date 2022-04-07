@@ -31,9 +31,14 @@ const NavigationItems = (props) => {
 
   return (
     <ul className={classes.HeaderItems}>
-      <li>
+      <li style={{ fontSize: "18px" }}>
         <NavLink to="/" style={isActive(props.currentPage, "/")}>
           EVENTS
+        </NavLink>
+      </li>
+      <li style={{ fontSize: "18px" }}>
+        <NavLink to="/" style={isActive(props.currentPage, "/")}>
+          Events
         </NavLink>
       </li>
 

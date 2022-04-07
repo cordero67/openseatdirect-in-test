@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
-import { API, PAYPAL_USE_SANDBOX } from "../../config";
+import { API } from "../../config";
 
 import classes from "./Components.module.css";
 
@@ -78,14 +78,9 @@ const PersonalDisplay = (props) => {
       props.submit();
       props.spinnerChange(false);
     } else {
-      let errmsg = "unable to validate ClientId and secret at this time";
-      if (data.message) {
-        console.log("data.message ", data.message);
-        errmsg = data.message;
-      }
-      console.log("errmsg: ", errmsg);
+      console.log("errmsg: ", data.message);
       setSubmissionStatus({
-        message: errmsg,
+        message: data.message,
         error: true,
       });
       props.spinnerChange(false);
@@ -107,10 +102,10 @@ const PersonalDisplay = (props) => {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
-        useSandbox: PAYPAL_USE_SANDBOX,
-        paymentGatewayType: "PayPalExpress",
-        paypalExpress_client_id: subValues.paypalExpress_client_id,
-        paypalExpress_client_secret: subValues.paypalExpress_client_secret,
+        //useSandbox: PAYPAL_USE_SANDBOX,
+        //paymentGatewayType: "PayPalExpress",
+        //paypalExpress_client_id: subValues.paypalExpress_client_id,
+        //paypalExpress_client_secret: subValues.paypalExpress_client_secret,
       }),
     };
     console.log("fetching with: ", url, fetcharg);
@@ -245,9 +240,7 @@ const PersonalDisplay = (props) => {
             value={subValues.userName}
           />
         </div>
-        <div
-          style={{ textAlign: "center", fontSize: "18px", paddingTop: "20px" }}
-        >
+        <div style={{ textAlign: "center", paddingTop: "20px" }}>
           <button
             className={buttonClass}
             style={{ fontSize: "18px" }}
@@ -258,7 +251,49 @@ const PersonalDisplay = (props) => {
               }
             }}
           >
-            Submit Personal Information
+            Submit Your Information
+          </button>
+        </div>
+        <div style={{ textAlign: "center", paddingTop: "20px" }}>
+          <button
+            className={buttonClass}
+            style={{ fontSize: "16px" }}
+            disabled={disabled}
+            onClick={() => {
+              if (!disabled) {
+                submitPersonal();
+              }
+            }}
+          >
+            SUBMIT YOUR INFORMATION
+          </button>
+        </div>
+        <div style={{ textAlign: "right", paddingTop: "20px" }}>
+          <button
+            className={buttonClass}
+            style={{ fontSize: "18px" }}
+            disabled={disabled}
+            onClick={() => {
+              if (!disabled) {
+                submitPersonal();
+              }
+            }}
+          >
+            SUBMIT YOUR INFORMATION
+          </button>
+        </div>
+        <div style={{ textAlign: "center", paddingTop: "20px" }}>
+          <button
+            className={buttonClass}
+            style={{ fontSize: "20px" }}
+            disabled={disabled}
+            onClick={() => {
+              if (!disabled) {
+                submitPersonal();
+              }
+            }}
+          >
+            Submit Your Information
           </button>
         </div>
         {displayButtons()}
@@ -289,7 +324,7 @@ const PersonalDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.HeaderModal}>
-          <div>Edit Personal Information</div>
+          <div>Edit Your Information</div>
           <div style={{ textAlign: "right", top: "10%" }}>
             <ion-icon
               style={{
@@ -313,7 +348,7 @@ const PersonalDisplay = (props) => {
         </div>
       );
     } else {
-      return <div className={classes.Header}>Enter Paypal Details</div>;
+      return <div className={classes.Header}>Edit Your Information</div>;
     }
   };
 

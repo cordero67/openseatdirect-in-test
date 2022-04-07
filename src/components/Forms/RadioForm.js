@@ -11,7 +11,12 @@ const RadioForm = (props) => {
           return (
             <Form.Field
               key={index}
-              style={{ height: "30px", lineHeight: "30px", margin: "0px" }}
+              style={{
+                height: "30px",
+                lineHeight: "30px",
+                width: "100%",
+                margin: "0px",
+              }}
             >
               <Radio
                 style={{ fontSize: "15px" }}
@@ -33,8 +38,11 @@ const RadioForm = (props) => {
       style={{
         border: "1px solid #8DADD4",
         backgroundColor: "#EFF3FA",
+        maxWidth: "90%",
+        margin: "0%",
         padding: "10px 10px 10px 10px",
         fontSize: "16px",
+        boxSizing: "border-box",
       }}
     >
       {formField()}

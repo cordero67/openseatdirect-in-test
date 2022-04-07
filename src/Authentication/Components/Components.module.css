@@ -19,6 +19,7 @@
   font-weight: 600;
   padding-top: 20px;
   padding-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .HeaderModal {
@@ -30,6 +31,7 @@
   height: 57px;
   padding-top: 20px;
   padding-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .InputBox {
@@ -41,6 +43,7 @@
   height: 40px;
   padding-left: 10px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 .InputBox:focus {
   background-color: #e0e8f5;
@@ -50,6 +53,7 @@
   height: 40px;
   padding-left: 10px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .Alternates {
@@ -58,6 +62,7 @@
   column-gap: "0px";
   font-size: 14px;
   padding-top: 20px;
+  box-sizing: border-box;
 }
 
 .ButtonBlue {
@@ -69,16 +74,19 @@
   width: 100%;
   height: 40px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 .ButtonBlue:hover {
   background-color: #1d355d;
   border: 1px solid #000;
   outline: none;
+  box-sizing: border-box;
 }
 .ButtonBlue:focus {
   background-color: #14233e;
   border: 1px solid #000;
   outline: none;
+  box-sizing: border-box;
 }
 
 .ButtonBlueOpac {
@@ -90,6 +98,7 @@
   opacity: 0.5;
   border: 1px solid black;
   outline: none;
+  box-sizing: border-box;
 }
 
 .ButtonGrey {
@@ -101,16 +110,19 @@
   width: 100%;
   height: 40px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 .ButtonGrey:hover {
   background-color: #858585;
   border: 1px solid #000;
   outline: none;
+  box-sizing: border-box;
 }
 .ButtonGrey:focus {
   background-color: #707070;
   border: 1px solid #000;
   outline: none;
+  box-sizing: border-box;
 }
 
 .BlueText {
@@ -125,33 +137,41 @@
   background-color: #fff;
   cursor: pointer;
   display: inline-block;
+  box-sizing: border-box;
 }
 .BlueText:hover {
   color: #0000cc;
   border: none;
   outline: none;
+  box-sizing: border-box;
 }
 .BlueText:focus {
   color: #0000aa;
   border: none;
   outline: none;
+  box-sizing: border-box;
 }
 
 @media (min-width: 460px) {
   .BlankCanvas {
     padding-left: calc(50% - 170px);
     padding-right: calc(50% - 170px);
+    box-sizing: border-box;
   }
   .InputBox {
     width: 340px;
+    box-sizing: border-box;
   }
   .ButtonBlue {
     width: 340px;
+    box-sizing: border-box;
   }
   .ButtonBlueOpac {
     width: 340px;
+    box-sizing: border-box;
   }
   .GreyButton {
     width: 340px;
+    box-sizing: border-box;
   }
 }

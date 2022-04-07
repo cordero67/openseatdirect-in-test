@@ -199,13 +199,14 @@ const Account = (props) => {
       <div className={classes.DisplayPanel} style={{ paddingTop: "20px" }}>
         <div style={{ fontWeight: "600" }}>
           Personal Information{" "}
-          <button
-            className={classes.PasswordButton}
-            onClick={() => {
-              setModalStatus("personal");
-            }}
-          >
-            EDIT
+          <button className={classes.EventButton}>
+            <ion-icon
+              style={{ fontSize: "18px", color: "blue" }}
+              name="create-outline"
+              onClick={() => {
+                setModalStatus("personal");
+              }}
+            />
           </button>
         </div>
         <div>First Name: {userInfo.firstname}</div>
@@ -226,7 +227,7 @@ const Account = (props) => {
             requestChange();
           }}
         >
-          Change Password
+          Edit Password
         </button>
         <br></br>
         <br></br>
