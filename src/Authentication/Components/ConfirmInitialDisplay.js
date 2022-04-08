@@ -130,7 +130,6 @@ const ConfirmInitialDisplay = (props) => {
       body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
     fetch(url, fetchBody)
       .then(handleErrors)
       .then((response) => {
@@ -151,7 +150,6 @@ const ConfirmInitialDisplay = (props) => {
   const confirmationForm = () => {
     const regsuper = /\b\d{6}\b/;
     let disabled = !regsuper.test(props.confirmation);
-    console.log("disabled: ", disabled);
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
@@ -162,11 +160,12 @@ const ConfirmInitialDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>Enter confirmation code</label>
+          <label style={{ fontSize: "15px" }}>Confirmation code</label>
           <input
             className={classes.InputBox}
             type="text"
             name="confirmation"
+            maxLength="6"
             onChange={props.inputChange}
             value={props.confirmation}
             onFocus={() => {
@@ -175,14 +174,7 @@ const ConfirmInitialDisplay = (props) => {
           />{" "}
           {props.confirmation && !regsuper.test(props.confirmation) ? (
             <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  fontSize: "14px",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
+              <span className={classes.ErrorText}>
                 A valid 6 digit code is required
               </span>
             </div>
@@ -206,14 +198,10 @@ const ConfirmInitialDisplay = (props) => {
 
   const errorText = () => {
     if (error) {
-      return (
-        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
-          {message}
-        </div>
-      );
+      return <div className={classes.ErrorText}>{message}</div>;
     } else if (props.expired && props.authOrigin !== true) {
       return (
-        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
+        <div className={classes.TimerText}>
           Timer has expired, please resubmit your email:
         </div>
       );
@@ -229,14 +217,7 @@ const ConfirmInitialDisplay = (props) => {
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
             Enter 6-digit code sent to your email.
           </div>
-          <div
-            style={{
-              fontSize: "16px",
-              fontWeight: "600",
-              color: "red",
-              paddingBottom: "20px",
-            }}
-          >
+          <div className={classes.SpamText}>
             PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
         </Fragment>
@@ -247,14 +228,7 @@ const ConfirmInitialDisplay = (props) => {
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
             Enter new 6-digit code sent to your email.
           </div>
-          <div
-            style={{
-              fontSize: "16px",
-              fontWeight: "600",
-              color: "red",
-              paddingBottom: "20px",
-            }}
-          >
+          <div className={classes.SpamText}>
             PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
         </Fragment>
@@ -288,12 +262,7 @@ const ConfirmInitialDisplay = (props) => {
           <div>Enter confirmation code</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
-              style={{
-                fontWeight: "600",
-                fontSize: "24px",
-                color: "black",
-                //paddingBottom: "5px",
-              }}
+              className={classes.CloseIcon}
               name="close-outline"
               cursor="pointer"
               onClick={() => {

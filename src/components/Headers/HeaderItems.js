@@ -36,16 +36,6 @@ const NavigationItems = (props) => {
           EVENTS
         </NavLink>
       </li>
-      <li style={{ fontSize: "18px" }}>
-        <NavLink to="/" style={isActive(props.currentPage, "/")}>
-          EVENTS
-        </NavLink>
-      </li>
-      <li style={{ fontSize: "18px" }}>
-        <NavLink to="/" style={isActive(props.currentPage, "/")}>
-          Events
-        </NavLink>
-      </li>
 
       {!isAuthenticated() ? (
         <li>
@@ -59,7 +49,7 @@ const NavigationItems = (props) => {
             to="/myaccount"
             style={isActive(props.currentPage, "/myaccount")}
           >
-            MY ACCOUNT
+            DASHBOARD
           </NavLink>
         </li>
       )}

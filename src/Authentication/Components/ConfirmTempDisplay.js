@@ -160,6 +160,7 @@ const ConfirmTempDisplay = (props) => {
           <input
             className={classes.InputBox}
             type="text"
+            maxlength="6"
             name="temporary"
             onChange={props.inputChange}
             value={props.temporary}
@@ -169,14 +170,7 @@ const ConfirmTempDisplay = (props) => {
           />
           {props.temporary && !regsuper.test(props.temporary) ? (
             <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  fontSize: "14px",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
+              <span className={classes.ErrorText}>
                 A valid 6 digit code is required
               </span>
             </div>
@@ -201,21 +195,10 @@ const ConfirmTempDisplay = (props) => {
 
   const errorText = () => {
     if (error) {
-      return (
-        <div
-          style={{
-            color: "red",
-            fontSize: "14px",
-            lineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          {message}
-        </div>
-      );
+      return <div className={classes.ErrorText}>{message}</div>;
     } else if (props.expired && props.authOrigin !== true) {
       return (
-        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
+        <div className={classes.TimerText}>
           Timer has expired, please resubmit your email:
         </div>
       );
@@ -231,14 +214,7 @@ const ConfirmTempDisplay = (props) => {
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
             Enter the 6-digit code sent to your email.
           </div>
-          <div
-            style={{
-              fontSize: "16px",
-              fontWeight: "600",
-              color: "red",
-              paddingBottom: "20px",
-            }}
-          >
+          <div className={classes.SpamText}>
             PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
         </Fragment>
@@ -249,14 +225,7 @@ const ConfirmTempDisplay = (props) => {
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
             Confirmation code resent to your email.
           </div>
-          <div
-            style={{
-              fontSize: "16px",
-              fontWeight: "600",
-              color: "red",
-              paddingBottom: "20px",
-            }}
-          >
+          <div className={classes.SpamText}>
             PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
         </Fragment>
@@ -306,12 +275,7 @@ const ConfirmTempDisplay = (props) => {
           <div>Enter confirmation code</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
-              style={{
-                fontWeight: "600",
-                fontSize: "28px",
-                color: "black",
-                paddingBottom: "5px",
-              }}
+              className={classes.CloseIcon}
               name="close-outline"
               cursor="pointer"
               onClick={() => {

@@ -111,14 +111,7 @@ const ForgotDisplay = (props) => {
           />
           {props.email && !regsuper.test(props.email) ? (
             <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  fontSize: "14px",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
+              <span className={classes.ErrorText}>
                 A valid email address is required
               </span>
             </div>
@@ -143,21 +136,10 @@ const ForgotDisplay = (props) => {
 
   const errorText = () => {
     if (error) {
-      return (
-        <div
-          style={{
-            color: "red",
-            fontSize: "14px",
-            lineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          {message}
-        </div>
-      );
+      return <div className={classes.ErrorText}>{message}</div>;
     } else if (props.expired && props.authOrigin !== true) {
       return (
-        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
+        <div className={classes.TimerText}>
           Timer has expired, please resubmit your email:
         </div>
       );
@@ -212,7 +194,7 @@ const ForgotDisplay = (props) => {
           <div>Trouble logging in?</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
-              style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
+              className={classes.CloseIcon}
               name="close-outline"
               cursor="pointer"
               onClick={() => {

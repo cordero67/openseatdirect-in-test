@@ -8,13 +8,13 @@ import SignUpDisplay from "./Components/SignUpDisplay";
 import ConfirmInitialDisplay from "./Components/ConfirmInitialDisplay";
 import PasswordDisplay from "./Components/PasswordDisplay";
 import FreeDisplay from "./Components/FreeDisplay";
+import PaidDisplay from "./Components/PaidDisplay";
 import GatewayDisplay from "./Components/GatewayDisplay";
 import PaypalDisplay from "./Components/PaypalDisplay";
 import OpennodeDisplay from "./Components/OpennodeDisplay";
 import SubscriptionDisplay from "./Components/SubscriptionDisplay";
 import ErrorDisplay from "./Components/ErrorDisplay";
 
-import Spinner from "../components/UI/Spinner/SpinnerNew";
 import { getStatus } from "../Resources/Utils";
 
 import classes from "./Authentication.module.css";
@@ -57,17 +57,17 @@ const Authentication = () => {
     let tempUser = JSON.parse(localStorage.getItem("user"));
     localStorage.setItem("user", JSON.stringify(tempUser));
     setAuthValues({
-      name: "", //
-      email: tempUser.user.email, //
-      password: "", //
-      temporary: "", //
-      reissued: false, //
-      expired: false, //
-      confirmation: "", //
-      resent: false, //
-      resetToken: tempUser.user.passwordToken, //
+      name: "",
+      email: tempUser.user.email,
+      password: "",
+      temporary: "",
+      reissued: false,
+      expired: false,
+      confirmation: "",
+      resent: false,
+      resetToken: tempUser.user.passwordToken,
       sessionToken: tempUser.token,
-      accountNum: tempUser.user.accountId.accountNum, //
+      accountNum: tempUser.user.accountId.accountNum,
     });
   };
 
@@ -241,21 +241,6 @@ const Authentication = () => {
       setShowSpinner(false);
     }
   };
-
-  const paidCongratsForm = (
-    <Fragment>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            window.location.href = "/myaccount";
-          }}
-        >
-          GO TO MY ACCOUNT
-        </button>
-      </div>
-    </Fragment>
-  );
 
   const signInDisplay = () => {
     if (display === "signin") {
@@ -474,43 +459,9 @@ const Authentication = () => {
     }
   };
 
-  const paidCongratsDisplay = () => {
+  const paidDisplay = () => {
     if (display === "paidCongrats") {
-      if (showSpinner) {
-        return (
-          <div className={classes.BlankCanvas} style={{ height: "240px" }}>
-            <Spinner />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.BlankCanvas}>
-            <div className={classes.Header}>
-              <div>Success!</div>
-            </div>
-            <div>
-              <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-                <div>You now have a Pro Plan!</div>
-                <div style={{ lineHeight: "25px" }}>
-                  You can issue an unlimited amount of free tickets.
-                </div>
-                <div>
-                  More details on this plan{" "}
-                  <a
-                    href="https://www.openseatdirect.com/#pricing-plans"
-                    target="blank"
-                    rel="noreferrer"
-                  >
-                    here
-                  </a>
-                  .
-                </div>
-              </div>
-              {paidCongratsForm}
-            </div>
-          </div>
-        );
-      }
+      return <PaidDisplay></PaidDisplay>;
     } else {
       return null;
     }
@@ -705,7 +656,7 @@ const Authentication = () => {
         {paypalDisplay()}
         {opennodeDisplay()}
         {subscriptionDisplay()}
-        {paidCongratsDisplay()}
+        {paidDisplay()}
         {errorDisplay()}
       </div>
     </div>

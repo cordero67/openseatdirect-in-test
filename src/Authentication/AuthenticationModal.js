@@ -9,7 +9,7 @@ import PasswordDisplay from "./Components/PasswordDisplay";
 import ErrorDisplay from "./Components/ErrorDisplay";
 
 import Backdrop from "../components/UI/Backdrop/Backdrop";
-import classes from "./AuthenticationModal.module.css";
+import classes from "./Authentication.module.css";
 
 const Authentication = (props) => {
   const [values, setValues] = useState({
@@ -37,13 +37,6 @@ const Authentication = (props) => {
     resetToken,
     sessionToken,
   } = values;
-
-  const [submissionStatus, setSubmissionStatus] = useState({
-    message: "",
-    error: false,
-  });
-
-  const { message, error } = submissionStatus;
 
   const [redirect, setRedirect] = useState("");
 
@@ -76,10 +69,6 @@ const Authentication = (props) => {
 
   const closeModal = () => {
     resetValues();
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
     setModalDisplay(props.start);
     props.closeModal();
   };

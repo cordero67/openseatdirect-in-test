@@ -100,8 +100,8 @@ const VendorNavigation = (props) => {
   return (
     <Fragment>
       <div className={classes.DashboardTitle}>
-        <FontAwesomeIcon color="white" cursor="pointer" icon={faHome} /> My
-        Account
+        <FontAwesomeIcon color="white" cursor="pointer" icon={faHome} />{" "}
+        Dashboard
       </div>
 
       <ul className={classes.NavigationBar}>

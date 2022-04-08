@@ -64,6 +64,23 @@
   padding-top: 20px;
   box-sizing: border-box;
 }
+.ImageGrid {
+  display: grid;
+  grid-template-columns: calc((100% - 10px)/2) calc((100% - 10px)/2);
+  column-gap: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.ImageBox {
+    width: 100%;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 85px;
+    padding-right: 88px;
+}
 
 .ButtonBlue {
   background-color: #2f5596;
@@ -97,6 +114,30 @@
   font-size: 14px;
   opacity: 0.5;
   border: 1px solid black;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.ButtonGreen {
+  background-color: #00a300;
+  border: 1px solid black;
+  outline: none;
+  border-radius: 0px;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.ButtonGreen:hover {
+  background-color: #007a00;
+  border: 1px solid #000;
+  outline: none;
+  box-sizing: border-box;
+}
+.ButtonGreen:active {
+  background-color: #005200;
+  border: 1px solid #000;
   outline: none;
   box-sizing: border-box;
 }
@@ -151,6 +192,146 @@
   outline: none;
   box-sizing: border-box;
 }
+.Red {
+  border: 1px solid red;
+}
+.Blue {
+  border: 1px solid blue;
+}
+.RedText {
+  color: red;
+  font-size: 14px;
+  padding-top: 5px;
+  padding-bottom: 10px
+}
+
+.PromoGrid {
+  height: 48px;
+  display: grid;
+  grid-template-columns: auto 80px;
+}
+.EnterPromoCode {
+  color: blue;
+  width: 140px;
+  /*padding-bottom: 10px;*/
+}
+.EnterPromoCode:hover {
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.AppliedPromoCode {
+  background-color: #eff8e9;
+  padding-top: 11px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  margin-bottom: 10px;
+  height: 40px;
+  vertical-align: center;
+}
+.RemovePromoCode {
+  color: blue;
+  font-size: 14px;
+  width: 80px;
+}
+.RemovePromoCode:hover {
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.PromoCodeInputBoxRed {
+  padding-left: 10px;
+  color: red;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeInputBoxBlack {
+  padding-left: 10px;
+  color: black;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonBlue {
+  font-size: 14px;
+  text-align: center;
+  color: blue;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonBlue:active {
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonRed {
+  font-size: 14px;
+  text-align: center;
+  color: red;
+  background-color: white;
+  border: none;
+  outline: none;
+}
+.PromoCodeButtonRed:active {
+  border: none;
+  outline: none;
+}
+
+.ErrorText {
+  color: red;
+  font-size: 14px;
+  line-height: 25px;
+  padding-bottom: 20px;
+}
+
+.TimerText {
+  color: red;
+  font-size: 16px;
+  padding-bottom: 20px;
+}
+
+.SpamText {
+  color: red;
+  font-size: 16px;
+  font-weight: 600;
+  padding-bottom: 20px;
+
+}
+
+.LineGrid {
+  display: grid;
+  grid-template-columns:
+    calc((100% - 150px)/2) 110px calc((100% - 150px)/2);
+  column-gap: 20px;
+  text-align: center;
+  font-size: 14px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.CloseIcon {
+  font-weight: 600;
+  font-size: 28px;
+  color: black;            
+}
+
+.HorizontalLine {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+.GatewayImage {
+  background: white;
+  width: 100%;
+  border: 1px solid lightgrey;
+  cursor: pointer;
+  outline: none;
+}
 
 @media (min-width: 460px) {
   .BlankCanvas {
@@ -162,6 +343,16 @@
     width: 340px;
     box-sizing: border-box;
   }
+
+  .ImageGrid {
+      display: grid;
+      grid-template-columns: 165px 165px;
+      column-gap: 10px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      box-sizing: border-box;
+    }
+
   .ButtonBlue {
     width: 340px;
     box-sizing: border-box;
@@ -173,5 +364,13 @@
   .GreyButton {
     width: 340px;
     box-sizing: border-box;
+  }
+}
+
+
+
+@media (min-width: 1140px) {
+  .PromoGrid {
+    grid-template-columns: auto 77px;
   }
 }

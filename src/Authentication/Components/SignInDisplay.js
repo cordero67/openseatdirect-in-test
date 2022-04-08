@@ -115,14 +115,7 @@ const SignInDisplay = (props) => {
           />
           {props.email && !regEmail.test(props.email) ? (
             <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  fontSize: "14px",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
+              <span className={classes.RedText}>
                 A valid email address is required
               </span>
             </div>
@@ -145,14 +138,7 @@ const SignInDisplay = (props) => {
           />
           {props.password && !regPassword.test(props.password) ? (
             <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  fontSize: "14px",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
+              <span className={classes.RedText}>
                 Minimum 8 character password including 1 number
               </span>
             </div>
@@ -171,41 +157,12 @@ const SignInDisplay = (props) => {
             LOG IN TO YOUR ACCOUNT
           </button>
         </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "calc((100% - 150px)/2) 110px calc((100% - 150px)/2)",
-            columnGap: "20px",
-            textAlign: "center",
-            fontSize: "14px",
-            paddingTop: "20px",
-            paddingBottom: "20px",
-          }}
-        >
-          <hr
-            style={{
-              display: "block",
-              height: "1px",
-              border: "0",
-              borderTop: "1px solid #ccc",
-              margin: "1em 0",
-              padding: "0",
-            }}
-          />
+        <div className={classes.LineGrid}>
+          <hr className={classes.HorizontalLine} />
           <div style={{ paddingTop: "5px", fontWeight: "600" }}>
             OR continue with
           </div>
-          <hr
-            style={{
-              display: "block",
-              height: "1px",
-              border: "0",
-              borderTop: "1px solid #ccc",
-              margin: "1em 0",
-              padding: "0",
-            }}
-          />
+          <hr className={classes.HorizontalLine} />
         </div>
         <div style={{ textAlign: "center" }}>
           <GoogleAuthentication
@@ -247,21 +204,10 @@ const SignInDisplay = (props) => {
 
   const showError = () => {
     if (error) {
-      return (
-        <div
-          style={{
-            color: "red",
-            fontSize: "14px",
-            lineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          {message}
-        </div>
-      );
+      return <div className={classes.ErrorText}>{message}</div>;
     } else if (props.expired && props.authOrigin !== true) {
       return (
-        <div style={{ color: "red", fontSize: "16px", paddingBottom: "20px" }}>
+        <div className={classes.TimerText}>
           Timer has expired, please resubmit your email:
         </div>
       );
@@ -277,12 +223,7 @@ const SignInDisplay = (props) => {
           <div>Welcome Back!</div>
           <div style={{ textAlign: "center" }}>
             <ion-icon
-              style={{
-                fontWeight: "600",
-                fontSize: "28px",
-                color: "black",
-                paddingBottom: "5px",
-              }}
+              className={classes.CloseIcon}
               name="close-outline"
               cursor="pointer"
               onClick={() => {

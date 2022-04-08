@@ -28,7 +28,7 @@ import {
   SUBSCRIPTION_PROMO_CODE_13,
 } from "../../config";
 
-import classes from "../Authentication.module.css";
+import classes from "./Components.module.css";
 
 const SubscriptionDisplay = (props) => {
   const [submissionStatus, setSubmissionStatus] = useState({
@@ -447,18 +447,7 @@ const SubscriptionDisplay = (props) => {
 
   const showDetail = () => {
     if (error) {
-      return (
-        <div
-          style={{
-            color: "red",
-            fontSize: "14px",
-            lineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          {message}
-        </div>
-      );
+      return <div className={classes.ErrorText}>{message}</div>;
     } else return null;
   };
 
@@ -907,11 +896,11 @@ const SubscriptionDisplay = (props) => {
 
   // Displays the entire subscription payment panel
   const subscriptionForm = (
-    <div className={classes.DisplayPanel}>
+    <Fragment>
       {paymentInstructions()}
       {promoOption()}
       {paymentPanel()}
-    </div>
+    </Fragment>
   );
 
   if (props.spinner) {

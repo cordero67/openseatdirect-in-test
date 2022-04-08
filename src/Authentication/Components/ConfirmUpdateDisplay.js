@@ -161,11 +161,12 @@ const ConfirmUpdateDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <label style={{ fontSize: "15px" }}>Enter confirmation code</label>
+          <label style={{ fontSize: "15px" }}>Confirmation code</label>
           <input
             className={classes.InputBox}
             type="text"
             name="confirmation"
+            maxLength="6"
             onChange={props.inputChange}
             value={props.confirmation}
             onFocus={() => {

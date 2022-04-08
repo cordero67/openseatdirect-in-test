@@ -273,6 +273,16 @@
   box-sizing: border-box;
 }
 
+.UpdateIcon {
+  text-align: center;
+  font-weight: 600;
+  padding-left: 0px;
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  outline: none;
+}
+
 .EventButton {
   text-align: center;
   color: blue;

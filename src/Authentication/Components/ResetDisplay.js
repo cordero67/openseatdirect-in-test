@@ -107,14 +107,7 @@ const ResetDisplay = (props) => {
           />
           {props.password && !regPassword.test(props.password) ? (
             <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  fontSize: "14px",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
+              <span className={classes.ErrorText}>
                 Minimum 8 character password including 1 number
               </span>
             </div>
@@ -139,18 +132,7 @@ const ResetDisplay = (props) => {
 
   const errorText = () => {
     if (error) {
-      return (
-        <div
-          style={{
-            color: "red",
-            fontSize: "14px",
-            lineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          {message}
-        </div>
-      );
+      return <div className={classes.ErrorText}>{message}</div>;
     } else {
       return null;
     }
@@ -161,7 +143,7 @@ const ResetDisplay = (props) => {
       <div>Change your password</div>
       <div style={{ textAlign: "right" }}>
         <ion-icon
-          style={{ fontWeight: "600", fontSize: "28px", color: "black" }}
+          className={classes.CloseIcon}
           name="close-outline"
           cursor="pointer"
           onClick={() => {

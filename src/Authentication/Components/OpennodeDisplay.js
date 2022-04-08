@@ -255,7 +255,7 @@ const OpennodeDisplay = (props) => {
             value={subValues.opennode_invoice_API_KEY}
           />
         </div>
-        <div style={{ paddingBottom: "20px", width: "200px" }}>
+        <div style={{ paddingBottom: "20px" }}>
           <div style={{ fontSize: "15px" }}>
             Settlement Currency: (see auto_settle field{" "}
             <a
@@ -277,7 +277,7 @@ const OpennodeDisplay = (props) => {
             }}
           />
         </div>
-        <div style={{ width: "200px" }}>
+        <div>
           <div style={{ fontSize: "15px" }}>
             Bitcoin Blockchain: (try dev setup{" "}
             <a
@@ -319,18 +319,7 @@ const OpennodeDisplay = (props) => {
 
   const errorText = () => {
     if (error) {
-      return (
-        <div
-          style={{
-            color: "red",
-            fontSize: "14px",
-            lineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          {message}
-        </div>
-      );
+      return <div className={classes.ErrorText}>{message}</div>;
     } else {
       return null;
     }
@@ -343,12 +332,7 @@ const OpennodeDisplay = (props) => {
           <div>Enter Opennode Details</div>
           <div style={{ textAlign: "right" }}>
             <ion-icon
-              style={{
-                fontWeight: "600",
-                fontSize: "28px",
-                color: "black",
-                paddingBottom: "5px",
-              }}
+              className={classes.CloseIcon}
               name="close-outline"
               cursor="pointer"
               onClick={() => {

@@ -126,53 +126,6 @@ const PersonalDisplay = (props) => {
       });
   };
 
-  const buttonText = () => {
-    if (props.initial === "upgrade") {
-      return "UPGRADE LATER";
-    } else {
-      return "STAY WITH FREE FOREVER PLAN";
-    }
-  };
-
-  const displayButtons = () => {
-    if (props.authOrigin) {
-      return (
-        <Fragment>
-          <div style={{ textAlign: "center", paddingTop: "20px" }}>
-            <button
-              className={classes.ButtonGrey}
-              onClick={() => {
-                initializeSubValues();
-                props.displayChange("gateway");
-                setSubmissionStatus({
-                  message: "",
-                  error: false,
-                });
-              }}
-            >
-              BACK TO GATEWAY SELECTION
-            </button>
-          </div>
-          <div style={{ textAlign: "center", paddingTop: "20px" }}>
-            <button
-              className={classes.ButtonGrey}
-              onClick={() => {
-                initializeSubValues();
-                if (props.initial === "upgrade") {
-                  window.close();
-                } else {
-                  props.redirect();
-                }
-              }}
-            >
-              {buttonText()}
-            </button>
-          </div>
-        </Fragment>
-      );
-    } else return null;
-  };
-
   const personalForm = () => {
     let disabled = true;
     if (true) {
@@ -296,25 +249,13 @@ const PersonalDisplay = (props) => {
             Submit Your Information
           </button>
         </div>
-        {displayButtons()}
       </Fragment>
     );
   };
 
   const errorText = () => {
     if (error) {
-      return (
-        <div
-          style={{
-            color: "red",
-            fontSize: "14px",
-            lineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          {message}
-        </div>
-      );
+      return <div className={classes.ErrorText}>{message}</div>;
     } else {
       return null;
     }
@@ -327,12 +268,7 @@ const PersonalDisplay = (props) => {
           <div>Edit Your Information</div>
           <div style={{ textAlign: "right", top: "10%" }}>
             <ion-icon
-              style={{
-                fontWeight: "600",
-                fontSize: "28px",
-                color: "black",
-                paddingBottom: "5px",
-              }}
+              className={classes.CloseIcon}
               name="close-outline"
               cursor="pointer"
               onClick={() => {

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { API } from "../../config.js";
 
 import PersonalModal from "./Modals/PersonalModal";
+import OrganizationModal from "./Modals/OrganizationModal ";
 import ResetModal from "./Modals/ResetModal";
 import OpennodeModal from "./Modals/OpennodeModal";
 import PaypalModal from "./Modals/PaypalModal";
@@ -197,17 +198,32 @@ const Account = (props) => {
     <div>
       <div className={classes.DisplayPanelTitle}>Account Settings</div>
       <div className={classes.DisplayPanel} style={{ paddingTop: "20px" }}>
-        <div style={{ fontWeight: "600" }}>
-          Personal Information{" "}
-          <button className={classes.EventButton}>
-            <ion-icon
-              style={{ fontSize: "18px", color: "blue" }}
-              name="create-outline"
-              onClick={() => {
-                setModalStatus("personal");
-              }}
-            />
-          </button>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "145px 20px",
+          }}
+        >
+          <div
+            style={{
+              verticalAlign: "top",
+              height: "20px",
+              fontWeight: "600",
+            }}
+          >
+            Personal Information{" "}
+          </div>
+          <div>
+            <button className={classes.UpdateIcon}>
+              <ion-icon
+                style={{ color: "blue" }}
+                name="create-outline"
+                onClick={() => {
+                  setModalStatus("personal");
+                }}
+              />
+            </button>
+          </div>
         </div>
         <div>First Name: {userInfo.firstname}</div>
         <div>Last Name: {userInfo.lastname}</div>
@@ -215,7 +231,33 @@ const Account = (props) => {
         <div>E-mail: {userInfo.email}</div>
 
         <br></br>
-        <div style={{ fontWeight: "600" }}>Organization Information</div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "172px 20px",
+          }}
+        >
+          <div
+            style={{
+              verticalAlign: "top",
+              height: "20px",
+              fontWeight: "600",
+            }}
+          >
+            Organization Information{" "}
+          </div>
+          <div>
+            <button className={classes.UpdateIcon}>
+              <ion-icon
+                style={{ color: "blue" }}
+                name="create-outline"
+                onClick={() => {
+                  setModalStatus("organization");
+                }}
+              />
+            </button>
+          </div>
+        </div>
         <div>Name: {userInfo.accountName}</div>
         <div>E-mail: {userInfo.accountEmail}</div>
         <div>Phone Number:</div>
@@ -242,6 +284,12 @@ const Account = (props) => {
       </div>
       <PersonalModal
         show={modalStatus === "personal"}
+        closeModal={() => {
+          setModalStatus("none");
+        }}
+      />
+      <OrganizationModal
+        show={modalStatus === "organization"}
         closeModal={() => {
           setModalStatus("none");
         }}

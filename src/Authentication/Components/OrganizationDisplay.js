@@ -2,11 +2,11 @@ import React, { useState, useEffect, Fragment } from "react";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
-import { API, PAYPAL_USE_SANDBOX } from "../../config";
+import { API } from "../../config";
 
 import classes from "./Components.module.css";
 
-const PaypalDisplay = (props) => {
+const OrganizationDisplay = (props) => {
   console.log("props: ", props);
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
@@ -15,8 +15,10 @@ const PaypalDisplay = (props) => {
   const { message, error } = submissionStatus;
 
   const [subValues, setSubValues] = useState({
-    paypalExpress_client_id: "", // vendor's clientID not OSD's
-    paypalExpress_client_secret: "", // vendor's secret not OSD's
+    accountName: "",
+    accountEmail: "",
+    phoneNumber: "",
+    website: "",
   });
 
   const handleSubValueChange = (event) => {
@@ -34,17 +36,25 @@ const PaypalDisplay = (props) => {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       if ("user" in tempUser && "accountId" in tempUser.user) {
         let tempSubValues = {};
-        if (tempUser.user.accountId?.paypalExpress_client_id) {
-          tempSubValues.paypalExpress_client_id =
-            tempUser.user.accountId.paypalExpress_client_id;
+        if (tempUser.user.accountId.accountName) {
+          tempSubValues.accountName = tempUser.user.accountId.accountName;
         } else {
-          tempSubValues.paypalExpress_client_id = "";
+          tempSubValues.accountName = "";
         }
-        if (tempUser.user.accountId?.paypalExpress_client_secret) {
-          tempSubValues.paypalExpress_client_secret =
-            tempUser.user.accountId.paypalExpress_client_secret;
+        if (tempUser.user.accountId.accountEmail) {
+          tempSubValues.accountEmail = tempUser.user.accountId.accountEmail;
         } else {
-          tempSubValues.paypalExpress_client_id = "";
+          tempSubValues.accountEmail = "";
+        }
+        if (tempUser.user.accountId.phoneNumber) {
+          tempSubValues.phoneNumber = tempUser.user.accountId.phoneNumber;
+        } else {
+          tempSubValues.phoneNumber = "";
+        }
+        if (tempUser.user.accountId.website) {
+          tempSubValues.website = tempUser.user.accountId.website;
+        } else {
+          tempSubValues.website = "";
         }
         setSubValues(tempSubValues);
         console.log("tempSubValues: ", tempSubValues);
@@ -66,7 +76,7 @@ const PaypalDisplay = (props) => {
     return response;
   };
 
-  const handlePaypal = (data) => {
+  const handlePersonal = (data) => {
     if (data.status) {
       let tempData = JSON.parse(localStorage.getItem("user"));
       tempData.user.accountId = data.result;
@@ -74,21 +84,16 @@ const PaypalDisplay = (props) => {
       props.submit();
       props.spinnerChange(false);
     } else {
-      let errmsg = "unable to validate ClientId and secret at this time";
-      if (data.message) {
-        console.log("data.message ", data.message);
-        errmsg = data.message;
-      }
-      console.log("errmsg: ", errmsg);
+      console.log("errmsg: ", data.message);
       setSubmissionStatus({
-        message: errmsg,
+        message: data.message,
         error: true,
       });
       props.spinnerChange(false);
     }
   };
 
-  const submitPaypal = () => {
+  const submitPersonal = () => {
     props.spinnerChange(true);
     setSubmissionStatus({
       message: "",
@@ -103,10 +108,10 @@ const PaypalDisplay = (props) => {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
-        useSandbox: PAYPAL_USE_SANDBOX,
-        paymentGatewayType: "PayPalExpress",
-        paypalExpress_client_id: subValues.paypalExpress_client_id,
-        paypalExpress_client_secret: subValues.paypalExpress_client_secret,
+        //useSandbox: PAYPAL_USE_SANDBOX,
+        //paymentGatewayType: "PayPalExpress",
+        //paypalExpress_client_id: subValues.paypalExpress_client_id,
+        //paypalExpress_client_secret: subValues.paypalExpress_client_secret,
       }),
     };
     console.log("fetching with: ", url, fetcharg);
@@ -118,7 +123,7 @@ const PaypalDisplay = (props) => {
       })
       .then((data) => {
         console.log("fetch return got back data on PayPal:", data);
-        handlePaypal(data);
+        handlePersonal(data);
       })
       .catch((error) => {
         console.log("error.message: ", error.message);
@@ -127,59 +132,9 @@ const PaypalDisplay = (props) => {
       });
   };
 
-  const buttonText = () => {
-    if (props.initial === "upgrade") {
-      return "UPGRADE LATER";
-    } else {
-      return "STAY WITH FREE FOREVER PLAN";
-    }
-  };
-
-  const displayButtons = () => {
-    if (props.authOrigin) {
-      return (
-        <Fragment>
-          <div style={{ textAlign: "center", paddingTop: "20px" }}>
-            <button
-              className={classes.ButtonGrey}
-              onClick={() => {
-                initializeSubValues();
-                props.displayChange("gateway");
-                setSubmissionStatus({
-                  message: "",
-                  error: false,
-                });
-              }}
-            >
-              BACK TO GATEWAY SELECTION
-            </button>
-          </div>
-          <div style={{ textAlign: "center", paddingTop: "20px" }}>
-            <button
-              className={classes.ButtonGrey}
-              onClick={() => {
-                initializeSubValues();
-                if (props.initial === "upgrade") {
-                  window.close();
-                } else {
-                  props.redirect();
-                }
-              }}
-            >
-              {buttonText()}
-            </button>
-          </div>
-        </Fragment>
-      );
-    } else return null;
-  };
-
-  const paypalForm = () => {
+  const organizationForm = () => {
     let disabled = true;
-    if (
-      subValues.paypalExpress_client_id &&
-      subValues.paypalExpress_client_secret
-    ) {
+    if (true) {
       disabled = false;
     }
     let buttonClass;
@@ -190,43 +145,9 @@ const PaypalDisplay = (props) => {
     }
     return (
       <Fragment>
-        <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          Can't find the Client ID and Secret?
-          <div style={{ paddingLeft: "20px" }}>
-            <a
-              className={classes.BlueText}
-              href="https://developer.paypal.com/developer/applications/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              PayPal Dashboard
-            </a>
-          </div>
-          <div style={{ paddingLeft: "20px" }}>
-            <a
-              className={classes.BlueText}
-              href="https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Additional instructions
-            </a>
-          </div>
-          <div style={{ paddingLeft: "20px" }}>
-            <a
-              className={classes.BlueText}
-              href="https://www.youtube.com/watch?v=gXAsubSL-1I"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Instructional video
-            </a>
-          </div>
-        </div>
-
-        <div style={{ paddingBottom: "20px" }}>
-          <label style={{ fontSize: "15px" }}>
-            Paypal Client ID <span style={{ color: "red" }}>* </span>
+        <div style={{ paddingBottom: "20px", width: "340px" }}>
+          <label style={{ width: "340px", fontSize: "15px" }}>
+            Organization Name <span style={{ color: "red" }}>* </span>
           </label>
           <input
             onFocus={() => {
@@ -237,14 +158,50 @@ const PaypalDisplay = (props) => {
             }}
             className={classes.InputBox}
             type="text"
-            name="paypalExpress_client_id"
+            name="accountName"
             onChange={handleSubValueChange}
-            value={subValues.paypalExpress_client_id}
+            value={subValues.accountName}
+          />
+        </div>
+        <div style={{ paddingBottom: "20px", width: "340px" }}>
+          <label style={{ width: "340px", fontSize: "15px" }}>
+            Organization E-mail <span style={{ color: "red" }}>* </span>
+          </label>
+          <input
+            onFocus={() => {
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
+            }}
+            className={classes.InputBox}
+            type="text"
+            name="accountEmail"
+            onChange={handleSubValueChange}
+            value={subValues.accountEmail}
+          />
+        </div>
+        <div style={{ paddingBottom: "20px", width: "340px" }}>
+          <label style={{ width: "340px", fontSize: "15px" }}>
+            Phone Number <span style={{ color: "red" }}>* </span>
+          </label>
+          <input
+            onFocus={() => {
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
+            }}
+            className={classes.InputBox}
+            type="text"
+            name="phoneNumber"
+            onChange={handleSubValueChange}
+            value={subValues.phoneNumber}
           />
         </div>
         <div>
-          <label style={{ fontSize: "15px" }}>
-            Paypal Secret <span style={{ color: "red" }}>* </span>
+          <label style={{ width: "340px", fontSize: "15px" }}>
+            Website <span style={{ color: "red" }}>* </span>
           </label>
           <input
             onFocus={() => {
@@ -255,25 +212,39 @@ const PaypalDisplay = (props) => {
             }}
             className={classes.InputBox}
             type="text"
-            name="paypalExpress_client_secret"
+            name="website"
             onChange={handleSubValueChange}
-            value={subValues.paypalExpress_client_secret}
+            value={subValues.website}
           />
         </div>
         <div style={{ textAlign: "center", paddingTop: "20px" }}>
           <button
             className={buttonClass}
+            style={{ fontSize: "19px" }}
             disabled={disabled}
             onClick={() => {
               if (!disabled) {
-                submitPaypal();
+                submitPersonal();
               }
             }}
           >
-            SUBMIT PAYPAL DETAILS
+            Submit Your Information
           </button>
         </div>
-        {displayButtons()}
+        <div style={{ textAlign: "center", paddingTop: "20px" }}>
+          <button
+            className={buttonClass}
+            style={{ fontSize: "17px" }}
+            disabled={disabled}
+            onClick={() => {
+              if (!disabled) {
+                submitPersonal();
+              }
+            }}
+          >
+            SUBMIT YOUR INFORMATION
+          </button>
+        </div>
       </Fragment>
     );
   };
@@ -290,7 +261,7 @@ const PaypalDisplay = (props) => {
     if (props.authOrigin !== true) {
       return (
         <div className={classes.HeaderModal}>
-          <div>Enter Paypal Details</div>
+          <div>Edit Your Information</div>
           <div style={{ textAlign: "right", top: "10%" }}>
             <ion-icon
               className={classes.CloseIcon}
@@ -309,7 +280,7 @@ const PaypalDisplay = (props) => {
         </div>
       );
     } else {
-      return <div className={classes.Header}>Enter Paypal Details</div>;
+      return <div className={classes.Header}>Edit Your Information</div>;
     }
   };
 
@@ -332,11 +303,11 @@ const PaypalDisplay = (props) => {
         {header()}
         <div>
           {errorText()}
-          {paypalForm()}
+          {organizationForm()}
         </div>
       </div>
     );
   }
 };
 
-export default PaypalDisplay;
+export default OrganizationDisplay;

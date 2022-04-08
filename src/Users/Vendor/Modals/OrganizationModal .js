@@ -1,11 +1,11 @@
 import React, { useState, useEffect, Fragment } from "react";
-import PersonalDisplay from "../../../Authentication/Components/PersonalDisplay";
+import OrganizationDisplay from "../../../Authentication/Components/OrganizationDisplay";
 import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./AccountModal.module.css";
 
-const Personal = (props) => {
+const Organization = (props) => {
   const [showSpinner, setShowSpinner] = useState(false);
 
   const [subValues, setSubValues] = useState({
@@ -35,10 +35,10 @@ const Personal = (props) => {
     initializeSubValues();
   }, []);
 
-  const personalDisplay = () => {
+  const organizationDisplay = () => {
     if (display === "paypal") {
       return (
-        <PersonalDisplay
+        <OrganizationDisplay
           authOrigin={false}
           close={() => {
             props.closeModal();
@@ -57,7 +57,7 @@ const Personal = (props) => {
             props.closeModal();
           }}
           //redirect={() => {closeModal()}} NOT IN MODAL
-        ></PersonalDisplay>
+        ></OrganizationDisplay>
       );
     } else {
       return null;
@@ -95,10 +95,10 @@ const Personal = (props) => {
         }}
         className={classes.Modal}
       >
-        {personalDisplay()}
+        {organizationDisplay()}
         {errorDisplay()}
       </div>
     </Fragment>
   );
 };
-export default Personal;
+export default Organization;

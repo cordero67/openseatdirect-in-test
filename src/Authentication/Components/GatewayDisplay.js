@@ -67,28 +67,12 @@ const GatewayDisplay = (props) => {
 
   const gatewayForm = (
     <Fragment>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "165px 165px",
-          columnGap: "10px",
-          paddingTop: "10px",
-          paddingBottom: "10px",
-        }}
-      >
-        <button
-          style={{
-            background: "white",
-            width: "160",
-            border: "1px solid lightgrey",
-            cursor: "pointer",
-            outline: "none",
-          }}
-        >
+      <div className={classes.ImageGrid}>
+        <button className={classes.GatewayImage}>
           <img
             src={stripeImg}
             alt="STRIPE"
-            width="140px"
+            width="100%"
             height="auto"
             cursor="pointer"
             onClick={() => {
@@ -97,19 +81,12 @@ const GatewayDisplay = (props) => {
             }}
           ></img>
         </button>
-        <button
-          style={{
-            background: "white",
-            width: "160",
-            border: "1px solid lightgrey",
-            cursor: "pointer",
-            outline: "none",
-          }}
-        >
+
+        <button className={classes.GatewayImage}>
           <img
             src={payPalImg}
             alt="PAYPAL"
-            width="140px"
+            width="100%"
             height="auto"
             cursor="pointer"
             onClick={() => {
@@ -120,28 +97,12 @@ const GatewayDisplay = (props) => {
         </button>
       </div>
 
-      <div
-        style={{
-          width: "165px",
-          textAlign: "center",
-          paddingTop: "10px",
-          paddingBottom: "10px",
-          paddingLeft: "89px",
-        }}
-      >
-        <button
-          style={{
-            background: "white",
-            width: "160",
-            border: "1px solid lightgrey",
-            cursor: "pointer",
-            outline: "none",
-          }}
-        >
+      <div className={classes.ImageBox}>
+        <button className={classes.GatewayImage}>
           <img
             src={opennodeImg}
             alt="OPENNODE"
-            width="150px"
+            width="100%"
             height="auto"
             cursor="pointer"
             onClick={() => {
@@ -184,18 +145,7 @@ const GatewayDisplay = (props) => {
 
   const errorText = () => {
     if (error) {
-      return (
-        <div
-          style={{
-            color: "red",
-            fontSize: "14px",
-            lineHeight: "25px",
-            paddingBottom: "20px",
-          }}
-        >
-          {message}
-        </div>
-      );
+      return <div className={classes.ErrorText}>{message}</div>;
     } else {
       return null;
     }

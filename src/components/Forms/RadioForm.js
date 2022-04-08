@@ -38,7 +38,6 @@ const RadioForm = (props) => {
       style={{
         border: "1px solid #8DADD4",
         backgroundColor: "#EFF3FA",
-        maxWidth: "90%",
         margin: "0%",
         padding: "10px 10px 10px 10px",
         fontSize: "16px",
