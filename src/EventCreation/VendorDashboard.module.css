@@ -271,7 +271,7 @@ column-gap: 5px;*/
   color: #fff;
   border: 1px solid black;
   outline: none;
-  font-size: 12px;
+  font-size: 16px;
 }
 .ButtonGreen:hover {
   background-color: #007a00;
@@ -293,7 +293,7 @@ column-gap: 5px;*/
   color: #fff;
   border: 1px solid black;
   outline: none;
-  font-size: 12px;
+  font-size: 16px;
 }
 .ButtonRed:hover {
   background-color: #a30000;
@@ -315,7 +315,7 @@ column-gap: 5px;*/
   color: white;
   border: 1px solid black;
   outline: none;
-  font-size: 12px;
+  font-size: 16px;
 }
 .ButtonGrey:hover {
   background-color: #858585;

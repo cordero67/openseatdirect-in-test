@@ -59,9 +59,9 @@ const GatewayDisplay = (props) => {
 
   const buttonText = () => {
     if (props.initial === "upgrade") {
-      return "UPGRADE LATER";
+      return "Upgrade Later";
     } else {
-      return "STAY WITH FREE FOREVER PLAN";
+      return "Stay with Free Forever Plan";
     }
   };
 

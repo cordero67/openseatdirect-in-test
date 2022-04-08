@@ -600,6 +600,7 @@ const TicketSelection = () => {
       return (
         <button
           style={{
+            fontSize: "16px",
             height: "40px",
             width: "180px",
             backgroundColor: "#cc0000",
@@ -612,7 +613,7 @@ const TicketSelection = () => {
             console.log("Gateway Required");
           }}
         >
-          NO GATEWAY
+          No Gateway
         </button>
       );
     } else if (hasRegistration) {
@@ -638,6 +639,7 @@ const TicketSelection = () => {
           return (
             <button
               className={buttonClass}
+              style={{ fontSize: "18px" }}
               disabled={!selectedTickets}
               onClick={() => {
                 console.log("Free User Checkout");
@@ -645,7 +647,7 @@ const TicketSelection = () => {
                 freeTicketHandler();
               }}
             >
-              SUBMIT ORDER
+              Submit Order
             </button>
           );
         } else {
@@ -656,6 +658,7 @@ const TicketSelection = () => {
               return (
                 <button
                   className={buttonClass}
+                  style={{ fontSize: "18px" }}
                   disabled={!selectedTickets}
                   onClick={() => {
                     console.log("Paid and Primary Order");
@@ -676,13 +679,14 @@ const TicketSelection = () => {
                     }
                   }}
                 >
-                  SELECT PAYMENT
+                  Continue
                 </button>
               );
             } else {
               return (
                 <button
                   className={buttonClass}
+                  style={{ fontSize: "18px" }}
                   disabled={!selectedTickets}
                   onClick={() => {
                     console.log("Paid and Crypto Order");
@@ -690,7 +694,7 @@ const TicketSelection = () => {
                     window.location.href = "/checkout-opennode";
                   }}
                 >
-                  PAY WITH BITCOIN
+                  Pay with bitcoin
                 </button>
               );
             }
@@ -701,13 +705,14 @@ const TicketSelection = () => {
               return (
                 <button
                   className={buttonClass}
+                  style={{ fontSize: "18px" }}
                   disabled={!selectedTickets}
                   onClick={() => {
                     console.log("Free User Checkout");
                     freeTicketHandler();
                   }}
                 >
-                  SUBMIT ORDER
+                  Submit Order
                 </button>
               );
             } else {
@@ -715,12 +720,13 @@ const TicketSelection = () => {
               return (
                 <button
                   className={classes.ButtonGreenOpac}
+                  style={{ fontSize: "18px" }}
                   disabled={!selectedTickets}
                   onClick={() => {
                     console.log("Free User Checkout");
                   }}
                 >
-                  MAKE A SELECTION
+                  Make a Selection
                 </button>
               );
             }
@@ -733,6 +739,7 @@ const TicketSelection = () => {
           return (
             <button
               className={buttonClass}
+              style={{ fontSize: "18px" }}
               disabled={!selectedTickets}
               onClick={() => {
                 console.log("Free and Guest Checkout");
@@ -740,7 +747,7 @@ const TicketSelection = () => {
                 window.location.href = "/infofree";
               }}
             >
-              CHECKOUT
+              Checkout
             </button>
           );
         } else if (paidAmount && (hasPrimary || hasCrypto)) {
@@ -748,6 +755,7 @@ const TicketSelection = () => {
           return (
             <button
               className={buttonClass}
+              style={{ fontSize: "18px" }}
               disabled={!selectedTickets}
               onClick={() => {
                 console.log("Paid and Guest Checkout");
@@ -755,7 +763,7 @@ const TicketSelection = () => {
                 window.location.href = "/infopaid";
               }}
             >
-              CHECKOUT
+              Checkout
             </button>
           );
         }
@@ -849,7 +857,7 @@ const TicketSelection = () => {
                 window.location.href = `/`;
               }}
             >
-              CONTINUE
+              Continue
             </button>
           </div>
         </div>
@@ -1065,7 +1073,7 @@ const TicketSelection = () => {
           setDisplay("main");
         }}
       >
-        I DISAGREE
+        I Disagree
       </button>
     </div>
   );
@@ -1104,7 +1112,7 @@ const TicketSelection = () => {
               }
             }}
           >
-            I AGREE
+            I Agree
           </button>
         </div>
       );

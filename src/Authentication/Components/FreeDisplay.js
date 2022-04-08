@@ -33,7 +33,7 @@ const FreeDisplay = (props) => {
             props.displayChange("gateway");
           }}
         >
-          UPGRADE TO PRO PLAN
+          Upgrade to Pro Plan
         </button>
       </div>
       <div style={{ paddingTop: "20px" }}>
@@ -43,7 +43,7 @@ const FreeDisplay = (props) => {
             window.location.href = "/myaccount";
           }}
         >
-          GO TO MY ACCOUNT
+          Go to My Dashboard
         </button>
       </div>
     </Fragment>

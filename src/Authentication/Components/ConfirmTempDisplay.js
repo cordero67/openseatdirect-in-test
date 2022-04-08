@@ -186,7 +186,7 @@ const ConfirmTempDisplay = (props) => {
               }
             }}
           >
-            SUBMIT CONFIRMATION CODE
+            Submit Confirmation Code
           </button>
         </div>
       </Fragment>

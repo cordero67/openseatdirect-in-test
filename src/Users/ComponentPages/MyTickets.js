@@ -79,13 +79,13 @@ const MyTickets = () => {
 
     // removes older orders without proper fields
     let tempOrders = [];
-    orders.map((order) => {
+    orders.forEach((order) => {
       if (order.eventId !== null && "totalPaidAmount" in order) {
         tempOrders.push(order);
       }
     });
 
-    tempOrders.map((order) => {
+    tempOrders.forEach((order) => {
       console.log("ORDER: ", order);
       let adjusted = order.eventId.startDateTime.replace("T", " ");
 
@@ -108,9 +108,9 @@ const MyTickets = () => {
       }
     });
 
-    tempOrders.map((order) => {
+    tempOrders.forEach((order) => {
       let position = tempEvents.indexOf(order.eventNum);
-      order.qrTickets.map((ticket) => {
+      order.qrTickets.forEach((ticket) => {
         tempArray[position].tickets.push(ticket);
       });
     });
@@ -118,7 +118,7 @@ const MyTickets = () => {
     console.log("tempArray: ", tempArray);
     console.log("tempEvents: ", tempEvents);
     setEvents(tempArray);
-    tempArray.map((event) => {
+    tempArray.forEach((event) => {
       let eventTime = Date.parse(event.endDateTime);
       if (eventTime > Date.now()) {
         tempFutureArray.push(event);
@@ -151,7 +151,7 @@ const MyTickets = () => {
 
       // removes older orders without proper fields
       let tempOrders = [];
-      orders.map((order) => {
+      orders.forEach((order) => {
         if (order.eventId !== null && "totalPaidAmount" in order) {
           tempOrders.push(order);
         }
@@ -175,7 +175,6 @@ const MyTickets = () => {
                       paddingTop: "10px",
                       paddingBottom: "10px",
                     }}
-                    key={index}
                   >
                     <div>{orderDate}</div>
                     <div></div>
@@ -250,7 +249,6 @@ const MyTickets = () => {
                       paddingTop: "10px",
                       paddingBottom: "10px",
                     }}
-                    key={index}
                   >
                     <div style={{ textAlign: "center" }}>
                       <div
@@ -357,7 +355,6 @@ const MyTickets = () => {
                       paddingTop: "10px",
                       paddingBottom: "10px",
                     }}
-                    key={index}
                   >
                     <div style={{ textAlign: "center" }}>
                       <div

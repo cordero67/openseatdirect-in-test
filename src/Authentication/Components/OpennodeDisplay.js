@@ -168,9 +168,9 @@ const OpennodeDisplay = (props) => {
 
   const buttonText = () => {
     if (props.initial === "upgrade") {
-      return "UPGRADE LATER";
+      return "Upgrade Later";
     } else {
-      return "STAY WITH FREE FOREVER PLAN";
+      return "Stay with Free Forever Plan";
     }
   };
 
@@ -190,7 +190,7 @@ const OpennodeDisplay = (props) => {
                 });
               }}
             >
-              BACK TO GATEWAY SELECTION
+              Back to Gateway Selection
             </button>
           </div>
           <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -309,7 +309,7 @@ const OpennodeDisplay = (props) => {
               }
             }}
           >
-            SUBMIT OPENNODE DETAILS
+            Submit Opennode Details
           </button>
         </div>
         {displayButtons()}

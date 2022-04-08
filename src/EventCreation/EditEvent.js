@@ -1279,11 +1279,11 @@ const EventEdit = (props) => {
     let liveStatus;
 
     if (eventDescription.isDraft) {
-      draftStatus = "UPDATE DRAFT";
-      liveStatus = "GO LIVE NOW";
+      draftStatus = "Update Draft";
+      liveStatus = "Go Live Now";
     } else {
-      draftStatus = "SAVE AS DRAFT";
-      liveStatus = "UPDATE LIVE";
+      draftStatus = "Save Draft";
+      liveStatus = "Update Live";
     }
 
     if (windowWidth >= 420) {
@@ -1322,7 +1322,7 @@ const EventEdit = (props) => {
                 window.location.href = `/myaccount`;
               }}
             >
-              CANCEL EDIT
+              Cancel Edit
             </button>
           </div>
         </Fragment>
@@ -1363,7 +1363,7 @@ const EventEdit = (props) => {
                 window.location.href = `/myaccount`;
               }}
             >
-              CANCEL EDIT
+              Cancel Edit
             </button>
           </div>
         </Fragment>

@@ -196,49 +196,6 @@ const PersonalDisplay = (props) => {
         <div style={{ textAlign: "center", paddingTop: "20px" }}>
           <button
             className={buttonClass}
-            style={{ fontSize: "18px" }}
-            disabled={disabled}
-            onClick={() => {
-              if (!disabled) {
-                submitPersonal();
-              }
-            }}
-          >
-            Submit Your Information
-          </button>
-        </div>
-        <div style={{ textAlign: "center", paddingTop: "20px" }}>
-          <button
-            className={buttonClass}
-            style={{ fontSize: "16px" }}
-            disabled={disabled}
-            onClick={() => {
-              if (!disabled) {
-                submitPersonal();
-              }
-            }}
-          >
-            SUBMIT YOUR INFORMATION
-          </button>
-        </div>
-        <div style={{ textAlign: "right", paddingTop: "20px" }}>
-          <button
-            className={buttonClass}
-            style={{ fontSize: "18px" }}
-            disabled={disabled}
-            onClick={() => {
-              if (!disabled) {
-                submitPersonal();
-              }
-            }}
-          >
-            SUBMIT YOUR INFORMATION
-          </button>
-        </div>
-        <div style={{ textAlign: "center", paddingTop: "20px" }}>
-          <button
-            className={buttonClass}
-            style={{ fontSize: "20px" }}
             disabled={disabled}
             onClick={() => {
               if (!disabled) {

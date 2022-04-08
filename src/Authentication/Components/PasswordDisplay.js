@@ -136,7 +136,7 @@ const PasswordDisplay = (props) => {
               }
             }}
           >
-            REGISTER YOUR PASSWORD
+            Register Your Passowrd
           </button>
         </div>
       </Fragment>

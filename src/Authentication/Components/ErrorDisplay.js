@@ -10,37 +10,31 @@ const ErrorDisplay = (props) => {
       props.redirect === "forgot" ||
       props.redirect === "temporary"
     ) {
-      console.log("returning log in later");
-      return "LOG IN LATER";
+      return "Log in Later";
     } else if (
       props.redirect === "signup" ||
       props.redirect === "confirmation" ||
       props.redirect === "password"
     ) {
-      console.log("returning sign up later");
-      return "SIGNUP LATER";
+      return "Signup Later";
     } else if (
       props.redirect === "gateway" ||
       props.redirect === "opennode" ||
       props.redirect === "paypal" ||
       props.redirect === "subscriptions"
     ) {
-      console.log("OTHER");
       if (props.initial === "upgrade") {
-        console.log("upgrade later");
-        return "UPGRADE LATER";
+        return "Upgrade Later";
       } else {
-        console.log("free forever");
-        return "STAY WITH FREE FOREVER PLAN";
+        return "Stay with Free Forever Plan";
       }
     } else if (
       props.redirect === "confirmUpdate" ||
       props.redirect === "reset"
     ) {
-      return "UPDATE LATER";
+      return "Update Later";
     } else {
-      console.log("OTHER");
-      return "TRY AGAIN LATER";
+      return "Try Again Later";
     }
   };
 
@@ -55,7 +49,7 @@ const ErrorDisplay = (props) => {
               props.now();
             }}
           >
-            TRY AGAIN NOW
+            Try Again Now
           </button>
         </div>
         <div style={{ paddingTop: "20px" }}>

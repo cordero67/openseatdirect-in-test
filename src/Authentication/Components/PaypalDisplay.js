@@ -129,9 +129,9 @@ const PaypalDisplay = (props) => {
 
   const buttonText = () => {
     if (props.initial === "upgrade") {
-      return "UPGRADE LATER";
+      return "Upgrade Later";
     } else {
-      return "STAY WITH FREE FOREVER PLAN";
+      return "Stay with Free Forever Plan";
     }
   };
 
@@ -151,7 +151,7 @@ const PaypalDisplay = (props) => {
                 });
               }}
             >
-              BACK TO GATEWAY SELECTION
+              Back to Gateway Selection
             </button>
           </div>
           <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -270,7 +270,7 @@ const PaypalDisplay = (props) => {
               }
             }}
           >
-            SUBMIT PAYPAL DETAILS
+            Submit Paypal Details
           </button>
         </div>
         {displayButtons()}

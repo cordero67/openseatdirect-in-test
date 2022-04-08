@@ -220,7 +220,6 @@ const OrganizationDisplay = (props) => {
         <div style={{ textAlign: "center", paddingTop: "20px" }}>
           <button
             className={buttonClass}
-            style={{ fontSize: "19px" }}
             disabled={disabled}
             onClick={() => {
               if (!disabled) {
@@ -229,20 +228,6 @@ const OrganizationDisplay = (props) => {
             }}
           >
             Submit Your Information
-          </button>
-        </div>
-        <div style={{ textAlign: "center", paddingTop: "20px" }}>
-          <button
-            className={buttonClass}
-            style={{ fontSize: "17px" }}
-            disabled={disabled}
-            onClick={() => {
-              if (!disabled) {
-                submitPersonal();
-              }
-            }}
-          >
-            SUBMIT YOUR INFORMATION
           </button>
         </div>
       </Fragment>

@@ -130,7 +130,7 @@ const SignUpDisplay = (props) => {
               }
             }}
           >
-            SUBMIT YOUR EMAIL
+            Submit Your Email
           </button>
         </div>
         <div style={{ fontSize: "16px", paddingTop: "10px" }}>

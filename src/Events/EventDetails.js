@@ -348,7 +348,7 @@ const EventDetail = () => {
       return (
         <div className={classes.ButtonContainer}>
           <button disabled={true} className={classes.ButtonGreenOpac}>
-            NO TICKETS AVAILABLE
+            No Tickets Available
           </button>
         </div>
       );
@@ -356,7 +356,7 @@ const EventDetail = () => {
       return (
         <div className={classes.ButtonContainer}>
           <button onClick={ticketsHandler} className={classes.ButtonGreen}>
-            FIND TICKETS
+            Find Tickets
           </button>
         </div>
       );

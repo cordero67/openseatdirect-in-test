@@ -144,7 +144,7 @@ const SignInDisplay = (props) => {
             </div>
           ) : null}
         </div>
-        <div style={{ paddingTop: "10px" }}>
+        <div style={{ fontSize: "18px", paddingTop: "10px" }}>
           <button
             className={buttonClass}
             disabled={disabled}
@@ -154,7 +154,7 @@ const SignInDisplay = (props) => {
               }
             }}
           >
-            LOG IN TO YOUR ACCOUNT
+            Log in to Your Account
           </button>
         </div>
         <div className={classes.LineGrid}>

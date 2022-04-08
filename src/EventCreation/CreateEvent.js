@@ -1277,7 +1277,7 @@ const CreateEvent = (props) => {
             saveEvent("saved");
           }}
         >
-          SAVE AS DRAFT
+          Save as Draft
         </button>
       </div>
       <div>
@@ -1290,7 +1290,7 @@ const CreateEvent = (props) => {
             saveEvent("live");
           }}
         >
-          GO LIVE NOW
+          Go Live Now
         </button>
       </div>
       <div>
@@ -1300,7 +1300,7 @@ const CreateEvent = (props) => {
             window.location.href = `/myaccount`;
           }}
         >
-          CANCEL CREATE
+          Cancel Create
         </button>
       </div>
     </Fragment>

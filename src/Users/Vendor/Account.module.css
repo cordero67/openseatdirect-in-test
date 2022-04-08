@@ -278,9 +278,26 @@
   font-weight: 600;
   padding-left: 0px;
   border: none;
+  outline: none;
   background-color: white;
   cursor: pointer;
   outline: none;
+  box-sizing: border-box;
+}
+.UpdateIcon:hover {
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+}
+.UpdateIcon:active {
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+}
+.UpdateIcon:focus {
+  border: none;
+  outline: none;
+  box-sizing: border-box;
 }
 
 .EventButton {
