@@ -17,8 +17,10 @@ const OrganizationDisplay = (props) => {
   const [subValues, setSubValues] = useState({
     accountName: "",
     accountEmail: "",
-    phoneNumber: "",
-    website: "",
+    accountPhone: "",
+    accountUrl: "",
+    userId: "",
+    sessionToken: "",
   });
 
   const handleSubValueChange = (event) => {
@@ -46,15 +48,25 @@ const OrganizationDisplay = (props) => {
         } else {
           tempSubValues.accountEmail = "";
         }
-        if (tempUser.user.accountId.phoneNumber) {
-          tempSubValues.phoneNumber = tempUser.user.accountId.phoneNumber;
+        if (tempUser.user.accountId.accountPhone) {
+          tempSubValues.accountPhone = tempUser.user.accountId.accountPhone;
         } else {
-          tempSubValues.phoneNumber = "";
+          tempSubValues.accountPhone = "";
         }
-        if (tempUser.user.accountId.website) {
-          tempSubValues.website = tempUser.user.accountId.website;
+        if (tempUser.user.accountId.accountUrl) {
+          tempSubValues.accountUrl = tempUser.user.accountId.accountUrl;
         } else {
-          tempSubValues.website = "";
+          tempSubValues.accountUrl = "";
+        }
+        if (tempUser.token) {
+          tempSubValues.sessionToken = tempUser.token;
+        } else {
+          tempSubValues.sessionToken = "";
+        }
+        if (tempUser.user.accountId._id) {
+          tempSubValues.userId = tempUser.user.accountId._id;
+        } else {
+          tempSubValues.userId = "";
         }
         setSubValues(tempSubValues);
         console.log("tempSubValues: ", tempSubValues);
@@ -76,10 +88,12 @@ const OrganizationDisplay = (props) => {
     return response;
   };
 
-  const handlePersonal = (data) => {
+  const handleOrganization = (data) => {
     if (data.status) {
       let tempData = JSON.parse(localStorage.getItem("user"));
-      tempData.user.accountId = data.result;
+      tempData.user.accountId.accountName = data.result.accountname;
+      tempData.user.accountId.accountPhone = data.result.accountPhone;
+      tempData.user.accountId.Email = data.result.Email;
       localStorage.setItem("user", JSON.stringify(tempData));
       props.submit();
       props.spinnerChange(false);
@@ -93,7 +107,8 @@ const OrganizationDisplay = (props) => {
     }
   };
 
-  const submitPersonal = () => {
+  const submitOrganization = () => {
+    console.log("subValues: ", subValues);
     props.spinnerChange(true);
     setSubmissionStatus({
       message: "",
@@ -101,17 +116,17 @@ const OrganizationDisplay = (props) => {
     });
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const authstring = `Bearer ${props.sessionToken}`;
+    const authstring = `Bearer ${subValues.sessionToken}`;
     myHeaders.append("Authorization", authstring);
-    let url = `${API}/accounts/${props.accountNum}`;
+    let url = `${API}/user/${subValues.userId}/accounts`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
-        //useSandbox: PAYPAL_USE_SANDBOX,
-        //paymentGatewayType: "PayPalExpress",
-        //paypalExpress_client_id: subValues.paypalExpress_client_id,
-        //paypalExpress_client_secret: subValues.paypalExpress_client_secret,
+        accountName: subValues.accountName,
+        accountEmail: subValues.accountEmail,
+        accountPhone: subValues.accountPhone,
+        accountUrl: subValues.accountUrl,
       }),
     };
     console.log("fetching with: ", url, fetcharg);
@@ -123,7 +138,7 @@ const OrganizationDisplay = (props) => {
       })
       .then((data) => {
         console.log("fetch return got back data on PayPal:", data);
-        handlePersonal(data);
+        handleOrganization(data);
       })
       .catch((error) => {
         console.log("error.message: ", error.message);
@@ -194,9 +209,9 @@ const OrganizationDisplay = (props) => {
             }}
             className={classes.InputBox}
             type="text"
-            name="phoneNumber"
+            name="accountPhone"
             onChange={handleSubValueChange}
-            value={subValues.phoneNumber}
+            value={subValues.accountPhone}
           />
         </div>
         <div>
@@ -212,9 +227,9 @@ const OrganizationDisplay = (props) => {
             }}
             className={classes.InputBox}
             type="text"
-            name="website"
+            name="accountUrl"
             onChange={handleSubValueChange}
-            value={subValues.website}
+            value={subValues.accountUrl}
           />
         </div>
         <div style={{ textAlign: "center", paddingTop: "20px" }}>
@@ -223,7 +238,7 @@ const OrganizationDisplay = (props) => {
             disabled={disabled}
             onClick={() => {
               if (!disabled) {
-                submitPersonal();
+                submitOrganization();
               }
             }}
           >
@@ -270,15 +285,8 @@ const OrganizationDisplay = (props) => {
   };
 
   if (props.spinner) {
-    let height;
-    if (props.authOrigin) {
-      height = { height: "494px" };
-    } else {
-      height = { height: "377px" };
-    }
-
     return (
-      <div className={classes.BlankCanvas} style={height}>
+      <div className={classes.BlankCanvas} style={{ height: "451px" }}>
         <Spinner />
       </div>
     );

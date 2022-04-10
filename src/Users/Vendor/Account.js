@@ -285,6 +285,7 @@ const Account = (props) => {
       <PersonalModal
         show={modalStatus === "personal"}
         closeModal={() => {
+          updateUserInfo();
           setModalStatus("none");
         }}
       />

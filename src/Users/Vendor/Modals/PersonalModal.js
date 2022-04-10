@@ -44,8 +44,6 @@ const Personal = (props) => {
             props.closeModal();
           }}
           //initial={initialView} // NOT IN MODAL
-          sessionToken={subValues.sessionToken}
-          accountNum={subValues.accountNum}
           spinner={showSpinner}
           spinnerChange={(value) => setShowSpinner(value)}
           showError={() => {

@@ -68,7 +68,7 @@ const SideDrawerItems = (props) => {
             style={isActive(props.currentPage, "/myaccount")}
             onClick={props.clicked}
           >
-            MY ACCOUNT
+            DASHBOARD
           </NavLink>
         </li>
       ) : null}
@@ -80,7 +80,7 @@ const SideDrawerItems = (props) => {
             style={isActive(props.currentPage, "/myaccount")}
             onClick={props.clicked}
           >
-            MY ACCOUNT
+            DASHBOARD
           </NavLink>
         </li>
       ) : null}

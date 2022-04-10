@@ -18,16 +18,41 @@ const Organization = (props) => {
   const initializeSubValues = () => {
     if (
       typeof window !== "undefined" &&
-      localStorage.getItem(`user`) !== null
+      localStorage.getItem("user") !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
-
-      let tempValues = { ...subValues };
-      tempValues.accountNum = tempUser.user.accountId.accountNum;
-      tempValues.sessionToken = tempUser.token;
-      console.log("tempValues: ", tempValues);
-      setSubValues(tempValues);
-      setDisplay("paypal");
+      if ("user" in tempUser && "accountId" in tempUser.user) {
+        let tempSubValues = {};
+        if (tempUser.user.firstname) {
+          tempSubValues.firstName = tempUser.user.firstname;
+        } else {
+          tempSubValues.firstName = "";
+        }
+        if (tempUser.user.lastname) {
+          tempSubValues.lastName = tempUser.user.lastname;
+        } else {
+          tempSubValues.lastName = "";
+        }
+        if (tempUser.user.username) {
+          tempSubValues.userName = tempUser.user.username;
+        } else {
+          tempSubValues.userName = "";
+        }
+        if (tempUser.user.username) {
+          tempSubValues.userId = tempUser.user._id;
+        } else {
+          tempSubValues.userName = "";
+        }
+        if (tempUser.user.sessionToken) {
+          tempSubValues.userId = tempUser.token;
+        } else {
+          tempSubValues.sessionToken = "";
+        }
+        setSubValues(tempSubValues);
+        console.log("tempSubValues: ", tempSubValues);
+      }
+    } else {
+      console.log("no user object");
     }
   };
 

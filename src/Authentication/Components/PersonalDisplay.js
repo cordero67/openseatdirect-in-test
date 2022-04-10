@@ -18,6 +18,8 @@ const PersonalDisplay = (props) => {
     firstName: "",
     lastName: "",
     userName: "",
+    userId: "",
+    sessionToken: "",
   });
 
   const handleSubValueChange = (event) => {
@@ -33,6 +35,7 @@ const PersonalDisplay = (props) => {
       localStorage.getItem("user") !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
+      console.log("tempUser: ", tempUser);
       if ("user" in tempUser && "accountId" in tempUser.user) {
         let tempSubValues = {};
         if (tempUser.user.firstname) {
@@ -49,6 +52,16 @@ const PersonalDisplay = (props) => {
           tempSubValues.userName = tempUser.user.username;
         } else {
           tempSubValues.userName = "";
+        }
+        if (tempUser.user.username) {
+          tempSubValues.userId = tempUser.user._id;
+        } else {
+          tempSubValues.userName = "";
+        }
+        if (tempUser.token) {
+          tempSubValues.sessionToken = tempUser.token;
+        } else {
+          tempSubValues.sessionToken = "";
         }
         setSubValues(tempSubValues);
         console.log("tempSubValues: ", tempSubValues);
@@ -73,7 +86,9 @@ const PersonalDisplay = (props) => {
   const handlePersonal = (data) => {
     if (data.status) {
       let tempData = JSON.parse(localStorage.getItem("user"));
-      tempData.user.accountId = data.result;
+      tempData.user.firstname = data.result.firstname;
+      tempData.user.lastname = data.result.lastname;
+      tempData.user.username = data.result.username;
       localStorage.setItem("user", JSON.stringify(tempData));
       props.submit();
       props.spinnerChange(false);
@@ -95,17 +110,17 @@ const PersonalDisplay = (props) => {
     });
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const authstring = `Bearer ${props.sessionToken}`;
+    const authstring = `Bearer ${subValues.sessionToken}`;
     myHeaders.append("Authorization", authstring);
-    let url = `${API}/accounts/${props.accountNum}`;
+    let url = `${API}/user/${subValues.userId}`;
+
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
-        //useSandbox: PAYPAL_USE_SANDBOX,
-        //paymentGatewayType: "PayPalExpress",
-        //paypalExpress_client_id: subValues.paypalExpress_client_id,
-        //paypalExpress_client_secret: subValues.paypalExpress_client_secret,
+        firstname: subValues.firstName,
+        lastname: subValues.lastName,
+        username: subValues.userName,
       }),
     };
     console.log("fetching with: ", url, fetcharg);
@@ -246,15 +261,8 @@ const PersonalDisplay = (props) => {
   };
 
   if (props.spinner) {
-    let height;
-    if (props.authOrigin) {
-      height = { height: "494px" };
-    } else {
-      height = { height: "377px" };
-    }
-
     return (
-      <div className={classes.BlankCanvas} style={height}>
+      <div className={classes.BlankCanvas} style={{ height: "363px" }}>
         <Spinner />
       </div>
     );

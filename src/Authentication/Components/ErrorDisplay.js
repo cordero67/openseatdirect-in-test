@@ -34,7 +34,7 @@ const ErrorDisplay = (props) => {
     ) {
       return "Update Later";
     } else {
-      return "Try Again Later";
+      return "Try Later";
     }
   };
 
