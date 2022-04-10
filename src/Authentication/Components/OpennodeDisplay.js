@@ -57,7 +57,7 @@ const OpennodeDisplay = (props) => {
         }
 
         if (tempUser.user.accountId?.opennode_dev === undefined) {
-          tempSubValues.opennode_dev = OPENNODE_USE_TEST;
+          tempSubValues.opennode_dev = false;
         } else {
           tempSubValues.opennode_dev = tempUser.user.accountId?.opennode_dev;
         }
@@ -231,7 +231,7 @@ const OpennodeDisplay = (props) => {
             Setup a new Opennode account{" "}
             <a
               className={classes.BlueText}
-              href="https://dev.opennode.com/signup"
+              href="https://app.opennode.com/signup"
               target="_blank"
               rel="noreferrer"
             >
