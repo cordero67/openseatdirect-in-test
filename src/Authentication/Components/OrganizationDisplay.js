@@ -14,62 +14,68 @@ const OrganizationDisplay = (props) => {
   });
   const { message, error } = submissionStatus;
 
-  const [subValues, setSubValues] = useState({
+  const [orgValues, setOrgValues] = useState({
     accountName: "",
     accountEmail: "",
     accountPhone: "",
     accountUrl: "",
+    accountNum: "",
     userId: "",
     sessionToken: "",
   });
 
-  const handleSubValueChange = (event) => {
-    setSubValues({
-      ...subValues,
+  const handleOrgValueChange = (event) => {
+    setOrgValues({
+      ...orgValues,
       [event.target.name]: event.target.value,
     });
   };
 
-  const initializeSubValues = () => {
+  const initializeOrgValues = () => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem("user") !== null
     ) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       if ("user" in tempUser && "accountId" in tempUser.user) {
-        let tempSubValues = {};
+        let tempOrgValues = {};
         if (tempUser.user.accountId.accountName) {
-          tempSubValues.accountName = tempUser.user.accountId.accountName;
+          tempOrgValues.accountName = tempUser.user.accountId.accountName;
         } else {
-          tempSubValues.accountName = "";
+          tempOrgValues.accountName = "";
         }
         if (tempUser.user.accountId.accountEmail) {
-          tempSubValues.accountEmail = tempUser.user.accountId.accountEmail;
+          tempOrgValues.accountEmail = tempUser.user.accountId.accountEmail;
         } else {
-          tempSubValues.accountEmail = "";
+          tempOrgValues.accountEmail = "";
         }
         if (tempUser.user.accountId.accountPhone) {
-          tempSubValues.accountPhone = tempUser.user.accountId.accountPhone;
+          tempOrgValues.accountPhone = tempUser.user.accountId.accountPhone;
         } else {
-          tempSubValues.accountPhone = "";
+          tempOrgValues.accountPhone = "";
         }
         if (tempUser.user.accountId.accountUrl) {
-          tempSubValues.accountUrl = tempUser.user.accountId.accountUrl;
+          tempOrgValues.accountUrl = tempUser.user.accountId.accountUrl;
         } else {
-          tempSubValues.accountUrl = "";
+          tempOrgValues.accountUrl = "";
         }
         if (tempUser.token) {
-          tempSubValues.sessionToken = tempUser.token;
+          tempOrgValues.sessionToken = tempUser.token;
         } else {
-          tempSubValues.sessionToken = "";
+          tempOrgValues.sessionToken = "";
         }
         if (tempUser.user.accountId._id) {
-          tempSubValues.userId = tempUser.user.accountId._id;
+          tempOrgValues.userId = tempUser.user.accountId._id;
         } else {
-          tempSubValues.userId = "";
+          tempOrgValues.userId = "";
         }
-        setSubValues(tempSubValues);
-        console.log("tempSubValues: ", tempSubValues);
+        if (tempUser.user.accountId.accountNum) {
+          tempOrgValues.accountNum = tempUser.user.accountId.accountNum;
+        } else {
+          tempOrgValues.accountNum = "";
+        }
+        setOrgValues(tempOrgValues);
+        console.log("tempOrgValues: ", tempOrgValues);
       }
     } else {
       console.log("no user object");
@@ -77,7 +83,7 @@ const OrganizationDisplay = (props) => {
   };
 
   useEffect(() => {
-    initializeSubValues();
+    initializeOrgValues();
   }, []);
 
   const handleErrors = (response) => {
@@ -91,9 +97,11 @@ const OrganizationDisplay = (props) => {
   const handleOrganization = (data) => {
     if (data.status) {
       let tempData = JSON.parse(localStorage.getItem("user"));
-      tempData.user.accountId.accountName = data.result.accountname;
+      tempData.user.accountId.accountName = data.result.accountName;
+      tempData.user.accountId.accountEmail = data.result.accountEmail;
       tempData.user.accountId.accountPhone = data.result.accountPhone;
-      tempData.user.accountId.Email = data.result.Email;
+      tempData.user.accountId.accountEmail = data.result.accountEmail;
+      tempData.user.accountId.accountUrl = data.result.accountUrl;
       localStorage.setItem("user", JSON.stringify(tempData));
       props.submit();
       props.spinnerChange(false);
@@ -108,7 +116,7 @@ const OrganizationDisplay = (props) => {
   };
 
   const submitOrganization = () => {
-    console.log("subValues: ", subValues);
+    console.log("orgValues: ", orgValues);
     props.spinnerChange(true);
     setSubmissionStatus({
       message: "",
@@ -116,17 +124,17 @@ const OrganizationDisplay = (props) => {
     });
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const authstring = `Bearer ${subValues.sessionToken}`;
+    const authstring = `Bearer ${orgValues.sessionToken}`;
     myHeaders.append("Authorization", authstring);
-    let url = `${API}/user/${subValues.userId}/accounts`;
+    let url = `${API}/accounts/${orgValues.accountNum}`;
     let fetcharg = {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
-        accountName: subValues.accountName,
-        accountEmail: subValues.accountEmail,
-        accountPhone: subValues.accountPhone,
-        accountUrl: subValues.accountUrl,
+        accountName: orgValues.accountName,
+        accountEmail: orgValues.accountEmail,
+        accountPhone: orgValues.accountPhone,
+        accountUrl: orgValues.accountUrl,
       }),
     };
     console.log("fetching with: ", url, fetcharg);
@@ -148,10 +156,46 @@ const OrganizationDisplay = (props) => {
   };
 
   const organizationForm = () => {
-    let disabled = true;
-    if (true) {
-      disabled = false;
-    }
+    const regName = /^.{2,}$/;
+    const regEmail =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const regPhone =
+      /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
+    const regUrl =
+      /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
+
+    let disabled =
+      !regName.test(orgValues.accountName) ||
+      !regEmail.test(orgValues.accountEmail) ||
+      !regPhone.test(orgValues.accountPhone) ||
+      !regUrl.test(orgValues.accountUrl);
+
+    let disabledName =
+      orgValues.accountName && !regName.test(orgValues.accountName);
+    let disabledEmail =
+      orgValues.accountEmail && !regEmail.test(orgValues.accountEmail);
+    let disabledPhone =
+      orgValues.accountPhone && !regPhone.test(orgValues.accountPhone);
+    let disabledUrl =
+      orgValues.accountUrl && !regUrl.test(orgValues.accountUrl);
+
+    let nameBorder =
+      orgValues.accountName && !regName.test(orgValues.accountName)
+        ? { border: "1px solid red" }
+        : null;
+    let emailBorder =
+      orgValues.accountEmail && !regEmail.test(orgValues.accountEmail)
+        ? { border: "1px solid red" }
+        : null;
+    let phoneBorder =
+      orgValues.accountPhone && !regPhone.test(orgValues.accountPhone)
+        ? { border: "1px solid red" }
+        : null;
+    let urlBorder =
+      orgValues.accountUrl && !regUrl.test(orgValues.accountUrl)
+        ? { border: "1px solid red" }
+        : null;
+
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
@@ -172,11 +216,19 @@ const OrganizationDisplay = (props) => {
               });
             }}
             className={classes.InputBox}
+            style={nameBorder}
             type="text"
             name="accountName"
-            onChange={handleSubValueChange}
-            value={subValues.accountName}
+            onChange={handleOrgValueChange}
+            value={orgValues.accountName}
           />
+          {disabledName ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span className={classes.RedText}>
+                A minimum of 2 characters are required
+              </span>
+            </div>
+          ) : null}
         </div>
         <div style={{ paddingBottom: "20px", width: "340px" }}>
           <label style={{ width: "340px", fontSize: "15px" }}>
@@ -190,11 +242,19 @@ const OrganizationDisplay = (props) => {
               });
             }}
             className={classes.InputBox}
+            style={emailBorder}
             type="text"
             name="accountEmail"
-            onChange={handleSubValueChange}
-            value={subValues.accountEmail}
+            onChange={handleOrgValueChange}
+            value={orgValues.accountEmail}
           />
+          {disabledEmail ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span className={classes.RedText}>
+                A valid email address is required
+              </span>
+            </div>
+          ) : null}
         </div>
         <div style={{ paddingBottom: "20px", width: "340px" }}>
           <label style={{ width: "340px", fontSize: "15px" }}>
@@ -208,11 +268,19 @@ const OrganizationDisplay = (props) => {
               });
             }}
             className={classes.InputBox}
+            style={phoneBorder}
             type="text"
             name="accountPhone"
-            onChange={handleSubValueChange}
-            value={subValues.accountPhone}
+            onChange={handleOrgValueChange}
+            value={orgValues.accountPhone}
           />
+          {disabledPhone ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span className={classes.RedText}>
+                A valid phone number is required
+              </span>
+            </div>
+          ) : null}
         </div>
         <div>
           <label style={{ width: "340px", fontSize: "15px" }}>
@@ -226,11 +294,19 @@ const OrganizationDisplay = (props) => {
               });
             }}
             className={classes.InputBox}
+            style={urlBorder}
             type="text"
             name="accountUrl"
-            onChange={handleSubValueChange}
-            value={subValues.accountUrl}
+            onChange={handleOrgValueChange}
+            value={orgValues.accountUrl}
           />
+          {disabledUrl ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span className={classes.RedText}>
+                A valid website address is required
+              </span>
+            </div>
+          ) : null}
         </div>
         <div style={{ textAlign: "center", paddingTop: "20px" }}>
           <button
@@ -268,7 +344,7 @@ const OrganizationDisplay = (props) => {
               name="close-outline"
               cursor="pointer"
               onClick={() => {
-                initializeSubValues();
+                initializeOrgValues();
                 setSubmissionStatus({
                   message: "",
                   error: false,

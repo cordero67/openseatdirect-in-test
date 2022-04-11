@@ -15,11 +15,18 @@ import classes from "./Account.module.css";
 const Account = (props) => {
   console.log("PROPS ACCOUNT: ", props);
   const [userInfo, setUserInfo] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     email: "",
     username: "",
+    id: "",
     token: "",
+    accountName: "",
+    accountEmail: "",
+    accountPhone: "",
+    accountUrl: "",
+    paymentGateway: "",
+    cryptoGateway: "",
   });
   const [modalStatus, setModalStatus] = useState("none");
   const [subscriptionType, setSubscriptionType] = useState("free");
@@ -41,6 +48,8 @@ const Account = (props) => {
         token: tempUser.token,
         accountName: tempUser.user.accountId.accountName,
         accountEmail: tempUser.user.accountId.accountEmail,
+        accountNumber: tempUser.user.accountId.accountPhone,
+        accountUrl: tempUser.user.accountId.accountUrl,
         paymentGateway: tempUser.user.accountId.paymentGatewayType,
         cryptoGateway: tempUser.user.accountId.cryptoGatewayType,
       };
@@ -260,8 +269,8 @@ const Account = (props) => {
         </div>
         <div>Name: {userInfo.accountName}</div>
         <div>E-mail: {userInfo.accountEmail}</div>
-        <div>Phone Number:</div>
-        <div>Website:</div>
+        <div>Phone Number: {userInfo.accountNumber}</div>
+        <div>Website: {userInfo.accountUrl}</div>
         <br></br>
         <button
           className={classes.PasswordButton}
@@ -292,6 +301,7 @@ const Account = (props) => {
       <OrganizationModal
         show={modalStatus === "organization"}
         closeModal={() => {
+          updateUserInfo();
           setModalStatus("none");
         }}
       />

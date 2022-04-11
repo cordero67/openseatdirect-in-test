@@ -53,10 +53,10 @@ const PersonalDisplay = (props) => {
         } else {
           tempSubValues.userName = "";
         }
-        if (tempUser.user.username) {
+        if (tempUser.user._id) {
           tempSubValues.userId = tempUser.user._id;
         } else {
-          tempSubValues.userName = "";
+          tempSubValues.userId = "";
         }
         if (tempUser.token) {
           tempSubValues.sessionToken = tempUser.token;
@@ -103,6 +103,7 @@ const PersonalDisplay = (props) => {
   };
 
   const submitPersonal = () => {
+    console.log("subValues: ", subValues);
     props.spinnerChange(true);
     setSubmissionStatus({
       message: "",
