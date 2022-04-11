@@ -21,73 +21,21 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 
 import classes from "./VendorAccount.module.css";
 
-import { useOurApi } from "../../utils/useOurApi";
-import { useOurApi2 } from "../../utils/useOurApi2";
-
 const VendorAccount = (props) => {
   console.log("VENDOR PROPS: ", props);
-  console.log("NEW VENDOR COMPONENT");
+  console.log("OLD VENDOR COMPONENT");
 
   // spinner, events, salesAnalytics, ticketSales, issueTickets, editEvent, wallet, account, create, orders
-  const [display, setDisplay] = useState("events");
-  //  const [eventDescriptions, setEventDescriptions] = useState({}); //
-  //  const [eventOrders, setEventOrders] = useState({}); //
+  const [display, setDisplay] = useState("spinner");
+  const [eventDescriptions, setEventDescriptions] = useState({}); //
+  const [eventOrders, setEventOrders] = useState({}); //
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [subscriptionType, setSubscriptionType] = useState("free");
   const [upgradeDisplay, setUpgradeDisplay] = useState("gateway");
 
-  //  const [userInfo, setUserInfo] = useState({}); //
+  const [userInfo, setUserInfo] = useState({}); //
 
-  //  const [userInfo, setUserInfo] = useState({}); //
-
-  let initialView = queryString.parse(window.location.search).view;
-  console.log("initialView: ", initialView);
-  if (initialView === "gateway" || initialView === "sub") {
-    setUpgradeDisplay(initialView);
-    setDisplay("upgrade");
-  }
-
-  let tempUser = JSON.parse(localStorage.getItem("user"));
-  let acctnum = tempUser?.user?.accountId?.accountNum;
-  if (!tempUser?.token || !acctnum) window.location.href = "/auth";
-
-  let userInfo = tempUser.user;
-  userInfo.token = tempUser.token;
-  userInfo.email = tempUser.user.email;
-  userInfo.firstname = tempUser.user.firstname;
-  userInfo.lastname = tempUser.user.lastname;
-  userInfo.status = tempUser.user.accountId.status;
-  userInfo.id = tempUser.user.accountId._id;
-  userInfo.account = tempUser.user.accountId;
-  userInfo.accountNum = tempUser.user.accountId.accountNum;
-
-  console.log("userInfo: ", userInfo);
-
-  //  setUserInfo(tempUserInfo);
-
-  // sets api variables for EVENTS
-
-  let myHeadersx = new Headers();
-  myHeadersx.append("Content-Type", "application/json");
-  myHeadersx.append("Authorization", "Bearer " + tempUser.token);
-  const url = `${API}/accounts/${tempUser.user.accountId.accountNum}/events`;
-  const method1 = "GET";
-  const body = null;
-  const initialData = { status: true, message: "hi first time for events" };
-  const { isLoading, hasError, setUrl, setBody, data, networkError } =
-    useOurApi(method1, url, myHeadersx, body, initialData);
-
-  // sets api variables for ORDERS
-  const url2 = `${API}/reports/organizer?rsid=orders1`;
-  const method2 = "POST";
-  const body2 = null;
-  const initialData2 = { status: true, message: "hi first time for orders" };
-
-  const { isLoading2, hasError2, setUrl2, setBody2, data2, networkError2 } =
-    useOurApi2(method2, url2, myHeadersx, body2, initialData2);
-
-  /*
   const handleErrors = (response) => {
     if (!response.ok) {
       console.log("error in 'handleErrors()'");
@@ -95,10 +43,12 @@ const VendorAccount = (props) => {
     }
     return response;
   };
+
   // LOOKS GOOD
   useEffect(() => {
     let initialView = queryString.parse(window.location.search).view;
     console.log("initialView: ", initialView);
+
     if (initialView === "gateway" || initialView === "sub") {
       setUpgradeDisplay(initialView);
       setDisplay("upgrade");
@@ -109,9 +59,11 @@ const VendorAccount = (props) => {
       ) {
         let tempUser = JSON.parse(localStorage.getItem("user"));
         console.log("tempUser: ", tempUser);
+
         if (!("user" in tempUser && "token" in tempUser)) {
           window.location.href = "/auth";
         }
+
         // LOOKS GOOD
         let tempUserInfo = {};
         tempUserInfo.token = tempUser.token;
@@ -123,7 +75,9 @@ const VendorAccount = (props) => {
         tempUserInfo.account = tempUser.user.accountId;
         tempUserInfo.accountNum = tempUser.user.accountId.accountNum;
         console.log("tempUserInfo: ", tempUserInfo);
-//        setUserInfo(tempUserInfo);
+
+        setUserInfo(tempUserInfo);
+
         // LOOKS GOOD
         // sets api variables
         let myHeaders = new Headers();
@@ -134,11 +88,13 @@ const VendorAccount = (props) => {
           headers: myHeaders,
           redirect: "follow",
         };
+
         // LOOKS GOOD
         // if "accountID" field exists than all event and order information is requested
         if (tempUserInfo.account) {
           console.log("INSIDE EVENT FETCH");
           let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/events`;
+
           fetch(fetchstr, requestOptions)
             .then(handleErrors)
             .then((response) => response.text())
@@ -185,9 +141,11 @@ const VendorAccount = (props) => {
       }
     }
   }, []);
+
   const reloadOrders = () => {
     let tempUser = JSON.parse(localStorage.getItem("user"));
     let vendorToken = tempUser.token;
+
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + tempUser.token);
@@ -196,6 +154,7 @@ const VendorAccount = (props) => {
       headers: myHeaders,
       redirect: "follow",
     };
+
     console.log("Temp User: ", tempUser);
     let fetchstr = `${API}/accounts/reports/organizer?rsid=orders1`;
     //let fetchstr = `${API}/accounts/${tempUser.user.accountId.accountNum}/orders`;
@@ -214,6 +173,7 @@ const VendorAccount = (props) => {
         console.log("error", error);
       });
   };
+
   // LOOKS GOOD
   const loadingSpinner = () => {
     if (display === "spinner") {
@@ -226,6 +186,7 @@ const VendorAccount = (props) => {
       return null;
     }
   };
+
   // LOOKS GOOD
   const connectionStatus = () => {
     if (display === "connection") {
@@ -237,49 +198,13 @@ const VendorAccount = (props) => {
       );
     } else return null;
   };
-  */
-
-  const reloadOrders = () => {
-    setUrl2(url2);
-  };
 
   const mainDisplay = () => {
-    console.log(
-      "in mainDisplay",
-      "isLoading12=",
-      isLoading,
-      isLoading2,
-      "hasError12=",
-      hasError,
-      hasError2,
-      "data=",
-      data,
-      "data2=",
-      data2
-    );
-
-    if (isLoading || isLoading2) {
-      return (
-        <div style={{ paddingTop: "60px" }}>
-          <Spinner />
-        </div>
-      );
-    }
-    if (hasError || hasError2) {
-      return (
-        <div className={classes.ConnectionText}>
-          There is a problem in retrieving your information. Please try again
-          later.
-        </div>
-      );
-    }
     if (display === "events") {
       return (
         <Events
-          //          eventDescriptions={eventDescriptions}
-          //          eventOrders={eventOrders}
-          eventDescriptions={data}
-          eventOrders={data2.data}
+          eventDescriptions={eventDescriptions}
+          eventOrders={eventOrders}
           salesAnalytics={(event, orders) => {
             setSelectedEvent(event);
             setSelectedOrders(orders);
@@ -399,7 +324,9 @@ const VendorAccount = (props) => {
     <div className={classes.DashboardContainer}>
       <div className={classes.DashboardCanvas}>
         {navigation}
+        {loadingSpinner()}
         {mainDisplay()}
+        {connectionStatus()}
       </div>
     </div>
   );
