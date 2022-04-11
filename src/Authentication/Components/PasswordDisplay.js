@@ -24,6 +24,7 @@ const PasswordDisplay = (props) => {
     if (data.status) {
       let tempUser = JSON.parse(localStorage.getItem("user"));
       tempUser.token = data.token;
+      tempUser.user._id = data.user._id;
       console.log("tempUser: ", tempUser);
       localStorage.setItem("user", JSON.stringify(tempUser));
 
