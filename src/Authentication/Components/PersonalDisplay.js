@@ -143,22 +143,32 @@ const PersonalDisplay = (props) => {
   };
 
   const personalForm = () => {
-    let disabled = true;
-    if (true) {
+    const regUser = /^.{1,}$/;
+
+    let disabled;
+
+    if (
+      subValues.userName === "" ||
+      (subValues.userName && !regUser.test(subValues.userName))
+    ) {
+      console.log("disabled true");
+      disabled = true;
+    } else {
+      console.log("disabled false");
       disabled = false;
     }
+
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
     } else {
       buttonClass = classes.ButtonBlue;
     }
+
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "340px" }}>
-          <label style={{ width: "340px", fontSize: "15px" }}>
-            First Name <span style={{ color: "red" }}>* </span>
-          </label>
+          <label style={{ width: "340px", fontSize: "15px" }}>First Name</label>
           <input
             onFocus={() => {
               setSubmissionStatus({
@@ -174,9 +184,7 @@ const PersonalDisplay = (props) => {
           />
         </div>
         <div style={{ paddingBottom: "20px", width: "340px" }}>
-          <label style={{ width: "340px", fontSize: "15px" }}>
-            Last Name <span style={{ color: "red" }}>* </span>
-          </label>
+          <label style={{ width: "340px", fontSize: "15px" }}>Last Name</label>
           <input
             onFocus={() => {
               setSubmissionStatus({
@@ -208,6 +216,13 @@ const PersonalDisplay = (props) => {
             onChange={handleSubValueChange}
             value={subValues.userName}
           />
+          {disabled ? (
+            <div style={{ paddingTop: "5px" }}>
+              <span className={classes.RedText}>
+                A minimum of 1 character is required
+              </span>
+            </div>
+          ) : null}
         </div>
         <div style={{ textAlign: "center", paddingTop: "20px" }}>
           <button

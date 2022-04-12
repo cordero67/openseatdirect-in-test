@@ -156,7 +156,7 @@ const OrganizationDisplay = (props) => {
   };
 
   const organizationForm = () => {
-    const regName = /^.{2,}$/;
+    const regName = /^.{1,}$/;
     const regEmail =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const regPhone =
@@ -164,37 +164,64 @@ const OrganizationDisplay = (props) => {
     const regUrl =
       /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
 
+    let disabledName;
+    let disabledEmail;
+    let disabledPhone;
+    let disabledUrl;
+
+    if (
+      orgValues.accountName === "" ||
+      (orgValues.accountName && !regName.test(orgValues.accountName))
+    ) {
+      console.log("disabledName true");
+      disabledName = true;
+    } else {
+      console.log("disabledName false");
+      disabledName = false;
+    }
+
+    if (
+      orgValues.accountEmail === "" ||
+      (orgValues.accountEmail && !regEmail.test(orgValues.accountEmail))
+    ) {
+      console.log("disabledEmail true");
+      disabledEmail = true;
+    } else {
+      console.log("disabledEmail false");
+      disabledEmail = false;
+    }
+
+    if (
+      orgValues.accountPhone !== "" &&
+      orgValues.accountPhone &&
+      !regPhone.test(orgValues.accountPhone)
+    ) {
+      console.log("disabledPhone true");
+      disabledPhone = true;
+    } else {
+      console.log("disabledPhone false");
+      disabledPhone = false;
+    }
+
+    if (
+      orgValues.accountUrl !== "" &&
+      orgValues.accountUrl &&
+      !regUrl.test(orgValues.accountUrl)
+    ) {
+      console.log("disabledUrl true");
+      disabledUrl = true;
+    } else {
+      console.log("disabledUrl false");
+      disabledUrl = false;
+    }
+
     let disabled =
-      !regName.test(orgValues.accountName) ||
-      !regEmail.test(orgValues.accountEmail) ||
-      !regPhone.test(orgValues.accountPhone) ||
-      !regUrl.test(orgValues.accountUrl);
+      disabledName || disabledEmail || disabledPhone || disabledUrl;
 
-    let disabledName =
-      orgValues.accountName && !regName.test(orgValues.accountName);
-    let disabledEmail =
-      orgValues.accountEmail && !regEmail.test(orgValues.accountEmail);
-    let disabledPhone =
-      orgValues.accountPhone && !regPhone.test(orgValues.accountPhone);
-    let disabledUrl =
-      orgValues.accountUrl && !regUrl.test(orgValues.accountUrl);
-
-    let nameBorder =
-      orgValues.accountName && !regName.test(orgValues.accountName)
-        ? { border: "1px solid red" }
-        : null;
-    let emailBorder =
-      orgValues.accountEmail && !regEmail.test(orgValues.accountEmail)
-        ? { border: "1px solid red" }
-        : null;
-    let phoneBorder =
-      orgValues.accountPhone && !regPhone.test(orgValues.accountPhone)
-        ? { border: "1px solid red" }
-        : null;
-    let urlBorder =
-      orgValues.accountUrl && !regUrl.test(orgValues.accountUrl)
-        ? { border: "1px solid red" }
-        : null;
+    let nameBorder = disabledName ? { border: "1px solid red" } : null;
+    let emailBorder = disabledEmail ? { border: "1px solid red" } : null;
+    let phoneBorder = disabledPhone ? { border: "1px solid red" } : null;
+    let urlBorder = disabledUrl ? { border: "1px solid red" } : null;
 
     let buttonClass;
     if (disabled) {
@@ -202,6 +229,7 @@ const OrganizationDisplay = (props) => {
     } else {
       buttonClass = classes.ButtonBlue;
     }
+
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "340px" }}>
@@ -225,7 +253,7 @@ const OrganizationDisplay = (props) => {
           {disabledName ? (
             <div style={{ paddingTop: "5px" }}>
               <span className={classes.RedText}>
-                A minimum of 2 characters are required
+                A minimum of 1 character is required
               </span>
             </div>
           ) : null}
@@ -258,7 +286,7 @@ const OrganizationDisplay = (props) => {
         </div>
         <div style={{ paddingBottom: "20px", width: "340px" }}>
           <label style={{ width: "340px", fontSize: "15px" }}>
-            Phone Number <span style={{ color: "red" }}>* </span>
+            Phone Number
           </label>
           <input
             onFocus={() => {
@@ -276,16 +304,12 @@ const OrganizationDisplay = (props) => {
           />
           {disabledPhone ? (
             <div style={{ paddingTop: "5px" }}>
-              <span className={classes.RedText}>
-                A valid phone number is required
-              </span>
+              <span className={classes.RedText}>Not a valid phone number</span>
             </div>
           ) : null}
         </div>
         <div>
-          <label style={{ width: "340px", fontSize: "15px" }}>
-            Website <span style={{ color: "red" }}>* </span>
-          </label>
+          <label style={{ width: "340px", fontSize: "15px" }}>Website</label>
           <input
             onFocus={() => {
               setSubmissionStatus({
@@ -303,7 +327,7 @@ const OrganizationDisplay = (props) => {
           {disabledUrl ? (
             <div style={{ paddingTop: "5px" }}>
               <span className={classes.RedText}>
-                A valid website address is required
+                Not a valid website address
               </span>
             </div>
           ) : null}

@@ -43,7 +43,7 @@ const FreeDisplay = (props) => {
             window.location.href = "/myaccount";
           }}
         >
-          Go to Dashboard
+          Go to my Dashboard
         </button>
       </div>
     </Fragment>
