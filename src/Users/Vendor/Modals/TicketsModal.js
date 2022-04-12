@@ -26,7 +26,7 @@ const TicketsModal = (props) => {
             props.close();
           }}
         >
-          CLOSE
+          Close
         </button>
       </div>
     );

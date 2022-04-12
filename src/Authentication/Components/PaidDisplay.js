@@ -32,7 +32,7 @@ const PaidDisplay = (props) => {
             window.location.href = "/myaccount";
           }}
         >
-          Go to My Dashboard
+          Go to Dashboard
         </button>
       </div>
     </Fragment>

@@ -159,7 +159,7 @@ const Orders = (props) => {
                 color: "blue",
                 padding: "0px",
               }}
-              content="Reload Page"
+              content="Reload page"
               onClick={() => {
                 window.location.reload();
                 return false;

@@ -1203,7 +1203,7 @@ const Upgrade = (props) => {
                 updatePageView();
               }}
             >
-              CONTINUE
+              Continue
             </button>
           </div>
         </div>
@@ -1494,7 +1494,7 @@ const Upgrade = (props) => {
                   setPageView("gateway");
                 }}
               >
-                Return to Payment Processor selection
+                Return to gateway selection
               </button>
             </div>
           </div>

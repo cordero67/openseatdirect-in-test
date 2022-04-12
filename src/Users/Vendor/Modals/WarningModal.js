@@ -58,7 +58,7 @@ const WarningModal = (props) => {
 
   const modalButtons = (
     <button className={classes.ButtonGrey} onClick={props.close}>
-      CONTINUE
+      Continue
     </button>
   );
 

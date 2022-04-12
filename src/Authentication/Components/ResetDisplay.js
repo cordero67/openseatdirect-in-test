@@ -123,7 +123,7 @@ const ResetDisplay = (props) => {
               }
             }}
           >
-            Register Password
+            Register password
           </button>
         </div>
       </Fragment>

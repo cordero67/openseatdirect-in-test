@@ -154,7 +154,7 @@ const SignInDisplay = (props) => {
               }
             }}
           >
-            Log in to Your Account
+            Log in to your account
           </button>
         </div>
         <div className={classes.LineGrid}>
@@ -269,7 +269,7 @@ const SignInDisplay = (props) => {
               props.displayChange("signup");
             }}
           >
-            Sign Up
+            Sign ip
           </button>
         </div>
       </div>

@@ -189,7 +189,7 @@ const ConfirmInitialDisplay = (props) => {
               }
             }}
           >
-            Submit Confirmation Code
+            Submit confirmation code
           </button>
         </div>
       </Fragment>

@@ -34,7 +34,7 @@ const TicketsModal = (props) => {
               props.loadPrevious();
             }}
           >
-            PREVIOUS EVENT
+            Previous event
           </button>
           <button
             className={classes.ButtonGreen}
@@ -42,7 +42,7 @@ const TicketsModal = (props) => {
               props.loadNext();
             }}
           >
-            NEXT EVENT
+            Next event
           </button>
           <button
             className={classes.ButtonGrey}
@@ -50,7 +50,7 @@ const TicketsModal = (props) => {
               props.close();
             }}
           >
-            CLOSE
+            Close
           </button>
         </div>
       );
@@ -63,7 +63,7 @@ const TicketsModal = (props) => {
               props.close();
             }}
           >
-            CLOSE
+            Close
           </button>
         </div>
       );
@@ -111,25 +111,3 @@ const TicketsModal = (props) => {
 };
 
 export default TicketsModal;
-
-//let adjustedTicketName;
-//let num = 40;
-
-/*
-  //if (ticket.ticketName.length <= num) {
-    if (true) {
-    adjustedTicketName = ticket.ticketName;
-  } else {
-    adjustedTicketName = ticket.ticketName.slice(0, num) + '...'
-  }
-
-  let adjustedPaymentMethod;
-
-  if ("manualPaymentMethod" in  ticket && parseFloat(ticket.unit_price).toFixed(2) !== "0.00") {
-    adjustedPaymentMethod = ticket.manualPaymentMethod;
-  } else if ("manualPaymentMethod" in  ticket) {
-    adjustedPaymentMethod = "comp"
-  } else {
-    adjustedPaymentMethod = "PayPal Express"
-  }
-  */

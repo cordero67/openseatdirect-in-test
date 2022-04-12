@@ -53,7 +53,7 @@ const ReceiptModal = (props) => {
               props.loadPrevious();
             }}
           >
-            PREVIOUS RECEIPT
+            Previous receipt
           </button>
           <button
             className={classes.ButtonGreen}
@@ -61,7 +61,7 @@ const ReceiptModal = (props) => {
               props.loadNext();
             }}
           >
-            NEXT RECEIPT
+            Next receipt
           </button>
           <button
             className={classes.ButtonGrey}
@@ -69,7 +69,7 @@ const ReceiptModal = (props) => {
               props.close();
             }}
           >
-            CLOSE
+            Close
           </button>
         </div>
       );
@@ -82,7 +82,7 @@ const ReceiptModal = (props) => {
               props.close();
             }}
           >
-            CLOSE
+            Close
           </button>
         </div>
       );
@@ -216,133 +216,3 @@ const ReceiptModal = (props) => {
 };
 
 export default ReceiptModal;
-
-// KEEP ALL THIS CODE
-// THIS SUPPORTS POTENTIAL CASH PAYMENT DISPLAY INFORMATION
-
-/*
-  let payPalExpressTotal = 0;
-  let cashTotal = 0;
-  let cashAppTotal = 0;
-  let venmoTotal = 0;
-  let paypalTotal = 0;
-  let bitcoinTotal = 0;
-  let ethereumTotal = 0;
-  let dogecoinTotal = 0;
-  let otherTotal = 0;
-*/
-
-/*
-{"message" in props.details.recipient ? props.details.recipient.message : null}
-*/
-
-/*
-if (props.details.isOffline) {
-  console.log("OFFLINE PAYMENT");
-  props.details.offlinePayment.forEach((payment) => {
-    console.log(payment.amt, "---", payment.payMethod);
-    if (payment.payMethod === "cash") {
-      cashTotal += payment.amt;
-    } else if (payment.payMethod === "CashApp") {
-      cashAppTotal += payment.amt;
-    } else if (payment.payMethod === "Venmo") {
-      venmoTotal += payment.amt;
-    } else if (payment.payMethod === "Paypal") {
-      paypalTotal += payment.amt;
-    } else if (payment.payMethod === "Bitcoin") {
-      bitcoinTotal += payment.amt;
-    } else if (payment.payMethod === "Ethereum") {
-      ethereumTotal += payment.amt;
-    } else if (payment.payMethod === "Dogecoin") {
-      dogecoinTotal += payment.amt;
-    } else if (payment.payMethod === "PayPal Express") {
-      payPalExpressTotal += payment.amt;
-    } else {
-      otherTotal += payment.amt;
-    }
-  });
-}
-*/
-
-/*
-<div
-  style={{
-    borderTop: "1px solid black",
-  }}
->
-  {payPalExpressTotal > 0 ? (
-    <div className={classes.SubTotal}>
-      <div style={{ textAlign: "right" }}>
-        PayPal Express payment:
-      </div>
-      <div style={{ textAlign: "right", paddingRight: "10px" }}>
-        {parseFloat(payPalExpressTotal).toFixed(2)}
-      </div>
-    </div>
-  ) : null}
-  {cashTotal > 0 ? (
-    <div className={classes.SubTotal}>
-      <div style={{ textAlign: "right" }}>cash payment:</div>
-      <div style={{ textAlign: "right", paddingRight: "10px" }}>
-        {parseFloat(cashTotal).toFixed(2)}
-      </div>
-    </div>
-  ) : null}
-  {cashAppTotal > 0 ? (
-    <div className={classes.SubTotal}>
-      <div style={{ textAlign: "right" }}>CashApp payment:</div>
-      <div style={{ textAlign: "right", paddingRight: "10px" }}>
-        {parseFloat(cashAppTotal).toFixed(2)}
-      </div>
-    </div>
-  ) : null}
-  {venmoTotal > 0 ? (
-    <div className={classes.SubTotal}>
-      <div style={{ textAlign: "right" }}>Venmo payment:</div>
-      <div style={{ textAlign: "right", paddingRight: "10px" }}>
-        {parseFloat(venmoTotal).toFixed(2)}
-      </div>
-    </div>
-  ) : null}
-  {paypalTotal > 0 ? (
-    <div className={classes.SubTotal}>
-      <div style={{ textAlign: "right" }}>PayPal payment:</div>
-      <div style={{ textAlign: "right", paddingRight: "10px" }}>
-        {parseFloat(paypalTotal).toFixed(2)}
-      </div>
-    </div>
-  ) : null}
-  {bitcoinTotal > 0 ? (
-    <div className={classes.SubTotal}>
-      <div style={{ textAlign: "right" }}>Bitcoin payment:</div>
-      <div style={{ textAlign: "right", paddingRight: "10px" }}>
-        {parseFloat(bitcoinTotal).toFixed(2)}
-      </div>
-    </div>
-  ) : null}
-  {ethereumTotal > 0 ? (
-    <div className={classes.SubTotal}>
-      <div style={{ textAlign: "right" }}>Ethereum payment:</div>
-      <div style={{ textAlign: "right", paddingRight: "10px" }}>
-        {parseFloat(ethereumTotal).toFixed(2)}
-      </div>
-    </div>
-  ) : null}
-  {dogecoinTotal > 0 ? (
-    <div className={classes.SubTotal}>
-      <div style={{ textAlign: "right" }}>Dogecoin payment:</div>
-      <div style={{ textAlign: "right", paddingRight: "10px" }}>
-        {parseFloat(dogecoinTotal).toFixed(2)}
-      </div>
-    </div>
-  ) : null}
-  {otherTotal > 0 ? (
-    <div className={classes.SubTotal}>
-      <div style={{ textAlign: "right" }}>other payment:</div>
-      <div style={{ textAlign: "right", paddingRight: "10px" }}>
-        {parseFloat(otherTotal).toFixed(2)}
-      </div>
-    </div>
-  ) : null}
-</div>
-*/

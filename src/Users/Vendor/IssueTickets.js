@@ -354,7 +354,7 @@ const IssueTickets = (props) => {
       <div className={classes.TicketCartButtons}>
         <div style={{ width: "320px", textAlign: "right" }}>
           <button className={classes.ButtonGreen} onClick={addNewTicket}>
-            ADDITIONAL TICKET
+            Additional ticket
           </button>
         </div>
         <div style={{ width: "320px" }}>
@@ -367,7 +367,7 @@ const IssueTickets = (props) => {
               setModalView("review");
             }}
           >
-            PREVIEW ORDER
+            Preview order
           </button>
         </div>
       </div>

@@ -613,7 +613,7 @@ const TicketSelection = () => {
             console.log("Gateway Required");
           }}
         >
-          No Gateway
+          No gateway
         </button>
       );
     } else if (hasRegistration) {
@@ -647,7 +647,7 @@ const TicketSelection = () => {
                 freeTicketHandler();
               }}
             >
-              Submit Order
+              Submit order
             </button>
           );
         } else {
@@ -712,7 +712,7 @@ const TicketSelection = () => {
                     freeTicketHandler();
                   }}
                 >
-                  Submit Order
+                  Submit order
                 </button>
               );
             } else {
@@ -726,7 +726,7 @@ const TicketSelection = () => {
                     console.log("Free User Checkout");
                   }}
                 >
-                  Make a Selection
+                  Make a selection
                 </button>
               );
             }
@@ -1073,7 +1073,7 @@ const TicketSelection = () => {
           setDisplay("main");
         }}
       >
-        I Disagree
+        I disagree
       </button>
     </div>
   );
@@ -1112,7 +1112,7 @@ const TicketSelection = () => {
               }
             }}
           >
-            I Agree
+            I agree
           </button>
         </div>
       );

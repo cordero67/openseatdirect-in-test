@@ -870,7 +870,7 @@ const SubscriptionDisplay = (props) => {
                   submitFreeSub();
                 }}
               >
-                Confirm Selection
+                Confirm selection
               </button>
             </div>
           )}

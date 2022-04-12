@@ -186,7 +186,7 @@ const ConfirmTempDisplay = (props) => {
               }
             }}
           >
-            Submit Confirmation Code
+            Submit confirmation code
           </button>
         </div>
       </Fragment>
@@ -262,7 +262,7 @@ const ConfirmTempDisplay = (props) => {
             props.displayChange("signin");
           }}
         >
-          Log In
+          Log in
         </button>
       </div>
     </div>

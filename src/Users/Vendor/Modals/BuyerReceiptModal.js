@@ -42,7 +42,7 @@ const ReceiptModal = (props) => {
             props.loadPrevious();
           }}
         >
-          LOAD PREVIOUS
+          Load previous
         </button>
         <button
           className={classes.ButtonGreen}
@@ -50,7 +50,7 @@ const ReceiptModal = (props) => {
             props.loadNext();
           }}
         >
-          LOAD NEXT
+          Load next
         </button>
         <button
           className={classes.ButtonGrey}
@@ -58,7 +58,7 @@ const ReceiptModal = (props) => {
             props.close();
           }}
         >
-          CLOSE
+          Close
         </button>
       </div>
     );

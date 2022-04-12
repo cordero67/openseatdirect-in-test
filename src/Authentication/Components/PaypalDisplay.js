@@ -151,7 +151,7 @@ const PaypalDisplay = (props) => {
                 });
               }}
             >
-              Back to Gateway Selection
+              Back to gateway selection
             </button>
           </div>
           <div style={{ textAlign: "center", paddingTop: "20px" }}>

@@ -127,7 +127,7 @@ const ForgotDisplay = (props) => {
               }
             }}
           >
-            Submit Your Email
+            Submit your email
           </button>
         </div>
       </Fragment>
@@ -180,7 +180,7 @@ const ForgotDisplay = (props) => {
               props.displayChange("signup");
             }}
           >
-            Sign Up
+            Sign up
           </button>
         </div>
       </div>

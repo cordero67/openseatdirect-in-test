@@ -318,7 +318,7 @@ const OrganizationDisplay = (props) => {
               }
             }}
           >
-            Submit Your Information
+            Submit your information
           </button>
         </div>
       </Fragment>

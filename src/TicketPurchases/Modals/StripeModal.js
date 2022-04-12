@@ -40,7 +40,7 @@ const StripeModal = (props) => {
         <br></br>
         <div>
           <button className={classes.ButtonGrey} onClick={props.closeModal}>
-            CONTINUE
+            Continue
           </button>
         </div>
         <br></br>
