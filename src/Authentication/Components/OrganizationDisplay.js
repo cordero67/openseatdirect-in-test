@@ -156,7 +156,7 @@ const OrganizationDisplay = (props) => {
   };
 
   const organizationForm = () => {
-    const regName = /^.{1,}$/;
+    const regName = /^.{1,64}$/;
     const regEmail =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const regPhone =
@@ -245,6 +245,7 @@ const OrganizationDisplay = (props) => {
             }}
             className={classes.InputBox}
             style={nameBorder}
+            max={"5"}
             type="text"
             name="accountName"
             onChange={handleOrgValueChange}
