@@ -1,8 +1,8 @@
 /*NEW CHANGES A*/
 .MainContainer {
   font-family: "Roboto", sans-serif;
-  background-color: #2f5596;
-  background-image: linear-gradient(180deg, #2f5596 0%, #000000 100%);
+  background-color: #8dadd4;
+  background-image: linear-gradient(180deg, #8dadd4 0%, #F0F4F9 100%);
   min-height: calc(100vh - 60px);
   padding-top: 60px;
   padding-left: 0px;

@@ -269,7 +269,7 @@ const SignInDisplay = (props) => {
               props.displayChange("signup");
             }}
           >
-            Sign ip
+            Sign up
           </button>
         </div>
       </div>
