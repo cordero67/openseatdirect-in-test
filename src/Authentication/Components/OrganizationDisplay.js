@@ -106,9 +106,9 @@ const OrganizationDisplay = (props) => {
       props.submit();
       props.spinnerChange(false);
     } else {
-      console.log("errmsg: ", data.message);
+      console.log("error: ", data.error);
       setSubmissionStatus({
-        message: data.message,
+        message: data.error,
         error: true,
       });
       props.spinnerChange(false);
