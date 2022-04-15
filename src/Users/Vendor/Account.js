@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { API } from "../../config.js";
 
-import PersonalModal from "./Modals/PersonalModalNEW";
+import PersonalModal from "./Modals/PersonalModal";
 import OrganizationModal from "./Modals/OrganizationModal ";
 import ResetModal from "./Modals/ResetModal";
 import OpennodeModal from "./Modals/OpennodeModal";

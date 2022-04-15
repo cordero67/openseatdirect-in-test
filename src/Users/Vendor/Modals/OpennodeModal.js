@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment } from "react";
-import OpennodeDisplay from "../../../Authentication/Components/OpennodeDisplay";
-import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
+import OpennodeDisplay from "../../../Authentication/Components/OpennodeDisplayNEW";
+import ErrorDisplay from "../../../Authentication/Components/ErrorDisplayNEW";
 
 import Backdrop from "./Backdrop";
-import classes from "./AccountModal.module.css";
+import classes from "./AccountModals.module.css";
 
 const Opennode = (props) => {
   const [showSpinner, setShowSpinner] = useState(false);

@@ -5,7 +5,7 @@ import { API } from "../../config";
 
 import classes from "./ComponentsNEW.module.css";
 
-const ResetDisplay = (props) => {
+const PasswordDisplay = (props) => {
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
     error: false,
@@ -20,22 +20,42 @@ const ResetDisplay = (props) => {
     return response;
   };
 
-  const handleReset = (data) => {
+  const handlePassword = (data) => {
     if (data.status) {
-      console.log("SUCCESS");
-      props.close();
-      props.spinnerChange(false);
+      let tempUser = JSON.parse(localStorage.getItem("user"));
+      tempUser.token = data.token;
+      tempUser.user._id = data.user._id;
+      console.log("tempUser: ", tempUser);
+      localStorage.setItem("user", JSON.stringify(tempUser));
+
+      props.values({
+        email: tempUser.user.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        expired: false,
+        confirmation: "",
+        resent: false,
+        resetToken: "",
+        sessionToken: tempUser.token,
+        accountNum: tempUser.user.accountId.accountNum,
+      });
+      props.submit();
+      console.log("success success1");
+      //props.spinnerChange(false);
+      console.log("success success2");
     } else {
-      console.log("error: ", data.error);
+      console.log("success failure");
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      props.displayChange("password");
       props.spinnerChange(false);
     }
   };
 
-  const submitReset = () => {
+  const submitPassword = () => {
     props.spinnerChange(true);
     setSubmissionStatus({
       message: "",
@@ -43,12 +63,11 @@ const ResetDisplay = (props) => {
     });
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${props.sessionToken}`);
-    let url = `${API}/auth/password/new`;
+    let url = `${API}/auth/signup/password`;
     let information = {
+      email: props.email,
       passwordToken: props.resetToken,
-      //password: props.password,
-      password: "222",
+      password: props.password,
     };
     let fetchBody = {
       method: "POST",
@@ -64,7 +83,7 @@ const ResetDisplay = (props) => {
       })
       .then((data) => {
         console.log("fetch return got back data:", data);
-        handleReset(data);
+        handlePassword(data);
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -73,7 +92,7 @@ const ResetDisplay = (props) => {
       });
   };
 
-  const resetForm = () => {
+  const passwordForm = () => {
     const regPassword = /^(?=.*\d).{8,}$/;
     let disabled = !regPassword.test(props.password);
     let buttonClass;
@@ -86,7 +105,7 @@ const ResetDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <div className={classes.Header}>Change your password</div>
+          <div className={classes.Header}>Create your password</div>
           {errorText()}
           <label style={{ fontSize: "15px" }}>Password</label>
           <input
@@ -116,11 +135,11 @@ const ResetDisplay = (props) => {
             disabled={disabled}
             onClick={() => {
               if (!disabled) {
-                submitReset();
+                submitPassword();
               }
             }}
           >
-            Register password
+            Register your passowrd
           </button>
         </div>
       </Fragment>
@@ -130,6 +149,12 @@ const ResetDisplay = (props) => {
   const errorText = () => {
     if (error) {
       return <div className={classes.ErrorText}>{message}</div>;
+    } else if (props.expired && props.authOrigin !== true) {
+      return (
+        <div className={classes.TimerText}>
+          Timer has expired, please resubmit your email:
+        </div>
+      );
     } else {
       return null;
     }
@@ -138,20 +163,22 @@ const ResetDisplay = (props) => {
   const closeIcon = () => {
     return (
       <div className={classes.CloseIcon}>
-        <ion-icon
-          name="close-circle-outline"
-          cursor="pointer"
-          onClick={() => {
-            props.close();
-          }}
-        />
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
       </div>
     );
   };
 
   if (props.spinner) {
     return (
-      <div style={{ paddingTop: "40px", height: "249px" }}>
+      <div style={{ paddingTop: "40px", height: "269px" }}>
         <Spinner />
       </div>
     );
@@ -159,10 +186,10 @@ const ResetDisplay = (props) => {
     return (
       <Fragment>
         {closeIcon()}
-        <div className={classes.BlankCanvas}>{resetForm()}</div>
+        <div className={classes.BlankCanvas}>{passwordForm()}</div>;
       </Fragment>
     );
   }
 };
 
-export default ResetDisplay;
+export default PasswordDisplay;

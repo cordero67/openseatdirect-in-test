@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment } from "react";
 import OrganizationDisplay from "../../../Authentication/Components/OrganizationDisplay";
-import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
+import ErrorDisplay from "../../../Authentication/Components/ErrorDisplayNEW";
 
 import Backdrop from "./Backdrop";
-import classes from "./AccountModal.module.css";
+import classes from "./AccountModals.module.css";
 
 const Organization = (props) => {
   const [showSpinner, setShowSpinner] = useState(false);

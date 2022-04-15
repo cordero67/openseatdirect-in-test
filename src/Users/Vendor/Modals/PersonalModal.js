@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment } from "react";
 import PersonalDisplay from "../../../Authentication/Components/PersonalDisplay";
-import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
+import ErrorDisplay from "../../../Authentication/Components/ErrorDisplayNEW";
 
 import Backdrop from "./Backdrop";
-import classes from "./AccountModal.module.css";
+import classes from "./AccountModals.module.css";
 
 const Personal = (props) => {
   const [showSpinner, setShowSpinner] = useState(false);

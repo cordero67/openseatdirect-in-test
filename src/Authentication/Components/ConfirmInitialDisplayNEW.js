@@ -5,7 +5,7 @@ import { API } from "../../config";
 
 import classes from "./ComponentsNEW.module.css";
 
-const ConfirmUpdateDisplay = (props) => {
+const ConfirmInitialDisplay = (props) => {
   console.log("props: ", props);
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
@@ -24,23 +24,23 @@ const ConfirmUpdateDisplay = (props) => {
   const handleResend = (data) => {
     if (data.status) {
       props.values({
-        email: props.email,
+        email: data.user.email,
         password: "",
         temporary: "",
         reissued: false,
         expired: false,
         confirmation: "",
         resent: true,
-        resetToken: data.user.passwordToken,
-        sessionToken: props.sessionToken,
-        accountNum: props.accountNum,
+        resetToken: "",
+        sessionToken: "",
+        accountNum: "",
       });
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
-      props.displayChange("confirmUpdate");
+      props.displayChange("confirmation");
       props.spinnerChange(false);
     }
   };
@@ -53,14 +53,17 @@ const ConfirmUpdateDisplay = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${props.sessionToken}`);
-    let url = `${API}/auth/password/sendcode`;
+    let url = `${API}/auth/signup/resendcode`;
+    let information = {
+      email: props.email,
+    };
     let fetchBody = {
       method: "POST",
       headers: myHeaders,
-      redirect: "follow",
+      body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
+    console.log("Information: ", information);
     fetch(url, fetchBody)
       .then(handleErrors)
       .then((response) => {
@@ -81,12 +84,10 @@ const ConfirmUpdateDisplay = (props) => {
   const handleConfirmation = (data) => {
     console.log("data: ", data);
     if (data.status) {
-      let tempUser = JSON.parse(localStorage.getItem("user"));
-      console.log("tempUser: ", tempUser);
-      tempUser.data = data.user;
+      localStorage.setItem("user", JSON.stringify(data));
 
       props.values({
-        email: props.email,
+        email: data.user.email,
         password: "",
         temporary: "",
         reissued: false,
@@ -94,17 +95,17 @@ const ConfirmUpdateDisplay = (props) => {
         confirmation: "",
         resent: false,
         resetToken: data.user.passwordToken,
-        sessionToken: props.sessionToken,
-        accountNum: props.accountNum,
+        sessionToken: "",
+        accountNum: data.user.accountId.accountNum,
       });
-      props.displayChange("reset");
+      props.displayChange("password");
       props.spinnerChange(false);
     } else {
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
-      props.displayChange("confirmUpdate");
+      props.displayChange("confirmation");
       props.spinnerChange(false);
     }
   };
@@ -118,9 +119,9 @@ const ConfirmUpdateDisplay = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${props.sessionToken}`);
-    let url = `${API}/auth/password/confirmcode`;
+    let url = `${API}/auth/signup/confirmcode`;
     let information = {
+      email: props.email,
       confirm_code: props.confirmation,
     };
     let fetchBody = {
@@ -129,7 +130,6 @@ const ConfirmUpdateDisplay = (props) => {
       body: JSON.stringify(information),
     };
     console.log("fetching with: ", url, fetchBody);
-    console.log("Information: ", information);
     fetch(url, fetchBody)
       .then(handleErrors)
       .then((response) => {
@@ -150,7 +150,6 @@ const ConfirmUpdateDisplay = (props) => {
   const confirmationForm = () => {
     const regsuper = /\b\d{6}\b/;
     let disabled = !regsuper.test(props.confirmation);
-    console.log("disabled: ", disabled);
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
@@ -162,8 +161,8 @@ const ConfirmUpdateDisplay = (props) => {
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
           <div className={classes.Header}>Enter confirmation code</div>
-          {topDisplay()}
           {errorText()}
+          {topDisplay()}
           <label style={{ fontSize: "15px" }}>Confirmation code</label>
           <input
             className={classes.InputBox}
@@ -178,14 +177,7 @@ const ConfirmUpdateDisplay = (props) => {
           />{" "}
           {props.confirmation && !regsuper.test(props.confirmation) ? (
             <div style={{ paddingTop: "5px" }}>
-              <span
-                style={{
-                  color: "red",
-                  fontSize: "14px",
-                  paddingTop: "5px",
-                  paddingBottom: "10px",
-                }}
-              >
+              <span className={classes.ErrorText}>
                 A valid 6 digit code is required
               </span>
             </div>
@@ -210,9 +202,11 @@ const ConfirmUpdateDisplay = (props) => {
 
   const errorText = () => {
     if (error) {
+      return <div className={classes.ErrorText}>{message}</div>;
+    } else if (props.expired && props.authOrigin !== true) {
       return (
-        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
-          {message}
+        <div className={classes.TimerText}>
+          Timer has expired, please resubmit your email:
         </div>
       );
     } else {
@@ -225,16 +219,9 @@ const ConfirmUpdateDisplay = (props) => {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter the 6-digit code sent to your email.
+            Enter 6-digit code sent to your email.
           </div>
-          <div
-            style={{
-              fontSize: "16px",
-              fontWeight: "600",
-              color: "red",
-              paddingBottom: "20px",
-            }}
-          >
+          <div className={classes.SpamText}>
             PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
         </Fragment>
@@ -243,16 +230,9 @@ const ConfirmUpdateDisplay = (props) => {
       return (
         <Fragment>
           <div style={{ fontSize: "16px", paddingBottom: "10px" }}>
-            Enter the new 6-digit code sent to your email.
+            Enter new 6-digit code sent to your email.
           </div>
-          <div
-            style={{
-              fontSize: "16px",
-              fontWeight: "600",
-              color: "red",
-              paddingBottom: "20px",
-            }}
-          >
+          <div className={classes.SpamText}>
             PLEASE CHECK YOUR SPAM/JUNK FOLDER
           </div>
         </Fragment>
@@ -282,20 +262,25 @@ const ConfirmUpdateDisplay = (props) => {
   const closeIcon = () => {
     return (
       <div className={classes.CloseIcon}>
-        <ion-icon
-          name="close-circle-outline"
-          cursor="pointer"
-          onClick={() => {
-            props.close();
-          }}
-        />
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
       </div>
     );
   };
 
   if (props.spinner) {
     return (
-      <div style={{ paddingTop: "40px", height: "360px" }}>
+      <div
+        className={classes.BlankCanvas}
+        style={{ paddingTop: "40px", height: "360px" }}
+      >
         <Spinner />
       </div>
     );
@@ -303,10 +288,10 @@ const ConfirmUpdateDisplay = (props) => {
     return (
       <Fragment>
         {closeIcon()}
-        <div className={classes.BlankCanvas}>{confirmationForm()}</div>
+        <div className={classes.BlankCanvas}>{confirmationForm()}</div>{" "}
       </Fragment>
     );
   }
 };
 
-export default ConfirmUpdateDisplay;
+export default ConfirmInitialDisplay;

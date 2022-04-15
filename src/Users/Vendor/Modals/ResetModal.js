@@ -1,20 +1,13 @@
 import React, { useState, useEffect, Fragment } from "react";
 import ConfirmUpdateDisplay from "../../../Authentication/Components/ConfirmUpdateDisplay";
 import ResetDisplay from "../../../Authentication/Components/ResetDisplay";
-import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
-
-import { API } from "../../../config";
+import ErrorDisplay from "../../../Authentication/Components/ErrorDisplayNEW";
 
 import Backdrop from "./Backdrop";
-import classes from "./ResetModal.module.css";
+import classes from "./AccountModals.module.css";
 
 const Reset = (props) => {
   const [showSpinner, setShowSpinner] = useState(false);
-
-  const [subValues, setSubValues] = useState({
-    accountNum: "",
-    sessionToken: "",
-  });
 
   const [display, setDisplay] = useState("confirmUpdate"); // spinner, signin, forgot, temporary, signup, confirmation, password, error
 
@@ -46,13 +39,6 @@ const Reset = (props) => {
     accountNum,
   } = values;
 
-  // transaction status variable
-  const [submissionStatus, setSubmissionStatus] = useState({
-    message: "",
-    error: false,
-  });
-  const { message, error } = submissionStatus;
-
   // LOOKS GOOD
   useEffect(() => {
     if (
@@ -67,67 +53,7 @@ const Reset = (props) => {
       window.location.href = "/auth";
     }
   }, []);
-  // LOOKS GOOD
-  const handleErrors = (response) => {
-    console.log("inside handleErrors ", response);
-    if (!response.ok) {
-      throw Error(response.status);
-    }
-    return response;
-  };
 
-  // LOOKS GOOD
-  const submitExpired = () => {
-    console.log("values: ", values);
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${values.sessionToken}`);
-    let url = `${API}/auth/password/sendcode`;
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-    };
-    console.log("url: ", url);
-    console.log("fetcharg: ", fetchBody);
-
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("fetch return got back data:", data);
-        handleExpired(data);
-      })
-      .catch((error) => {
-        console.log("freeTicketHandler() error.message: ", error.message);
-        setSubmissionStatus({
-          message: "Server is down, please try later",
-          error: true,
-        });
-        setDisplay("error");
-      });
-  };
-
-  const handleExpired = (data) => {
-    if (data.status) {
-      resetValues();
-      console.log("SUCCESS");
-      setDisplay("confirmUpdate");
-    } else {
-      setSubmissionStatus({
-        message: data.error,
-        error: true,
-      });
-      console.log("ERROR: ", data.error);
-    }
-  };
   // LOOKS GOOD
   const resetValues = () => {
     let tempValues = {
@@ -139,6 +65,7 @@ const Reset = (props) => {
     };
     setValues(tempValues);
   };
+
   // LOOKS GOOD
   const handleChange = (event) => {
     setValues({
@@ -146,74 +73,15 @@ const Reset = (props) => {
       [event.target.name]: event.target.value,
     });
   };
-  // LOOKS GOOD
-  const showError = () => {
-    if (error) {
-      return (
-        <div style={{ color: "red", fontSize: "14px", paddingBottom: "20px" }}>
-          {message}
-        </div>
-      );
-    }
-  };
-
-  const expiredForm = (
-    <Fragment>
-      <div style={{ width: "100%", paddingBottom: "10px", fontSize: "16px" }}>
-        Would you still like to set your password?
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.OSDBlueButton}
-          onClick={() => {
-            console.log("clicked yes button");
-            submitExpired();
-          }}
-        >
-          Yes resend code
-        </button>
-      </div>
-      <div style={{ paddingTop: "10px" }}>
-        <button
-          className={classes.ButtonGrey}
-          onClick={() => {
-            closeModal();
-          }}
-        >
-          Not at this time
-        </button>
-      </div>
-    </Fragment>
-  );
 
   // LOOKS GOOD
   const closeModal = () => {
     resetValues();
-    setSubmissionStatus({
-      message: "",
-      error: false,
-    });
     setDisplay("confirmUpdate");
     props.closeModal();
   };
 
-  const expiredDisplay = () => {
-    if (display === "expired") {
-      return (
-        <div className={classes.BlankCanvas}>
-          <div className={classes.Header}>
-            <div>Time expired</div>
-          </div>
-          <div>
-            {showError()}
-            {expiredForm}
-          </div>
-        </div>
-      );
-    } else return null;
-  };
-
-  const confirmUpdateDisplayNEW = () => {
+  const confirmUpdateDisplay = () => {
     if (display === "confirmUpdate") {
       return (
         <ConfirmUpdateDisplay
@@ -298,9 +166,8 @@ const Reset = (props) => {
         }}
         className={classes.Modal}
       >
-        {confirmUpdateDisplayNEW()}
+        {confirmUpdateDisplay()}
         {resetDisplay()}
-        {expiredDisplay()}
         {errorDisplay()}
       </div>
     </Fragment>

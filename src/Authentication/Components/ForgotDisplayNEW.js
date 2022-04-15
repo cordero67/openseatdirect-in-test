@@ -5,7 +5,7 @@ import { API } from "../../config";
 
 import classes from "./ComponentsNEW.module.css";
 
-const ResetDisplay = (props) => {
+const ForgotDisplay = (props) => {
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
     error: false,
@@ -20,22 +20,33 @@ const ResetDisplay = (props) => {
     return response;
   };
 
-  const handleReset = (data) => {
+  const handleForgot = (data) => {
     if (data.status) {
-      console.log("SUCCESS");
-      props.close();
+      props.values({
+        email: data.user?.email,
+        password: "",
+        temporary: "",
+        reissued: false,
+        expired: false,
+        confirmation: "",
+        resent: false,
+        resetToken: "",
+        sessionToken: "",
+        accountNum: "",
+      });
+      props.displayChange("temporary");
       props.spinnerChange(false);
     } else {
-      console.log("error: ", data.error);
       setSubmissionStatus({
         message: data.error,
         error: true,
       });
+      props.displayChange("forgot");
       props.spinnerChange(false);
     }
   };
 
-  const submitReset = () => {
+  const submitForgot = () => {
     props.spinnerChange(true);
     setSubmissionStatus({
       message: "",
@@ -43,12 +54,9 @@ const ResetDisplay = (props) => {
     });
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${props.sessionToken}`);
-    let url = `${API}/auth/password/new`;
+    let url = `${API}/auth/signin/sendcode`;
     let information = {
-      passwordToken: props.resetToken,
-      //password: props.password,
-      password: "222",
+      email: props.email,
     };
     let fetchBody = {
       method: "POST",
@@ -64,7 +72,7 @@ const ResetDisplay = (props) => {
       })
       .then((data) => {
         console.log("fetch return got back data:", data);
-        handleReset(data);
+        handleForgot(data);
       })
       .catch((error) => {
         console.log("freeTicketHandler() error.message: ", error.message);
@@ -73,9 +81,10 @@ const ResetDisplay = (props) => {
       });
   };
 
-  const resetForm = () => {
-    const regPassword = /^(?=.*\d).{8,}$/;
-    let disabled = !regPassword.test(props.password);
+  const forgotForm = () => {
+    const regsuper =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let disabled = !regsuper.test(props.email);
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
@@ -86,15 +95,15 @@ const ResetDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <div className={classes.Header}>Change your password</div>
+          <div className={classes.Header}>Trouble logging in?</div>
           {errorText()}
-          <label style={{ fontSize: "15px" }}>Password</label>
+          <label style={{ fontSize: "15px" }}>E-mail Address</label>
           <input
             className={classes.InputBox}
-            type="text"
-            name="password"
+            type="email"
+            name="email"
             onChange={props.inputChange}
-            value={props.password}
+            value={props.email}
             onFocus={() => {
               setSubmissionStatus({
                 message: "",
@@ -102,10 +111,10 @@ const ResetDisplay = (props) => {
               });
             }}
           />
-          {props.password && !regPassword.test(props.password) ? (
+          {props.email && !regsuper.test(props.email) ? (
             <div style={{ paddingTop: "5px" }}>
               <span className={classes.ErrorText}>
-                Minimum 8 character password including 1 number
+                A valid email address is required
               </span>
             </div>
           ) : null}
@@ -116,13 +125,14 @@ const ResetDisplay = (props) => {
             disabled={disabled}
             onClick={() => {
               if (!disabled) {
-                submitReset();
+                submitForgot();
               }
             }}
           >
-            Register password
+            Submit your email
           </button>
         </div>
+        {bottomDisplay}
       </Fragment>
     );
   };
@@ -130,28 +140,78 @@ const ResetDisplay = (props) => {
   const errorText = () => {
     if (error) {
       return <div className={classes.ErrorText}>{message}</div>;
+    } else if (props.expired && props.authOrigin !== true) {
+      return (
+        <div className={classes.TimerText}>
+          Timer has expired, please resubmit your email:
+        </div>
+      );
     } else {
       return null;
     }
   };
 
+  const bottomDisplay = (
+    <div className={classes.Alternates}>
+      <div style={{ textAlign: "left" }}>
+        Back to{" "}
+        <button
+          className={classes.BlueText}
+          onClick={() => {
+            setSubmissionStatus({
+              message: "",
+              error: false,
+            });
+            props.displayChange("signin");
+          }}
+        >
+          Log in
+        </button>
+      </div>
+
+      <div style={{ textAlign: "right" }}>
+        <div style={{ textAlign: "right" }}>
+          Not a member?{" "}
+          <button
+            className={classes.BlueText}
+            onClick={() => {
+              props.resetValues();
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
+              props.displayChange("signup");
+            }}
+          >
+            Sign up
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   const closeIcon = () => {
     return (
       <div className={classes.CloseIcon}>
-        <ion-icon
-          name="close-circle-outline"
-          cursor="pointer"
-          onClick={() => {
-            props.close();
-          }}
-        />
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
       </div>
     );
   };
 
   if (props.spinner) {
     return (
-      <div style={{ paddingTop: "40px", height: "249px" }}>
+      <div
+        className={classes.BlankCanvas}
+        style={{ paddingTop: "40px", height: "290px" }}
+      >
         <Spinner />
       </div>
     );
@@ -159,10 +219,10 @@ const ResetDisplay = (props) => {
     return (
       <Fragment>
         {closeIcon()}
-        <div className={classes.BlankCanvas}>{resetForm()}</div>
+        <div className={classes.BlankCanvas}>{forgotForm()}</div>
       </Fragment>
     );
   }
 };
 
-export default ResetDisplay;
+export default ForgotDisplay;

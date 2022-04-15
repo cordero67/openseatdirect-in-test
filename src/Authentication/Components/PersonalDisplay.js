@@ -4,7 +4,7 @@ import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../../config";
 
-import classes from "./Components.module.css";
+import classes from "./ComponentsNEW.module.css";
 
 const PersonalDisplay = (props) => {
   console.log("props: ", props);
@@ -168,6 +168,8 @@ const PersonalDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "340px" }}>
+          <div className={classes.Header}>Edit Your Information</div>
+          {errorText()}
           <label style={{ width: "340px", fontSize: "15px" }}>First Name</label>
           <input
             onFocus={() => {
@@ -249,48 +251,39 @@ const PersonalDisplay = (props) => {
     }
   };
 
-  const header = () => {
-    if (props.authOrigin !== true) {
-      return (
-        <div className={classes.HeaderModal}>
-          <div>Edit Your Information</div>
-          <div style={{ textAlign: "right", top: "10%" }}>
-            <ion-icon
-              className={classes.CloseIcon}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                initializeSubValues();
-                setSubmissionStatus({
-                  message: "",
-                  error: false,
-                });
-                props.close();
-              }}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return <div className={classes.Header}>Edit Your Information</div>;
-    }
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              initializeSubValues();
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
   };
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "363px" }}>
+      <div style={{ paddingTop: "40px", height: "416px" }}>
         <Spinner />
       </div>
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        {header()}
-        <div>
-          {errorText()}
-          {personalForm()}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{personalForm()}</div>
+      </Fragment>
     );
   }
 };
