@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { API } from "../config.js";
 import { useOurApi } from "../utils/useOurApi";
@@ -11,7 +11,6 @@ const CheckoutOpennode = (props) => {
   //    const  isSignedUser = tempUser !=null;
   //    const isGuest = "guestInfo" in tempCart && ! isSignedUser;
   //    const [stripePromise, setStripePromise] = useState();
-
 
   const event = props?.event
     ? props.event
@@ -91,19 +90,34 @@ const CheckoutOpennode = (props) => {
     return <div> Loading please wait...</div>;
   } else if (networkError) {
     console.log("onennodeError=");
-    return <div>These was a network connectivity problem. Please check your connection, click the back button on your browser and try again.</div>;
-  } else if (hasError) {    // must check networkError before hasError
-    return <div>System problem with bitcoin payments. Please click the back button on your browser and try again or inform the event creator...</div>;
+    return (
+      <div>
+        These was a network connectivity problem. Please check your connection,
+        click the back button on your browser and try again.
+      </div>
+    );
+  } else if (hasError) {
+    // must check networkError before hasError
+    return (
+      <div>
+        System problem with bitcoin payments. Please click the back button on
+        your browser and try again or inform the event creator...
+      </div>
+    );
   } else if (data?.success) {
-      window.location.href = data.redirect_url;
-      return <div>redirecting to Opennode to complete payment...</div>;
+    window.location.href = data.redirect_url;
+    return <div>redirecting to Opennode to complete payment...</div>;
   } else if (data?.error) {
-      return <div>{data.error}</div>;
+    return <div>{data.error}</div>;
   } else {
-      console.log("Something went wrong");
-      return <div>Something went wrong. Please try again or report a problem to the event creator.</div>;
+    console.log("Something went wrong");
+    return (
+      <div>
+        Something went wrong. Please try again or report a problem to the event
+        creator.
+      </div>
+    );
   }
-}
-
+};
 
 export default CheckoutOpennode;

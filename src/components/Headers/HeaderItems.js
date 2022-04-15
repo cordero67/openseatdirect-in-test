@@ -31,6 +31,22 @@ const NavigationItems = (props) => {
 
   return (
     <ul className={classes.HeaderItems}>
+      {!isAuthenticated() ? (
+        <li>
+          <NavLink to="/auth" style={isActive(props.currentPage, "/myaccount")}>
+            Create Event
+          </NavLink>
+        </li>
+      ) : (
+        <li>
+          <NavLink
+            to="/myaccount?view=create"
+            style={isActive(props.currentPage, "/auth")}
+          >
+            Create Eventt
+          </NavLink>
+        </li>
+      )}
       <li style={{ fontSize: "16px" }}>
         <NavLink to="/" style={isActive(props.currentPage, "/")}>
           Events
