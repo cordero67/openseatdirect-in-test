@@ -9,7 +9,7 @@ import PasswordDisplay from "./Components/PasswordDisplay";
 import ErrorDisplay from "./Components/ErrorDisplay";
 
 import Backdrop from "../components/UI/Backdrop/Backdrop";
-import classes from "./Authentication.module.css";
+import classes from "./AuthenticationModal.module.css";
 
 const Authentication = (props) => {
   const [values, setValues] = useState({
@@ -21,7 +21,6 @@ const Authentication = (props) => {
     confirmation: "",
     resent: false,
     resetToken: "",
-    sessionToken: "",
     accountNum: "",
   });
 
@@ -33,14 +32,12 @@ const Authentication = (props) => {
     expired,
     confirmation,
     resent,
-    username,
     resetToken,
-    sessionToken,
   } = values;
 
   const [redirect, setRedirect] = useState("");
 
-  const [modalDisplay, setModalDisplay] = useState(props.start); // signin, forgot, temporary, signup, confirmation, password, username, error
+  const [modalDisplay, setModalDisplay] = useState(props.start); // signin, forgot, temporary, signup, confirmation, password, error
 
   const [showSpinner, setShowSpinner] = useState(false);
 
@@ -53,9 +50,7 @@ const Authentication = (props) => {
       expired: false,
       confirmation: "",
       resent: false,
-      username: "",
       resetToken: "",
-      sessionToken: "",
       userId: "",
     });
   };

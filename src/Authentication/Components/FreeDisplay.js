@@ -26,11 +26,16 @@ const FreeDisplay = (props) => {
 
   const freeForm = (
     <Fragment>
+      <div className={classes.Header}>
+        <div>Success!</div>
+      </div>
+      {topDisplay}
       <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.ButtonBlue}
           onClick={() => {
             props.displayChange("gateway");
+            console.log("going to gateway");
           }}
         >
           Upgrade to Pro Plan
@@ -40,25 +45,36 @@ const FreeDisplay = (props) => {
         <button
           className={classes.ButtonGrey}
           onClick={() => {
-            window.location.href = "/myaccount";
+            window.location.href = "/";
           }}
         >
-          Go to my Dashboard
+          Continue
         </button>
       </div>
     </Fragment>
   );
 
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
+  };
+
   return (
-    <div className={classes.BlankCanvas}>
-      <div className={classes.Header}>
-        <div>Success!</div>
-      </div>
-      <div>
-        {topDisplay}
-        {freeForm}
-      </div>
-    </div>
+    <Fragment>
+      {closeIcon()}
+      <div className={classes.BlankCanvas}>{freeForm}</div>
+    </Fragment>
   );
 };
 

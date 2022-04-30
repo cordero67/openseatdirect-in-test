@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import OrganizationDisplay from "../../../Authentication/Components/OrganizationDisplay";
-import ErrorDisplay from "../../../Authentication/Components/ErrorDisplayNEW";
+import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./AccountModals.module.css";

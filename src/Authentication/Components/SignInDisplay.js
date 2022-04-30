@@ -99,6 +99,8 @@ const SignInDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
+          <div className={classes.Header}>Welcome Back!</div>
+          {showError()}
           <label style={{ fontSize: "15px" }}>Email Address</label>
           <input
             className={classes.InputBox}
@@ -198,6 +200,7 @@ const SignInDisplay = (props) => {
             }}
           />
         </div>
+        {bottomDisplay}
       </Fragment>
     );
   };
@@ -216,26 +219,20 @@ const SignInDisplay = (props) => {
     }
   };
 
-  const header = () => {
-    if (props.authOrigin !== true) {
-      return (
-        <div className={classes.HeaderModal}>
-          <div>Welcome Back!</div>
-          <div style={{ textAlign: "center" }}>
-            <ion-icon
-              className={classes.CloseIcon}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                props.close();
-              }}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return <div className={classes.Header}>Welcome Back!</div>;
-    }
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
   };
 
   const bottomDisplay = (
@@ -278,20 +275,19 @@ const SignInDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "435px" }}>
+      <div
+        className={classes.BlankCanvas}
+        style={{ paddingTop: "40px", height: "488px" }}
+      >
         <Spinner />
       </div>
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        {header()}
-        <div>
-          {showError()}
-          {signInForm()}
-          {bottomDisplay}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{signInForm()}</div>
+      </Fragment>
     );
   }
 };

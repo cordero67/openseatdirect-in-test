@@ -98,6 +98,11 @@ const SignUpDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
+          <div className={classes.Header} style={{ lineHeight: "30px" }}>
+            Ready to join{" "}
+            <img src={OSDImg} alt="OPENNODE" width="80px" height="auto"></img>
+          </div>
+          {showError()}
           <label style={{ fontSize: "15px" }}>Email Address</label>
           <input
             className={classes.InputBox}
@@ -134,7 +139,7 @@ const SignUpDisplay = (props) => {
           </button>
         </div>
         <div style={{ fontSize: "16px", paddingTop: "10px" }}>
-          By clicking 'Submit Your Email' I agree to Open Seat Direct's{" "}
+          By clicking 'Submit your email' you agree to Open Seat Direct's{" "}
           <a
             className={classes.BlueText}
             href="https://www.openseatdirect.com/privacy-policy/"
@@ -197,6 +202,7 @@ const SignUpDisplay = (props) => {
             }}
           />
         </div>
+        {bottomDisplay}
       </Fragment>
     );
   };
@@ -233,64 +239,37 @@ const SignUpDisplay = (props) => {
     </div>
   );
 
-  const header = () => {
-    if (props.authOrigin !== true) {
-      return (
-        <div className={classes.HeaderModal}>
-          <div style={{ lineHeight: "30px" }}>
-            Ready to join{" "}
-            <img
-              src={OSDImg}
-              alt="OPENNODE"
-              width="80px"
-              height="auto"
-              cursor="pointer"
-              onClick={() => {
-                console.log("selecting Opennode");
-                //setDisplay("opennode");
-              }}
-            ></img>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <ion-icon
-              className={classes.CloseIcon}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                props.close();
-              }}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={classes.Header}>
-          <div style={{ lineHeight: "30px" }}>
-            Ready to join{" "}
-            <img src={OSDImg} alt="OPENNODE" width="80px" height="auto"></img>
-          </div>
-        </div>
-      );
-    }
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
   };
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "433px" }}>
+      <div
+        className={classes.BlankCanvas}
+        style={{ paddingTop: "40px", height: "484px" }}
+      >
         <Spinner />
       </div>
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        {header()}
-        <div>
-          {showError()}
-          {signUpForm()}
-          {bottomDisplay}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{signUpForm()}</div>
+      </Fragment>
     );
   }
 };

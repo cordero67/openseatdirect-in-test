@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import ConfirmUpdateDisplay from "../../../Authentication/Components/ConfirmUpdateDisplay";
 import ResetDisplay from "../../../Authentication/Components/ResetDisplay";
-import ErrorDisplay from "../../../Authentication/Components/ErrorDisplayNEW";
+import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./AccountModals.module.css";

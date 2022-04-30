@@ -105,6 +105,8 @@ const PasswordDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
+          <div className={classes.Header}>Create your password</div>
+          {errorText()}
           <label style={{ fontSize: "15px" }}>Password</label>
           <input
             className={classes.InputBox}
@@ -137,7 +139,7 @@ const PasswordDisplay = (props) => {
               }
             }}
           >
-            Register your passowrd
+            Register your password
           </button>
         </div>
       </Fragment>
@@ -158,43 +160,34 @@ const PasswordDisplay = (props) => {
     }
   };
 
-  const header = () => {
-    if (props.authOrigin !== true) {
-      return (
-        <div className={classes.HeaderModal}>
-          <div>Create your password</div>
-          <div style={{ textAlign: "right" }}>
-            <ion-icon
-              className={classes.CloseIcon}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                props.close();
-              }}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return <div className={classes.Header}>Create your password</div>;
-    }
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
   };
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "197px" }}>
+      <div style={{ paddingTop: "40px", height: "269px" }}>
         <Spinner />
       </div>
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        {header()}
-        <div>
-          {errorText()}
-          {passwordForm()}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{passwordForm()}</div>;
+      </Fragment>
     );
   }
 };

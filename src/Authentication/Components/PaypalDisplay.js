@@ -191,6 +191,8 @@ const PaypalDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
+          <div className={classes.Header}>Enter Paypal Details</div>
+          {errorText()}
           Can't find the Client ID and Secret?
           <div style={{ paddingLeft: "20px" }}>
             <a
@@ -286,55 +288,46 @@ const PaypalDisplay = (props) => {
     }
   };
 
-  const header = () => {
-    if (props.authOrigin !== true) {
-      return (
-        <div className={classes.HeaderModal}>
-          <div>Enter Paypal Details</div>
-          <div style={{ textAlign: "right", top: "10%" }}>
-            <ion-icon
-              className={classes.CloseIcon}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                initializeSubValues();
-                setSubmissionStatus({
-                  message: "",
-                  error: false,
-                });
-                props.close();
-              }}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return <div className={classes.Header}>Enter Paypal Details</div>;
-    }
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              initializeSubValues();
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
   };
 
   if (props.spinner) {
-    let height;
+    let style;
     if (props.authOrigin) {
-      height = { height: "494px" };
+      style = { paddingTop: "40px", height: "494px" };
     } else {
-      height = { height: "377px" };
+      style = { paddingTop: "40px", height: "427px" };
     }
 
     return (
-      <div className={classes.BlankCanvas} style={height}>
+      <div style={style}>
         <Spinner />
       </div>
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        {header()}
-        <div>
-          {errorText()}
-          {paypalForm()}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{paypalForm()}</div>
+      </Fragment>
     );
   }
 };

@@ -227,6 +227,8 @@ const OpennodeDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ fontSize: "15px", paddingBottom: "20px" }}>
+          <div className={classes.Header}>Enter Opennode Details</div>
+          {errorText()}
           <div>
             Setup a new Opennode account{" "}
             <a
@@ -325,55 +327,46 @@ const OpennodeDisplay = (props) => {
     }
   };
 
-  const header = () => {
-    if (props.authOrigin !== true) {
-      return (
-        <div className={classes.HeaderModal}>
-          <div>Enter Opennode Details</div>
-          <div style={{ textAlign: "right" }}>
-            <ion-icon
-              className={classes.CloseIcon}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                console.log("CLOSING");
-                initializeSubValues();
-                setSubmissionStatus({
-                  message: "",
-                  error: false,
-                });
-                props.close();
-              }}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return <div className={classes.Header}>Enter Opennode Details</div>;
-    }
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              console.log("CLOSING");
+              initializeSubValues();
+              setSubmissionStatus({
+                message: "",
+                error: false,
+              });
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
   };
 
   if (props.spinner) {
-    let height;
+    let style;
     if (props.authOrigin) {
-      height = { height: "591px" };
+      style = { paddingTop: "40px", height: "591px" };
     } else {
-      height = { height: "471px" };
+      style = { paddingTop: "40px", height: "521px" };
     }
     return (
-      <div className={classes.BlankCanvas} style={height}>
+      <div style={style}>
         <Spinner />
       </div>
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        {header()}
-        <div>
-          {errorText()}
-          {opennodeForm()}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{opennodeForm()}</div>
+      </Fragment>
     );
   }
 };

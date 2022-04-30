@@ -38,16 +38,6 @@ const VendorAccount = (props) => {
 
   //  const [userInfo, setUserInfo] = useState({}); //
 
-  let initialView = queryString.parse(window.location.search).view;
-  if (initialView === "gateway" || initialView === "sub") {
-    setUpgradeDisplay(initialView);
-    setDisplay("upgrade");
-  } else if (initialView === "create") {
-    //console.log("going to create");
-    setUpgradeDisplay(initialView);
-    setDisplay("create");
-  }
-
   let tempUser = JSON.parse(localStorage.getItem("user"));
   let acctnum = tempUser?.user?.accountId?.accountNum;
   if (!tempUser?.token || !acctnum) window.location.href = "/auth";
@@ -89,6 +79,13 @@ const VendorAccount = (props) => {
 
   useEffect(() => {
     console.log("inside useEffect");
+    let initialView = queryString.parse(window.location.search).view;
+    console.log("initialView: ", initialView);
+
+    if (initialView === "create") {
+      setUpgradeDisplay(initialView);
+      setDisplay("create");
+    }
   }, []);
 
   const mainDisplay = () => {

@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from "react";
 
-import Spinner from "../../components/UI/Spinner/SpinnerNew";
+import Spinner from "../../components/UI/Spinner/Spinner";
 import { API } from "../../config";
 
 import classes from "./Components.module.css";
@@ -115,7 +115,7 @@ const ConfirmTempDisplay = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/confirmcode`;
+    let url = `${API}/auth/signinnnn/confirmcode`;
     let information = {
       email: props.email,
       confirm_code: props.temporary,
@@ -156,6 +156,9 @@ const ConfirmTempDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
+          <div className={classes.Header}>Enter confirmation code</div>
+          {errorText()}
+          {topDisplay()}
           <label style={{ fontSize: "15px" }}>Confirmation Code</label>
           <input
             className={classes.InputBox}
@@ -189,6 +192,7 @@ const ConfirmTempDisplay = (props) => {
             Submit confirmation code
           </button>
         </div>
+        {bottomDisplay}
       </Fragment>
     );
   };
@@ -268,45 +272,37 @@ const ConfirmTempDisplay = (props) => {
     </div>
   );
 
-  const header = () => {
-    if (props.authOrigin !== true) {
-      return (
-        <div className={classes.HeaderModal}>
-          <div>Enter confirmation code</div>
-          <div style={{ textAlign: "right" }}>
-            <ion-icon
-              className={classes.CloseIcon}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                props.close();
-              }}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return <div className={classes.Header}>Enter confirmation code</div>;
-    }
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
   };
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "308px" }}>
+      <div
+        className={classes.BlankCanvas}
+        style={{ paddingTop: "40px", height: "360px" }}
+      >
         <Spinner />
       </div>
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        {header()}
-        <div>
-          {errorText()}
-          {topDisplay()}
-          {temporaryForm()}
-          {bottomDisplay}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{temporaryForm()}</div>{" "}
+      </Fragment>
     );
   }
 };

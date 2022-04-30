@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 
-import Spinner from "../../components/UI/Spinner/SpinnerNew";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -445,7 +445,7 @@ const SubscriptionDisplay = (props) => {
     }
   };
 
-  const showDetail = () => {
+  const errorText = () => {
     if (error) {
       return <div className={classes.ErrorText}>{message}</div>;
     } else return null;
@@ -600,7 +600,7 @@ const SubscriptionDisplay = (props) => {
       })
       .catch((err) => {
         console.log("error.message: ", error.message);
-        props.showError();
+        props.errorText();
         props.spinnerChange(false);
       });
   };
@@ -897,11 +897,29 @@ const SubscriptionDisplay = (props) => {
   // Displays the entire subscription payment panel
   const subscriptionForm = (
     <Fragment>
+      <div className={classes.Header}>Select Your Plan!</div>
+      {errorText()}
       {paymentInstructions()}
       {promoOption()}
       {paymentPanel()}
     </Fragment>
   );
+
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
+  };
 
   if (props.spinner) {
     return (
@@ -911,15 +929,10 @@ const SubscriptionDisplay = (props) => {
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        <div className={classes.Header}>
-          <div>Select Your Plan!</div>
-        </div>
-        <div>
-          {showDetail()}
-          {subscriptionForm}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{subscriptionForm}</div>;
+      </Fragment>
     );
   }
 };

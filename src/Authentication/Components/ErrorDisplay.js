@@ -42,6 +42,7 @@ const ErrorDisplay = (props) => {
     console.log("INSIDE NEW EEROR FORM");
     return (
       <Fragment>
+        <div className={classes.ErrorHeader}>System Error</div>
         <div style={{ paddingTop: "10px" }}>
           <button
             className={classes.ButtonBlue}
@@ -68,9 +69,6 @@ const ErrorDisplay = (props) => {
 
   return (
     <div className={classes.BlankCanvas}>
-      <div className={classes.Header}>
-        <div>System Error</div>
-      </div>
       <div>{errorForm()}</div>
     </div>
   );

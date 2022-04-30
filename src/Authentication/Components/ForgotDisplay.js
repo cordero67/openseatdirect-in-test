@@ -95,6 +95,8 @@ const ForgotDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
+          <div className={classes.Header}>Trouble logging in?</div>
+          {errorText()}
           <label style={{ fontSize: "15px" }}>E-mail Address</label>
           <input
             className={classes.InputBox}
@@ -130,6 +132,7 @@ const ForgotDisplay = (props) => {
             Submit your email
           </button>
         </div>
+        {bottomDisplay}
       </Fragment>
     );
   };
@@ -187,44 +190,37 @@ const ForgotDisplay = (props) => {
     </div>
   );
 
-  const header = () => {
-    if (props.authOrigin !== true) {
-      return (
-        <div className={classes.HeaderModal}>
-          <div>Trouble logging in?</div>
-          <div style={{ textAlign: "right" }}>
-            <ion-icon
-              className={classes.CloseIcon}
-              name="close-outline"
-              cursor="pointer"
-              onClick={() => {
-                props.close();
-              }}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return <div className={classes.Header}>Trouble logging in?</div>;
-    }
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
   };
 
   if (props.spinner) {
     return (
-      <div className={classes.BlankCanvas} style={{ height: "238px" }}>
+      <div
+        className={classes.BlankCanvas}
+        style={{ paddingTop: "40px", height: "290px" }}
+      >
         <Spinner />
       </div>
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        {header()}
-        <div>
-          {errorText()}
-          {forgotForm()}
-          {bottomDisplay}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{forgotForm()}</div>
+      </Fragment>
     );
   }
 };

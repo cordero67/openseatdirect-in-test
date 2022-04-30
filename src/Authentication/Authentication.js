@@ -18,6 +18,7 @@ import ErrorDisplay from "./Components/ErrorDisplay";
 import { getStatus } from "../Resources/Utils";
 
 import classes from "./Authentication.module.css";
+import { isFirstDayOfMonth } from "date-fns";
 
 const Authentication = () => {
   const [showSpinner, setShowSpinner] = useState(false);
@@ -91,7 +92,13 @@ const Authentication = () => {
         console.log("We have a fullUser");
       }
       if (status === 8) {
-        window.location.href = "/myaccount";
+        if (initialView === "create") {
+          console.log("going to createevent");
+          window.location.href = "/createevent";
+        } else {
+          console.log("public events");
+          window.location.href = "/";
+        }
       } else if (initialView === "upgrade") {
         console.log("initialView: ", initialView, ", upgrade");
         if ((status === 1 || status === 4 || status === 6) && fullUser) {
@@ -203,8 +210,13 @@ const Authentication = () => {
     console.log("Redirect user");
     let status = getStatus();
     if (status === 8) {
-      console.log("going to myaccount");
-      window.location.href = "/myaccount";
+      if (initialView === "create") {
+        console.log("going to createevent");
+        window.location.href = "/createevent";
+      } else {
+        console.log("public events");
+        window.location.href = "/";
+      }
     } else if (
       (status === 1 || status === 4 || status === 5 || status === 6) &&
       initialView === "free"
@@ -227,8 +239,13 @@ const Authentication = () => {
       setDisplay("subscription");
       setShowSpinner(false);
     } else if (status === 1 || status === 4 || status === 5 || status === 6) {
-      console.log("going to myaccount");
-      window.location.href = "/myaccount";
+      if (initialView === "create") {
+        console.log("going to createevent");
+        window.location.href = "/createevent";
+      } else {
+        console.log("public events");
+        window.location.href = "/";
+      }
     } else if (
       initialView === "upgrade" ||
       initialView === "paid" ||
@@ -263,7 +280,10 @@ const Authentication = () => {
           }}
           values={(input) => setAuthValues(input)} // AUTH
           resetValues={() => resetValues()} // AUTH
-          submit={() => redirectUser()} // AUTH
+          submit={() => {
+            console.log("going to redirectuser");
+            redirectUser();
+          }} // AUTH
         ></SignInDisplay>
       );
     } else {
@@ -427,6 +447,7 @@ const Authentication = () => {
     if (display === "gateway") {
       return (
         <GatewayDisplay
+          authOrigin={true}
           initial={initialView} // AUTH
           spinner={showSpinner} // AUTH
           spinnerChange={(value) => setShowSpinner(value)} // AUTH
@@ -449,8 +470,10 @@ const Authentication = () => {
 
   const freeDisplay = () => {
     if (display === "freeCongrats") {
+      console.log("showSpinner: ", showSpinner);
       return (
         <FreeDisplay
+          authOrigin={true}
           displayChange={(modal) => setDisplay(modal)} // AUTH
         ></FreeDisplay>
       );
@@ -461,7 +484,7 @@ const Authentication = () => {
 
   const paidDisplay = () => {
     if (display === "paidCongrats") {
-      return <PaidDisplay></PaidDisplay>;
+      return <PaidDisplay authOrigin={true}></PaidDisplay>;
     } else {
       return null;
     }
@@ -501,7 +524,13 @@ const Authentication = () => {
           redirect={() => {
             // AUTH
             if (getStatus() !== 0) {
-              window.location.href = "/myaccount";
+              if (initialView === "create") {
+                console.log("going to createevent");
+                window.location.href = "/createevent";
+              } else {
+                console.log("public events");
+                window.location.href = "/";
+              }
             } else {
               setDisplay("signup");
             }
@@ -548,7 +577,13 @@ const Authentication = () => {
           redirect={() => {
             // AUTH
             if (getStatus() !== 0) {
-              window.location.href = "/myaccount";
+              if (initialView === "create") {
+                console.log("going to createevent");
+                window.location.href = "/createevent";
+              } else {
+                console.log("public events");
+                window.location.href = "/";
+              }
             } else {
               setDisplay("signup");
             }
@@ -564,6 +599,7 @@ const Authentication = () => {
     if (display === "subscription") {
       return (
         <SubscriptionDisplay
+          authOrigin={true}
           sessionToken={authValues.sessionToken} // AUTH
           accountNum={authValues.accountNum} // AUTH
           spinner={showSpinner} // AUTH
@@ -632,7 +668,13 @@ const Authentication = () => {
               redirect === "subscription"
             ) {
               console.log("LATER");
-              window.location.href = "/myaccount";
+              if (initialView === "create") {
+                console.log("going to createevent");
+                window.location.href = "/createevent";
+              } else {
+                console.log("public events");
+                window.location.href = "/";
+              }
             }
           }}
         ></ErrorDisplay>

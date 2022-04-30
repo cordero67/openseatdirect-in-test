@@ -8,6 +8,7 @@ import EventDetailsNEW from "../../Events/EventDetailsNEW";
 import EventDeletion from "../../EventCreation/DeleteEvent";
 import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
+import CreateEvent from "../Help/CreateEvent";
 import CustomerInfoPaid from "../../TicketPurchases/CustomerInfoPaid";
 import CustomerInfoFree from "../../TicketPurchases/CustomerInfoFree";
 import CheckoutPayPalExpress from "../../TicketPurchases/CheckoutPayPalExpress";
@@ -92,6 +93,23 @@ const Routes = () => {
               buyer={"ANOTHER"}
               owner={"SOMETHING"}
             />
+            <Footer></Footer>
+          </Fragment>
+        )}
+      />
+
+      <Route
+        path="/createevent"
+        exact
+        render={(routeProps) => (
+          <Fragment>
+            <Header
+              positioning="fixed"
+              logo={LogoC}
+              clicked={toggleSideDrawer}
+            />
+            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
+            <CreateEvent />
             <Footer></Footer>
           </Fragment>
         )}

@@ -3,7 +3,7 @@ import Spinner from "../../components/UI/Spinner/SpinnerNew";
 
 import { API } from "../../config";
 
-import classes from "./ComponentsNEW.module.css";
+import classes from "./Components.module.css";
 
 const OrganizationDisplay = (props) => {
   console.log("props: ", props);

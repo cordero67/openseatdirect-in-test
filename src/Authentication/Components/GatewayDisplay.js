@@ -65,8 +65,32 @@ const GatewayDisplay = (props) => {
     }
   };
 
+  const errorText = () => {
+    if (error) {
+      return <div className={classes.ErrorText}>{message}</div>;
+    } else {
+      return null;
+    }
+  };
+
+  const topDisplay = (
+    <div
+      style={{
+        fontSize: "16px",
+        liineHeight: "25px",
+        paddingBottom: "20px",
+      }}
+    >
+      Link to Stripe or Paypal to get paid instantly in cash, or Opennode for
+      bitcoin payments.
+    </div>
+  );
+
   const gatewayForm = (
     <Fragment>
+      <div className={classes.Header}>How to Get Paid Instantly.</div>
+      {errorText()}
+      {topDisplay}
       <div className={classes.ImageGrid}>
         <button className={classes.GatewayImage}>
           <img
@@ -81,7 +105,6 @@ const GatewayDisplay = (props) => {
             }}
           ></img>
         </button>
-
         <button className={classes.GatewayImage}>
           <img
             src={payPalImg}
@@ -96,7 +119,6 @@ const GatewayDisplay = (props) => {
           ></img>
         </button>
       </div>
-
       <div className={classes.ImageBox}>
         <button className={classes.GatewayImage}>
           <img
@@ -130,25 +152,20 @@ const GatewayDisplay = (props) => {
     </Fragment>
   );
 
-  const topDisplay = (
-    <div
-      style={{
-        fontSize: "16px",
-        liineHeight: "25px",
-        paddingBottom: "20px",
-      }}
-    >
-      Link to Stripe or Paypal to get paid instantly in cash, or Opennode for
-      bitcoin payments.
-    </div>
-  );
-
-  const errorText = () => {
-    if (error) {
-      return <div className={classes.ErrorText}>{message}</div>;
-    } else {
-      return null;
-    }
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
   };
 
   if (props.spinner) {
@@ -159,16 +176,10 @@ const GatewayDisplay = (props) => {
     );
   } else {
     return (
-      <div className={classes.BlankCanvas}>
-        <div className={classes.Header}>
-          <div>How to Get Paid Instantly.</div>
-        </div>
-        <div>
-          {errorText()}
-          {topDisplay}
-          {gatewayForm}
-        </div>
-      </div>
+      <Fragment>
+        {closeIcon()}
+        <div className={classes.BlankCanvas}>{gatewayForm}</div>
+      </Fragment>
     );
   }
 };

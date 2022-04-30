@@ -33,17 +33,20 @@ const NavigationItems = (props) => {
     <ul className={classes.HeaderItems}>
       {!isAuthenticated() ? (
         <li>
-          <NavLink to="/auth" style={isActive(props.currentPage, "/myaccount")}>
+          <NavLink
+            to="/auth?view=create"
+            style={isActive(props.currentPage, "/auth")}
+          >
             Create Event
           </NavLink>
         </li>
       ) : (
         <li>
           <NavLink
-            to="/myaccount?view=create"
-            style={isActive(props.currentPage, "/auth")}
+            to="/createevent"
+            style={isActive(props.currentPage, "/createevent")}
           >
-            Create Eventt
+            Create Event
           </NavLink>
         </li>
       )}

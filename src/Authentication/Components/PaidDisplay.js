@@ -25,6 +25,8 @@ const PaidDisplay = (props) => {
 
   const paidForm = (
     <Fragment>
+      <div className={classes.Header}>Success!!!!</div>
+      {topDisplay}
       <div style={{ paddingTop: "10px" }}>
         <button
           className={classes.ButtonGrey}
@@ -38,16 +40,29 @@ const PaidDisplay = (props) => {
     </Fragment>
   );
 
+  const closeIcon = () => {
+    return (
+      <div className={classes.CloseIcon}>
+        {props.authOrigin !== true ? (
+          <ion-icon
+            name="close-circle-outline"
+            cursor="pointer"
+            onClick={() => {
+              props.close();
+            }}
+          />
+        ) : null}
+      </div>
+    );
+  };
+
   return (
-    <div className={classes.BlankCanvas}>
-      <div className={classes.Header}>
-        <div>Success!</div>
+    <Fragment>
+      {closeIcon()}
+      <div className={classes.BlankCanvas}>
+        <div>{paidForm}</div>
       </div>
-      <div>
-        {topDisplay}
-        {paidForm}
-      </div>
-    </div>
+    </Fragment>
   );
 };
 

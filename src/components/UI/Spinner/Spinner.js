@@ -1,4 +1,3 @@
-// THIS CODE LOOKS ALL GOOD 1/8/21
 import React from "react";
 
 import styles from "./Spinner.module.css";
