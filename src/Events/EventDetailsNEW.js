@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import queryString from "query-string";
 import dateFormat from "dateformat";
 import ReactHtmlParser from "html-react-parser";
+import { ErrorBoundary } from "react-error-boundary";
 
 import { getEventData } from "./apiEvents";
 
@@ -10,12 +11,19 @@ import TicketPurchase from "../TicketPurchase/TicketPurchase";
 
 import classes from "./EventDetails.module.css";
 
+import { isValidEventNum } from "../utils/validators";
+import { getAPIEvent } from "./useOurApiEvent";
+
 // defines an event's NON ticket type specific information
 let eventDetails;
 
 const EventDetail = () => {
   // defines data loading control variables
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [isBadEvent, setIsBadEvent] = useState(false);
+  const [eventAPIData, setEventAPIData] = useState("");
+  const [networkError, setNetworkError] = useState(false);
   const [isSuccessfull, setIsSuccessfull] = useState(true);
   const [showLargerDoublePane, setShowLargerDoublePane] = useState(false);
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
@@ -526,13 +534,3 @@ const EventDetail = () => {
 };
 
 export default EventDetail;
-
-/*
-<div className={classes.MainContainer}>
-  <div className={classes.MainGrid}>
-    <section className={classes.Events}>
-      {!isLoadingEvents ? eventsNew() : <Spinner />}
-    </section>
-  </div>
-</div>
-*/

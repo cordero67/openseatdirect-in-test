@@ -115,7 +115,7 @@ const ConfirmTempDisplay = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signinnnn/confirmcode`;
+    let url = `${API}/auth/signin/confirmcode`;
     let information = {
       email: props.email,
       confirm_code: props.temporary,

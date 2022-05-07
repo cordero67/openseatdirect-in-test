@@ -47,8 +47,7 @@ const ResetDisplay = (props) => {
     let url = `${API}/auth/password/new`;
     let information = {
       passwordToken: props.resetToken,
-      //password: props.password,
-      password: "222",
+      password: props.password,
     };
     let fetchBody = {
       method: "POST",

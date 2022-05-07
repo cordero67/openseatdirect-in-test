@@ -7,29 +7,27 @@ import { ErrorBoundary } from "react-error-boundary";
 import { getEventData } from "./apiEvents";
 
 import Spinner from "../components/UI/Spinner/SpinnerNew";
+//
 
 import classes from "./EventDetails.module.css";
 
 import { isValidEventNum } from "../utils/validators";
 import { getAPIEvent } from "./useOurApiEvent";
 
-console.log("loading eventDetails page ....");
 // defines an event's NON ticket type specific information
 let eventDetails;
 
 const EventDetail = () => {
-  console.log("in EventDetails func ....");
-
   // defines data loading control variables
   const [isLoadingEvent, setIsLoadingEvent] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isBadEvent, setIsBadEvent] = useState(false);
   const [eventAPIData, setEventAPIData] = useState("");
   const [networkError, setNetworkError] = useState(false);
-
   const [isSuccessfull, setIsSuccessfull] = useState(true);
   const [showLargerDoublePane, setShowLargerDoublePane] = useState(false);
   const [showSmallerDoublePane, setShowSmallerDoublePane] = useState(false);
+  //
 
   function ErrorFallback({ error, resetErrorBoundary }) {
     return (
