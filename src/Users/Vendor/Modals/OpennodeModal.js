@@ -1,11 +1,11 @@
 import React, { useState, useEffect, Fragment } from "react";
-import OpennodeDisplay from "../../../Authentication/Components/OpennodeDisplay";
+import OpenNodeDisplay from "../../../Authentication/Components/OpenNodeDisplay";
 import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./AccountModals.module.css";
 
-const Opennode = (props) => {
+const OpenNode = (props) => {
   const [showSpinner, setShowSpinner] = useState(false);
 
   const [subValues, setSubValues] = useState({
@@ -39,10 +39,10 @@ const Opennode = (props) => {
     props.closeModal();
   };
 
-  const opennodeDisplay = () => {
+  const openNodeDisplay = () => {
     if (display === "opennode") {
       return (
-        <OpennodeDisplay
+        <OpenNodeDisplay
           authOrigin={false}
           close={() => {
             props.closeModal();
@@ -60,7 +60,7 @@ const Opennode = (props) => {
             props.closeModal();
           }}
           //redirect={() => {setDefaultValues()}} NOT IN MODAL
-        ></OpennodeDisplay>
+        ></OpenNodeDisplay>
       );
     } else {
       return null;
@@ -98,10 +98,10 @@ const Opennode = (props) => {
         }}
         className={classes.Modal}
       >
-        {opennodeDisplay()}
+        {openNodeDisplay()}
         {errorDisplay()}
       </div>
     </Fragment>
   );
 };
-export default Opennode;
+export default OpenNode;

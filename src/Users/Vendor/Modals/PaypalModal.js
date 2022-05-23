@@ -1,11 +1,11 @@
 import React, { useState, useEffect, Fragment } from "react";
-import PaypalDisplay from "../../../Authentication/Components/PaypalDisplay";
+import PayPalDisplay from "../../../Authentication/Components/PayPalDisplay";
 import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./AccountModals.module.css";
 
-const PaypalExpress = (props) => {
+const PayPalModal = (props) => {
   const [showSpinner, setShowSpinner] = useState(false);
 
   const [subValues, setSubValues] = useState({
@@ -35,10 +35,10 @@ const PaypalExpress = (props) => {
     initializeSubValues();
   }, []);
 
-  const paypalDisplay = () => {
+  const payPalDisplay = () => {
     if (display === "paypal") {
       return (
-        <PaypalDisplay
+        <PayPalDisplay
           authOrigin={false}
           close={() => {
             props.closeModal();
@@ -57,7 +57,7 @@ const PaypalExpress = (props) => {
             props.closeModal();
           }}
           //redirect={() => {closeModal()}} NOT IN MODAL
-        ></PaypalDisplay>
+        ></PayPalDisplay>
       );
     } else {
       return null;
@@ -95,10 +95,10 @@ const PaypalExpress = (props) => {
         }}
         className={classes.Modal}
       >
-        {paypalDisplay()}
+        {payPalDisplay()}
         {errorDisplay()}
       </div>
     </Fragment>
   );
 };
-export default PaypalExpress;
+export default PayPalModal;

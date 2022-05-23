@@ -7,7 +7,7 @@ import { API, OPENNODE_USE_TEST } from "../../config";
 
 import classes from "./Components.module.css";
 
-const OpennodeDisplay = (props) => {
+const OpenNodeDisplay = (props) => {
   console.log("props: ", props);
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
@@ -106,7 +106,7 @@ const OpennodeDisplay = (props) => {
     return response;
   };
 
-  const handleOpennode = (data) => {
+  const handleOpenNode = (data) => {
     if (data.status) {
       let tempData = JSON.parse(localStorage.getItem("user"));
       tempData.user.accountId = data.result;
@@ -115,7 +115,7 @@ const OpennodeDisplay = (props) => {
       props.spinnerChange(false);
     } else {
       let errmsg =
-        "unable to validate Opennode API Key and secret at this time";
+        "unable to validate OpenNode API Key and secret at this time";
       if (data.message) {
         errmsg = data.message;
       }
@@ -127,7 +127,7 @@ const OpennodeDisplay = (props) => {
     }
   };
 
-  const submitOpennode = () => {
+  const submitOpenNode = () => {
     props.spinnerChange(true);
     setSubmissionStatus({
       message: "",
@@ -142,7 +142,7 @@ const OpennodeDisplay = (props) => {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
-        paymentGatewayType2: "Opennode",
+        paymentGatewayType2: "OpenNode",
         opennode_invoice_API_KEY: subValues.opennode_invoice_API_KEY,
         opennode_auto_settle: subValues.opennode_auto_settle,
         opennode_dev: subValues.opennode_dev,
@@ -156,8 +156,8 @@ const OpennodeDisplay = (props) => {
         return response.json();
       })
       .then((data) => {
-        console.log("fetch return got back data on Opennode:", data);
-        handleOpennode(data);
+        console.log("fetch return got back data on OpenNode:", data);
+        handleOpenNode(data);
       })
       .catch((error) => {
         console.log("error.message: ", error.message);
@@ -213,7 +213,7 @@ const OpennodeDisplay = (props) => {
     } else return null;
   };
 
-  const opennodeForm = () => {
+  const openNodeForm = () => {
     let disabled = true;
     if (subValues.opennode_invoice_API_KEY) {
       disabled = false;
@@ -227,25 +227,52 @@ const OpennodeDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ fontSize: "15px", paddingBottom: "20px" }}>
-          <div className={classes.Header}>Enter Opennode Details</div>
+          <div className={classes.Header}>Enter OpenNode Details</div>
           {errorText()}
           <div>
-            Setup a new Opennode account{" "}
+            Don't have an OpenNode account?
+            <div style={{ paddingLeft: "20px" }}>
+              <a
+                className={classes.BlueText}
+                href="https://app.opennode.com/signup"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Create an OpenNode account
+              </a>
+              <a
+                className={classes.BlueText}
+                href="https://drive.google.com/file/d/1-Qs_Gl4U3WdyIvlkMMH-Fv4Bld9qU1yE/view?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Additional instructions
+              </a>
+            </div>
+          </div>
+          <label style={{ width: "200px", fontSize: "15px", margin: "0px" }}>
+            <br></br>
+            OpenNode API key
+            <span style={{ color: "red" }}>* </span>
+          </label>
+          <div style={{ paddingLeft: "20px" }}>
             <a
               className={classes.BlueText}
-              href="https://app.opennode.com/signup"
+              href="https://app.opennode.com/developers/integrations"
               target="_blank"
               rel="noreferrer"
             >
-              {" "}
-              here
+              Extract OpenNode API Key
+            </a>
+            <a
+              className={classes.BlueText}
+              href="https://drive.google.com/file/d/1-_L8b43VtDNsJo2YJ-dy9dxBYYyoT7LO/view?usp=sharing"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Additional instructions
             </a>
           </div>
-          <label style={{ width: "200px", fontSize: "15px" }}>
-            <br></br>
-            Opennode API key
-            <span style={{ color: "red" }}>* </span>
-          </label>
           <input
             onFocus={() => {
               setSubmissionStatus({ message: "", error: false });
@@ -259,16 +286,26 @@ const OpennodeDisplay = (props) => {
         </div>
         <div style={{ paddingBottom: "20px" }}>
           <div style={{ fontSize: "15px" }}>
-            Settlement Currency: (see auto_settle field{" "}
-            <a
-              className={classes.BlueText}
-              href="https://developers.opennode.com/reference/create-charge"
-              target="_blank"
-              rel="noreferrer"
-            >
-              here
-            </a>
-            )
+            Settlement Currency:
+            <div style={{ paddingLeft: "20px" }}>
+              <a
+                className={classes.BlueText}
+                href="https://developers.opennode.com/reference/create-charge"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Edit "auto_settle" field
+              </a>
+              <br></br>
+              <a
+                className={classes.BlueText}
+                href="https://drive.google.com/file/d/1-L6BdibR3RgtwZ__hPQLbZtSangEW9ZA/view?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Additional instructions
+              </a>
+            </div>
           </div>
           <RadioForm
             details={settleOptions}
@@ -281,16 +318,26 @@ const OpennodeDisplay = (props) => {
         </div>
         <div>
           <div style={{ fontSize: "15px" }}>
-            Bitcoin Blockchain: (try dev setup{" "}
-            <a
-              className={classes.BlueText}
-              href="https://dev.opennode.com/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              here
-            </a>
-            )
+            Bitcoin Blockchain:
+            <div style={{ paddingLeft: "20px" }}>
+              <a
+                className={classes.BlueText}
+                href="https://dev.opennode.com/login"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Create a development OpenNode account
+              </a>
+              <br></br>
+              <a
+                className={classes.BlueText}
+                //href="https://drive.google.com/file/d/1ozk3BKzLwLEpzQJCqX7FwAIF0897im0H/view?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Additional instructions
+              </a>
+            </div>
           </div>
           <RadioForm
             details={blockchainOptions}
@@ -307,11 +354,11 @@ const OpennodeDisplay = (props) => {
             disabled={disabled}
             onClick={() => {
               if (!disabled) {
-                submitOpennode();
+                submitOpenNode();
               }
             }}
           >
-            Submit Opennode details
+            Submit OpenNode details
           </button>
         </div>
         {displayButtons()}
@@ -352,9 +399,9 @@ const OpennodeDisplay = (props) => {
   if (props.spinner) {
     let style;
     if (props.authOrigin) {
-      style = { paddingTop: "40px", height: "591px" };
+      style = { paddingTop: "40px", height: "798px" };
     } else {
-      style = { paddingTop: "40px", height: "521px" };
+      style = { paddingTop: "40px", height: "679px" };
     }
     return (
       <div style={style}>
@@ -365,10 +412,10 @@ const OpennodeDisplay = (props) => {
     return (
       <Fragment>
         {closeIcon()}
-        <div className={classes.BlankCanvas}>{opennodeForm()}</div>
+        <div className={classes.BlankCanvas}>{openNodeForm()}</div>
       </Fragment>
     );
   }
 };
 
-export default OpennodeDisplay;
+export default OpenNodeDisplay;

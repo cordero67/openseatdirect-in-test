@@ -259,7 +259,7 @@ const SignUpDisplay = (props) => {
     return (
       <div
         className={classes.BlankCanvas}
-        style={{ paddingTop: "40px", height: "484px" }}
+        style={{ paddingTop: "40px", height: "482px" }}
       >
         <Spinner />
       </div>

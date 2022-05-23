@@ -210,7 +210,7 @@ const ForgotDisplay = (props) => {
     return (
       <div
         className={classes.BlankCanvas}
-        style={{ paddingTop: "40px", height: "290px" }}
+        style={{ paddingTop: "40px", height: "288px" }}
       >
         <Spinner />
       </div>

@@ -45,10 +45,14 @@ const FreeDisplay = (props) => {
         <button
           className={classes.ButtonGrey}
           onClick={() => {
-            window.location.href = "/";
+            if (props.initial !== "create") {
+              window.location.href = "/";
+            } else {
+              window.location.href = "/createevent";
+            }
           }}
         >
-          Continue
+          Stay with Free Forever Plan
         </button>
       </div>
     </Fragment>

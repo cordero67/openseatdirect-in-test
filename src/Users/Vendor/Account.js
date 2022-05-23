@@ -5,8 +5,8 @@ import { API } from "../../config.js";
 import PersonalModal from "./Modals/PersonalModal";
 import OrganizationModal from "./Modals/OrganizationModal ";
 import ResetModal from "./Modals/ResetModal";
-import OpennodeModal from "./Modals/OpennodeModal";
-import PaypalModal from "./Modals/PaypalModal";
+import OpenNodeModal from "./Modals/OpenNodeModal";
+import PayPalModal from "./Modals/PayPalModal";
 
 import { getStatus } from "../../Resources/Utils";
 
@@ -312,13 +312,13 @@ const Account = (props) => {
           setModalStatus("none");
         }}
       />
-      <PaypalModal
+      <PayPalModal
         show={modalStatus === "paypal"}
         closeModal={() => {
           setModalStatus("none");
         }}
       />
-      <OpennodeModal
+      <OpenNodeModal
         show={modalStatus === "opennode"}
         closeModal={() => {
           updateUserInfo();

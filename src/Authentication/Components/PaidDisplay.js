@@ -31,10 +31,14 @@ const PaidDisplay = (props) => {
         <button
           className={classes.ButtonGrey}
           onClick={() => {
-            window.location.href = "/myaccount";
+            if (props.initial !== "create") {
+              window.location.href = "/";
+            } else {
+              window.location.href = "/createevent";
+            }
           }}
         >
-          Go to my Dashboard
+          Finish
         </button>
       </div>
     </Fragment>

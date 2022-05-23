@@ -277,7 +277,7 @@ const SignInDisplay = (props) => {
     return (
       <div
         className={classes.BlankCanvas}
-        style={{ paddingTop: "40px", height: "488px" }}
+        style={{ paddingTop: "40px", height: "485px" }}
       >
         <Spinner />
       </div>

@@ -279,7 +279,7 @@ const ConfirmInitialDisplay = (props) => {
     return (
       <div
         className={classes.BlankCanvas}
-        style={{ paddingTop: "40px", height: "360px" }}
+        style={{ paddingTop: "40px", height: "358px" }}
       >
         <Spinner />
       </div>

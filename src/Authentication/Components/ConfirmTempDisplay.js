@@ -292,7 +292,7 @@ const ConfirmTempDisplay = (props) => {
     return (
       <div
         className={classes.BlankCanvas}
-        style={{ paddingTop: "40px", height: "360px" }}
+        style={{ paddingTop: "40px", height: "357px" }}
       >
         <Spinner />
       </div>

@@ -10,15 +10,14 @@ import PasswordDisplay from "./Components/PasswordDisplay";
 import FreeDisplay from "./Components/FreeDisplay";
 import PaidDisplay from "./Components/PaidDisplay";
 import GatewayDisplay from "./Components/GatewayDisplay";
-import PaypalDisplay from "./Components/PaypalDisplay";
-import OpennodeDisplay from "./Components/OpennodeDisplay";
+import PayPalDisplay from "./Components/PayPalDisplay";
+import OpenNodeDisplay from "./Components/OpenNodeDisplay";
 import SubscriptionDisplay from "./Components/SubscriptionDisplay";
 import ErrorDisplay from "./Components/ErrorDisplay";
 
 import { getStatus } from "../Resources/Utils";
 
 import classes from "./Authentication.module.css";
-import { isFirstDayOfMonth } from "date-fns";
 
 const Authentication = () => {
   const [showSpinner, setShowSpinner] = useState(false);
@@ -92,13 +91,7 @@ const Authentication = () => {
         console.log("We have a fullUser");
       }
       if (status === 8) {
-        if (initialView === "create") {
-          console.log("going to createevent");
-          window.location.href = "/createevent";
-        } else {
-          console.log("public events");
-          window.location.href = "/";
-        }
+        window.location.href = "/";
       } else if (initialView === "upgrade") {
         console.log("initialView: ", initialView, ", upgrade");
         if ((status === 1 || status === 4 || status === 6) && fullUser) {
@@ -144,6 +137,27 @@ const Authentication = () => {
         } else if (status === 5 && fullUser) {
           updateAuthValues();
           setDisplay("subscription");
+        } else if (
+          "user" in tempUser &&
+          "passwordToken" in tempUser.user &&
+          !("token" in tempUser)
+        ) {
+          updateAuthValues();
+          setDisplay("password");
+        } else {
+          setDisplay("signup");
+        }
+      } else if (initialView === "sub") {
+        console.log("initialView: ", initialView, ", sub");
+        if ((status === 1 || status === 4 || status === 5) && fullUser) {
+          console.log("status = ", status);
+          updateAuthValues();
+          setDisplay("subscription");
+        } else if (status === 6 && fullUser) {
+          console.log("status = ", status);
+          updateAuthValues();
+          setDisplay("paidCongrats");
+          console.log("status = ", status);
         } else if (
           "user" in tempUser &&
           "passwordToken" in tempUser.user &&
@@ -474,6 +488,7 @@ const Authentication = () => {
       return (
         <FreeDisplay
           authOrigin={true}
+          initial={initialView} // AUTH
           displayChange={(modal) => setDisplay(modal)} // AUTH
         ></FreeDisplay>
       );
@@ -484,16 +499,18 @@ const Authentication = () => {
 
   const paidDisplay = () => {
     if (display === "paidCongrats") {
-      return <PaidDisplay authOrigin={true}></PaidDisplay>;
+      return (
+        <PaidDisplay authOrigin={true} initial={initialView}></PaidDisplay>
+      );
     } else {
       return null;
     }
   };
 
-  const paypalDisplay = () => {
+  const payPalDisplay = () => {
     if (display === "paypal") {
       return (
-        <PaypalDisplay
+        <PayPalDisplay
           authOrigin={true} // AUTH
           //close={closeModal} NOT IN AUTH
           initial={initialView} // AUTH
@@ -535,17 +552,17 @@ const Authentication = () => {
               setDisplay("signup");
             }
           }}
-        ></PaypalDisplay>
+        ></PayPalDisplay>
       );
     } else {
       return null;
     }
   };
 
-  const opennodeDisplay = () => {
+  const openNodeDisplay = () => {
     if (display === "opennode") {
       return (
-        <OpennodeDisplay
+        <OpenNodeDisplay
           authOrigin={true} // AUTH
           //close={closeModal} NOT IN AUTH
           initial={initialView} // AUTH
@@ -588,7 +605,7 @@ const Authentication = () => {
               setDisplay("signup");
             }
           }}
-        ></OpennodeDisplay>
+        ></OpenNodeDisplay>
       );
     } else {
       return null;
@@ -695,8 +712,8 @@ const Authentication = () => {
         {passwordDisplay()}
         {freeDisplay()}
         {gatewayDisplay()}
-        {paypalDisplay()}
-        {opennodeDisplay()}
+        {payPalDisplay()}
+        {openNodeDisplay()}
         {subscriptionDisplay()}
         {paidDisplay()}
         {errorDisplay()}

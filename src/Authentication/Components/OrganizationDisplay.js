@@ -381,7 +381,7 @@ const OrganizationDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div style={{ paddingTop: "40px", height: "504px" }}>
+      <div style={{ paddingTop: "40px", height: "506px" }}>
         <Spinner />
       </div>
     );

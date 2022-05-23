@@ -178,7 +178,7 @@ const PasswordDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div style={{ paddingTop: "40px", height: "269px" }}>
+      <div style={{ paddingTop: "40px", height: "267px" }}>
         <Spinner />
       </div>
     );

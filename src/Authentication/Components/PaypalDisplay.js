@@ -6,7 +6,7 @@ import { API, PAYPAL_USE_SANDBOX } from "../../config";
 
 import classes from "./Components.module.css";
 
-const PaypalDisplay = (props) => {
+const PayPalDisplay = (props) => {
   console.log("props: ", props);
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
@@ -66,7 +66,7 @@ const PaypalDisplay = (props) => {
     return response;
   };
 
-  const handlePaypal = (data) => {
+  const handlePayPal = (data) => {
     if (data.status) {
       let tempData = JSON.parse(localStorage.getItem("user"));
       tempData.user.accountId = data.result;
@@ -88,7 +88,7 @@ const PaypalDisplay = (props) => {
     }
   };
 
-  const submitPaypal = () => {
+  const submitPayPal = () => {
     props.spinnerChange(true);
     setSubmissionStatus({
       message: "",
@@ -118,7 +118,7 @@ const PaypalDisplay = (props) => {
       })
       .then((data) => {
         console.log("fetch return got back data on PayPal:", data);
-        handlePaypal(data);
+        handlePayPal(data);
       })
       .catch((error) => {
         console.log("error.message: ", error.message);
@@ -174,7 +174,7 @@ const PaypalDisplay = (props) => {
     } else return null;
   };
 
-  const paypalForm = () => {
+  const payPalForm = () => {
     let disabled = true;
     if (
       subValues.paypalExpress_client_id &&
@@ -191,7 +191,7 @@ const PaypalDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ fontSize: "16px", paddingBottom: "20px" }}>
-          <div className={classes.Header}>Enter Paypal Details</div>
+          <div className={classes.Header}>Enter PayPal Details</div>
           {errorText()}
           Can't find the Client ID and Secret?
           <div style={{ paddingLeft: "20px" }}>
@@ -228,7 +228,7 @@ const PaypalDisplay = (props) => {
 
         <div style={{ paddingBottom: "20px" }}>
           <label style={{ fontSize: "15px" }}>
-            Paypal Client ID <span style={{ color: "red" }}>* </span>
+            PayPal Client ID <span style={{ color: "red" }}>* </span>
           </label>
           <input
             onFocus={() => {
@@ -246,7 +246,7 @@ const PaypalDisplay = (props) => {
         </div>
         <div>
           <label style={{ fontSize: "15px" }}>
-            Paypal Secret <span style={{ color: "red" }}>* </span>
+            PayPal Secret <span style={{ color: "red" }}>* </span>
           </label>
           <input
             onFocus={() => {
@@ -268,11 +268,11 @@ const PaypalDisplay = (props) => {
             disabled={disabled}
             onClick={() => {
               if (!disabled) {
-                submitPaypal();
+                submitPayPal();
               }
             }}
           >
-            Submit Paypal Details
+            Submit PayPal Details
           </button>
         </div>
         {displayButtons()}
@@ -312,9 +312,9 @@ const PaypalDisplay = (props) => {
   if (props.spinner) {
     let style;
     if (props.authOrigin) {
-      style = { paddingTop: "40px", height: "494px" };
+      style = { paddingTop: "40px", height: "544px" };
     } else {
-      style = { paddingTop: "40px", height: "427px" };
+      style = { paddingTop: "40px", height: "428px" };
     }
 
     return (
@@ -326,10 +326,10 @@ const PaypalDisplay = (props) => {
     return (
       <Fragment>
         {closeIcon()}
-        <div className={classes.BlankCanvas}>{paypalForm()}</div>
+        <div className={classes.BlankCanvas}>{payPalForm()}</div>
       </Fragment>
     );
   }
 };
 
-export default PaypalDisplay;
+export default PayPalDisplay;

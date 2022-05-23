@@ -274,7 +274,7 @@ const PersonalDisplay = (props) => {
 
   if (props.spinner) {
     return (
-      <div style={{ paddingTop: "40px", height: "416px" }}>
+      <div style={{ paddingTop: "40px", height: "417px" }}>
         <Spinner />
       </div>
     );
