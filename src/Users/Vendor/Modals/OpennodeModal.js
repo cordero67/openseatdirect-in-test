@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment } from "react";
-import OpenNodeDisplay from "../../../Authentication/Components/OpenNodeDisplay";
 import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
 
 import Backdrop from "./Backdrop";
