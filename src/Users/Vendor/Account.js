@@ -5,8 +5,8 @@ import { API } from "../../config.js";
 import PersonalModal from "./Modals/PersonalModal";
 import OrganizationModal from "./Modals/OrganizationModal ";
 import ResetModal from "./Modals/ResetModal";
-import OpenNodeModal from "./Modals/OpenNodeModalcopy";
-import PayPalModal from "./Modals/PayPalModalcopy";
+import OpenNodeModal from "./Modals/OpenNodeModal";
+import PayPalModal from "./Modals/PayPalModal";
 
 import { getStatus } from "../../Resources/Utils";
 
