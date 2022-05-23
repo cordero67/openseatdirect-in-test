@@ -11,7 +11,7 @@ import FreeDisplay from "./Components/FreeDisplay";
 import PaidDisplay from "./Components/PaidDisplay";
 import GatewayDisplay from "./Components/GatewayDisplay";
 import PayPalDisplay from "./Components/PayPalDisplay";
-import OpenNodeDisplay from "./Components/OpenNodeDisplay";
+import OpenNodeDisplay from "./Components/OpenNodeDisplay copy";
 import SubscriptionDisplay from "./Components/SubscriptionDisplay";
 import ErrorDisplay from "./Components/ErrorDisplay";
 
