@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
-import PayPalDisplay from "../../../Authentication/Components/PayPalDisplay";
 import ErrorDisplay from "../../../Authentication/Components/ErrorDisplay";
+
+import PayPalDisplay from "../../../Authentication/Components/PayPalDisplay";
 
 import Backdrop from "./Backdrop";
 import classes from "./AccountModals.module.css";
