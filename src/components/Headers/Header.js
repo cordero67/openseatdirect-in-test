@@ -14,14 +14,11 @@ const Header = ({ history, logo, positioning, clicked }) => {
 
   console.log("HOST: ", `${HOST}`);
 
-  const [isResizing, setIsResizing] = useState(false);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
 
   const stylingUpdate = (inWidth) => {
     console.log("stylingUpdate in Header");
-    setIsResizing(true);
     setScreenSize(inWidth);
-    setIsResizing(false);
     console.log("screenSize in Header: ", screenSize);
   };
 

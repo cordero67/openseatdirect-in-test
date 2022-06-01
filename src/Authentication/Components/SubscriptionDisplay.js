@@ -116,6 +116,7 @@ const SubscriptionDisplay = (props) => {
           if (!tempUser.user.accountId.paypal_plan_id) {
             tempBuyerInfo.paypal_plan_id = "P-5DT364104U926810EL5FRXSY"; // sandbox monthly full price
           } else {
+            console.log("Assigning old subscription id");
             tempBuyerInfo.paypal_plan_id =
               tempUser.user.accountId.paypal_plan_id;
           }
@@ -138,6 +139,7 @@ const SubscriptionDisplay = (props) => {
           if (!tempUser.user.accountId.paypal_plan_id) {
             tempBuyerInfo.paypal_plan_id = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
           } else {
+            console.log("Assigning old subscription id");
             tempBuyerInfo.paypal_plan_id =
               tempUser.user.accountId.paypal_plan_id;
           }
@@ -612,6 +614,9 @@ const SubscriptionDisplay = (props) => {
         <PayPalButton
           onButtonReady={() => {}}
           createSubscription={(data, actions) => {
+            console.log("HERE I AM");
+            console.log("subscriptions.clientId: ", subscriptions.clientId);
+            console.log("subValues.paypal_plan_id: ", subValues.paypal_plan_id);
             return actions.subscription.create({
               plan_id: subValues.paypal_plan_id,
             });
@@ -699,8 +704,8 @@ const SubscriptionDisplay = (props) => {
             vault: true,
           }}
           catchError={(err) => {
-            console.log("error occurs: ", err);
-            window.alert("Problem connecting with PayPal. Please try again.");
+            //console.log("error occurs: ", err);
+            window.alert("Error connecting with PayPal. Please try again.");
             props.spinnerChange(false);
           }}
         />

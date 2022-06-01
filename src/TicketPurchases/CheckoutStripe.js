@@ -523,7 +523,7 @@ const Checkout = () => {
       return (
         <div>
           <span style={{ fontSize: "18px", fontWeight: "600" }}>
-            PayPal Checkout
+            Stripe Checkout
           </span>
         </div>
       );

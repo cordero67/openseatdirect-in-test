@@ -13,7 +13,7 @@
   .MainContainer {
     font-family: "Roboto", sans-serif;
     background-color: #8dadd4;
-    background-image: linear-gradient(180deg, #8dadd4 0%, #F0F4F9 100%);
+    background-image: linear-gradient(180deg, #0F6FBD 0%, #2F98EE 100%);
     min-height: calc(100vh - 60px);
     width: 100vw;
     padding-top: 120px;

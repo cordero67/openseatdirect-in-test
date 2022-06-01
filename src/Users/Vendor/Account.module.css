@@ -193,10 +193,6 @@
   font-weight: 700;
   text-decoration: underline;
 }
-.NavigationItems a.active {
-  font-weight: 700;
-  text-decoration: underline;
-}
 
 .NavigationSubItems {
   font-size: 14px;
