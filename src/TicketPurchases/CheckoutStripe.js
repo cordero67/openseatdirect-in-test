@@ -166,6 +166,7 @@ const Checkout = () => {
               received = true;
             })
             .catch((error) => {
+              console.log("freeTicketHandler() error: ", error);
               console.log("freeTicketHandler() error.message: ", error.message);
               received = false;
             })
@@ -407,7 +408,7 @@ const Checkout = () => {
           </Elements>
         </div>
       );
-    } else return null;
+    } else return <div>OOPPS</div>; //null;
   };
 
   // LOOKS GOOD BUT REVIEW LOGIC
