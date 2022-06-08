@@ -99,8 +99,8 @@ const EventDetails = (props) => {
   };
 
   const imageCanvas = () => {
-//    if (props.eventImage === "existing" && !props.photoData.isLoaded) {
-    if ((!props.isCreateEvent) && !props.photoData.isLoaded) {
+    //    if (props.eventImage === "existing" && !props.photoData.isLoaded) {
+    if (!props.isCreateEvent && !props.photoData.isLoaded) {
       // **EDIT EVENT HERE
       console.log("inside imageCanvas first if");
       return <p>Loading ....</p>;
@@ -116,7 +116,7 @@ const EventDetails = (props) => {
       );
     } else {
       console.log("inside imageCanvas else");
-         // **CREATE EVENT HERE
+      // **CREATE EVENT HERE
       return (
         <ImgDropAndCrop
           photoData={{ isLoaded: true }}
