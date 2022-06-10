@@ -89,20 +89,6 @@ const VendorAccount = (props) => {
   }, []);
 
   const mainDisplay = () => {
-    /*console.log(
-      "in mainDisplay",
-      "isLoading12=",
-      isLoading,
-      isLoading2,
-      "hasError12=",
-      hasError,
-      hasError2,
-      "data=",
-      data,
-      "data2=",
-      data2
-    );*/
-
     if (isLoading || isLoading2) {
       return (
         <div style={{ paddingTop: "60px" }}>

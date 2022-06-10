@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 
 import SignInDisplay from "./Components/SignInDisplay";
@@ -21,9 +21,8 @@ import classes from "./Authentication.module.css";
 
 const Authentication = () => {
   const [showSpinner, setShowSpinner] = useState(false);
-  const [initialView, setInitialView] = useState(
-    queryString.parse(window.location.search).view
-  );
+  const initialView = queryString.parse(window.location.search).view;
+  const affiliate = queryString.parse(window.location.search).aff;
 
   const [authValues, setAuthValues] = useState({
     email: "",
@@ -73,9 +72,7 @@ const Authentication = () => {
 
   useEffect(() => {
     console.log("initialView: ", initialView);
-    let view = queryString.parse(window.location.search).view;
-    console.log("view: ", view);
-    setInitialView(view);
+    console.log("affiliate: ", affiliate);
     let fullUser = false;
 
     if (
@@ -369,6 +366,7 @@ const Authentication = () => {
           authOrigin={true} // AUTH
           //close={closeModal} NOT IN AUTH
           //expired={expired} NOT IN AUTH
+          affiliate={affiliate} // AUTH
           email={email} // AUTH
           password={password}
           spinner={showSpinner} // AUTH

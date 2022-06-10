@@ -60,6 +60,7 @@ const SignUpDisplay = (props) => {
     let url = `${API}/auth/signup/email`;
     let information = {
       email: props.email,
+      affiliate: props.affiliate,
     };
     let fetchBody = {
       method: "POST",
