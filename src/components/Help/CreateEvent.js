@@ -15,7 +15,6 @@ const Privacy = () => {
     <div className={classes.MainContainer}>
       <div
         style={{
-          paddingLeft: "50px",
           paddingTop: "10px",
           paddingBottom: "10px",
         }}
@@ -29,7 +28,7 @@ const Privacy = () => {
           Create your Event
         </button>
       </div>
-      <h1 style={{ weight: "600", fontSize: "34px", paddingTop: "10px" }}>
+      <h1 style={{ weight: "600", fontSize: "24px", paddingTop: "10px" }}>
         Event Creation basics
       </h1>
       <div>
@@ -222,7 +221,6 @@ const Privacy = () => {
       </p>
       <div
         style={{
-          paddingLeft: "50px",
           paddingTop: "10px",
           paddingBottom: "10px",
         }}

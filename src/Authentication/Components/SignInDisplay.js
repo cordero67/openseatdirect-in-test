@@ -99,7 +99,7 @@ const SignInDisplay = (props) => {
     return (
       <Fragment>
         <div style={{ paddingBottom: "20px", width: "100%" }}>
-          <div className={classes.Header}>Welcome Back!</div>
+          <div className={classes.Header}>Log in</div>
           {showError()}
           <label style={{ fontSize: "15px" }}>Email Address</label>
           <input
@@ -156,7 +156,7 @@ const SignInDisplay = (props) => {
               }
             }}
           >
-            Log in to your account
+            Log in
           </button>
         </div>
         <div className={classes.LineGrid}>

@@ -85,21 +85,31 @@
   border: 1px solid #000;
 }
 .BlueText {
+  color: #4c8bf5;
+  border: none;
+  outline: none;
   font-size: 14px;
   text-align: left;
   font-weight: 600;
+  font-size: 16px;
   padding-left: 0px;
-  color: #0000ff;
-  border: none;
   background-color: #fff;
   cursor: pointer;
   display: inline-block;
-  outline: none;
+  box-sizing: border-box;
 }
 .BlueText:hover {
-  color: #0000cc;
+  color: #1868F2;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
 }
-
+.BlueText:focus {
+  color: #0B4EC1;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+}
 @media (min-width: 500px) {
   .Modal {
     width: 500px;

@@ -69,7 +69,7 @@
   display: grid;
   grid-template-columns: auto auto;
   column-gap: "0px";
-  font-size: 14px;
+  font-size: 16px;
   padding-top: 20px;
   box-sizing: border-box;
 }
@@ -176,7 +176,7 @@
 }
 
 .BlueText {
-  color: #0000ff;
+  color: #4c8bf5;
   border: none;
   outline: none;
   font-size: 14px;
@@ -190,13 +190,13 @@
   box-sizing: border-box;
 }
 .BlueText:hover {
-  color: #0000cc;
+  color: #1868F2;
   border: none;
   outline: none;
   box-sizing: border-box;
 }
 .BlueText:focus {
-  color: #0000aa;
+  color: #0B4EC1;
   border: none;
   outline: none;
   box-sizing: border-box;
@@ -311,10 +311,9 @@
 .LineGrid {
   display: grid;
   grid-template-columns:
-    calc((100% - 150px)/2) 110px calc((100% - 150px)/2);
-  column-gap: 20px;
+    calc((100% - 170px)/2) 170px calc((100% - 180px)/2);
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   padding-top: 20px;
   padding-bottom: 20px;
 }

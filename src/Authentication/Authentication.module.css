@@ -12,8 +12,9 @@
 @media (min-width: 500px) {
   .MainContainer {
     font-family: "Roboto", sans-serif;
-    background-color: #8dadd4;
-    background-image: linear-gradient(180deg, #8DADD4 0%, #C6E3FA 100%);
+    /*background-color: #8dadd4;*/
+    background-color: #F0F4F9;
+    /*background-image: linear-gradient(180deg, #8dadd4 0%, #F0F4F9 100%);*/
     min-height: calc(100vh - 60px);
     width: 100vw;
     padding-top: 120px;
@@ -37,6 +38,7 @@
 }
 @media (min-width: 450px) {
   .Modal {
+    border: 1px solid #2F5596;
     width: 450px;
     padding-top: 0px;
     padding-bottom: 0px;

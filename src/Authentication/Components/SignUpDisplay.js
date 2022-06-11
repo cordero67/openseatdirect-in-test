@@ -139,10 +139,11 @@ const SignUpDisplay = (props) => {
             Submit your email
           </button>
         </div>
-        <div style={{ fontSize: "16px", paddingTop: "10px" }}>
+        <div style={{ fontSize: "14px", paddingTop: "10px" }}>
           By clicking 'Submit your email' you agree to Open Seat Direct's{" "}
           <a
             className={classes.BlueText}
+            style={{ fontSize: "14px" }}
             href="https://www.openseatdirect.com/privacy-policy/"
             target="_blank"
             rel="noreferrer"
@@ -152,6 +153,7 @@ const SignUpDisplay = (props) => {
           and{" "}
           <a
             className={classes.BlueText}
+            style={{ fontSize: "14px" }}
             href="https://www.openseatdirect.com/terms-and-conditions/"
             target="_blank"
             rel="noreferrer"

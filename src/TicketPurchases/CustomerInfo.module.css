@@ -75,15 +75,30 @@
   border: 1px solid black;
 }
 .BlueText {
-  color: blue;
+  color: #4c8bf5;
   border: none;
-  background-color: white;
+  outline: none;
+  font-size: 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 16px;
+  padding-left: 0px;
+  background-color: #fff;
   cursor: pointer;
   display: inline-block;
+  box-sizing: border-box;
+}
+.BlueText:hover {
+  color: #1868F2;
+  border: none;
   outline: none;
-  text-align: left;
-  padding-left: 0px;
-  font-weight: 600;
+  box-sizing: border-box;
+}
+.BlueText:focus {
+  color: #0B4EC1;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
 }
 .faShoppingCart {
   font-size: 1.5rem;

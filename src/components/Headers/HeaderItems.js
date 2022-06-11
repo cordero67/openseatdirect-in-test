@@ -5,17 +5,6 @@ import { isAuthenticated } from "../../Users/apiUsers";
 
 import classes from "./HeaderItems.module.css";
 
-// determines if current menu item, i.e. "<NavLink>" is the active link
-// "page" represents the actual active path
-// "path" represents the path defined in the respective "<NavLink>"
-const isActive = (page, path) => {
-  if (page === path) {
-    return { color: "#007BFF" };
-  } else {
-    return { color: "#000" };
-  }
-};
-
 const NavigationItems = (props) => {
   const [isResizing, setIsResizing] = useState(false);
   const [screenSize, setScreenSize] = useState(500);
@@ -33,41 +22,32 @@ const NavigationItems = (props) => {
     <ul className={classes.HeaderItems}>
       {!isAuthenticated() ? (
         <li>
-          <NavLink
-            to="/auth?view=create"
-            style={isActive(props.currentPage, "/auth")}
-          >
-            Create Event
+          <NavLink to="/auth?view=create" style={{ color: "#000" }}>
+            Create event
           </NavLink>
         </li>
       ) : (
         <li>
-          <NavLink
-            to="/createevent"
-            style={isActive(props.currentPage, "/createevent")}
-          >
-            Create Event
+          <NavLink to="/createevent" style={{ color: "#000" }}>
+            Create event
           </NavLink>
         </li>
       )}
       <li style={{ fontSize: "16px" }}>
-        <NavLink to="/" style={isActive(props.currentPage, "/")}>
+        <NavLink to="/" style={{ color: "#000" }}>
           Events
         </NavLink>
       </li>
 
       {!isAuthenticated() ? (
         <li>
-          <NavLink to="/auth" style={isActive(props.currentPage, "/auth")}>
-            Log In
+          <NavLink to="/auth" style={{ color: "#000" }}>
+            Log in
           </NavLink>
         </li>
       ) : (
         <li>
-          <NavLink
-            to="/myaccount"
-            style={isActive(props.currentPage, "/myaccount")}
-          >
+          <NavLink to="/myaccount" style={{ color: "#000" }}>
             Dashboard
           </NavLink>
         </li>

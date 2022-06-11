@@ -57,7 +57,7 @@ const SideDrawerItems = (props) => {
           style={isActive(props.currentPage, "/past")}
           onClick={props.clicked}
         >
-          Past Events
+          Past events
         </NavLink>
       </li>
 
@@ -94,7 +94,7 @@ const SideDrawerItems = (props) => {
               props.clicked();
             }}
           >
-            Log In
+            Log in
           </NavLink>
         </li>
       )}
@@ -109,7 +109,7 @@ const SideDrawerItems = (props) => {
               signout(() => {});
             }}
           >
-            Log Out
+            Log out
           </NavLink>
         </li>
       )}
