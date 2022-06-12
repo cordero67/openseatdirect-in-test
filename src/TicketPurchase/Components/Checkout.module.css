@@ -26,8 +26,9 @@
 .Blue {
   border: 1px solid blue;
 }
+
 .BlueText {
-  color: #4c8bf5;
+  color: #1A0DAB;
   border: none;
   outline: none;
   font-size: 14px;
@@ -41,13 +42,13 @@
   box-sizing: border-box;
 }
 .BlueText:hover {
-  color: #1868F2;
+  color: #2010D1;
   border: none;
   outline: none;
   box-sizing: border-box;
 }
 .BlueText:focus {
-  color: #0B4EC1;
+  color: #2D1BEE;
   border: none;
   outline: none;
   box-sizing: border-box;

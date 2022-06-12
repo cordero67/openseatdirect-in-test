@@ -176,7 +176,7 @@
 }
 
 .BlueText {
-  color: #4c8bf5;
+  color: #1A0DAB;
   border: none;
   outline: none;
   font-size: 14px;
@@ -190,13 +190,13 @@
   box-sizing: border-box;
 }
 .BlueText:hover {
-  color: #1868F2;
+  color: #2010D1;
   border: none;
   outline: none;
   box-sizing: border-box;
 }
 .BlueText:focus {
-  color: #0B4EC1;
+  color: #2D1BEE;
   border: none;
   outline: none;
   box-sizing: border-box;
@@ -311,7 +311,7 @@
 .LineGrid {
   display: grid;
   grid-template-columns:
-    calc((100% - 170px)/2) 170px calc((100% - 180px)/2);
+    calc((100% - 170px)/2) 170px calc((100% - 170px)/2);
   text-align: center;
   font-size: 16px;
   padding-top: 20px;
