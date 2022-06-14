@@ -57,7 +57,7 @@ const SideDrawerItems = (props) => {
           style={isActive(props.currentPage, "/past")}
           onClick={props.clicked}
         >
-          Past events
+          Past Events
         </NavLink>
       </li>
 

@@ -179,10 +179,9 @@
   color: #1A0DAB;
   border: none;
   outline: none;
-  font-size: 14px;
+  font-size: 16px;
   text-align: left;
   font-weight: 600;
-  font-size: 16px;
   padding-left: 0px;
   background-color: #fff;
   cursor: pointer;
@@ -197,6 +196,32 @@
 }
 .BlueText:focus {
   color: #2D1BEE;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.BlueTextSmall {
+  color: #0000ff;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  text-align: left;
+  font-weight: 600;
+  padding-left: 0px;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  box-sizing: border-box;
+}
+.BlueTextSmall:hover {
+  color: #0000cc;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+}
+.BlueTextSmall:focus {
+  color: #0000aa;
   border: none;
   outline: none;
   box-sizing: border-box;
