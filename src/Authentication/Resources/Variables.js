@@ -9,7 +9,7 @@ export const SubscriptionPlans = () => {
     // PRODUCTION subscription plans (there are no Sandbox plans)
     plans = {
       monthly: {
-        name: "$15 monthly: 1st month free",
+        name: "$15 monthly",
         id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
       },
       annually: {
@@ -55,7 +55,7 @@ export const SubscriptionPlans = () => {
     // PRODUCTION subscription plans
     plans = {
       monthly: {
-        name: "$15 monthly: 1st month free",
+        name: "$15 monthly",
         id: "P-3E209303AY287713HMDN3PLQ", // OSD PayPal Production subscription
       },
       annually: {
