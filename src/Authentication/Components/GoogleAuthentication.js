@@ -1,5 +1,4 @@
 import { GoogleLogin } from "react-google-login";
-import { faCss3 } from "@fortawesome/free-brands-svg-icons";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const API = process.env.REACT_APP_API_URL;
@@ -8,11 +7,18 @@ function MyGoogleLogin(props) {
   const handleOnSuccess = async (googleData) => {
     console.log("Login Success: currentUser:", googleData);
     try {
+      let affiliate = "";
+      if (
+        typeof window !== "undefined" &&
+        localStorage.getItem(`affiliate`) !== null
+      ) {
+        affiliate = JSON.parse(localStorage.getItem("affiliate"));
+      }
       const res = await fetch(API + "/auth/signin/google/tokensignin", {
         method: "post",
         body: JSON.stringify({
-          affiliate: props.dsdsds
           token: googleData.tokenId,
+          affiliate: affiliate,
         }),
         headers: {
           "Content-Type": "application/json",

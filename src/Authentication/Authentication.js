@@ -22,7 +22,6 @@ import classes from "./Authentication.module.css";
 const Authentication = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const initialView = queryString.parse(window.location.search).view;
-  const affiliate = queryString.parse(window.location.search).aff;
 
   const [authValues, setAuthValues] = useState({
     email: "",
@@ -72,8 +71,14 @@ const Authentication = () => {
 
   useEffect(() => {
     console.log("initialView: ", initialView);
-    console.log("affiliate: ", affiliate);
     let fullUser = false;
+
+    if (queryString.parse(window.location.search).aff) {
+      let affiliate = queryString.parse(
+        window.location.search === undefined
+      ).aff;
+      localStorage.setItem("affiliate", JSON.stringify(affiliate));
+    }
 
     if (
       typeof window !== "undefined" &&
@@ -366,7 +371,6 @@ const Authentication = () => {
           authOrigin={true} // AUTH
           //close={closeModal} NOT IN AUTH
           //expired={expired} NOT IN AUTH
-          affiliate={affiliate} // AUTH
           email={email} // AUTH
           password={password}
           spinner={showSpinner} // AUTH

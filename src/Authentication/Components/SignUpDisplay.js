@@ -55,12 +55,19 @@ const SignUpDisplay = (props) => {
       message: "",
       error: false,
     });
+    let affiliate = "";
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`affiliate`) !== null
+    ) {
+      affiliate = JSON.parse(localStorage.getItem("affiliate"));
+    }
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/email`;
     let information = {
       email: props.email,
-      affiliate: props.affiliate,
+      affiliate: affiliate,
     };
     let fetchBody = {
       method: "POST",
@@ -172,7 +179,6 @@ const SignUpDisplay = (props) => {
         <div style={{ textAlign: "center" }}>
           <GoogleAuthentication
             authOrigin={props.authOrigin}
-            authenticate={props.affiliate}
             error={(message) => {
               if (!message) {
                 setSubmissionStatus({
