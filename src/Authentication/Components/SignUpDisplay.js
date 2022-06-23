@@ -8,6 +8,7 @@ import OSDImg from "../../assets/OpenSeatDirect/BlueLettering_TransparentBackgro
 import classes from "./Components.module.css";
 
 const SignUpDisplay = (props) => {
+  console.log("inside SignUp display");
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
     error: false,
@@ -50,25 +51,30 @@ const SignUpDisplay = (props) => {
   };
 
   const submitSignUp = () => {
+    console.log();
     props.spinnerChange(true);
     setSubmissionStatus({
       message: "",
       error: false,
     });
-    let affiliate = "";
+    let information;
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`affiliate`) !== null
     ) {
-      affiliate = JSON.parse(localStorage.getItem("affiliate"));
+      information = {
+        email: props.email,
+        affiliate: JSON.parse(localStorage.getItem("affiliate")),
+      };
+    } else {
+      information = {
+        email: props.email,
+      };
     }
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/email`;
-    let information = {
-      email: props.email,
-      affiliate: affiliate,
-    };
+
     let fetchBody = {
       method: "POST",
       headers: myHeaders,

@@ -74,10 +74,10 @@ const Authentication = () => {
     let fullUser = false;
 
     if (queryString.parse(window.location.search).aff) {
-      let affiliate = queryString.parse(
-        window.location.search === undefined
-      ).aff;
+      let affiliate = queryString.parse(window.location.search).aff;
+
       localStorage.setItem("affiliate", JSON.stringify(affiliate));
+      console.log("affiliate link = ", affiliate);
     }
 
     if (

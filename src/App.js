@@ -18,19 +18,24 @@ function App() {
 
     const onOneTapSignedIn = (response) => {
       console.log("onOneTapSignedIn w:", response);
-      let affiliate = "";
+      let information;
       if (
         typeof window !== "undefined" &&
         localStorage.getItem(`affiliate`) !== null
       ) {
-        affiliate = JSON.parse(localStorage.getItem("affiliate"));
+        information = {
+          google_data: response,
+          affiliate: JSON.parse(localStorage.getItem("affiliate")),
+        };
+      } else {
+        information = {
+          google_data: response,
+        };
       }
       fetch(API_URL + "/auth/signin/google/onetap", {
         method: "post",
-        body: JSON.stringify({
-          google_data: response,
-          affiliate: affiliate,
-        }),
+
+        body: JSON.stringify(information),
         headers: {
           "Content-Type": "application/json",
         },

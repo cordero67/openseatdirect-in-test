@@ -7,19 +7,23 @@ function MyGoogleLogin(props) {
   const handleOnSuccess = async (googleData) => {
     console.log("Login Success: currentUser:", googleData);
     try {
-      let affiliate = "";
+      let information;
       if (
         typeof window !== "undefined" &&
         localStorage.getItem(`affiliate`) !== null
       ) {
-        affiliate = JSON.parse(localStorage.getItem("affiliate"));
+        information = {
+          token: googleData.tokenId,
+          affiliate: JSON.parse(localStorage.getItem("affiliate")),
+        };
+      } else {
+        information = {
+          token: googleData.tokenId,
+        };
       }
       const res = await fetch(API + "/auth/signin/google/tokensignin", {
         method: "post",
-        body: JSON.stringify({
-          token: googleData.tokenId,
-          affiliate: affiliate,
-        }),
+        body: JSON.stringify(information),
         headers: {
           "Content-Type": "application/json",
         },
