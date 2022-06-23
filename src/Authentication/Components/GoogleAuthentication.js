@@ -11,6 +11,7 @@ function MyGoogleLogin(props) {
       const res = await fetch(API + "/auth/signin/google/tokensignin", {
         method: "post",
         body: JSON.stringify({
+          affiliate: props.dsdsds
           token: googleData.tokenId,
         }),
         headers: {

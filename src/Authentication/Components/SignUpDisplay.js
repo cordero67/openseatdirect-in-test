@@ -172,6 +172,7 @@ const SignUpDisplay = (props) => {
         <div style={{ textAlign: "center" }}>
           <GoogleAuthentication
             authOrigin={props.authOrigin}
+            authenticate={props.affiliate}
             error={(message) => {
               if (!message) {
                 setSubmissionStatus({

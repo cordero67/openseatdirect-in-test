@@ -1,72 +1,68 @@
 /* global google */
 
 import React from "react";
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import Routes from "./components/Routes/Routes";
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
-const API_URL  = process.env.REACT_APP_API_URL
-
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+const API_URL = process.env.REACT_APP_API_URL;
 
 function App() {
-
   useEffect(() => {
-    console.log ("in App.js's useEffect");
+    console.log("in App.js's useEffect");
     const user = localStorage.getItem("user");
-    if  (user ) {
-      console.log ("exiting with user = " , user);
+    if (user) {
+      console.log("exiting with user = ", user);
       return;
+    }
+
+    const onOneTapSignedIn = (response) => {
+      console.log("onOneTapSignedIn w:", response);
+      fetch(API_URL + "/auth/signin/google/onetap", {
+        method: "post",
+        body: JSON.stringify({
+          google_data: response,
+          //affiliate: ""
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("got login credentials setting gprofile:", data);
+          //setLoginData (data);
+          localStorage.setItem("user", JSON.stringify(data));
+          window.location.href = "/myaccount";
+        })
+        .catch((err) => {
+          console.log("err3333>>", err);
+        });
     };
 
-    const onOneTapSignedIn = response => {
-      console.log ("onOneTapSignedIn w:", response );
-      fetch (API_URL+'/auth/signin/google/onetap',{
-        method:"post",
-        body: JSON.stringify ({
-            google_data:response,
-        }),
-        headers:{
-            'Content-Type':'application/json',
-        },
-      }).then ((res)=>res.json())    
-      .then ((data) =>{
-      console.log ("got login credentials setting gprofile:", data)
-      //setLoginData (data);
-      localStorage.setItem ('user', JSON.stringify (data));
-      window.location.href='/myaccount';
-
-      }).catch ((err)=>{
-      console.log ("err3333>>", err)
-      })
-    }
-  
     const initializeGSI = () => {
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
-        callback: onOneTapSignedIn
+        callback: onOneTapSignedIn,
       });
       google.accounts.id.prompt((notification) => {
-        
-        console.log ("prompt notification>> ", notification);
-  
+        console.log("prompt notification>> ", notification);
+
         if (notification.isNotDisplayed()) {
-          console.log(notification.getNotDisplayedReason())
+          console.log(notification.getNotDisplayedReason());
         } else if (notification.isSkippedMoment()) {
-          console.log(notification.getSkippedReason())
-        } else if(notification.isDismissedMoment()) {
-          console.log(notification.getDismissedReason())
+          console.log(notification.getSkippedReason());
+        } else if (notification.isDismissedMoment()) {
+          console.log(notification.getDismissedReason());
         }
       });
-    }
-  
+    };
 
-    const el = document.createElement('script')
-    el.setAttribute('src', 'https://accounts.google.com/gsi/client')
+    const el = document.createElement("script");
+    el.setAttribute("src", "https://accounts.google.com/gsi/client");
     el.onload = () => initializeGSI();
-    document.querySelector('body').appendChild(el)
-  }, [])
-
-
+    document.querySelector("body").appendChild(el);
+  }, []);
 
   return (
     <BrowserRouter>
@@ -76,7 +72,6 @@ function App() {
 }
 
 export default App;
-
 
 // Polo Blue (OSD light blue): #8DADD4 rgb(141,173,212)
 // lightest blue complement: #E1EAF4 rgb(225,234,244)
