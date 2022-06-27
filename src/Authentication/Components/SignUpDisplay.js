@@ -71,6 +71,7 @@ const SignUpDisplay = (props) => {
         email: props.email,
       };
     }
+    console.log("Body information: ", information);
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     let url = `${API}/auth/signup/email`;

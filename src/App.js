@@ -45,7 +45,7 @@ function App() {
           console.log("got login credentials setting gprofile:", data);
           //setLoginData (data);
           localStorage.setItem("user", JSON.stringify(data));
-          window.location.href = "/myaccount";
+          window.location.href = "/";
         })
         .catch((err) => {
           console.log("err3333>>", err);

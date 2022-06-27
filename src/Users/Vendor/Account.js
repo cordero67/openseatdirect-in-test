@@ -289,7 +289,6 @@ const Account = (props) => {
         <br></br>
         <div>{paymentDetails()}</div>
         <div>{cryptoDetails()}</div>
-        <div></div>
       </div>
       <PersonalModal
         show={modalStatus === "personal"}

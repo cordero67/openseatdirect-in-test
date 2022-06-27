@@ -21,6 +21,7 @@ function MyGoogleLogin(props) {
           token: googleData.tokenId,
         };
       }
+      console.log("Body information: ", information);
       const res = await fetch(API + "/auth/signin/google/tokensignin", {
         method: "post",
         body: JSON.stringify(information),
@@ -39,7 +40,7 @@ function MyGoogleLogin(props) {
         console.log("ALL GOOD: ", data);
         if (!data.firstTime && props.authOrigin) {
           console.log("LOGGING IN");
-          window.location.href = "/myaccount";
+          window.location.href = "/";
         } else {
           console.log("SIGNING UP");
           props.success(data);

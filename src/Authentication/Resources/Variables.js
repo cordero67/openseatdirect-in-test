@@ -9,7 +9,7 @@ export const SubscriptionPlans = () => {
     // PRODUCTION subscription plans (there are no Sandbox plans)
     plans = {
       monthly: {
-        name: "$15 monthly",
+        name: "$15 monthly: 30 day FREE trial",
         id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
       },
       annually: {
@@ -17,7 +17,7 @@ export const SubscriptionPlans = () => {
         id: "P-5YA13382D9271245EL5FRXTA", // Bondirectly PayPal Sandbox subscription
       },
       monthlyDiscounted: {
-        name: "$15 monthly: 6 weeks free",
+        name: "$15 monthly: 6 weeks FREE",
         id: "P-5DT364104U926810EL5FRXSY", // Bondirectly PayPal Sandbox subscription
       },
       annuallyDiscounted: {
@@ -25,7 +25,7 @@ export const SubscriptionPlans = () => {
         id: "P-5YA13382D9271245EL5FRXTA", // Bondirectly PayPal Sandbox subscription
       },
       monthlyFreeTrial: {
-        name: "$15 monthly: 3 months free",
+        name: "$15 monthly: 3 months FREE",
         id: "P-3U3085871T847894PL5FRXTI", // Bondirectly PayPal Sandbox subscription
       },
       annualGrowPR: {
@@ -55,15 +55,15 @@ export const SubscriptionPlans = () => {
     // PRODUCTION subscription plans
     plans = {
       monthly: {
-        name: "$15 monthly",
-        id: "P-3E209303AY287713HMDN3PLQ", // OSD PayPal Production subscription
+        name: "$15 monthly: 30 day FREE trial",
+        id: "P-73X287123M572854BMK42LOQ", // OSD PayPal Production subscription
       },
       annually: {
         name: "$169 annually",
         id: "P-9P586954FE0229727MDN3RMQ", // OSD PayPal Production subscription
       },
       monthlyDiscounted: {
-        name: "$15 monthly: 6 weeks free",
+        name: "$15 monthly: 6 weeks FREE",
         id: "P-3MM32159H2853152CMDN3T6Q", // OSD PayPal Production subscription
       },
       annuallyDiscounted: {
@@ -71,7 +71,7 @@ export const SubscriptionPlans = () => {
         id: "P-41592191WY6636644MDN3VOY", // OSD PayPal Production subscription
       },
       monthlyFreeTrial: {
-        name: "$15 monthly: 3 months free",
+        name: "$15 monthly: 3 months FREE",
         id: "P-0VY95999WV5246104MDOLPKI", // OSD PayPal Production subscription
       },
       annualGrowPR: {

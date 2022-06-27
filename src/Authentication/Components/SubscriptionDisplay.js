@@ -65,7 +65,7 @@ const SubscriptionDisplay = (props) => {
 
   // UPDATE WHEN A NEW PAYPAL PLAN IS INTRODUCED
   const [subValues, setSubValues] = useState({
-    paypal_plan_id: "P-3E209303AY287713HMDN3PLQ", // default value is production monthly plan
+    paypal_plan_id: "P-73X287123M572854BMK42LOQ", // default value is production monthly plan
     paypal_plan_id_full: "", // default plan for "FULL" ticket plan selection view
     paypal_plan_id_discount: "", // default plan for "DISCOUNT" ticket plan selection view
     paypal_plan_id_forFree: "", // default plan for "FORFREE" ticket plan selection view
@@ -126,7 +126,7 @@ const SubscriptionDisplay = (props) => {
             PAYPAL_USE_SANDBOX,
             " Sandbox false"
           );
-          tempBuyerInfo.paypal_plan_id_full = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
+          tempBuyerInfo.paypal_plan_id_full = "P-73X287123M572854BMK42LOQ"; // production monthly full price
           tempBuyerInfo.paypal_plan_id_discount = "P-3MM32159H2853152CMDN3T6Q"; // production monthly discounted price
           tempBuyerInfo.paypal_plan_id_forFree = "P-0VY95999WV5246104MDOLPKI"; // production monthly 3 months free
           tempBuyerInfo.paypal_plan_id_growPR = "P-8T757325FM2761033MF5677Y"; // production monthly 3 months free
@@ -137,7 +137,7 @@ const SubscriptionDisplay = (props) => {
             "P-74091125HK783123JMDOLLEA"; // production monthly full price
           tempBuyerInfo.paypal_plan_id_freeSubscription = ""; // production FREE SUBSCRIPTION no PayPal
           if (!tempUser.user.accountId.paypal_plan_id) {
-            tempBuyerInfo.paypal_plan_id = "P-3E209303AY287713HMDN3PLQ"; // production monthly full price
+            tempBuyerInfo.paypal_plan_id = "P-73X287123M572854BMK42LOQ"; // production monthly full price
           } else {
             console.log("Assigning old subscription id");
             tempBuyerInfo.paypal_plan_id =
