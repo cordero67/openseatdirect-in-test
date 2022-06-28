@@ -23,13 +23,13 @@ const NavigationItems = (props) => {
       {!isAuthenticated() ? (
         <li>
           <NavLink to="/auth?view=create" style={{ color: "#000" }}>
-            Create Event
+            Create event
           </NavLink>
         </li>
       ) : (
         <li>
           <NavLink to="/createevent" style={{ color: "#000" }}>
-            Create Event
+            Create event
           </NavLink>
         </li>
       )}
