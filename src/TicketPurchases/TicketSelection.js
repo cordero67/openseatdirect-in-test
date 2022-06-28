@@ -694,7 +694,7 @@ const TicketSelection = () => {
                     window.location.href = "/checkout-opennode";
                   }}
                 >
-                  Pay with bitcoinnn
+                  Pay with bitcoin
                 </button>
               );
             }
