@@ -145,23 +145,31 @@ const CustomerInfo = (props) => {
   // creates submit button to send free ticket information to server
   const checkoutButton = () => {
     if (orderTotals.ticketsPurchased > 0 && detailsMinimal()) {
+      console.log("crypto: ", eventDetails.cryptoGateway);
+      console.log("gateway: ", eventDetails.gateway);
       return (
         <button
           onClick={loadCustomerInfo}
           disabled={false}
           className={classes.ButtonGreen}
         >
-          {eventDetails.cryptoGateway === "Opennode"
-            ? "PAY WITH BITCOIN"
-            : "SUBMIT INFORMATION"}
+          {eventDetails.gateway === "PayPalExpress" ||
+          eventDetails.gateway === "PayPalMerchant" ||
+          eventDetails.gateway === "Stripe"
+            ? "Submit information"
+            : "Pay with Bitcoin"}
         </button>
       );
     } else {
+      console.log("crypto: ", eventDetails.cryptoGateway);
+      console.log("gateway: ", eventDetails.gateway);
       return (
         <button disabled={true} className={classes.ButtonGreenOpac}>
-          {eventDetails.cryptoGateway === "Opennode"
-            ? "PAY WITH BITCOIN"
-            : "SUBMIT INFORMATION"}
+          {eventDetails.gateway === "PayPalExpress" ||
+          eventDetails.gateway === "PayPalMerchant" ||
+          eventDetails.gateway === "Stripe"
+            ? "Submit information"
+            : "Pay with Bitcoin"}
         </button>
       );
     }
@@ -425,7 +433,6 @@ const CustomerInfo = (props) => {
         closeModal={() => setModalStatus(false)}
         submit={() => {
           console.log("Inside submitOrder");
-          //eventDetails.gateway = "PayPalMerchant";
           if (eventDetails.gateway === "PayPalExpress") {
             console.log("window.location.href = '/checkout-paypalexpress'");
             window.location.href = "/checkout-paypalexpress";
