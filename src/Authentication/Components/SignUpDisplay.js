@@ -1,5 +1,7 @@
 import React, { useState, Fragment } from "react";
 import GoogleAuthentication from "./GoogleAuthentication";
+import MyFBLogin from "./FacebookAuthentication";
+
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
@@ -219,10 +221,52 @@ const SignUpDisplay = (props) => {
             }}
           />
         </div>
+        <div>
+          <MyFBLogin
+          appId="235978594688418"
+          autoLoad={false}
+          calllback={responseFacebook}
+          />,
+        </div>
         {bottomDisplay}
       </Fragment>
     );
   };
+
+  const responseFacebook = (response) =>{
+    console.log (response);
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let url = `${API}/auth/signin/facebooklogin`;
+     
+
+    let fetchBody = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify({ accessToken: response.accessToken, userId:response.userID}),
+    };
+    console.log("fetching with: ", url, fetchBody);
+    fetch(url, fetchBody)
+      .then(handleErrors)
+      .then((response) => {
+        console.log("then response: ", response);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("facebook login success return from server:", data);
+
+//        handleSignUp(data);
+      })
+      .catch((error) => {
+        console.log("error.message: ", error.message);
+        props.showError();
+        props.spinnerChange(false);
+      });
+
+
+
+  }
 
   const showError = () => {
     if (error) {
