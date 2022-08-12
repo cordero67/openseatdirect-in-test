@@ -223,9 +223,39 @@ const SignUpDisplay = (props) => {
         </div>
         <div>
           <MyFBLogin
-          appId="235978594688418"
-          autoLoad={false}
-          calllback={responseFacebook}
+            authOrigin={props.authOrigin}
+            error={(message) => {
+              if (!message) {
+                setSubmissionStatus({
+                  message: "System error please try again.",
+                  error: true,
+                });
+              } else {
+                setSubmissionStatus({
+                  message: message,
+                  error: true,
+                });
+              }
+            }}
+
+            success={(data) => {
+              console.log("data: ", data);
+              props.values({
+                name: "",
+                email: data.user.email,
+                password: "",
+                temporary: "",
+                reissued: false,
+                confirmation: "",
+                resent: false,
+                username: data.user.username,
+                resetToken: "",
+                sessionToken: data.token,
+                userId: data.user.userId,
+                accountNum: data.user.accountId.accountNum,
+              });
+              props.submit();
+            }}
           />,
         </div>
         {bottomDisplay}
@@ -233,40 +263,6 @@ const SignUpDisplay = (props) => {
     );
   };
 
-  const responseFacebook = (response) =>{
-    console.log (response);
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/facebooklogin`;
-     
-
-    let fetchBody = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify({ accessToken: response.accessToken, userId:response.userID}),
-    };
-    console.log("fetching with: ", url, fetchBody);
-    fetch(url, fetchBody)
-      .then(handleErrors)
-      .then((response) => {
-        console.log("then response: ", response);
-        return response.json();
-      })
-      .then((data) => {
-        console.log("facebook login success return from server:", data);
-
-//        handleSignUp(data);
-      })
-      .catch((error) => {
-        console.log("error.message: ", error.message);
-        props.showError();
-        props.spinnerChange(false);
-      });
-
-
-
-  }
 
   const showError = () => {
     if (error) {
