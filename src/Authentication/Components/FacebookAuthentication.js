@@ -11,10 +11,10 @@ function MyFBLogin(props) {
 
 const facebookResponse = async (response) => {
   console.log("FB  response :", response);
-
+  // accessToken, dta_access_experation_time,graphDomain,id, name, signedRequest, userID
   let body = { 
     accessToken: response?.accessToken, 
-    userId:      response?.userID
+    userID:      response?.userID
   };
 
   if (typeof window !== "undefined" && localStorage.getItem(`affiliate`) !== null) {
