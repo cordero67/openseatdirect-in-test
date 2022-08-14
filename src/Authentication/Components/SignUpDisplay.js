@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from "react";
 import GoogleAuthentication from "./GoogleAuthentication";
 import MyFBLogin from "./FacebookAuthentication";
+import MyAppleSigninButton from "./AppleAuthentication";
 
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
@@ -258,6 +259,48 @@ const SignUpDisplay = (props) => {
             }}
           />,
         </div>
+
+        <div>
+          <MyAppleSigninButton
+            authOrigin={props.authOrigin}
+            error={(message) => {
+              if (!message) {
+                setSubmissionStatus({
+                  message: "System error please try again.",
+                  error: true,
+                });
+              } else {
+                setSubmissionStatus({
+                  message: message,
+                  error: true,
+                });
+              }
+            }}
+
+            success={(data) => {
+              console.log("data: ", data);
+              props.values({
+                name: "",
+                email: data.user.email,
+                password: "",
+                temporary: "",
+                reissued: false,
+                confirmation: "",
+                resent: false,
+                username: data.user.username,
+                resetToken: "",
+                sessionToken: data.token,
+                userId: data.user.userId,
+                accountNum: data.user.accountId.accountNum,
+              });
+              props.submit();
+            }}
+          />,
+        </div>
+
+
+
+
         {bottomDisplay}
       </Fragment>
     );

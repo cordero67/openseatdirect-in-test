@@ -66,7 +66,6 @@ const handleErrors = (response) => {
   return response;
 };
 
-// autoLoad={true}
 
   return (
     <div style={{ height: "40px" }}>
