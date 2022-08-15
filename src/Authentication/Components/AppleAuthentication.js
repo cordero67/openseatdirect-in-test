@@ -24,7 +24,7 @@ function MyAppleSigninButton(props) {
         console.log("fb body: ", body);
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        let url = `${API}/auth/sso/applelogin`;
+        let url = `${API}/auth/sso/apple`;
         
         fetch(url, {
             method: "post",

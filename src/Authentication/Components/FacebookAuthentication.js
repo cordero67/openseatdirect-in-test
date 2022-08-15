@@ -24,7 +24,7 @@ const facebookResponse = async (response) => {
   console.log("fb body: ", body);
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  let url = `${API}/auth/sso/facebooklogin`;
+  let url = `${API}/auth/sso/facebook`;
   
   fetch(url, {
     method: "post",
