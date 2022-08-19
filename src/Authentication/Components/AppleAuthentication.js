@@ -3,6 +3,7 @@ import AppleSignin from "react-apple-signin-auth";
 
 const APPLE_CLIENT_ID = process.env.REACT_APP_APPLE_CLIENT_ID;
 const API = process.env.REACT_APP_API_URL;
+                        
 
 //        cssClass="my-facebook-button-class"
 //        icon="fa-facebook"
@@ -72,22 +73,24 @@ function MyAppleSigninButton(props) {
         props.error ("Apple signin system error. Please try again")
     }
 
-    console.log ( "APPLE_CLIENT_ID=",APPLE_CLIENT_ID)
+    console.log ( "APPLE_CLIENT_ID=",APPLE_CLIENT_ID ," API=", API);
     return (
         <div style={{ height: "40px" }}>
         <AppleSignin
             /** Auth options passed to AppleID.auth.init() */
             authOptions={{
             /** Client ID - eg: 'com.example.com' */
-            clientId: "254DW3GMRJ.com.openseatdirect.ticketapp",
+//MM            clientId: "254DW3GMRJ.com.openseatdirect.ticketapp",
+            clientId: APPLE_CLIENT_ID,
             /** Requested scopes, seperated by spaces - eg: 'email name' */
             scope: 'email name',
             /** Apple's redirectURI - must be one of the URIs you added to the serviceID - the undocumented trick in apple docs is that you should call auth from a page that is listed as a redirectURI, localhost fails */
-            redirectURI: 'https://www.bondirectly.com',
+//MM            redirectURI: 'https://api.bondirectly.com',
+            redirectURI: API, 
             /** State string that is returned with the apple response */
             state: 'state',
             /** Nonce */
-            nonce: 'nonce',
+            nonce: 'nonce', // sha256(nonce)
             /** Uses popup auth instead of redirection */
 //            usePopup: ${authOptions.usePopup},
             usePopup:true,
