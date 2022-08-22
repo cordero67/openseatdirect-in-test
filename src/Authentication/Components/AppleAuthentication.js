@@ -68,7 +68,7 @@ function MyAppleSigninButton(props) {
     };
 
     const onError  = (appleError) =>{
-        console.log ("apple error 70");
+        console.log ("apple error 70",appleError);
         console.error(appleError);
         props.error ("Apple signin system error. Please try again")
     }
@@ -90,7 +90,7 @@ function MyAppleSigninButton(props) {
             /** State string that is returned with the apple response */
             state: 'state',
             /** Nonce */
-            nonce: 'nonce', // sha256(nonce)
+//            nonce: 'nonce', // sha256(nonce)
             /** Uses popup auth instead of redirection */
 //            usePopup: ${authOptions.usePopup},
             usePopup:true,
