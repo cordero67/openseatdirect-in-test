@@ -1,6 +1,6 @@
 import React from "react";
-import FacebookLogin from "react-facebook-login";
-//ygit import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+//import FacebookLogin from "react-facebook-login";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 
 const FACEBOOK_APP_ID = process.env.REACT_APP_FACEBOOK_APP_ID;
 const API = process.env.REACT_APP_API_URL;
@@ -77,6 +77,7 @@ function MyFBLogin(props) {
         callback={facebookResponse}
         render={(renderProps) => (
           <button
+            onClick={renderProps.onClick}
             style={{
               height: "40px",
               width: "105px",
