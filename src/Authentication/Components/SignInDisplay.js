@@ -2,6 +2,7 @@ import React, { useState, Fragment } from "react";
 import GoogleAuthentication from "./GoogleAuthentication";
 import FacebookAuthentication from "./FacebookAuthentication";
 import AppleAuthentication from "./AppleAuthentication";
+import validator from "validator";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
@@ -57,11 +58,25 @@ const SignInDisplay = (props) => {
     });
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/email`;
-    let information = {
-      email: props.email,
-      password: props.password,
-    };
+    let url;
+    let information;
+
+    if (validator.isEmail(props.email)) {
+      console.log("about to send email login");
+      url = `${API}/auth/signin/email`;
+      information = {
+        email: props.email,
+        password: props.password,
+      };
+    } else if (validator.isMobilePhone(props.email)) {
+      console.log("about to send mobile phone login");
+      url = `${API}/auth/signin/phone`;
+      information = {
+        mobilePhone: props.email,
+        password: props.password,
+      };
+    } else {
+    }
     let fetchBody = {
       method: "POST",
       headers: myHeaders,
@@ -86,11 +101,21 @@ const SignInDisplay = (props) => {
   };
 
   const signInForm = () => {
-    const regEmail =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    console.log("Validator check");
+
+    let validEmail = validator.isEmail(props.email);
+    console.log("Email Validator results: ", validEmail);
+
+    let validPhone = validator.isMobilePhone(props.email);
+    console.log("Phone Validator results: ", validPhone);
+
+    //const regEmail =
+    //  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const regPassword = /^(?=.*\d).{8,}$/;
     let disabled =
-      !regEmail.test(props.email) || !regPassword.test(props.password);
+      (!validator.isEmail(props.email) &&
+        !validator.isMobilePhone(props.email)) ||
+      !regPassword.test(props.password);
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
@@ -103,7 +128,7 @@ const SignInDisplay = (props) => {
         <div style={{ paddingBottom: "20px", width: "100%" }}>
           <div className={classes.Header}>Log in</div>
           {showError()}
-          <label style={{ fontSize: "15px" }}>Email Address</label>
+          <label style={{ fontSize: "15px" }}>Email Address/Cell Phone</label>
           <input
             className={classes.InputBox}
             type="email"
@@ -117,10 +142,12 @@ const SignInDisplay = (props) => {
               });
             }}
           />
-          {props.email && !regEmail.test(props.email) ? (
+          {props.email &&
+          !validator.isEmail(props.email) &&
+          !validator.isMobilePhone(props.email) ? (
             <div style={{ paddingTop: "5px" }}>
               <span className={classes.RedText}>
-                A valid email address is required
+                A valid email address or mobile phone is required
               </span>
             </div>
           ) : null}
