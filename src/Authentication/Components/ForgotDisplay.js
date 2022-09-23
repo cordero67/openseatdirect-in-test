@@ -1,4 +1,5 @@
 import React, { useState, Fragment } from "react";
+import validator from "validator";
 
 import Spinner from "../../components/UI/Spinner/SpinnerNew";
 import { API } from "../../config";
@@ -21,9 +22,20 @@ const ForgotDisplay = (props) => {
   };
 
   const handleForgot = (data) => {
+    console.log("data.user: ", data.user);
     if (data.status) {
+      let value;
+      if (data.user.email) {
+        console.log("There is an email");
+        value = data.user.email;
+      } else if (data.user.mobilePhone) {
+        console.log("There is a mobile phone");
+        value = data.user.mobilePhone;
+      } else {
+        console.log("there is nothing");
+      }
       props.values({
-        email: data.user?.email,
+        email: value,
         password: "",
         temporary: "",
         reissued: false,
@@ -53,11 +65,24 @@ const ForgotDisplay = (props) => {
       error: false,
     });
     let myHeaders = new Headers();
+    let url;
+    let information;
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/sendcode`;
-    let information = {
-      email: props.email,
-    };
+    if (validator.isEmail(props.email)) {
+      console.log("about to send code via email");
+      url = `${API}/auth/signin/sendcode`;
+      information = {
+        email: props.email,
+      };
+    } else if (validator.isMobilePhone(props.email)) {
+      console.log("about to send code via text");
+      url = `${API}/auth/signin/phone/sendcode`;
+      information = {
+        mobilePhone: props.email,
+      };
+    } else {
+    }
+
     let fetchBody = {
       method: "POST",
       headers: myHeaders,
@@ -82,9 +107,10 @@ const ForgotDisplay = (props) => {
   };
 
   const forgotForm = () => {
-    const regsuper =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let disabled = !regsuper.test(props.email);
+    //const regsuper =
+    //  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let disabled =
+      !validator.isEmail(props.email) && !validator.isMobilePhone(props.email);
     let buttonClass;
     if (disabled) {
       buttonClass = classes.ButtonBlueOpac;
@@ -97,7 +123,7 @@ const ForgotDisplay = (props) => {
         <div style={{ paddingBottom: "20px", width: "100%" }}>
           <div className={classes.Header}>Trouble logging in?</div>
           {errorText()}
-          <label style={{ fontSize: "15px" }}>E-mail Address</label>
+          <label style={{ fontSize: "15px" }}>E-mail Address/Cell Phone</label>
           <input
             className={classes.InputBox}
             type="email"
@@ -111,10 +137,12 @@ const ForgotDisplay = (props) => {
               });
             }}
           />
-          {props.email && !regsuper.test(props.email) ? (
+          {props.email &&
+          !validator.isEmail(props.email) &&
+          !validator.isMobilePhone(props.email) ? (
             <div style={{ paddingTop: "5px" }}>
               <span className={classes.ErrorText}>
-                A valid email address is required
+                A valid email address or mobile phone is required
               </span>
             </div>
           ) : null}
@@ -129,7 +157,7 @@ const ForgotDisplay = (props) => {
               }
             }}
           >
-            Submit your email
+            Submit
           </button>
         </div>
         {bottomDisplay}

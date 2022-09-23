@@ -1,4 +1,5 @@
 import React, { useState, Fragment } from "react";
+import validator from "validator";
 
 import Spinner from "../../components/UI/Spinner/Spinner";
 import { API } from "../../config";
@@ -6,6 +7,7 @@ import { API } from "../../config";
 import classes from "./Components.module.css";
 
 const ConfirmTempDisplay = (props) => {
+  console.log("props: ", props);
   const [submissionStatus, setSubmissionStatus] = useState({
     message: "",
     error: false,
@@ -45,6 +47,7 @@ const ConfirmTempDisplay = (props) => {
   };
 
   const submitReissue = () => {
+    console.log("props.email after reissue: ", props.email);
     setSubmissionStatus({
       message: "",
       error: false,
@@ -52,10 +55,24 @@ const ConfirmTempDisplay = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/sendcode`;
-    let information = {
-      email: props.email,
-    };
+    let url;
+    let information;
+    if (validator.isEmail(props.email)) {
+      console.log("about to send code via email now");
+      url = `${API}/auth/signin/sendcode`;
+      information = {
+        email: props.email,
+      };
+    } else if (validator.isMobilePhone(props.email)) {
+      console.log("about to send code via text now");
+      url = `${API}/auth/signin/phone/sendcode`;
+      information = {
+        mobilePhone: props.email,
+      };
+    } else {
+      console.log("nothing happens");
+    }
+
     let fetchBody = {
       method: "POST",
       headers: myHeaders,
@@ -115,11 +132,22 @@ const ConfirmTempDisplay = (props) => {
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    let url = `${API}/auth/signin/confirmcode`;
-    let information = {
-      email: props.email,
-      confirm_code: props.temporary,
-    };
+    let url;
+    let information;
+    if (validator.isEmail(props.email)) {
+      url = `${API}/auth/signin/confirmcode`;
+      information = {
+        email: props.email,
+        confirm_code: props.temporary,
+      };
+    } else if (validator.isMobilePhone(props.email)) {
+      url = `${API}/auth/signin/phone/confirmcode`;
+      information = {
+        mobilePhone: props.email,
+        confirm_code: props.temporary,
+      };
+    } else {
+    }
     let fetchBody = {
       method: "POST",
       headers: myHeaders,
