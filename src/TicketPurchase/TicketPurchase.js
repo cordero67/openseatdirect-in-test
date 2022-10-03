@@ -853,7 +853,7 @@ const TicketPurchase = (props) => {
           {promoOption()}
           {ticketItems()}
           <div className={classes.EventDescription}>
-            Powered by{" "}
+            Powered by MAZIER{" "}
             <NavLink to="/" exact>
               <img
                 className={classes.ImageBox}

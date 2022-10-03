@@ -111,7 +111,10 @@ const SignInDisplay = (props) => {
 
     //const regEmail =
     //  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const regPassword = /^(?=.*\d).{8,}$/;
+    //const regPassword = /^(?=.*\d).{8,}$/;
+    const regPassword = /^([ A-Za-z0-9?=.*]).{8,}$/;
+    ///^[ A-Za-z0-9_@./#&+-]*$/
+
     let disabled =
       (!validator.isEmail(props.email) &&
         !validator.isMobilePhone(props.email)) ||
@@ -170,7 +173,7 @@ const SignInDisplay = (props) => {
           {props.password && !regPassword.test(props.password) ? (
             <div style={{ paddingTop: "5px" }}>
               <span className={classes.RedText}>
-                Minimum 8 character password including 1 number
+                Minimum 8 character password
               </span>
             </div>
           ) : null}
