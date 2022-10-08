@@ -669,8 +669,12 @@ const TicketSelection = () => {
                       );
                       window.location.href = "/checkout-paypalexpress";
                     } else if (eventDetails.gateway === "Stripe") {
-                      console.log("window.location.href = '/checkout-stripe'");
-                      window.location.href = "/checkout-stripe";
+                      //console.log("window.location.href = '/checkout-stripe'");
+                      //window.location.href = "/checkout-stripe";
+                      console.log(
+                        "window.location.href = '/checkout-stripe-mobile'"
+                      );
+                      window.location.href = "/checkout-stripe-mobile";
                     } else if (eventDetails.gateway === "PayPalMarketplace") {
                       console.log(
                         "window.location.href = '/checkout-paypalmerchant'"
@@ -812,8 +816,10 @@ const TicketSelection = () => {
         console.log("window.location.href = '/checkout-paypalexpress'");
         window.location.href = "/checkout-paypalexpress";
       } else if (eventDetails.gateway === "Stripe") {
-        console.log("window.location.href = '/checkout-stripe'");
-        window.location.href = "/checkout-stripe";
+        //console.log("window.location.href = '/checkout-stripe'");
+        //window.location.href = "/checkout-stripe";
+        console.log("window.location.href = '/checkout-stripe-mobile'");
+        window.location.href = "/checkout-stripe-mobile";
       } else if (eventDetails.gateway === "PayPalMarketplace") {
         console.log("window.location.href = '/checkout-paypalmerchant'");
         window.location.href = "/checkout-paypalmerchant";

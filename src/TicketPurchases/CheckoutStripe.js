@@ -402,13 +402,13 @@ const Checkout = () => {
                     name
                   )
                 );
-                setDisplay("confirmation");
+                //setDisplay("confirmation");
               }}
             />
           </Elements>
         </div>
       );
-    } else return <div>OOPPS</div>; //null;
+    } else return null;
   };
 
   // LOOKS GOOD BUT REVIEW LOGIC
