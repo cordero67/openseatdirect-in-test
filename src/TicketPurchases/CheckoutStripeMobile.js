@@ -34,11 +34,13 @@ const Checkout = () => {
     // payment_intent_client_secret=pi_3Lqakq4KmDyQDRAL16sizCPO_secret_qSB9vvfpPkRLDhhKtQ0W9ZFsl&
     // redirect_status=succeeded"
 
-    //stripeAccount: "acct_1LF5yd4KmDyQDRAL",
+    // stripeAccount: "acct_1LF5yd4KmDyQDRAL",
+
+    // https://app.bondirect.com/checkout-stripe?client-secret=xxxxxxx
 
     let result = queryString.parse(window.location.search).result;
     let stripeAccount = queryString.parse(window.location.search).account;
-    let clientSecret = queryString.parse(window.location.search).secret;
+    let clientSecret = queryString.parse(window.location.search).clientSecret;
 
     if (result === "success") {
       console.log("success");
