@@ -57,7 +57,7 @@ const VendorAccount = (props) => {
   let myHeadersx = new Headers();
   myHeadersx.append("Content-Type", "application/json");
   myHeadersx.append("Authorization", "Bearer " + tempUser.token);
-  const url = `${API}/accounts/${tempUser.user.accountId.accountNum}/events`;
+  const url = `${API}/accounts/${tempUser.user.accountId.accountNum}/events?draft`;
   const method1 = "GET";
   const body = null;
   const initialData = { status: true, message: "hi first time for events" };
