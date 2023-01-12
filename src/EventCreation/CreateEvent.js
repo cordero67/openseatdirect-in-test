@@ -583,7 +583,7 @@ const CreateEvent = (props) => {
       myHeaders.append("content-type", "application/json");
 
       let apiurl;
-      apiurl = `${API}/accounts/${accountNum}/events?draft`;
+      apiurl = `${API}/accounts/${accountNum}/events?draft=true`;
       console.log("photoData = ", photoData);
 
       let imgError = false; // catch errors in image upload

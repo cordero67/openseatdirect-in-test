@@ -594,7 +594,7 @@ const EventEdit = (props) => {
       myHeaders.append("content-type", "application/json");
 
       let apiurl;
-      apiurl = `${API}/accounts/${accountNum}/events/${eventDescription.eventNum}?draft`;
+      apiurl = `${API}/accounts/${accountNum}/events/${eventDescription.eventNum}?draft=true`;
       //
       //
       let imgError = false; // catch errors in image upload
