@@ -1016,7 +1016,7 @@ const TicketSelection = () => {
           {promoOption()}
           {ticketItems()}
           <div className={classes.EventDescription}>
-            Powered by MR MIKE{" "}
+            Powered by{" "}
             <NavLink to="/" exact>
               <img
                 className={classes.ImageBox}
