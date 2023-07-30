@@ -4,7 +4,6 @@ import { Route } from "react-router-dom";
 import Events from "../../Events/Events";
 import EventsPast from "../../Events/EventsPast";
 import EventDetails from "../../Events/EventDetails";
-import EventDetailsNEW from "../../Events/EventDetailsNEW";
 import EventDeletion from "../../EventCreation/DeleteEvent";
 import PrivacyPolicy from "../Corporate/PrivacyPolicy";
 import TermsConditions from "../Corporate/TermsConditions";
@@ -298,22 +297,6 @@ const Routes = () => {
             />
             <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
             <EventDetails />
-            <Footer></Footer>
-          </Fragment>
-        )}
-      />
-
-      <Route
-        path="/edNEW/"
-        render={(routeProps) => (
-          <Fragment>
-            <Header
-              positioning="fixed"
-              logo={LogoC}
-              clicked={toggleSideDrawer}
-            />
-            <SideDrawer open={showSideDrawer} closed={closeSideDrawer} />
-            <EventDetailsNEW />
             <Footer></Footer>
           </Fragment>
         )}

@@ -1,10 +1,13 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, useCallback, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import queryString from "query-string";
 import ReactHtmlParser from "html-react-parser";
 
 import { API } from "../config.js";
 import { getEventData, getEventImage } from "./Resources/apiCore";
+
+import { isValidEventNum } from "../utils/validators";
+import { getAPIEvent } from "../Events/useOurApiEvent";
 
 //gatewayClientID: event.accountId.paypalExpress_client_id,
 //paypalClientID: event.accountId.paypalExpress_client_id,
@@ -54,6 +57,15 @@ let OrderSummarySectionAlt = {};
 
 const TicketSelection = () => {
   console.log("You are in Ticket Selection");
+
+  //localStorage.clear();
+  // defines data loading control variables
+  const [isLoadingEvent, setIsLoadingEvent] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [isBadEvent, setIsBadEvent] = useState(false);
+  const [eventAPIData, setEventAPIData] = useState("");
+  const [networkError, setNetworkError] = useState(false);
+
   const [display, setDisplay] = useState("spinner"); // defines panel displayed: main, registration, spinner, confirmation, connection
   const [showDoublePane, setShowDoublePane] = useState(false); // defines single or double panel display on main page
   const [showOrderSummaryOnly, setShowOrderSummaryOnly] = useState(false); // defines panel display for a single panel display on main page
@@ -85,7 +97,80 @@ const TicketSelection = () => {
     userId: "",
   });
 
+  let eventNum_url = queryString.parse(window?.location?.search)?.eventID;
+  // get eventNum from local storage and check if data has been loaded
+  if (!isValidEventNum(eventNum_url)) {
+    let urlparts = window?.location?.pathname?.split("/");
+    console.log("urlaprts=", urlparts);
+    eventNum_url = urlparts?.pop();
+  }
+
+  const loadTicketEventData = useCallback((eventJson) => {
+    let res = eventJson;
+    console.log(
+      "Current TicketSelection: EVENT DATA OBJECT from Server: in 'getEventData()': ",
+      res
+    );
+    console.log("res: ", res);
+    eventDetails = loadEventDetails(res);
+    console.log("I am here");
+    console.log("eventDetails: ", eventDetails);
+    // checks if an order exists in local storage
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem(`cart_${eventDetails.eventNum}`) !== null
+    ) {
+      let cart = JSON.parse(
+        localStorage.getItem(`cart_${eventDetails.eventNum}`)
+      );
+      setTicketInfo(cart.ticketInfo);
+      setPromoCodeDetails(cart.promoCodeDetails);
+      setOrderTotals(cart.orderTotals);
+    } else {
+      console.log("ticketInfo: ", loadTicketInfo(res));
+      if (res.tickets.length === 0) {
+        window.location.href = `/ed/${eventDetails.vanityLink}?eventID=${eventDetails.eventNum}`;
+      }
+      console.log("ticketInfo: ", loadTicketInfo(res));
+      setTicketInfo(loadTicketInfo(res));
+      setPromoCodeDetails(loadPromoCodeDetails(res, promoCodeDetails));
+      setOrderTotals(loadOrderTotals(res));
+    }
+  }, []);
+
   useEffect(() => {
+    let isSubscribed = true;
+
+    console.log("GOODBYE");
+    console.log("in useEffect...w eventNum=", eventNum_url);
+    if (isValidEventNum(eventNum_url)) {
+      setIsLoadingEvent(true);
+      getAPIEvent(eventNum_url)
+        .then((r) => {
+          if (!isSubscribed) return null;
+          console.log("return fromgetAPIEvent", r);
+          if (r.ok) {
+            loadTicketEventData(r.data);
+            setEventAPIData(r.data);
+            setHasError(false);
+            setDisplay("main");
+          } else {
+            setHasError(true);
+            setDisplay("connection");
+          }
+        })
+        .catch((e) => {
+          if (!isSubscribed) return null;
+          console.log("catch fromgetAPIEvent 133", e);
+          setHasError(true);
+          setDisplay("connection");
+        })
+        .finally(() => {
+          if (!isSubscribed) return null;
+          setIsLoadingEvent(false);
+        });
+    }
+
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
@@ -99,10 +184,12 @@ const TicketSelection = () => {
       });
     }
 
-    eventData(queryString.parse(window.location.search).eventID);
-
     stylingUpdate(window.innerWidth, window.innerHeight);
-  }, []);
+
+    return () => {
+      isSubscribed = false;
+    };
+  }, [eventNum_url, loadTicketEventData]);
 
   // receives Event Data from server and populates several control variables
   const eventData = (eventID) => {
@@ -128,18 +215,13 @@ const TicketSelection = () => {
             "https://imagedelivery.net/IF3fDroBzQ70u9_0XhN7Jg/cf557769-811d-44d6-8efc-cf75949d3100/public";
         }
         console.log("res.photoUrl2: ", res.photoUrl2);
-
         console.log("res.photoUrl1: ", res.photoUrl1);
-
-        console.log("I am here");
         console.log("res: ", res);
 
-        console.log("I am here");
         eventDetails = loadEventDetails(res);
 
         console.log("I am here");
         console.log("eventDetails: ", eventDetails);
-        //eventDetails = loadEventDetails(res);
         // checks if an order exists in local storage
         if (
           typeof window !== "undefined" &&
@@ -163,17 +245,6 @@ const TicketSelection = () => {
         }
 
         setDisplay("main");
-        /*
-        getEventImage(eventID)
-          .then((res) => {
-            eventLogo = res;
-          })
-          .catch((err) => {
-            eventLogo = DefaultLogo;
-          })
-          .finally(() => {
-          });
-          */
       })
       .catch((err) => {
         setDisplay("connection");
@@ -219,7 +290,6 @@ const TicketSelection = () => {
     let event = JSON.parse(localStorage.getItem("eventNum"));
     localStorage.removeItem(`cart_${event}`);
     localStorage.removeItem(`image_${event}`);
-    localStorage.removeItem(`eventNum`);
   };
   // LOOKS GOOD
   const handleErrors = (response) => {
@@ -478,90 +548,241 @@ const TicketSelection = () => {
     setTicketInfo(changeTicketInfo(event, ticketType, ticketInfo));
     updateOrderTotals();
   };
-  // LOOKS GOOD
-  // creates checkout/submit order button
-  // THIS IS NOT IN PRODUCTION CODE
+
   const checkoutButton = () => {
+    let selectedTickets = orderTotals.ticketsPurchased ? true : false;
+    let paidAmount = orderTotals.finalPurchaseAmount > 0 ? true : false;
+
+    let buttonClass = selectedTickets
+      ? classes.ButtonGreen
+      : classes.ButtonGreenOpac;
+
+    let tempArray = [];
+    ticketInfo.forEach((ticket, index) => {
+      tempArray.push(ticket.adjustedTicketPrice);
+    });
+    let onlyFree = Math.max(...tempArray) === 0 ? true : false;
+    let noFree = Math.min(...tempArray) > 0 ? true : false;
+
+    let hasRegistration = false;
     if (
-      // there is a registration requirement & total purchase amount > zero
       eventDetails.register &&
       "buttonLabel" in eventDetails.register &&
-      "content" in eventDetails.register &&
-      eventDetails.register.content.length > 0 &&
-      orderTotals.ticketsPurchased > 0
+      "content" in eventDetails.register
     ) {
+      hasRegistration = true;
+    }
+
+    let isSignedIn = false;
+    if (customerInformation.sessionToken !== "") {
+      isSignedIn = true;
+    }
+
+    let hasPrimary = false;
+    if (
+      eventDetails.gateway === "PayPalExpress" ||
+      eventDetails.gateway === "PayPalMarketplace" ||
+      eventDetails.gateway === "Stripe"
+    ) {
+      hasPrimary = true;
+    }
+    console.log("hasPrimary: ", hasPrimary);
+
+    let hasCrypto = eventDetails.cryptoGateway === "Opennode" ? true : false;
+
+    let needsGateway = false;
+    if (!hasPrimary && !hasCrypto && (paidAmount || noFree)) {
+      needsGateway = true;
+      console.log("needsGateway: ", needsGateway);
+    } else {
+      console.log("needsGateway: ", needsGateway);
+    }
+
+    if (needsGateway) {
+      console.log("NO GATEWAY");
       return (
         <button
+          style={{
+            fontSize: "16px",
+            height: "40px",
+            width: "180px",
+            backgroundColor: "#cc0000",
+            color: "#fff",
+            border: "1px solid black",
+            outline: "none",
+          }}
+          disabled={true}
           onClick={() => {
+            console.log("Gateway Required");
+          }}
+        >
+          No gateway
+        </button>
+      );
+    } else if (hasRegistration) {
+      console.log("REGISTRATION REQUIRED");
+      return (
+        <button
+          className={buttonClass}
+          disabled={true}
+          onClick={() => {
+            console.log("Registration Required");
             setDisplay("registration");
           }}
-          className={classes.ButtonGreen}
         >
           {eventDetails.register.buttonLabel.toUpperCase()}
-        </button>
-      );
-    } else if (
-      // there is a registration requirement & total purchase amount > zero
-      eventDetails.register &&
-      "buttonLabel" in eventDetails.register &&
-      "content" in eventDetails.register &&
-      eventDetails.register.content.length > 0
-    ) {
-      return (
-        <button disabled={true} className={classes.ButtonGreenOpac}>
-          {eventDetails.register.buttonLabel.toUpperCase()}
-        </button>
-      );
-    } else if (
-      // there is NOT a registration requirement & a signed order of positive tickets and a zero total value
-      orderTotals.finalPurchaseAmount === 0 &&
-      orderTotals.ticketsPurchased > 0 &&
-      customerInformation.sessionToken !== ""
-    ) {
-      return (
-        <button onClick={freeTicketHandler} className={classes.ButtonGreen}>
-          SUBMIT ORDER
-        </button>
-      );
-    } else if (
-      orderTotals.finalPurchaseAmount > 0 &&
-      customerInformation.sessionToken !== ""
-    ) {
-      // there is NOT a registration requirement & a signed order of positive tickets and a positive total value
-      return (
-        <button
-          onClick={() => {
-            storeOrder();
-          }}
-          className={classes.ButtonGreen}
-        >
-          PROCEED TO CHECKOUT
-        </button>
-      );
-    } else if (orderTotals.ticketsPurchased > 0) {
-      // there is NOT a registration requirement & a unsigned order of positive tickets and a positive total value
-      return (
-        <button
-          onClick={() => {
-            storeOrder();
-          }}
-          className={classes.ButtonGreen}
-        >
-          PROCEED TO CHECKOUT
         </button>
       );
     } else {
-      // there is NOT a registration requirement & a unsigned order of no tickets
-      return (
-        <button disabled={true} className={classes.ButtonGreenOpac}>
-          PROCEED TO CHECKOUT
-        </button>
-      );
+      console.log("NO REGISTRATION REQUIRED");
+      if (isSignedIn) {
+        console.log("LOGGED-IN USER");
+        if (onlyFree) {
+          console.log("FREE ORDER");
+          return (
+            <button
+              className={buttonClass}
+              style={{ fontSize: "18px" }}
+              disabled={!selectedTickets}
+              onClick={() => {
+                console.log("Free User Checkout");
+                storeOrder();
+                freeTicketHandler();
+              }}
+            >
+              Submit order
+            </button>
+          );
+        } else {
+          console.log("Potentialy a Paid Order");
+          if (noFree || (paidAmount && selectedTickets)) {
+            console.log("Only Paid Orders");
+            if (hasPrimary) {
+              return (
+                <button
+                  className={buttonClass}
+                  style={{ fontSize: "18px" }}
+                  disabled={!selectedTickets}
+                  onClick={() => {
+                    console.log("Paid and Primary Order");
+                    storeOrder();
+                    if (eventDetails.gateway === "PayPalExpress") {
+                      console.log(
+                        "window.location.href = '/checkout-paypalexpress'"
+                      );
+                      window.location.href = "/checkout-paypalexpress";
+                    } else if (eventDetails.gateway === "Stripe") {
+                      console.log("window.location.href = '/checkout-stripe'");
+                      window.location.href = "/checkout-stripe";
+                      //console.log(
+                      //  "window.location.href = '/checkout-stripe-mobile'"
+                      //);
+
+                      //window.location.href =
+                      //  "/checkout-stripe-mobile?account=####&clientSecret=####";
+                    } else if (eventDetails.gateway === "PayPalMarketplace") {
+                      console.log(
+                        "window.location.href = '/checkout-paypalmerchant'"
+                      );
+                      window.location.href = "/checkout-paypalmerchant";
+                    }
+                  }}
+                >
+                  Continue
+                </button>
+              );
+            } else {
+              return (
+                <button
+                  className={buttonClass}
+                  style={{ fontSize: "18px" }}
+                  disabled={!selectedTickets}
+                  onClick={() => {
+                    console.log("Paid and Crypto Order");
+                    storeOrder();
+                    window.location.href = "/checkout-opennode";
+                  }}
+                >
+                  Pay with bitcoin
+                </button>
+              );
+            }
+          } else {
+            console.log("Mixed Orders");
+            if (selectedTickets) {
+              console.log("FREE ORDER");
+              return (
+                <button
+                  className={buttonClass}
+                  style={{ fontSize: "18px" }}
+                  disabled={!selectedTickets}
+                  onClick={() => {
+                    console.log("Free User Checkout");
+                    freeTicketHandler();
+                  }}
+                >
+                  Submit order
+                </button>
+              );
+            } else {
+              console.log("NO ORDER MADE");
+              return (
+                <button
+                  className={classes.ButtonGreenOpac}
+                  style={{ fontSize: "18px" }}
+                  disabled={!selectedTickets}
+                  onClick={() => {
+                    console.log("Free User Checkout");
+                  }}
+                >
+                  Make a selection
+                </button>
+              );
+            }
+          }
+        }
+      } else {
+        console.log("GUEST USER");
+        if (!paidAmount) {
+          console.log("Free and Guest Checkout");
+          return (
+            <button
+              className={buttonClass}
+              style={{ fontSize: "18px" }}
+              disabled={!selectedTickets}
+              onClick={() => {
+                console.log("Free and Guest Checkout");
+                storeOrder();
+                window.location.href = "/infofree";
+              }}
+            >
+              Checkout
+            </button>
+          );
+        } else if (paidAmount && (hasPrimary || hasCrypto)) {
+          console.log("Paid and Guest Checkout");
+          return (
+            <button
+              className={buttonClass}
+              style={{ fontSize: "18px" }}
+              disabled={!selectedTickets}
+              onClick={() => {
+                console.log("Paid and Guest Checkout");
+                storeOrder();
+                window.location.href = "/infopaid";
+              }}
+            >
+              Checkout
+            </button>
+          );
+        }
+      }
     }
   };
+
   // LOOKS GOOD
   // stores order and event information into "localStorage"
-  const storeOrder = (/*orderId*/) => {
+  const storeOrder = () => {
     //
     let signedIn = false;
     console.log("Inside 'storeOrder'");
@@ -587,8 +808,12 @@ const TicketSelection = () => {
         signedIn = true;
       }
     }
+    //
+  };
 
-    if (signedIn === true) {
+  const processOrder = () => {
+    //if (signedIn === true) {
+    if (true) {
       console.log("eventDetails.gateway: ", eventDetails.gateway);
       // user is signed in therefore skip guest info page
       console.log("eventDetails.gateway: ", eventDetails.gateway);
@@ -598,6 +823,9 @@ const TicketSelection = () => {
       } else if (eventDetails.gateway === "Stripe") {
         console.log("window.location.href = '/checkout-stripe'");
         window.location.href = "/checkout-stripe";
+        //console.log("window.location.href = '/checkout-stripe-mobile'");
+        //window.location.href =
+        //  "/checkout-stripe-mobile?account=####&clientSecret=####";
       } else if (eventDetails.gateway === "PayPalMarketplace") {
         console.log("window.location.href = '/checkout-paypalmerchant'");
         window.location.href = "/checkout-paypalmerchant";
@@ -638,10 +866,10 @@ const TicketSelection = () => {
             <button
               className={classes.ButtonGrey}
               onClick={() => {
-                window.location.href = `/events`;
+                window.location.href = `/`;
               }}
             >
-              CONTINUE
+              Continue
             </button>
           </div>
         </div>
@@ -695,10 +923,15 @@ const TicketSelection = () => {
   // determines whether or not to display purchase amount
   const totalAmount = (show) => {
     if (display === "main" && !show && orderTotals.ticketsPurchased > 0) {
+      // show 2 decimal places in currency amount ($2.10 instead of $2.1). We need to adjust for Yen.
+      let amt2 =
+        "number" === typeof orderTotals.finalPurchaseAmount
+          ? orderTotals.finalPurchaseAmount.toFixed(2)
+          : orderTotals.finalPurchaseAmount;
       return (
         <div>
           {orderTotals.currencySym}
-          {orderTotals.finalPurchaseAmount}
+          {amt2}
         </div>
       );
     } else return null;
@@ -775,20 +1008,7 @@ const TicketSelection = () => {
       );
     }
   };
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
+
   // LOOKS GOOD
   // creates ticket pane with promo form and ticket sections
   const ticketPane = () => {
@@ -865,7 +1085,7 @@ const TicketSelection = () => {
           setDisplay("main");
         }}
       >
-        I DISAGREE
+        I disagree
       </button>
     </div>
   );
@@ -904,7 +1124,7 @@ const TicketSelection = () => {
               }
             }}
           >
-            I AGREE
+            I agree
           </button>
         </div>
       );
@@ -965,15 +1185,6 @@ const TicketSelection = () => {
   };
 
   return (
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
     <div style={MainContainer}>
       {loadingSpinner()}
       {mainDisplay()}

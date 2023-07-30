@@ -52,6 +52,8 @@ import Backdrop from "./Modals/Backdrop";
 
 const TicketPurchase = (props) => {
   console.log("Event props: ", props.event);
+
+  //localStorage.clear();
   // defines panel displayed: selection, registration, guestinfo, payment, spinner, ?confirmation?, ?connection?
   const [display, setDisplay] = useState("selection");
   // defines single or double panel display on main page
@@ -103,6 +105,7 @@ const TicketPurchase = (props) => {
 
   // REVIEWED 1/1/22
   useEffect(() => {
+    console.log("HELLO");
     if (
       typeof window !== "undefined" &&
       localStorage.getItem(`user`) !== null
